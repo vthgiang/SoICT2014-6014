@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
@@ -9,55 +9,54 @@ import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
 import "../quote.css";
-class QuoteCreateGood extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            discountsOfGood: [],
-            discountsOfGoodChecked: {},
-            slasOfGood: [],
-            slasOfGoodChecked: {},
-            taxs: [],
-            step: 0,
-            steps: [
-                {
-                    label: "Chọn sản phẩm",
-                    active: true,
-                },
-                {
-                    label: "Các chính sách",
-                    active: false,
-                },
-                {
-                    label: "Thuế",
-                    active: false,
-                },
-            ],
-        };
-    }
+function QuoteCreateGood(props) {
 
-    componentDidMount() {
-        this.props.getAllGoodsByType({ type: "product" });
-    }
+    const [state, setState] = useState({
+        discountsOfGood: [],
+        discountsOfGoodChecked: {},
+        slasOfGood: [],
+        slasOfGoodChecked: {},
+        taxs: [],
+        step: 0,
+        steps: [
+            {
+                label: "Chọn sản phẩm",
+                active: true,
+            },
+            {
+                label: "Các chính sách",
+                active: false,
+            },
+            {
+                label: "Thuế",
+                active: false,
+            },
+        ],
+    })
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
-            await this.getCheckedForGood(nextProps.goods.goodItems);
-            return false;
-        }
+    useEffect(() => {
+        props.getAllGoodsByType({ type: "product" });
+    }, [])
 
+    useEffect(() => {
+
+        getCheckedForGood(props.goods.goodItems);
+
+    }, [props.goods.goodItems])
+
+    useEffect(() => {
         //Lấy số lượng hàng tồn kho cho các mặt hàng
-        if (nextProps.goods.goodItems.inventoryByGoodId !== nextState.inventory && nextState.good !== "title") {
-            this.setState({
-                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+        if (props.goods.goodItems.inventoryByGoodId !== state.inventory && state.good !== "title") {
+            setState({
+                ...state,
+                inventory: props.goods.goodItems.inventoryByGoodId,
             });
         }
-        return true;
-    };
+    }, [props.goods.goodItems.inventoryByGoodId])
 
-    nextStep = (e) => {
+    const nextstep = (e) => {
         e.preventDefault();
-        let { step, steps } = this.state;
+        let { step, steps } = state;
         step++;
         steps.map((item, index) => {
             if (index <= step) {
@@ -67,14 +66,16 @@ class QuoteCreateGood extends Component {
             }
             return item;
         });
-        this.setState({
+        setState({
+            ...state,
             steps: steps,
             step: step,
         });
     };
-    preStep = (e) => {
+
+    const preStep = (e) => {
         e.preventDefault();
-        let { step, steps } = this.state;
+        let { step, steps } = state;
         step--;
         steps.map((item, index) => {
             if (index <= step) {
@@ -84,7 +85,7 @@ class QuoteCreateGood extends Component {
             }
             return item;
         });
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 steps: steps,
@@ -93,9 +94,9 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    setCurrentStep = (e, step) => {
+    const setCurrentStep = (e, step) => {
         e.preventDefault();
-        let { steps } = this.state;
+        let { steps } = state;
         steps.map((item, index) => {
             if (index <= step) {
                 item.active = true;
@@ -104,7 +105,7 @@ class QuoteCreateGood extends Component {
             }
             return item;
         });
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 steps: steps,
@@ -113,8 +114,8 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    handleDiscountsChange = (data) => {
-        this.setState((state) => {
+    const handleDiscountsChange = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfGood: data,
@@ -122,8 +123,8 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    setDiscountsOfGoodChecked = (discountsOfGoodChecked) => {
-        this.setState((state) => {
+    const setDiscountsOfGoodChecked = (discountsOfGoodChecked) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfGoodChecked,
@@ -131,7 +132,7 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    validateGood = (value, willUpdateState = true) => {
+    const validateGood = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -140,7 +141,7 @@ class QuoteCreateGood extends Component {
         }
 
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     goodError: msg,
@@ -150,12 +151,12 @@ class QuoteCreateGood extends Component {
         return msg;
     };
 
-    handleGoodChange = async (value) => {
+    const handleGoodChange = async (value) => {
         if (value[0] !== "title") {
-            let { listGoodsByType } = this.props.goods;
+            let { listGoodsByType } = props.goods;
             const goodInfo = listGoodsByType.filter((item) => item._id === value[0]);
             if (goodInfo.length) {
-                await this.setState((state) => {
+                await setState((state) => {
                     return {
                         ...state,
                         good: goodInfo[0]._id,
@@ -176,9 +177,9 @@ class QuoteCreateGood extends Component {
                 });
             }
 
-            await this.props.getItemsForGood(value[0]);
+            await props.getItemsForGood(value[0]);
         } else {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     good: value[0],
@@ -200,11 +201,11 @@ class QuoteCreateGood extends Component {
             });
         }
 
-        this.validateGood(value, true);
+        validateGood(value, true);
     };
 
-    hasDiscountsOnGoodChecker = () => {
-        let { discountsOfGood } = this.state;
+    const hasDiscountsOnGoodChecker = () => {
+        let { discountsOfGood } = state;
         let checked = false;
         discountsOfGood.forEach((element) => {
             if (element.formality == "5") {
@@ -214,23 +215,22 @@ class QuoteCreateGood extends Component {
         return checked;
     };
 
-    validatePrice = (value, willUpdateState = true) => {
+    const validatePrice = (value, willUpdateState = true) => {
         let msg = undefined;
-        let checkDiscountOnGoods = this.hasDiscountsOnGoodChecker(); //Nếu mặt hàng là giảm giá tồn kho thì không cần salesPriceVariance
+        let checkDiscountOnGoods = hasDiscountsOnGoodChecker(); //Nếu mặt hàng là giảm giá tồn kho thì không cần salesPriceVariance
 
-        let { salesPriceVariance, pricePerBaseUnitOrigin } = this.state;
+        let { salesPriceVariance, pricePerBaseUnitOrigin } = state;
         if (!value) {
             msg = "Giá trị không được để trống!";
         } else if (parseInt(value) < 0) {
             msg = "Giá không được âm";
         } else if (parseInt(value) < pricePerBaseUnitOrigin - salesPriceVariance && !checkDiscountOnGoods) {
-            msg = `Giá không được chênh lệch quá ${salesPriceVariance ? formatCurrency(salesPriceVariance) : 0} (vnđ) so với giá gốc: ${
-                pricePerBaseUnitOrigin ? formatCurrency(pricePerBaseUnitOrigin) : 0
-            } (vnđ)`;
+            msg = `Giá không được chênh lệch quá ${salesPriceVariance ? formatCurrency(salesPriceVariance) : 0} (vnđ) so với giá gốc: ${pricePerBaseUnitOrigin ? formatCurrency(pricePerBaseUnitOrigin) : 0
+                } (vnđ)`;
         }
 
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     pricePerBaseUnit: value,
@@ -241,12 +241,12 @@ class QuoteCreateGood extends Component {
         return msg;
     };
 
-    handlePriceChange = (e) => {
+    const handlePriceChange = (e) => {
         let { value } = e.target;
-        this.validatePrice(value, true);
+        validatePrice(value, true);
     };
 
-    validateQuantity = (value, willUpdateState = true) => {
+    const validateQuantity = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống!";
@@ -255,7 +255,7 @@ class QuoteCreateGood extends Component {
         }
 
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     quantity: value,
@@ -266,15 +266,15 @@ class QuoteCreateGood extends Component {
         return msg;
     };
 
-    handleQuantityChange = (e) => {
+    const handleQuantityChange = (e) => {
         let { value } = e.target;
         if (value >= 0) {
-            this.validateQuantity(value, true);
+            validateQuantity(value, true);
         }
     };
 
-    handleSlasOfGoodChange = (value) => {
-        this.setState((state) => {
+    const handleSlasOfGoodChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 slasOfGood: value,
@@ -282,8 +282,8 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    setSlasOfGoodChecked = (slasOfGoodChecked) => {
-        this.setState((state) => {
+    const setSlasOfGoodChecked = (slasOfGoodChecked) => {
+        setState((state) => {
             return {
                 ...state,
                 slasOfGoodChecked,
@@ -291,15 +291,16 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    handleNoteChange = (e) => {
+    const handleNoteChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             note: value,
         });
     };
 
-    handleTaxsChange = (value) => {
-        this.setState((state) => {
+    const handleTaxsChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 taxs: value,
@@ -307,8 +308,8 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    getOriginAmountOfGood = () => {
-        const { quantity, pricePerBaseUnit } = this.state;
+    const getOriginAmountOfGood = () => {
+        const { quantity, pricePerBaseUnit } = state;
         let originAmount = 0;
         if (pricePerBaseUnit && quantity) {
             originAmount = pricePerBaseUnit * quantity;
@@ -319,9 +320,9 @@ class QuoteCreateGood extends Component {
         return originAmount;
     };
 
-    getAmountAfterApplyDiscount = () => {
-        let amountAfterApplyDiscount = this.getOriginAmountOfGood();
-        const { discountsOfGood, pricePerBaseUnit } = this.state;
+    const getAmountAfterApplyDiscount = () => {
+        let amountAfterApplyDiscount = getOriginAmountOfGood();
+        const { discountsOfGood, pricePerBaseUnit } = state;
         let discountForFormality = {
             0: [],
             1: [],
@@ -336,7 +337,8 @@ class QuoteCreateGood extends Component {
 
         if (discountForFormality[5].length) {
             if (discountForFormality[5][0].discountOnGoods.discountedPrice !== pricePerBaseUnit) {
-                this.setState({
+                setState({
+                    ...state,
                     pricePerBaseUnit: discountForFormality[5][0].discountOnGoods.discountedPrice,
                 });
             }
@@ -353,10 +355,10 @@ class QuoteCreateGood extends Component {
         return amountAfterApplyDiscount;
     };
 
-    getAmountAfterApplyTax = () => {
-        const { listTaxsByGoodId } = this.props.goods.goodItems;
-        let amountAfterApplyTax = this.getAmountAfterApplyDiscount();
-        const { taxs } = this.state;
+    const getAmountAfterApplyTax = () => {
+        const { listTaxsByGoodId } = props.goods.goodItems;
+        let amountAfterApplyTax = getAmountAfterApplyDiscount();
+        const { taxs } = state;
         let listTaxs = taxs.map((item) => {
             let tax = listTaxsByGoodId.find((element) => element.code == item);
             if (tax) {
@@ -372,19 +374,19 @@ class QuoteCreateGood extends Component {
         return amountAfterApplyTax;
     };
 
-    isValidateGoodSelected = () => {
-        let { good, pricePerBaseUnit, quantity } = this.state;
-        if (this.validateGood([good], false) || this.validatePrice(pricePerBaseUnit, false) || this.validateQuantity(quantity, false)) {
+    const isValidateGoodSelected = () => {
+        let { good, pricePerBaseUnit, quantity } = state;
+        if (validateGood([good], false) || validatePrice(pricePerBaseUnit, false) || validateQuantity(quantity, false)) {
             return false;
         } else {
             return true;
         }
     };
 
-    addGood = (e) => {
+    const addGood = (e) => {
         e.preventDefault();
-        if (this.isValidateGoodSelected()) {
-            const { listTaxsByGoodId } = this.props.goods.goodItems;
+        if (isValidateGoodSelected()) {
+            const { listTaxsByGoodId } = props.goods.goodItems;
             let {
                 taxs,
                 slasOfGood,
@@ -399,13 +401,13 @@ class QuoteCreateGood extends Component {
                 note,
                 steps,
                 salesPriceVariance,
-            } = this.state;
+            } = state;
 
-            let { listGoods } = this.props;
+            let { listGoods } = props;
 
-            let amount = this.getOriginAmountOfGood();
-            let amountAfterDiscount = this.getAmountAfterApplyDiscount();
-            let amountAfterTax = this.getAmountAfterApplyTax();
+            let amount = getOriginAmountOfGood();
+            let amountAfterDiscount = getAmountAfterApplyDiscount();
+            let amountAfterTax = getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
                 let tax = listTaxsByGoodId.find((element) => element.code == item);
@@ -415,7 +417,7 @@ class QuoteCreateGood extends Component {
             });
 
             let listSlas = [];
-            let { listSlasByGoodId } = this.props.goods.goodItems;
+            let { listSlasByGoodId } = props.goods.goodItems;
             for (const key in slasOfGood) {
                 let slaInfo = listSlasByGoodId.find((element) => element._id === key);
                 listSlas.push({
@@ -450,8 +452,8 @@ class QuoteCreateGood extends Component {
                 step.active = !index ? true : false;
                 return step;
             });
-            this.props.setGoods(listGoods);
-            this.setState((state) => {
+            props.setGoods(listGoods);
+            setState((state) => {
                 return {
                     ...state,
                     discountsOfGood: [],
@@ -477,13 +479,13 @@ class QuoteCreateGood extends Component {
         }
     };
 
-    deleteGood = (goodId) => {
-        let { listGoods } = this.props;
+    const deleteGood = (goodId) => {
+        let { listGoods } = props;
         let goodsFilter = listGoods.filter((item) => item.good._id !== goodId);
-        this.props.setGoods(goodsFilter);
+        props.setGoods(goodsFilter);
     };
 
-    getDiscountsCheckedForEditGood = (item, quantity, goodId) => {
+    const getDiscountsCheckedForEditGood = (item, quantity, goodId) => {
         let checked = { id: "", status: false };
         item.discounts.forEach((discount, index) => {
             let checkGoodInDiscount = discount.discountOnGoods.find((element) => goodId === element.good._id); //Kiểm tra mặt hàng này có được trong danh mục khuyến mãi
@@ -508,7 +510,7 @@ class QuoteCreateGood extends Component {
         return checked;
     };
 
-    getSlasCheckedForEditGood = (goodItems, slasOfGoodChecked, slaChecked) => {
+    const getSlasCheckedForEditGood = (goodItems, slasOfGoodChecked, slaChecked) => {
         let { listSlasByGoodId } = goodItems;
         let slaInfo = listSlasByGoodId.find((element) => element._id === slaChecked._id);
 
@@ -525,9 +527,9 @@ class QuoteCreateGood extends Component {
         return slasOfGoodChecked;
     };
 
-    getCheckedForGood = (goodItems) => {
+    const getCheckedForGood = (goodItems) => {
         //lấy những sla và discount đã check box set vào state
-        let { discountsOfGoodChecked, slasOfGoodChecked, discountsOfGood, slasOfGood, quantity, good } = this.state;
+        let { discountsOfGoodChecked, slasOfGoodChecked, discountsOfGood, slasOfGood, quantity, good } = state;
         let { listDiscountsByGoodId } = goodItems;
 
         if (discountsOfGood) {
@@ -535,7 +537,7 @@ class QuoteCreateGood extends Component {
                 //checked các khuyến mãi đã có trong danh mục
                 let discount = listDiscountsByGoodId.find((dis) => dis._id === element._id);
                 if (discount) {
-                    let checked = this.getDiscountsCheckedForEditGood(discount, quantity, good);
+                    let checked = getDiscountsCheckedForEditGood(discount, quantity, good);
                     discountsOfGoodChecked[`${checked.id}`] = checked.status;
                 }
             });
@@ -548,20 +550,21 @@ class QuoteCreateGood extends Component {
                     _id: key,
                     descriptions: slasOfGood[key],
                 };
-                slasOfGoodChecked = this.getSlasCheckedForEditGood(goodItems, slasOfGoodChecked, element);
+                slasOfGoodChecked = getSlasCheckedForEditGood(goodItems, slasOfGoodChecked, element);
             }
         }
 
-        this.setState({
+        setState({
+            ...state,
             discountsOfGoodChecked,
             slasOfGoodChecked,
         });
     };
 
-    handleEditGood = async (item, index) => {
-        await this.props.getItemsForGood(item.good._id);
+    const handleEditGood = async (item, index) => {
+        await props.getItemsForGood(item.good._id);
 
-        let { listGoodsByType } = this.props.goods;
+        let { listGoodsByType } = props.goods;
         const goodInfo = listGoodsByType.filter((good) => good._id === item.good._id);
 
         let slasForEdit = {};
@@ -569,7 +572,8 @@ class QuoteCreateGood extends Component {
             slasForEdit[element._id] = element.descriptions;
         });
 
-        await this.setState({
+        await setState({
+            ...state,
             editGood: true,
             indexEditting: index,
             taxs: item.taxs.map((tax) => tax.code),
@@ -588,17 +592,17 @@ class QuoteCreateGood extends Component {
             slasOfGood: slasForEdit,
         });
 
-        this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
+        getCheckedForGood(props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
     };
 
-    handleCancelEditGood = (e) => {
+    const handleCancelEditGood = (e) => {
         e.preventDefault();
-        let { steps } = this.state;
+        let { steps } = state;
         steps = steps.map((step, index) => {
             step.active = !index ? true : false;
             return step;
         });
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 indexEditting: "",
@@ -625,10 +629,10 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    handleSaveEditGood = (e) => {
+    const handleSaveEditGood = (e) => {
         e.preventDefault();
-        if (this.isValidateGoodSelected()) {
-            const { listTaxsByGoodId } = this.props.goods.goodItems;
+        if (isValidateGoodSelected()) {
+            const { listTaxsByGoodId } = props.goods.goodItems;
             let {
                 taxs,
                 slasOfGood,
@@ -644,13 +648,13 @@ class QuoteCreateGood extends Component {
                 steps,
                 salesPriceVariance,
                 indexEditting,
-            } = this.state;
+            } = state;
 
-            let { listGoods } = this.props;
+            let { listGoods } = props;
 
-            let amount = this.getOriginAmountOfGood();
-            let amountAfterDiscount = this.getAmountAfterApplyDiscount();
-            let amountAfterTax = this.getAmountAfterApplyTax();
+            let amount = getOriginAmountOfGood();
+            let amountAfterDiscount = getAmountAfterApplyDiscount();
+            let amountAfterTax = getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
                 let tax = listTaxsByGoodId.find((element) => element.code == item);
@@ -660,7 +664,7 @@ class QuoteCreateGood extends Component {
             });
 
             let listSlas = [];
-            let { listSlasByGoodId } = this.props.goods.goodItems;
+            let { listSlasByGoodId } = props.goods.goodItems;
             for (const key in slasOfGood) {
                 let slaInfo = listSlasByGoodId.find((element) => element._id === key);
                 listSlas.push({
@@ -695,8 +699,8 @@ class QuoteCreateGood extends Component {
                 step.active = !index ? true : false;
                 return step;
             });
-            this.props.setGoods(listGoods);
-            this.setState((state) => {
+            props.setGoods(listGoods);
+            setState((state) => {
                 return {
                     ...state,
                     indexEditting: "",
@@ -724,336 +728,334 @@ class QuoteCreateGood extends Component {
         }
     };
 
-    render() {
-        let {
-            good,
-            goodName,
-            code,
-            pricePerBaseUnit,
-            baseUnit,
-            inventory,
-            quantity,
-            discountsOfGood,
-            discountsOfGoodChecked,
-            slasOfGood,
-            slasOfGoodChecked,
-            taxs,
-            note,
-            steps,
-            step,
-            editGood,
-        } = this.state;
+    let {
+        good,
+        goodName,
+        code,
+        pricePerBaseUnit,
+        baseUnit,
+        inventory,
+        quantity,
+        discountsOfGood,
+        discountsOfGoodChecked,
+        slasOfGood,
+        slasOfGoodChecked,
+        taxs,
+        note,
+        steps,
+        step,
+        editGood,
+    } = state;
 
-        let { goodError, pricePerBaseUnitError, quantityError } = this.state;
+    let { goodError, pricePerBaseUnitError, quantityError } = state;
 
-        const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = this.props;
-        let { listGoods } = this.props;
+    const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = props;
+    let { listGoods } = props;
 
-        const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = this.props;
+    const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = props;
 
-        let originAmount = this.getOriginAmountOfGood();
-        let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
-        let amountAfterApplyTax = this.getAmountAfterApplyTax();
+    let originAmount = getOriginAmountOfGood();
+    let amountAfterApplyDiscount = getAmountAfterApplyDiscount();
+    let amountAfterApplyTax = getAmountAfterApplyTax();
 
-        let isGoodValidate = this.isValidateGoodSelected();
-        return (
-            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <fieldset className="scheduler-border" style={{ padding: 10 }}>
-                    <legend className="scheduler-border">Các mặt hàng</legend>
-                    {/* ---------------------STEP--------------------- */}
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ backgroundColor: "#f5f5f5" }}>
-                        <div className="timeline">
-                            <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
-                            <div className="timeline-items">
-                                {steps.map((item, index) => (
-                                    <div
-                                        className={`timeline-item ${item.active ? "active" : ""} 
+    let isGoodValidate = isValidateGoodSelected();
+    return (
+        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <fieldset className="scheduler-border" style={{ padding: 10 }}>
+                <legend className="scheduler-border">Các mặt hàng</legend>
+                {/* ---------------------STEP--------------------- */}
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ backgroundColor: "#f5f5f5" }}>
+                    <div className="timeline">
+                        <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
+                        <div className="timeline-items">
+                            {steps.map((item, index) => (
+                                <div
+                                    className={`timeline-item ${item.active ? "active" : ""} 
                                         ${!isGoodValidate && index > 0 ? "disable-onclick-prevent" : ""}`}
-                                        key={index}
-                                        onClick={(e) => {
-                                            this.setCurrentStep(e, index);
-                                        }}
-                                    >
-                                        <div className="timeline-contain">{item.label}</div>
-                                    </div>
-                                ))}
-                            </div>
+                                    key={index}
+                                    onClick={(e) => {
+                                        setCurrentStep(e, index);
+                                    }}
+                                >
+                                    <div className="timeline-contain">{item.label}</div>
+                                </div>
+                            ))}
                         </div>
-                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
-                            <div
-                                style={{ padding: 10, backgroundColor: "white", height: "100%" }}
-                                className="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                            >
-                                {step === 0 && (
-                                    <GoodSelected
-                                        good={good}
-                                        goodName={goodName}
-                                        pricePerBaseUnit={pricePerBaseUnit}
-                                        baseUnit={baseUnit}
-                                        inventory={inventory}
-                                        quantity={quantity}
-                                        handleGoodChange={this.handleGoodChange}
-                                        handlePriceChange={this.handlePriceChange}
-                                        handleQuantityChange={this.handleQuantityChange}
-                                        //log error
-                                        pricePerBaseUnitError={pricePerBaseUnitError}
-                                        goodError={goodError}
-                                        quantityError={quantityError}
-                                    />
-                                )}
-                                {step === 1 && (
-                                    <ApplyDiscount
-                                        quantity={quantity}
-                                        handleQuantityChange={this.handleQuantityChange}
-                                        good={good}
-                                        goodName={goodName}
-                                        code={code}
-                                        baseUnit={baseUnit}
-                                        inventory={inventory}
-                                        pricePerBaseUnit={pricePerBaseUnit}
-                                        handleDiscountsChange={(data) => this.handleDiscountsChange(data)}
-                                        setDiscountsChecked={(checked) => this.setDiscountsOfGoodChecked(checked)}
-                                        discountsChecked={discountsOfGoodChecked}
-                                        discountsOfGood={discountsOfGood}
-                                        slasOfGood={slasOfGood}
-                                        handleSlasOfGoodChange={(data) => this.handleSlasOfGoodChange(data)}
-                                        slasOfGoodChecked={slasOfGoodChecked}
-                                        setSlasOfGoodChecked={(checked) => this.setSlasOfGoodChecked(checked)}
-                                        //log error
-                                        quantityError={quantityError}
-                                    />
-                                )}
-                                {step === 2 && (
-                                    <Payment
-                                        quantity={quantity}
-                                        good={good}
-                                        goodName={goodName}
-                                        code={code}
-                                        baseUnit={baseUnit}
-                                        inventory={inventory}
-                                        pricePerBaseUnit={pricePerBaseUnit}
-                                        taxs={taxs}
-                                        note={note}
-                                        handleTaxsChange={this.handleTaxsChange}
-                                        handleNoteChange={this.handleNoteChange}
-                                    />
-                                )}
-                            </div>
-                        </div>
-
-                        {/* ---------------------END-STEP--------------------- */}
-
-                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, minHeight: "250px" }}>
-                            <div style={{ padding: 10, backgroundColor: "white" }}>
-                                <div className="form-group">
-                                    <strong>Thành tiền: </strong>
-                                    <span style={{ float: "right" }}>{originAmount ? formatCurrency(originAmount) : `0 `}</span>
-                                </div>
-                                <div className="form-group">
-                                    <strong>Khuyến mãi: </strong>
-                                    <span style={{ float: "right" }} className="text-red">
-                                        {amountAfterApplyDiscount
-                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100)
-                                            : `0 `}
-                                    </span>
-                                </div>
-                                <div className="form-group">
-                                    <strong>Tổng tiền trước thuế: </strong>
-                                    <span style={{ float: "right" }}>
-                                        {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount) : `0 `}
-                                    </span>
-                                </div>
-                                <div className="form-group">
-                                    <strong>Thuế: </strong>
-                                    <span style={{ float: "right" }}>
-                                        {amountAfterApplyTax
-                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100)
-                                            : `0 `}
-                                    </span>
-                                </div>
-
-                                <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
-                                    <strong>Tổng tiền sau thuế: </strong>
-                                    <span style={{ float: "right", fontSize: "18px" }} className="text-red">
-                                        {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) : `0`}
-                                    </span>
-                                </div>
-
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    {/* Thêm sản phẩm mới */}
-                                    {step === steps.length - 1 && !editGood ? (
-                                        <div className="quote-add-good-button">
-                                            <button disabled={!isGoodValidate} className="btn btn-success" onClick={this.addGood}>
-                                                Thêm sản phẩm
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        ""
-                                    )}
-
-                                    {/* Lưu chỉnh sửa */}
-                                    {step === steps.length - 1 && editGood ? (
-                                        <div className="quote-save-edit-good-button">
-                                            <button disabled={!isGoodValidate} className="btn btn-success" onClick={this.handleSaveEditGood}>
-                                                Lưu
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        ""
-                                    )}
-
-                                    {/* Hủy chỉnh sửa */}
-                                    {editGood ? (
-                                        <div className="quote-cancel-edit-good-button">
-                                            <button className="btn btn-success" onClick={this.handleCancelEditGood}>
-                                                Hủy chỉnh sửa
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        ""
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={"pull-right"} style={{ padding: 10 }}></div>
+                    </div>
+                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
+                        <div
+                            style={{ padding: 10, backgroundColor: "white", height: "100%" }}
+                            className="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+                        >
+                            {step === 0 && (
+                                <GoodSelected
+                                    good={good}
+                                    goodName={goodName}
+                                    pricePerBaseUnit={pricePerBaseUnit}
+                                    baseUnit={baseUnit}
+                                    inventory={inventory}
+                                    quantity={quantity}
+                                    handleGoodChange={handleGoodChange}
+                                    handlePriceChange={handlePriceChange}
+                                    handleQuantityChange={handleQuantityChange}
+                                    //log error
+                                    pricePerBaseUnitError={pricePerBaseUnitError}
+                                    goodError={goodError}
+                                    quantityError={quantityError}
+                                />
+                            )}
+                            {step === 1 && (
+                                <ApplyDiscount
+                                    quantity={quantity}
+                                    handleQuantityChange={handleQuantityChange}
+                                    good={good}
+                                    goodName={goodName}
+                                    code={code}
+                                    baseUnit={baseUnit}
+                                    inventory={inventory}
+                                    pricePerBaseUnit={pricePerBaseUnit}
+                                    handleDiscountsChange={(data) => handleDiscountsChange(data)}
+                                    setDiscountsChecked={(checked) => setDiscountsOfGoodChecked(checked)}
+                                    discountsChecked={discountsOfGoodChecked}
+                                    discountsOfGood={discountsOfGood}
+                                    slasOfGood={slasOfGood}
+                                    handleSlasOfGoodChange={(data) => handleSlasOfGoodChange(data)}
+                                    slasOfGoodChecked={slasOfGoodChecked}
+                                    setSlasOfGoodChecked={(checked) => setSlasOfGoodChecked(checked)}
+                                    //log error
+                                    quantityError={quantityError}
+                                />
+                            )}
+                            {step === 2 && (
+                                <Payment
+                                    quantity={quantity}
+                                    good={good}
+                                    goodName={goodName}
+                                    code={code}
+                                    baseUnit={baseUnit}
+                                    inventory={inventory}
+                                    pricePerBaseUnit={pricePerBaseUnit}
+                                    taxs={taxs}
+                                    note={note}
+                                    handleTaxsChange={handleTaxsChange}
+                                    handleNoteChange={handleNoteChange}
+                                />
+                            )}
                         </div>
                     </div>
 
-                    {/* Hiển thị bảng */}
-                    <table className="table table-bordered not-sort">
-                        <thead>
-                            <tr>
-                                <th title={"STT"}>STT</th>
-                                <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
-                                <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
-                                <th title={"Đơn vị tính"}>Đ/v tính</th>
-                                <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
-                                <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
-                                <th title={"Số lượng"}>Số lượng</th>
-                                <th title={"Khuyến mãi"}>Khuyến mãi</th>
-                                <th title={"Thành tiền"}>Thành tiền</th>
-                                <th title={"Thuế"}>Thuế</th>
-                                <th title={"Tổng tiền"}>Tổng tiền</th>
-                                <th>Cam kết chất lượng</th>
-                                <th title={"Ghi chú"}>Ghi chú</th>
-                                <th title={"Hành động"}>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody id={`quote-goods-table`}>
-                            {listGoods &&
-                                listGoods.length !== 0 &&
-                                listGoods.map((item, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>{item.good ? item.good.code : ""}</td>
-                                        <td>{item.good ? item.good.name : ""}</td>
-                                        <td>{item.good ? item.good.baseUnit : ""}</td>
-                                        <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) : `0 `}</td>
-                                        <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) : `0`}</td>
-                                        <td>{item.quantity}</td>
-                                        <td>
+                    {/* ---------------------END-STEP--------------------- */}
+
+                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, minHeight: "250px" }}>
+                        <div style={{ padding: 10, backgroundColor: "white" }}>
+                            <div className="form-group">
+                                <strong>Thành tiền: </strong>
+                                <span style={{ float: "right" }}>{originAmount ? formatCurrency(originAmount) : `0 `}</span>
+                            </div>
+                            <div className="form-group">
+                                <strong>Khuyến mãi: </strong>
+                                <span style={{ float: "right" }} className="text-red">
+                                    {amountAfterApplyDiscount
+                                        ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100)
+                                        : `0 `}
+                                </span>
+                            </div>
+                            <div className="form-group">
+                                <strong>Tổng tiền trước thuế: </strong>
+                                <span style={{ float: "right" }}>
+                                    {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount) : `0 `}
+                                </span>
+                            </div>
+                            <div className="form-group">
+                                <strong>Thuế: </strong>
+                                <span style={{ float: "right" }}>
+                                    {amountAfterApplyTax
+                                        ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100)
+                                        : `0 `}
+                                </span>
+                            </div>
+
+                            <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
+                                <strong>Tổng tiền sau thuế: </strong>
+                                <span style={{ float: "right", fontSize: "18px" }} className="text-red">
+                                    {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) : `0`}
+                                </span>
+                            </div>
+
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                {/* Thêm sản phẩm mới */}
+                                {step === steps.length - 1 && !editGood ? (
+                                    <div className="quote-add-good-button">
+                                        <button disabled={!isGoodValidate} className="btn btn-success" onClick={addGood}>
+                                            Thêm sản phẩm
+                                        </button>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+
+                                {/* Lưu chỉnh sửa */}
+                                {step === steps.length - 1 && editGood ? (
+                                    <div className="quote-save-edit-good-button">
+                                        <button disabled={!isGoodValidate} className="btn btn-success" onClick={handleSaveEditGood}>
+                                            Lưu
+                                        </button>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+
+                                {/* Hủy chỉnh sửa */}
+                                {editGood ? (
+                                    <div className="quote-cancel-edit-good-button">
+                                        <button className="btn btn-success" onClick={handleCancelEditGood}>
+                                            Hủy chỉnh sửa
+                                        </button>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className={"pull-right"} style={{ padding: 10 }}></div>
+                    </div>
+                </div>
+
+                {/* Hiển thị bảng */}
+                <table className="table table-bordered not-sort">
+                    <thead>
+                        <tr>
+                            <th title={"STT"}>STT</th>
+                            <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
+                            <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
+                            <th title={"Đơn vị tính"}>Đ/v tính</th>
+                            <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
+                            <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
+                            <th title={"Số lượng"}>Số lượng</th>
+                            <th title={"Khuyến mãi"}>Khuyến mãi</th>
+                            <th title={"Thành tiền"}>Thành tiền</th>
+                            <th title={"Thuế"}>Thuế</th>
+                            <th title={"Tổng tiền"}>Tổng tiền</th>
+                            <th>Cam kết chất lượng</th>
+                            <th title={"Ghi chú"}>Ghi chú</th>
+                            <th title={"Hành động"}>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id={`quote-goods-table`}>
+                        {listGoods &&
+                            listGoods.length !== 0 &&
+                            listGoods.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.good ? item.good.code : ""}</td>
+                                    <td>{item.good ? item.good.name : ""}</td>
+                                    <td>{item.good ? item.good.baseUnit : ""}</td>
+                                    <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) : `0 `}</td>
+                                    <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) : `0`}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>
+                                        <a
+                                            onClick={() => setCurrentDiscountsOfGood(item.discountsOfGood)}
+                                            style={{
+                                                cursor: "pointer",
+                                            }}
+                                            data-toggle="modal"
+                                            data-backdrop="static"
+                                            href={"#modal-create-quote-discounts-of-good-detail"}
+                                            title="Click để xem chi tiết"
+                                        >
+                                            {item.amount && item.amountAfterDiscount
+                                                ? formatCurrency(item.amount - item.amountAfterDiscount)
+                                                : `0 `}
+                                        </a>
+                                    </td>
+                                    <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
+                                    <td>
+                                        {item.amountAfterDiscount && item.amountAfterTax
+                                            ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount)
+                                            : `0`}
+                                        ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
+                                    </td>
+                                    <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) : `0 `}</td>
+                                    <td>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                            }}
+                                        >
                                             <a
-                                                onClick={() => setCurrentDiscountsOfGood(item.discountsOfGood)}
                                                 style={{
                                                     cursor: "pointer",
                                                 }}
                                                 data-toggle="modal"
                                                 data-backdrop="static"
-                                                href={"#modal-create-quote-discounts-of-good-detail"}
-                                                title="Click để xem chi tiết"
+                                                href={"#modal-create-quote-slas-of-good-detail"}
+                                                onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                             >
-                                                {item.amount && item.amountAfterDiscount
-                                                    ? formatCurrency(item.amount - item.amountAfterDiscount)
-                                                    : `0 `}
+                                                Chi tiết &ensp;
+                                                <i className="fa fa-arrow-circle-right"></i>
                                             </a>
-                                        </td>
-                                        <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
-                                        <td>
-                                            {item.amountAfterDiscount && item.amountAfterTax
-                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount)
-                                                : `0`}
-                                            ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
-                                        </td>
-                                        <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) : `0 `}</td>
-                                        <td>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                }}
-                                            >
-                                                <a
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                    data-toggle="modal"
-                                                    data-backdrop="static"
-                                                    href={"#modal-create-quote-slas-of-good-detail"}
-                                                    onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
-                                                >
-                                                    Chi tiết &ensp;
-                                                    <i className="fa fa-arrow-circle-right"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                        <td>{item.note}</td>
-                                        <td>
-                                            <a className="edit text-yellow">
-                                                <i className="material-icons" onClick={() => this.handleEditGood(item, index)}>
-                                                    edit
-                                                </i>
-                                            </a>
-                                            <a className="edit text-red">
-                                                <i className="material-icons" onClick={() => this.deleteGood(item.good._id)}>
-                                                    delete
-                                                </i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
-                            {listGoods.length !== 0 && (
-                                <tr>
-                                    <td colSpan={7} style={{ fontWeight: 600 }}>
-                                        <center>Tổng</center>
+                                        </div>
                                     </td>
-                                    <td style={{ fontWeight: 600 }}>
-                                        {formatCurrency(
-                                            listGoods.reduce((accumulator, currentValue) => {
-                                                return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
-                                            }, 0)
-                                        )}
+                                    <td>{item.note}</td>
+                                    <td>
+                                        <a className="edit text-yellow">
+                                            <i className="material-icons" onClick={() => handleEditGood(item, index)}>
+                                                edit
+                                            </i>
+                                        </a>
+                                        <a className="edit text-red">
+                                            <i className="material-icons" onClick={() => deleteGood(item.good._id)}>
+                                                delete
+                                            </i>
+                                        </a>
                                     </td>
-                                    <td style={{ fontWeight: 600 }}>
-                                        {formatCurrency(
-                                            listGoods.reduce((accumulator, currentValue) => {
-                                                return accumulator + currentValue.amountAfterDiscount;
-                                            }, 0)
-                                        )}
-                                    </td>
-                                    <td style={{ fontWeight: 600 }}>
-                                        {formatCurrency(
-                                            listGoods.reduce((accumulator, currentValue) => {
-                                                return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
-                                            }, 0)
-                                        )}
-                                    </td>
-                                    <td style={{ fontWeight: 600 }}>
-                                        {formatCurrency(
-                                            listGoods.reduce((accumulator, currentValue) => {
-                                                return accumulator + currentValue.amountAfterTax;
-                                            }, 0)
-                                        )}
-                                    </td>
-                                    <td colSpan={3}></td>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </fieldset>
-            </div>
-        );
-    }
+                            ))}
+                        {listGoods.length !== 0 && (
+                            <tr>
+                                <td colSpan={7} style={{ fontWeight: 600 }}>
+                                    <center>Tổng</center>
+                                </td>
+                                <td style={{ fontWeight: 600 }}>
+                                    {formatCurrency(
+                                        listGoods.reduce((accumulator, currentValue) => {
+                                            return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
+                                        }, 0)
+                                    )}
+                                </td>
+                                <td style={{ fontWeight: 600 }}>
+                                    {formatCurrency(
+                                        listGoods.reduce((accumulator, currentValue) => {
+                                            return accumulator + currentValue.amountAfterDiscount;
+                                        }, 0)
+                                    )}
+                                </td>
+                                <td style={{ fontWeight: 600 }}>
+                                    {formatCurrency(
+                                        listGoods.reduce((accumulator, currentValue) => {
+                                            return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
+                                        }, 0)
+                                    )}
+                                </td>
+                                <td style={{ fontWeight: 600 }}>
+                                    {formatCurrency(
+                                        listGoods.reduce((accumulator, currentValue) => {
+                                            return accumulator + currentValue.amountAfterTax;
+                                        }, 0)
+                                    )}
+                                </td>
+                                <td colSpan={3}></td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </fieldset>
+        </div>
+    );
 }
 
 function mapStateToProps(state) {

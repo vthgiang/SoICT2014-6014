@@ -142,14 +142,13 @@ exports.getPaymentDetail = async(PaymentId, portal) => {
 exports.getPaidForSalesOrder = async (orderId, portal) => {
     let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ salesOrders: { $elemMatch: { salesOrder: orderId } } });
     let paid = 0;
-
     for (let index = 0; index < paymentsForOrder.length; index++){
         let { salesOrders } = paymentsForOrder[index];
-
-        let paymentForSalesOrder = salesOrders.find((element) => element.salesOrder.toString() === orderId.toString())
-
+        let paymentForSalesOrder = salesOrders.filter((element) => element.salesOrder.toString() === orderId.toString())
         if (paymentForSalesOrder) {
-            paid += paymentForSalesOrder.money;
+            paymentForSalesOrder.forEach(value =>{
+                paid += parseInt(value.money);
+            })
         }
     }
     return paid;
@@ -165,10 +164,12 @@ exports.getPaidForPurchaseOrder = async (orderId, portal) => {
         let { purchaseOrders } = paymentsForOrder[index];
 
         //populate đến purchaseOrders.purchaseOrder
-        let paymentForPurchaseOrder = purchaseOrders.find((element) => element.purchaseOrder.toString() === orderId.toString())
+        let paymentForPurchaseOrder = purchaseOrders.filter((element) => element.purchaseOrder.toString() === orderId.toString())
 
         if (paymentForPurchaseOrder) {
-            paid += paymentForPurchaseOrder.money;
+            paymentForPurchaseOrder.forEach(value => {
+                paid += pasreInt(value.money);
+            })
         }
     }
     return paid;

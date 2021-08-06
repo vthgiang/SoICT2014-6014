@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
@@ -12,31 +12,31 @@ import { PaginateBar, DataTableSetting, SelectMulti } from "../../../../../../co
 import PaymentVoucherCreateForm from "./paymentVoucherCreateForm";
 import PaymentVoucherDetailForm from "./paymentVoucherDetailForm";
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
-class PaymentVoucherManagementTable extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "payment-voucher-manager-table";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
-        this.state = {
-            page: 1,
-            limit: limit,
-            type: 2,
-            tableId
-        };
-    }
+function PaymentVoucherManagementTable(props) {
 
-    componentDidMount() {
-        const { page, limit, type } = this.state;
-        this.props.getAllPayments({ page, limit, type });
-        this.props.getCustomers({getAll:true});
-        this.props.getAllBankAccounts({ page: 1, limit: 1000, status: true });
-    }
+    const TableId = "payment-voucher-manager-table";
+    const defaultConfig = { limit: 5 }
+    const Limit = getTableConfiguration(TableId, defaultConfig).limit;
 
-    setPage = async (page) => {
-        const { limit, type } = this.state;
-        await this.setState({
+    const [state, setState] = useState({
+        page: 1,
+        limit: Limit,
+        type: 2,
+        tableId: TableId,
+    })
+
+    useEffect(() => {
+        const { page, limit, type } = state;
+        props.getAllPayments({ page, limit, type });
+        props.getCustomers({ getAll: true });
+        props.getAllBankAccounts({ page: 1, limit: 1000, status: true });
+    }, [])
+
+    const setPage = async (page) => {
+        const { limit, type } = state;
+        await setState({
+            ...state,
             page: page,
         });
         const data = {
@@ -44,12 +44,13 @@ class PaymentVoucherManagementTable extends Component {
             page: page,
             type,
         };
-        this.props.getAllPayments(data);
+        props.getAllPayments(data);
     };
 
-    setLimit = async (limit) => {
-        const { page, type } = this.state;
-        await this.setState({
+    const setLimit = async (limit) => {
+        const { page, type } = state;
+        await setState({
+            ...state,
             limit: limit,
         });
         const data = {
@@ -57,17 +58,18 @@ class PaymentVoucherManagementTable extends Component {
             page,
             type,
         };
-        this.props.getAllPayments(data);
+        props.getAllPayments(data);
     };
 
-    handleShowDetailPayment = async (payment) => {
-        await this.setState({
+    const handleShowDetailPayment = async (payment) => {
+        await setState({
+            ...state,
             paymentDetail: payment,
         });
         window.$("#modal-payment-voucher-detail").modal("show");
     };
 
-    getPaidForPayment = (item) => {
+    const getPaidForPayment = (item) => {
         let paid = item.purchaseOrders.reduce((accumulator, currentValue) => {
             return accumulator + parseInt(currentValue.money);
         }, 0);
@@ -75,22 +77,24 @@ class PaymentVoucherManagementTable extends Component {
         return formatCurrency(paid);
     };
 
-    handleSupplierChange = (value) => {
+    const handleSupplierChange = (value) => {
         //Tìm kiếm theo khách hàng
-        this.setState({
+        setState({
+            ...state,
             supplier: value,
         });
     };
 
-    handleCodeChange = (e) => {
+    const handleCodeChange = (e) => {
         let { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             code: value,
         });
     };
 
-    handleSubmitSearch = () => {
-        let { limit, page, code, supplier, type } = this.state;
+    const handleSubmitSearch = () => {
+        let { limit, page, code, supplier, type } = state;
         const data = {
             limit,
             page,
@@ -98,122 +102,120 @@ class PaymentVoucherManagementTable extends Component {
             supplier,
             type,
         };
-        this.props.getAllPayments(data);
+        props.getAllPayments(data);
     };
 
-    render() {
-        const { translate } = this.props;
-        const { payments } = this.props;
-        const { totalPages, page, listPayments } = payments;
+    const { translate } = props;
+    const { payments } = props;
+    const { totalPages, page, listPayments } = payments;
 
-        const { paymentDetail, tableId } = this.state;
-        return (
-            <React.Fragment>
-                <div className="box-body qlcv">
-                    <PaymentVoucherCreateForm />
-                    {paymentDetail && <PaymentVoucherDetailForm paymentDetail={paymentDetail} />}
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">Mã phiếu</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="code"
-                                onChange={this.handleCodeChange}
-                                placeholder="Mã phiếu"
-                                autoComplete="off"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-control-static">Nhà cung cấp</label>
-                            <SelectMulti
-                                id={`selectMulti-filter-supplier-payment-voucher`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    this.props.customers.list
-                                        ? this.props.customers.list.map((customerItem) => {
-                                            return {
-                                                value: customerItem._id,
-                                                text: customerItem.name,
-                                            };
-                                        })
-                                        : []
-                                }
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn nhà cung cấp", allSelectedText: "Đã chọn tất cả" }}
-                                onChange={this.handleSupplierChange}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
-                                Tìm kiếm
-                            </button>
-                        </div>
+    const { paymentDetail, tableId } = state;
+    return (
+        <React.Fragment>
+            <div className="box-body qlcv">
+                <PaymentVoucherCreateForm />
+                {paymentDetail && <PaymentVoucherDetailForm paymentDetail={paymentDetail} />}
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label className="form-control-static">Mã phiếu</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="code"
+                            onChange={handleCodeChange}
+                            placeholder="Mã phiếu"
+                            autoComplete="off"
+                        />
                     </div>
-                    <table id={tableId} className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Mã phiếu</th>
-                                <th>Nhà cung cấp</th>
-                                <th>Người thanh toán</th>
-                                <th>Số tiền thanh toán</th>
-                                <th>Ngày thanh toán</th>
-                                <th
-                                    style={{
-                                        width: "120px",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    Hành động
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={["STT", "Mã phiếu", "Nhà cung cấp", "Người thanh toán", "Số tiền thanh toán", "Ngày thanh toán"]}
-                                        setLimit={this.setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listPayments &&
-                                listPayments.length !== 0 &&
-                                listPayments.map((item, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <item>{item.code}</item>
-                                        <td>{item.supplier ? item.supplier.name : "---"}</td>
-                                        <td>{item.curator ? item.curator.name : "---"}</td>
-                                        <td>{this.getPaidForPayment(item)}</td>
-                                        <td>{item.paymentAt ? formatDate(item.paymentAt) : "---"}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a
-                                                style={{ width: "5px" }}
-                                                title={"Xem chi tiết"}
-                                                onClick={() => {
-                                                    this.handleShowDetailPayment(item);
-                                                }}
-                                            >
-                                                <i className="material-icons">view_list</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
-                    {payments.isLoading ? (
-                        <div className="table-info-panel">{translate("confirm.loading")}</div>
-                    ) : (
-                            (typeof listPayments === "undefined" || listPayments.length === 0) && (
-                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                            )
-                        )}
-                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
+                    <div className="form-group">
+                        <label className="form-control-static">Nhà cung cấp</label>
+                        <SelectMulti
+                            id={`selectMulti-filter-supplier-payment-voucher`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={
+                                props.customers.list
+                                    ? props.customers.list.map((customerItem) => {
+                                        return {
+                                            value: customerItem._id,
+                                            text: customerItem.name,
+                                        };
+                                    })
+                                    : []
+                            }
+                            multiple="multiple"
+                            options={{ nonSelectedText: "Chọn nhà cung cấp", allSelectedText: "Đã chọn tất cả" }}
+                            onChange={handleSupplierChange}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" title="Lọc" onClick={handleSubmitSearch}>
+                            Tìm kiếm
+                        </button>
+                    </div>
                 </div>
-            </React.Fragment>
-        );
-    }
+                <table id={tableId} className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã phiếu</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Người thanh toán</th>
+                            <th>Số tiền thanh toán</th>
+                            <th>Ngày thanh toán</th>
+                            <th
+                                style={{
+                                    width: "120px",
+                                    textAlign: "center",
+                                }}
+                            >
+                                Hành động
+                                <DataTableSetting
+                                    tableId={tableId}
+                                    columnArr={["STT", "Mã phiếu", "Nhà cung cấp", "Người thanh toán", "Số tiền thanh toán", "Ngày thanh toán"]}
+                                    setLimit={setLimit}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {listPayments &&
+                            listPayments.length !== 0 &&
+                            listPayments.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <item>{item.code}</item>
+                                    <td>{item.supplier ? item.supplier.name : "---"}</td>
+                                    <td>{item.curator ? item.curator.name : "---"}</td>
+                                    <td>{getPaidForPayment(item)}</td>
+                                    <td>{item.paymentAt ? formatDate(item.paymentAt) : "---"}</td>
+                                    <td style={{ textAlign: "center" }}>
+                                        <a
+                                            style={{ width: "5px" }}
+                                            title={"Xem chi tiết"}
+                                            onClick={() => {
+                                                handleShowDetailPayment(item);
+                                            }}
+                                        >
+                                            <i className="material-icons">view_list</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+                {payments.isLoading ? (
+                    <div className="table-info-panel">{translate("confirm.loading")}</div>
+                ) : (
+                    (typeof listPayments === "undefined" || listPayments.length === 0) && (
+                        <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                    )
+                )}
+                <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={setPage} />
+            </div>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {

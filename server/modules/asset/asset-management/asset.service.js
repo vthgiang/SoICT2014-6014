@@ -1084,6 +1084,13 @@ exports.deleteAsset = async (portal, id) => {
     return asset;
 };
 
+exports.deleteAssets = async (portal, assetIds) => {
+    let assets = await Asset(connect(DB_CONNECTION, portal))
+        .deleteMany({ _id: { $in: assetIds.map(item => mongoose.Types.ObjectId(item)) } });
+
+    return assets;
+}
+
 /**
  * Chỉnh sửa thông tin khấu hao tài sản
  */

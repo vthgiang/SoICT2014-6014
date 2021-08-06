@@ -211,6 +211,23 @@ exports.deleteAsset = async (req, res) => {
     }
 }
 
+exports.deleteAssets = async (req, res) => {
+    try {
+        let data = await AssetService.deleteAssets(req.portal, req.body.assetIds);
+        res.status(200).json({
+            success: true,
+            messages: ["delete_asset_success"],
+            content: data
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ["delete_asset_false"],
+            content: { error: error }
+        });
+    }
+}
+
 
 /**
  * Chỉnh sửa thông tin khấu hao tài sản

@@ -3,15 +3,12 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DatePicker, SelectBox, ErrorLabel } from "../../../../../../common-components";
 
-class SalesOrderCreateInfo extends Component {
-    constructor(props) {
-        super(props);
-    }
+function SalesOrderCreateInfo(props) {
 
-    getCustomerOptions = () => {
+    const getCustomerOptions = () => {
         let options = [];
 
-        const { list } = this.props.customers;
+        const { list } = props.customers;
         if (list) {
             options = [
                 {
@@ -20,7 +17,7 @@ class SalesOrderCreateInfo extends Component {
                 },
             ];
 
-            let mapOptions = this.props.customers.list.map((item) => {
+            let mapOptions = props.customers.list.map((item) => {
                 return {
                     value: item._id,
                     text: item.code + " - " + item.name,
@@ -33,10 +30,10 @@ class SalesOrderCreateInfo extends Component {
         return options;
     };
 
-    getOrganizationalUnitOptions = () => {
+    const getOrganizationalUnitOptions = () => {
         let options = [];
 
-        const { listBusinessDepartments } = this.props;
+        const { listBusinessDepartments } = props;
         if (listBusinessDepartments.length) {
             options = [
                 {
@@ -61,7 +58,7 @@ class SalesOrderCreateInfo extends Component {
         return options;
     };
 
-    checkAvailableUser = (listUsers, id) => {
+    const checkAvailableUser = (listUsers, id) => {
         var result = -1;
         listUsers.forEach((value, index) => {
             if (value.user._id === id) {
@@ -71,9 +68,9 @@ class SalesOrderCreateInfo extends Component {
         return result;
     };
 
-    getUsersInDepartments = () => {
+    const getUsersInDepartments = () => {
         let users = [];
-        const { listBusinessDepartments } = this.props;
+        const { listBusinessDepartments } = props;
         for (let indexDepartment = 0; indexDepartment < listBusinessDepartments.length; indexDepartment++) {
             if (listBusinessDepartments[indexDepartment].role === 2 || listBusinessDepartments[indexDepartment].role === 3) {
                 //Chỉ lấy đơn vị quản lý bán hàng và đơn vị kế toán
@@ -84,7 +81,7 @@ class SalesOrderCreateInfo extends Component {
                     if (managers[indexRole].users) {
                         for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++) {
                             //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
-                            let availableCheckedIndex = this.checkAvailableUser(users, managers[indexRole].users[indexUser].userId._id);
+                            let availableCheckedIndex = checkAvailableUser(users, managers[indexRole].users[indexUser].userId._id);
                             if (availableCheckedIndex === -1) {
                                 users.push({ user: managers[indexRole].users[indexUser].userId, roleName: managers[indexRole].name });
                             } else {
@@ -100,7 +97,7 @@ class SalesOrderCreateInfo extends Component {
                     if (deputyManagers[indexRole].users) {
                         for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
                             //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
-                            let availableCheckedIndex = this.checkAvailableUser(users, deputyManagers[indexRole].users[indexUser].userId._id);
+                            let availableCheckedIndex = checkAvailableUser(users, deputyManagers[indexRole].users[indexUser].userId._id);
                             if (availableCheckedIndex === -1) {
                                 users.push({ user: deputyManagers[indexRole].users[indexUser].userId, roleName: deputyManagers[indexRole].name });
                             } else {
@@ -116,7 +113,7 @@ class SalesOrderCreateInfo extends Component {
                     if (employees[indexRole].users) {
                         for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
                             //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
-                            let availableCheckedIndex = this.checkAvailableUser(users, employees[indexRole].users[indexUser].userId._id);
+                            let availableCheckedIndex = checkAvailableUser(users, employees[indexRole].users[indexUser].userId._id);
                             if (availableCheckedIndex === -1) {
                                 users.push({ user: employees[indexRole].users[indexUser].userId, roleName: employees[indexRole].name });
                             } else {
@@ -131,10 +128,10 @@ class SalesOrderCreateInfo extends Component {
         return users;
     };
 
-    getApproversOptions = () => {
+    const getApproversOptions = () => {
         let options = [];
 
-        const { listBusinessDepartments } = this.props;
+        const { listBusinessDepartments } = props;
         if (listBusinessDepartments.length) {
             options = [
                 {
@@ -142,7 +139,7 @@ class SalesOrderCreateInfo extends Component {
                     text: "---Chọn người phê duyệt---",
                 },
             ];
-            let users = this.getUsersInDepartments();
+            let users = getUsersInDepartments();
             let mapOptions = users.map((item) => {
                 return {
                     value: item.user._id,
@@ -156,151 +153,150 @@ class SalesOrderCreateInfo extends Component {
         return options;
     };
 
-    render() {
-        let {
-            code,
-            note,
-            customer,
-            customerPromotions,
-            customerName,
-            customerAddress,
-            customerPhone,
-            customerRepresent,
-            customerTaxNumber,
-            customerEmail,
-            priority,
-            organizationalUnit,
-            approvers,
-            isUseForeignCurrency,
-            foreignCurrency,
-        } = this.props;
+    let {
+        code,
+        note,
+        customer,
+        customerPromotions,
+        customerName,
+        customerAddress,
+        customerPhone,
+        customerRepresent,
+        customerTaxNumber,
+        customerEmail,
+        priority,
+        organizationalUnit,
+        approvers,
+        isUseForeignCurrency,
+        foreignCurrency,
+    } = props;
 
-        let {
-            customerError,
-            customerEmailError,
-            customerPhoneError,
-            customerAddressError,
-            priorityError,
-            organizationalUnitError,
-            approversError,
-        } = this.props;
+    let {
+        customerError,
+        customerEmailError,
+        customerPhoneError,
+        customerAddressError,
+        priorityError,
+        organizationalUnitError,
+        approversError,
+    } = props;
 
-        const {
-            handleCustomerChange,
-            handleCustomerAddressChange,
-            handleCustomerPhoneChange,
-            handleCustomerRepresentChange,
-            handleNoteChange,
-            handleUseForeignCurrencyChange,
-            handleRatioOfCurrencyChange,
-            handleSymbolOfForreignCurrencyChange,
-            handleCustomerEmailChange,
-            handlePriorityChange,
-            handleOrganizationalUnitChange,
-            handleApproversChange,
-        } = this.props;
+    const {
+        handleCustomerChange,
+        handleCustomerAddressChange,
+        handleCustomerPhoneChange,
+        handleCustomerRepresentChange,
+        handleNoteChange,
+        handleUseForeignCurrencyChange,
+        handleRatioOfCurrencyChange,
+        handleSymbolOfForreignCurrencyChange,
+        handleCustomerEmailChange,
+        handlePriorityChange,
+        handleOrganizationalUnitChange,
+        handleApproversChange,
+    } = props;
 
-        return (
-            <React.Fragment>
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
-                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                            <legend className="scheduler-border">Thông tin khách hàng</legend>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!customerError ? "" : "has-error"}`}>
-                                        <label>
-                                            Khách hàng
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-sales-order-customer`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={customer}
-                                            items={this.getCustomerOptions()}
-                                            onChange={handleCustomerChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={customerError} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                    <div className="form-group">
-                                        <label>
-                                            Tên khách hàng <span className="attention"> </span>
-                                        </label>
-                                        <input type="text" className="form-control" value={customerName} disabled={true} />
-                                    </div>
-                                </div>
-                            </div>
+    return (
+        <React.Fragment>
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
+                    <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                        <legend className="scheduler-border">Thông tin khách hàng</legend>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group ${!customerEmailError ? "" : "has-error"}`}>
+                                <div className={`form-group ${!customerError ? "" : "has-error"}`}>
                                     <label>
-                                        email
+                                        Khách hàng
                                         <span className="attention"> * </span>
                                     </label>
-                                    <input type="text" className="form-control" value={customerEmail} onChange={handleCustomerEmailChange} />
-                                    <ErrorLabel content={customerEmailError} />
+                                    <SelectBox
+                                        id={`select-sales-order-customer`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={customer}
+                                        items={getCustomerOptions()}
+                                        onChange={handleCustomerChange}
+                                        multiple={false}
+                                    />
+                                    <ErrorLabel content={customerError} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                                 <div className="form-group">
                                     <label>
-                                        Mã số thuế <span className="attention"> </span>
+                                        Tên khách hàng <span className="attention"> </span>
                                     </label>
-                                    <input type="text" className="form-control" value={customerTaxNumber} disabled={true} />
+                                    <input type="text" className="form-control" value={customerName} disabled={true} />
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group ${!customerPhoneError ? "" : "has-error"}`}>
-                                        <label>
-                                            Số điện thoại
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="number" className="form-control" value={customerPhone} onChange={handleCustomerPhoneChange} />
-                                        <ErrorLabel content={customerPhoneError} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                    <div className="form-group">
-                                        <label>
-                                            Người liên hệ <span className="attention"> </span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={customerRepresent}
-                                            onChange={handleCustomerRepresentChange}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className={`form-group ${!customerAddressError ? "" : "has-error"}`}>
-                                    <label>
-                                        Địa chỉ nhận hàng
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <textarea type="text" className="form-control" value={customerAddress} onChange={handleCustomerAddressChange} />
-                                    <ErrorLabel content={customerAddressError} />
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
-                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                            <legend className="scheduler-border">Đơn bán hàng</legend>
-                            <div className="form-group">
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className={`form-group ${!customerEmailError ? "" : "has-error"}`}>
                                 <label>
-                                    Mã đơn
+                                    email
                                     <span className="attention"> * </span>
                                 </label>
-                                <input type="text" className="form-control" value={code} disabled={true} />
+                                <input type="text" className="form-control" value={customerEmail} onChange={handleCustomerEmailChange} />
+                                <ErrorLabel content={customerEmailError} />
                             </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                            <div className="form-group">
+                                <label>
+                                    Mã số thuế <span className="attention"> </span>
+                                </label>
+                                <input type="text" className="form-control" value={customerTaxNumber} disabled={true} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!customerPhoneError ? "" : "has-error"}`}>
+                                    <label>
+                                        Số điện thoại
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <input type="number" className="form-control" value={customerPhone} onChange={handleCustomerPhoneChange} />
+                                    <ErrorLabel content={customerPhoneError} />
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                                <div className="form-group">
+                                    <label>
+                                        Người liên hệ <span className="attention"> </span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={customerRepresent}
+                                        onChange={handleCustomerRepresentChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className={`form-group ${!customerAddressError ? "" : "has-error"}`}>
+                                <label>
+                                    Địa chỉ nhận hàng
+                                    <span className="attention"> * </span>
+                                </label>
+                                <textarea type="text" className="form-control" value={customerAddress} onChange={handleCustomerAddressChange} />
+                                <ErrorLabel content={customerAddressError} />
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
+                    <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                        <legend className="scheduler-border">Đơn bán hàng</legend>
+                        <div className="form-group">
+                            <label>
+                                Mã đơn
+                                <span className="attention"> * </span>
+                            </label>
+                            <input type="text" className="form-control" value={code} disabled={true} />
+                        </div>
 
-                            {/* <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
+                        {/* <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
                                 <label>
                                     Đơn vị bán hàng
                                     <span className="attention"> * </span>
@@ -310,130 +306,129 @@ class SalesOrderCreateInfo extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={organizationalUnit}
-                                    items={this.getOrganizationalUnitOptions()}
+                                    items={getOrganizationalUnitOptions()}
                                     onChange={handleOrganizationalUnitChange}
                                     multiple={false}
                                 />
                                 <ErrorLabel content={organizationalUnitError} />
                             </div> */}
-                            <div className={`form-group ${!approversError ? "" : "has-error"}`}>
-                                <label>
-                                    Người phê duyệt
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-create-sales-order-aprrovers`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={approvers}
-                                    items={this.getApproversOptions()}
-                                    onChange={handleApproversChange}
-                                    multiple={true}
-                                />
-                                <ErrorLabel content={approversError} />
-                            </div>
+                        <div className={`form-group ${!approversError ? "" : "has-error"}`}>
+                            <label>
+                                Người phê duyệt
+                                <span className="attention"> * </span>
+                            </label>
+                            <SelectBox
+                                id={`select-create-sales-order-aprrovers`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={approvers}
+                                items={getApproversOptions()}
+                                onChange={handleApproversChange}
+                                multiple={true}
+                            />
+                            <ErrorLabel content={approversError} />
+                        </div>
 
-                            <div className={`form-group ${!priorityError ? "" : "has-error"}`}>
-                                <label>
-                                    Độ ưu tiên
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-create-sales-order-priority`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={priority}
-                                    items={[
-                                        { value: "title", text: "---Chọn độ ưu tiên---" },
-                                        { value: 1, text: "Thấp" },
-                                        { value: 2, text: "Trung bình" },
-                                        { value: 3, text: "Cao" },
-                                        { value: 4, text: "Đặc biệt" },
-                                    ]}
-                                    onChange={handlePriorityChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={priorityError} />
-                            </div>
+                        <div className={`form-group ${!priorityError ? "" : "has-error"}`}>
+                            <label>
+                                Độ ưu tiên
+                                <span className="attention"> * </span>
+                            </label>
+                            <SelectBox
+                                id={`select-create-sales-order-priority`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={priority}
+                                items={[
+                                    { value: "title", text: "---Chọn độ ưu tiên---" },
+                                    { value: 1, text: "Thấp" },
+                                    { value: 2, text: "Trung bình" },
+                                    { value: 3, text: "Cao" },
+                                    { value: 4, text: "Đặc biệt" },
+                                ]}
+                                onChange={handlePriorityChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={priorityError} />
+                        </div>
 
+                        <div className="form-group">
                             <div className="form-group">
-                                <div className="form-group">
-                                    <label>
-                                        Ghi chú
-                                        <span className="attention"> </span>
-                                    </label>
-                                    <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} />
-                                </div>
-                            </div>
-
-                            <div className="form-group ">
-                                <input
-                                    type="checkbox"
-                                    className={`form-check-input`}
-                                    id={`checkbox-use-foreign-currency`}
-                                    value={isUseForeignCurrency}
-                                    checked={isUseForeignCurrency}
-                                    onChange={handleUseForeignCurrencyChange}
-                                    style={{ minWidth: "20px" }}
-                                />
-                                <label className={`form-check-label`} htmlFor={`checkbox-use-foreign-currency`} style={{ fontWeight: 500 }}>
-                                    Sử dụng ngoại tệ
+                                <label>
+                                    Ghi chú
+                                    <span className="attention"> </span>
                                 </label>
+                                <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} />
                             </div>
-                            {isUseForeignCurrency ? (
-                                <>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style={{ paddingLeft: "0px" }}>
-                                        <div className="form-group">
-                                            <label>
-                                                Tên viết tắt ngoại tệ
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="Nhập tên viết tắt..."
-                                                value={foreignCurrency.symbol}
-                                                onChange={handleSymbolOfForreignCurrencyChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ paddingRight: "0px" }}>
-                                        <div className="form-group">
-                                            <label>
-                                                Tỷ giá hối đoái
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                placeholder="Vd: 99,99"
-                                                value={foreignCurrency.ratio}
-                                                onChange={handleRatioOfCurrencyChange}
-                                            />
-                                        </div>
-                                    </div>
+                        </div>
 
-                                    <div className={`form-group`}>
-                                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
-                                            <div>
-                                                {" "}
-                                                <span className="text-red">1</span> ({foreignCurrency.symbol}) ={" "}
-                                                <span className="text-red">{foreignCurrency.ratio}</span> (vnđ){" "}
-                                            </div>
-                                        ) : (
-                                            ""
-                                        )}
+                        <div className="form-group ">
+                            <input
+                                type="checkbox"
+                                className={`form-check-input`}
+                                id={`checkbox-use-foreign-currency`}
+                                value={isUseForeignCurrency}
+                                checked={isUseForeignCurrency}
+                                onChange={handleUseForeignCurrencyChange}
+                                style={{ minWidth: "20px" }}
+                            />
+                            <label className={`form-check-label`} htmlFor={`checkbox-use-foreign-currency`} style={{ fontWeight: 500 }}>
+                                Sử dụng ngoại tệ
+                            </label>
+                        </div>
+                        {isUseForeignCurrency ? (
+                            <>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style={{ paddingLeft: "0px" }}>
+                                    <div className="form-group">
+                                        <label>
+                                            Tên viết tắt ngoại tệ
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Nhập tên viết tắt..."
+                                            value={foreignCurrency.symbol}
+                                            onChange={handleSymbolOfForreignCurrencyChange}
+                                        />
                                     </div>
-                                </>
-                            ) : (
-                                ""
-                            )}
-                        </fieldset>
-                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ paddingRight: "0px" }}>
+                                    <div className="form-group">
+                                        <label>
+                                            Tỷ giá hối đoái
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="Vd: 99,99"
+                                            value={foreignCurrency.ratio}
+                                            onChange={handleRatioOfCurrencyChange}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className={`form-group`}>
+                                    {foreignCurrency.ratio && foreignCurrency.symbol ? (
+                                        <div>
+                                            {" "}
+                                            <span className="text-red">1</span> ({foreignCurrency.symbol}) ={" "}
+                                            <span className="text-red">{foreignCurrency.ratio}</span> (vnđ){" "}
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            ""
+                        )}
+                    </fieldset>
                 </div>
-            </React.Fragment>
-        );
-    }
+            </div>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {
