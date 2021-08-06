@@ -757,7 +757,7 @@ function AssetManagement(props) {
             parent: node.location,
         }
     })
-    console.log(selectedData)
+    
     var pageTotal = ((assetsManager.totalList % limit) === 0) ?
         parseInt(assetsManager.totalList / limit) :
         parseInt((assetsManager.totalList / limit) + 1);

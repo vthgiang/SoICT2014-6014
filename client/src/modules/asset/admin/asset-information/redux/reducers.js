@@ -119,7 +119,7 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.DELETE_ASSETS_SUCCESS:
             return {
                 ...state,
-                listAssets: state.lists.filter(asset=> !action.assetIds.includes(asset?._id)),
+                listAssets: state.listAssets.filter(asset=> !action.assetIds.includes(asset?._id)),
                 isLoading: false
             };
 
