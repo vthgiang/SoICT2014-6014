@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 
-import { DatePicker, SlimScroll, LazyLoadComponent } from '../../../common-components';
+import { DatePicker, SlimScroll, LazyLoadComponent, forceCheckOrVisible  } from '../../../common-components';
 import { GanttCalendar } from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
 import GeneralTaskPersonalChart from '../../task/task-dashboard/task-personal-dashboard/generalTaskPersonalChart';
 import { NewsFeed } from './newsFeed';
@@ -349,8 +349,56 @@ class SuperHome extends Component {
                         </div>
                     </div>
                 </div>
+                
+                <div className="nav-tabs-custom">
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#tasks-oveview" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tổng quan công việc</a></li>
+                        <li><a href="#tasks-calendar" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('task.task_management.tasks_calendar')}</a></li>
+                        <li><a href="#newfeeds" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('news_feed.news_feed')}</a></li>
+                    </ul>
+
+                    <div className="tab-content">
+                        <div className="tab-pane active" id = "tasks-oveview">
+                            <div className="box-header with-border">
+                                <div className="box-title">{`Tổng quan công việc (${listTasksGeneral ? listTasksGeneral.length : 0})`}</div>
+                            </div>
+                                {
+                                    listTasksGeneral && listTasksGeneral.length > 0 ?
+                                        <LazyLoadComponent once={true}>
+                                            <GeneralTaskPersonalChart
+                                                tasks={listTasksGeneral}
+                                            />
+                                        </LazyLoadComponent>
+                                        : (loadingInformed && loadingCreator && loadingConsulted && loadingAccountable) ?
+                                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                            <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
+                        </div>
+                        
+                        <div className="tab-pane" id="tasks-calendar">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startDateWork} {translate('task.task_management.lower_to')} {endDateWork}</div>
+                                </div>
+                                <LazyLoadComponent once={true}>
+                                    <GanttCalendar
+                                        tasks={tasks}
+                                        unitOrganization={false}
+                                    />
+                                </LazyLoadComponent>
+                            </div>
+                        </div>
+
+                        <div className="tab-pane" id="newfeeds">
+                            <LazyLoadComponent once={true}>
+                                <NewsFeed />
+                            </LazyLoadComponent>
+                        </div>
+                    </div>
+                </div>
+                
                 {/* Tổng quan công việc cá nhân */}
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-md-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
@@ -370,11 +418,11 @@ class SuperHome extends Component {
                         </div>
 
                     </div>
-                </div>
+                </div> */}
 
 
                 {/* Lịch công việc chi tiết */}
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
@@ -388,16 +436,16 @@ class SuperHome extends Component {
                             </LazyLoadComponent>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* News feed */}
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-xs-12">
                         <LazyLoadComponent once={true}>
                             <NewsFeed />
                         </LazyLoadComponent>
                     </div>
-                </div>
+                </div> */}
 
                 {/* <input className="alarmTask" type="checkbox" id="toggle-1"></input> */}
                 <label className="alarm-task-arrow animated alram-task-bounce" htmlFor="toggle-1" onClick={this.viewAllTask}>
