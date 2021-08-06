@@ -458,7 +458,7 @@ const EmployeeImportForm = (props) => {
         value = value.map((x, index) => {
             let errorAlert = [];
             if (x.employeeNumber === null || x.fullName === null || x.name === null || x.contractType === null
-                || x.startDate === null || x.endDate === null) {
+                || x.startDate === null) {
                 rowError = [...rowError, index + 1]
                 x = { ...x, error: true }
             }
