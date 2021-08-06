@@ -210,7 +210,7 @@ class MainDashboardUnit extends Component {
         })
         return data;
     }
-    
+
     showUnitTask = (selectBoxUnit, idsUnit) => {
         const { translate } = this.props
         if (idsUnit && idsUnit.length > 0) {
@@ -306,8 +306,8 @@ class MainDashboardUnit extends Component {
                         </ul>
                         <div className="tab-content ">
                             <div className="tab-pane active" id="task">
-                                <TabTask 
-                                    childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} 
+                                <TabTask
+                                    childOrganizationalUnit={childOrganizationalUnit?.length && childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
                                     organizationalUnits={organizationalUnits}
                                     getUnitName={this.getUnitName}
                                     showUnitTask={this.showUnitTask}
@@ -317,10 +317,10 @@ class MainDashboardUnit extends Component {
                             {/* Tab năng lực nhân viên*/}
                             <div className="tab-pane" id="employee-capacity">
                                 <LazyLoadComponent>
-                                    <TabEmployeeCapacity 
+                                    <TabEmployeeCapacity
                                         organizationalUnits={organizationalUnits}
-                                        month={monthShow} 
-                                        allOrganizationalUnits={organizationalUnits} 
+                                        month={monthShow}
+                                        allOrganizationalUnits={organizationalUnits}
                                         childOrganizationalUnit={childOrganizationalUnit}
                                     />
                                 </LazyLoadComponent>
@@ -384,7 +384,7 @@ class MainDashboardUnit extends Component {
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
                                 <LazyLoadComponent>
-                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits}/>
+                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits} />
                                 </LazyLoadComponent>
                             </div>
 
@@ -398,7 +398,7 @@ class MainDashboardUnit extends Component {
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
                                 <LazyLoadComponent>
-                                    <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} organizationalUnits={organizationalUnits}/>
+                                    <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} organizationalUnits={organizationalUnits} />
                                 </LazyLoadComponent>
                             </div>
                         </div>
