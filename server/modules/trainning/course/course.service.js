@@ -1,6 +1,7 @@
 const {
     EducationProgram,
-    Course
+    Course,
+    UserRole
 } = require(`../../../models`);
 
 const {
@@ -351,9 +352,14 @@ exports.updateCourse = async (portal, id, data) => {
             'fullName': 1,
             'employeeNumber': 1
         }
+    }).populate({
+        path: 'educationProgram',
+        select: {
+            '_id': 1,
+            'name': 1
+        }
     }).lean();
 
-  
     return {
         ...updateCourse,
         listEmployees: updateCourse.results
