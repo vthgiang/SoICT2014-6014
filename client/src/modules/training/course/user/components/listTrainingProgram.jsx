@@ -178,6 +178,7 @@ const ListTrainingProgram = (props) => {
                     listCourses={currentViewRow.listCourses}
                     totalList={currentViewRow.totalList}
                     data={currentViewRow}
+                    detail={currentViewRow.detailsOfProgram}
                 />
             }
         </div>

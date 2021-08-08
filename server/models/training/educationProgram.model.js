@@ -21,7 +21,11 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     applyForPositions: [{ // Những chức vụ bắt buộc phải tham gia chương trình đào tạo
         type: Schema.Types.ObjectId,
         ref: 'Role'
-    }]
+    }],
+    detailsOfProgram: {
+        type: String,
+        required: true
+    }
 }, {
     timestamps: true,
 });

@@ -8,11 +8,11 @@ import { EmployeeManagerActions } from '../../../../human-resource/profile/emplo
 import { CourseActions } from '../redux/actions';
 
 const CourseRegister = (props) => {
-    const [state, setState] = useState({...props, addEmployees: []})
+    const [state, setState] = useState({...props, addEmployees: [], isRegistered: props.registeredEmployees.find(i => i.employee == localStorage.getItem('userId'))?.registerType || 0})
 
     useEffect(() => {
         const { applyForOrganizationalUnits, applyForPositions } = state;
-        props.getAllEmployee({ organizationalUnits: applyForOrganizationalUnits, position: applyForPositions });
+        props.getAllEmployee({ organizationalUnits: applyForOrganizationalUnits, position: applyForPositions});
     }, [])
 
     const save = () => {
@@ -62,6 +62,7 @@ const CourseRegister = (props) => {
             errorOnEducationProgram: undefined,
             errorOnStartDate: undefined,
             errorOnEndDate: undefined,
+            isRegistered: props.registeredEmployees.find(i => i.employee == localStorage.getItem('userId'))?.registerType || 0
         })
     }
     
@@ -86,6 +87,35 @@ const CourseRegister = (props) => {
         }
     }
 
+    const DisplayStatus = () => {
+        switch(state.isRegistered) {
+            case 1: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span class="text-yellow">{translate('training.course.status.waiting_for_approval')}</span>
+                    </div>
+                )
+            }
+            case 2: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span class="text-green">{translate('training.course.status.success')}</span>
+                    </div>
+                )
+            }
+            case 3: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span class="text-green">{translate('training.course.status.reject')}</span>
+                    </div>
+                )
+            }
+            default: {
+                break
+            }
+        }
+    } 
+ 
     return (
         <React.Fragment>
             <DialogModal
@@ -97,62 +127,18 @@ const CourseRegister = (props) => {
                 maxWidth={850}
                 saveText={translate('training.course.register')}
             >
-                <div className="row">
-                        {/* Mã khoá đào tạo*/}
-                        <div className="form-group col-sm-6 col-xs-12">
-                            <label>{translate('training.course.table.course_code')}: {courseId}</label>
-                        </div>
-                        {/* Tên khoá đào tạo*/}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnCourseName && "has-error"}`}>
-                            <label>{translate('training.course.table.course_name')}: {name}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Thời gian bắt đầu */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                            <label>{translate('training.course.start_date')}: {startDate}</label>
-                        </div>
-                        {/* Thời gian kết thúc */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                            <label>{translate('training.course.end_date')}: {endDate}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Địa điểm đào tạo */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnCoursePlace && "has-error"}`}>
-                            <label>{translate('training.course.table.course_place')}: {coursePlace}</label>
-                        </div>
-                        {/* Đơn vị đào tạo */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnOfferedBy && "has-error"}`}>
-                            <label>{translate('training.course.table.offered_by')}: {offeredBy}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Giảng viên */}
-                        <div className="form-group col-sm-6 col-xs-12">
-                            <label>{translate('training.course.table.lecturer')}: {lecturer}</label>
-                        </div>
-                        {/* Loại đào tạo */}
-                        <div className="form-group col-sm-6 col-xs-12">
-                            <label>{translate('training.course.table.course_type')}: {type}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Thuộc chương trình đào tạo*/}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEducationProgram && "has-error"}`}>
-                            <label>{translate('training.course.table.education_program')}: {educationProgram.name}</label>
-                        </div>
-                        {/* Chi phi đào tạo */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnCost && "has-error"}`}>
-                            <label>{translate('training.course.table.cost')}: {cost}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Thời gian cam kêt */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEmployeeCommitmentTime && "has-error"}`}>
-                            <label>{translate('training.course.table.employee_commitment_time')}: {employeeCommitmentTime}</label>
-                        </div>
-                    </div>
+                <div>{translate('training.course.table.course_code')}: {courseId}</div>
+                <div>{translate('training.course.table.course_name')}: {name}</div>
+                <div>{translate('training.course.start_date')}: {startDate}</div>
+                <div>{translate('training.course.end_date')}: {endDate}</div>
+                <div>{translate('training.course.table.course_place')}: {coursePlace}</div>
+                <div>{translate('training.course.table.offered_by')}: {offeredBy}</div>
+                <div>{translate('training.course.table.lecturer')}: {lecturer}</div>
+                <div>{translate('training.course.table.course_type')}: {type}</div>
+                <div>{translate('training.course.table.education_program')}: {educationProgram.name}</div>
+                <div>{translate('training.course.table.cost')}: {cost}</div>
+                <div>{translate('training.course.table.employee_commitment_time')}: {employeeCommitmentTime}</div>
+                <DisplayStatus />
             </DialogModal>
         </React.Fragment >
     );

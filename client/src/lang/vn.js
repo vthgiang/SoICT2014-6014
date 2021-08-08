@@ -152,7 +152,7 @@ export default {
             time_keeping: "Chấm công nhân viên",
             list_education: "Chương trình đào tạo bắt buộc",
             training_plan: "Quản lý khoá đào tạo",
-            training_plan_employee: "Danh sách khóa đào tạo",
+            training_plan_employee: "Thông tin đào tạo",
             list_major: "Danh sách chuyên ngành",
             list_career_position: "Danh sách vị trí công việc",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
@@ -2473,13 +2473,20 @@ export default {
                 delete_course_faile: "Xoá khoá đào tạo thất bại",
                 edit_course_success: "Chỉnh sửa khoá đào tạo thành công",
                 edit_course_faile: "Chỉnh sửa khoá đào tạo thất bại",
+                status: {
+                    register: "Trạng thái đăng ký",
+                    waiting_for_approval: "Đã đăng ký, Chờ phê duyệt",
+                    success: "Được chấp nhận",
+                    reject: "Bị từ chối"
+                },
             },
 
             // Quản lý chương trình đào tạo
             education_program: {
                 education_program_code: "Mã chương trình đào tạo",
                 education_program_name: "Tên chương trình đào tạo",
-
+                detail: "Thông tin chi tiết",
+                number_course: "Số khóa đào tạo",
                 table: {
                     program_code: "Mã chương trình",
                     program_name: "Tên chương trình",
