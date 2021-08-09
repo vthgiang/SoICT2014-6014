@@ -734,16 +734,7 @@ function TaskManagement(props) {
                     dataTree,
                     currentTasks,
                 })
-                if (data.length > perPage) {
-                    handleUpdateData()
-                }
-            } else
-                setState({
-                    ...state,
-                    data: [],
-                    dataTree: [],
-                    currentTasks,
-                })
+            }
         }
 
     }, [JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)]);
