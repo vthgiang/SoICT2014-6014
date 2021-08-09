@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { LazyLoadComponent, ExportExcel } from '../../../common-components';
 
-import { ResultsOfAllOrganizationalUnitKpiChart } from '../../kpi/organizational-unit/dashboard/component/resultsOfAllOrganizationalUnitKpiChart';
+import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
 import { ResultsOfAllEmployeeKpiSetChart } from '../../kpi/evaluation/dashboard/component/resultsOfAllEmployeeKpiSetChart';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../kpi/evaluation/dashboard/redux/actions';
 
@@ -127,24 +127,11 @@ class TabEmployeeCapacity extends Component {
                 {/* Kết quả KPI các đơn vị */}
                 <LazyLoadComponent>
                     <div className="col-md-12">
-                        <div className="box box-solid">
-                            <div className="box-header with-border">
-                                <div className="box-title">
-                                    {translate('kpi.organizational_unit.dashboard.result_kpi_unit')}
-                                    {childOrganizationalUnit?.length > 1
-                                        ? <span onClick={() => showListInSwal(childOrganizationalUnit.filter((item, index) => index > 0).map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                            <span> {childOrganizationalUnit?.[0]?.name} </span> {translate('human_resource.profile.employee_management.and')} <a style={{ fontWeight: 'bold' }}> {childOrganizationalUnit.length - 1} </a>{translate('kpi.evaluation.dashboard.number_of_child_unit')}
-                                        </span>
-                                        : childOrganizationalUnit?.[0]?.name && ` ${childOrganizationalUnit?.[0]?.name}`
-                                    }
-                                </div>
-                                {resultsOfAllOrganizationalUnitsKpiChartData && <ExportExcel type="link" id="export-all-organizational-unit-kpi-results-chart" exportData={resultsOfAllOrganizationalUnitsKpiChartData} style={{ marginLeft: 10 }} />}
-                            </div>
-                            <div className="box-body qlcv">
-                                <ResultsOfAllOrganizationalUnitKpiChart
-                                    onDataAvailable={this.handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable} />
-                            </div>
-                        </div>
+                        <ResultsOfAllOrganizationalUnitKpiChart
+                            childOrganizationalUnit={childOrganizationalUnit}
+                            monthSearch={monthSearch}
+                            onDataAvailable={this.handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable}
+                        />
                     </div>
                 </LazyLoadComponent>
 
@@ -247,14 +234,14 @@ class TabEmployeeCapacity extends Component {
     }
 };
 
-function mapState(state) {
+function mapStateToProps(state) {
     const { dashboardEvaluationEmployeeKpiSet, department } = state;
     return { dashboardEvaluationEmployeeKpiSet, department };
 }
 
-const actionCreators = {
+const mapDispatchToProps = {
     getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
 };
 
-const tabEmployeeCapacity = connect(mapState, actionCreators)(withTranslate(TabEmployeeCapacity));
+const tabEmployeeCapacity = React.memo(connect(mapStateToProps, mapDispatchToProps)(withTranslate(TabEmployeeCapacity)));
 export { tabEmployeeCapacity as TabEmployeeCapacity };

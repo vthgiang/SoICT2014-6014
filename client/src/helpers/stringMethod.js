@@ -133,3 +133,12 @@ export const convertTime = (ms) => {
 
     return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
 }
+
+export const compactString = (str, numberCompact = 32) => {
+    const compactedString =
+        str && str.length > numberCompact
+            ? str.substr(0, numberCompact) + '...'
+            : str;
+
+    return compactedString;
+};

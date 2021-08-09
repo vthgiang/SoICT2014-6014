@@ -320,8 +320,9 @@ class MainDashboardUnit extends Component {
                                     <TabEmployeeCapacity
                                         organizationalUnits={organizationalUnits}
                                         month={monthShow}
+                                        monthSearch={monthSearch}
                                         allOrganizationalUnits={organizationalUnits}
-                                        childOrganizationalUnit={childOrganizationalUnit}
+                                        childOrganizationalUnit={childOrganizationalUnit?.length && childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
                                     />
                                 </LazyLoadComponent>
                             </div>
