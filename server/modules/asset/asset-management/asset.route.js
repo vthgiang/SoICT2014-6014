@@ -47,5 +47,6 @@ router.get('/assets/incident-logs', auth, AssetController.getIncidents);
 router.post('/assets/:id/incident-logs', auth, AssetController.createIncident);
 router.patch('/assets/:id/incident-logs', auth, AssetController.updateIncident);
 router.delete('/assets/:id/incident-logs', auth, AssetController.deleteIncident);
+router.delete('/asset/incident-log', auth, AssetController.deleteIncidents);
 
 module.exports = router;

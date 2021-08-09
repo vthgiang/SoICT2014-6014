@@ -6,6 +6,7 @@ export const IncidentService = {
     createMaintainanceForIncident,
     updateIncident,
     deleteIncident,
+    deleteIncidents,
 }
 
 // Lấy danh sách sự cố
@@ -63,4 +64,21 @@ function deleteIncident(assetId, incidentId) {
         method: 'DELETE',
         data: {incidentId}
     }, true, true, 'asset.incident');
+}
+
+// xóa nhiều thông tin  sự cố tài sản
+
+function  deleteIncidents(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/asset/incident-log`,
+            method: "DELETE",
+            data: {
+                incidentIds: data?.incidentIds
+            }
+        },
+        true,
+        true,
+        "asset.incident"
+    );
 }

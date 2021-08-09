@@ -124,7 +124,7 @@ const ListAttendedCourse = (props) => {
 
     const { translate, course } = props;
 
-    const { page, limit, currentEditRow, currentViewRow } = state;
+    const { page, limit, currentViewRow } = state;
 
     let { listCoursesUserPassed } = course;
     let pageTotal = (course.totalList % limit === 0) ?
@@ -179,6 +179,7 @@ const ListAttendedCourse = (props) => {
                                 <th title="Địa điểm đào tạo">{translate('training.course.table.course_place')}</th>
                                 <th>{translate('training.course.table.offered_by')}</th>
                                 <th>{translate('training.course.table.course_type')}</th>
+                                <th>{translate('training.course.table.result')}</th>
                                 <th style={{ width: "120px" }}>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="course-table"
@@ -189,7 +190,8 @@ const ListAttendedCourse = (props) => {
                                             translate('training.course.table.end_date'),
                                             translate('training.course.table.course_place'),
                                             translate('training.course.table.offered_by'),
-                                            translate('training.course.table.course_type')
+                                            translate('training.course.table.course_type'),
+                                            translate('training.course.table.result')
                                         ]}
                                         limit={state.limit}
                                         setLimit={setLimit}
@@ -210,6 +212,7 @@ const ListAttendedCourse = (props) => {
                                         <td>{x.coursePlace}</td>
                                         <td>{x.offeredBy}</td>
                                         <td>{translate(`training.course.type.${x.type}`)}</td>
+                                        <td>{translate('training.course.result.pass')}</td>
                                         <td>
                                             <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('training.course.view_course')}><i className="material-icons">view_list</i></a>
                                         </td>
@@ -224,28 +227,6 @@ const ListAttendedCourse = (props) => {
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
                 </div>
-                {
-                    currentEditRow &&
-                    <CourseRegister
-                        _id={currentEditRow._id}
-                        name={currentEditRow.name}
-                        courseId={currentEditRow.courseId}
-                        offeredBy={currentEditRow.offeredBy}
-                        coursePlace={currentEditRow.coursePlace}
-                        startDate={formatDate(currentEditRow.startDate)}
-                        endDate={formatDate(currentEditRow.endDate)}
-                        cost={currentEditRow.cost.number}
-                        lecturer={currentEditRow.lecturer}
-                        applyForOrganizationalUnits={currentEditRow.educationProgram.applyForOrganizationalUnits}
-                        applyForPositions={currentEditRow.educationProgram.applyForPositions}
-                        educationProgram={currentEditRow.educationProgram.name}
-                        employeeCommitmentTime={currentEditRow.employeeCommitmentTime}
-                        type={currentEditRow.type}
-                        listEmployees={currentEditRow.listEmployees}
-                        unit={currentEditRow.cost.unit}
-                        registeredEmployees={currentEditRow.registeredEmployees}
-                    />
-                }
                 {
                     currentViewRow &&
                     <CourseDetailForm

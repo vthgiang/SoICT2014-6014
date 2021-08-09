@@ -1581,3 +1581,15 @@ exports.deleteIncident = async (portal, assetId, incidentId) => {
         { $pull: { incidentLogs: { _id: incidentId } } }
     );
 };
+
+exports.deleteIncidents = async (portal, incidentIds) => {
+    console.log(incidentIds);
+     incidentIds.forEach(async (incidentId) => {
+         await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            {incidentLogs : {$elemMatch: { _id:  mongoose.Types.ObjectId(incidentId)}}},
+            { $pull: { incidentLogs: { _id: incidentId } } }
+        )
+    })
+
+    return  incidentIds;
+}

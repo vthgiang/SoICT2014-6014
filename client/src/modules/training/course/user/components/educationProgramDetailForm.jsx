@@ -8,49 +8,6 @@ import { CourseActions } from '../../../course/user/redux/actions';
 const EducationProgramDetailForm = (props) => {
     const [state, setState] = useState({})
 
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, monthYear = false) => {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
-    }
-
-    /** Bắt sự kiện thay đổi mã chương trình đào tạo để tìm kiếm */
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setState({
-            ...state,
-            [name]: value
-        });
-    }
-
-    /**
-     * Bắt sự kiện thay đổi loại đào tạo để tìm kiếm
-     * @param {*} value : loại khoá đào tạo
-     */
-    const handleTypeChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        setState({
-            ...state,
-            type: value
-        })
-    }
 
     /**
      * Function bắt sự kiện thay đổi số dòng hiện thị trên 1 trang
@@ -79,16 +36,6 @@ const EducationProgramDetailForm = (props) => {
         props.getListCourse(state);
     }
 
-    /** Bắt sự kiện tìm kiếm */
-    const handleSunmitSearch = async () => {
-        console.log(state)
-        await setState({
-            ...state,
-            search: true
-        });
-        props.getListCourse(state);
-    }
-
     if (props._id !== state._id || props.programName !== state.programName) {
         setState({
             ...state,
@@ -98,6 +45,7 @@ const EducationProgramDetailForm = (props) => {
             programId: props.programId,
             listCourses: props.listCourses,
             totalList: props.totalList,
+            detail: props.detail,
             courseId: "",
             type: null,
             page: 0,
@@ -105,9 +53,9 @@ const EducationProgramDetailForm = (props) => {
         })
     }
 
-    const { education, course, translate } = props;
+    const { education, course, translate, data} = props;
 
-    let { _id, programName, programId, listCourses, page, limit, totalList, search } = state;
+    let { _id, programName, programId, listCourses, page, limit, totalList, search, detail } = state;
 
     if (search === true) {
         listCourses = course.listCourses;
@@ -118,44 +66,19 @@ const EducationProgramDetailForm = (props) => {
         parseInt(totalList / limit) :
         parseInt((totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
-
+    console.log(props)
     return (
         <React.Fragment>
             <DialogModal
                 modalID={`modal-view-education${_id}`} isLoading={education.isLoading && course.isLoading}
                 formID={`form-view-education${_id}`}
-                title={`${translate('training.education_program.view_education_program')}: ${programName} - ${programId}`}
+                title={`${translate('training.education_program.view_education_program')}`}
                 hasSaveButton={false}
                 size={75}
                 maxWidth={900}
                 hasNote={false}
             >
                 <form className="form-group" id={`form-view-education${_id}`} >
-                    <div className="qlcv">
-                        {/* Mã khoá đào tạo */}
-                        <div className="form-inline" >
-                            <div className="form-group">
-                                <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_code')}</label>
-                                <input type="text" className="form-control" name="courseId" onChange={handleChange} />
-                            </div>
-                        </div>
-                        {/* Loại đào tạo */}
-                        <div className="form-inline" style={{ marginBottom: 10 }}>
-                            <div className="form-group">
-                                <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_type')}</label>
-                                <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
-                                    options={{ nonSelectedText: translate('training.course.no_course_type'), allSelectedText: translate('training.course.all_course_type') }}
-                                    onChange={handleTypeChange}
-                                    items={[
-                                        { value: "internal", text: translate('training.course.type.internal') },
-                                        { value: "external", text: translate('training.course.type.external') },
-                                    ]}
-                                >
-                                </SelectMulti>
-                                <button type="button" className="btn btn-success" onClick={handleSunmitSearch}>{translate('general.search')}</button>
-                            </div>
-                        </div>
-                    </div>
                     <DataTableSetting
                         tableId="course-table"
                         columnArr={[
@@ -171,35 +94,10 @@ const EducationProgramDetailForm = (props) => {
                         setLimit={setLimit}
                         hideColumnOption={true}
                     />
-                    <table id="course-table" className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                        <thead>
-                            <tr>
-                                <th>{translate('training.course.table.course_code')}</th>
-                                <th>{translate('training.course.table.course_name')}</th>
-                                <th title={translate('training.course.start_date')}>{translate('training.course.table.start_date')}</th>
-                                <th title={translate('training.course.end_date')}>{translate('training.course.table.end_date')}</th>
-                                <th title="Địa điểm đào tạo">{translate('training.course.table.course_place')}</th>
-                                <th>{translate('training.course.table.offered_by')}</th>
-                                <th style={{ width: "120px" }}>{translate('training.course.table.course_type')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                listCourses && listCourses.length !== 0 &&
-                                listCourses.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.courseId}</td>
-                                        <td>{x.programName}</td>
-                                        <td>{formatDate(x.startDate)}</td>
-                                        <td>{formatDate(x.endDate)}</td>
-                                        <td>{x.coursePlace}</td>
-                                        <td>{x.offeredBy}</td>
-                                        <td>{translate(`training.course.type.${x.type}`)}</td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
+                    <div>{translate('training.education_program.education_program_name')}: {programName}</div>
+                    <div>{translate('training.education_program.education_program_code')}: {programId}</div>
+                    <div>{translate('training.education_program.detail')}: {detail}</div>
+                    <div>{translate('training.education_program.table.total_courses')}: {data.totalList}</div>
                     {(education.isLoading || course.isLoading) ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (!listCourses || listCourses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>

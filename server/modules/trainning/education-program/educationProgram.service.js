@@ -1,11 +1,13 @@
 const {
     EducationProgram,
     Course,
+    Role
 } = require(`../../../models`);
 
 const {
     connect
 } = require(`../../../helpers/dbHelper`);
+const mongoose = require('mongoose')
 
 
 /**
@@ -60,14 +62,19 @@ exports.searchEducationPrograms = async (portal, params, company) => {
         }
     }
     // Bắt sựu kiện tìm kiếm theo chức vụ áp dụng
-    if (params.position) {
+    let role = await Role(connect(DB_CONNECTION, portal)).findOne({
+        _id: mongoose.Types.ObjectId(params.position)
+    })
+    
+    if (params.position && role.name !== "Admin") {
         keySearch = {
             ...keySearch,
             applyForPositions: {
-                $in: params.position
-            }
-        }
+                $in: params.position,
+            },
+        };
     }
+
 
     let totalList = await EducationProgram(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let educations = await EducationProgram(connect(DB_CONNECTION, portal)).find(keySearch)

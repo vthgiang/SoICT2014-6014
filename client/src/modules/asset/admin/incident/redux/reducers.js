@@ -50,6 +50,13 @@ export function incidentManager(state = initState, action) {
                 isLoading: false,
                 error: action.error
             };
+
+        case IncidentConstants.DELETE_INCIDENTS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                incidentList: state.incidentList.filter(incident => !action.incidentIds.includes(incident?._id)),
+            }
         
         default:
             return state
