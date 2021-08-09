@@ -46,8 +46,8 @@ export const taskManagementService = {
  * @param {*} endDate kết thúc công việc
  */
 
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
 
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
@@ -85,8 +85,8 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -123,8 +123,8 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -161,8 +161,8 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
  * @param {*} endDate kết thúc công việc
  */
 
-function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -199,8 +199,8 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
  * @param {*} endDate kết thúc công việc
  */
 
-function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -282,7 +282,7 @@ function getPaginatedTasksByOrganizationalUnit(data) {
         params: {
             type: 'paginated_task_by_unit',
             unit: data?.unit,
-            number: data?.page,
+            page: data?.page,
             perPage: data?.perPage,
             status: data?.status,
             priority: data?.priority,
