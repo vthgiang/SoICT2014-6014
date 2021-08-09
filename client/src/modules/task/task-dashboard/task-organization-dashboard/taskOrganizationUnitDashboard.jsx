@@ -23,6 +23,10 @@ import { SelectMulti, DatePicker, LazyLoadComponent, ExportExcel } from '../../.
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
+const formatMonth = (value) => {
+    let startMonthTitle = value.slice(5, 7) + '-' + value.slice(0, 4);
+    return startMonthTitle
+}
 function TaskOrganizationUnitDashboard(props) {
     const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = props;
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -122,7 +126,7 @@ function TaskOrganizationUnitDashboard(props) {
             await props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
             await props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
             await props.getAllUserInAllUnitsOfCompany();
-            await setState({
+            setState({
                 ...state,
                 dataStatus: DATA_STATUS.QUERYING,
                 willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
@@ -131,83 +135,87 @@ function TaskOrganizationUnitDashboard(props) {
         fetchMyAPI()
     }, [])
 
-    // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
-    if (idsUnit && dashboardEvaluationEmployeeKpiSet && !dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-        setState({
-            ...state,
-            idsUnit: null
-        })
-    }
-
-    if (!idsUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-        let data, organizationUnit = "organizationUnit";
-        let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
-
-        if (dashboardEvaluationEmployeeKpiSet) {
-            currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+    useEffect(() => {
+        // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
+        if (idsUnit && dashboardEvaluationEmployeeKpiSet && !dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            setState({
+                ...state,
+                idsUnit: null
+            })
         }
-        if (currentOrganizationalUnit) {
-            childrenOrganizationalUnit.push(currentOrganizationalUnit);
-            queue.push(currentOrganizationalUnit);
-            while (queue.length > 0) {
-                let v = queue.shift();
-                if (v.children) {
-                    for (let i = 0; i < v.children.length; i++) {
-                        let u = v.children[i];
-                        queue.push(u);
-                        childrenOrganizationalUnit.push(u);
+
+        if (!idsUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            let data, organizationUnit = "organizationUnit";
+            let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
+
+            if (dashboardEvaluationEmployeeKpiSet) {
+                currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            }
+            if (currentOrganizationalUnit) {
+                childrenOrganizationalUnit.push(currentOrganizationalUnit);
+                queue.push(currentOrganizationalUnit);
+                while (queue.length > 0) {
+                    let v = queue.shift();
+                    if (v.children) {
+                        for (let i = 0; i < v.children.length; i++) {
+                            let u = v.children[i];
+                            queue.push(u);
+                            childrenOrganizationalUnit.push(u);
+                        }
                     }
                 }
             }
-        }
 
-        setState({
-            ...state,
-            startMonth: state.startMonth,
-            endMonth: state.endMonth,
-            checkUnit: state.checkUnit,
-            idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : state.idsUnit,
-            selectBoxUnit: childrenOrganizationalUnit
-        });
-        data = {
-            organizationUnitId: [childrenOrganizationalUnit?.[0]?.id],
-            type: organizationUnit,
-        }
-
-        props.getTaskInOrganizationUnitByMonth([childrenOrganizationalUnit?.[0]?.id], state.startMonth, state.endMonth);
-        props.getTaskByUser(data);
-
-    }
-    if (state.dataStatus === DATA_STATUS.QUERYING) {
-        setState({
-            ...state,
-            dataStatus: DATA_STATUS.AVAILABLE,
-            callAction: true
-        });
-    }
-    if (state.dataStatus === DATA_STATUS.AVAILABLE && state.willUpdate) {
-        setState({
-            ...state,
-            dataStatus: DATA_STATUS.FINISHED,
-            willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-        });
-    }
-
-    if ((!distributionOfEmployeeChart?.employees || !allTimeSheetLogsByUnit?.employees) && user?.employees) {
-        let employeesDistributionOfEmployeeChart = filterArraySkipAndLimit(user?.employees, distributionOfEmployeeChart?.page, distributionOfEmployeeChart?.perPage);
-        let employeesAllTimeSheetLogsByUnit = filterArraySkipAndLimit(user?.employees, allTimeSheetLogsByUnit?.page, allTimeSheetLogsByUnit?.perPage);
-        setState({
-            ...state,
-            distributionOfEmployeeChart: {
-                ...state.distributionOfEmployeeChart,
-                employees: employeesDistributionOfEmployeeChart
-            },
-            allTimeSheetLogsByUnit: {
-                ...state.allTimeSheetLogsByUnit,
-                employees: employeesAllTimeSheetLogsByUnit
+            setState({
+                ...state,
+                startMonth: state.startMonth,
+                endMonth: state.endMonth,
+                checkUnit: state.checkUnit,
+                idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : state.idsUnit,
+                selectBoxUnit: childrenOrganizationalUnit
+            });
+            data = {
+                organizationUnitId: [childrenOrganizationalUnit?.[0]?.id],
+                type: organizationUnit,
             }
-        })
-    }
+
+            props.getTaskInOrganizationUnitByMonth([childrenOrganizationalUnit?.[0]?.id], state.startMonth, state.endMonth);
+            props.getTaskByUser(data);
+
+        }
+        else if (state.dataStatus === DATA_STATUS.QUERYING) {
+            setState({
+                ...state,
+                dataStatus: DATA_STATUS.AVAILABLE,
+                callAction: true
+            });
+        }
+        else if (state.dataStatus === DATA_STATUS.AVAILABLE && state.willUpdate) {
+            setState({
+                ...state,
+                dataStatus: DATA_STATUS.FINISHED,
+                willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+            });
+        }
+    }, [idsUnit, dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit, state.dataStatus, state.willUpdate])
+
+    useEffect(() => {
+        if ((!distributionOfEmployeeChart?.employees || !allTimeSheetLogsByUnit?.employees) && user?.employees) {
+            let employeesDistributionOfEmployeeChart = filterArraySkipAndLimit(user?.employees, distributionOfEmployeeChart?.page, distributionOfEmployeeChart?.perPage);
+            let employeesAllTimeSheetLogsByUnit = filterArraySkipAndLimit(user?.employees, allTimeSheetLogsByUnit?.page, allTimeSheetLogsByUnit?.perPage);
+            setState({
+                ...state,
+                distributionOfEmployeeChart: {
+                    ...state.distributionOfEmployeeChart,
+                    employees: employeesDistributionOfEmployeeChart
+                },
+                allTimeSheetLogsByUnit: {
+                    ...state.allTimeSheetLogsByUnit,
+                    employees: employeesAllTimeSheetLogsByUnit
+                }
+            })
+        }
+    }, [distributionOfEmployeeChart?.employees, allTimeSheetLogsByUnit?.employees, user?.employees])
 
     function formatDate(date) {
         if (date) {
@@ -228,30 +236,28 @@ function TaskOrganizationUnitDashboard(props) {
 
     const handleSelectMonthStart = async (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         setInfoSearch({
             ...infoSearch,
             startMonth: month,
-            startMonthTitle: startMonthTitle
         })
     }
 
     const handleSelectMonthEnd = async (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         setInfoSearch({
             ...infoSearch,
             endMonth: month,
-            endMonthTitle: endMonthTitle
         })
     }
 
     const handleSearchData = async () => {
         const { allTimeSheetLogsByUnitIdPerPage, distributionOfEmployeeChartPerPage } = state;
-        let startMonth = new Date(infoSearch.startMonth);
-        let endMonth = new Date(infoSearch.endMonth);
+        const { idsUnit, startMonth, endMonth, checkUnit } = infoSearch
 
-        if (startMonth.getTime() > endMonth.getTime()) {
+        let startMonthObj = new Date(infoSearch.startMonth);
+        let endMonthObj = new Date(infoSearch.endMonth);
+
+        if (startMonthObj.getTime() > endMonthObj.getTime()) {
             const { translate } = props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -262,14 +268,19 @@ function TaskOrganizationUnitDashboard(props) {
         } else {
             setState({
                 ...state,
-                startMonth: infoSearch.startMonth,
-                endMonth: infoSearch.endMonth,
-                checkUnit: infoSearch.checkUnit,
-                idsUnit: infoSearch.idsUnit
+                startMonth: startMonth,
+                endMonth: endMonth,
+                checkUnit: checkUnit,
+                idsUnit: idsUnit
+            })
+            setInfoSearch({
+                ...infoSearch,
+                startMonthTitle: formatMonth(startMonth),
+                endMonthTitle: formatMonth(endMonth),
             })
 
             let data = {
-                organizationalUnitIds: infoSearch.idsUnit,
+                organizationalUnitIds: idsUnit,
                 page: 1
             }
 
@@ -283,7 +294,7 @@ function TaskOrganizationUnitDashboard(props) {
                 type: "forAllTimeSheetLogs",
                 perPage: allTimeSheetLogsByUnitIdPerPage
             });
-            await props.getTaskInOrganizationUnitByMonth(infoSearch.idsUnit, state.startMonth, state.endMonth);
+            await props.getTaskInOrganizationUnitByMonth(idsUnit, startMonth, endMonth);
         }
     }
 
@@ -359,7 +370,6 @@ function TaskOrganizationUnitDashboard(props) {
         currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
     }
 
-
     return (
         <React.Fragment>
             {currentOrganizationalUnit
@@ -402,7 +412,7 @@ function TaskOrganizationUnitDashboard(props) {
                                 />
                             </div>
                             <div className="form-group">
-                                <button className="btn btn-success" onClick={handleSearchData}>{translate('task.task_management.search')}</button>
+                                <button className="btn btn-success" onClick={() => handleSearchData()}>{translate('task.task_management.search')}</button>
                             </div>
 
                         </div>
