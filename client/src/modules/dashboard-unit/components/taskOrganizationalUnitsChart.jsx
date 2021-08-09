@@ -535,10 +535,13 @@ class TaskOrganizationalUnitsChart extends Component {
     handleToggleAdvanceMode = () => {
         const { advancedMode, startDate, endDate, searchAdvanceMode } = this.state;
         const { childOrganizationalUnit, month } = this.props;
+        console.log('month', month);
         if (!advancedMode) {
             this.setState({
                 ...this.state,
                 advancedMode: !advancedMode,
+                startDate: this.formatString(month),
+                endDate: this.formatString(month),
             })
         } else {
             if (searchAdvanceMode) {
