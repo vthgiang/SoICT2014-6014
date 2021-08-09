@@ -99,7 +99,7 @@ class TabEmployeeCapacity extends Component {
 
 
     render() {
-        const { translate, department, dashboardEvaluationEmployeeKpiSet, childOrganizationalUnit } = this.props;
+        const { translate, department, dashboardEvaluationEmployeeKpiSet, childOrganizationalUnit, monthSearch } = this.props;
         const { month, organizationalUnits, allOrganizationalUnits, numberOfExcellentEmployees, numberOfExcellent,
             resultsOfAllOrganizationalUnitsKpiChartData, resultsOfAllEmployeeKpiSetChartData } = this.state;
 
