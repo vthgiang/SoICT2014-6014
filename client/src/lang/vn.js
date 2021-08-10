@@ -1918,7 +1918,7 @@ export default {
                 certificate: "Chứng chỉ",
                 name_diploma: "Tên bằng cấp",
                 name_certificate: "Tên chứng chỉ",
-                diploma_issued_by: "Nơi đào tạo",
+                diploma_issued_by: "Cơ sở đào tạo",
                 graduation_year: "Năm tốt nghiệp",
                 ranking_learning: "Xếp loại",
                 attached_files: "File đính kèm",
