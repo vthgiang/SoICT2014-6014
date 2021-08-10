@@ -9,7 +9,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceChartBySalary = (props) => {
-    
+
     const [state, setState] = useState({})
 
     const rotateChart = useRef(null);
@@ -173,7 +173,7 @@ const HumanResourceChartBySalary = (props) => {
 
     if (data.length !== 0) {
         data = data.map(x => {
-            let total = parseInt(x.mainSalary);
+            let total = x?.mainSalary ? parseInt(x.mainSalary) : 0;
             if (x.bonus.length !== 0) {
                 for (let count in x.bonus) {
                     total = total + parseInt(x.bonus[count].number)
@@ -228,7 +228,7 @@ const HumanResourceChartBySalary = (props) => {
                         ? <p>{translate('general.loading')}</p>
                         : <div className="dashboard_box_body">
                             <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
-                             <div ref={rotateChart}></div>
+                            <div ref={rotateChart}></div>
                         </div>
                     }
                 </div>

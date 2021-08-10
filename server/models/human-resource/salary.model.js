@@ -23,7 +23,6 @@ const SalarySchema = new Schema({
     },
     mainSalary: { // Lương chính
         type: String,
-        required: true,
     },
     unit: { // Đơn vị tiền lương(VND hoặc USD)
         type: String,

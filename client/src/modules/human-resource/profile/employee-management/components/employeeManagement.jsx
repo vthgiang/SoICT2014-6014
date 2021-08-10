@@ -551,7 +551,7 @@ const EmployeeManagement = (props) => {
                     })
                 };
 
-                total = total + parseInt(x.mainSalary);
+                total = total + x?.mainSalary ? parseInt(x.mainSalary) : 0;
             }
 
             return {
@@ -559,7 +559,7 @@ const EmployeeManagement = (props) => {
                 employeeNumber: x.employeeNumber,
                 fullName: x.fullName,
                 organizationalUnit: x.organizationalUnit,
-                mainSalary: parseInt(x.mainSalary),
+                mainSalary: x?.mainSalary ? parseInt(x.mainSalary) : 0,
                 total: total,
                 month: month,
                 year: year,

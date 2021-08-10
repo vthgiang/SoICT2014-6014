@@ -212,23 +212,24 @@ const SalaryManagement = (props) => {
                         })
                     };
                 }
-
+                let mainSalary = x?.mainSalary ? parseInt(x.mainSalary) : 0;
                 return {
                     STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
-                    mainSalary: parseInt(x.mainSalary),
+                    mainSalary: mainSalary,
                     birthdate: new Date(x.employee.birthdate),
                     status: x.employee.status === 'active' ? translate('human_resource.profile.active') : translate('human_resource.profile.leave'),
                     gender: x.employee.gender === 'male' ? translate('human_resource.profile.male') : translate('human_resource.profile.female'),
                     organizationalUnit: organizationalUnit ? organizationalUnit.name : '',
-                    total: total + parseInt(x.mainSalary),
+                    total: parseInt(total) + mainSalary,
                     month: month,
                     year: year,
                     ...bonus
                 };
             })
         }
+        console.log('data', data)
         let columns = [{ key: 'bonus0', value: 0 }];
         if (otherSalary.length !== 0) {
             columns = otherSalary.map((x, index) => {
@@ -380,7 +381,7 @@ const SalaryManagement = (props) => {
                     <tbody>
                         {(listSalarys && listSalarys.length !== 0) &&
                             listSalarys.map((x, index) => {
-                                let total = parseInt(x.mainSalary);
+                                let total = x.mainSalary ? parseInt(x.mainSalary) : 0;
                                 if (x.bonus && x.bonus.length !== 0) {
                                     for (let count in x.bonus) {
                                         total = total + parseInt(x.bonus[count].number)

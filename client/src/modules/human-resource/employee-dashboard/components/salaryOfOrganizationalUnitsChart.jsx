@@ -85,7 +85,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
     let data = salary.listSalaryByMonth;
     if (data.length !== 0) {
         data = data.map(x => {
-            let total = parseInt(x.mainSalary);
+            let total = x?.mainSalary ? parseInt(x.mainSalary) : 0;
             if (x.bonus.length !== 0) {
                 for (let count in x.bonus) {
                     total = total + parseInt(x.bonus[count].number)

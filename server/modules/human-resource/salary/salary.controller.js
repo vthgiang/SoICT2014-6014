@@ -49,15 +49,6 @@ exports.createSalary = async (req, res) => {
                     inputData: req.body
                 }
             });
-        } else if (req.body.mainSalary.trim() === "") {
-            await Log.error(req.user.email, 'CREATE_SARALY', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["money_salary_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
         } else {
             let createSalary = await SalaryService.createSalary(req.portal, req.body, req.user.company._id);
             if (createSalary === "have_exist") { // Kiểm tra trùng lặp
@@ -79,6 +70,7 @@ exports.createSalary = async (req, res) => {
             }
         }
     } catch (error) {
+        console.log('eror', error)
         await Log.error(req.user.email, 'CREATE_SARALY', req.portal);
         res.status(400).json({
             success: false,
@@ -115,24 +107,13 @@ exports.deleteSalary = async (req, res) => {
 /** Chỉnh sửa thông tin bảng lương */
 exports.updateSalary = async (req, res) => {
     try {
-        if (req.body.mainSalary.trim() === "") {
-            await Log.error(req.user.email, 'EDIT_SARALY', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ["money_salary_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else {
-            let salaryUpdate = await SalaryService.updateSalary(req.portal, req.params.id, req.body);
-            await Log.info(req.user.email, 'EDIT_SARALY', req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ["edit_salary_success"],
-                content: salaryUpdate
-            });
-        }
+        let salaryUpdate = await SalaryService.updateSalary(req.portal, req.params.id, req.body);
+        await Log.info(req.user.email, 'EDIT_SARALY', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["edit_salary_success"],
+            content: salaryUpdate
+        });
     } catch (error) {
         await Log.error(req.user.email, 'EDIT_SARALY', req.portal);
         res.status(400).json({

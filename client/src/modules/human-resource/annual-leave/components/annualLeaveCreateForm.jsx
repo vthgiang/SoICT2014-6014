@@ -339,7 +339,7 @@ function AnnualLeaveCreateForm(props) {
 
     /** Bắt sự kiện submit form */
     const save = () => {
-        let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee)._id;
+        let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee)?._id;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');

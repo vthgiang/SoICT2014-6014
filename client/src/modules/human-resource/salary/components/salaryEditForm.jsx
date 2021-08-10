@@ -15,26 +15,18 @@ const SalaryEditForm = (props) => {
     /** Function bắt sự kiện thay đổi tiền lương chính */
     const handleMainSalaryChange = (e) => {
         let value = e.target.value;
-        validateMainSalary(value, true);
+        setState(state => ({
+            ...state,
+            mainSalary: value
+        }))
     }
-    const validateMainSalary = (value, willUpdateState = true) => {
-        let { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
 
-        if (willUpdateState) {
-            setState(state => ({
-                ...state,
-                errorOnMainSalary: message,
-                mainSalary: value}))
-        }
-        return message === undefined;
-    }
 
 
     /** Function bắt sự kiện thay đổi đơn vị tiền lương */
     const handleChange = (e) => {
         let value = e.target.value;
-        setState(state => ({...state, unit: value}));
+        setState(state => ({ ...state, unit: value }));
     }
 
     /** Bắt sự kiện click thêm lương thưởng khác */
@@ -52,10 +44,10 @@ const SalaryEditForm = (props) => {
                 }
             }
             if (result === true) {
-                setState(state => ({...state, bonus: [...bonus, { nameBonus: "", number: "" }]}));
+                setState(state => ({ ...state, bonus: [...bonus, { nameBonus: "", number: "" }] }));
             }
         } else {
-            setState(state => ({...state, bonus: [...bonus, { nameBonus: "", number: "" }]}));
+            setState(state => ({ ...state, bonus: [...bonus, { nameBonus: "", number: "" }] }));
         }
 
     }
@@ -131,17 +123,16 @@ const SalaryEditForm = (props) => {
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         let { mainSalary, bonus } = state;
-        let result = validateMainSalary(mainSalary, false);
-        if (result === true) {
-            if (bonus !== []) {
-                let test = bonus;
-                for (let n in test) {
-                    result = validateNameSalary(test[n].nameBonus, n, false) &&
-                        validateMoreMoneySalary(test[n].number, n, false);
-                    if (result === false) break;
-                }
+        let result;
+        if (bonus !== []) {
+            let test = bonus;
+            for (let n in test) {
+                result = validateNameSalary(test[n].nameBonus, n, false) &&
+                    validateMoreMoneySalary(test[n].number, n, false);
+                if (result === false) break;
             }
         }
+
         return result;
     }
 
@@ -215,7 +206,7 @@ const SalaryEditForm = (props) => {
                     </div>
                     {/* Tiền lương chính */}
                     <div className={`form-group ${errorOnMainSalary && "has-error"}`}>
-                        <label >{translate('human_resource.salary.table.main_salary')}<span className="text-red">*</span></label>
+                        <label >{translate('human_resource.salary.table.main_salary')}</label>
                         <div>
                             <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={handleMainSalaryChange} style={{ display: "inline", width: "85%" }} autoComplete="off" />
                             <select className="form-control" name="unit" value={unit} onChange={handleChange} style={{ display: "inline", width: "15%" }}>
