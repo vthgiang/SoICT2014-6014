@@ -535,6 +535,11 @@ function configurationSocialInsuranceDetails(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.position`).toLowerCase()}`,
             value: translate(`human_resource.position`)
         },
+        money: { // Chức danh
+            columnName: translate(`human_resource.profile.money`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.money`).toLowerCase()}`,
+            value: translate(`human_resource.profile.money`)
+        },
     };
     return config;
 }
@@ -1017,7 +1022,8 @@ function templateImport(translate) {
                                 { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
                                 { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
                                 { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 }
+                                { key: "position", value: translate(`human_resource.position`), width: 25 },
+                                { key: "money", value: translate(`human_resource.profile.money`), width: 30 },
                             ],
                             data: [{
                                 STT: 1,
@@ -1026,7 +1032,8 @@ function templateImport(translate) {
                                 endDate: "05-2020",
                                 fullName: "Nguyễn Văn An",
                                 position: "Nhân viên",
-                                startDate: "01-2020"
+                                startDate: "01-2020",
+                                money: 400000
                             },{
                                 STT: 2,
                                 company: "Vnist",
@@ -1034,7 +1041,8 @@ function templateImport(translate) {
                                 endDate: "05-2020",
                                 fullName: "Trần Văn Bình",
                                 position: "Nhân viên",
-                                startDate: "01-2020"
+                                startDate: "01-2020",
+                                money: 24000000
                             }]
                         }
                     ]

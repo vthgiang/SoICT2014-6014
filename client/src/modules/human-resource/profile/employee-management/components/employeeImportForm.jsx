@@ -501,6 +501,7 @@ const EmployeeImportForm = (props) => {
                 ...x,
                 startDate: convertStringToDate(startDate, true),
                 endDate: convertStringToDate(endDate, true),
+                money: x.money ? parseInt(x.money) : x.money
             }
         });
 
