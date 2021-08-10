@@ -1835,6 +1835,7 @@ export default {
 
                 labor_contract: "Labor contract",
                 training_process: "Training process",
+                number_contract: "Contract number",
                 name_contract: "Contract name",
                 type_contract: "Type of contract",
                 start_date: "Effective date",

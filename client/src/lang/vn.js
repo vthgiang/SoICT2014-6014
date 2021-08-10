@@ -1955,6 +1955,7 @@ export default {
 
                 labor_contract: "Hợp đồng lao động",
                 training_process: "Quá trình đào tạo",
+                number_contract: "Số hợp đồng",
                 name_contract: "Tên hợp đồng",
                 type_contract: "Loại hợp đồng",
                 start_date: "Ngày có hiệu lực",

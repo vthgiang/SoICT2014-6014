@@ -368,7 +368,6 @@ const EmployeeCreateForm = (props) => {
                 year: [splitDate[2], splitDate[1], splitDate[0]].join("-")
             }
         }) : [];
-        console.log('degrees', degreesConvert)
 
         let formData = convertJsonObjectToFormData({
             ...employee,

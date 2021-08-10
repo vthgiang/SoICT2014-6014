@@ -43,8 +43,8 @@ function ContractEditModal(props) {
 
     const { id } = props;
 
-    const { name, contractType, startDate, endDate, file, urlFile, fileUpload, errorOnNameContract,
-        errorOnTypeContract, errorOnStartDate, errorOnEndDate } = state;
+    const { contractNumber, name, contractType, startDate, endDate, file, urlFile, fileUpload, errorOnNameContract,
+        errorOnTypeContract, errorOnStartDate, errorOnEndDate, errorOnNumberContract } = state;
 
     useEffect(() => {
         setState(state => {
@@ -52,6 +52,7 @@ function ContractEditModal(props) {
                 ...state,
                 id: props.id,
                 index: props.index,
+                contractNumber: props?.contractNumber,
                 name: props.name,
                 startDate: props.startDate,
                 endDate: props.endDate,
@@ -210,10 +211,32 @@ function ContractEditModal(props) {
         })
     }
 
+    const validateContractNumber = (value, willUpdateState = true) => {
+        const { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
+        if (willUpdateState) {
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnNumberContract: message,
+                    contractNumber: value,
+                }
+            });
+        }
+        return message === undefined;
+    }
+
+
+    const handleContractNumber = (e) => {
+        let { value } = e.target;
+        validateContractNumber(value, true);
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
-        const { name, contractType, startDate, endDate } = state;
-        let result = validateNameContract(name, false) && validateTypeContract(contractType, false);
+        const { name, contractType, startDate, endDate, contractNumber } = state;
+        let result = validateNameContract(name, false) && validateTypeContract(contractType, false) && validateContractNumber(contractNumber, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         if (endDate) {
@@ -253,6 +276,13 @@ function ContractEditModal(props) {
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-edit-contract-${id}`}>
+                    {/* Số hợp đồng */}
+                    <div className={`form-group ${errorOnNumberContract && "has-error"}`}>
+                        <label>{translate('human_resource.profile.number_contract')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" value={contractNumber} onChange={handleContractNumber} autoComplete="off" />
+                        <ErrorLabel content={errorOnNumberContract} />
+                    </div>
+
                     {/* Tên hợp đồng lao động*/}
                     <div className={`form-group ${errorOnNameContract && "has-error"}`}>
                         <label>{translate('human_resource.profile.name_contract')}<span className="text-red">*</span></label>

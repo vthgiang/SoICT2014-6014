@@ -83,6 +83,7 @@ function ContractTab(props) {
                     <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}  >
                         <thead>
                             <tr>
+                                <th >{translate('human_resource.profile.number_contract')}</th>
                                 <th >{translate('human_resource.profile.name_contract')}</th>
                                 <th >{translate('human_resource.profile.type_contract')}</th>
                                 <th >{translate('human_resource.profile.start_date')}</th>
@@ -94,6 +95,7 @@ function ContractTab(props) {
                             {contracts && contracts.length !== 0 &&
                                 contracts.map((x, index) => (
                                     <tr key={index}>
+                                        <td>{x?.contractNumber}</td>
                                         <td>{x.name}</td>
                                         <td>{x.contractType}</td>
                                         <td>{formatDate(x.startDate)}</td>

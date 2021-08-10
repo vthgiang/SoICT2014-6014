@@ -235,6 +235,7 @@ const EmployeeSchema = new Schema({
     },
     contracts: [{
         name: String,
+        contractNumber: String,
         contractType: String,
         startDate: Date,
         endDate: Date,
