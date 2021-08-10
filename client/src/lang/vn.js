@@ -1908,6 +1908,7 @@ export default {
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
+                job_description: "Công việc đã làm",
                 unit: "Đơn vị công tác",
                 from_month_year: "Từ tháng/năm",
                 to_month_year: "Đến tháng/năm",

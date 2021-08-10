@@ -230,6 +230,7 @@ function ExperienceTab(props) {
                                 <th>{translate('human_resource.profile.to_month_year')}</th>
                                 <th>{translate('human_resource.profile.unit')}</th>
                                 <th>{translate('table.position')}</th>
+                                <th>{translate('human_resource.profile.job_description')}</th>
                                 <th style={{ width: '120px' }}>{translate('general.action')}</th>
                             </tr>
                         </thead>
@@ -239,8 +240,9 @@ function ExperienceTab(props) {
                                     <tr key={index}>
                                         <td>{formatDate(x.startDate, true)}</td>
                                         <td>{formatDate(x.endDate, true)}</td>
-                                        <td>{x.company}</td>
-                                        <td>{x.position}</td>
+                                        <td>{x?.company}</td>
+                                        <td>{x?.position}</td>
+                                        <td>{x?.jobDescription}</td>
                                         <td>
                                             <a onClick={() => handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_experience')}><i className="material-icons">edit</i></a>
                                             <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => _delete(index)}><i className="material-icons"></i></a>
@@ -265,6 +267,7 @@ function ExperienceTab(props) {
                     startDate={formatDate(currentRow.startDate, true)}
                     endDate={formatDate(currentRow.endDate, true)}
                     position={currentRow.position}
+                    jobDescription={currentRow.jobDescription}
                     handleChange={handleEditExperience}
                 />
             }

@@ -46,6 +46,7 @@ function ModalEditExperience(props) {
                 startDate: props.startDate,
                 endDate: props.endDate,
                 position: props.position,
+                jobDescription: props.jobDescription,
                 errorOnPosition: undefined,
                 errorOnUnit: undefined,
                 errorOnStartDate: undefined,
@@ -66,7 +67,7 @@ function ModalEditExperience(props) {
 
     const { id } = props;
 
-    const { company, position, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
+    const { company, position, jobDescription, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -170,6 +171,15 @@ function ModalEditExperience(props) {
         })
     }
 
+    const handleJobDescription = (e) => {
+        const { value } = e.target;
+
+        setState({
+            ...state,
+            jobDescription: value,
+        })
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { company, position, startDate, endDate } = state;
@@ -242,6 +252,12 @@ function ModalEditExperience(props) {
                         <label>{translate('table.position')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
                         <ErrorLabel content={errorOnPosition} />
+                    </div>
+
+                    {/* Các công việc đã làm */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.job_description')}</label>
+                        <textarea style={{ minHeight: '100px' }} type="text" value={jobDescription} className="form-control" onChange={handleJobDescription} />
                     </div>
                 </form>
             </DialogModal>

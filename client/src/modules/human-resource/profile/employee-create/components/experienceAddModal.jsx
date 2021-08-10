@@ -34,13 +34,14 @@ function ModalAddExperience(props) {
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
         position: "",
+        jobDescription: "",
     })
 
     const { translate } = props;
 
     const { id } = props;
 
-    const { company, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = state;
+    const { company, position, startDate, endDate, jobDescription, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = state;
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -145,6 +146,14 @@ function ModalAddExperience(props) {
         })
     }
 
+    const handleJobDescription = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            jobDescription: value,
+        })
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { position, company, startDate, endDate } = state;
@@ -218,6 +227,12 @@ function ModalAddExperience(props) {
                         <label>{translate('table.position')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
                         <ErrorLabel content={errorOnPosition} />
+                    </div>
+
+                    {/* Các công việc đã làm */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.job_description')}</label>
+                        <textarea style={{ minHeight: '100px' }} type="text" value={jobDescription} className="form-control" onChange={handleJobDescription} />
                     </div>
                 </form>
             </DialogModal>

@@ -1788,6 +1788,7 @@ export default {
                 phd: "Ph.D",
                 unavailable: "Other",
                 work_experience: "Work experience",
+                job_description: "Job description",
                 unit: "Unit",
                 from_month_year: "From month/year",
                 to_month_year: "To month/year",
