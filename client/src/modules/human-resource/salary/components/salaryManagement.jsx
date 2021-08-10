@@ -16,7 +16,7 @@ const SalaryManagement = (props) => {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-     const formatDate = (date, monthYear = false) => {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -34,7 +34,7 @@ const SalaryManagement = (props) => {
         }
         return date;
     }
-    
+
     let partMonth = formatDate(Date.now(), true).split('-');
     let month = [partMonth[1], partMonth[0]].join('-');
 
@@ -57,9 +57,12 @@ const SalaryManagement = (props) => {
         searchSalary(state);
         getDepartment()
     }, []);
-    
 
-    
+    useEffect(() => {
+        window.$('#modal_import_file').modal('show');
+    }, [state.importSalary])
+
+
 
     /** Function bắt sự kiện thêm lương nhân viên bằng tay */
     const createSalary = () => {
@@ -80,7 +83,7 @@ const SalaryManagement = (props) => {
 
     /** Function bắt sự kiện thêm lương nhân viên bằng import file */
     const _importSalary = async () => {
-        await setState(state, () => ({
+        setState(() => ({
             ...state,
             importSalary: true
         }))
@@ -153,7 +156,7 @@ const SalaryManagement = (props) => {
             ...state,
             limit: parseInt(number),
         }));
-        
+
     }
 
     /**
@@ -167,7 +170,7 @@ const SalaryManagement = (props) => {
         await setState(state => ({
             ...state,
             page: parseInt(page)
-        }));  
+        }));
     }
 
     useEffect(() => {
@@ -290,6 +293,7 @@ const SalaryManagement = (props) => {
         parseInt((salary.totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
 
+    console.log('importSalary', importSalary)
     return (
         <div className="box">
             <div className="box-body qlcv">
@@ -441,14 +445,14 @@ const SalaryManagement = (props) => {
 }
 
 function mapState(state) {
-const { salary, department } = state;
-return { salary, department };
+    const { salary, department } = state;
+    return { salary, department };
 };
 
 const actionCreators = {
-searchSalary: SalaryActions.searchSalary,
-deleteSalary: SalaryActions.deleteSalary,
-getDepartment: DepartmentActions.get,
+    searchSalary: SalaryActions.searchSalary,
+    deleteSalary: SalaryActions.deleteSalary,
+    getDepartment: DepartmentActions.get,
 };
 
 const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryManagement));
