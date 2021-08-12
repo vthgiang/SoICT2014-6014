@@ -80,7 +80,7 @@ export function employeesManager(state = initState, action) {
         case EmployeeConstants.ADDEMPLOYEE_SUCCESS:
             return {
                 ...state,
-                listEmployees: [...state.listEmployees, action.payload],
+                listEmployees: [action.payload,...state.listEmployees],
                     isLoading: false
             };
         case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS:
