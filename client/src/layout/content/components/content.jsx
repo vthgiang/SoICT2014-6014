@@ -172,13 +172,18 @@ class Content extends Component {
             return str;
         }
 
+        window.$("body").mouseup(function (e) {
+            var container = window.$(".dropdown-menu-filter");
+            // if the target of the click isn't the container nor a descendant of the container
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+
+                container.hide();
+            }
+        });
         for (let i = 0; i < tables.length; i++) {
             let table = window.$(tables[i]);
-            //console.log(table)
             let tableHeadings = table.find("th:not(:last-child)").not(".not-sort");
-            //console.log(tableHeadings)
             let tableHeadingsColSort = table.find("th.col-sort").not(".not-sort");
-            //console.log(tableHeadingsColSort)
             if (tableHeadingsColSort && tableHeadingsColSort.length) {
                 for (let k = 0; k < tableHeadingsColSort.length; ++k) {
                     tableHeadings.push(tableHeadingsColSort[k])
@@ -186,8 +191,6 @@ class Content extends Component {
             }
             for (let j = 0; j < tableHeadings.length; j++) {
                 let th = window.$(tableHeadings[j]);
-                //console.log(th);
-                //console.log(th.find("div.sort"))
                 if (th.find("div.sort").length < 1) {
                     //hàm sort
                     let sort = (ascOrder) => {
@@ -247,29 +250,29 @@ class Content extends Component {
                             table.children('tbody').append(row);
                         });
                     }
-                    
+
                     // icon sort
                     let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-sort' });
                     let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-asc' });
                     let requestReturn = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-desc' });
 
                     //icon filter
-                    let filterIcon = window.$("<button>", { style: 'width: 100%; float: right; cursor: pointer; color: rgb(226 222 222); border: none; background: none', class: 'fa fa-filter', target: 'dropdown-menu-filter'});
-                    let filterDropdown = window.$("<div>", { style: 'display: none; cursor: auto; z-index: 1000; position: absolute;width: 200px;margin-top: 25px;text-align: left;border-radius: 5px;margin: 26px 0px 0px 19px;padding: 10px;background-color: rgb(232, 240, 244);box-sizing: border-box;border-top: 2px solid rgb(54, 156, 199);box-shadow: 4px 4px 15px rgba(50, 50, 50)', class: 'collapse dropdown-menu-filter'});
-                    let closeButton = window.$("<button>", { style: 'float: right; font-size: 11px;top: 7px;right: 8px;line-height: 15px;background-color: rgb(60 141 188);color: rgb(232, 240, 244);border-radius: 50%;width: 14px;height: 14px;font-weight: bold;text-align: center;margin: 0;padding: 0;border: 0', class: 'fa fa-times', target: 'dropdown-menu-filter'});
+                    let filterIcon = window.$("<button>", { style: 'width: 100%; float: right; cursor: pointer; color: rgb(226 222 222); border: none; background: none', class: 'fa fa-filter', target: 'dropdown-menu-filter' });
+                    let filterDropdown = window.$("<div>", { style: 'display: none; cursor: auto; z-index: 1000; position: absolute;width: 200px;margin-top: 25px;text-align: left;border-radius: 5px;margin: 26px 0px 0px 19px;padding: 10px;background-color: rgb(232, 240, 244);box-sizing: border-box;border-top: 2px solid rgb(54, 156, 199);box-shadow: 4px 4px 15px rgba(50, 50, 50); overflow:hidden', class: 'collapse dropdown-menu-filter' });
+                    let closeButton = window.$("<button>", { style: 'float: right; font-size: 11px;top: 7px;right: 8px;line-height: 15px;background-color: rgb(60 141 188);color: rgb(232, 240, 244);border-radius: 50%;width: 14px;height: 14px;font-weight: bold;text-align: center;margin: 0;padding: 0;border: 0', class: 'fa fa-times', target: 'dropdown-menu-filter' });
                     //let clearButton = window.$("<button>", { style: 'float: right; font-size: 11px; width: 24px;height: 24px;font-weight: bold;background-color: blue;text-align: center;margin: 0;padding: 0;border: 0', target: 'dropdown-menu-filter'});
-                    let filterInput = window.$("<input>",{style: 'width: 100%; display: block', class: 'form-control'} )
-                    let filterTitle = window.$("<h6>",{ style: 'margin: 0px 0px 15px;padding: 0px;font-weight: bold;color: #3c8dbc; text-align: center', text:'kkk'})
-                    let filterLabel = window.$("<label>",{ style: 'margin: 0; color: #3c8dbc' , text: 'Filter' })
-                    filterDropdown.append(closeButton,filterTitle, filterLabel, filterInput)
+                    let filterInput = window.$("<input>", { style: 'width: 100%; display: block', class: 'form-control' })
+                    let filterTitle = window.$("<h6>", { style: 'margin: 0px 0px 15px;padding: 0px;font-weight: bold;color: #3c8dbc; text-align: center', text: 'kkk' })
+                    let filterLabel = window.$("<label>", { style: 'margin: 0; color: #3c8dbc', text: 'Filter' })
+                    filterDropdown.append(closeButton, filterTitle, filterLabel, filterInput)
 
 
                     for (let k = 0; k < tableHeadings.length; ++k) {
-                        if(k === j){
+                        if (k === j) {
                             let thChoiced = window.$(tableHeadings[k]);
                             let title = thChoiced[0].innerText;
                             filterTitle[0].innerText = title;
-                            
+
                         }
                     }
 
@@ -287,77 +290,68 @@ class Content extends Component {
 
                     filterIcon.click(() => {
                         for (let k = 0; k < tableHeadings.length; ++k) {
-                            if(k === j){
+                            if (k === j) {
                                 let thChoiced = window.$(tableHeadings[k]);
                                 let filterDiv = thChoiced.find("div.filter")
                                 let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
                                 if (x.style.display = "none") {
                                     x.style.display = "block";
-                                  } 
-                            }else{
+                                }
+                            } else {
                                 let thNotChoice = window.$(tableHeadings[k]);
                                 let filterDiv = thNotChoice.find("div.filter")
                                 let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
                                 if (x.style.display = "block") {
                                     x.style.display = "none";
-                                  }
+                                }
                             }
                         }
+                        // bắt sự kiện user nhập thông tin từ bàn phím
+                        table.find('.filter input').keyup(function (e) {
+                            // tất cả input trong heading của table
+                            let inputs = table.find("th:not(:last-child) input");
+                            let rows = table.find('tbody tr');
+                            window.$(rows).show();
+                            window.$.each(inputs, function (index, input) {
+                                let value = input.value.toLowerCase();
+                                let iconFilter = window.$(input).parent().parent().children()[0]
+                                if (value.replace(/\s/g, "") !== "") { // value khác rỗng
+                                    iconFilter.style.color = "black"
+                                    rows.filter((a) => {
+                                        let keyData = window.$(window.$(rows[a]).find("td:eq(" + index + ")")).text();
+                                        let re = new RegExp(nonAccentVietnamese(value), "gi");
+                                        if (nonAccentVietnamese(keyData).search(re) == -1) {
+                                            window.$(rows[a]).hide();
+                                        }
+                                    });
+                                } else {
+                                    iconFilter.style.color = "rgb(226 222 222)"
+                                }
+
+                            });
+                        });
                     })
 
                     closeButton.click(() => {
                         for (let k = 0; k < tableHeadings.length; ++k) {
-                            if(j === k){
+                            if (j === k) {
                                 let thNotChoice = window.$(tableHeadings[k]);
                                 let listdiv = thNotChoice.find("div.filter")
-                                
+
                                 let x = window.$(listdiv[0]).find(".dropdown-menu-filter")[0];
                                 if (x.style.display == "none") {
                                     x.style.display = "block";
-                                  } else {
+                                } else {
                                     x.style.display = "none";
-                                  }
+                                }
                             }
                         }
                     })
 
-                    
-                    // bắt sự kiện user nhập thông tin từ bàn phím
-                    table.find('.filter input').keyup(function(e) {
-                        let inputs = window.$('.filter input');
-                        let rows = table.find('tbody tr');
-                        window.$(rows).show();
-
-                        window.$.each(inputs, function(index, input) {
-                            let value = input.value.toLowerCase();
-                            if (value.replace(/\s/g,"") !== "") { // value khác rỗng
-                                //console.log(input.value)
-                                //console.log(input)
-                                rows.filter((a) => {
-                                    let keyData = window.$(window.$(rows[a]).find("td:eq("+index+")")).text();
-                                    //console.log( window.$((window.$(rows[a]))[0]).find("td:eq("+index+")")[0].innerText)
-                                    console.log(keyData)
-                                    //console.log(keyData)
-                                    let re = new RegExp(nonAccentVietnamese(value), "gi");
-                                    if (nonAccentVietnamese(keyData).search(re) == -1) {
-                                        window.$(rows[a]).hide();
-                                    }
-                                });
-                            }
-                            
-                        });
-                    });
-                    // if (value.replace(/\s/g,"") !== "") { // check if input có giá trị
-                    //     window.$(window.$(input))[0].offsetParent.previousSibling.style.color = "black"
-                    // }
-                    // else {
-                    //     console.log(window.$(window.$(input)))
-                    //     //window.$(window.$(input))[0].offsetParent.previousSibling.style.color = "rgb(226, 222, 222)"
-                    // }
                     let divSort = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 4px', class: 'sort' });
                     let divFilter = window.$("<div>", { style: 'float: right; margin-top: 3px; margin-right: -10px', class: 'filter' });
                     filterDropdown.hide();
-                    divSort.append(up, down, requestReturn,filterIcon);
+                    divSort.append(up, down, requestReturn, filterIcon);
                     divFilter.append(filterIcon, filterDropdown)
                     th.prepend(divSort);
                     th.append(divFilter);
