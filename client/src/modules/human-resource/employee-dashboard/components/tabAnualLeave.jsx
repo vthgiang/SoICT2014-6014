@@ -8,18 +8,34 @@ import { TrendOfOvertime, AnnualLeaveTrendsChart, AnnualLeaveChartAndTable } fro
 
 const TabAnualLeave = (props) => {
 
-    const { childOrganizationalUnit, defaultUnit, organizationalUnits } = props
-    
+    const { childOrganizationalUnit, defaultUnit, organizationalUnits, idUnits } = props
+
     return (
         <React.Fragment>
             <LazyLoadComponent>
-                <AnnualLeaveTrendsChart defaultUnit={defaultUnit} childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số lượt nghỉ' nameData2='Số giờ nghỉ phép' nameChart={'Xu hướng nghỉ phép'} />
+                <AnnualLeaveTrendsChart
+                    defaultUnit={defaultUnit}
+                    childOrganizationalUnit={childOrganizationalUnit}
+                    idUnits={idUnits.map(x => x.id)}
+                    unitName={idUnits.map(x => x.name)}
+                    nameData1='Số lượt nghỉ'
+                    nameData2='Số giờ nghỉ phép'
+                    nameChart={'Xu hướng nghỉ phép'} />
             </LazyLoadComponent>
             <LazyLoadComponent>
-                <AnnualLeaveChartAndTable childOrganizationalUnit={childOrganizationalUnit} defaultUnit={defaultUnit} organizationalUnits={organizationalUnits}></AnnualLeaveChartAndTable>
+                <AnnualLeaveChartAndTable
+                    childOrganizationalUnit={childOrganizationalUnit}
+                    defaultUnit={defaultUnit}
+                    organizationalUnits={organizationalUnits}>
+                </AnnualLeaveChartAndTable>
             </LazyLoadComponent>
             <LazyLoadComponent>
-                <TrendOfOvertime defaultUnit={defaultUnit} childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
+                <TrendOfOvertime
+                    defaultUnit={defaultUnit}
+                    childOrganizationalUnit={childOrganizationalUnit}
+                    organizationalUnits={[childOrganizationalUnit[0].id]}
+                    nameData1='Số giờ tăng ca'
+                    nameChart={'Xu hướng tăng ca'} />
             </LazyLoadComponent>
         </React.Fragment>
     );

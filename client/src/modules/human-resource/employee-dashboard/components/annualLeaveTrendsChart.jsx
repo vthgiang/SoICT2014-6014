@@ -10,34 +10,37 @@ import { SelectMulti, DatePicker } from '../../../../common-components';
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
-import 'c3/c3.css';
+import 'c3/c3.css'
+import dayjs from 'dayjs';
+import cloneDeep from 'lodash/cloneDeep';
+
+/**
+* Function format dữ liệu Date thành string
+* @param {*} date : Ngày muốn format
+* @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+*/
+const formatDate = (date, monthYear = false) => {
+    if (date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+    return date;
+}
 
 const AnnualLeaveTrendsChart = (props) => {
-    const { department, annualLeave, translate, timesheets, childOrganizationalUnit } = props;
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    }
+    const { department, annualLeave, translate, timesheets, childOrganizationalUnit, idUnits, unitName } = props;
+    console.log('idUnits', idUnits);
 
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
@@ -48,32 +51,38 @@ const AnnualLeaveTrendsChart = (props) => {
         startDateShow: _startDate,
         endDate: formatDate(Date.now(), true),
         endDateShow: formatDate(Date.now(), true),
-        organizationalUnitsSearch: props.defaultUnit ? props.organizationalUnits : [],
-        organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
+        organizationalUnits: idUnits ? idUnits : [],
     })
-    const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = state;
+    const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow } = state;
 
     const barChart = useRef(null);
 
     useEffect(() => {
-        const { organizationalUnits, startDate, endDate } = state;
+        console.log(':V', props?.idUnits)
+        const { startDate, endDate } = state;
         let arrStart = startDate.split('-');
         let startDateNew = [arrStart[1], arrStart[0]].join('-');
 
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+        if (props?.idUnits?.length) {
+            props.getAnnualLeave({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew })
+            props.getTimesheets({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
+        }
 
-        props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew })
-        props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
-    }, []);
+    }, [JSON.stringify(props?.idUnits)]);
 
     useEffect(() => {
         if (annualLeave?.arrMonth?.length > 0) {
-            let ratioX = ['x', ...annualLeave.arrMonth];
+            let arrMonth = cloneDeep(annualLeave?.arrMonth);
+            arrMonth = arrMonth.reverse();
+
+            let ratioX = [];
             let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
             let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
             let data1 = ['data1'], data2 = ['data2'];
-            annualLeave.arrMonth.forEach(x => {
+            arrMonth.forEach(x => {
+                ratioX = [...ratioX, dayjs(x).format("MM-YYYY")]
                 let total = 0;
                 let date = new Date(x);
                 let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -86,15 +95,16 @@ const AnnualLeaveTrendsChart = (props) => {
                 data1 = [...data1, total]
                 let hoursOff = 0;
                 listHoursOffOfUnitsByStartDateAndEndDate.forEach(y => {
-                    if (new Date(y.month).getTime() === new Date(x).getTime()) {
-                        hoursOff = hoursOff + y.totalHoursOff ? y.totalHoursOff : 0
+                    if (dayjs(y.month).format("MM-YYYY") === dayjs(x).format("MM-YYYY")) {
+                        let totalHoursOff = y.totalHoursOff ? y.totalHoursOff : 0;
+                        hoursOff = hoursOff + totalHoursOff
                     };
                 })
                 data2 = [...data2, hoursOff]
             })
             renderChart({ nameData1, ratioX, data1, lineChart, nameData2, data2 });
         }
-    }, [JSON.stringify(annualLeave)])
+    }, [JSON.stringify(annualLeave), JSON.stringify(timesheets)])
 
     /**
      * Function bắt sự kiện thay đổi unit
@@ -196,30 +206,34 @@ const AnnualLeaveTrendsChart = (props) => {
         data.data1.shift();
         data.data2.shift();
         removePreviousChart();
+        const nameData1 = data.nameData1;
+        const nameData2 = data.nameData2;
+        const customAxes = {
+            [nameData1]: 'y',
+            [nameData2]: 'y2'
+
+        }
         let chart = c3.generate({
             bindto: barChart.current,
             data: {
-                x: 'x',
-                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2]],
+                columns: [[nameData1, ...data.data1], [nameData2, ...data.data2]],
                 type: data.lineChart === true ? '' : 'bar',
                 labels: data.lineChart === true ? false : true,
-                names: {
-                    data1: data.nameData1,
-                    data2: data.nameData2,
-                },
+                axes: customAxes,
             },
             axis: {
                 x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%m - %Y',
-                        outer: false,
-                        rotate: -45,
-                        multiline: false
-                    },
+                    type: 'category',
+                    categories: data.ratioX,
+
                 },
                 y: {
-                    tick: { outer: false },
+                    show: true,
+                    label: 'Số lượt nghỉ'
+                },
+                y2: {
+                    show: true,
+                    label: 'Số giờ nghỉ phép'
                 }
             },
         });
@@ -232,7 +246,6 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             startDateShow: startDate,
             endDateShow: endDate,
-            organizationalUnitsSearch: organizationalUnits,
         })
         let arrStart = startDate.split('-');
         let startDateNew = [arrStart[1], arrStart[0]].join('-');
@@ -246,12 +259,6 @@ const AnnualLeaveTrendsChart = (props) => {
         }
     }
 
-    let organizationalUnitsName = [];
-    if (organizationalUnitsSearch) {
-        organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
-        organizationalUnitsName = organizationalUnitsName.map(x => x.name);
-    }
-
     return (
         <React.Fragment>
             <div className="box box-solid">
@@ -259,15 +266,15 @@ const AnnualLeaveTrendsChart = (props) => {
                     <div className="box-title">
                         {`${nameChart} `}
                         {
-                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                            unitName && unitName.length < 2 ?
                                 <>
                                     <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    <span>{` ${unitName?.[0]}`}</span>
                                 </>
                                 :
-                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                <span onClick={() => showListInSwal(unitName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
                                     <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitName?.length}</a>
                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                 </span>
                         }
@@ -324,8 +331,8 @@ const AnnualLeaveTrendsChart = (props) => {
                         ? <div>{translate('general.loading')}</div>
                         : annualLeave?.arrMonth?.length > 0
                             ? <div className="dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p>
-                                <div className="box-tools pull-right">
+                                {/* <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p> */}
+                                <div className="box-tools pull-right" style={{ marginBottom: '10px' }}>
                                     <div className="btn-group pull-rigth">
                                         <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
                                         <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>

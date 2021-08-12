@@ -14,38 +14,44 @@ import { SalaryActions } from '../../salary/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import './employeeDashBoard.css';
 
+
+/**
+ * Function format dữ liệu Date thành string
+ * @param {*} date : Ngày muốn format
+ * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+ */
+const formatDate = (date, monthYear = false) => {
+    if (date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+    return date;
+};
+
+
+let INFO_SEARCH = {
+
+}
+
 const DashBoardEmployees = (props) => {
     const {
         translate, employeesManager, annualLeave, discipline, timesheets,
-        childOrganizationalUnit, getAllEmployeeOfUnitByIds,
-        getAllEmployee, searchAnnualLeaves,
+        childOrganizationalUnit,
+        getAllEmployee,
         getListPraise, getListDiscipline,
-        searchSalary, getTimesheets
+        searchSalary,
     } = props;
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    };
 
     const [state, setState] = useState({
         month: formatDate(Date.now(), true),
@@ -59,13 +65,11 @@ const DashBoardEmployees = (props) => {
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        getAllEmployeeOfUnitByIds(organizationalUnits && organizationalUnits.length !== 0 ? organizationalUnits : childOrganizationalUnit.map(x => x.id));
-
+        INFO_SEARCH = {
+            organizationalUnits,
+        }
         /* Lấy danh sách nhân viên  */
         getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-        /* Lấy thông tin nghi phép */
-        searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: newMonth });
 
         /* Lấy dánh sách khen thưởng, kỷ luật */
         getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
@@ -74,12 +78,6 @@ const DashBoardEmployees = (props) => {
         /* Lấy dữ liệu lương nhân viên*/
         searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
         searchSalary({ callApiDashboard: true, month: newMonth });
-
-        /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        getTimesheets({
-            organizationalUnits: organizationalUnits, month: newMonth, page: 0,
-            limit: 100000,
-        });
     }, []);
 
 
@@ -90,10 +88,13 @@ const DashBoardEmployees = (props) => {
      * @param {*} value : Array id đơn vị
      */
     const handleSelectOrganizationalUnit = (value) => {
-        setState(state => ({
-            ...state,
-            arrayUnitShow: value
-        }));
+        INFO_SEARCH = {
+            organizationalUnits: value
+        }
+        // setState(state => ({
+        //     ...state,
+        //     arrayUnitShow: value
+        // }));
     }
 
     /**
@@ -106,41 +107,32 @@ const DashBoardEmployees = (props) => {
 
     /** Bắt sự kiện phân tích dữ liệu */
     const handleUpdateData = () => {
-        const { childOrganizationalUnit } = props;
-        let { month, arrayUnitShow } = state;
+        const { organizationalUnits } = INFO_SEARCH;
+
+        let { month } = state;
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        if (arrayUnitShow?.length > 0) {
+        if (organizationalUnits?.length > 0) {
             setState(state => ({
                 ...state,
-                organizationalUnits: arrayUnitShow,
-                monthShow: month
+                organizationalUnits: organizationalUnits,
+                monthShow: month,
+                arrayUnitShow: organizationalUnits
             }));
 
-            const { getAllEmployeeOfUnitByIds, getAllEmployee, searchAnnualLeaves, getListPraise, getListDiscipline, searchSalary, getTimesheets } = props;
-
-            getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
+            const { getAllEmployee, getListPraise, getListDiscipline, searchSalary } = props;
 
             /* Lấy danh sách nhân viên  */
-            getAllEmployee({ organizationalUnits: arrayUnitShow, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-            /* Lấy thông tin nghi phép */
-            searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
+            getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
             /* Lấy dánh sách khen thưởng, kỷ luật */
-            getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
-            getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
+            getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
+            getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
 
             /* Lấy dữ liệu lương nhân viên*/
-            searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
+            searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
             searchSalary({ callApiDashboard: true, month: newMonth });
-
-            /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-            getTimesheets({
-                organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
-                limit: 100000,
-            });
         }
     }
 
@@ -257,7 +249,10 @@ const DashBoardEmployees = (props) => {
                         {/* Tab nghỉ phép tăng ca*/}
                         <div className="tab-pane" id="annualLeave">
                             <LazyLoadComponent>
-                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} />
+                                <TabAnualLeave
+                                    childOrganizationalUnit={childOrganizationalUnit}
+                                    idUnits={props?.childOrganizationalUnit?.length && props.childOrganizationalUnit.filter(item => arrayUnitShow.includes(item?.id))}
+                                    defaultUnit={true} />
                             </LazyLoadComponent>
                         </div>
 
@@ -284,12 +279,9 @@ function mapState(state) {
 
 const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
-    searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     getListPraise: DisciplineActions.getListPraise,
     getListDiscipline: DisciplineActions.getListDiscipline,
     searchSalary: SalaryActions.searchSalary,
-    getTimesheets: TimesheetsActions.searchTimesheets,
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 };
 const DashBoard = connect(mapState, actionCreators)(withTranslate(DashBoardEmployees));
 export { DashBoard as DashBoardEmployees };
