@@ -1570,6 +1570,8 @@ export default {
                 employee_code_duplicated: "Mã số nhân viên bị trùng lặp",
                 employee_name_required: "Tên nhân viên không được để trống",
                 employee_number_required: "Mã nhân viên không được để trống",
+                staff_non_unit: "Nhân viên không thuộc đơn vị",
+                organizationalUnit_not_found: "Đơn vị không tồn tại",
                 staff_code_not_special:
                     "Mã nhân viên không được chứ ký tự đặc biệt",
                 staff_code_not_find: "Mã nhân viên không tồn tại",

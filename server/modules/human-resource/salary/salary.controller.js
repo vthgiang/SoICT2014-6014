@@ -146,6 +146,7 @@ exports.importSalaries = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('error',)
         await Log.error(req.user.email, 'IMPORT_SARALY', req.portal);
         res.status(400).json({
             success: false,
