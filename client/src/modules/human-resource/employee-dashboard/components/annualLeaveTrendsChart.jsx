@@ -40,7 +40,6 @@ const formatDate = (date, monthYear = false) => {
 
 const AnnualLeaveTrendsChart = (props) => {
     const { department, annualLeave, translate, timesheets, childOrganizationalUnit, idUnits, unitName } = props;
-    console.log('idUnits', idUnits);
 
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
@@ -104,7 +103,7 @@ const AnnualLeaveTrendsChart = (props) => {
             })
             renderChart({ nameData1, ratioX, data1, lineChart, nameData2, data2 });
         }
-    }, [JSON.stringify(annualLeave), JSON.stringify(timesheets)])
+    }, [JSON.stringify(props?.annualLeave?.listAnnualLeaveOfNumberMonth), JSON.stringify(props?.timesheets?.listHoursOffOfUnitsByStartDateAndEndDate), JSON.stringify(props?.annualLeave?.arrMonth)])
 
     /**
      * Function bắt sự kiện thay đổi unit

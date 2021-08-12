@@ -33,6 +33,8 @@ const TabAnualLeave = (props) => {
                 <TrendOfOvertime
                     defaultUnit={defaultUnit}
                     childOrganizationalUnit={childOrganizationalUnit}
+                    idUnits={idUnits.map(x => x.id)}
+                    unitName={idUnits.map(x => x.name)}
                     organizationalUnits={[childOrganizationalUnit[0].id]}
                     nameData1='Số giờ tăng ca'
                     nameChart={'Xu hướng tăng ca'} />
