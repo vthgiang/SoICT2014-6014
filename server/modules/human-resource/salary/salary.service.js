@@ -233,64 +233,8 @@ exports.importSalaries = async (portal, data, company) => {
     let users = [], rowError = [], result = [];
 
     if (organizationalUnitId?.length) {
-        // Lấy danh sách nhân viên của các đơn vị
-        let roles = [];
-        let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ '_id': { $in: organizationalUnitId.map(item => mongoose.Types.ObjectId(item)) } });
-        for (let i = 0; i < units.length; i++) {
-            roles = [
-                ...roles,
-                ...units[i].employees,
-                ...units[i].managers,
-                ...units[i].deputyManagers
-            ]
-        }
-        users = await UserRole(connect(DB_CONNECTION, portal)).aggregate([
-            {
-                $match: {'roleId': { $in: roles }}
-            },
-            {
-                $group: {
-                    '_id': '$userId',
-                    'user': { $push: "$$ROOT" }
-                }
-            },
-            {
-                $lookup: {
-                    "from": "organizationalunits",
-                    "let": { "roleId": "$user.roleId" },
-                    "pipeline": [
-                        {
-                            $match: {
-                                $expr: {
-                                    $or: [
-                                        { $eq: ["$managers", "$$roleId"] },
-                                        { $eq: ["$deputyManagers", "$$roleId"] },
-                                        { $eq: ["$employees", "$$roleId"] }
-                                    ]
-                                }
-                            }
-                        },
-                    ],
-                    "as": "organizationalUnit"
-                }
-            }
-        ])
-        users = users.map(item => {
-            if (item?.user?.[0]) {
-                item.user[0].idUnit = item?.organizationalUnit?.[0]?._id
-                return item.user[0]
-            }
-        });
-        await User(connect(DB_CONNECTION, portal)).populate(users, { path: "userId", select: "email" });
-       
-        // gom nhóm các nhân viên theo đơn vị
-        users = users.reduce((groups, item) => {
-                groups[item.idUnit] = [...groups[item.idUnit] || [], item?.userId?.email];
-                return groups;
-        }, {});
-
         for (let k = 0; k < organizationalUnitId?.length; k++){
-            // láy danh sách các bảng lương từng đơn vị theo tháng
+            // ----láy danh sách các bảng lương từng đơn vị theo tháng
             let salaryExisted = await Salary(connect(DB_CONNECTION, portal)).find({
                 month: data[0].month,
                 organizationalUnit: organizationalUnitId[k],
@@ -298,19 +242,78 @@ exports.importSalaries = async (portal, data, company) => {
             if (salaryExisted)
                 listSalary[organizationalUnitId[k]] = salaryExisted;
             
-            // Dựa vào email user đã lấy dc ở bước trên láy thông tin nhân sự của từng người vì user email liên kết với email employees
+            // ----Lấy danh sách nhân viên của các đơn vị
+            
+            let roles = [];
+            let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ '_id': organizationalUnitId[k] });
+            for (let i = 0; i < units.length; i++) {
+                roles = [
+                    ...roles,
+                    ...units[i].employees,
+                    ...units[i].managers,
+                    ...units[i].deputyManagers
+                ]
+            }
+
+            // laays danh sach user thuoc don vi
+            users = await UserRole(connect(DB_CONNECTION, portal)).aggregate([
+                {
+                    
+                    $match: {'roleId': { $in: roles }}
+                },
+                {
+                    $group: {
+                        '_id': '$userId',
+                        'user': { $push: "$$ROOT" }
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": "organizationalunits",
+                        "let": { "roleId": "$user.roleId" },
+                        "pipeline": [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $or: [
+                                            { $eq: ["$managers", "$$roleId"] },
+                                            { $eq: ["$deputyManagers", "$$roleId"] },
+                                            { $eq: ["$employees", "$$roleId"] }
+                                        ]
+                                    }
+                                }
+                            },
+                        ],
+                        "as": "organizationalUnit"
+                    }
+                }
+            ])
+
+            users = users.map(item => {
+                if (item?.user?.[0]) {
+                    item.user[0].idUnit = item?.organizationalUnit?.[0]?._id
+                    return item.user[0]
+                }
+            });
+            await User(connect(DB_CONNECTION, portal)).populate(users, { path: "userId", select: "email" });
+       
+            let listMail = [];
+            users?.length && users.forEach(x => listMail = [...listMail, x?.userId?.email]);
+
+            // timf danh sach nhan vien thong qua danh sach email
             let listEmployeeInUnit = await Employee(connect(DB_CONNECTION, portal)).find({
                 emailInCompany: {
-                    $in: users[organizationalUnitId[k]]
+                    $in: listMail
                 }
             }, {
                 employeeNumber: 1,
                 _id: 1
             });
-            
+
             listEmployeeUnits[organizationalUnitId[k]] = listEmployeeInUnit
         }
 
+        // xu lý validate du lieu
         data.forEach((x, index) => {
             let row = {...x};
             if (x?.organizationalUnit) {
