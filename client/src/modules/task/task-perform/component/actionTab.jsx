@@ -1357,7 +1357,7 @@ function ActionTab(props) {
                                                                                             <span> Điểm đánh giá:<span className="text-red"> {element?.rating}/10</span> - Độ quan trọng:<span className="text-red"> {element?.actionImportanceLevel}/10</span></span>
                                                                                             &ensp;
                                                                                             {role === "accountable" &&
-                                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => handleDeleteActionEvaluation(item._id, task._id, element._id)}><i className="material-icons">delete</i></a>
+                                                                                                <a style={{ cursor: "pointer", fontWeight: '600' }} onClick={() => handleDeleteActionEvaluation(item._id, task._id, element._id)}><i className="material-icons text-red" style={{ display: "inline-flex", verticalAlign: "top" }}>delete</i></a>
                                                                                             }
                                                                                         </div >
                                                                                     )
