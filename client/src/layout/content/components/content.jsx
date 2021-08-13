@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { Loading } from '../../../common-components';
 import moment from 'moment'
+import { filter } from 'lodash';
 
 class Content extends Component {
     constructor(props) {
@@ -258,13 +259,15 @@ class Content extends Component {
 
                     //icon filter
                     let filterIcon = window.$("<button>", { style: 'width: 100%; float: right; cursor: pointer; color: rgb(226 222 222); border: none; background: none', class: 'fa fa-filter', target: 'dropdown-menu-filter' });
-                    let filterDropdown = window.$("<div>", { style: 'display: none; cursor: auto; z-index: 1000; position: absolute;width: 200px;margin-top: 25px;text-align: left;border-radius: 5px;margin: 26px 0px 0px 19px;padding: 10px;background-color: rgb(232, 240, 244);box-sizing: border-box;border-top: 2px solid rgb(54, 156, 199);box-shadow: 4px 4px 15px rgba(50, 50, 50); overflow:hidden', class: 'collapse dropdown-menu-filter' });
+                    let filterDropdown = window.$("<div>", { style: 'display: none; cursor: auto; z-index: 1000; position: absolute;width: 200px;margin-top: 25px;text-align: left;border-radius: 5px;margin: 26px 0px 0px 19px;padding: 10px;background-color: rgb(232, 240, 244);box-sizing: border-box;border-top: 2px solid rgb(54, 156, 199);box-shadow: 4px 4px 15px rgba(50, 50, 50); ', class: 'collapse dropdown-menu-filter' });
                     let closeButton = window.$("<button>", { style: 'float: right; font-size: 11px;top: 7px;right: 8px;line-height: 15px;background-color: rgb(60 141 188);color: rgb(232, 240, 244);border-radius: 50%;width: 14px;height: 14px;font-weight: bold;text-align: center;margin: 0;padding: 0;border: 0', class: 'fa fa-times', target: 'dropdown-menu-filter' });
-                    //let clearButton = window.$("<button>", { style: 'float: right; font-size: 11px; width: 24px;height: 24px;font-weight: bold;background-color: blue;text-align: center;margin: 0;padding: 0;border: 0', target: 'dropdown-menu-filter'});
+                    let clearButton = window.$("<button>", { style: 'float: right; font-size: 11px;height: 24px;font-weight: bold;color: rgb(60 141 188);background-color: transparent;margin: 0;border: 0', target: 'dropdown-menu-filter', text: "Clear" });
+
                     let filterInput = window.$("<input>", { style: 'width: 100%; display: block', class: 'form-control' })
                     let filterTitle = window.$("<h6>", { style: 'margin: 0px 0px 15px;padding: 0px;font-weight: bold;color: #3c8dbc; text-align: center', text: 'kkk' })
                     let filterLabel = window.$("<label>", { style: 'margin: 0; color: #3c8dbc', text: 'Filter' })
-                    filterDropdown.append(closeButton, filterTitle, filterLabel, filterInput)
+
+                    filterDropdown.append(closeButton, filterTitle, filterLabel, filterInput, clearButton)
 
 
                     for (let k = 0; k < tableHeadings.length; ++k) {
@@ -288,48 +291,53 @@ class Content extends Component {
                         sort("return")
                     })
 
+                    let filterFunc = () => {
+                        // tất cả input trong heading của table
+                        let inputs = table.find("th:not(:last-child) input");
+                        let rows = table.find('tbody tr');
+                        window.$(rows).show();
+                        window.$.each(inputs, function (index, input) {
+                            let value = input.value.toLowerCase();
+                            let iconFilter = window.$(input).parent().parent().children()[0]
+                            if (value.replace(/\s/g, "") !== "") { // value khác rỗng
+                                iconFilter.style.color = "black"
+                                rows.filter((a) => {
+                                    let keyData = window.$(window.$(rows[a]).find("td:eq(" + index + ")")).text();
+                                    let re = new RegExp(nonAccentVietnamese(value), "gi");
+                                    if (nonAccentVietnamese(keyData).search(re) == -1) {
+                                        window.$(rows[a]).hide();
+                                    }
+                                });
+                            } else {
+                                iconFilter.style.color = "rgb(226 222 222)"
+                            }
+
+                        });
+                    }
+                    let filterOnKeyUp = () => {
+                        table.find('.filter input').keyup(function (e) {
+                            filterFunc()
+                        });
+                    }
                     filterIcon.click(() => {
+                        console.log('filterDropdown :>> ', filterDropdown);
+                        console.log('window.innerWidth :>> ', window.innerWidth);
+                        console.log('filterDropdown :>> ', filterDropdown[0]);
+
                         for (let k = 0; k < tableHeadings.length; ++k) {
                             if (k === j) {
                                 let thChoiced = window.$(tableHeadings[k]);
                                 let filterDiv = thChoiced.find("div.filter")
-                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
-                                if (x.style.display = "none") {
-                                    x.style.display = "block";
-                                }
-                            } else {
-                                let thNotChoice = window.$(tableHeadings[k]);
-                                let filterDiv = thNotChoice.find("div.filter")
-                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
-                                if (x.style.display = "block") {
-                                    x.style.display = "none";
+                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter");
+                                if (x[0].style.display == "none") {
+                                    x.toggle("show")
+                                    x.find("input").focus()
+                                    x[0].style.display = "block"
                                 }
                             }
                         }
+                        filterOnKeyUp()
                         // bắt sự kiện user nhập thông tin từ bàn phím
-                        table.find('.filter input').keyup(function (e) {
-                            // tất cả input trong heading của table
-                            let inputs = table.find("th:not(:last-child) input");
-                            let rows = table.find('tbody tr');
-                            window.$(rows).show();
-                            window.$.each(inputs, function (index, input) {
-                                let value = input.value.toLowerCase();
-                                let iconFilter = window.$(input).parent().parent().children()[0]
-                                if (value.replace(/\s/g, "") !== "") { // value khác rỗng
-                                    iconFilter.style.color = "black"
-                                    rows.filter((a) => {
-                                        let keyData = window.$(window.$(rows[a]).find("td:eq(" + index + ")")).text();
-                                        let re = new RegExp(nonAccentVietnamese(value), "gi");
-                                        if (nonAccentVietnamese(keyData).search(re) == -1) {
-                                            window.$(rows[a]).hide();
-                                        }
-                                    });
-                                } else {
-                                    iconFilter.style.color = "rgb(226 222 222)"
-                                }
-
-                            });
-                        });
                     })
 
                     closeButton.click(() => {
@@ -338,16 +346,24 @@ class Content extends Component {
                                 let thNotChoice = window.$(tableHeadings[k]);
                                 let listdiv = thNotChoice.find("div.filter")
 
-                                let x = window.$(listdiv[0]).find(".dropdown-menu-filter")[0];
-                                if (x.style.display == "none") {
-                                    x.style.display = "block";
-                                } else {
-                                    x.style.display = "none";
-                                }
+                                let x = window.$(listdiv[0]).find(".dropdown-menu-filter");
+                                x.toggle("hide")
                             }
                         }
                     })
-
+                    clearButton.click(() => {
+                        for (let k = 0; k < tableHeadings.length; ++k) {
+                            if (j === k) {
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.filter")
+                                let input = thNotChoice.find("div.filter input")
+                                let x = window.$(listdiv[0]).find(".dropdown-menu-filter");
+                                input[0].value = ""
+                                x.find("input").focus()
+                            }
+                        }
+                        filterFunc()
+                    })
                     let divSort = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 4px', class: 'sort' });
                     let divFilter = window.$("<div>", { style: 'float: right; margin-top: 3px; margin-right: -10px', class: 'filter' });
                     filterDropdown.hide();
