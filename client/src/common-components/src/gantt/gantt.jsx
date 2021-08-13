@@ -95,13 +95,11 @@ function Gantt(props) {
             console.log('when showscroll == true', outer[0]);
         } else {
             let outer = window.$(`#gantt-${ganttId}`);
-            let lenghHeight = outer.css("height")
-
             //console.log('when showscroll == true', outer[0],lenghHeight);
-            outer.css({ "max-height": `${window.innerHeight}px` });
+            outer.css({ "max-height": `${1000000}px` });
 
         }
-    }, [dimensions, showscroll])
+    }, [showscroll])
     // console.log(window.innerHeight);
     useEffect(() => {
         //   console.log('showscroll', showscroll);
@@ -210,7 +208,8 @@ function Gantt(props) {
     let heightCalc = parseFloat(line) ? (parseFloat(line) * 35 + 80) : 80;
     return (
         <React.Fragment>
-            <button type="button" onClick={handleShowScroll}>Bật/Tắt scroll</button>
+            <button type="button"  onClick={handleShowScroll}>Bật/Tắt scroll</button>
+            
             <ToolbarGantt
                 zoom={zoom}
                 onZoomChange={onZoomChange}

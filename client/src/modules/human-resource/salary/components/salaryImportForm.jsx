@@ -24,11 +24,11 @@ const SalaryImportForm = (props) => {
         limit: 100,
         page: 0
     });
-    
-    useEffect(() => {
-        const { salary } = props;
-        salary.importStatus && window.$(`#modal_import_file`).modal("hide");
-    })
+
+    // useEffect(() => {
+    //     const { salary } = props;
+    //     salary.importStatus && window.$(`#modal_import_file`).modal("hide");
+    // })
 
     /**
      * Function format dữ liệu Date thành string
@@ -126,7 +126,7 @@ const SalaryImportForm = (props) => {
         }
     }
 
-    const { importSalary, downloadFile} = props;
+    const { importSalary, downloadFile } = props;
 
     /** Function kiểm tra lỗi trước khi submit form*/
     const isFormValidated = () => {
@@ -144,7 +144,7 @@ const SalaryImportForm = (props) => {
 
     /** Function import dữ liệu */
     const save = () => {
-        let { importData, month, configData, organizationalUnit } = state;
+        let { importData, month, configData } = state;
 
         let bonusName = configData.bonus.value;
         importData = importData.map(x => {
@@ -154,8 +154,9 @@ const SalaryImportForm = (props) => {
                     bonus = [...bonus, { nameBonus: bonusName[index], number: y }]
                 }
             })
-            return { ...x, month: month, organizationalUnit: organizationalUnit, bonus: bonus }
+            return { ...x, month: month, organizationalUnit: x?.organizationalUnitId, bonus: bonus }
         });
+        console.log('importData', importData)
         importSalary(importData);
         setState(state => ({
             ...state,
@@ -175,13 +176,32 @@ const SalaryImportForm = (props) => {
         }));
     }
 
+    const checkUserOfUnits = (unitName) => {
+        if (unitName && department?.list?.length) {
+            const unitLength = department.list.length;
+            let unitId;
+            for (let i = 0; i < unitLength; i++) {
+                if (typeof unitName === 'string' && unitName?.trim().toLowerCase() === department.list[i]?.name?.trim()?.toLowerCase()) {
+                    unitId = department.list[i]._id;
+                    break;
+                }
+            }
+            if (unitId) {
+                return unitId;
+            } else
+                return unitName;
+        } else {
+            return unitName
+        }
+    }
+
+
     /**
      * Function thay đổi file import
      * @param {*} value : Dữ liệu file import
      * @param {*} checkFileImport : true - file import đúng định dạng, false - file import sai định dạng
      */
     const handleImportExcel = (value, checkFileImport) => {
-        console.log(value);
         const { translate } = props;
         if (checkFileImport) {
             let rowError = [];
@@ -189,7 +209,8 @@ const SalaryImportForm = (props) => {
             let checkImportData = value;
             value = value.map((x, index) => {
                 let errorAlert = [];
-                if (x.employeeNumber === null || x.employeeName === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1) {
+                const organizationalUnitId = x?.orgUnit ? checkUserOfUnits(x.orgUnit) : x?.orgUnit;
+                if (x.employeeNumber === null || x.employeeName === null || x.orgUnit === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1) {
                     rowError = [...rowError, index + 1]
                     x = { ...x, error: true }
                 }
@@ -202,7 +223,10 @@ const SalaryImportForm = (props) => {
                 if (x.employeeName === null)
                     errorAlert = [...errorAlert, translate('human_resource.salary.employee_name_required')];
 
-                x = { ...x, errorAlert: errorAlert }
+                if (x.orgUnit === null)
+                    errorAlert = [...errorAlert, "Đơn vị không được để trống"];
+
+                x = { ...x, organizationalUnitId, errorAlert: errorAlert }
                 return x;
             });
             setState(state => ({
@@ -219,41 +243,24 @@ const SalaryImportForm = (props) => {
         }
     }
 
-    /**
-     * Function tải file import mẫu
-     * @param {*} e 
-     * @param {*} path : Đường dẫn file
-     * @param {*} fileName : Tên file muốn tải về
-     */
-    const requestDownloadFile = (e, path, fileName) => {
-        e.preventDefault()
-        downloadFile(path, fileName)
-    }
-
-    
-
     let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport, organizationalUnit } = state;
     if (salary.error.rowError && changeMonth === false) {
         rowError = salary.error.rowError;
-        importData = salary.error.data
+        importData = salary.error.data;
         importData = importData.map(x => {
-            let bonusName = configData.bonus.value;
-            let bonus = bonusName.map(b => null);
-            bonusName.forEach((y, key) => {
-                if (x.nameBonus === y) {
-                    bonus[key] = x.number;
-                }
+            let bonus = [];
+            x?.bonus && x.bonus.forEach(k => {
+                bonus = [...bonus, k.number]
             })
             if (x.errorAlert && x.errorAlert.length !== 0) {
                 let errorAlert = x.errorAlert.map(err => translate(`human_resource.salary.${err}`));
-                return { ...x, bonus: bonus, errorAlert: errorAlert }
+                return { ...x, bonus, errorAlert: errorAlert }
             }
-            return { ...x, bonus: bonus }
+            return { ...x, bonus }
         })
     }
 
-    let exportData = configurationSalary.templateImport(translate);
-
+    let exportData = configurationSalary.templateImport(translate, department?.list);
     return (
         <React.Fragment>
             <DialogModal
@@ -276,7 +283,7 @@ const SalaryImportForm = (props) => {
                     />
                     <div className="row">
                         {/* Đơn vị */}
-                        <div className="form-group col-md-4 col-sm-12 col-xs-12">
+                        {/* <div className="form-group col-md-4 col-sm-12 col-xs-12">
                             <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`import-salary-unit`}
@@ -286,7 +293,7 @@ const SalaryImportForm = (props) => {
                                 items={department.list.map(y => { return { value: y._id, text: y.name } })}
                                 onChange={handleOrganizationalUnitChange}
                             />
-                        </div>
+                        </div> */}
                         {/* Tháng */}
                         <div className="form-group col-md-4 col-sm-12 col-xs-12">
                             <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
@@ -327,10 +334,10 @@ const SalaryImportForm = (props) => {
                             configData={configData}
                             importData={importData}
                             rowError={rowError}
-                            scrollTableWidth={1000}
                             checkFileImport={checkFileImport}
                             limit={limit}
                             page={page}
+                            scrollTableWidth={2500}
                         />
                     </div>
                     {/* </div> */}

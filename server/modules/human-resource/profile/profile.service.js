@@ -818,6 +818,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         foreignLanguage: data.foreignLanguage,
         educationalLevel: data.educationalLevel,
         experiences: data.experiences,
+        workProcess: data.workProcess,
         certificates: certificates,
         degrees: degrees,
         // major: major,
@@ -936,6 +937,9 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         createExperiences,
         deleteExperiences,
         editExperiences,
+        createWorkProcess,
+        editWorkProcess,
+        deleteWorkProcess,
         createDegrees,
         editDegrees,
         deleteDegrees,
@@ -1049,6 +1053,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         return arrObject;
     }
     oldEmployee.experiences = deleteEditCreateObjectInArrayObject(oldEmployee.experiences, deleteExperiences, editExperiences, createExperiences);
+    oldEmployee.workProcess = deleteEditCreateObjectInArrayObject(oldEmployee.workProcess, deleteWorkProcess, editWorkProcess, createWorkProcess);
     oldEmployee.socialInsuranceDetails = deleteEditCreateObjectInArrayObject(oldEmployee.socialInsuranceDetails, deleteSocialInsuranceDetails, editSocialInsuranceDetails, createSocialInsuranceDetails);
 
     // oldEmployee.career = deleteEditCreateObjectInArrayObject(oldEmployee.career, deleteCareer, editCareer, createCareer, fileCareer);

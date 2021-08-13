@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 
-import { ModalAddExperience, ModalEditExperience } from './combinedContent';
+import { ModalAddExperience, ModalEditExperience, ModalAddWorkProcess, ModalEditWorkProcess } from './combinedContent';
 
 function ExperienceTab(props) {
     const [state, setState] = useState({
@@ -15,20 +15,21 @@ function ExperienceTab(props) {
 
     const { id } = props;
 
-    const { educationalLevel, foreignLanguage, professionalSkill, experiences, currentRow } = state;
+    const { educationalLevel, foreignLanguage, professionalSkill, experiences, workProcess, currentRowEditWorkProcess, currentRow } = state;
 
     useEffect(() => {
         setState(state => {
             return {
                 ...state,
                 id: props.id,
+                workProcess: props?.employee?.workProcess ? props.employee.workProcess : [],
                 experiences: props.employee?.experiences ? props.employee.experiences : [],
                 professionalSkill: props.employee?.professionalSkill ? props.employee.professionalSkill : "",
                 foreignLanguage: props.employee?.foreignLanguage ? props.employee.foreignLanguage : "",
                 educationalLevel: props.employee?.educationalLevel ? props.employee.educationalLevel : "",
             }
         })
-    }, [props.id, props.employee?.experiences])
+    }, [props.id, props.employee?.experiences, props?.employee?.workProcess])
 
     /**
      * Function format dữ liệu Date thành string
@@ -176,6 +177,80 @@ function ExperienceTab(props) {
         props.handleDeleteExperience([...experiences], data);
     }
 
+
+
+    const handleAddWorkProcess = (data) => {
+        const { translate } = props;
+        let { workProcess } = state;
+
+        let checkData = checkForDuplicate(data, workProcess);
+        if (checkData) {
+            setState({
+                ...state,
+                workProcess: [...workProcess, {
+                    ...data
+                }]
+            })
+            props.handleAddWorkProcess([...workProcess, data], data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={[translate('human_resource.profile.time_experience_duplicate')]}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
+    }
+
+    const _deleteWorkProcess = (index) => {
+        let { workProcess } = state;
+
+        let data = workProcess[index];
+        workProcess.splice(index, 1);
+        setState({
+            ...state,
+            workProcess: [...workProcess]
+        })
+        props.handleDeleteWorkProcess([...workProcess], data);
+    }
+
+    const handleEditWorkProcess = async (value, index) => {
+        await setState(state => {
+            return {
+                ...state,
+                currentRowEditWorkProcess: { ...value, index: index }
+            }
+        });
+        window.$(`#modal-edit-work-process-${index}`).modal('show');
+    }
+
+
+    const handleChangleEditWorkProcess = async (data) => {
+        const { translate } = props;
+        let { workProcess } = state;
+
+        let workProcessNew = [...workProcess];
+        let checkData = checkForDuplicate(data, workProcessNew.filter((x, index) => index !== data.index));
+        if (checkData) {
+            workProcess[data.index] = data;
+            await setState({
+                ...state,
+                workProcess: workProcess
+            });
+            props.handleEditWorkProcess(workProcess, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={[translate('human_resource.profile.time_experience_duplicate')]}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
+    }
     return (
         <div id={id} className="tab-pane">
             <div className="box-body">
@@ -219,6 +294,44 @@ function ExperienceTab(props) {
                         </select>
                     </div>
                 </fieldset>
+                {/* Quá trình công tác */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.Working_process')}</h4></legend>
+                    <ModalAddWorkProcess handleChange={handleAddWorkProcess} id={`addWorkProcess${id}`} />
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
+                        <thead>
+                            <tr>
+                                <th>{translate('human_resource.profile.from_month_year')}</th>
+                                <th>{translate('human_resource.profile.to_month_year')}</th>
+                                <th>{translate('human_resource.profile.unit')}</th>
+                                <th>{translate('table.position')}</th>
+                                <th>{translate('human_resource.profile.reference_information')}</th>
+                                <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {workProcess && workProcess.length !== 0 &&
+                                workProcess.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{formatDate(x.startDate, true)}</td>
+                                        <td>{formatDate(x.endDate, true)}</td>
+                                        <td>{x?.company}</td>
+                                        <td>{x?.position}</td>
+                                        <td>{x?.referenceInformation}</td>
+                                        <td>
+                                            <a onClick={() => handleEditWorkProcess(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_working_process')}><i className="material-icons">edit</i></a>
+                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => _deleteWorkProcess(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                    {
+                        (!workProcess || workProcess.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+
+                </fieldset>
+
                 {/* Kinh nghiệm làm việc */}
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.work_experience')}</h4></legend>
@@ -229,7 +342,10 @@ function ExperienceTab(props) {
                                 <th>{translate('human_resource.profile.from_month_year')}</th>
                                 <th>{translate('human_resource.profile.to_month_year')}</th>
                                 <th>{translate('human_resource.profile.unit')}</th>
-                                <th>{translate('table.position')}</th>
+                                <th>{translate('human_resource.profile.project')}</th>
+                                <th>{translate('human_resource.profile.position_in_task')}</th>
+                                <th>{translate('human_resource.profile.customer')}</th>
+                                <th>{translate('human_resource.profile.address')}</th>
                                 <th>{translate('human_resource.profile.job_description')}</th>
                                 <th style={{ width: '120px' }}>{translate('general.action')}</th>
                             </tr>
@@ -241,7 +357,10 @@ function ExperienceTab(props) {
                                         <td>{formatDate(x.startDate, true)}</td>
                                         <td>{formatDate(x.endDate, true)}</td>
                                         <td>{x?.company}</td>
+                                        <td>{x?.project}</td>
                                         <td>{x?.position}</td>
+                                        <td>{x?.customer}</td>
+                                        <td>{x?.address}</td>
                                         <td>{x?.jobDescription}</td>
                                         <td>
                                             <a onClick={() => handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_experience')}><i className="material-icons">edit</i></a>
@@ -267,8 +386,27 @@ function ExperienceTab(props) {
                     startDate={formatDate(currentRow.startDate, true)}
                     endDate={formatDate(currentRow.endDate, true)}
                     position={currentRow.position}
+                    project={currentRow.project}
+                    customer={currentRow.customer}
+                    address={currentRow.address}
                     jobDescription={currentRow.jobDescription}
                     handleChange={handleEditExperience}
+                />
+            }
+
+            {
+                // Form chỉnh sửa quá trình công tác
+                currentRowEditWorkProcess &&
+                <ModalEditWorkProcess
+                    id={`${currentRowEditWorkProcess.index}`}
+                    _id={currentRowEditWorkProcess._id}
+                    index={currentRowEditWorkProcess.index}
+                    company={currentRowEditWorkProcess.company}
+                    startDate={formatDate(currentRowEditWorkProcess.startDate, true)}
+                    endDate={formatDate(currentRowEditWorkProcess.endDate, true)}
+                    position={currentRowEditWorkProcess.position}
+                    referenceInformation={currentRowEditWorkProcess.referenceInformation}
+                    handleChange={handleChangleEditWorkProcess}
                 />
             }
         </div>

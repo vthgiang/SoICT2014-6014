@@ -1,7 +1,8 @@
 const {
     EducationProgram,
     Course,
-    UserRole
+    User,
+    Employee
 } = require(`../../../models`);
 
 const {
@@ -47,6 +48,13 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions, 
         select: {
             name: 1,
             programId: 1
+        }
+    }).populate({
+        path: 'registeredEmployees.employee',
+        select: {
+            '_id': 1,
+            'fullName': 1,
+            'employeeNumber': 1
         }
     }).lean();
 
@@ -325,11 +333,25 @@ exports.updateCourse = async (portal, id, data) => {
     }
 
     if (data.subscriber) {
-        const isRegistered = data.registeredEmployees.find(i => i.employee.toString() == data.subscriber.employee.toString())
+        const isRegistered = data.registeredEmployees.find(i => i.user.toString() == data.subscriber.user.toString())
         if (!isRegistered) {
+            let tmpUser = await User(connect(DB_CONNECTION, portal))
+            .findOne({
+                _id: mongoose.Types.ObjectId(data.subscriber.user)
+            },
+            { email: 1 } 
+            );
+
+            let id = await Employee(connect(DB_CONNECTION, portal))
+            .findOne({
+                emailInCompany: tmpUser.email
+            }, {
+                _id: 1
+            })
             data.registeredEmployees.push({
-              employee: mongoose.Types.ObjectId(data.subscriber.employee),
-              registerType: data.subscriber.registerType
+                employee: id._id,
+                user: data.subscriber.user,
+                registerType: data.subscriber.registerType
             });
 
             courseChange = {

@@ -90,6 +90,7 @@ function EmployeeCreatePage(props) {
             roles: [],
             phoneNumber: "",
             experiences: [],
+            workProcess: [],
             socialInsuranceDetails: [],
             degrees: [],
             certificates: [],
@@ -211,7 +212,19 @@ function EmployeeCreatePage(props) {
                 }
             }
         })
-        // console.log("exp", employee);
+    }
+
+    const handleChangeWorkProcess = (data, addData) => {
+        const { employee } = state;
+        setState(state => {
+            return {
+                ...state,
+                employee: {
+                    ...employee,
+                    workProcess: [...data]
+                }
+            }
+        })
     }
 
     /**
@@ -643,6 +656,10 @@ function EmployeeCreatePage(props) {
                         handleAddExperience={handleChangeExperience}
                         handleEditExperience={handleChangeExperience}
                         handleDeleteExperience={handleChangeExperience}
+
+                        handleAddWorkProcess={handleChangeWorkProcess}
+                        handleEditWorkProcess={handleChangeWorkProcess}
+                        handleDeleteWorkProcess={handleChangeWorkProcess}
                     />
                     {/* Tab bằng cấp - chứng chỉ */}
                     <CertificateTab

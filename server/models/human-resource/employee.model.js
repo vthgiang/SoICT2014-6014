@@ -221,11 +221,21 @@ const EmployeeSchema = new Schema({
         file: String,
         urlFile: String
     }],
-    experiences: [{ // Kinh nghiệm làm việc
+    workProcess: [{ //QUas trinhf cong tac
         startDate: Date,
         endDate: Date,
         company: String,
         position: String,
+        referenceInformation: String
+    }],
+    experiences: [{ // Kinh nghiệm làm việc
+        startDate: Date,
+        endDate: Date,
+        company: String,
+        project: String,
+        position: String,
+        customer: String,
+        address: String,
         jobDescription: String,
     }],
     contractEndDate: {

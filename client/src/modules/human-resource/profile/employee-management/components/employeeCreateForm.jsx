@@ -73,6 +73,7 @@ const EmployeeCreateForm = (props) => {
             identityCardDate: formatDate2(Date.now()),
             birthdate: formatDate2(Date.now()),
             roles: [],
+            workProcess: [],
             experiences: [],
             socialInsuranceDetails: [],
         },
@@ -166,6 +167,19 @@ const EmployeeCreateForm = (props) => {
                 experiences: data
             }
         }))
+    }
+
+    const handleChangeWorkProcess = (data, addData) => {
+        const { employee } = state;
+        setState(state => {
+            return {
+                ...state,
+                employee: {
+                    ...employee,
+                    workProcess: [...data]
+                }
+            }
+        })
     }
 
     /**
@@ -616,6 +630,10 @@ const EmployeeCreateForm = (props) => {
                             handleAddExperience={handleChangeExperience}
                             handleEditExperience={handleChangeExperience}
                             handleDeleteExperience={handleChangeExperience}
+
+                            handleAddWorkProcess={handleChangeWorkProcess}
+                            handleDeleteWorkProcess={handleChangeWorkProcess}
+                            handleEditWorkProcess={handleChangeWorkProcess}
                         />
                         {/* Tab bằng cấp - chứng chỉ */}
                         <CertificateTab

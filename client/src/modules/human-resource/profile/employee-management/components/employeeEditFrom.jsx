@@ -57,6 +57,7 @@ const EmployeeEditFrom = (props) => {
         },
         roles: [],
         experiences: [],
+        workProcess: [],
         socialInsuranceDetails: [],
         courses: [],
         degrees: [],
@@ -90,6 +91,7 @@ const EmployeeEditFrom = (props) => {
         editDisciplines: [],
         editSocialInsuranceDetails: [],
         editExperiences: [],
+        editWorkProcess: [],
         editFiles: [],
         deleteAnnualLeaves: [],
         deleteCertificates: [],
@@ -100,6 +102,7 @@ const EmployeeEditFrom = (props) => {
         deleteDisciplines: [],
         deleteSocialInsuranceDetails: [],
         deleteExperiences: [],
+        deleteWorkProcess: [],
         deleteFiles: []
     })
 
@@ -151,6 +154,7 @@ const EmployeeEditFrom = (props) => {
                     avatar: "",
                     employee: props.employeesInfo.employees?.[0],
                     experiences: props.employeesInfo.employees?.[0]?.experiences,
+                    workProcess: props.employeesInfo.employees?.[0]?.workProcess,
                     degrees: props.employeesInfo.employees?.[0]?.degrees,
                     certificates: props.employeesInfo.employees?.[0]?.certificates,
                     // career: props.employeesInfo.employees?.[0]?.career,
@@ -176,7 +180,7 @@ const EmployeeEditFrom = (props) => {
 
     const { translate, employeesInfo } = props;
 
-    let { _id, img, employee, experiences, degrees, certificates, socialInsuranceDetails, contracts, courses,
+    let { _id, img, employee, experiences, workProcess, degrees, certificates, socialInsuranceDetails, contracts, courses,
         organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
 
 
@@ -874,6 +878,44 @@ const EmployeeEditFrom = (props) => {
     }
 
 
+    const handleCreateWorkProcess = (data, addData) => {
+        setState({
+            ...state,
+            workProcess: [...workProcess, addData]
+        })
+    }
+
+    const handleEditWorkProcess = (data, editData) => {
+        const { editWorkProcess } = state;
+        if (editData._id) {
+            setState({
+                ...state,
+                editWorkProcess: [...editWorkProcess, editData]
+            })
+        } else {
+            setState({
+                ...state,
+                workProcess: data
+            })
+        }
+    }
+
+    const handleDeleteWorkProcess = (data, deleteData) => {
+        const { deleteWorkProcess, editWorkProcess } = state;
+        if (deleteData._id) {
+            setState({
+                ...state,
+                deleteWorkProcess: [...deleteWorkProcess, deleteData],
+                editWorkProcess: editWorkProcess.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            setState({
+                ...state,
+                workProcess: data
+            })
+        }
+    }
+
 
     /**
      * Function kiểm tra các trường bắt buộc phải nhập
@@ -914,10 +956,9 @@ const EmployeeEditFrom = (props) => {
     }
 
     const save = async () => {
-        let { _id, experiences, degrees, certificates, contracts, files, avatar,
+        let { _id, experiences, workProcess, degrees, certificates, contracts, files, avatar,
             disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
 
-        console.log('degrees', degrees);
         let degreesConvert = [];
         const createDegrees = degrees?.length ? degrees.filter(x => x._id === undefined) : [];
         createDegrees.forEach(x => {
@@ -934,6 +975,7 @@ const EmployeeEditFrom = (props) => {
         let formData = convertJsonObjectToFormData({
             ...state,
             createExperiences: experiences.filter(x => x._id === undefined),
+            createWorkProcess: workProcess.filter(x => x._id === undefined),
             createDegrees: degreesConvert,
             createCertificates: certificates.filter(x => x._id === undefined),
             // createCareer: career.filter(x => x._id === undefined),
@@ -1182,6 +1224,10 @@ const EmployeeEditFrom = (props) => {
                                 handleAddExperience={handleCreateExperiences}
                                 handleEditExperience={handleEditExperiences}
                                 handleDeleteExperience={handleDeleteExperiences}
+
+                                handleAddWorkProcess={handleCreateWorkProcess}
+                                handleDeleteWorkProcess={handleDeleteWorkProcess}
+                                handleEditWorkProcess={handleEditWorkProcess}
                             />
                             {/* Tab bằng cấp - chứng chỉ */}
                             <CertificateTab

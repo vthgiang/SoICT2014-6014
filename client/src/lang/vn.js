@@ -1570,6 +1570,8 @@ export default {
                 employee_code_duplicated: "Mã số nhân viên bị trùng lặp",
                 employee_name_required: "Tên nhân viên không được để trống",
                 employee_number_required: "Mã nhân viên không được để trống",
+                staff_non_unit: "Nhân viên không thuộc đơn vị",
+                organizationalUnit_not_found: "Đơn vị không tồn tại",
                 staff_code_not_special:
                     "Mã nhân viên không được chứ ký tự đặc biệt",
                 staff_code_not_find: "Mã nhân viên không tồn tại",
@@ -1908,11 +1910,18 @@ export default {
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
+                Working_process: "Quá trình công tác",
                 job_description: "Công việc đã làm",
+                reference_information: "Thông tin tham chiếu",
                 unit: "Đơn vị công tác",
+                position_in_task: "Chức vụ",
+                project: 'Dự án',
+                customer: "Khách hàng",
                 from_month_year: "Từ tháng/năm",
                 to_month_year: "Đến tháng/năm",
                 edit_experience: "Chỉnh sửa kinh nghiệm làm việc",
+                edit_working_process: "Chỉnh sửa quá trình công tác",
+                add_working_process: "Thêm mới quá trình công tác",
                 add_experience: "Thêm mới kinh nghiệm làm việc",
 
                 diploma: "Bằng cấp",
@@ -2477,10 +2486,15 @@ export default {
                 edit_course_faile: "Chỉnh sửa khoá đào tạo thất bại",
                 status: {
                     register: "Trạng thái đăng ký",
+                    is_not_registered: "Chưa đăng ký",
                     waiting_for_approval: "Đã đăng ký, Chờ phê duyệt",
                     success: "Được chấp nhận",
                     reject: "Bị từ chối"
                 },
+                admin: {
+                    accept: "Chấp nhận",
+                    reject: "Từ chối"
+                }
             },
 
             // Quản lý chương trình đào tạo

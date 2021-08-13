@@ -46,6 +46,9 @@ function ModalEditExperience(props) {
                 startDate: props.startDate,
                 endDate: props.endDate,
                 position: props.position,
+                project: props?.project,
+                customer: props?.customer,
+                address: props?.address,
                 jobDescription: props.jobDescription,
                 errorOnPosition: undefined,
                 errorOnUnit: undefined,
@@ -67,7 +70,7 @@ function ModalEditExperience(props) {
 
     const { id } = props;
 
-    const { company, position, jobDescription, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
+    const { company, position, jobDescription, project, customer, address, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -111,6 +114,29 @@ function ModalEditExperience(props) {
             });
         }
         return message === undefined;
+    }
+
+
+    const handleProjectChange = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            project: value,
+        })
+    }
+    const handleCustomerChange = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            customer: value,
+        })
+    }
+    const handleAddessChange = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            address: value,
+        })
     }
 
     /**
@@ -252,6 +278,24 @@ function ModalEditExperience(props) {
                         <label>{translate('table.position')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
                         <ErrorLabel content={errorOnPosition} />
+                    </div>
+
+                    {/* Dự án */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.project')}</label>
+                        <input type="text" className="form-control" name="position" value={project} onChange={handleProjectChange} autoComplete="off" />
+                    </div>
+
+                    {/* Khách hàng */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.customer')}</label>
+                        <input type="text" className="form-control" name="position" value={customer} onChange={handleCustomerChange} autoComplete="off" />
+                    </div>
+
+                    {/* Địa chỉ */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.address')}</label>
+                        <input type="text" className="form-control" name="position" value={address} onChange={handleAddessChange} autoComplete="off" />
                     </div>
 
                     {/* Các công việc đã làm */}

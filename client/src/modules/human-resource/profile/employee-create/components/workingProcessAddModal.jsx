@@ -6,53 +6,48 @@ import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../..
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-function ModalAddExperience(props) {
+/**
+ * Function format ngày hiện tại thành dạnh mm-yyyy
+ * @param {*} date : Ngày muốn format
+ */
+const formatDate = (date) => {
+    if (date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
-    /**
-     * Function format ngày hiện tại thành dạnh mm-yyyy
-     * @param {*} date : Ngày muốn format
-     */
-    const formatDate = (date) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
 
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            return [month, year].join('-');
-        }
-        return date;
+        return [month, year].join('-');
     }
-
+    return date;
+}
+function ModalAddWorkProcess(props) {
     const [state, setState] = useState({
         company: "",
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
         position: "",
-        project: "",
-        customer: "",
-        address: "",
-        jobDescription: "",
+        referenceInformation: "",
     })
 
     const { translate } = props;
 
     const { id } = props;
 
-    const { company, position, project, address, customer, startDate, endDate, jobDescription, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = state;
+    const { company, startDate, endDate, position, referenceInformation, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = state;
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
         let { value } = e.target;
-        validateExperienceUnit(value, true)
+        validateUnit(value, true)
     }
 
-    const validateExperienceUnit = (value, willUpdateState = true) => {
+    const validateUnit = (value, willUpdateState = true) => {
         const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
@@ -71,10 +66,10 @@ function ModalAddExperience(props) {
     /** Bắt sự kiện thay đổi chức vụ */
     const handlePositionChange = (e) => {
         let { value } = e.target;
-        validateExperiencePosition(value, true)
+        validatePosition(value, true)
     }
 
-    const validateExperiencePosition = (value, willUpdateState = true) => {
+    const validatePosition = (value, willUpdateState = true) => {
         const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
@@ -90,28 +85,6 @@ function ModalAddExperience(props) {
         return message === undefined;
     }
 
-
-    const handleProjectChange = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            project: value,
-        })
-    }
-    const handleCustomerChange = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            customer: value,
-        })
-    }
-    const handleAddessChange = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            address: value,
-        })
-    }
     /**
      * Function lưu thay đổi "từ tháng/năm" vào state
      * @param {*} value : Tháng bắt đầu
@@ -171,18 +144,18 @@ function ModalAddExperience(props) {
         })
     }
 
-    const handleJobDescription = (e) => {
+    const handleReferenceInformation = (e) => {
         const { value } = e.target;
         setState({
             ...state,
-            jobDescription: value,
+            referenceInformation: value,
         })
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { position, company, startDate, endDate } = state;
-        let result = validateExperienceUnit(company, false) && validateExperiencePosition(position, false);
+        let result = validateUnit(company, false) && validatePosition(position, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
@@ -206,21 +179,29 @@ function ModalAddExperience(props) {
 
     return (
         <React.Fragment>
-            <ButtonModal modalID={`modal-create-experience-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_experience')} />
+            <ButtonModal modalID={`modal-create-work-process-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_working_process')} />
             <DialogModal
-                size='50' modalID={`modal-create-experience-${id}`} isLoading={false}
-                formID={`form-create-experience-${id}`}
-                title={translate('human_resource.profile.add_experience')}
+                size='50' modalID={`modal-create-work-process-${id}`} isLoading={false}
+                formID={`modal-create-work-process-${id}`}
+                title={translate('human_resource.profile.add_working_process')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
-                <form className="form-group" id={`form-create-experience-${id}`}>
+                <form className="form-group" id={`modal-create-work-process-${id}`}>
                     {/* Đơn vị */}
                     <div className={`form-group ${errorOnUnit && "has-error"}`}>
                         <label>{translate('human_resource.profile.unit')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" name="company" value={company} onChange={handleUnitChange} autoComplete="off" />
                         <ErrorLabel content={errorOnUnit} />
                     </div>
+
+                    {/* Chức danh */}
+                    <div className={`form-group ${errorOnPosition && "has-error"}`}>
+                        <label>{translate('table.position')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
+                        <ErrorLabel content={errorOnPosition} />
+                    </div>
+
                     <div className="row">
                         {/* Từ tháng */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
@@ -247,35 +228,11 @@ function ModalAddExperience(props) {
                             <ErrorLabel content={errorOnEndDate} />
                         </div>
                     </div>
-                    {/* Chức vụ */}
-                    <div className={`form-group ${errorOnPosition && "has-error"}`}>
-                        <label>{translate('human_resource.profile.position_in_task')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
-                        <ErrorLabel content={errorOnPosition} />
-                    </div>
 
-                    {/* Dự án */}
+                    {/* Thoong tin tham chieu*/}
                     <div className="form-group">
-                        <label>{translate('human_resource.profile.project')}</label>
-                        <input type="text" className="form-control" name="position" value={project} onChange={handleProjectChange} autoComplete="off" />
-                    </div>
-
-                    {/* Khách hàng */}
-                    <div className="form-group">
-                        <label>{translate('human_resource.profile.customer')}</label>
-                        <input type="text" className="form-control" name="position" value={customer} onChange={handleCustomerChange} autoComplete="off" />
-                    </div>
-
-                    {/* Địa chỉ */}
-                    <div className="form-group">
-                        <label>{translate('human_resource.profile.address')}</label>
-                        <input type="text" className="form-control" name="position" value={address} onChange={handleAddessChange} autoComplete="off" />
-                    </div>
-
-                    {/* Các công việc đã làm */}
-                    <div className="form-group">
-                        <label>{translate('human_resource.profile.job_description')}</label>
-                        <textarea style={{ minHeight: '100px' }} type="text" value={jobDescription} className="form-control" onChange={handleJobDescription} />
+                        <label>{translate('human_resource.profile.reference_information')}</label>
+                        <textarea style={{ minHeight: '100px' }} type="text" value={referenceInformation} className="form-control" onChange={handleReferenceInformation} />
                     </div>
                 </form>
             </DialogModal>
@@ -283,5 +240,5 @@ function ModalAddExperience(props) {
     );
 };
 
-const addExperience = connect(null, null)(withTranslate(ModalAddExperience));
-export { addExperience as ModalAddExperience };
+const addWorkProcess = connect(null, null)(withTranslate(ModalAddWorkProcess));
+export { addWorkProcess as ModalAddWorkProcess };
