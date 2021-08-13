@@ -63,6 +63,10 @@ const CourseSchema = new Schema({
             ref: 'Employee',
             required: true
         },
+        user: {
+            type: String,
+            required: true
+        },
         registerType: {
             // 1: Nhân viên đăng ký, chưa phê duyệt
             // 2: Nhân viên đăng ký, được accept

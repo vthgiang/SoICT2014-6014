@@ -2486,10 +2486,15 @@ export default {
                 edit_course_faile: "Chỉnh sửa khoá đào tạo thất bại",
                 status: {
                     register: "Trạng thái đăng ký",
+                    is_not_registered: "Chưa đăng ký",
                     waiting_for_approval: "Đã đăng ký, Chờ phê duyệt",
                     success: "Được chấp nhận",
                     reject: "Bị từ chối"
                 },
+                admin: {
+                    accept: "Chấp nhận",
+                    reject: "Từ chối"
+                }
             },
 
             // Quản lý chương trình đào tạo

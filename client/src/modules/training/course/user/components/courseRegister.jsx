@@ -8,7 +8,7 @@ import { EmployeeManagerActions } from '../../../../human-resource/profile/emplo
 import { CourseActions } from '../redux/actions';
 
 const CourseRegister = (props) => {
-    const [state, setState] = useState({...props, addEmployees: [], isRegistered: props.registeredEmployees.find(i => i.employee == localStorage.getItem('userId'))?.registerType || 0})
+    const [state, setState] = useState({...props, addEmployees: [], isRegistered: props.registeredEmployees.find(i => i.user == localStorage.getItem('userId'))?.registerType || 0})
 
     useEffect(() => {
         const { applyForOrganizationalUnits, applyForPositions } = state;
@@ -24,7 +24,7 @@ const CourseRegister = (props) => {
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
         const subscriber = {
-            employee: localStorage.getItem('userId'),
+            user: localStorage.getItem('userId'),
             registerType: 1
         }
         
@@ -33,7 +33,7 @@ const CourseRegister = (props) => {
 
     }
 
-    if (props._id !== state._id) {
+    if (props._id !== state._id || props.registeredEmployees.length !== state.registeredEmployees.length) {
         setState({
             ...state,
             _id: props._id,
@@ -62,15 +62,14 @@ const CourseRegister = (props) => {
             errorOnEducationProgram: undefined,
             errorOnStartDate: undefined,
             errorOnEndDate: undefined,
-            isRegistered: props.registeredEmployees.find(i => i.employee == localStorage.getItem('userId'))?.registerType || 0
+            isRegistered: props.registeredEmployees.find(i => i.user == localStorage.getItem('userId'))?.registerType || 0
         })
     }
     
     const { education, translate, course, employeesManager } = props;
 
     const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
-        employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
-        errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = state;
+        employeeCommitmentTime, educationProgram, isRegistered } = state;
 
     let listEducations = education.listAll, employeeInfors = [], userlist = [];
 
@@ -89,6 +88,13 @@ const CourseRegister = (props) => {
 
     const DisplayStatus = () => {
         switch(state.isRegistered) {
+            case 0: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span>{translate('training.course.status.is_not_registered')}</span>
+                    </div>
+                )
+            }
             case 1: {
                 return (
                     <div>
@@ -115,7 +121,6 @@ const CourseRegister = (props) => {
             }
         }
     } 
- 
     return (
         <React.Fragment>
             <DialogModal
@@ -126,6 +131,7 @@ const CourseRegister = (props) => {
                 size={75}
                 maxWidth={850}
                 saveText={translate('training.course.register')}
+                disableSubmit={isRegistered === 2 || isRegistered === 3}
             >
                 <div>{translate('training.course.table.course_code')}: {courseId}</div>
                 <div>{translate('training.course.table.course_name')}: {name}</div>
