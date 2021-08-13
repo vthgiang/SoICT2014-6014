@@ -20,7 +20,7 @@ const TabAnualLeave = (props) => {
                     unitName={idUnits.map(x => x.name)}
                     nameData1='Số lượt nghỉ'
                     nameData2='Số giờ nghỉ phép'
-                    nameChart={'Xu hướng nghỉ phép'} />
+                    nameChart={'Thống kê nghỉ phép'} />
             </LazyLoadComponent>
             <LazyLoadComponent>
                 <AnnualLeaveChartAndTable

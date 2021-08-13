@@ -45,19 +45,18 @@ const AnnualLeaveTrendsChart = (props) => {
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
 
     const [state, setState] = useState({
-        lineChart: true,
+        countAnnuaLeave: true,
         startDate: _startDate,
         startDateShow: _startDate,
         endDate: formatDate(Date.now(), true),
         endDateShow: formatDate(Date.now(), true),
         organizationalUnits: idUnits ? idUnits : [],
     })
-    const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow } = state;
+    const { countAnnuaLeave, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow } = state;
 
     const barChart = useRef(null);
 
     useEffect(() => {
-        console.log(':V', props?.idUnits)
         const { startDate, endDate } = state;
         let arrStart = startDate.split('-');
         let startDateNew = [arrStart[1], arrStart[0]].join('-');
@@ -68,42 +67,53 @@ const AnnualLeaveTrendsChart = (props) => {
             props.getAnnualLeave({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew })
             props.getTimesheets({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
         }
-
     }, [JSON.stringify(props?.idUnits)]);
+
 
     useEffect(() => {
         if (annualLeave?.arrMonth?.length > 0) {
             let arrMonth = cloneDeep(annualLeave?.arrMonth);
             arrMonth = arrMonth.reverse();
 
-            let ratioX = [];
-            let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
-            let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
-            let data1 = ['data1'], data2 = ['data2'];
-            arrMonth.forEach(x => {
-                ratioX = [...ratioX, dayjs(x).format("MM-YYYY")]
-                let total = 0;
-                let date = new Date(x);
-                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-                listAnnualLeaveOfNumberMonth.forEach(y => {
-                    if (firstDay.getTime() < new Date(y.startDate).getTime() && new Date(y.startDate).getTime() <= lastDay.getTime()) {
-                        total += 1;
-                    }
+            let ratioX1 = [], ratioX2 = [];
+            if (countAnnuaLeave) {
+                // Xử lý dữ liệu lấy số lượt nghỉ phép.
+                let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
+                let data1 = ['data1']
+                arrMonth.forEach(x => {
+                    ratioX1 = [...ratioX1, dayjs(x).format("MM-YYYY")];
+                    let total = 0;
+                    let date = new Date(x);
+                    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+                    listAnnualLeaveOfNumberMonth.forEach(y => {
+                        if (firstDay.getTime() < new Date(y.startDate).getTime() && new Date(y.startDate).getTime() <= lastDay.getTime()) {
+                            total += 1;
+                        }
+                    })
+                    data1 = [...data1, total]
                 })
-                data1 = [...data1, total]
-                let hoursOff = 0;
-                listHoursOffOfUnitsByStartDateAndEndDate.forEach(y => {
-                    if (dayjs(y.month).format("MM-YYYY") === dayjs(x).format("MM-YYYY")) {
-                        let totalHoursOff = y.totalHoursOff ? y.totalHoursOff : 0;
-                        hoursOff = hoursOff + totalHoursOff
-                    };
+                renderChart({ nameData: nameData1, ratioX: ratioX1, data: data1 });
+            } else {
+                // Xử lý dữ liệu lấy số giờ nghỉ phép
+                let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
+
+                let data2 = ['data2'];
+                arrMonth.forEach(x => {
+                    ratioX2 = [...ratioX2, dayjs(x).format("MM-YYYY")]
+                    let hoursOff = 0;
+                    listHoursOffOfUnitsByStartDateAndEndDate.forEach(y => {
+                        if (dayjs(y.month).format("MM-YYYY") === dayjs(x).format("MM-YYYY")) {
+                            let totalHoursOff = y.totalHoursOff ? y.totalHoursOff : 0;
+                            hoursOff = hoursOff + totalHoursOff
+                        };
+                    })
+                    data2 = [...data2, hoursOff]
                 })
-                data2 = [...data2, hoursOff]
-            })
-            renderChart({ nameData1, ratioX, data1, lineChart, nameData2, data2 });
+                renderChart({ nameData: nameData2, ratioX: ratioX2, data: data2, });
+            }
         }
-    }, [JSON.stringify(props?.annualLeave?.listAnnualLeaveOfNumberMonth), JSON.stringify(props?.timesheets?.listHoursOffOfUnitsByStartDateAndEndDate), JSON.stringify(props?.annualLeave?.arrMonth)])
+    }, [JSON.stringify(props?.annualLeave?.listAnnualLeaveOfNumberMonth), JSON.stringify(props?.timesheets?.listHoursOffOfUnitsByStartDateAndEndDate), JSON.stringify(props?.annualLeave?.arrMonth), state.countAnnuaLeave])
 
     /**
      * Function bắt sự kiện thay đổi unit
@@ -145,10 +155,10 @@ const AnnualLeaveTrendsChart = (props) => {
      * Bắt sự kiện thay đổi chế đọ xem biểu đồ
      * @param {*} value : chế độ xem biểu đồ (true or false)
      */
-    const handleChangeViewChart = (value) => {
+    const handleChangeDataChart = (value) => {
         setState({
             ...state,
-            lineChart: value
+            countAnnuaLeave: value
         })
     }
 
@@ -202,23 +212,14 @@ const AnnualLeaveTrendsChart = (props) => {
      * @param {*} data : Dữ liệu biểu đồ
      */
     function renderChart(data) {
-        data.data1.shift();
-        data.data2.shift();
         removePreviousChart();
-        const nameData1 = data.nameData1;
-        const nameData2 = data.nameData2;
-        const customAxes = {
-            [nameData1]: 'y',
-            [nameData2]: 'y2'
+        data.data.shift();
 
-        }
         let chart = c3.generate({
             bindto: barChart.current,
             data: {
-                columns: [[nameData1, ...data.data1], [nameData2, ...data.data2]],
-                type: data.lineChart === true ? '' : 'bar',
-                labels: data.lineChart === true ? false : true,
-                axes: customAxes,
+                columns: [[data.nameData, ...data.data]],
+                labels: true,
             },
             axis: {
                 x: {
@@ -228,12 +229,8 @@ const AnnualLeaveTrendsChart = (props) => {
                 },
                 y: {
                     show: true,
-                    label: 'Số lượt nghỉ'
+                    label: countAnnuaLeave ? 'Số lượt' : 'Số giờ'
                 },
-                y2: {
-                    show: true,
-                    label: 'Số giờ nghỉ phép'
-                }
             },
         });
     }
@@ -333,8 +330,8 @@ const AnnualLeaveTrendsChart = (props) => {
                                 {/* <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p> */}
                                 <div className="box-tools pull-right" style={{ marginBottom: '10px' }}>
                                     <div className="btn-group pull-rigth">
-                                        <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
-                                        <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
+                                        <button type="button" className={`btn btn-xs ${countAnnuaLeave ? 'btn-danger' : "active"}`} onClick={() => handleChangeDataChart(true)}>{nameData1}</button>
+                                        <button type="button" className={`btn btn-xs ${countAnnuaLeave ? "active" : "btn-danger"}`} onClick={() => handleChangeDataChart(false)}>{nameData2}</button>
                                     </div>
                                 </div>
                                 <div ref={barChart}></div>
