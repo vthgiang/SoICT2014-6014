@@ -10,33 +10,33 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
 import 'c3/c3.css';
+import dayjs from 'dayjs';
+/**
+ * Function format dữ liệu Date thành string
+ * @param {*} date : Ngày muốn format
+ * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+ */
+const formatDate = (date, monthYear = false) => {
+    if (date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+    return date;
+}
 
 const TrendOfOvertime = (props) => {
-    const { department, timesheets, translate, childOrganizationalUnit, employeesManager } = props;
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    }
+    const { department, timesheets, translate, childOrganizationalUnit, idUnits, unitName } = props;
 
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
@@ -55,15 +55,16 @@ const TrendOfOvertime = (props) => {
     const barChart = useRef(null)
 
     useEffect(() => {
-        const { organizationalUnits, startDate, endDate } = state;
+        const { startDate, endDate } = state;
         let arrStart = startDate.split('-');
         let startDateNew = [arrStart[1], arrStart[0]].join('-');
 
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
-        props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
-    }, []);
+        if (props?.idUnits?.length)
+            props.getTimesheets({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
+    }, [JSON.stringify(props?.idUnits)]);
 
     useEffect(() => {
         if (timesheets?.arrMonth?.length > 0) {
@@ -73,15 +74,16 @@ const TrendOfOvertime = (props) => {
             timesheets.arrMonth.forEach(x => {
                 let overtime = 0;
                 listOvertimeOfUnitsByStartDateAndEndDate.forEach(y => {
-                    if (new Date(y.month).getTime() === new Date(x).getTime()) {
-                        overtime = overtime + y.totalOvertime ? y.totalOvertime : 0
+                    if (dayjs(y.month).format("MM-YYYY") === dayjs(x).format("MM-YYYY")) {
+                        let totalOvertime = y.totalOvertime ? y.totalOvertime : 0;
+                        overtime = overtime + totalOvertime
                     };
                 })
                 data1 = [...data1, overtime]
             })
             renderChart({ nameData1, ratioX, data1, lineChart });
         }
-    }, [JSON.stringify(timesheets)])
+    }, [JSON.stringify(props?.timesheets?.listOvertimeOfUnitsByStartDateAndEndDate), JSON.stringify(props?.timesheets?.arrMonth)])
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -231,12 +233,6 @@ const TrendOfOvertime = (props) => {
         }
     }
 
-    let organizationalUnitsName = [];
-    if (organizationalUnitsSearch) {
-        organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
-        organizationalUnitsName = organizationalUnitsName.map(x => x.name);
-    }
-
     return (
         <React.Fragment>
             <div className="box box-solid">
@@ -244,15 +240,15 @@ const TrendOfOvertime = (props) => {
                     <div className="box-title">
                         {`${nameChart} `}
                         {
-                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                            unitName && unitName.length < 2 ?
                                 <>
                                     <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                    <span>{` ${unitName?.[0] ? unitName?.[0] : ""}`}</span>
                                 </>
                                 :
-                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                <span onClick={() => showListInSwal(unitName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
                                     <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitName?.length}</a>
                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                 </span>
                         }
