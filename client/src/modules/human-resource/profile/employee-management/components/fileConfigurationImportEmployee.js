@@ -470,6 +470,11 @@ function configurationContract(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
             value: translate(`human_resource.profile.full_name`)
         },
+        contractNumber: {
+            columnName: translate(`human_resource.profile.number_contract`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.number_contract').toLowerCase()}`,
+            value: translate(`human_resource.profile.number_contract`)
+        },
         name: { // Tên hợp đồng
             columnName: translate(`human_resource.profile.name_contract`),
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.name_contract`).toLowerCase()}`,
@@ -985,6 +990,7 @@ function templateImport(translate) {
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "contractNumber", value: translate(`human_resource.profile.number_contract`), width: 35 },
                                 { key: "name", value: translate(`human_resource.profile.name_contract`), width: 35 },
                                 { key: "contractType", value: translate(`human_resource.profile.type_contract`), width: 25 },
                                 { key: "startDate", value: translate(`human_resource.profile.start_date`) },
@@ -1004,6 +1010,7 @@ function templateImport(translate) {
                                 employeeNumber: "MS2015124",
                                 endDate: "26-12-2020",
                                 fullName: "Trần Văn Bình",
+                                contractNumber: "2019.06.02-06/HĐKV-VNIST",
                                 name: "Hợp đồng làm việc",
                                 startDate: "26-06-2019",
                             }]

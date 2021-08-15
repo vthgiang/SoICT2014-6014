@@ -457,10 +457,13 @@ const EmployeeImportForm = (props) => {
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
             let errorAlert = [];
-            if (x.employeeNumber === null || x.fullName === null || x.name === null || x.contractType === null
+            if (x.employeeNumber === null || x.fullName === null || x.contractNumber === null || x.name === null || x.contractType === null
                 || x.startDate === null) {
                 rowError = [...rowError, index + 1]
                 x = { ...x, error: true }
+            }
+            if (x.contractNumber === null) {
+                errorAlert = [...errorAlert, `Số hợp đồng ${translate('human_resource.cannot_be_empty')}`];
             }
             if (x.employeeNumber === null) {
                 errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
