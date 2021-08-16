@@ -73,9 +73,7 @@ function TaskManagement(props) {
 
     const { tasks, user, translate, project } = props;
     const { currentTaskId, currentPage, currentTab,
-        parentTask, startDate, endDate, perPage,
-        status, monthTimeSheetLog, tableId,
-        responsibleEmployees, creatorTime,
+        parentTask, status, tableId, creatorTime,
         projectSearch, tags
     } = state;
 
@@ -620,7 +618,7 @@ function TaskManagement(props) {
     let units = [];
 
     useEffect(() => {
-        if ((!props?.tasks?.isLoading && props?.tasks?.tasks?.length) || !props?.project?.isLoading) {
+        if ((!props?.tasks?.loadingPaginateTasks && props?.tasks?.tasks?.length) || !props?.project?.isLoading) {
             const currentTasks = cloneDeep(props.tasks.tasks);
             let data = [], dataTree = [];
 
@@ -1023,7 +1021,7 @@ function TaskManagement(props) {
                     {/* Dạng bảng */}
                     <div id="tree-table-container" style={{ marginTop: '20px' }}>
                         {
-                            tasks?.isLoading ? <div className="table-info-panel">{translate('general.loading')}</div> :
+                            tasks?.loadingPaginateTasks ? <div className="table-info-panel">{translate('general.loading')}</div> :
                                 <TreeTable
                                     tableId={tableId}
                                     behaviour="show-children"
@@ -1059,7 +1057,7 @@ function TaskManagement(props) {
 
                     <div id="tasks-list" style={{ display: 'none', marginTop: '30px' }}>
                         {
-                            state?.isLoading ? <span>{translate('general.loading')}</span> : (!state?.loadingScreen && currentTasks?.length) ?
+                            tasks?.loadingPaginateTasks ? <span>{translate('general.loading')}</span> : (currentTasks?.length) ?
                                 <TaskListView
                                     data={state.currentTasks}
                                     project={project}

@@ -110,6 +110,10 @@ function TaskManagementOfUnit(props) {
         }
     }, [state.organizationalUnit, dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnitLoading, dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit])
 
+    useEffect(() => {
+        window.$(`#modelPerformTask${state.currentTaskId}`).modal('show')
+    }, [state.currentTaskId])
+
     const list_to_tree = (list) => {
         let map = {}, node, roots = [], i, newarr = [];
         for (i = 0; i < list.length; i += 1) {
@@ -283,9 +287,20 @@ function TaskManagementOfUnit(props) {
     }
 
     const handleShowModal = (id) => {
+        const { tasks } = props;
+        const taskLength = tasks?.tasks?.length;
+        let taskName;
+        for (let i = 0; i < taskLength; i++) {
+            if (tasks.tasks[i]._id === id) {
+                taskName = tasks.tasks[i].name;
+                break;
+            }
+        }
+
         setState({
             ...state,
-            currentTaskId: id
+            currentTaskId: id,
+            taskName
         })
         window.$(`#modelPerformTask${id}`).modal('show');
     }
@@ -561,7 +576,7 @@ function TaskManagementOfUnit(props) {
     let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management_of"));
     return (
         <React.Fragment>
-            { currentOrganizationalUnit
+            {currentOrganizationalUnit
                 ? <div className="box">
                     <div className="box-body qlcv">
                         <div style={{ height: "40px" }}>
@@ -785,6 +800,7 @@ function TaskManagementOfUnit(props) {
                             <ModalPerform
                                 units={units}
                                 id={currentTaskId}
+                                taskName={state?.taskName ? state?.taskName : ""}
                             />
                         }
 

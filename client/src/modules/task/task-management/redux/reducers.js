@@ -201,7 +201,8 @@ export function tasks(state = {
                 ...state,
                 tasks: null,
                 pages: null,
-                isLoading: true
+                isLoading: true,
+                loadingPaginateTasks: true,
             }
 
         case taskManagementConstants.GET_PAGINATE_TASK_SUCCESS:
@@ -210,13 +211,15 @@ export function tasks(state = {
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 totalCount: action.payload.totalCount,
-                isLoading: false
+                isLoading: false,
+                loadingPaginateTasks: false,
             };
         case taskManagementConstants.GET_PAGINATE_TASK_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                isLoading: false,
+                loadingPaginateTasks: false,
             };
         case taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_REQUEST:
             return {
