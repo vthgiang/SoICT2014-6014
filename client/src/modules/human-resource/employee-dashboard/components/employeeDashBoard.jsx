@@ -13,7 +13,7 @@ import { DisciplineActions } from '../../commendation-discipline/redux/actions';
 import { SalaryActions } from '../../salary/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import './employeeDashBoard.css';
-
+import Swal from 'sweetalert2';
 
 /**
  * Function format dữ liệu Date thành string
@@ -136,6 +136,15 @@ const DashBoardEmployees = (props) => {
         }
     }
 
+    const showDetailAnnualLeave = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h4><div >Số giờ nghỉ phép được tổng hợp theo phần chấm công nhân viên</div> </h4>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">`,
+            width: "25%",
+        })
+    }
+
     /** Bắt sự kiện chuyển tab  */
     const handleNavTabs = (value) => {
         if (!value) {
@@ -202,7 +211,9 @@ const DashBoardEmployees = (props) => {
                         <div className="info-box with-border">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-clock-o" aria-hidden="true"></i></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Số giờ nghỉ phép</span>
+                                <span className="info-box-text">Số giờ nghỉ phép <a title={'Giải thích'} onClick={showDetailAnnualLeave}>
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                                </a></span>
                                 <span className="info-box-number" style={{ fontSize: '20px' }}>
                                     {totalHourAnnualLeave}
                                 </span>

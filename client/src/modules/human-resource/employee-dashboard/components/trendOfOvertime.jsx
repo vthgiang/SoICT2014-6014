@@ -11,6 +11,8 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 import c3 from 'c3';
 import 'c3/c3.css';
 import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
+
 /**
  * Function format dữ liệu Date thành string
  * @param {*} date : Ngày muốn format
@@ -233,11 +235,19 @@ const TrendOfOvertime = (props) => {
         }
     }
 
+    const showDetailTrendOfOverTimeCharts = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h4><div>Biểu đồ xu hướng tăng ca được lấy dữ liệu tăng ca của nhân viên dựa theo chấm công</div> </h4>`,
+            width: "50%",
+        })
+    }
+
     return (
         <React.Fragment>
             <div className="box box-solid">
                 <div className="box-header with-border">
-                    <div className="box-title">
+                    <div className="box-title" style={{ marginRight: '5px' }}>
                         {`${nameChart} `}
                         {
                             unitName && unitName.length < 2 ?
@@ -254,6 +264,9 @@ const TrendOfOvertime = (props) => {
                         }
                         {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}
                     </div>
+                    <a title={'Giải thích'} onClick={showDetailTrendOfOverTimeCharts}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                    </a>
                 </div>
                 <div className="box-body">
                     <div className="qlcv" style={{ marginBottom: 15 }}>

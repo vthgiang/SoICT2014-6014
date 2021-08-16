@@ -13,6 +13,7 @@ import c3 from 'c3';
 import 'c3/c3.css'
 import dayjs from 'dayjs';
 import cloneDeep from 'lodash/cloneDeep';
+import Swal from 'sweetalert2';
 
 /**
 * Function format dữ liệu Date thành string
@@ -255,11 +256,25 @@ const AnnualLeaveTrendsChart = (props) => {
         }
     }
 
+
+    const showDetailAnnualLeaveTrenCharts = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Biểu đồ thống kê nghỉ phép các đơn vị:</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Có 2 đường thống kê như sau</p>
+            <ul>
+                <li><b>Số lượt nghỉ:</b> được tính bằng cách thống kê tổng số đơn xin nghỉ phép đã được chấp nhận của từng nhân viên thuộc các đơn vị theo tháng</li>
+                <li><b>Số giờ nghỉ phép: </b>được tính dựa bằng cách thống kê số giờ nghỉ phép của từng nhân viên dựa vào phần chấm công</li>
+            </ul>`,
+            width: "50%",
+        })
+    }
     return (
         <React.Fragment>
             <div className="box box-solid">
                 <div className="box-header with-border">
-                    <div className="box-title">
+                    <div className="box-title" style={{ marginRight: '5px' }}>
                         {`${nameChart} `}
                         {
                             unitName && unitName.length < 2 ?
@@ -276,6 +291,9 @@ const AnnualLeaveTrendsChart = (props) => {
                         }
                         {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}
                     </div>
+                    <a title={'Giải thích'} onClick={showDetailAnnualLeaveTrenCharts}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                    </a>
                 </div>
                 <div className="box-body">
                     <div className="qlcv" style={{ marginBottom: 15 }}>

@@ -246,6 +246,11 @@ export function tasks(state = {
                 isLoading: false
             };
         case taskManagementConstants.ADDNEW_TASK_SUCCESS:
+            console.log('action.payload', action.payload);
+            console.log('kkkkk', [
+                    action.payload,
+                    ...state.tasks,
+                ]);
             return {
                 ...state,
                 tasks: [

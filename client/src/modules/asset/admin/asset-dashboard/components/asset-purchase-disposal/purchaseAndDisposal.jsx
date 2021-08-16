@@ -8,7 +8,7 @@ import AssetDisposalChart from './assetDisposalChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { AssetTypeService } from '../../../asset-type/redux/services';
-
+import Swal from 'sweetalert2';
 class PurchaseAndDisposal extends Component {
 
     constructor(props) {
@@ -61,6 +61,19 @@ class PurchaseAndDisposal extends Component {
         this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
     }
 
+    showDetailAssetDisposal = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Biểu đồ thống kê thanh lý tài sản được xây dựng cần đầy đủ 2 điều kiện:</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <ul>
+               <li>Tài sản phải chuyển trạng thái về : <b>Đã thanh lý</b></li>
+                <li>Tài sản phải có đầy đủ thông tin thanh lý</li>
+            </ul>`,
+            width: "50%",
+        })
+    }
+
     render() {
         const { translate } = this.props;
         const { listAssets, assetType } = this.state;
@@ -90,7 +103,10 @@ class PurchaseAndDisposal extends Component {
                         <div className="col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">{translate('asset.dashboard.disposal_asset')}</div>
+                                    <div style={{ marginRight: '5px' }} className="box-title">{translate('asset.dashboard.disposal_asset')}</div>
+                                    <a className="text-red" title={'Giải thích'} onClick={this.showDetailAssetDisposal}>
+                                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', color: '#dd4b39' }} />
+                                    </a>
                                 </div>
                                 <div className="box-body qlcv">
                                     <AssetDisposalChart

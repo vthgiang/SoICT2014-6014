@@ -7,6 +7,7 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
 import 'c3/c3.css';
+import Swal from 'sweetalert2';
 
 const SalaryOfOrganizationalUnitsChart = (props) => {
 
@@ -112,6 +113,18 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         data1: ['data1', ...data1],
     }
 
+    const showDetailSalary = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Biểu đồ thu nhập được tính như sau:</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <ul>
+                <li>Lương chính (Lương cơ bản)</b></li>
+                <li>Các khoản lương thưởng, phụ cấp,...vv</li>
+            </ul>`,
+            width: "50%",
+        })
+    }
 
     renderChart(dataChart);
 
@@ -119,7 +132,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         <React.Fragment>
             <div className="box box-solid" style={{ paddingBottom: 20 }}>
                 <div className="box-header with-border">
-                    <div className="box-title">
+                    <div className="box-title" style={{ marginRight: '5px' }}>
                         {`Biểu đồ thu nhập `}
                         {
                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
@@ -136,6 +149,9 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                         }
                         {` tháng ${monthShow}`}
                     </div>
+                    <a title={'Giải thích'} onClick={showDetailSalary}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                    </a>
                 </div>
                 {salary.isLoading
                     ? <div style={{ marginLeft: "5px" }}>{translate('general.loading')}</div>

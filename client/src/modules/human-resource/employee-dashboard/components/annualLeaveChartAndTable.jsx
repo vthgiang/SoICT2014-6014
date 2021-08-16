@@ -11,7 +11,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from 'd3';
 import './employeeDashBoard.css';
-
+import Swal from 'sweetalert2';
 
 const AnnualLeaveChartAndTable = (props) => {
     const { defaultUnit } = props
@@ -258,11 +258,19 @@ const AnnualLeaveChartAndTable = (props) => {
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
+    const showDetailTAnnualeaveChartAndTable = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h4><div>Biểu đồ xu hướng nghỉ phép của nhân viên trong tuần trước và tuần tới của các đơn vị lấy dữ liệu theo đơn xin nghỉ phép</div> </h4>`,
+            width: "50%",
+        })
+    }
+
     return (
         <React.Fragment>
             <div className="box box-solid">
                 <div className="box-header with-border">
-                    <div className="box-title">
+                    <div className="box-title" style={{ marginRight: '5px' }}>
                         Xu hướng nghỉ phép của nhân viên trong tuần trước và tuần tới
                         {
                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
@@ -278,6 +286,9 @@ const AnnualLeaveChartAndTable = (props) => {
                                 </span>
                         }
                     </div>
+                    <a title={'Giải thích'} onClick={showDetailTAnnualeaveChartAndTable}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                    </a>
                 </div>
                 <div className="box-body" >
                     {!defaultUnit
