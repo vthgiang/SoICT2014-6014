@@ -20,12 +20,7 @@ import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
-import TextareaAutosize from 'react-textarea-autosize';
-import ValidationHelper from '../../../../helpers/validationHelper';
-import { formatDate } from '../../../../helpers/formatDate';
-import { convertTime } from '../../../../helpers/stringMethod';
 import { htmlToText } from 'html-to-text';
-import { formatTime } from '../../../project/projects/components/functionHelper';
 import ModalAddLogTime from './modalAddLogTime';
 
 function ActionTab(props) {
@@ -144,9 +139,6 @@ function ActionTab(props) {
         newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, addLogStartTime, addLogEndTime
     } = state;
 
-    // error message
-    const { errorDateAddLog, errorStartTimeAddLog, errorEndTimeAddLog } = state;
-    const checkUserId = obj => obj.creator._id === currentUser;
 
     if (performtasks?.task && notifications?.associatedData?.value) {
         if (notifications.associatedData.dataType === "realtime_tasks") {
@@ -169,12 +161,6 @@ function ActionTab(props) {
             props.getTaskLog(props.id);
         }
     }, [props.id])
-
-    useEffect(() => {
-        if (props.id) {
-            props.getTaskById(props.id)
-        }
-    }, [props.auth.user.avatar])
 
     useEffect(() => {
         if (performtasks?.task?.taskActions) {
@@ -288,20 +274,8 @@ function ActionTab(props) {
             selected: content
         })
     }
-    const handleComment = (event) => {
-        event.preventDefault();
-        setState({
-            ...state,
-            comment: !state.comment
-        })
-    }
-    const handleAction = (event) => {
-        event.preventDefault();
-        setState({
-            ...state,
-            action: !state.action
-        })
-    }
+
+
     const handleShowChildComment = (id) => {
         let a;
         if (state.showChildComment.some(obj => obj === id)) {
@@ -327,13 +301,8 @@ function ActionTab(props) {
             }
         })
     }
-    const handleCloseModal = (id) => {
-        let element = document.getElementsByTagName("BODY")[0];
-        element.classList.remove("modal-open");
-        let modal = document.getElementById(`modelPerformTask${id}`);
-        modal.classList.remove("in");
-        modal.style = "display: none;";
-    }
+
+
     const submitComment = (actionId, taskId) => {
         let { newCommentOfAction } = state;
         const data = new FormData();
@@ -414,6 +383,8 @@ function ActionTab(props) {
             newTaskCommentFilePaste: []
         })
     }
+
+
     const submitCommentOfTaskComment = (commentId, taskId) => {
         let { newCommentOfTaskComment } = state;
         const data = new FormData();
@@ -671,27 +642,6 @@ function ActionTab(props) {
         props.confirmAction(userId, actionId, taskId)
     }
 
-    const handleChange = (event) => {
-
-        const textareaLineHeight = 13;
-        const { minRows, maxRows } = state;
-        const previousRows = event.target.rows;//3
-        event.target.rows = minRows; // reset number of rows in textarea 
-        const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
-        if (currentRows === previousRows) {
-            event.target.rows = currentRows;
-        }
-        if (currentRows >= maxRows) {
-            event.target.rows = maxRows;
-            event.target.scrollTop = event.target.scrollHeight;
-        }
-
-        setState({
-            ...state,
-            value: event.target.value,
-            rows: currentRows < maxRows ? currentRows : maxRows,
-        });
-    }
 
     const onActionFilesChange = (files) => {
         setState({
@@ -868,15 +818,7 @@ function ActionTab(props) {
         }
     }
 
-    const pressEnter = (event, taskId, index) => {
-        let code = event.keyCode || event.which;
-        if (code === 13 && !event.shiftKey) {
-            submitAction(taskId, index)
-        }
-        if (code == 13 && !event.shiftKey) {
-            event.preventDefault();
-        }
-    }
+
     const onEditFileTask = (files) => {
         setState({
             ...state,
@@ -953,9 +895,6 @@ function ActionTab(props) {
         });
     }
 
-    const setSrc = (src) => {
-        setState({ src: src });
-    }
 
     const convertTime = (ms) => {
         if (!ms) return '00:00:00';
@@ -991,11 +930,6 @@ function ActionTab(props) {
         })
     }
 
-    const checkValidateDate = (start, end) => {
-        let mStart = moment(start);
-        let mEnd = moment(end);
-        return mEnd.isAfter(mStart);
-    }
 
     const handleOpenModalAddLog = () => {
         window.$('#modal-add-log-time').modal('show');
@@ -1146,6 +1080,8 @@ function ActionTab(props) {
             break;
     }
     // console.log("state ActionTab", state)
+
+
     return (
         <div>
             {
@@ -2233,7 +2169,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getTaskById: performTaskAction.getTaskById,
     createActionComment: performTaskAction.createActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,

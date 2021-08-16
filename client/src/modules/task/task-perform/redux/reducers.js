@@ -7,19 +7,22 @@ export function performtasks(state = {}, action) {
                 ...state,
                 task: null,
                 loading: true,
-                isLoading: true
+                isLoading: true,
+                isLoadingGetTaskById: true,
             };
         case performTaskConstants.GETTASK_BYID_SUCCESS:
             return {
                 ...state,
                 task: action.payload,
                 actions: action.payload.taskActions,
-                isLoading: false
+                isLoading: false,
+                isLoadingGetTaskById: false,
             };
         case performTaskConstants.GETTASK_BYID_FAILURE:
             return {
                 error: action.error,
-                isLoading: false
+                isLoading: false,
+                isLoadingGetTaskById: false,
             };
         case performTaskConstants.CREATE_RESULT_TASK_REQUEST:
             return {

@@ -25,7 +25,7 @@ function ModalEditTaskByAccountableEmployee(props) {
 
     const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
         startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
-        ,taskProjectName, tags } = state;
+        , taskProjectName, tags } = state;
 
     function initState(task) {
         let userId = getStorage("userId");
@@ -157,7 +157,6 @@ function ModalEditTaskByAccountableEmployee(props) {
     }
 
     useEffect(() => {
-        props.getAllUserInAllUnitsOfCompany();
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
         props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }, [])
@@ -866,31 +865,6 @@ function ModalEditTaskByAccountableEmployee(props) {
         props.editTaskByAccountableEmployees(data, taskId);
     }
 
-    const formatPriority = (data) => {
-        const { translate } = props;
-        if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.average');
-        if (data === 3) return translate('task.task_management.standard');
-        if (data === 4) return translate('task.task_management.high');
-        if (data === 5) return translate('task.task_management.urgent');
-    }
-
-    const formatRole = (data) => {
-        const { translate } = props;
-        if (data === "consulted") return translate('task.task_management.consulted');
-        if (data === "accountable") return translate('task.task_management.accountable');
-        if (data === "responsible") return translate('task.task_management.responsible');
-    }
-
-    const formatStatus = (data) => {
-        const { translate } = props;
-        if (data === "inprocess") return translate('task.task_management.inprocess');
-        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
-        else if (data === "finished") return translate('task.task_management.finished');
-        else if (data === "delayed") return translate('task.task_management.delayed');
-        else if (data === "canceled") return translate('task.task_management.canceled');
-    }
-
     const handleTaskProject = (value) => {
         value = value.toString();
         setState({
@@ -948,9 +922,6 @@ function ModalEditTaskByAccountableEmployee(props) {
         return new Date(strDateTime);
     }
 
-    let departmentUsers, usercompanys;
-    if (user.userdepartments) departmentUsers = user.userdepartments;
-    if (user.usercompanys) usercompanys = user.usercompanys;
 
     // list công việc liên quan.
     let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
@@ -1248,16 +1219,12 @@ function ModalEditTaskByAccountableEmployee(props) {
                             {/*Người tư vấn */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.consulted')}</label>
-                                {usercompanys &&
+                                {unitMembers &&
                                     <SelectBox
                                         id={`select-consulted-employee-${perform}-${role}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={
-                                            usercompanys.map(x => {
-                                                return { value: x._id, text: x.name };
-                                            })
-                                        }
+                                        items={unitMembers}
                                         onChange={handleSelectedConsultedEmployee}
                                         multiple={true}
                                         value={consultedEmployees}
@@ -1268,16 +1235,12 @@ function ModalEditTaskByAccountableEmployee(props) {
                             {/*Người giám sát*/}
                             <div className="form-group">
                                 <label>{translate('task.task_management.informed')}</label>
-                                {usercompanys &&
+                                {unitMembers &&
                                     <SelectBox
                                         id={`select-informed-employee-${perform}-${role}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={
-                                            usercompanys.map(x => {
-                                                return { value: x._id, text: x.name };
-                                            })
-                                        }
+                                        items={unitMembers}
                                         onChange={handleSelectedInformEmployee}
                                         multiple={true}
                                         value={informedEmployees}
@@ -1367,7 +1330,6 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = { //dispatchActionToProps
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     editTaskByAccountableEmployees: performTaskAction.editTaskByAccountableEmployees,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 }

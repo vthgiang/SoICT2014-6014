@@ -342,9 +342,19 @@ function TaskManagement(props) {
     }
 
     const handleShowModal = (id) => {
+        const { tasks } = props;
+        const taskLength = tasks?.tasks?.length;
+        let taskName;
+        for (let i = 0; i < taskLength; i++) {
+            if (tasks.tasks[i]._id === id) {
+                taskName = tasks.tasks[i].name;
+                break;
+            }
+        }
         setState({
             ...state,
-            currentTaskId: id
+            currentTaskId: id,
+            taskName
         })
         window.$(`#modelPerformTask${currentTaskId}`).modal('show')
     }
@@ -984,6 +994,7 @@ function TaskManagement(props) {
                         <ModalPerform
                             units={units}
                             id={currentTaskId}
+                            taskName={state?.taskName ? state?.taskName : ""}
                         />
                     }
 

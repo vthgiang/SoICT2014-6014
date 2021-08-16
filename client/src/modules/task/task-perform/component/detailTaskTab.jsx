@@ -17,27 +17,71 @@ import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess, QuillEditor } from '../../../../common-components';
-import moment from 'moment';
 import Swal from 'sweetalert2';
-import parse from 'html-react-parser';
 
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 
-import { ProjectActions } from "../../../project/projects/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from 'dayjs';
+
+// convert ISODate to String dd-mm-yyyy
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [day, month, year].join('-');
+}
+
+const taskPriorityColor = (priority) => {
+    switch (priority) {
+        case 5:
+            return "#ff0707";
+        case 4:
+            return "#ff5707";
+        case 3:
+            return "#28A745";
+        case 2:
+            return "#ffa707";
+        default:
+            return "#808080"
+    }
+}
+
+
+const taskStatusColor = (status) => {
+    switch (status) {
+        case "inprocess":
+            return "#385898";
+        case "canceled":
+            return "#e86969";
+        case "delayed":
+            return "#db8b0b";
+        case "finished":
+            return "#31b337";
+        default:
+            return "#333";
+    }
+}
+
 function DetailTaskTab(props) {
     const [state, setState] = useState(() => initState())
+    const [dataCheck, setDataCheck] = useState({})
     const [currentRole, setCurrentRole] = useState(null)
-    const { tasks, performtasks, user, translate, role } = props;
+    const { performtasks, user, translate, role } = props;
     const { showToolbar, id, isProcess } = props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
     const { currentUser, roles, collapseInfo,
         showEdit, showEndTask, showEvaluate, showRequestClose,
         showMore, showCopy, showSaveAsTemplate, modalEditId
     } = state
-    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
     const ROLE = {
         RESPONSIBLE: { name: translate('task.task_management.responsible'), value: "responsible" },
@@ -46,15 +90,14 @@ function DetailTaskTab(props) {
         CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
         INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
     };
+
     function initState() {
-        let { translate } = props;
         var idUser = getStorage("userId");
         let currentRoleId = getStorage("currentRole");
 
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
-        let DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         return {
             collapseInfo: false,
@@ -64,7 +107,6 @@ function DetailTaskTab(props) {
             highestIndex: 0,
             currentUser: idUser,
             currentRoleId,
-            dataStatus: DATA_STATUS.NOT_AVAILABLE,
             showMore: {},
             modalEditId: undefined,
             currentMonth: currentYear + '-' + (currentMonth + 1),
@@ -76,7 +118,6 @@ function DetailTaskTab(props) {
     useEffect(() => {
         props.getAllUserInAllUnitsOfCompany();
         const { currentRoleId } = state;
-        props.getProjectsDispatch({ calledId: "" });
         props.showInfoRole(currentRoleId);
     }, [])
 
@@ -84,14 +125,14 @@ function DetailTaskTab(props) {
         setState({
             ...state,
             id: props.id,
-            dataStatus: DATA_STATUS.QUERYING,
             editCollaboratedTask: false
         })
     }, [props.id])
 
     useEffect(() => {
-        if (tasks.task) {
-            if (task && task.organizationalUnit) props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
+        if (performtasks?.task) {
+            let task = performtasks.task; /// chú ý: cần check thêm trường hợp quy trình có lấy dữ liệu ở performTasks hay ko
+            if (task?.organizationalUnit) props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
             let roles = [];
             if (task) {
@@ -145,11 +186,10 @@ function DetailTaskTab(props) {
             }
             setState({
                 ...state,
-                dataStatus: DATA_STATUS.FINISHED,
                 roles: roles,
             })
         }
-    }, [JSON.stringify(tasks?.task)])
+    }, [JSON.stringify(performtasks?.task)])
 
     useEffect(() => {
         window.$(`#modal-request-close-task-${showRequestClose}`).modal('show');
@@ -232,20 +272,6 @@ function DetailTaskTab(props) {
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
-    // convert ISODate to String dd-mm-yyyy
-    function formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
-    }
 
     const handleShowEdit = (id, role, checkHasAccountable) => {
         let modalId = `#modal-edit-task-by-${role}-${id}`;
@@ -336,7 +362,6 @@ function DetailTaskTab(props) {
             showEdit: undefined,
             showEndTask: undefined,
             showEvaluate: undefined,
-            dataStatus: DATA_STATUS.QUERYING,
         })
 
     }
@@ -666,10 +691,7 @@ function DetailTaskTab(props) {
     }
 
     const remindEvaluateTaskOnThisMonth = (task) => {
-        let startDate = new Date(task?.startDate);
-        let endDate = new Date(task?.endDate);
-
-        let endOfMonth = new moment().endOf("month").toDate();
+        let endOfMonth = new Date(dayjs().endOf('month').format()); // lấy ngày cuối cũng của tháng hiện tại
         let today = new Date();
         let check;
 
@@ -694,177 +716,187 @@ function DetailTaskTab(props) {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
-    const taskStatusColor = (status) => {
-        switch (status) {
-            case "inprocess":
-                return "#385898";
-            case "canceled":
-                return "#e86969";
-            case "delayed":
-                return "#db8b0b";
-            case "finished":
-                return "#31b337";
-            default:
-                return "#333";
+
+    useEffect(() => {
+        let task;
+        if (props?.isProcess) {
+            task = props.task;
+        } else if (Object.entries(performtasks).length > 0) {
+            task = performtasks.task;
         }
-    }
+        console.log('taskEfect', task);
 
-    const taskPriorityColor = (priority) => {
-        switch (priority) {
-            case 5:
-                return "#ff0707";
-            case 4:
-                return "#ff5707";
-            case 3:
-                return "#28A745";
-            case 2:
-                return "#ffa707";
-            default:
-                return "#808080"
-        }
-    }
+        if (task) {
+            let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
+            // Các biến dùng trong phần Nhắc Nhở
+            let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
+            // Các biến dùng cho biểu đồ đóng góp thời gian
+            let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
+            // Các biến check trưởng đơn vị phối hợp
+            let employeeCollaboratedWithUnitSelectBox;
 
-    let task;
-    let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
-    // Các biến dùng trong phần Nhắc Nhở
-    let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
-    // Các biến dùng cho biểu đồ đóng góp thời gian
-    let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
-    // Các biến check trưởng đơn vị phối hợp
-    let employeeCollaboratedWithUnitSelectBox;
+            // kiểm tra công việc chỉ có người thực hiện
+            let checkHasAccountable = true;
 
-    if (isProcess) {
-        task = props.task
-    }
-    else if (Object.entries(performtasks).length > 0) {
-        task = performtasks.task;
-    }
-
-    if (task) {
-        codeInProcess = task.codeInProcess;
-        if (codeInProcess) {
-            let splitter = codeInProcess.split("_");
-            typeOfTask = splitter[0];
-        }
-    }
-
-    // kiểm tra công việc chỉ có người thực hiện
-    let checkHasAccountable = true;
-    if (task && task.accountableEmployees && task.accountableEmployees.length === 0) {
-        checkHasAccountable = false;
-    }
-
-    if (task) {
-        statusTask = task.status;
-    }
-    if (task) {
-        checkInactive = task.inactiveEmployees && task.inactiveEmployees.indexOf(currentUser) === -1
-    }; // return true if user is active user
-    if (task && task.evaluations && task.evaluations.length !== 0) {
-        evaluations = task.evaluations; //.reverse()
-    }
-
-    // thêm giá trị prevDate vào evaluation
-    if (evaluations && evaluations.length > 0) {
-        for (let i = 0; i < evaluations.length; i++) {
-            let prevEval;
-            let startDate = task.startDate;
-            let prevDate = startDate;
-            let splitter = formatDate(evaluations[i].evaluatingMonth).split("-");
-
-            let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-            let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-            let newMonth = dateOfPrevEval.getMonth() - 1;
-            if (newMonth < 0) {
-                newMonth += 12;
-                dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
+            codeInProcess = task.codeInProcess;
+            if (codeInProcess) {
+                let splitter = codeInProcess.split("_");
+                typeOfTask = splitter[0];
             }
-            dateOfPrevEval.setDate(15);
-            dateOfPrevEval.setMonth(newMonth);
 
-            let monthOfPrevEval = dateOfPrevEval.getMonth();
-            let yearOfPrevEval = dateOfPrevEval.getFullYear();
-
-            prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
-            if (prevEval) {
-                prevDate = prevEval.evaluatingMonth;
-            } else {
-                let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
-                // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-                if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
-                    || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
-                )) {
-                    prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").toDate();
-                }
+            if (task?.accountableEmployees?.length === 0) {
+                checkHasAccountable = false;
             }
-            evalList.push({ ...evaluations[i], prevDate: prevDate })
-        }
-    }
 
-    evalList = handleSortMonthEval(evalList);
+            statusTask = task.status;
+            checkInactive = task.inactiveEmployees && task.inactiveEmployees.indexOf(currentUser) === -1;
 
-    // Xử lý dữ liệu phần Nhắc nhở
-    checkEvaluate = remindEvaluateTaskOnThisMonth(task);
-    checkConfirmTask = handleCheckConfirmTask(task);
-    checkEvaluationTaskAction = handleCheckEvaluationTaskAction(task);
-    checkEvaluationTaskAndKpiLink = handleCheckEvaluationTaskAndKpiLink(task);
-    checkDeadlineForEvaluation = handleCheckDeadlineForEvaluation(task);
-    checkConfirmAssginOfOrganizationalUnit = handleCheckConfirmAssginOfOrganizationalUnit(task);
-    warning = (statusTask === "inprocess") && ((checkEvaluate) || (checkConfirmTask && checkConfirmTask.checkConfirm)
-        || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
-        || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
-        || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
-        || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
-        || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
-        || (checkConfirmAssginOfOrganizationalUnit.checkConfirm)
-        || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1);
-
-    // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
-    if (task && task.hoursSpentOnTask) {
-        hoursSpentOfEmployeeInTask = {};
-        for (let i = 0; i < task.timesheetLogs.length; i++) {
-            let tsheetlog = task.timesheetLogs[i];
-
-            if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
-                let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
-
-                if (tsheetlog.acceptLog) {
-                    hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
-                }
+            if (task?.evaluations?.length !== 0) {
+                evaluations = task.evaluations; //.reverse()
             }
-        }
-    }
 
-    if (task && task.evaluations && task.evaluations.length !== 0) {
-        task.evaluations.map(item => {
-            if (item.results && item.results.length !== 0) {
-                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = {};
+            // thêm giá trị prevDate vào evaluation
+            if (evaluations && evaluations.length > 0) {
+                for (let i = 0; i < evaluations.length; i++) {
+                    let prevEval;
+                    let startDate = task.startDate;
+                    let prevDate = startDate;
+                    let splitter = formatDate(evaluations[i].evaluatingMonth).split("-");
 
-                item.results.map(result => {
-                    if (result.employee) {
-                        if (!hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name]) {
-                            if (result.hoursSpent) {
-                                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = Number.parseFloat(result.hoursSpent);
-                            }
-                        } else {
-                            hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
+                    let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                    let newMonth = dateOfPrevEval.getMonth() - 1;
+                    if (newMonth < 0) {
+                        newMonth += 12;
+                        dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
+                    }
+                    dateOfPrevEval.setDate(15);
+                    dateOfPrevEval.setMonth(newMonth);
+
+                    let monthOfPrevEval = dateOfPrevEval.getMonth();
+                    let yearOfPrevEval = dateOfPrevEval.getFullYear();
+                    prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
+                    if (prevEval) {
+                        prevDate = prevEval.evaluatingMonth;
+                    } else {
+                        // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
+                        if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+                            || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+                        )) {
+                            prevDate = new Date(dayjs(`${yearOfPrevEval}-${monthOfPrevEval + 1}`).endOf('month').format())
                         }
                     }
-                })
-            } else {
-                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = null;
+                    evalList.push({ ...evaluations[i], prevDate: prevDate })
+                }
             }
-        })
-    }
 
-    // Xử lý phần đơn vị phối hợp
-    if (task) {
-        employeeCollaboratedWithUnitSelectBox = setSelectBoxOfUserSameDepartmentCollaborated(task);
-    }
+            evalList = handleSortMonthEval(evalList);
+
+            // Xử lý dữ liệu phần Nhắc nhở
+            checkEvaluate = remindEvaluateTaskOnThisMonth(task);
+            checkConfirmTask = handleCheckConfirmTask(task);
+            checkEvaluationTaskAction = handleCheckEvaluationTaskAction(task);
+            checkEvaluationTaskAndKpiLink = handleCheckEvaluationTaskAndKpiLink(task);
+            checkDeadlineForEvaluation = handleCheckDeadlineForEvaluation(task);
+            checkConfirmAssginOfOrganizationalUnit = handleCheckConfirmAssginOfOrganizationalUnit(task);
+            warning = (statusTask === "inprocess") && ((checkEvaluate) || (checkConfirmTask && checkConfirmTask.checkConfirm)
+                || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
+                || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
+                || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
+                || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
+                || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
+                || (checkConfirmAssginOfOrganizationalUnit.checkConfirm)
+                || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1);
+
+            // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
+            if (task?.hoursSpentOnTask) {
+                hoursSpentOfEmployeeInTask = {};
+                for (let i = 0; i < task.timesheetLogs.length; i++) {
+                    let tsheetlog = task.timesheetLogs[i];
+
+                    if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
+                        let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
+
+                        if (tsheetlog.acceptLog) {
+                            hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
+                        }
+                    }
+                }
+            }
+
+            if (task?.evaluations?.length !== 0) {
+                task.evaluations.map(item => {
+                    if (item.results && item.results.length !== 0) {
+                        hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = {};
+
+                        item.results.map(result => {
+                            if (result.employee) {
+                                if (!hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name]) {
+                                    if (result.hoursSpent) {
+                                        hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = Number.parseFloat(result.hoursSpent);
+                                    }
+                                } else {
+                                    hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
+                                }
+                            }
+                        })
+                    } else {
+                        hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = null;
+                    }
+                })
+            }
+
+            // Xử lý phần đơn vị phối hợp
+            employeeCollaboratedWithUnitSelectBox = setSelectBoxOfUserSameDepartmentCollaborated(task);
+
+            setDataCheck({
+                ...dataCheck,
+                task,
+                evalList,
+                typeOfTask,
+                evaluations,
+                checkEvaluate,
+                checkConfirmTask,
+                checkEvaluationTaskAction,
+                checkEvaluationTaskAndKpiLink,
+                checkDeadlineForEvaluation,
+                checkConfirmAssginOfOrganizationalUnit,
+                warning,
+                statusTask,
+                checkHasAccountable,
+                checkInactive,
+                codeInProcess,
+                hoursSpentOfEmployeeInTask,
+                hoursSpentOfEmployeeInEvaluation,
+                employeeCollaboratedWithUnitSelectBox
+            })
+
+        }
+    }, [JSON.stringify(props?.task), JSON.stringify(props?.performtasks?.task), props.isProcess])
+
+    const { evalList,
+        typeOfTask,
+        task,
+        evaluations,
+        checkEvaluate,
+        checkConfirmTask,
+        checkEvaluationTaskAction,
+        checkEvaluationTaskAndKpiLink,
+        checkDeadlineForEvaluation,
+        checkConfirmAssginOfOrganizationalUnit,
+        warning,
+        statusTask,
+        checkHasAccountable,
+        checkInactive,
+        codeInProcess,
+        hoursSpentOfEmployeeInTask,
+        hoursSpentOfEmployeeInEvaluation,
+        employeeCollaboratedWithUnitSelectBox } = dataCheck;
 
     const checkCurrentRoleIsManager = role && role.item &&
         role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
-    console.log("state", state)
+
+    console.log('currentRole', currentRole);
+
     return (
         <React.Fragment>
             {(showToolbar) &&
@@ -1090,7 +1122,7 @@ function DetailTaskTab(props) {
                             <div>
                                 <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
                                 <span>
-                                    {task && task.collaboratedWithOrganizationalUnits.length !== 0
+                                    {task.collaboratedWithOrganizationalUnits.length !== 0
                                         ? <span>
                                             {
                                                 task.collaboratedWithOrganizationalUnits.map((item, index) => {
@@ -1119,7 +1151,7 @@ function DetailTaskTab(props) {
                                 </div>
                             </div>
                             {
-                                (task && task.taskInformations && task.taskInformations.length !== 0) &&
+                                (task.taskInformations && task.taskInformations.length !== 0) &&
                                 task.taskInformations.map((info, key) => {
                                     if (info.type === "date") {
                                         return <div key={key}><strong>{info.name}:</strong> {info.value ? formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
@@ -1146,7 +1178,7 @@ function DetailTaskTab(props) {
                                         id={`description-${task?._id}`}
                                         toolbar={false}
                                         quillValueDefault={task?.description}
-                                        maxHeight={180}
+                                        maxHeight={250}
                                         enableDropImage={false}
                                         enableEdit={false}
                                         showDetail={{
@@ -1167,7 +1199,7 @@ function DetailTaskTab(props) {
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <span style={{ fontSize: '17px', marginRight: '5px' }} className="material-icons">
                                         people_alt
-                                </span>
+                                    </span>
                                     <h4>
                                         {translate('task.task_management.role')}
                                     </h4>
@@ -1298,7 +1330,7 @@ function DetailTaskTab(props) {
                                                 {translate('task.task_management.detail_eval')}&nbsp;{formatDate(eva.startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatDate(eva.endDate)}
                                             </h4>
                                             <a style={{ cursor: "pointer" }} onClick={() => handleChangeShowMoreEvalItem(eva._id)}>{showMore[eva._id] ? <p>Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-up"></i></p> : <p>Nhấn chuột để xem chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-down"></i></p>}</a>
-                                            { showMore[eva._id] &&
+                                            {showMore[eva._id] &&
                                                 <div>
                                                     {
                                                         eva.results.length !== 0 &&
@@ -1468,8 +1500,8 @@ function DetailTaskTab(props) {
 
 
 function mapStateToProps(state) {
-    const { tasks, performtasks, user, role } = state;
-    return { tasks, performtasks, user, role };
+    const { performtasks, user, role } = state;
+    return { performtasks, user, role };
 
 }
 
@@ -1484,7 +1516,6 @@ const actionGetState = { //dispatchActionToProps
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getProjectsDispatch: ProjectActions.getProjectsDispatch,
     openTaskAgain: performTaskAction.openTaskAgain,
 
     showInfoRole: RoleActions.show,
