@@ -6,7 +6,7 @@ const overviewService = require(`../../kpi/employee/management/management.servic
 
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
-
+const cloneDeep = require('lodash/cloneDeep');
 
 /**
  * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
@@ -1212,7 +1212,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
-    
+
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
             keySearch,
@@ -1723,7 +1723,7 @@ exports.getPaginatedTasksByOrganizationalUnit = async (portal, task, type) => {
  * Lấy công việc theo id đơn vị
  * @task dữ liệu từ params
  */
-exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
+exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => { //nguyen
     let { organizationalUnitId, startMonth, endMonth } = task;
     let organizationUnitTasks;
     let keySearch = {};
@@ -2004,7 +2004,6 @@ exports.sendEmailForCreateTask = async (portal, task) => {
  * Tạo công việc mới
  */
 exports.createTask = async (portal, task) => {
-
     // Lấy thông tin công việc liên quan
     var level = 1;
     if (mongoose.Types.ObjectId.isValid(task.parent)) {
@@ -2084,7 +2083,7 @@ exports.createTask = async (portal, task) => {
         taskInformations = taskTemplate ? taskTemplate.taskInformations : [];
     }
 
-    var newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
+    const newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
         creator: task.creator, //id của người tạo
@@ -2114,16 +2113,17 @@ exports.createTask = async (portal, task) => {
         );
     }
 
-    let mail = await this.sendEmailForCreateTask(portal, newTask);
+
+    let mail = await this.sendEmailForCreateTask(portal, cloneDeep(newTask));
 
     const taskPopulate = await newTask.populate([
-            { path: "organizationalUnit parent" },
-            { path: 'creator', select: "_id name email avatar" },
-            { path: 'responsibleEmployees', select: "_id name email avatar" },
-            { path: 'accountableEmployees', select: "_id name email avatar" },
-            { path: "timesheetLogs.creator", select: "name" },
-        ]).execPopulate();
-    console.log('taskPopulate',taskPopulate)
+        { path: "organizationalUnit parent" },
+        { path: 'creator', select: "_id name email avatar" },
+        { path: 'responsibleEmployees', select: "_id name email avatar" },
+        { path: 'accountableEmployees', select: "_id name email avatar" },
+        { path: "timesheetLogs.creator", select: "name" },
+    ]).execPopulate();
+
     return {
         task: newTask,
         taskPopulate,
@@ -2296,7 +2296,7 @@ exports.getSubTask = async (portal, taskId) => {
  * @param {*} data 
  */
 
-exports.getTasksByUser = async (portal, data) => {
+exports.getTasksByUser = async (portal, data) => { //nguyen
     var tasks = [];
     if (data.data == "user") {
         tasks = await Task(connect(DB_CONNECTION, portal)).find({

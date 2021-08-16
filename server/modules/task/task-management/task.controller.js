@@ -484,7 +484,7 @@ exports.createTask = async (req, res) => {
 
         await NotificationServices.createNotification(req.portal, req.user.company._id, data);
         await NotificationServices.createNotification(req.portal, req.user.company._id, collaboratedData);
-        await sendEmail(email, task.name, '', html,null,`${task._id}@gmail.com`);
+        await sendEmail(email, task.name, '', html, null, `${task._id}@gmail.com`);
         collaboratedEmail && collaboratedEmail.length !== 0
             && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
         await NewsFeed.createNewsFeed(req.portal, {
@@ -515,6 +515,7 @@ exports.createTask = async (req, res) => {
             content: tasks?.taskPopulate
         });
     } catch (error) {
+        console.log('error', error)
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -742,7 +743,7 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
 
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
-        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`,`${tasks._id}@gmail.com`,null);
+        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`, `${tasks._id}@gmail.com`, null);
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
@@ -781,7 +782,7 @@ exports.editTaskByAccountableEmployees = async (req, res) => {
 
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
-        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`,`${tasks._id}@gmail.com`,null);
+        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`, `${tasks._id}@gmail.com`, null);
         await Logger.info(req.user.email, 'edit_task_by_account_table_employees', req.portal);
         res.status(200).json({
             success: true,
@@ -1069,7 +1070,7 @@ getTasksByProject = async (req, res) => {
 
 exports.importTasks = async (req, res) => {
     try {
-        const data = await TaskManagementService.importTasks(req.body,req.portal, req.user);
+        const data = await TaskManagementService.importTasks(req.body, req.portal, req.user);
         await Logger.info(req.user.email, 'import_task_success', req.portal)
         res.status(200).json({
             success: true,
