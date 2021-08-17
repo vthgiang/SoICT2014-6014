@@ -38,7 +38,7 @@ function SubTaskTab(props) {
     }
 
     const { translate, tasks } = props;
-    var subtasks = tasks.subtasks;
+    let subtasks = tasks.subtasks;
 
     return (
         <div>
@@ -64,8 +64,8 @@ function SubTaskTab(props) {
 
 
 function mapState(state) {
-    const { tasks, performtasks, user, auth } = state;
-    return { tasks, performtasks, user, auth };
+    const { tasks } = state;
+    return { tasks };
 }
 
 const subTaskCreators = {

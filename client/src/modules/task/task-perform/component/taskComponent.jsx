@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { DetailTaskTab } from './detailTaskTab';
-import { ActionTab } from './actionTab';
+import ActionTab from './actionTab';
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { performTaskAction } from '../redux/actions';
@@ -56,6 +56,7 @@ function TaskComponent(props) {
             role: role
         })
     }
+
     let taskId = props.id;
     let task;
 
@@ -64,6 +65,29 @@ function TaskComponent(props) {
             taskId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).taskId;
         }
     }
+
+    const detailTaskTab = useCallback(
+        () => (
+            performtasks.task && <DetailTaskTab
+                id={taskId}
+                onChangeTaskRole={onChangeTaskRole}
+                showToolbar={true}
+            />
+        ),
+        [JSON.stringify(performtasks.task), taskId],
+    );
+
+    const actionsTab = useCallback(
+        () => (
+            performtasks.task && <ActionTab
+                id={taskId}
+                onChangeTaskRole={onChangeTaskRole}
+                showToolbar={true}
+                role={role}
+            />
+        ),
+        [JSON.stringify(performtasks.task), taskId, role],
+    );
 
     if (performtasks.task) {
         task = performtasks.task;
@@ -76,6 +100,7 @@ function TaskComponent(props) {
         );
     }
     const check = props?.performtasks?.isLoadingGetTaskById;
+
     return (
         <React.Fragment>
             {
@@ -91,21 +116,12 @@ function TaskComponent(props) {
                                     task={task && task}
                                     showToolbar={true}
                                 />
-                                : <DetailTaskTab
-                                    id={taskId}
-                                    onChangeTaskRole={onChangeTaskRole}
-                                    task={task && task}
-                                    showToolbar={true}
-                                />
+                                : detailTaskTab()
                             }
                         </div>
 
                         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
-                            <ActionTab
-                                id={taskId}
-                                role={role}
-                                task={task}
-                            />
+                            {actionsTab()}
                         </div>
 
                     </div>

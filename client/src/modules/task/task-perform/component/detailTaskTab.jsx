@@ -83,14 +83,6 @@ function DetailTaskTab(props) {
         showMore, showCopy, showSaveAsTemplate, modalEditId
     } = state
 
-    const ROLE = {
-        RESPONSIBLE: { name: translate('task.task_management.responsible'), value: "responsible" },
-        ACCOUNTABLE: { name: translate('task.task_management.accountable'), value: "accountable" },
-        CONSULTED: { name: translate('task.task_management.consulted'), value: "consulted" },
-        CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
-        INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
-    };
-
     function initState() {
         var idUser = getStorage("userId");
         let currentRoleId = getStorage("currentRole");
@@ -115,19 +107,19 @@ function DetailTaskTab(props) {
         }
     }
 
+    const ROLE = {
+        RESPONSIBLE: { name: translate('task.task_management.responsible'), value: "responsible" },
+        ACCOUNTABLE: { name: translate('task.task_management.accountable'), value: "accountable" },
+        CONSULTED: { name: translate('task.task_management.consulted'), value: "consulted" },
+        CREATOR: { name: translate('task.task_management.creator'), value: "creator" },
+        INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
+    };
+
     useEffect(() => {
         props.getAllUserInAllUnitsOfCompany();
         const { currentRoleId } = state;
         props.showInfoRole(currentRoleId);
     }, [])
-
-    useEffect(() => {
-        setState({
-            ...state,
-            id: props.id,
-            editCollaboratedTask: false
-        })
-    }, [props.id])
 
     useEffect(() => {
         if (performtasks?.task) {
@@ -353,18 +345,21 @@ function DetailTaskTab(props) {
     }
 
     const refresh = () => {
-        props.getTaskById(state.id);
-        props.getSubTask(state.id);
-        props.getTimesheetLogs(state.id);
-        props.getTaskLog(state.id);
+        if (props.id) {
+            props.getTaskById(props.id);
+            props.getSubTask(props.id);
+            props.getTimesheetLogs(props.id);
+            props.getTaskLog(props.id);
+        }
+
         setState({
             ...state,
             showEdit: undefined,
             showEndTask: undefined,
             showEvaluate: undefined,
         })
-
     }
+
     const changeRole = (role) => {
         setCurrentRole(role)
         props.onChangeTaskRole(role);
@@ -724,7 +719,6 @@ function DetailTaskTab(props) {
         } else if (Object.entries(performtasks).length > 0) {
             task = performtasks.task;
         }
-        console.log('taskEfect', task);
 
         if (task) {
             let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
@@ -894,8 +888,6 @@ function DetailTaskTab(props) {
 
     const checkCurrentRoleIsManager = role && role.item &&
         role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
-
-    console.log('currentRole', currentRole);
 
     return (
         <React.Fragment>
@@ -1521,6 +1513,6 @@ const actionGetState = { //dispatchActionToProps
     showInfoRole: RoleActions.show,
 }
 
-const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));
+const detailTask = React.memo(connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab)));
 
 export { detailTask as DetailTaskTab };

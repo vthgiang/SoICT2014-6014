@@ -27,10 +27,7 @@ function ActionTab(props) {
     let idUser = getStorage("userId");
     const { tasks, performtasks, notifications, user, auth, translate, role, id } = props;
 
-    const [state, setState] = useState(() => initState())
-    const [hover1, setHover1] = useState({})
-    function initState() {
-        let idUser = getStorage("userId");
+    const [state, setState] = useState(() => {
         let lang = getStorage("lang")
         moment.locale(lang)
         return {
@@ -126,10 +123,11 @@ function ActionTab(props) {
             descriptionFile: "",
             deleteFile: '',
 
-            checkDateAddLog: false,
             showPopupApproveAllAction: false,
         };
-    }
+    })
+    const [hover1, setHover1] = useState({})
+
     const subtasks = tasks.subtasks;
     const {
         showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
@@ -139,7 +137,7 @@ function ActionTab(props) {
         newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, addLogStartTime, addLogEndTime
     } = state;
 
-
+    console.log('notifications', notifications);
     if (performtasks?.task && notifications?.associatedData?.value) {
         if (notifications.associatedData.dataType === "realtime_tasks") {
             props.refreshData(notifications.associatedData.value);
@@ -148,11 +146,6 @@ function ActionTab(props) {
     }
 
     useEffect(() => {
-        setState({
-            ...state,
-            id: props.id,
-            checkDateAddLog: false,
-        })
         if (props.id) {
             props.getTimesheetLogs(props.id);
             props.getTimerStatusTask(props.id);
@@ -304,27 +297,28 @@ function ActionTab(props) {
 
 
     const submitComment = (actionId, taskId) => {
-        let { newCommentOfAction } = state;
+        let { newCommentOfAction, CommentOfActionFilePaste } = state;
         const data = new FormData();
-
         if (actionId) {
-            data.append("creator", newCommentOfAction[`${actionId}`].creator);
-            data.append("description", newCommentOfAction[`${actionId}`].description);
-            newCommentOfAction[`${actionId}`].files && newCommentOfAction[`${actionId}`].files.forEach(x => {
+            data.append("creator", newCommentOfAction[`${actionId}`]?.creator);
+            data.append("description", newCommentOfAction[`${actionId}`]?.description);
+            newCommentOfAction[`${actionId}`]?.files && newCommentOfAction[`${actionId}`].files.forEach(x => {
                 data.append("files", x);
             })
-            if (newCommentOfAction[`${actionId}`].description && newCommentOfAction[`${actionId}`].creator) {
+            if (newCommentOfAction[`${actionId}`]?.description && newCommentOfAction[`${actionId}`]?.creator) {
                 props.createActionComment(taskId, actionId, data);
             }
+            newCommentOfAction[actionId] = {
+                description: "",
+                files: [],
+                descriptionDefault: ''
+            }
+            CommentOfActionFilePaste = []
             setState(state => {
-                state.newCommentOfAction[`${actionId}`] = {
-                    description: "",
-                    files: [],
-                    descriptionDefault: ''
-                }
-                state.CommentOfActionFilePaste = []
                 return {
                     ...state,
+                    newCommentOfAction,
+                    CommentOfActionFilePaste
                 }
             })
         }
@@ -692,13 +686,15 @@ function ActionTab(props) {
     }
 
     const onCommentFilesChange = (files, actionId) => {
+        let { newCommentOfAction } = state;
+        newCommentOfAction[actionId] = {
+            ...newCommentOfAction[actionId],
+            files: files
+        }
         setState(state => {
-            state.newCommentOfAction[`${actionId}`] = {
-                ...state.newCommentOfAction[`${actionId}`],
-                files: files
-            }
             return {
-                ...state
+                ...state,
+                newCommentOfAction,
             }
         })
     }
@@ -1079,8 +1075,24 @@ function ActionTab(props) {
         default:
             break;
     }
-    // console.log("state ActionTab", state)
 
+    const handleChangleCommentOfTaskActions = (value, item) => {
+        let { newCommentOfAction } = state;
+        newCommentOfAction[item._id] = {
+            ...newCommentOfAction[item._id],
+            creator: idUser,
+            description: value,
+            descriptionDefault: null
+        }
+        setState((state) => {
+            return {
+                ...state,
+                newCommentOfAction
+            }
+        })
+    }
+
+    console.log("state ActionTab", state)
 
     return (
         <div>
@@ -1368,7 +1380,7 @@ function ActionTab(props) {
                                                             />
 
                                                             {item.files.length > 0 &&
-                                                                <div className="tool-level1" style={{ marginTop: -15 }}>
+                                                                <div className="tool-level1" style={{ marginTop: -10 }}>
                                                                     {item.files.map((file, index) => {
                                                                         return <div key={index}>
                                                                             <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
@@ -1473,7 +1485,7 @@ function ActionTab(props) {
                                                                             />
                                                                             {/* Hiện file đã tải lên */}
                                                                             {child.files.length > 0 &&
-                                                                                <div className="tool-level2" style={{ marginTop: -15 }}>
+                                                                                <div className="tool-level2" style={{ marginTop: -8, fontSize: '12px' }}>
                                                                                     {child.files.map((file, index) => {
                                                                                         return <div key={index}>
                                                                                             <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
@@ -1502,17 +1514,7 @@ function ActionTab(props) {
                                                                 text={newCommentOfAction[`${item._id}`]?.descriptionDefault}
                                                                 placeholder={translate("task.task_perform.enter_comment_action")}
                                                                 submitButtonText={translate("task.task_perform.create_comment_action")}
-                                                                onTextChange={(value, imgs) => {
-                                                                    setState({
-                                                                        ...state,
-                                                                        [state.newCommentOfAction[`${item._id}`]]: {
-                                                                            ...state.newCommentOfAction[`${item._id}`],
-                                                                            creator: idUser,
-                                                                            description: value,
-                                                                            descriptionDefault: null
-                                                                        }
-                                                                    })
-                                                                }}
+                                                                onTextChange={(value, imgs) => handleChangleCommentOfTaskActions(value, item)}
                                                                 onSubmit={(e) => { submitComment(item._id, task._id) }}
                                                             />
                                                         </div>
@@ -1587,6 +1589,9 @@ function ActionTab(props) {
                             </React.Fragment>
                         }
                     </div>
+
+
+
 
                     {/* Chuyển qua tab trao đổi */}
                     <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
@@ -1712,7 +1717,7 @@ function ActionTab(props) {
                                                             />
                                                             {/* Hiện file đã tải lên */}
                                                             {item.files.length > 0 &&
-                                                                <div className="tool-level1" style={{ marginTop: -15 }}>
+                                                                <div className="tool-level1" style={{ marginTop: -10 }}>
                                                                     {item.files.map((file, index) => {
                                                                         return <div key={index} >
                                                                             <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
@@ -1813,7 +1818,7 @@ function ActionTab(props) {
                                                                             />
                                                                             {/* Hiện file đã tải lên */}
                                                                             {child.files.length > 0 &&
-                                                                                <div className="tool-level2" style={{ marginTop: -15 }}>
+                                                                                <div className="tool-level2" style={{ marginTop: -8, fontSize: '12px' }}>
                                                                                     {child.files.map(file => {
                                                                                         return <div>
                                                                                             <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "commentoftaskcomment") }}><i className="fa fa-times"></i></a>
@@ -1841,8 +1846,8 @@ function ActionTab(props) {
                                                                 submitButtonText={translate("task.task_perform.create_comment")}
                                                                 onTextChange={(value, imgs) => {
                                                                     setState(state => {
-                                                                        state.newCommentOfTaskComment[`${item._id}`] = {
-                                                                            ...state.newCommentOfTaskComment[`${item._id}`],
+                                                                        state.newCommentOfTaskComment[item._id] = {
+                                                                            ...state.newCommentOfTaskComment[item._id],
                                                                             description: value,
                                                                             creator: currentUser,
                                                                             descriptionDefault: null
@@ -1957,7 +1962,7 @@ function ActionTab(props) {
                                                                     onSubmit={(e) => { handleSaveEditTaskFile(e, item.description, item._id, task._id) }}
                                                                 />
                                                                 {item.files.length > 0 &&
-                                                                    <div className="tool-level1" style={{ marginTop: -15 }}>
+                                                                    <div className="tool-level1" style={{ marginTop: -10 }}>
                                                                         {item.files.map(file => {
                                                                             return <div>
                                                                                 <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { handleDeleteFile(file._id, file.name, item._id, "task") }}><i className="fa fa-times"></i></a>
@@ -2001,9 +2006,7 @@ function ActionTab(props) {
 
                     {/* Chuyển qua tab công việc liên quan */}
                     <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
-                        <SubTaskTab
-                            id={state.id}
-                        />
+                        <SubTaskTab />
                     </div>
 
                     {/* Chuyển qua tab Bấm giờ */}
@@ -2059,12 +2062,12 @@ function ActionTab(props) {
                                                                         onClick={
                                                                             item.acceptLog ?
                                                                                 () => {
-                                                                                    props.editTimeSheetLog(state.id, item._id, {
+                                                                                    props.editTimeSheetLog(props.id, item._id, {
                                                                                         acceptLog: false
                                                                                     })
                                                                                 } :
                                                                                 () => {
-                                                                                    props.editTimeSheetLog(state.id, item._id, {
+                                                                                    props.editTimeSheetLog(props.id, item._id, {
                                                                                         acceptLog: true
                                                                                     })
                                                                                 }
@@ -2207,6 +2210,5 @@ const actionCreators = {
     refreshData: performTaskAction.refreshData,
 };
 
-const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));
-export { actionTab as ActionTab }
+export default connect(mapState, actionCreators)(withTranslate(ActionTab));
 
