@@ -9,6 +9,8 @@ import { ResultsOfAllEmployeeKpiSetChart } from '../../kpi/evaluation/dashboard/
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../kpi/evaluation/dashboard/redux/actions';
 
 import { showListInSwal } from '../../../helpers/showListInSwal';
+import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 
 class TabEmployeeCapacity extends Component {
     constructor(props) {
@@ -18,20 +20,6 @@ class TabEmployeeCapacity extends Component {
             numberOfExcellent: 5
         }
     };
-
-    formatDate(date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [month, year].join('-');
-    }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.organizationalUnits !== prevState.organizationalUnits || nextProps.month !== prevState.month) {
@@ -96,6 +84,16 @@ class TabEmployeeCapacity extends Component {
         window.$(`#setting-excellent`).collapse("hide");
     }
 
+    showDetailTopEmployees = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h4><div>Top nhân viên xuất sắc nhất lấy theo nhân viên có điểm người phê duyệt chấm, và sắp xếp từ cao xuống thấp </h4>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+          `,
+            width: "50%",
+        })
+    }
+
 
 
     render() {
@@ -108,20 +106,16 @@ class TabEmployeeCapacity extends Component {
             organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         }
-
         if (dashboardEvaluationEmployeeKpiSet) {
             employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
 
-            lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) === month);
+            lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => dayjs(item.date).format("MM-YYYY") === month);
             lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.filter(x => x.approvedPoint)
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
 
-        let unitForResultsOfAllOrganizationalUnitKpiChart;
-        if (department?.list?.length > 0) {
-            unitForResultsOfAllOrganizationalUnitKpiChart = department.list.filter(item => allOrganizationalUnits.includes(item?._id)).map(item => item?.name)
-        }
+
         return (
             <div className="row qlcv">
                 {/* Kết quả KPI các đơn vị */}
@@ -145,7 +139,7 @@ class TabEmployeeCapacity extends Component {
                                     organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                         <>
                                             <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                            <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                            <span style={{ fontWeight: 'bold' }}>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
                                         </>
                                         :
                                         <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
@@ -174,8 +168,11 @@ class TabEmployeeCapacity extends Component {
 
                                     <button type="button" className="btn btn-primary pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
                                 </div>
-
                             </div>
+                            {/* Giải thích */}
+                            <a title={'Giải thích các nhóm tài sản'} style={{ marginLeft: '5px' }} onClick={this.showDetailTopEmployees}>
+                                <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                            </a>
                         </div>
                         <div className="box-body no-parding">
                             <ul className="users-list clearfix">
@@ -185,7 +182,7 @@ class TabEmployeeCapacity extends Component {
                                         : (lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.length !== 0) ?
                                             lastMonthEmployeeKpiSets.map((item, index) =>
                                                 <li key={index} style={{ maxWidth: 200 }}>
-                                                    <img alt="avatar" src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
+                                                    <img alt="avatar" style={{ height: '150px' }} src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
                                                     <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                     <span className="users-list-date">{item.approvedPoint}</span>
                                                 </li>

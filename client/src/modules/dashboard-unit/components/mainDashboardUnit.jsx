@@ -31,9 +31,6 @@ class MainDashboardUnit extends Component {
             // Biểu đồ khẩn cấp / cần làm
             currentDate: this.formatDate(Date.now(), false),
             listUnit: [],
-            urgent: [],
-            taskNeedToDo: [],
-            arrayUnitForUrgentChart: [this.props.childOrganizationalUnit[0].id],
         }
     };
 
@@ -116,12 +113,7 @@ class MainDashboardUnit extends Component {
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: arrayUnitShow });
-        this.props.getTaskInOrganizationUnitByMonth(arrayUnitShow, newMonth, newMonth, "in_month");
 
-        /** Lấy dữ liệu công việc sắp hết hạn */
-        this.props.getTaskByUser({ organizationUnitId: arrayUnitShow, type: "organizationUnit", })
-
-        // this.props.searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
         /* Lấy dánh sách khen thưởng, kỷ luật */
         this.props.getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
         this.props.getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
@@ -148,14 +140,10 @@ class MainDashboardUnit extends Component {
 
 
     static getDerivedStateFromProps(props, state) {
-        const { tasks } = props;
-
-        if (tasks && tasks.organizationUnitTasksChart && props.childOrganizationalUnit) {
+        if (props.childOrganizationalUnit) {
             return {
                 ...state,
                 listUnit: props.childOrganizationalUnit,
-                urgent: tasks.organizationUnitTasksChart.urgent,
-                taskNeedToDo: tasks.organizationUnitTasksChart.taskNeedToDo,
             }
         } else {
             return null;
@@ -163,7 +151,7 @@ class MainDashboardUnit extends Component {
     }
 
     componentDidMount() {
-        const { organizationalUnits, month, currentDate, arrayUnitForUrgentChart } = this.state;
+        const { organizationalUnits, month, currentDate } = this.state;
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
@@ -175,10 +163,6 @@ class MainDashboardUnit extends Component {
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: organizationalUnits });
-        this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth, "in_month");
-
-        /** Lấy dữ liệu công việc sắp hết hạn */
-        this.props.getTaskByUser({ organizationUnitId: organizationalUnits, type: "organizationUnit", })
 
         /* Lấy dánh sách khen thưởng, kỷ luật */
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
@@ -193,11 +177,6 @@ class MainDashboardUnit extends Component {
             organizationalUnits: organizationalUnits, month: newMonth, page: 0,
             limit: 100000,
         });
-
-
-        let partDate = currentDate.split('-');
-        let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
     }
 
     getUnitName = (arrayUnit, arrUnitId) => {
@@ -228,9 +207,6 @@ class MainDashboardUnit extends Component {
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-
-        // Item select box chọn đơn vị
-        let listUnitSelect = listUnit.map(item => ({ value: item.id, text: item.name }));
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
@@ -426,9 +402,6 @@ const actionCreators = {
     getTimesheets: TimesheetsActions.searchTimesheets,
 
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getTaskByUser: taskManagementActions.getTasksByUser,
-    getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
 };
 
 const mainDashboardUnit = connect(mapState, actionCreators)(withTranslate(MainDashboardUnit));
