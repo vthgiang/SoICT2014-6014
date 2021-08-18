@@ -64,7 +64,6 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
         const { startDate, endDate } = INFO_SEARCH;
         const { childOrganizationalUnit } = props;
         //xuất báo cáo
-        console.log('CÒN CÁI NỊT');
         if (createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             const organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
             const exportData = convertDataToExportData(organizationalUnitKpiSetsOfChildUnit, startDate, endDate);
@@ -329,7 +328,7 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     };
 
     const multiLineChart = () => {
-        const { dataChart } = state;
+        const { dataChart, fullnameUnit } = state;
         removePreviosChart();
         chart.current = c3.generate({
             bindto: refMultiLineChart.current,
@@ -367,7 +366,11 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                     },
                 }
             },
-
+            tooltip: {
+                format: !singleUnit && !advancedMode && {
+                    title: function (d, index) { return fullnameUnit[index]; }
+                }
+            },
             legend: {
                 show: false
             }

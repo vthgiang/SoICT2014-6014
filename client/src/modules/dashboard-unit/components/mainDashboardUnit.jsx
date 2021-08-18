@@ -385,7 +385,10 @@ class MainDashboardUnit extends Component {
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
                                 <LazyLoadComponent>
-                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits} />
+                                    <TabAnualLeave
+                                        idUnits={childOrganizationalUnit?.length ? childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id)) : []}
+                                        defaultUnit={true}
+                                        childOrganizationalUnit={childOrganizationalUnit} />
                                 </LazyLoadComponent>
                             </div>
 

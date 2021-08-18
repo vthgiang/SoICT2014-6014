@@ -12,6 +12,8 @@ import Swal from 'sweetalert2';
 import c3 from 'c3';
 import 'c3/c3.css';
 import dayjs from 'dayjs'
+import { compactString } from '../../../helpers/stringMethod';
+
 class TaskOrganizationalUnitsChart extends Component {
     constructor(props) {
         super(props);
@@ -319,7 +321,8 @@ class TaskOrganizationalUnitsChart extends Component {
             })
         })
 
-        let title = ["x"];
+        let title = [];
+        let shortTitle = ["x"];
         let totalTask = ["Số công việc"], taskPerEmployeeOfUnit = ["Công việc trên đầu người"];
 
 
@@ -331,15 +334,19 @@ class TaskOrganizationalUnitsChart extends Component {
             let taskPerEmployee = taskOfUnist?.length / employeeOfUnits?.[unit?.id]?.length
 
             title.push(unit?.name)
+            shortTitle.push(compactString(unit?.name, 10))
             totalTask.push(taskOfUnist?.length)
             taskPerEmployeeOfUnit.push(taskPerEmployee && !isNaN(taskPerEmployee) ? taskPerEmployee.toFixed(1) : 0)
         })
 
-        return [
-            title,
-            totalTask,
-            taskPerEmployeeOfUnit
-        ]
+        return {
+            data: [
+                shortTitle,
+                totalTask,
+                taskPerEmployeeOfUnit
+            ],
+            title
+        }
     }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -360,7 +367,7 @@ class TaskOrganizationalUnitsChart extends Component {
         const { singleUnit, barChart, advancedMode, searchAdvanceMode } = this.state
 
         this.removePreviousChart();
-        let dataChart;
+        let dataChart, title;
 
         if (singleUnit) { // chế độ 1 unit
             if (barChart || !barChart)
@@ -368,8 +375,11 @@ class TaskOrganizationalUnitsChart extends Component {
         } else {
             // dạng nhiều đơn vị và không ở chế độ nâng cao
             if (!advancedMode) {
-                if (barChart || !barChart)
-                    dataChart = this.setMultiDataChart();
+                if (barChart || !barChart) {
+                    const data = this.setMultiDataChart()
+                    title = data.title;
+                    dataChart = data.data;
+                }
             }
             // dạng nhiều đơn vị và ở chế độ nâng cao/ bấm tìm kiếm mới thay đổi chart
             if (advancedMode) {
@@ -396,7 +406,6 @@ class TaskOrganizationalUnitsChart extends Component {
                     tick: {
                         format: '%m - %Y',
                         outer: false,
-                        rotate: -45,
                         multiline: false
                     },
                 },
@@ -408,24 +417,27 @@ class TaskOrganizationalUnitsChart extends Component {
             },
 
             tooltip: {
-                position: function () {
-                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
-                    return position;
-                },
-                contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
-                    value = value + '<table class=\'c3-tooltip\'>';
-
-                    data.forEach((val) => {
-                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                            + '<td class=\'value\'>' + val.value + '</td></tr>';
-                    });
-
-                    value = value + '</table>';
-                    value = value + '</div>';
-
-                    return value;
+                format: !singleUnit && !advancedMode && {
+                    title: function (d, index) { return title[index]; }
                 }
+                // position: function () {
+                //     let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
+                //     return position;
+                // },
+                // contents: function (data) {
+                //     let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
+                //     value = value + '<table class=\'c3-tooltip\'>';
+
+                //     data.forEach((val) => {
+                //         value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
+                //             + '<td class=\'value\'>' + val.value + '</td></tr>';
+                //     });
+
+                //     value = value + '</table>';
+                //     value = value + '</div>';
+
+                //     return value;
+                // }
             },
         });
     };
@@ -535,7 +547,6 @@ class TaskOrganizationalUnitsChart extends Component {
     handleToggleAdvanceMode = () => {
         const { advancedMode, startDate, endDate, searchAdvanceMode } = this.state;
         const { childOrganizationalUnit, month } = this.props;
-        console.log('month', month);
         if (!advancedMode) {
             this.setState({
                 ...this.state,

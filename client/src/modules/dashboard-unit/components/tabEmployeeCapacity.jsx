@@ -200,34 +200,11 @@ class TabEmployeeCapacity extends Component {
 
                 {/* Kết quả Kpi tất cả nhân viên */}
                 <div className="col-md-12">
-                    <div className="box box-solid">
-                        <div className="box-header with-border">
-                            <div className="box-title">
-                                {`${translate('kpi.evaluation.dashboard.result_kpi_titile')} `}
-                                {
-                                    organizationalUnitsName && organizationalUnitsName.length < 2 ?
-                                        <>
-                                            <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                            <span>{` ${organizationalUnitsName?.[0]}`}</span>
-                                        </>
-                                        :
-                                        <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                            <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                            <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                            <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                        </span>
-                                }
-                            </div>
-                            {resultsOfAllEmployeeKpiSetChartData && <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop: 5 }} />}
-                        </div>
-                        {/* /.box-header */}
-                        <div className="box-body qlcv">
-                            <ResultsOfAllEmployeeKpiSetChart
-                                organizationalUnitIds={(organizationalUnits && organizationalUnits.length !== 0) ? organizationalUnits : allOrganizationalUnits}
-                                onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
-                            />
-                        </div>
-                    </div>
+                    <ResultsOfAllEmployeeKpiSetChart
+                        organizationalUnitIds={(organizationalUnits && organizationalUnits.length !== 0) ? organizationalUnits : allOrganizationalUnits}
+                        onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
+                        organizationalUnitsName={organizationalUnitsName}
+                    />
                 </div>
             </div>
         );
