@@ -137,13 +137,16 @@ function ActionTab(props) {
         newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, addLogStartTime, addLogEndTime
     } = state;
 
-    console.log('notifications', notifications);
-    if (performtasks?.task && notifications?.associatedData?.value) {
-        if (notifications.associatedData.dataType === "realtime_tasks") {
-            props.refreshData(notifications.associatedData.value);
+    useEffect(() => {
+        if (performtasks?.task && notifications?.associatedData?.value) {
+            if (notifications.associatedData.dataType === "realtime_tasks") {
+                props.refreshData(notifications.associatedData.value);
+            }
+            notifications.associatedData = {}; // reset lại ... 
         }
         notifications.associatedData = {}; // reset lại ... 
-    }
+    }, [JSON.stringify(notifications?.associatedData?.value), JSON.stringify(performtasks?.task)])
+
 
     useEffect(() => {
         if (props.id) {
@@ -2167,8 +2170,8 @@ function ActionTab(props) {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, auth, notifications } = state;
-    return { tasks, performtasks, user, auth, notifications };
+    const { tasks, performtasks, auth, notifications } = state;
+    return { tasks, performtasks, auth, notifications };
 }
 
 const actionCreators = {

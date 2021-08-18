@@ -15,7 +15,25 @@ module.exports = async (server) => {
     // Socket.io realtime
     global.CONNECTED_CLIENTS = [];
 
-    global.SOCKET_IO = require("socket.io")(server);
+     /**
+     * docs setup socket:
+     * setup server (từ v3 trở lên phải setup cors): https://socket.io/docs/v4/server-initialization/
+     * setup client: https://socket.io/docs/v4/client-initialization/
+     */
+    global.SOCKET_IO = require("socket.io")(server, {
+        cors: {
+            origin: [
+                "http://localhost:3000",
+                "https://dxclan.com",
+                "https://dxclan.com:3000",
+                "https://dx.vietanhviavet.com",
+                "https://dx.vietanhviavet.com:3000",
+            ],
+            allowedHeaders: ["my-custom-header"],
+            credentials: true
+        }
+    });
+    
     SOCKET_IO.on("connection", function (socket) {
         CONNECTED_CLIENTS.push({
             socketId: socket.id,
