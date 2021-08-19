@@ -124,10 +124,6 @@ class TaskOrganizationalUnitsChart extends Component {
                     singleUnit: singleUnit
                 }
             })
-            // Khi unit thay đổi thì gọi bên mainDashboard rồi, ko cần gọi lại
-            // this.props.getAllEmployeeOfUnitByIds({
-            //     organizationalUnitIds: childOrganizationalUnitId,
-            // });
 
             // Nếu số đơn vị >1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
             if (singleUnit) {
@@ -688,7 +684,6 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 };
 
 const taskOrganizationalUnitsChart = connect(mapState, actionCreators)(withTranslate(TaskOrganizationalUnitsChart));

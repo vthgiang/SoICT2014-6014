@@ -50,17 +50,9 @@ class TabIntegratedStatistics extends Component {
 
     render() {
         const { translate, timesheets, discipline, department } = this.props;
-        const { month, employeeTasks, listEmployee, listAllEmployees, organizationalUnits } = this.props;
+        const { month, listEmployee, listAllEmployees, organizationalUnits } = this.props;
         const { viewOverTime, viewHoursOff } = this.state;
-        let maxTask = 1;
 
-        if (employeeTasks && employeeTasks.length !== 0) {
-            employeeTasks.forEach(x => {
-                if (x.totalTask > maxTask) {
-                    maxTask = x.totalTask
-                }
-            })
-        }
 
 
         let employeeOvertime = [], employeeHoursOff = [];
@@ -92,6 +84,85 @@ class TabIntegratedStatistics extends Component {
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         };
 
+        const taskUnits = this.props?.tasks?.organizationUnitTasks?.tasks;
+        let employeeTasks = [];
+        if (taskUnits?.length) {
+            for (let i in listEmployee) {
+                let tasks = [];
+                let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
+                taskUnits.forEach(x => {
+                    if (x?.accountableEmployees) {
+                        x.accountableEmployees.forEach(k => {
+                            if (typeof k === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    accountableTask = [...accountableTask, x._id]
+                            }
+                            if (typeof k === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    accountableTask = [...accountableTask, x._id]
+                            }
+                        })
+                    }
+
+                    if (x?.responsibleEmployees) {
+                        x.responsibleEmployees.forEach(k => {
+                            if (typeof (k) === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    responsibleTask = [...responsibleTask, x._id]
+                            }
+                            if (typeof (k) === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    responsibleTask = [...responsibleTask, x._id]
+                            }
+                        })
+                    }
+
+                    if (x?.consultedEmployees) {
+                        x.consultedEmployees.forEach(k => {
+                            if (typeof (k) === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    consultedTask = [...consultedTask, x._id]
+                            }
+                            if (typeof (k) === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    consultedTask = [...consultedTask, x._id]
+                            }
+                        })
+                    }
+
+                    if (x?.informedEmployees) {
+                        x.informedEmployees.forEach(k => {
+                            if (typeof (k) === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    informedTask = [...informedTask, x._id]
+                            }
+                            if (typeof (k) === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    informedTask = [...informedTask, x._id]
+                            }
+                        })
+                    }
+                })
+                tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
+                let totalTask = tasks.filter(function (item, pos) {
+                    return tasks.indexOf(item) === pos;
+                })
+                employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i].userId?.name, totalTask: totalTask?.length }]
+            }
+        }
+        if (employeeTasks.length !== 0) {
+            employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
+        };
+
+        let maxTask = 1;
+
+        if (employeeTasks && employeeTasks.length !== 0) {
+            employeeTasks.forEach(x => {
+                if (x.totalTask > maxTask) {
+                    maxTask = x.totalTask
+                }
+            })
+        }
         return (
             <div className="qlcv">
                 <div className='row'>
@@ -362,7 +433,7 @@ class TabIntegratedStatistics extends Component {
                             <div className="box box-solid">
                                 <div className="box-header with-border">
                                     <div className="box-title">
-                                        {`Tổng hợp tình hình tăng ca `} 
+                                        {`Tổng hợp tình hình tăng ca `}
                                         {
                                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                                 <>
@@ -429,8 +500,8 @@ class TabIntegratedStatistics extends Component {
 }
 
 function mapState(state) {
-    const { timesheets, discipline, department } = state;
-    return { timesheets, discipline, department };
+    const { timesheets, discipline, department, tasks } = state;
+    return { timesheets, discipline, department, tasks };
 }
 
 const tabIntegratedStatistics = connect(mapState, null)(withTranslate(TabIntegratedStatistics));
