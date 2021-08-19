@@ -107,19 +107,14 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
         }
 
         let dateAxisX = [];
-
-        const monthStart = dayjs(startMonth).get('month') + 1;
-        const yearStart = dayjs(startMonth).get('year');
-        const monthEnd = dayjs(endMonth).get('month') + 1;
-        const period = parseInt(monthEnd) - parseInt(monthStart);
+        const period = dayjs(endMonth).diff(startMonth, 'month');
         for (let i = 0; i <= period; i++) {
             dateAxisX = [
                 ...dateAxisX,
-                dayjs(`${yearStart}-${monthStart + i}`).format(
-                    'MM-YYYY',
-                ),
+                dayjs(startMonth).add(i, 'month').format("MM-YYYY"),
             ];
         }
+
 
         if (employeeKpiSetsInOrganizationalUnitByMonthPaginate) {
             for (let i = 0; i < employeeKpiSetsInOrganizationalUnitByMonthPaginate.length; i++) {

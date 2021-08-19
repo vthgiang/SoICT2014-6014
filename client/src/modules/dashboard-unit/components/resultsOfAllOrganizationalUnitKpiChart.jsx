@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { createUnitKpiActions } from '../../kpi/organizational-unit/creation/redux/actions';
 
-import { DatePicker, CustomLegendC3js } from '../../../common-components';
+import { DatePicker, CustomLegendC3js, PaginateBar } from '../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -36,7 +36,9 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
         startDate: INFO_SEARCH.startDate,
         endDate: INFO_SEARCH.endDate,
         kindOfPoint: KIND_OF_POINT.AUTOMATIC,
-        searchAdvanceMode: false
+        searchAdvanceMode: false,
+        page: 1,
+        limit: 8,
     });
     const [advancedMode, setAdvancedMode] = useState(false)
     const [date, setDate] = useState(() => {
@@ -46,7 +48,7 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     })
 
     const { createKpiUnit, translate } = props;
-    const { kindOfPoint, infoSearch, searchAdvanceMode } = state;
+    const { kindOfPoint, infoSearch, searchAdvanceMode, display, totalList, pageTotal, currentPage, childOrganizationalUnitPaginate } = state;
 
     useEffect(() => {
         const { monthSearch } = props;
@@ -63,6 +65,8 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     useEffect(() => {
         const { startDate, endDate } = INFO_SEARCH;
         const { childOrganizationalUnit } = props;
+        const { page, limit } = state;
+
         //xuất báo cáo
         if (createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             const organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
@@ -76,23 +80,37 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
 
             // Nếu chọn 1 đơn vị
             if (singleUnit) {
-                let category = ['x'],
+                let category = [],
                     dataChart = [];
-                const monthStart = dayjs(formatString(startDate)).get('month') + 1;
-                const yearStart = dayjs(formatString(startDate)).get('year');
-                const monthEnd = dayjs(formatString(endDate)).get('month') + 1;
-                const period = parseInt(monthEnd) - parseInt(monthStart);
+
+                const period = dayjs(formatString(endDate)).diff(formatString(startDate), 'month');
                 for (let i = 0; i <= period; i++) {
                     category = [
                         ...category,
-                        dayjs(`${yearStart}-${monthStart + i}`).format(
-                            'YYYY-MM-DD',
-                        ),
+                        dayjs(formatString(startDate)).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
                     ];
                 }
 
+                // xử lý phân trang
+                let totalList = category ? category.length : 0;
+                let pageTotal = ((totalList % limit) === 0) ?
+                    parseInt(totalList / limit) :
+                    parseInt((totalList / limit) + 1);
+
+                let currentPage = parseInt((page / limit) + 1);
+
+                // tính start and end item indexes  để căt dữ liệu
+                const startIndex = (currentPage - 1) * limit;
+                const endIndex = Math.min(startIndex + limit - 1, totalList - 1);
+
+                let categoryPaginate = category && category.slice(startIndex, endIndex + 1);
+                // kết thúc phân trang
+
+                const display = categoryPaginate.length;
+                categoryPaginate.unshift("x");
+
                 dataChart = [
-                    category
+                    categoryPaginate
                 ]
 
                 let result = [childOrganizationalUnit[0].name];
@@ -106,12 +124,12 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                             .name
                     ) {
                         let xLength = createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x].length;
-                        for (let index = 1; index < category.length; index++) {
+                        for (let index = 1; index < categoryPaginate.length; index++) {
                             let point = 0;
                             for (let y = 1; y < xLength; y++) {
                                 let item = createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x];
 
-                                if (item[y]?.date && dayjs(item[y].date).format("MM-YYYY") === dayjs(category[index]).format("MM-YYYY")) {
+                                if (item[y]?.date && dayjs(item[y].date).format("MM-YYYY") === dayjs(categoryPaginate[index]).format("MM-YYYY")) {
                                     if (kindOfPoint === 1) {
                                         point = item[y].automaticPoint
                                     }
@@ -136,12 +154,32 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                 setState({
                     ...state,
                     dataChart,
+                    totalList,
+                    pageTotal,
+                    currentPage,
+                    display
                 })
             } else {
-                // Chế độ multUnit và ko ở nâng cao
-                if (!advancedMode) {
-                    let categories = ['x'], fullnameUnit = [], dataChart = [kindOfPoint === 1 ? 'Điểm tự động' : kindOfPoint === 2 ? "Điểm tự đánh giá" : "Điểm người phê duyệt"];
-                    childOrganizationalUnit.forEach((o) => {
+                // Chế độ multUnit và !advancedMode: ko ở chế độ nâng cao,
+                // (advancedMode && !searchAdvanceMode): ở chế độ nang cao nhưng chưa bấm tìm kiếm từ tháng tới tháng, mà bấm phân trang, thì sẽ xử lý ở đây
+                if (!advancedMode || (advancedMode && !searchAdvanceMode)) {
+                    let categories = ["x"], fullnameUnit = [], dataChart = [kindOfPoint === 1 ? 'Điểm tự động' : kindOfPoint === 2 ? "Điểm tự đánh giá" : "Điểm người phê duyệt"];
+
+                    // xử lý phân trang
+                    const totalList = childOrganizationalUnit ? childOrganizationalUnit?.length : 0;
+                    let pageTotal = ((totalList % limit) === 0) ?
+                        parseInt(totalList / limit) :
+                        parseInt((totalList / limit) + 1);
+
+                    const currentPage = parseInt((page / limit) + 1);
+                    // calculate start and end item indexes
+                    const startIndex = (currentPage - 1) * limit;
+                    const endIndex = Math.min(startIndex + limit - 1, totalList - 1);
+
+                    const childOrganizationalUnitPaginate = childOrganizationalUnit && childOrganizationalUnit.slice(startIndex, endIndex + 1);
+
+                    // Kết thúc phân trang
+                    childOrganizationalUnitPaginate.forEach((o) => {
                         categories = [...categories, compactString(o.name, 10)];
                         fullnameUnit = [...fullnameUnit, o.name];
                     });
@@ -189,74 +227,100 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                             ...state,
                             fullnameUnit,
                             dataChart: [categories, dataChart],
+                            totalList,
+                            pageTotal,
+                            currentPage,
+                            display: childOrganizationalUnitPaginate?.length,
+                            childOrganizationalUnitPaginate
                         })
                 }
 
-                if (advancedMode) {
-                    let category = ['x'],
-                        dataChart = [];
-                    const monthStart = dayjs(formatString(startDate)).get('month') + 1;
-                    const yearStart = dayjs(formatString(startDate)).get('year');
-                    const monthEnd = dayjs(formatString(endDate)).get('month') + 1;
-                    const period = parseInt(monthEnd) - parseInt(monthStart);
-                    for (let i = 0; i <= period; i++) {
-                        category = [
-                            ...category,
-                            dayjs(`${yearStart}-${monthStart + i}`).format(
-                                'YYYY-MM-DD',
-                            ),
-                        ];
-                    }
-                    dataChart = [category];
+                if (advancedMode) { // khi ở chế độ nâng cao
+                    if (searchAdvanceMode) { // khi bấm tìm kiếm từ tháng đến tháng ở chế độ nâng cao
+                        let category = [],
+                            dataChart = [];
 
-                    childOrganizationalUnit.forEach(o => {
-                        let pointOfUnit = [o.name];
-                        const organizationalUnitKpiSetsOfChildUnitLength =
-                            createKpiUnit?.organizationalUnitKpiSetsOfChildUnit.length;
+                        const period = dayjs(formatString(endDate)).diff(formatString(startDate), 'month');
+                        for (let i = 0; i <= period; i++) {
+                            category = [
+                                ...category,
+                                dayjs(formatString(startDate)).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+                            ];
+                        }
 
-                        for (let x = 0; x < organizationalUnitKpiSetsOfChildUnitLength; x++) {
-                            if (
-                                o.name ===
-                                createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x][0]
-                                    .name
-                            ) {
-                                let xLength = createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x].length;
-                                for (let index = 1; index < category.length; index++) {
-                                    let point = null;
-                                    for (let y = 1; y < xLength; y++) {
-                                        let item = createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x];
 
-                                        if (item[y]?.date && dayjs(item[y].date).format("MM-YYYY") === dayjs(category[index]).format("MM-YYYY")) {
-                                            if (kindOfPoint === 1) {
-                                                point = item[y].automaticPoint
+                        // xử lý phân trang
+                        let totalList = category ? category.length : 0;
+                        let pageTotal = ((totalList % limit) === 0) ?
+                            parseInt(totalList / limit) :
+                            parseInt((totalList / limit) + 1);
+
+                        let currentPage = parseInt((page / limit) + 1);
+
+                        // tính start and end item indexes  để căt dữ liệu
+                        const startIndex = (currentPage - 1) * limit;
+                        const endIndex = Math.min(startIndex + limit - 1, totalList - 1);
+
+                        let categoryPaginate = category && category.slice(startIndex, endIndex + 1);
+                        // kết thúc phân trang
+                        const display = categoryPaginate.length;
+
+                        categoryPaginate.unshift("x");
+                        dataChart = [categoryPaginate];
+
+                        childOrganizationalUnit.forEach(o => {
+                            let pointOfUnit = [o.name];
+                            const organizationalUnitKpiSetsOfChildUnitLength =
+                                createKpiUnit?.organizationalUnitKpiSetsOfChildUnit.length;
+
+                            for (let x = 0; x < organizationalUnitKpiSetsOfChildUnitLength; x++) {
+                                if (
+                                    o.name ===
+                                    createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x][0]
+                                        .name
+                                ) {
+                                    let xLength = createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x].length;
+                                    for (let index = 1; index < categoryPaginate.length; index++) {
+                                        let point = null;
+                                        for (let y = 1; y < xLength; y++) {
+                                            let item = createKpiUnit.organizationalUnitKpiSetsOfChildUnit[x];
+
+                                            if (item[y]?.date && dayjs(item[y].date).format("MM-YYYY") === dayjs(categoryPaginate[index]).format("MM-YYYY")) {
+                                                if (kindOfPoint === 1) {
+                                                    point = item[y].automaticPoint
+                                                }
+
+                                                if (kindOfPoint === 2) {
+                                                    point = item[y].employeePoint
+                                                }
+
+                                                if (kindOfPoint === 3)
+                                                    point = item[y].approvedPoint
                                             }
 
-                                            if (kindOfPoint === 2) {
-                                                point = item[y].employeePoint
-                                            }
-
-                                            if (kindOfPoint === 3)
-                                                point = item[y].approvedPoint
                                         }
-
+                                        pointOfUnit = [...pointOfUnit, point];
                                     }
-                                    pointOfUnit = [...pointOfUnit, point];
                                 }
                             }
-                        }
-                        dataChart = [...dataChart, pointOfUnit];
-                    })
+                            dataChart = [...dataChart, pointOfUnit];
+                        })
 
-                    setState({
-                        ...state,
-                        dataChart
-                    })
+                        setState({
+                            ...state,
+                            dataChart,
+                            totalList,
+                            pageTotal,
+                            currentPage,
+                            display
+                        })
+                    }
                 }
             }
         }
     }, [JSON.stringify(
         props?.createKpiUnit?.organizationalUnitKpiSetsOfChildUnit,
-    ), kindOfPoint])
+    ), kindOfPoint, state.page,])
 
 
     useEffect(() => {
@@ -307,6 +371,7 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                 setState({
                     ...state,
                     searchAdvanceMode: true,
+                    page: 1,
                 })
             } else {
                 setDate({
@@ -353,7 +418,7 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
 
             axis: {
                 x: {
-                    type: singleUnit ? 'timeseries' : (advancedMode ? 'timeseries' : 'categories'),
+                    type: singleUnit ? 'timeseries' : ((advancedMode && searchAdvanceMode) ? 'timeseries' : 'categories'),
                     tick: {
                         format: '%m - %Y',
                         outer: false,
@@ -495,6 +560,16 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
         }
     }
 
+    const handlePagination = (page) => {
+        const { limit } = state;
+        let pageConvert = (page - 1) * (limit);
+
+        setState({
+            ...state,
+            page: parseInt(pageConvert),
+        })
+    }
+
     const { childOrganizationalUnit } = props;
 
     return (
@@ -592,9 +667,16 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                                     chartId={"resultsOfAllUnit"}
                                     legendId={"resultsOfAllUnitLegend"}
                                     title={props?.childOrganizationalUnit && `${translate('general.list_unit')} (${props?.childOrganizationalUnit?.length})`}
-                                    dataChartLegend={props?.childOrganizationalUnit?.length && props?.childOrganizationalUnit.map(item => item.name)}
+                                    dataChartLegend={(!singleUnit && !advancedMode && !searchAdvanceMode) ? (childOrganizationalUnitPaginate?.length && childOrganizationalUnitPaginate.map(x => x.name)) : (props?.childOrganizationalUnit?.length && props?.childOrganizationalUnit.map(item => item.name))}
                                 />
                             </section>
+                            <PaginateBar
+                                display={display}
+                                total={totalList}
+                                pageTotal={pageTotal}
+                                currentPage={currentPage}
+                                func={handlePagination}
+                            />
                         </section>
                         :
                         <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>

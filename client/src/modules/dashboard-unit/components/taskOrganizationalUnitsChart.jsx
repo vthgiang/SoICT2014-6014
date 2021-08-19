@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
-import { UserActions } from '../../super-admin/user/redux/actions';
 
-import { DatePicker } from '../../../common-components';
+import { DatePicker, PaginateBar, CustomLegendC3js } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
 import Swal from 'sweetalert2';
 
@@ -13,6 +12,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import dayjs from 'dayjs'
 import { compactString } from '../../../helpers/stringMethod';
+import cloneDeep from 'lodash/cloneDeep';
 
 class TaskOrganizationalUnitsChart extends Component {
     constructor(props) {
@@ -23,8 +23,9 @@ class TaskOrganizationalUnitsChart extends Component {
             startDate: startDate,
             endDate: this.formatDate(Date.now(), true)
         }
+        this.chart = React.createRef();
+
         this.state = {
-            // singleUnit: childOrganizationalUnit?.length <= 1,
             singleUnit: childOrganizationalUnit?.length < 2 ? true : false,
             month: month,
             startDate: this.infoSearch.startDate,
@@ -35,6 +36,9 @@ class TaskOrganizationalUnitsChart extends Component {
             barChart: true,
             advancedMode: false,
             searchAdvanceMode: false,
+            page: 1,
+            limit: 8,
+            displayPaginate: [],
         }
     }
 
@@ -121,7 +125,8 @@ class TaskOrganizationalUnitsChart extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    singleUnit: singleUnit
+                    singleUnit: singleUnit,
+                    displayPaginate: []
                 }
             })
 
@@ -146,22 +151,32 @@ class TaskOrganizationalUnitsChart extends Component {
     setDataLineChart = () => {
         const { tasks, user } = this.props;
         let { childOrganizationalUnit } = this.props;
-        const { startDate, endDate, totalTask } = this.state;
+        const { startDate, endDate, totalTask, page, limit } = this.state;
 
-        const monthStart = dayjs(this.formatString(startDate)).get('month') + 1;
-        const yearStart = dayjs(this.formatString(startDate)).get('year');
-        const monthEnd = dayjs(this.formatString(endDate)).get('month') + 1;
-        const period = parseInt(monthEnd) - parseInt(monthStart);
+        const period = dayjs(this.formatString(endDate)).diff(this.formatString(startDate), 'month');
 
         let arrMonth = [];
         for (let i = 0; i <= period; i++) {
             arrMonth = [
                 ...arrMonth,
-                dayjs(`${yearStart}-${monthStart + i}`).format(
-                    'YYYY-MM-DD',
-                ),
+                dayjs(this.formatString(startDate)).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
             ];
         }
+
+        // xử lý phân trang: trường hợp người dùng chọn xem nhiều tháng
+        let totalList = arrMonth ? arrMonth.length : 0;
+        let pageTotal = ((totalList % limit) === 0) ?
+            parseInt(totalList / limit) :
+            parseInt((totalList / limit) + 1);
+
+        let currentPage = parseInt((page / limit) + 1);
+
+        // tính start and end item indexes  để căt dữ liệu
+        const startIndex = (currentPage - 1) * limit;
+        const endIndex = Math.min(startIndex + limit - 1, totalList - 1);
+
+        const arrMonthPaginate = arrMonth && arrMonth.slice(startIndex, endIndex + 1);
+
 
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
         let employeeOfUnits = {};
@@ -185,13 +200,13 @@ class TaskOrganizationalUnitsChart extends Component {
             })
         }
 
-        let data = [["x", ...arrMonth]];
+        let data = [["x", ...arrMonthPaginate]];
         childOrganizationalUnit && childOrganizationalUnit.forEach((x, index) => {
             let taskOfUnist = [];
             if (listTask.length !== 0) {
                 taskOfUnist = listTask.filter(t => t.organizationalUnit?._id === x.id);
             }
-            let row = [...arrMonth];
+            let row = [...arrMonthPaginate];
             row = row.map(r => {
                 let taskOfUnistInMonth = taskOfUnist.filter(t => {
                     let date = new Date(r)
@@ -212,28 +227,48 @@ class TaskOrganizationalUnitsChart extends Component {
             data = [...data, [x.name, ...row]]
         })
 
+        if (JSON.stringify(this.state.displayPaginate) !== JSON.stringify(arrMonthPaginate)) {
+            this.setState({
+                totalList,
+                pageTotal,
+                currentPage,
+                display: arrMonthPaginate?.length,
+                displayPaginate: arrMonthPaginate
+            })
+        }
+
         return data
     }
 
     setSingleDataChart = () => {
         const { tasks, user } = this.props;
         let { childOrganizationalUnit } = this.props;
-        const { startDate, endDate } = this.state;
+        const { startDate, endDate, page, limit } = this.state;
 
-        const monthStart = dayjs(this.formatString(startDate)).get('month') + 1;
-        const yearStart = dayjs(this.formatString(startDate)).get('year');
-        const monthEnd = dayjs(this.formatString(endDate)).get('month') + 1;
-        const period = parseInt(monthEnd) - parseInt(monthStart);
+        const period = dayjs(this.formatString(endDate)).diff(this.formatString(startDate), 'month');
 
         let arrMonth = [];
         for (let i = 0; i <= period; i++) {
             arrMonth = [
                 ...arrMonth,
-                dayjs(`${yearStart}-${monthStart + i}`).format(
-                    'YYYY-MM-DD',
-                ),
+                dayjs(this.formatString(startDate)).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
             ];
         }
+
+        // xử lý phân trang: trường hợp người dùng chọn xem nhiều tháng
+        let totalList = arrMonth ? arrMonth.length : 0;
+        let pageTotal = ((totalList % limit) === 0) ?
+            parseInt(totalList / limit) :
+            parseInt((totalList / limit) + 1);
+
+        let currentPage = parseInt((page / limit) + 1);
+
+        // tính start and end item indexes  để căt dữ liệu
+        const startIndex = (currentPage - 1) * limit;
+        const endIndex = Math.min(startIndex + limit - 1, totalList - 1);
+
+        const arrMonthPaginate = arrMonth && arrMonth.slice(startIndex, endIndex + 1);
+
 
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
         let employees = user.employees;
@@ -256,7 +291,7 @@ class TaskOrganizationalUnitsChart extends Component {
             })
         })
 
-        let title = ["x", ...arrMonth];
+        let title = ["x", ...arrMonthPaginate];
         let totalTask = ["Số công việc"], taskPerEmployeeOfUnit = ["Công việc trên đầu người"];
 
         childOrganizationalUnit && childOrganizationalUnit.forEach((x, index) => {
@@ -264,7 +299,7 @@ class TaskOrganizationalUnitsChart extends Component {
             if (listTask.length !== 0) {
                 taskOfUnist = listTask.filter(t => t.organizationalUnit?._id === x.id);
             }
-            let row = [...arrMonth];
+            let row = [...arrMonthPaginate];
             row = row.map(r => {
                 let taskOfUnistInMonth = taskOfUnist.filter(t => {
                     let date = new Date(r)
@@ -285,6 +320,15 @@ class TaskOrganizationalUnitsChart extends Component {
             })
         })
 
+        if (JSON.stringify(this.state.displayPaginate) !== JSON.stringify(arrMonthPaginate)) {
+            this.setState({
+                totalList,
+                pageTotal,
+                currentPage,
+                display: arrMonthPaginate?.length,
+                displayPaginate: arrMonthPaginate
+            })
+        }
         return [
             title,
             totalTask,
@@ -295,11 +339,28 @@ class TaskOrganizationalUnitsChart extends Component {
     setMultiDataChart = () => {
         const { tasks, user } = this.props;
         let { childOrganizationalUnit } = this.props;
+        const { limit, page } = this.state;
 
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
         let employees = user.employees;
         let employeeOfUnits = {};
-        childOrganizationalUnit && childOrganizationalUnit.forEach(unit => {
+
+        // xử lý phân trang
+        let units = cloneDeep(childOrganizationalUnit);
+        const totalList = units ? units?.length : 0;
+        let pageTotal = ((totalList % limit) === 0) ?
+            parseInt(totalList / limit) :
+            parseInt((totalList / limit) + 1);
+
+        let currentPage = parseInt((page / limit) + 1);
+
+        // calculate start and end item indexes
+        const startIndex = (currentPage - 1) * limit;
+        const endIndex = Math.min(startIndex + limit - 1, totalList - 1);
+
+        const childOrganizationalUnitPaginate = units && units.slice(startIndex, endIndex + 1);
+
+        childOrganizationalUnitPaginate && childOrganizationalUnitPaginate.forEach(unit => {
             let roleInUnit = unit.managers.concat(unit.deputyManagers).concat(unit.employees)
             employeeOfUnits[unit.id] = employees?.filter(e => {
                 if (e?.roleId?.length > 0) {
@@ -322,7 +383,7 @@ class TaskOrganizationalUnitsChart extends Component {
         let totalTask = ["Số công việc"], taskPerEmployeeOfUnit = ["Công việc trên đầu người"];
 
 
-        childOrganizationalUnit && childOrganizationalUnit.forEach((unit, index) => {
+        childOrganizationalUnitPaginate && childOrganizationalUnitPaginate.forEach((unit, index) => {
             let taskOfUnist = [];
             if (listTask.length !== 0) {
                 taskOfUnist = listTask.filter(t => t.organizationalUnit?._id === unit.id);
@@ -334,6 +395,16 @@ class TaskOrganizationalUnitsChart extends Component {
             totalTask.push(taskOfUnist?.length)
             taskPerEmployeeOfUnit.push(taskPerEmployee && !isNaN(taskPerEmployee) ? taskPerEmployee.toFixed(1) : 0)
         })
+
+        if (JSON.stringify(this.state.displayPaginate) !== JSON.stringify(childOrganizationalUnitPaginate)) {
+            this.setState({
+                totalList,
+                pageTotal,
+                currentPage,
+                display: childOrganizationalUnitPaginate?.length,
+                displayPaginate: childOrganizationalUnitPaginate
+            })
+        }
 
         return {
             data: [
@@ -370,7 +441,7 @@ class TaskOrganizationalUnitsChart extends Component {
                 dataChart = this.setSingleDataChart();
         } else {
             // dạng nhiều đơn vị và không ở chế độ nâng cao
-            if (!advancedMode) {
+            if (!advancedMode || (advancedMode && !searchAdvanceMode)) {
                 if (barChart || !barChart) {
                     const data = this.setMultiDataChart()
                     title = data.title;
@@ -378,12 +449,12 @@ class TaskOrganizationalUnitsChart extends Component {
                 }
             }
             // dạng nhiều đơn vị và ở chế độ nâng cao/ bấm tìm kiếm mới thay đổi chart
-            if (advancedMode) {
+            if (advancedMode && searchAdvanceMode) {
                 // linechart
                 dataChart = this.setDataLineChart();
             }
         }
-        let chart = c3.generate({
+        this.chart.current = c3.generate({
             bindto: this.refs.taskUnitsChart,
             data: {
                 x: 'x',
@@ -398,7 +469,7 @@ class TaskOrganizationalUnitsChart extends Component {
             },
             axis: {
                 x: {
-                    type: singleUnit ? 'timeseries' : (advancedMode ? 'timeseries' : 'categories'),
+                    type: singleUnit ? 'timeseries' : ((advancedMode && searchAdvanceMode) ? 'timeseries' : 'categories'),
                     tick: {
                         format: '%m - %Y',
                         outer: false,
@@ -435,6 +506,9 @@ class TaskOrganizationalUnitsChart extends Component {
                 //     return value;
                 // }
             },
+            legend: {
+                show: (!singleUnit && advancedMode && searchAdvanceMode) ? false : true
+            }
         });
     };
 
@@ -447,9 +521,6 @@ class TaskOrganizationalUnitsChart extends Component {
             ...this.infoSearch,
             startDate: value
         }
-        // this.setState({
-        //     startDate: value
-        // })
     }
 
     /**
@@ -461,10 +532,6 @@ class TaskOrganizationalUnitsChart extends Component {
             ...this.infoSearch,
             endDate: value
         }
-
-        // this.setState({
-        //     endDate: value,
-        // })
     }
 
     static isEqual = (items1, items2) => {
@@ -511,6 +578,7 @@ class TaskOrganizationalUnitsChart extends Component {
                     endDate: endDate,
                     taskOfUnists: [],
                     searchAdvanceMode: true,
+                    page: 1
                 })
             } else {
                 this.setState({
@@ -518,7 +586,9 @@ class TaskOrganizationalUnitsChart extends Component {
                     endDateShow: endDate,
                     startDate: startDate,
                     endDate: endDate,
-                    taskOfUnists: []
+                    taskOfUnists: [],
+                    page: 1,
+
                 })
             }
 
@@ -572,11 +642,19 @@ class TaskOrganizationalUnitsChart extends Component {
 
     }
 
+    handlePagination = (page) => {
+        const { limit } = this.state;
+        let pageConvert = (page - 1) * (limit);
+
+        this.setState({
+            page: parseInt(pageConvert),
+        })
+    }
+
     render() {
         const { translate, tasks } = this.props;
         let { childOrganizationalUnit } = this.props;
-        const { startDate, endDate, singleUnit, totalTask, barChart, advancedMode, searchAdvanceMode } = this.state;
-
+        const { startDate, endDate, singleUnit, totalTask, barChart, advancedMode, searchAdvanceMode, totalList, display, currentPage, pageTotal } = this.state;
 
         return (
             <div className="box box-solid" >
@@ -666,8 +744,23 @@ class TaskOrganizationalUnitsChart extends Component {
                                     </div>
                                 }
                                 <section id={"taskUnitsChart"} className="c3-chart-container">
-                                    <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
+                                    <div ref="taskUnitsChart" style={{ marginBottom: "25px" }}></div>
+                                    {!singleUnit && advancedMode && searchAdvanceMode && <CustomLegendC3js
+                                        chart={this.chart.current}
+                                        chartId={"taskUnitsChart"}
+                                        legendId={"taskUnitsChartLegend"}
+                                        title={this.props?.childOrganizationalUnit && `${translate('general.list_unit')} (${this.props?.childOrganizationalUnit?.length})`}
+                                        dataChartLegend={this.props?.childOrganizationalUnit?.length && this.props.childOrganizationalUnit.map(item => item.name)}
+                                    />}
+
                                 </section>
+                                <PaginateBar
+                                    display={display}
+                                    total={totalList}
+                                    pageTotal={pageTotal}
+                                    currentPage={currentPage}
+                                    func={this.handlePagination}
+                                />
                             </div>
                             : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                     }
