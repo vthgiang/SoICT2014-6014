@@ -150,37 +150,35 @@ function TaskDashboard(props) {
         }
     }
 
+    const formatMonth = (value) => {
+        let monthTitle = value.slice(5, 7) + '-' + value.slice(0, 4);
+        return monthTitle
+    }
+
     const handleSelectMonthStart = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         setInfoSearch({
             ...infoSearch,
             startMonth: month,
-            startMonthTitle: startMonthTitle
         })
-        // infoSearch.startMonth = month;
-        // infoSearch.startMonthTitle = startMonthTitle;
     }
 
     const handleSelectMonthEnd = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         setInfoSearch({
             ...infoSearch,
             endMonth: month,
-            endMonthTitle: endMonthTitle
         })
-        // infoSearch.endMonth = month;
-        // infoSearch.endMonthTitle = endMonthTitle;
     }
 
 
 
     const handleSearchData = async () => {
-        let startMonth = new Date(infoSearch.startMonth);
-        let endMonth = new Date(infoSearch.endMonth);
+        const { startMonth, endMonth } = infoSearch
+        let startMonthObj = new Date(startMonth);
+        let endMonthObj = new Date(endMonth);
 
-        if (startMonth.getTime() > endMonth.getTime()) {
+        if (startMonthObj.getTime() > endMonthObj.getTime()) {
             const { translate } = props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -191,15 +189,20 @@ function TaskDashboard(props) {
         } else {
             setState({
                 ...state,
-                startMonth: infoSearch.startMonth,
-                endMonth: infoSearch.endMonth
+                startMonth: startMonth,
+                endMonth: endMonth
+            })
+            setInfoSearch({
+                ...infoSearch,
+                startMonthTitle: formatMonth(startMonth),
+                endMonthTitle: formatMonth(endMonth),
             })
 
-            await props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, infoSearch.startMonth, infoSearch.endMonth, null, null, true);
-            await props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, infoSearch.startMonth, infoSearch.endMonth, null, null, true);
-            await props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, infoSearch.startMonth, infoSearch.endMonth, null, null, true);
-            await props.getInformedTaskByUser([], 1, 1000, [], [], [], null, infoSearch.startMonth, infoSearch.endMonth, null, null, true);
-            await props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, infoSearch.startMonth, infoSearch.endMonth, null, null, true);
+            await props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            await props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            await props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            await props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+            await props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         }
     }
 
