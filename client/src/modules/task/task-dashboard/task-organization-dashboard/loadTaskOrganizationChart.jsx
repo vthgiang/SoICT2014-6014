@@ -10,7 +10,7 @@ import { CustomLegendC3js } from '../../../../common-components';
 import { customAxisC3js } from '../../../../helpers/customAxisC3js';
 
 const LoadTaskOrganizationChart = (props) => {
-    const { translate, tasks } = props
+    const { translate, tasks, organizationUnitTasks } = props
     const { startMonth, endMonth, startMonthTitle, endMonthTitle, units, idsUnit, typeChart = "followTime" } = props;
 
     const [dataChart, setDataChart] = useState();
@@ -31,7 +31,7 @@ const LoadTaskOrganizationChart = (props) => {
 
     function setDateBarChart() {
         let data = [], category = []
-        let taskList = typeChart === "followTime" ? tasks?.organizationUnitTasks?.tasks : tasks?.organizationUnitTasksInMonth?.tasks;
+        let taskList = typeChart === "followTime" && organizationUnitTasks
         if (taskList?.length > 0) {
             let selectedUnit = idsUnit;
 
@@ -193,7 +193,7 @@ const LoadTaskOrganizationChart = (props) => {
                 bottom: 50,
                 right: 20
             },
-            
+
             axis: {
                 x: {
                     type: 'category',
@@ -277,12 +277,12 @@ const LoadTaskOrganizationChart = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    { tasks.isLoading 
+                    {tasks.isLoading
                         ? <p>{translate('general.loading')}</p>
-                        : (tasks?.organizationUnitTasks && typeChart === "followTime") || tasks?.organizationUnitTasksInMonth
+                        : organizationUnitTasks
                             ? <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
                                 <div id="weightTaskOrganization"></div>
-                                { typeChart === "followTime" 
+                                {typeChart === "followTime"
                                     && <CustomLegendC3js
                                         chart={ref.current.chart}
                                         chartId={"weightTaskOrganizationChart"}
@@ -291,9 +291,9 @@ const LoadTaskOrganizationChart = (props) => {
                                         dataChartLegend={dataChart && dataChart.map(item => item[0])}
                                     />
                                 }
-                            </section>  
+                            </section>
                             : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
-                    }   
+                    }
                 </div>
             </div>
         </React.Fragment>

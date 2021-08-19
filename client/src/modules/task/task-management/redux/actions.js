@@ -28,6 +28,8 @@ export const taskManagementActions = {
     getTasksByProject,
 
     importTasks,
+
+    getOrganizationTaskDashboardChart
 };
 
 
@@ -615,6 +617,27 @@ function importTasks(data) {
                 dispatch({
                     type: taskManagementConstants.IMPORT_TASKS_FAILURE,
                     error: err.response.data.content
+                });
+            })
+    }
+}
+function getOrganizationTaskDashboardChart(data) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST
+        });
+
+        taskManagementService.getOrganizationTaskDashboardChart(data)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE,
+                    error
                 });
             })
     }

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const moment = require("moment");
-const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole } = require('../../../models');
+const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole, Role } = require('../../../models');
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const overviewService = require(`../../kpi/employee/management/management.service`);
 
@@ -2296,7 +2296,7 @@ exports.getSubTask = async (portal, taskId) => {
  * @param {*} data 
  */
 
-exports.getTasksByUser = async (portal, data) => { //nguyen
+exports.getTasksByUser = async (portal, data) => {
     var tasks = [];
     if (data.data == "user") {
         tasks = await Task(connect(DB_CONNECTION, portal)).find({
@@ -3013,3 +3013,200 @@ exports.importTasks = async (data, portal, user) => {
     if (dataImport?.length)
         return await Task(connect(DB_CONNECTION, portal)).insertMany(dataImport);
 }
+exports.getOrganizationTaskDashboardChartData = async (data, portal, user) => {
+    // return organizationUnitTasks
+
+    let { organizationalUnitId, startMonth, endMonth } = data;
+    let organizationUnitTasks;
+    let keySearch = {};
+
+    if (organizationalUnitId) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnitId,
+            }
+        };
+    }
+
+    let startDate = new Date(startMonth);
+    let endDate = new Date(endMonth);
+    endDate.setMonth(endDate.getMonth() + 1);
+
+    if (startDate && endDate) {
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
+
+    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': -1 })
+        .populate({ path: "organizationalUnit parent" })
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
+
+    // return usersInUnitsOfCompany - Lấy tất nhan vien trong moi đơn vị trong công ty
+    const allUnits = await OrganizationalUnit(
+        connect(DB_CONNECTION, portal)
+    ).find(); // { company: id }
+    const newData = allUnits.map((department) => {
+        return {
+            id: department._id.toString(),
+            name: department.name,
+            description: department.description,
+            managers: department.managers.map((item) => item.toString()),
+            deputyManagers: department.deputyManagers.map((item) => item.toString()),
+            employees: department.employees.map((item) => item.toString()),
+            parent_id:
+                department.parent !== null && department.parent !== undefined
+                    ? department.parent.toString()
+                    : null,
+        };
+    });
+
+    let userArray = await _getAllUsersInOrganizationalUnits(portal, newData);
+
+    return [
+        {
+            name: "general-task-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+                usersInUnitsOfCompany: userArray
+            }
+        },
+        {
+            name: "gantt-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+            }
+        },
+        {
+            name: "employee-distribution-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+            }
+        },
+        {
+            name: "in-process-unit-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+            }
+        },
+        {
+            name: "task-results-domain-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+
+            }
+
+        },
+        {
+            name: "task-status-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+
+            }
+        },
+        {
+            name: "average-results-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+
+            }
+        },
+        {
+            name: "load-task-organization-chart",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+
+            }
+        },
+        {
+            name: "all-time-sheet-log-by-unit",
+            data: {
+                organizationUnitTasks: organizationUnitTasks,
+            }
+        },
+    ]
+
+}
+
+_getAllUsersInOrganizationalUnits = async (portal, data) => {
+    var userArray = [];
+    for (let i = 0; i < data.length; i++) {
+        var department = data[i];
+        if (department) {
+            var userRoles = await UserRole(connect(DB_CONNECTION, portal))
+                .find({
+                    roleId: {
+                        $in: [
+                            ...department.managers,
+                            ...department.deputyManagers,
+                            ...department.employees,
+                        ],
+                    },
+                })
+                .populate({
+                    path: "userId",
+                    select: "name",
+                });
+
+            var tmp = await Role(connect(DB_CONNECTION, portal)).find(
+                {
+                    _id: {
+                        $in: [
+                            ...department.managers,
+                            ...department.deputyManagers,
+                            ...department.employees,
+                        ],
+                    },
+                },
+                {
+                    name: 1,
+                }
+            );
+            var users = {
+                managers: {},
+                deputyManagers: {},
+                employees: {},
+                department: department.name,
+                id: department.id,
+            };
+            tmp.forEach((item) => {
+                let obj = {};
+                obj._id = item.id;
+                obj.name = item.name;
+                obj.members = [];
+
+                if (department.managers.includes(item._id.toString())) {
+                    users.managers[item._id.toString()] = obj;
+                } else if (department.deputyManagers.includes(item._id.toString())) {
+                    users.deputyManagers[item._id.toString()] = obj;
+                } else if (department.employees.includes(item._id.toString())) {
+                    users.employees[item._id.toString()] = obj;
+                }
+            });
+
+            userRoles.forEach((item) => {
+                if (users.managers[item.roleId.toString()] && item.userId) {
+                    users.managers[item.roleId.toString()].members.push(item.userId);
+                } else if (users.deputyManagers[item.roleId.toString()] && item.userId) {
+                    users.deputyManagers[item.roleId.toString()].members.push(
+                        item.userId
+                    );
+                } else if (users.employees[item.roleId.toString()] && item.userId) {
+                    users.employees[item.roleId.toString()].members.push(
+                        item.userId
+                    );
+                }
+            });
+
+            userArray.push(users);
+        }
+    }
+    return userArray;
+};

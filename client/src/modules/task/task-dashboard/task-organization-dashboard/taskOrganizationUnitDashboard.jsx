@@ -24,10 +24,11 @@ import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 const formatMonth = (value) => {
-    let startMonthTitle = value.slice(5, 7) + '-' + value.slice(0, 4);
-    return startMonthTitle
+    let monthTitle = value.slice(5, 7) + '-' + value.slice(0, 4);
+    return monthTitle
 }
 function TaskOrganizationUnitDashboard(props) {
+    const { taskDashboardChart } = props.tasks
     const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = props;
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
@@ -122,15 +123,14 @@ function TaskOrganizationUnitDashboard(props) {
     }
     useEffect(() => {
         async function fetchMyAPI() {
-            await props.getDepartment();
             await props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-            await props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-            await props.getAllUserInAllUnitsOfCompany();
+
             setState({
                 ...state,
                 dataStatus: DATA_STATUS.QUERYING,
                 willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             });
+
         }
         fetchMyAPI()
     }, [])
@@ -145,7 +145,7 @@ function TaskOrganizationUnitDashboard(props) {
         }
 
         if (!idsUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            let data, organizationUnit = "organizationUnit";
+            // let data, organizationUnit = "organizationUnit";
             let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
             if (dashboardEvaluationEmployeeKpiSet) {
@@ -174,13 +174,13 @@ function TaskOrganizationUnitDashboard(props) {
                 idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : state.idsUnit,
                 selectBoxUnit: childrenOrganizationalUnit
             });
-            data = {
-                organizationUnitId: [childrenOrganizationalUnit?.[0]?.id],
-                type: organizationUnit,
+            let data = {
+                organizationalUnitId: childrenOrganizationalUnit?.[0]?.id,
+                startMonth: state.startMonth,
+                endMonth: state.endMonth
             }
-
-            props.getTaskInOrganizationUnitByMonth([childrenOrganizationalUnit?.[0]?.id], state.startMonth, state.endMonth);
-            props.getTaskByUser(data);
+            // service mới, lưu vào state redux : props.tasks.taskDashboardChart:[ general-task-chart, ]
+            props.getOrganizationTaskDashboardChart(data);
 
         }
         else if (state.dataStatus === DATA_STATUS.QUERYING) {
@@ -216,14 +216,6 @@ function TaskOrganizationUnitDashboard(props) {
             })
         }
     }, [distributionOfEmployeeChart?.employees, allTimeSheetLogsByUnit?.employees, user?.employees])
-
-    function formatDate(date) {
-        if (date) {
-            let data = date.split("-");
-            data = data[1] + "-" + data[0]
-            return data;
-        }
-    }
 
     const handleChangeOrganizationUnit = async (value) => {
         let checkUnit = state.checkUnit + 1;
@@ -294,7 +286,12 @@ function TaskOrganizationUnitDashboard(props) {
                 type: "forAllTimeSheetLogs",
                 perPage: allTimeSheetLogsByUnitIdPerPage
             });
-            await props.getTaskInOrganizationUnitByMonth(idsUnit, startMonth, endMonth);
+            let dataQuery = {
+                organizationalUnitId: idsUnit,
+                startMonth: startMonth,
+                endMonth: endMonth
+            }
+            await props.getOrganizationTaskDashboardChart(dataQuery);
         }
     }
 
@@ -361,15 +358,43 @@ function TaskOrganizationUnitDashboard(props) {
             })
         }
     }
+    function checkNullOrUndefined(chartName) {
+        var found = false;
+        for (var i = 0; i < taskDashboardChart?.length; i++) {
+            if (taskDashboardChart[i].name == chartName && taskDashboardChart[i].data.length > 0) {
+                found = true;
+                break;
+            }
+        }
+        return found
+    }
 
-    let childrenOrganizationalUnit = [];
+    function getDataTask(chartName) {
+        let data;
+        for (var i = 0; i < taskDashboardChart?.length; i++) {
+            if (taskDashboardChart[i].name == chartName) {
+                data = taskDashboardChart[i].data.organizationUnitTasks
+            }
+        }
+        return data
+    }
+
+    function getDataEmployee(chartName) {
+        let data;
+        for (var i = 0; i < taskDashboardChart?.length; i++) {
+            if (taskDashboardChart[i].name == chartName) {
+                data = taskDashboardChart[i].data.usersInUnitsOfCompany
+            }
+        }
+        return data
+    }
+
     let currentOrganizationalUnit, currentOrganizationalUnitLoading;
 
     if (dashboardEvaluationEmployeeKpiSet) {
         currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
         currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
     }
-
     return (
         <React.Fragment>
             {currentOrganizationalUnit
@@ -443,11 +468,11 @@ function TaskOrganizationUnitDashboard(props) {
                                 </div>
 
                                 <div className="box-body qlcv">
-                                    {state.callAction && tasks && tasks.organizationUnitTasks?.tasks?.length > 0 &&
+                                    {state.callAction && taskDashboardChart?.length &&
                                         <GeneralTaskChart
-                                            tasks={tasks.organizationUnitTasks}
+                                            tasks={getDataTask("general-task-chart")}
                                             units={selectBoxUnit}
-                                            employees={user.usersInUnitsOfCompany}
+                                            employees={getDataEmployee("general-task-chart")}
                                             unitSelected={idsUnit}
                                             startMonthTitle={startMonthTitle}
                                             endMonthTitle={endMonthTitle}
@@ -482,7 +507,7 @@ function TaskOrganizationUnitDashboard(props) {
                                 </div>
                                 <LazyLoadComponent once={true}>
                                     <GanttCalendar
-                                        tasks={tasks}
+                                        organizationUnitTasks={getDataTask("gantt-chart")}
                                         unit={true}
                                         unitSelected={idsUnit}
                                     />
@@ -496,12 +521,11 @@ function TaskOrganizationUnitDashboard(props) {
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box box-primary">
-                                {tasks && tasks.organizationUnitTasks &&
+                                {taskDashboardChart?.length &&
                                     <LazyLoadComponent once={true}>
                                         <DistributionOfEmployee
                                             unitIds={idsUnit}
-                                            tasks={tasks.organizationUnitTasks}
-                                            listEmployee={distributionOfEmployeeChart?.employees}
+                                            tasks={getDataTask("employee-distribution-chart")}
                                             startMonthTitle={startMonthTitle}
                                             endMonthTitle={endMonthTitle}
                                             selectBoxUnit={selectBoxUnit}
@@ -536,11 +560,10 @@ function TaskOrganizationUnitDashboard(props) {
                                     </div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    {state.callAction && tasks && tasks.organizationUnitTasks &&
+                                    {state.callAction && taskDashboardChart?.length &&
                                         <LazyLoadComponent once={true}>
                                             <InprocessOfUnitTask
-                                                tasks={tasks.organizationUnitTasks}
-                                                listEmployee={user && user.employees}
+                                                tasks={getDataTask("in-process-unit-chart")}
                                                 unitSelected={idsUnit}
                                                 unitNameSelected={idsUnit && getUnitName(selectBoxUnit, idsUnit)}
                                             />
@@ -575,7 +598,7 @@ function TaskOrganizationUnitDashboard(props) {
                                     {state.callAction &&
                                         <LazyLoadComponent once={true}>
                                             <DomainOfTaskResultsChart
-                                                callAction={!state.willUpdate}
+                                                organizationUnitTasks={getDataTask("task-results-domain-chart")}
                                                 TaskOrganizationUnitDashboard={true}
                                                 units={idsUnit}
                                                 startMonth={startMonth}
@@ -610,6 +633,7 @@ function TaskOrganizationUnitDashboard(props) {
                                     {state.callAction &&
                                         <LazyLoadComponent once={true}>
                                             <TaskStatusChart
+                                                organizationUnitTasks={getDataTask("task-status-chart")}
                                                 callAction={!state.willUpdate}
                                                 TaskOrganizationUnitDashboard={true}
                                                 startMonth={startMonth}
@@ -647,6 +671,7 @@ function TaskOrganizationUnitDashboard(props) {
                                 <div className="box-body qlcv">
                                     <LazyLoadComponent once={true}>
                                         <AverageResultsOfTaskInOrganizationalUnit
+                                            organizationUnitTasks={getDataTask("average-results-chart")}
                                             units={idsUnit}
                                             startMonth={startMonth}
                                             endMonth={endMonth}
@@ -662,15 +687,13 @@ function TaskOrganizationUnitDashboard(props) {
                         <div className="col-xs-12">
                             <LazyLoadComponent once={true}>
                                 <LoadTaskOrganizationChart
-                                    tasks={tasks?.organizationUnitTasks}
-                                    listEmployee={user && user.employees}
+                                    organizationUnitTasks={getDataTask("load-task-organization-chart")}
                                     units={selectBoxUnit}
                                     startMonth={startMonth}
                                     endMonth={endMonth}
                                     startMonthTitle={startMonthTitle}
                                     endMonthTitle={endMonthTitle}
                                     idsUnit={idsUnit}
-                                    employeeLoading={user?.employeeLoading}
                                     getUnitName={getUnitName}
                                     showUnitTask={showUnitGeneraTask}
                                 />
@@ -729,13 +752,9 @@ function mapState(state) {
     return { tasks, user, dashboardEvaluationEmployeeKpiSet };
 }
 const actionCreators = {
-    getTaskByUser: taskManagementActions.getTasksByUser,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getDepartment: UserActions.getDepartmentOfUser,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getOrganizationTaskDashboardChart: taskManagementActions.getOrganizationTaskDashboardChart
 };
 
 export default connect(mapState, actionCreators)(withTranslate(TaskOrganizationUnitDashboard));

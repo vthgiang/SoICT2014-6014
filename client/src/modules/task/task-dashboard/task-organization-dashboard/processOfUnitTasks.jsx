@@ -10,7 +10,7 @@ const InprocessOfUnitTask = (props) => {
 
     useDeepCompareEffect(() => {
         let { tasks } = props;
-        let taskList = tasks?.organizationUnitTasks?.tasks;
+        let taskList = tasks;
         let delayed = [translate('task.task_management.delayed_time')];
         let intime = [translate('task.task_management.in_time')];
         let notAchived = [translate('task.task_management.not_achieved')];
@@ -54,7 +54,7 @@ const InprocessOfUnitTask = (props) => {
     }, [props.tasks])
 
     const barChart = (delayed, intime, notAchived) => {
-        let height = unitNameSelected?.length ?  unitNameSelected.length * 60 : 0;
+        let height = unitNameSelected?.length ? unitNameSelected.length * 60 : 0;
         let heightOfChart = height > 500 ? height : 500;
         const pie = c3.generate({
             bindto: document.getElementById("inprocessOfUnitTask"),
@@ -104,8 +104,7 @@ const InprocessOfUnitTask = (props) => {
 }
 
 function mapState(state) {
-    const { tasks } = state;
-    return { tasks }
+    return { state }
 }
 
 const connectedInprocessOfUnitTask = connect(mapState, null)(withTranslate(InprocessOfUnitTask));

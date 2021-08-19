@@ -181,20 +181,18 @@ const GeneralTaskChart = (props) => {
         }
     }, [state])
 
-    useDeepCompareEffect(() => {
+    useEffect(() => {
         console.count();
         const { tasks, units, unitSelected, employees } = props;
-        const allTasks = tasks?.tasks;
 
         const listEmployee = {};
         //Lay cac cong viec cua cac unit da chon
-        const tasksOfSelectedUnit = allTasks?.filter(x =>
+        const tasksOfSelectedUnit = tasks?.filter(x =>
             unitSelected?.includes(x?.organizationalUnit?._id))
 
         // Dem cong viec cua tat ca cac unit da chon
         let dataRow = countTask(tasksOfSelectedUnit, 'Tổng');
         dataTable.push(dataRow);
-
         // Dem cong viec cua tung unit da chon
         let listUnit = [];
         units && units.forEach(unit => {
@@ -474,7 +472,9 @@ const GeneralTaskChart = (props) => {
 
     let data = [];
     let dataTemp = state.filter(o => o.name);
+
     for (let i in dataTemp) {
+
         let bold = dataTemp[i].parent && dataTemp[i].parent !== true ? "normal" : "bold";
         data[i] = {
             ...dataTemp[i],

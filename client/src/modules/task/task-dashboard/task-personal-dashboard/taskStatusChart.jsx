@@ -10,7 +10,7 @@ import 'c3/c3.css';
 
 function TaskStatusChart(props) {
     // Khai báo props
-    const { translate, TaskOrganizationUnitDashboard, tasks } = props;
+    const { translate, TaskOrganizationUnitDashboard, tasks, organizationUnitTasks } = props;
 
     const ROLE = { RESPONSIBLE: 1, ACCOUNTABLE: 2, CONSULTED: 3, INFORMED: 4, CREATOR: 5 };
     const ROLE_SELECTBOX = [
@@ -48,7 +48,7 @@ function TaskStatusChart(props) {
             && tasks.accountableTasks
             && tasks.consultedTasks
             && tasks.informedTasks
-            && tasks.creatorTasks) || (tasks.organizationUnitTasks)
+            && tasks.creatorTasks) || (organizationUnitTasks)
         ) {
             pieChart();
         }
@@ -86,8 +86,8 @@ function TaskStatusChart(props) {
     const setDataPieChart = () => {
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
         let listTask = [], listTaskByRole = [];
-        if (TaskOrganizationUnitDashboard) {
-            listTask = tasks && tasks.organizationUnitTasks;
+        if (TaskOrganizationUnitDashboard) { // neu la listTask cua organizationUnit
+            listTask = organizationUnitTasks && organizationUnitTasks;
         }
         else if (tasks && tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
             listTaskByRole[ROLE.RESPONSIBLE] = tasks.responsibleTasks;
@@ -104,10 +104,7 @@ function TaskStatusChart(props) {
 
             listTask = filterDuplicateTask(listTask);
         };
-
         if (listTask) {
-            listTask = TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
-
             listTask.map(task => {
                 switch (task.status) {
                     case "inprocess":
@@ -136,6 +133,7 @@ function TaskStatusChart(props) {
             [translate('task.task_management.delayed'), numberOfDelayed],
             [translate('task.task_management.canceled'), numberOfCanceled],
         ];
+
         return dataPieChart;
     }
 

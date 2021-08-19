@@ -251,9 +251,9 @@ export function tasks(state = {
         case taskManagementConstants.ADDNEW_TASK_SUCCESS:
             console.log('action.payload', action.payload);
             console.log('kkkkk', [
-                    action.payload,
-                    ...state.tasks,
-                ]);
+                action.payload,
+                ...state.tasks,
+            ]);
             return {
                 ...state,
                 tasks: [
@@ -639,25 +639,43 @@ export function tasks(state = {
             }
 
         case taskManagementConstants.IMPORT_TASKS_REQUEST:
-             return {
+            return {
                 ...state,
                 isLoading: true
             };
-        
+
         case taskManagementConstants.IMPORT_TASKS_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 importTask: action.payload.content,
             }
-        
+
         case taskManagementConstants.IMPORT_TASKS_FAILURE:
-             return {
+            return {
                 ...state,
                 error: action.error,
                 isLoading: false
             }
-        
+        case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST:
+            return {
+                ...state,
+                taskDashboardChart: null,
+                isLoading: true
+            }
+        case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_SUCCESS:
+            return {
+                ...state,
+                taskDashboardChart: action.payload,
+                isLoading: false
+            }
+        case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE:
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false
+            }
+
         default:
             return state
     }

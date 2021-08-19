@@ -113,7 +113,7 @@ class DomainOfTaskResultsChart extends Component {
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             // Kiểm tra tasks đã được bind vào props hay chưa
             if (this.props.TaskOrganizationUnitDashboard) {
-                if (!nextProps.tasks.organizationUnitTasks) {
+                if (!nextProps.organizationUnitTasks) {
                     return false;
                 }
 
@@ -181,13 +181,14 @@ class DomainOfTaskResultsChart extends Component {
 
     // Hàm lọc các công việc theo từng tháng
     filterTasksByMonth = (currentMonth, nextMonth) => {
-        const { tasks, TaskOrganizationUnitDashboard, units } = this.props;
+        const { tasks, TaskOrganizationUnitDashboard, units, organizationUnitTasks } = this.props;
         const { role, userId, typePoint } = this.state;
 
         let results = [], maxResult, minResult;
         let listTask = [], listTaskByRole = [];
         if (TaskOrganizationUnitDashboard) {
-            listTask = tasks.organizationUnitTasks;
+            listTask = organizationUnitTasks;
+            console.log('listTask1 :>> ', listTask);
         }
         else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks) {
             listTaskByRole[this.ROLE.RESPONSIBLE] = tasks.responsibleTasks;
@@ -201,13 +202,14 @@ class DomainOfTaskResultsChart extends Component {
             }
 
             listTask = filterDifference(listTask);
+            console.log('listTask2 :>> ', listTask);
         };
-
         if (listTask) {
-            listTask = TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
+                    console.log("111")
                     let date = new Date(nextMonth)
+                    console.log('date :>> ', date);
                     let month = date.getMonth() + 1
                     let day;
                     if (month === 1 || month === 3 || month === 5 || month === 7 || month === 8 || month === 10 || month === 12) {
@@ -224,12 +226,18 @@ class DomainOfTaskResultsChart extends Component {
 
                     return 0;
                 }).map(evaluation => {
+                    console.log("222")
                     evaluation.results.filter(result => {
+                        console.log("333")
                         if (units || (result.employee === userId)) {
+                            console.log("444")
                             return 1;
                         }
                         return 0;
                     }).map(result => {
+                        console.log("111")
+                        console.log('result :>> ', result);
+                        console.log('typePoint :>> ', typePoint);
                         switch (typePoint) {
                             case this.TYPEPOINT.AUTOMAIC_POINT:
                                 results.push(result.automaticPoint);
@@ -250,7 +258,12 @@ class DomainOfTaskResultsChart extends Component {
             maxResult = Math.max.apply(Math, results);
             minResult = Math.min.apply(Math, results);
         }
-
+        let x = {
+            'month': new Date(currentMonth),
+            'max': maxResult,
+            'min': minResult
+        };
+        console.log('x :>> ', x);
         return {
             'month': new Date(currentMonth),
             'max': maxResult,

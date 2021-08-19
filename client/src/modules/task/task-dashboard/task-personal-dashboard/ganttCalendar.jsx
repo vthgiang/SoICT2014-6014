@@ -201,10 +201,9 @@ function GanttCalendar(props) {
 
   // Xử lý công việc đơn vị
   const getdataTaskUnit = () => {
-    const { tasks, unitSelected } = props;
-    const { organizationUnitTasks } = tasks;
-    const listtask = organizationUnitTasks && organizationUnitTasks.tasks;
-    const tasksOfSelectedUnit = listtask?.filter(x =>
+    const { organizationUnitTasks, unitSelected } = props;
+
+    const tasksOfSelectedUnit = organizationUnitTasks?.filter(x =>
       unitSelected?.includes(x?.organizationalUnit?._id))
 
     let line = 0;
@@ -423,9 +422,6 @@ function GanttCalendar(props) {
   const count = dataCalendar.countAllTask;
   const task = tasks && tasks.task;
 
-  console.log('dataCalendar', dataCalendar)
-  console.log('dataTask', dataTask)
-
   return (
     <div className="gantt qlcv" >
       <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
@@ -454,7 +450,7 @@ function GanttCalendar(props) {
 
       {<ModalDetailTask action={'Employee'} task={task} />}
       <Gantt
-        ganttId = "gantt-chart"
+        ganttId="gantt-chart"
         ganttData={dataTask}
         zoom={currentZoom}
         status={taskStatus}

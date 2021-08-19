@@ -9,7 +9,7 @@ import 'c3/c3.css';
 
 function AverageResultsOfTaskInOrganizationalUnit(props) {
     // Khai báo props
-    const { translate, tasks, dashboardEvaluationEmployeeKpiSet } = props;
+    const { translate, tasks, dashboardEvaluationEmployeeKpiSet, organizationUnitTasks } = props;
 
     // Khởi tạo dữ liệu select box
     const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
@@ -69,7 +69,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 
     useEffect(() => {
         if (currentState.criteria === criteria && currentState.typePoint === typePoint) {
-            if (tasks.organizationUnitTasks) {
+            if (organizationUnitTasks) {
                 averageChart();
             }
         }
@@ -137,8 +137,8 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                 }
             })
         }
-        if (tasks && tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks) {
-            listTask = tasks.organizationUnitTasks.tasks;
+        if (organizationUnitTasks) {
+            listTask = organizationUnitTasks;
         };
 
         if (listTask) {

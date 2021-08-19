@@ -1244,7 +1244,7 @@ export default {
                 title_showless: "Click to show less"
             },
             google_driver: {
-                button : "Add files from Google Drive"
+                button: "Add files from Google Drive"
             }
         },
 
@@ -2814,6 +2814,7 @@ export default {
                 edit_status_of_task_success: "Edit status of task successfully",
                 edit_status_archived_of_task_success:
                     "Edit archived status of task successfully",
+                get_task_dashboard_data_success: "Get task dashboard data success",
 
                 get_subtask_fail: "Get sub task fail",
                 get_task_of_informed_employee_fail:
@@ -2834,6 +2835,7 @@ export default {
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail:
                     "Can't edit archived status of task",
+                get_task_dashboard_data_fail: "Get task dashboard data fail",
                 task_status_error: "Status of task doesn't allow archive",
                 confirm_delete:
                     "This task cannot be deleted because it is in progress!",

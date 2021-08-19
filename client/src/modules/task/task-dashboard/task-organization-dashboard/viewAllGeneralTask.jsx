@@ -49,7 +49,6 @@ const ViewAllGeneralTask = (props) => {
         }
     }
 
-    console.log('tasks', tasks)
     return (
         <React.Fragment>
             <DialogModal

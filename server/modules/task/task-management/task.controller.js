@@ -1087,3 +1087,22 @@ exports.importTasks = async (req, res) => {
         })
     }
 }
+exports.getOrganizationTaskDashboardChartData = async (req, res) => {
+    try {
+        const data = await TaskManagementService.getOrganizationTaskDashboardChartData(req.query, req.portal, req.user);
+        await Logger.info(req.user.email, 'get_task_dashboard_data_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_dashboard_data_success'],
+            content: data
+        })
+    } catch (error) {
+        console.log('errror', error)
+        await Logger.error(req.user.email, 'get_task_dashboard_data_fail', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_task_dashboard_data_fail'],
+            content: error
+        })
+    }
+}

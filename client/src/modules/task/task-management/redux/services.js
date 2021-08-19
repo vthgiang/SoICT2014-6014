@@ -30,6 +30,8 @@ export const taskManagementService = {
     addNewProjectTask,
     getTasksByProject,
     importTasks,
+
+    getOrganizationTaskDashboardChart,
 };
 
 
@@ -500,4 +502,16 @@ function importTasks(data) {
         method: 'POST',
         data: data
     }, true, true, 'task.task_management');
+}
+
+function getOrganizationTaskDashboardChart(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/task-dashboard`,
+        method: 'GET',
+        params: {
+            organizationalUnitId: data.organizationalUnitId,
+            startMonth: data.startMonth,
+            endMonth: data.endMonth
+        }
+    }, false, true, 'task.task_management');
 }

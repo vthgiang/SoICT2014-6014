@@ -120,7 +120,7 @@ export default {
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình hoạt động chăm sóc khách hàng",
                 evaluation: "Đánh giá hoạt động CSKH",
-                crmUnitConfiguration:"Cấu hình đơn vị chăm sóc khách hàng"
+                crmUnitConfiguration: "Cấu hình đơn vị chăm sóc khách hàng"
             },
 
             task_template: "Mẫu Công Việc",
@@ -1342,7 +1342,7 @@ export default {
                 title_showless: "Bấm để hiển thị ít hơn"
             },
             google_driver: {
-                button : "Thêm files từ Google Drive"
+                button: "Thêm files từ Google Drive"
             }
         },
 
@@ -2162,7 +2162,7 @@ export default {
                         "Chỉnh sửa thông tin nhân viên thất bại",
                     import_employee_success:
                         "Import thông tin nhân viên thành công",
-                    importing_employee: 
+                    importing_employee:
                         "Đang xử lí dữ liệu",
                     import_employee_faile:
                         "Import thông tin nhân viên thất bại",
@@ -3027,6 +3027,7 @@ export default {
                 get_task_evaluation_success:
                     "Lấy thông tin đánh giá công việc thành công",
                 get_all_task_success: "Lấy tất cả công việc thành công",
+                get_task_dashboard_data_success: "Lấy dữ liệu dashboard thành công",
                 create_task_success: "Tạo công việc mới thành công",
                 delete_success: "Xóa công việc thành công",
                 edit_status_of_task_success:
@@ -3050,6 +3051,7 @@ export default {
                 get_task_evaluation_fail:
                     "Lấy thông tin đánh giá công việc thất bại",
                 get_all_task_fail: "Lấy tất cả công việc thất bại",
+                get_task_dashboard_data_fail: "Lấy dữ liệu dashboard thất bại",
                 create_task_fail: "không thể tạo công việc mới",
                 delete_fail: "Không thể xóa công việc này",
                 edit_status_of_task_fail:
@@ -5873,7 +5875,7 @@ export default {
                 add_fail: "Thêm phương tiện thất bại",
                 edit_success: "Đã chỉnh sửa trạng thái phương tiện",
                 edit_fail: "Chỉnh sửa trạng thái phương tiện thất bại",
-            },            
+            },
             transportDepartment: {
                 add_success: "Đã thêm đơn vị vận chuyển",
                 add_fail: "Thêm đơn vị vận chuyển thất bại",

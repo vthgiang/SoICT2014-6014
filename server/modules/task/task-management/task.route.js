@@ -23,4 +23,6 @@ router.get('/time-sheet/all', auth, TaskManagementController.getAllUserTimeSheet
 
 router.post('/tasks/project-tasks/cpm', auth, TaskManagementController.createProjectTasksFromCPM);
 
+router.get('/task-dashboard', auth, TaskManagementController.getOrganizationTaskDashboardChartData)
+
 module.exports = router;

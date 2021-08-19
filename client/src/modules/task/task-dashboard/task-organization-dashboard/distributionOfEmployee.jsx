@@ -102,7 +102,7 @@ class DistributionOfEmployee extends Component {
         const { tasks, user } = this.props;
         const { status } = this.state;
         let listEmployee;
-        let organizationUnitTasks = tasks.organizationUnitTasks, taskListByStatus;
+        let organizationUnitTasks = tasks, taskListByStatus;
         let taskListEmployee = [], numOfAccountableTask = [], numOfConsultedTask = [], numOfResponsibleTask = [], numOfInformedTask = [], nameEmployee = [];
         let accountableEmployees = 0, consultedEmployees = 0, responsibleEmployees = 0, informedEmployees = 0;
 
@@ -110,7 +110,7 @@ class DistributionOfEmployee extends Component {
             listEmployee = user?.employeeForDistributionChart?.employees;
         }
         if (status) {
-            taskListByStatus = organizationUnitTasks?.tasks?.filter(task => this.filterByStatus(task))
+            taskListByStatus = organizationUnitTasks?.filter(task => this.filterByStatus(task))
         }
 
         if (listEmployee) {
@@ -343,8 +343,8 @@ class DistributionOfEmployee extends Component {
 }
 
 function mapState(state) {
-    const { user, tasks } = state;
-    return { user, tasks };
+    const { user } = state;
+    return { user };
 }
 
 const actions = {
