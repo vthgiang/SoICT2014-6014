@@ -384,6 +384,7 @@ class SuperHome extends Component {
                                     <GanttCalendar
                                         tasks={tasks}
                                         unitOrganization={false}
+                                        checkFromHome={true}
                                     />
                                 </LazyLoadComponent>
                             </div>

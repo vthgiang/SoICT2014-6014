@@ -81,7 +81,7 @@ function Gantt(props) {
     }, [])
 
     useEffect(() => {
-        if (showscroll) {
+        if (showscroll || props?.checkFromHome) {
             let outer = window.$(`#gantt-${ganttId}`);
             // console.log(outer.css("height"), window.innerHeight / 2);
             let lenghHeight = outer.css("height")
@@ -90,16 +90,17 @@ function Gantt(props) {
             lenghHeight = parseInt(lenghHeight)
             if (lenghHeight !== window.innerHeight / 2) {
                 outer.css({ "max-height": `${window.innerHeight / 2}px` });
-                setAb(window.innerHeight / 2)
+                setAb(window.innerHeight / 2);
+                // console.log('when showscroll == true', outer[0]);
             }
-            console.log('when showscroll == true', outer[0]);
+            // console.log('when showscroll == true', outer[0]);
         } else {
             let outer = window.$(`#gantt-${ganttId}`);
-            //console.log('when showscroll == true', outer[0],lenghHeight);
-            outer.css({ "max-height": `${1000000}px` });
+            console.log('when showscroll == true');
+            outer.css({ "max-height": `${5000}px` });
 
         }
-    }, [showscroll])
+    }, [showscroll, props?.checkFromHome])
     // console.log(window.innerHeight);
     useEffect(() => {
         //   console.log('showscroll', showscroll);
@@ -206,10 +207,10 @@ function Gantt(props) {
     }
 
     let heightCalc = parseFloat(line) ? (parseFloat(line) * 35 + 80) : 80;
+    console.log('props?.checkFromHome', props?.checkFromHome);
     return (
         <React.Fragment>
-            <button type="button"  onClick={handleShowScroll}>Bật/Tắt scroll</button>
-            
+            {!props?.checkFromHome && <button type="button" onClick={handleShowScroll} >Bật/Tắt scroll</button>}
             <ToolbarGantt
                 zoom={zoom}
                 onZoomChange={onZoomChange}
