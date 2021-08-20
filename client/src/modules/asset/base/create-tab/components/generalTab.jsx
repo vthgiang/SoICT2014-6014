@@ -845,9 +845,9 @@ function GeneralTab(props) {
                         <div className="col-md-12">
                             <label>{translate('asset.general_information.asset_properties')}:
                                 <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
-                                onClick={handleAddDetailInfo} /></a>
-                                <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_default_properties')}><i className="fa fa-plus-square" style={{ color: "red", marginLeft: 5 }}
-                                onClick={handleAddDefaultInfo} /></a>
+                                onClick={handleAddDetailInfo} /><span onClick={handleAddDetailInfo}>Thêm thuộc tính tài sản</span></a>
+                                <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_default_properties')}><i className="fa fa-plus-square" style={{ color: "red", marginLeft: 20 }}
+                                onClick={handleAddDefaultInfo} /><span onClick={handleAddDefaultInfo}>Thêm thuộc tính mặc định của tài sản</span></a>
                             </label>
                             
 
