@@ -272,6 +272,15 @@ function TaskDashboard(props) {
         })
     }
 
+    const showDetailInprocessChart = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h4>Biểu đồ tiến độ công việc chỉ xét những công việc có trạng thái <b>Đang thực hiện</b></h4>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">`,
+            width: "50%",
+        })
+    }
+
     let { startMonthTitle, endMonthTitle } = infoSearch;
     let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
 
@@ -585,7 +594,10 @@ function TaskDashboard(props) {
                 <div className="col-xs-12 col-sm-12 col-md-6">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            <div className="box-title" style={{ marginRight: '5px' }}>{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            <a title={'Giải thích các nhóm tài sản'} onClick={showDetailInprocessChart}>
+                                <i className="fa fa-question-circle" style={{ cursor: 'pointer' }} />
+                            </a>
                         </div>
                         <div className="box-body qlcv">
                             <LazyLoadComponent once={true}>
@@ -606,8 +618,8 @@ function TaskDashboard(props) {
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showLoadTaskDoc()}>
-                                <i className="fa fa-question-circle" style={{ cursor: 'pointer', color: '#dd4b39', marginLeft: '5px' }} />
+                            <a title={translate('task.task_management.explain')} onClick={() => showLoadTaskDoc()}>
+                                <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                             </a>
                         </div>
 

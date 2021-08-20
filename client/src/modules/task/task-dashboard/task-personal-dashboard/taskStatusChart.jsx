@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { SelectMulti } from '../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
+import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -64,24 +65,6 @@ function TaskStatusChart(props) {
         })
     }
 
-    // Lọc công việc trùng lặp
-    const filterDuplicateTask = (listTask) => {
-        let idArray = listTask.map(item => item && item._id);
-        idArray = idArray.map((item, index, array) => {
-            if (array.indexOf(item) === index) {
-                return index;
-            } else {
-                return false
-            }
-        })
-        idArray = idArray.filter(item => listTask[item]);
-        let listTaskNotDuplicate = idArray.map(item => {
-            return listTask[item]
-        })
-
-        return listTaskNotDuplicate;
-    }
-
     // Thiết lập dữ liệu biểu đồ
     const setDataPieChart = () => {
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
@@ -102,7 +85,7 @@ function TaskStatusChart(props) {
                 })
             }
 
-            listTask = filterDuplicateTask(listTask);
+            listTask = filterDifference(listTask);
         };
         if (listTask) {
             listTask.map(task => {
