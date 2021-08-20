@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import moment from 'moment';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
@@ -26,13 +25,13 @@ const GeneralTaskPersonalChart = (props) => {
         // xu ly du lieu
         if (tasks && tasks.length) {
             for (let i in tasks) {
-                let created = moment(tasks[i].createdAt);
-                let start = moment(tasks[i].startDate);
-                let end = moment(tasks[i].endDate);
-                let now = moment(new Date());
-                let duration = end.diff(start, 'days');
-                let createdToNow = now.diff(created, 'days');
-                let nowToEnd = end.diff(now, 'days');
+                let created = dayjs(tasks[i].createdAt);
+                let start = dayjs(tasks[i].startDate);
+                let end = dayjs(tasks[i].endDate);
+                let now = dayjs(new Date());
+                let duration = end.diff(start, 'day');
+                let createdToNow = now.diff(created, 'day');
+                let nowToEnd = end.diff(now, 'day');
 
                 if (dayjs(tasks[i].endDate).isSameOrAfter(dayjs(new Date()))) {
                     const nowDate = new Date();
