@@ -194,29 +194,14 @@ exports.updateAssetInformation = async (req, res) => {
 /**
  * Xoá thông tin tài sản
  */
+
+
 exports.deleteAsset = async (req, res) => {
     try {
-        let data = await AssetService.deleteAsset(req.portal, req.params.id);
+        let data = await AssetService.deleteAsset(req.portal, req.body.assetIds);
         res.status(200).json({
             success: true,
             messages: ["delete_asset_success"],
-            content: data
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            messages: ["delete_asset_false"],
-            content: { error: error }
-        });
-    }
-}
-
-exports.deleteAssets = async (req, res) => {
-    try {
-        let data = await AssetService.deleteAssets(req.portal, req.body.assetIds);
-        res.status(200).json({
-            success: true,
-            messages: ["delete_assets_success"],
             content: data
         });
     } catch (error) {
@@ -500,26 +485,10 @@ exports.updateIncident = async (req, res) => {
 /**
  * Xóa thông tin sự cố tài sản
  */
+
 exports.deleteIncident = async (req, res) => {
     try {
-        let data = await AssetService.deleteIncident(req.portal, req.params.id, req.body.incidentId);
-        res.status(200).json({
-            success: true,
-            messages: ["delete_incident_success"],
-            content: data
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            messages: ["delete_incident_false"],
-            content: { error: error }
-        });
-    }
-}
-
-exports.deleteIncidents = async (req, res) => {
-    try {
-        let data = await AssetService.deleteIncidents(req.portal, req.body.incidentIds);
+        let data = await AssetService.deleteIncident(req.portal, req.body.incidentIds);
         res.status(200).json({
             success: true,
             messages: ["delete_incident_success"],

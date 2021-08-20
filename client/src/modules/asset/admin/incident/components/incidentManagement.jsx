@@ -45,9 +45,15 @@ function IncidentManagement(props) {
     }
 
     const handleDeleteOptions = () => {
-       props.deleteIncidents({
+       props.deleteIncident({
            incidentIds: selectedData
        });
+    }
+
+    const handleDeleteAnIncident = (id) => {
+        props.deleteIncident({
+            incidentIds: [id]
+        })
     }
 
     const { translate, assetsManager, assetType, user, isActive, incidentManager } = props;
@@ -439,7 +445,7 @@ function IncidentManagement(props) {
                                         id: x._id,
                                         info: x.asset.code + " - " + x.incidentCode
                                     }}
-                                    func={() => deleteIncident(x.asset._id, x._id)}
+                                    func={handleDeleteAnIncident}
                                 />
                             </td>
                         }
@@ -536,8 +542,7 @@ function mapState(state) {
 
 const actionCreators = {
     getIncidents: ManageIncidentActions.getIncidents,
-    deleteIncident: IncidentActions.deleteIncident,
-    deleteIncidents: ManageIncidentActions.deleteIncidents,
+    deleteIncident:  ManageIncidentActions.deleteIncident,
     getAssetTypes: AssetTypeActions.getAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,

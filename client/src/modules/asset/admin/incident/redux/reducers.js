@@ -11,6 +11,7 @@ const initState = {
 export function incidentManager(state = initState, action) {
     switch (action.type) {
         case IncidentConstants.GET_INCIDENT_REQUEST:
+        case IncidentConstants.DELETE_INCIDENT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -25,6 +26,7 @@ export function incidentManager(state = initState, action) {
             }
 
         case IncidentConstants.GET_INCIDENT_FAILURE:
+        case IncidentConstants.DELETE_INCIDENT_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -37,12 +39,6 @@ export function incidentManager(state = initState, action) {
                 isLoading: true
             };
 
-        case IncidentConstants.UPDATE_INCIDENT_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                incidentList: state.incidentList.map(obj=>(obj._id === action.payload._id)?action.payload:obj),
-            }
 
         case IncidentConstants.UPDATE_INCIDENT_FAILURE:
             return {
@@ -51,7 +47,7 @@ export function incidentManager(state = initState, action) {
                 error: action.error
             };
 
-        case IncidentConstants.DELETE_INCIDENTS_SUCCESS:
+        case IncidentConstants.DELETE_INCIDENT_SUCCESS:
             return {
                 ...state,
                 isLoading: false,

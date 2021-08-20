@@ -19,7 +19,7 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.ADDASSET_REQUEST:
         case AssetConstants.UPDATE_INFOR_ASSET_REQUEST:
         case AssetConstants.CREATE_USAGE_REQUEST:
-        case AssetConstants.DELETE_ASSETS_REQUEST:
+        case AssetConstants.DELETE_ASSET_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -97,26 +97,9 @@ export function assetsManager(state = initState, action) {
                 //     action.payload.asset[0] : x),
                 isLoading: false
             };
-
-
-        case AssetConstants.DELETE_ASSET_REQUEST:
-            return {
-                ...state,
-                listAssets: state.listAssets.map(asset =>
-                    asset._id === action.id
-                        ? { ...asset, deleting: true }
-                        : asset
-                ),
-                isLoading: false
-            };
+          
 
         case AssetConstants.DELETE_ASSET_SUCCESS:
-            return {
-                ...state,
-                listAssets: state.listAssets.filter(x => (x._id !== action.payload._id)),
-                isLoading: false,
-            };
-        case AssetConstants.DELETE_ASSETS_SUCCESS:
             return {
                 ...state,
                 listAssets: state.listAssets.filter(asset=> !action.assetIds.includes(asset?._id)),
@@ -127,7 +110,6 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.GET_LIST_BUILDING_AS_TREE_FAILURE:
         case AssetConstants.UPDATE_INFOR_ASSET_FAILURE:
         case AssetConstants.DELETE_ASSET_FAILURE:
-        case AssetConstants.DELETE_ASSETS_FAILURE:
         case AssetConstants.CREATE_USAGE_FAILURE:
             return {
                 ...state,

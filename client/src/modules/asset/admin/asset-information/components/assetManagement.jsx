@@ -42,9 +42,15 @@ function AssetManagement(props) {
     }
 
     const handleDeleteOptions = () => {
-       props.deleteAssets({
+       props.deleteAsset({
            assetIds: selectedData
        });
+    }
+
+    const handleDeleteAnAsset = (id) => {
+        props.deleteAsset({
+            assetIds: [id]
+        });
     }
 
     const { assetsManager, assetType, translate, user, isActive, department } = props;
@@ -1006,7 +1012,7 @@ function AssetManagement(props) {
                                         id: x._id,
                                         info: x.code + " - " + x.assetName
                                     }}
-                                    func={props.deleteAsset}
+                                    func={handleDeleteAnAsset}
                                 />
                             </td>
                         }
@@ -1143,7 +1149,6 @@ const actionCreators = {
     getAllAsset: AssetManagerActions.getAllAsset,
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     deleteAsset: AssetManagerActions.deleteAsset,
-    deleteAssets: AssetManagerActions.deleteAssets,
     getUser: UserActions.get,
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,

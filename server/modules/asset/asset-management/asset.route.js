@@ -18,8 +18,7 @@ router.get('/assets', auth, AssetController.searchAssetProfiles);
 
 router.post('/assets', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 router.patch('/assets/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
-router.delete('/assets/:id', auth, AssetController.deleteAsset);
-router.delete('/assets', auth, AssetController.deleteAssets);
+router.delete('/assets', auth, AssetController.deleteAsset);
 
 
 /* Tab khấu hao */
@@ -46,7 +45,6 @@ router.delete('/assets/:id/maintainance-logs', auth, AssetController.deleteMaint
 router.get('/assets/incident-logs', auth, AssetController.getIncidents);
 router.post('/assets/:id/incident-logs', auth, AssetController.createIncident);
 router.patch('/assets/:id/incident-logs', auth, AssetController.updateIncident);
-router.delete('/assets/:id/incident-logs', auth, AssetController.deleteIncident);
-router.delete('/asset/incident-log', auth, AssetController.deleteIncidents);
+router.delete('/assets/incident-log', auth, AssetController.deleteIncident);
 
 module.exports = router;

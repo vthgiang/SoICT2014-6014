@@ -6,7 +6,6 @@ export const AssetManagerActions = {
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
-    deleteAssets,
     getListBuildingAsTree,
 };
 
@@ -116,49 +115,28 @@ function updateInformationAsset(id, data, isImport = undefined) {
 
 /**
  * Xóa tài sản
- * @param {*} id
- * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
+ * @param {*} data
  */
-function deleteAsset(id, managedBy = "", page) {
+
+
+function deleteAsset(data) {
     return (dispatch) => {
         dispatch({
-            type: AssetConstants.DELETE_ASSET_REQUEST,
-        });
-
-        AssetService.deleteAsset(id)
-            .then((res) => {
-                dispatch({
-                    type: AssetConstants.DELETE_ASSET_SUCCESS,
-                    payload: res.data.content,
-                });
-            })
-            .catch((err) => {
-                dispatch({
-                    type: AssetConstants.DELETE_ASSET_FAILURE,
-                    error: err,
-                });
-            });
-    };
-}
-
-function deleteAssets(data) {
-    return (dispatch) => {
-        dispatch({
-            type: AssetConstants.DELETE_ASSETS_REQUEST
+            type: AssetConstants.DELETE_ASSET_REQUEST
         });
 
         AssetService
-            .deleteAssets(data)
+            .deleteAsset(data)
             .then((res) => {
                 dispatch({
-                    type: AssetConstants.DELETE_ASSETS_SUCCESS,
+                    type: AssetConstants.DELETE_ASSET_SUCCESS,
                     payload: res.data.content,
                     assetIds: data.assetIds
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: AssetConstants.DELETE_ASSETS_FAILURE,
+                    type: AssetConstants.DELETE_ASSET_FAILURE,
                     error
                 });
             });

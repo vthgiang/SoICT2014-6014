@@ -1076,15 +1076,9 @@ exports.updateAssetInformation = async (
  * Xoá thông tin tài sản
  * @id : Id tài sản cần xoá
  */
-exports.deleteAsset = async (portal, id) => {
-    let asset = await Asset(connect(DB_CONNECTION, portal)).findOneAndDelete({
-        _id: id,
-    });
 
-    return asset;
-};
 
-exports.deleteAssets = async (portal, assetIds) => {
+exports.deleteAsset = async (portal, assetIds) => {
     let assets = await Asset(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: assetIds.map(item => mongoose.Types.ObjectId(item)) } });
 
@@ -1575,14 +1569,9 @@ exports.updateIncident = async (portal, incidentId, data) => {
 /**
  * Xóa thông tin sự cố tài sản
  */
-exports.deleteIncident = async (portal, assetId, incidentId) => {
-    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        { _id: assetId },
-        { $pull: { incidentLogs: { _id: incidentId } } }
-    );
-};
 
-exports.deleteIncidents = async (portal, incidentIds) => {
+
+exports.deleteIncident = async (portal, incidentIds) => {
     console.log(incidentIds);
      incidentIds.forEach(async (incidentId) => {
          await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate(
