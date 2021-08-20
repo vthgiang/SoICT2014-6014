@@ -1,250 +1,116 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import { taskManagementActions } from '../../task-management/redux/actions';
-import { UserActions } from '../../../super-admin/user/redux/actions';
-
-import { SelectBox, SelectMulti } from '../../../../common-components/index';
-
-import { withTranslate } from 'react-redux-multilingual';
-
 import c3 from 'c3';
 import 'c3/c3.css';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { SelectBox, SelectMulti } from '../../../../common-components/index';
 import { filterDifference } from '../../../../helpers/taskModuleHelpers';
-class DomainOfTaskResultsChart extends Component {
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween)
 
-    constructor(props) {
-        super(props);
-        let { translate } = this.props;
+function DomainOfTaskResultsChart(props) {
+    const { translate, TaskOrganizationUnitDashboard } = props;
+    const ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
+    const ROLE_SELECTBOX = [
+        {
+            text: translate('task.task_management.responsible'),
+            value: ROLE.RESPONSIBLE
+        },
+        {
+            text: translate('task.task_management.accountable'),
+            value: ROLE.ACCOUNTABLE
+        },
+        {
+            text: translate('task.task_management.consulted'),
+            value: ROLE.CONSULTED
+        }
+    ];
+    const TYPEPOINT = { AUTOMAIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
+    const TYPEPOINT_SELECTBOX = [
+        {
+            text: translate('task.task_management.detail_auto_point'),
+            value: TYPEPOINT.AUTOMAIC_POINT
+        },
+        {
+            text: translate('task.task_management.detail_emp_point'),
+            value: TYPEPOINT.EMPLOYEE_POINT
+        },
+        {
+            text: translate('task.task_management.detail_acc_point'),
+            value: TYPEPOINT.APPROVED_POINT
+        }
+    ];
 
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    let DATA_SEARCH = {
+        role: [ROLE.RESPONSIBLE],
+        typePoint: TYPEPOINT.AUTOMAIC_POINT,
+    };
+    const CHART = React.createRef();
 
-        this.ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
-        this.ROLE_SELECTBOX = [
-            {
-                text: translate('task.task_management.responsible'),
-                value: this.ROLE.RESPONSIBLE
-            },
-            {
-                text: translate('task.task_management.accountable'),
-                value: this.ROLE.ACCOUNTABLE
-            },
-            {
-                text: translate('task.task_management.consulted'),
-                value: this.ROLE.CONSULTED
-            }
-        ];
-
-        this.TYPEPOINT = { AUTOMAIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
-        this.TYPEPOINT_SELECTBOX = [
-            {
-                text: translate('task.task_management.detail_auto_point'),
-                value: this.TYPEPOINT.AUTOMAIC_POINT
-            },
-            {
-                text: translate('task.task_management.detail_emp_point'),
-                value: this.TYPEPOINT.EMPLOYEE_POINT
-            },
-            {
-                text: translate('task.task_management.detail_acc_point'),
-                value: this.TYPEPOINT.APPROVED_POINT
-            }
-        ];
-
-        this.DATA_SEARCH = {
-            role: [this.ROLE.RESPONSIBLE],
-            typePoint: this.TYPEPOINT.AUTOMAIC_POINT,
-        };
-
-        this.state = {
+    const [state, setState] = useState(() => {
+        return {
             aPeriodOfTime: true,
             userId: localStorage.getItem("userId"),
-
-            dataStatus: this.DATA_STATUS.QUERYING,
-
-            role: this.DATA_SEARCH.role,
-            typePoint: this.DATA_SEARCH.typePoint,
-        };
-    }
-
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.units !== this.props.units || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
-            if (this.props.TaskOrganizationUnitDashboard) {
-                this.setState(state => {
-                    return {
-                        ...state,
-                        startMonth: nextProps.startMonth,
-                        endMonth: nextProps.endMonth,
-
-                    }
-                })
-            }
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                };
-            });
-
-            return false;
+            role: DATA_SEARCH.role,
+            typePoint: DATA_SEARCH.typePoint,
         }
-
-        if (nextState.role !== this.state.role || nextState.typePoint !== this.state.typePoint) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    role: nextState.role,
-                    typePoint: nextState.typePoint
-                }
-            })
-            this.domainChart();
-        }
-
-        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                };
-            });
-
-            return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            // Kiểm tra tasks đã được bind vào props hay chưa
-            if (this.props.TaskOrganizationUnitDashboard) {
-                if (!nextProps.organizationUnitTasks) {
-                    return false;
-                }
-
-            }
-            else if (!nextProps.tasks.responsibleTasks
-                || !nextProps.tasks.accountableTasks
-                || !nextProps.tasks.consultedTasks
-            ) {
-                return false;           // Đang lấy dữ liệu, ko cần render lại
-            };
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE
-                }
-            });
-
-            return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.domainChart();
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                };
-            });
-        }
-
-        return false;
-    }
-
-    static getDerivedStateFromProps = (nextProps, prevState) => {
-
-        if (nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth) {
-            return {
-                ...prevState,
-                startMonth: nextProps.startMonth,
-                endMonth: nextProps.endMonth
-            }
-        } else {
-            return null
-        }
-    }
-
-    handleSelectRole = (value) => {
-        let role = value.map(item => Number(item));
-        this.DATA_SEARCH.role = role;
-    }
-
-    handleSelectTypePoint = (value) => {
-        this.DATA_SEARCH.typePoint = Number(value[0]);
-    }
-
-    handleSearchData = async () => {
-        await this.setState(state => {
-            return {
-                ...state,
-                role: this.DATA_SEARCH.role,
-                typePoint: this.DATA_SEARCH.typePoint
-            }
-        })
-    }
+    })
+    const { typePoint, role } = state;
 
     // Hàm lọc các công việc theo từng tháng
-    filterTasksByMonth = (currentMonth, nextMonth) => {
-        const { tasks, TaskOrganizationUnitDashboard, units, organizationUnitTasks } = this.props;
-        const { role, userId, typePoint } = this.state;
+    const filterTasksByMonth = (startMonth, endMonth) => {
+        console.log('=============================', startMonth)
+        const { tasks, TaskOrganizationUnitDashboard, units, organizationUnitTasks } = props;
+        const { role, userId, typePoint } = state;
 
         let results = [], maxResult, minResult;
         let listTask = [], listTaskByRole = [];
+
         if (TaskOrganizationUnitDashboard) {
             listTask = organizationUnitTasks;
-            console.log('listTask1 :>> ', listTask);
         }
         else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks) {
-            listTaskByRole[this.ROLE.RESPONSIBLE] = tasks.responsibleTasks;
-            listTaskByRole[this.ROLE.ACCOUNTABLE] = tasks.accountableTasks;
-            listTaskByRole[this.ROLE.CONSULTED] = tasks.consultedTasks;
+            listTaskByRole[ROLE.RESPONSIBLE] = tasks.responsibleTasks;
+            listTaskByRole[ROLE.ACCOUNTABLE] = tasks.accountableTasks;
+            listTaskByRole[ROLE.CONSULTED] = tasks.consultedTasks;
 
             if (role.length !== 0) {
                 role.map(role => {
                     listTask = listTask.concat(listTaskByRole[role]);
                 })
             }
-
+            // console.log('listTaskByRole', listTaskByRole)
             listTask = filterDifference(listTask);
-            console.log('listTask2 :>> ', listTask);
         };
+
         if (listTask) {
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
-                    console.log("111")
-                    let date = new Date(nextMonth)
-                    console.log('date :>> ', date);
-                    let month = date.getMonth() + 1
-                    let day;
-                    if (month === 1 || month === 3 || month === 5 || month === 7 || month === 8 || month === 10 || month === 12) {
-                        day = 31;
-                    } else if (month === 2) {
-                        day = 28;
-                    } else {
-                        day = 30;
-                    }
-                    let dateNextMonth = date.getFullYear() + '-' + month + '-' + day;
-                    if (new Date(evaluation.date) < new Date(dateNextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
+                    let evaluatingMonth = dayjs(evaluation.evaluatingMonth).format("YYYY-MM");
+                    // console.log('evaluatingMonth', evaluatingMonth, task.name)
+                    if (dayjs(evaluatingMonth).isBetween(startMonth, endMonth, null, '[]')) { // '[]': tham số này check cho phép evaluatingMonth = startMonth hoặ startMonth = endMOnth, ko muốn thì set '()'
                         return 1;
                     }
-
                     return 0;
                 }).map(evaluation => {
-                    console.log("222")
                     evaluation.results.filter(result => {
-                        console.log("333")
                         if (units || (result.employee === userId)) {
-                            console.log("444")
                             return 1;
                         }
                         return 0;
                     }).map(result => {
-                        console.log("111")
-                        console.log('result :>> ', result);
-                        console.log('typePoint :>> ', typePoint);
+                        // console.log('resultEvalue', result, typePoint);
                         switch (typePoint) {
-                            case this.TYPEPOINT.AUTOMAIC_POINT:
+                            case TYPEPOINT.AUTOMAIC_POINT:
                                 results.push(result.automaticPoint);
-                            case this.TYPEPOINT.EMPLOYEE_POINT:
+                                break;
+                            case TYPEPOINT.EMPLOYEE_POINT:
                                 results.push(result.employeePoint);
-                            case this.TYPEPOINT.APPROVED_POINT:
+                                break;
+                            case TYPEPOINT.APPROVED_POINT:
                                 results.push(result.approvedPoint);
+                                break;
                         }
 
                     });
@@ -254,69 +120,91 @@ class DomainOfTaskResultsChart extends Component {
 
         if (results.length === 0) {
             maxResult = null;
+            minResult = null;
         } else {
             maxResult = Math.max.apply(Math, results);
             minResult = Math.min.apply(Math, results);
         }
-        let x = {
-            'month': new Date(currentMonth),
-            'max': maxResult,
-            'min': minResult
-        };
-        console.log('x :>> ', x);
+
         return {
-            'month': new Date(currentMonth),
             'max': maxResult,
             'min': minResult
         }
     }
 
-    setDataDomainChart = () => {
-        const { translate } = this.props;
-        const { startMonth, endMonth } = this.state;
+    useEffect(() => {
+        const { translate } = props;
+        const { startMonth, endMonth } = props; // cha truyền xuống
 
-        let month = ['x'], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
-        let monthIndex = startMonth;
-        while (new Date(monthIndex) <= new Date(endMonth)) {
-            let data, nextMonthIndex;
+        let month = [], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
 
-            if (new Number(monthIndex.slice(5, 7)) < 9) {
-                nextMonthIndex = monthIndex.slice(0, 4) + '-0' + (new Number(monthIndex.slice(5, 7)) + 1);
-            } else if (new Number(monthIndex.slice(5, 7)) < 12) {
-                nextMonthIndex = monthIndex.slice(0, 4) + '-' + (new Number(monthIndex.slice(5, 7)) + 1);
-            } else {
-                nextMonthIndex = (new Number(monthIndex.slice(0, 4)) + 1) + '-' + '01';
-            }
+        const period = dayjs(endMonth).diff(startMonth, 'month');
+        let data;
 
-            data = this.filterTasksByMonth(monthIndex, nextMonthIndex);
-
-            if (data.max) {
-                month.push(data.month);
+        for (let i = 0; i <= period; i++) {
+            let currentMonth = dayjs(startMonth).add(i, 'month').format("YYYY-MM");
+            month = [
+                ...month,
+                dayjs(startMonth).add(i, 'month').format("MM-YYYY"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+            ];
+            data = filterTasksByMonth(currentMonth, currentMonth);
+            if (data) {
                 maxResults.push(data.max);
                 minResults.push(data.min)
             }
-
-            monthIndex = nextMonthIndex;
         }
-        return [
-            month,
-            maxResults,
-            minResults
-        ]
+        month.unshift("x");
+
+        if (month?.length)
+            setState({
+                ...state,
+                dataChart: [
+                    month,
+                    maxResults,
+                    minResults
+                ]
+            })
+    }, [props?.startMonth, props?.endMonth, JSON.stringify(props?.units), state.role, state.typePoint, JSON.stringify(props?.organizationUnitTasks),
+    JSON.stringify(props?.tasks?.responsibleTasks), JSON.stringify(props?.tasks?.accountableTasks), JSON.stringify(props?.tasks?.consultedTasks)])
+
+    useEffect(() => {
+        if (state?.dataChart)
+            domainChart();
+    }, [state.dataChart])
+
+
+    const handleSelectRole = (value) => {
+        let role = value.map(item => Number(item));
+        DATA_SEARCH.role = role;
     }
 
-    removePreviosChart = () => {
-        const chart = this.refs.chart;
+    const handleSelectTypePoint = (value) => {
+        DATA_SEARCH.typePoint = Number(value[0]);
+    }
+
+    const handleSearchData = () => {
+        setState(state => {
+            return {
+                ...state,
+                role: DATA_SEARCH.role,
+                typePoint: DATA_SEARCH.typePoint
+            }
+        })
+    }
+
+
+    const removePreviosChart = () => {
+        const chart = CHART.current;
         while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
     }
 
-    domainChart = () => {
-        this.removePreviosChart();
-        let dataChart = this.setDataDomainChart();
-        this.chart = c3.generate({
-            bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="chart"
+    const domainChart = () => {
+        removePreviosChart();
+        const { dataChart } = state;
+        c3.generate({
+            bindto: CHART.current,
 
             data: {
                 x: 'x',
@@ -333,10 +221,8 @@ class DomainOfTaskResultsChart extends Component {
 
             axis: {                                // Config trục tọa độ
                 x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
-                    }
+                    type: 'categories',
+
                 },
                 y: {
                     max: 100,
@@ -354,47 +240,43 @@ class DomainOfTaskResultsChart extends Component {
         })
     }
 
-    render() {
-        const { translate, TaskOrganizationUnitDashboard } = this.props;
-
-        return (
-            <React.Fragment>
-                <div className="qlcv">
-                    {!TaskOrganizationUnitDashboard
-                        &&
-                        <div className="form-inline" >
-                            <div className="form-group">
-                                <label style={{ width: "auto" }}>{translate('task.task_management.role')}</label>
-                                <SelectMulti
-                                    id="multiSelectDomainOfTaskResults"
-                                    items={this.ROLE_SELECTBOX}
-                                    onChange={this.handleSelectRole}
-                                    options={{ allSelectedText: translate('task.task_management.select_all_status') }}
-                                    value={this.DATA_SEARCH.role}
-                                />
-                            </div>
-                        </div>
-                    }
+    return (
+        <React.Fragment>
+            <div className="qlcv">
+                {!TaskOrganizationUnitDashboard
+                    &&
                     <div className="form-inline" >
                         <div className="form-group">
-                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                            <SelectBox
-                                id={`typePointOfResultsTaskSelectBox`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={this.TYPEPOINT_SELECTBOX}
-                                multiple={false}
-                                onChange={this.handleSelectTypePoint}
-                                value={this.DATA_SEARCH.typePoint}
+                            <label style={{ width: "auto" }}>{translate('task.task_management.role')}</label>
+                            <SelectMulti
+                                id="multiSelectDomainOfTaskResults"
+                                items={ROLE_SELECTBOX}
+                                onChange={handleSelectRole}
+                                options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                                value={role}
                             />
                         </div>
-                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </div>
+                }
+                <div className="form-inline" >
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                        <SelectBox
+                            id={`typePointOfResultsTaskSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={TYPEPOINT_SELECTBOX}
+                            multiple={false}
+                            onChange={handleSelectTypePoint}
+                            value={typePoint}
+                        />
+                    </div>
+                    <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                 </div>
-                <div ref="chart"></div>
-            </React.Fragment>
-        )
-    }
+            </div>
+            <div ref={CHART}></div>
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {
@@ -406,4 +288,4 @@ const actions = {
 }
 
 const connectedDomainOfTaskResultsChart = connect(mapState, actions)(withTranslate(DomainOfTaskResultsChart));
-export { connectedDomainOfTaskResultsChart as DomainOfTaskResultsChart }
+export { connectedDomainOfTaskResultsChart as DomainOfTaskResultsChart };

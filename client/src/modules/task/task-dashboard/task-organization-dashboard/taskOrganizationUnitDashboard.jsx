@@ -281,11 +281,13 @@ function TaskOrganizationUnitDashboard(props) {
                 type: "forDistributionChart",
                 perPage: distributionOfEmployeeChartPerPage
             });
+
             await props.getAllEmployeeOfUnitByIds({
                 ...data,
                 type: "forAllTimeSheetLogs",
                 perPage: allTimeSheetLogsByUnitIdPerPage
             });
+
             let dataQuery = {
                 organizationalUnitId: idsUnit,
                 startMonth: startMonth,
@@ -359,8 +361,8 @@ function TaskOrganizationUnitDashboard(props) {
         }
     }
     function checkNullOrUndefined(chartName) {
-        var found = false;
-        for (var i = 0; i < taskDashboardChart?.length; i++) {
+        let found = false;
+        for (let i = 0; i < taskDashboardChart?.length; i++) {
             if (taskDashboardChart[i].name == chartName && taskDashboardChart[i].data.length > 0) {
                 found = true;
                 break;
@@ -370,20 +372,25 @@ function TaskOrganizationUnitDashboard(props) {
     }
 
     function getDataTask(chartName) {
-        let data;
-        for (var i = 0; i < taskDashboardChart?.length; i++) {
-            if (taskDashboardChart[i].name == chartName) {
-                data = taskDashboardChart[i].data.organizationUnitTasks
+        let data = [];
+        if (taskDashboardChart?.length) {
+            for (let i = 0; i < taskDashboardChart?.length; i++) {
+                if (taskDashboardChart[i].name == chartName) {
+                    data = taskDashboardChart[i].data.organizationUnitTasks
+                }
             }
         }
+
         return data
     }
 
     function getDataEmployee(chartName) {
-        let data;
-        for (var i = 0; i < taskDashboardChart?.length; i++) {
-            if (taskDashboardChart[i].name == chartName) {
-                data = taskDashboardChart[i].data.usersInUnitsOfCompany
+        let data = [];
+        if (taskDashboardChart?.length) {
+            for (let i = 0; i < taskDashboardChart?.length; i++) {
+                if (taskDashboardChart[i].name == chartName) {
+                    data = taskDashboardChart[i].data.usersInUnitsOfCompany
+                }
             }
         }
         return data
@@ -395,6 +402,7 @@ function TaskOrganizationUnitDashboard(props) {
         currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
         currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
     }
+
     return (
         <React.Fragment>
             {currentOrganizationalUnit
@@ -442,6 +450,8 @@ function TaskOrganizationUnitDashboard(props) {
 
                         </div>
                     </div>
+
+                    {/* Tổng quan công việc đơn vị */}
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box box-primary">
@@ -484,6 +494,8 @@ function TaskOrganizationUnitDashboard(props) {
                             </div>
                         </div>
                     </div>
+
+
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box box-primary">
