@@ -1,8 +1,8 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { CourseDetailForm, CourseRegister } from './combinedContent';
+import { CourseDetailForm } from './combinedContent';
 
 import {PaginateBar, DataTableSetting, SelectMulti } from '../../../../../common-components';
 
@@ -45,18 +45,6 @@ const ListAttendedCourse = (props) => {
         }
         return date;
 
-    }
-
-    /**
-     * Function bắt sự kiện chỉnh sửa chương trình đào tạo
-     * @param {*} value : Giá trị chương trình đào tạo
-     */
-    const handleEdit = async (value) => {
-        await setState({
-            ...state,
-            currentEditRow: value
-        })
-        window.$(`#modal-edit-course${value._id}`).modal('show');
     }
 
     /**

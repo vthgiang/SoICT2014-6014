@@ -282,7 +282,7 @@ const TrainingPlan = (props) => {
 
 function mapState(state) {
     const { course, education, } = state;
-    return { course, education, };
+    return { course, education };
 };
 
 const actionCreators = {
