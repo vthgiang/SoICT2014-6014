@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, SelectMulti, PaginateBar, DataTableSetting } from '../../../../../common-components';
+import { DialogModal, PaginateBar, DataTableSetting } from '../../../../../common-components';
 
 import { CourseActions } from '../../../course/user/redux/actions';
 const EducationProgramDetailForm = (props) => {
@@ -66,7 +66,7 @@ const EducationProgramDetailForm = (props) => {
         parseInt(totalList / limit) :
         parseInt((totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
-    console.log(props)
+    
     return (
         <React.Fragment>
             <DialogModal

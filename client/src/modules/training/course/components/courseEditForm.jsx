@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -214,33 +214,33 @@ const CourseEditForm = (props) => {
      * Bắt sự kiện thêm nhân viên tham gia
      * @param {*} value : Array id nhân viên tham gia
      */
-    const handleEmployeeChange = (value) => {
-        setState({
-            ...state,
-            addEmployees: value.map(x => { return { _id: x, employresult: 'failed' } })
-        })
-    }
+    // const handleEmployeeChange = (value) => {
+    //     setState({
+    //         ...state,
+    //         addEmployees: value.map(x => { return { _id: x, employresult: 'failed' } })
+    //     })
+    // }
 
     /**
      * Bắt sự kiện xoá nhân viên tham gia
      * @param {*} id : Id nhân viên muốn xoá
      */
-    const handleDelete = (id) => {
-        setState({
-            ...state,
-            listEmployees: state.listEmployees.filter(x => x._id !== id)
-        })
-    }
+    // const handleDelete = (id) => {
+    //     setState({
+    //         ...state,
+    //         listEmployees: state.listEmployees.filter(x => x._id !== id)
+    //     })
+    // }
 
     /** Bắt sự kiện click buttom thêm nhân viên tham gia */
-    const handleAdd = (e) => {
-        e.preventDefault();
-        setState({
-            ...state,
-            listEmployees: state.listEmployees.concat(state.addEmployees),
-            addEmployees: [],
-        })
-    }
+    // const handleAdd = (e) => {
+    //     e.preventDefault();
+    //     setState({
+    //         ...state,
+    //         listEmployees: state.listEmployees.concat(state.addEmployees),
+    //         addEmployees: [],
+    //     })
+    // }
 
     /**
      * Bắt sự kiện thay đổi chấp nhận hoặc từ chối đăng ký khóa học
@@ -350,7 +350,7 @@ const CourseEditForm = (props) => {
             employeeInfors = employeeInfor.concat(employeeInfors);
         }
     }
-    console.log(state)
+
     return (
         <React.Fragment>
             <DialogModal
