@@ -3451,7 +3451,7 @@ export default {
                 communication: "Trao đổi",
                 documents: "Tài liệu",
                 timesheetlogs: "Lịch sử bấm giờ",
-                subtasks: "Công việc ",
+                subtasks: "Công việc con",
                 change_history: "Lịch sử thay đổi",
                 change_process: "Quy trình",
                 change_incoming: "Dữ liệu vào",

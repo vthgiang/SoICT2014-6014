@@ -53,7 +53,7 @@ exports.getTaskById = async (portal, id, userId) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
-            { path: "taskActions.timesheetLogs.creator", select: "_id name email" },
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email avatar" },
             { path: "taskComments.creator", select: "name email avatar" },
             {
                 path: "taskComments.comments.creator",
@@ -140,14 +140,19 @@ exports.getTaskById = async (portal, id, userId) => {
             },
             { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
             { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
-            { path: "logs.creator", select: "_id name" }
+            { path: "logs.creator", select: "_id name avatar email " }
         ]);
+
+    const subTasks = await Task(connect(DB_CONNECTION, portal)).find({
+        parent: id
+    }).sort("createdAt")
+
     if (!task) {
         return {
             info: true,
         };
     }
-    var responsibleEmployees,
+    let responsibleEmployees,
         accountableEmployees,
         consultedEmployees,
         informedEmployees;
@@ -276,7 +281,9 @@ exports.getTaskById = async (portal, id, userId) => {
         };
     }
     task.evaluations.reverse();
-
+    task.logs.reverse()
+    task = task.toObject();
+    task.subTasks = subTasks; // đính kèm công việc con vào thông tin chi tiết công việc
     return task;
 };
 

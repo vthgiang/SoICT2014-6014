@@ -347,9 +347,6 @@ function DetailTaskTab(props) {
     const refresh = () => {
         if (props.id) {
             props.getTaskById(props.id);
-            props.getSubTask(props.id);
-            props.getTimesheetLogs(props.id);
-            props.getTaskLog(props.id);
         }
 
         setState({
@@ -1499,12 +1496,9 @@ function mapStateToProps(state) {
 
 const actionGetState = { //dispatchActionToProps
     getTaskById: performTaskAction.getTaskById,
-    getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
-    getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    getTaskLog: performTaskAction.getTaskLog,
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,

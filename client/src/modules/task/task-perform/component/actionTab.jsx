@@ -127,8 +127,6 @@ function ActionTab(props) {
         };
     })
     const [hover1, setHover1] = useState({})
-
-    const subtasks = tasks.subtasks;
     const {
         showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
         editTaskComment, showEditTaskFile, evaluations, actionImportanceLevelAll, ratingAll,
@@ -150,11 +148,9 @@ function ActionTab(props) {
 
     useEffect(() => {
         if (props.id) {
-            props.getTimesheetLogs(props.id);
-            props.getTimerStatusTask(props.id);
-            props.getSubTask(props.id);
-            props.getAllPreceedingTasks(props.id);
-            props.getTaskLog(props.id);
+            if (props?.isProcess) {
+                props.getAllPreceedingTasks(props.id);
+            }
         }
     }, [props.id])
 
@@ -1052,18 +1048,17 @@ function ActionTab(props) {
         else return false;
     }
 
-    let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
+    let task, documents, taskComments, logTimer, logs, subtasks;
     if (typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
         task = performtasks.task;
         taskComments = task.taskComments;
         documents = task.documents
     }
-    if (performtasks.logtimer) {
-        logTimer = performtasks.logtimer;
+    if (performtasks?.task) {
+        logTimer = performtasks.task.timesheetLogs;
+        logs = performtasks.task.logs;
+        subtasks = performtasks.task.subTasks;
     }
-    if (performtasks.logs) {
-        logs = performtasks.logs;
-    };
 
     switch (state.filterLogAutoStopped) {
         case 'auto':
@@ -2009,7 +2004,7 @@ function ActionTab(props) {
 
                     {/* Chuyển qua tab công việc liên quan */}
                     <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
-                        <SubTaskTab />
+                        <SubTaskTab subtasks={subtasks} />
                     </div>
 
                     {/* Chuyển qua tab Bấm giờ */}
@@ -2184,8 +2179,6 @@ const actionCreators = {
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
     editTimeSheetLog: performTaskAction.editTimeSheetLog,
-    getTimesheetLogs: performTaskAction.getTimesheetLogs,
-    getTimerStatusTask: performTaskAction.getTimerStatusTask,
     editTaskComment: performTaskAction.editTaskComment,
     deleteTaskComment: performTaskAction.deleteTaskComment,
     createTaskComment: performTaskAction.createTaskComment,
@@ -2197,13 +2190,12 @@ const actionCreators = {
     deleteActionEvaluation: performTaskAction.deleteActionEvaluation,
     confirmAction: performTaskAction.confirmAction,
     downloadFile: AuthActions.downloadFile,
-    getSubTask: taskManagementActions.getSubTask,
     uploadFile: performTaskAction.uploadFile,
     deleteFileAction: performTaskAction.deleteFileAction,
     deleteFileCommentOfAction: performTaskAction.deleteFileCommentOfAction,
     deleteFileTaskComment: performTaskAction.deleteFileTaskComment,
     deleteFileChildTaskComment: performTaskAction.deleteFileChildTaskComment,
-    getTaskLog: performTaskAction.getTaskLog,
+    // getTaskLog: performTaskAction.getTaskLog,
     deleteFileTask: performTaskAction.deleteFileTask,
     deleteDocument: performTaskAction.deleteDocument,
     editDocument: performTaskAction.editDocument,

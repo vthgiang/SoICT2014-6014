@@ -9,36 +9,22 @@ import { taskManagementActions } from "../../task-management/redux/actions";
 
 import { performTaskAction } from '../redux/actions';
 
+const formatDate = (date) => {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [day, month, year].join('/');
+}
 function SubTaskTab(props) {
-
-    const [state, setState] = useState({});
-
-    useEffect(() => {
-        if (props.location) { // Nếu là trang trực tiếp (trong Route)
-            const { taskId } = qs.parse(props.location.search, { ignoreQueryPrefix: true });
-            if (taskId) {
-                props.getTaskById(taskId);
-                props.getSubTask(taskId);
-            }
-        }
-    })
-
-    const formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('/');
-    }
-
-    const { translate, tasks } = props;
-    let subtasks = tasks.subtasks;
+    const { subtasks } = props;
+    const { translate } = props;
 
     return (
         <div>

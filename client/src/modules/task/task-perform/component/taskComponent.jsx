@@ -40,13 +40,15 @@ function TaskComponent(props) {
             if (taskId && flag === 1) {
                 setFlag(2)
                 props.getTaskById(taskId);
+                props.getTimerStatusTask(taskId);
             }
         }
     }, [JSON.stringify(props.location)])
 
     useEffect(() => {
-        if (props.id) {
+        if (props.id && !props.location) {
             props.getTaskById(props.id); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
+            props.getTimerStatusTask(props.id);
         }
     }, [props.id])
 
@@ -136,6 +138,7 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: performTaskAction.getTaskById,
+    getTimerStatusTask: performTaskAction.getTimerStatusTask,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
