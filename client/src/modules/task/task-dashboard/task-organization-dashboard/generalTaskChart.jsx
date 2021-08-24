@@ -1,12 +1,161 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { SlimScroll, DataTableSetting, TreeTable } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import './generalTaskChart.css';
 import ViewAllGeneralTask from './viewAllGeneralTask';
 import _cloneDeep from 'lodash/cloneDeep';
-import useDeepCompareEffect from 'use-deep-compare-effect'
+// import useDeepCompareEffect from 'use-deep-compare-effect'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+
+const countTask = (tasklist, name) => {
+    let confirmedTask = [], noneUpdateTask = [], intimeTask = [], delayTask = [], overdueTask = [], taskFinished = [], taskInprocess = [];
+
+    for (let i in tasklist) {
+        let start = dayjs(tasklist[i]?.startDate);
+        let end = dayjs(tasklist[i]?.endDate);
+        let lastUpdate = dayjs(tasklist[i]?.updatedAt);
+        let now = dayjs(new Date());
+        let duration = end.diff(start, 'day');
+        let uptonow = now.diff(lastUpdate, 'day');
+        if (tasklist[i]?.confirmedByEmployees?.length) {
+            confirmedTask = [...confirmedTask, tasklist[i]];
+        }
+        if (uptonow >= 7) {
+            noneUpdateTask = [...noneUpdateTask, tasklist[i]];
+        }
+        if (tasklist[i]?.status === 'inprocess') {
+            if (now > end) {
+                // Quá hạn
+                overdueTask = [...overdueTask, tasklist[i]];
+            }
+            else {
+                let processDay = Math.floor(tasklist[i]?.progress * duration / 100);
+                let startToNow = now.diff(start, 'day');
+
+                if (startToNow > processDay) {
+                    // Trễ hạn
+                    delayTask = [...delayTask, tasklist[i]];
+                }
+                else if (startToNow <= processDay) {
+                    // Đúng hạn
+                    intimeTask = [...intimeTask, tasklist[i]];
+                }
+            }
+        }
+        if (tasklist[i] && tasklist[i].status === "finished") {
+            taskFinished = [...taskFinished, tasklist[i]];
+        }
+        if (tasklist[i] && tasklist[i].status === "inprocess") {
+            taskInprocess = [...taskInprocess, tasklist[i]];
+        }
+    }
+    return {
+        name: name ? name : "",
+        totalTask: tasklist,
+        confirmedTask,
+        noneUpdateTask,
+        intimeTask,
+        delayTask,
+        overdueTask,
+        taskFinished,
+        taskInprocess,
+        organization: true,
+        show: true,
+    }
+}
+
+const processTask = (task) => {
+    let propNames = ['totalTask'];
+    let start = dayjs(task?.startDate);
+    let end = dayjs(task?.endDate);
+    let lastUpdate = dayjs(task?.updatedAt);
+    let now = dayjs(new Date());
+    let duration = end.diff(start, 'day');
+    let uptonow = now.diff(lastUpdate, 'day');
+    if (task?.confirmedByEmployees?.length) {
+        propNames.push('confirmedTask');
+    }
+    if (uptonow >= 7) {
+        propNames.push('noneUpdateTask');
+    }
+    if (task?.status === 'inprocess') {
+        if (now > end) {
+            // Quá hạn
+            propNames.push('overdueTask');
+        }
+        else {
+            let processDay = Math.floor(task?.progress * duration / 100);
+            let startToNow = now.diff(start, 'day');
+
+            if (startToNow > processDay) {
+                // Trễ hạn
+                propNames.push('delayTask');
+            }
+            else if (startToNow <= processDay) {
+                // Đúng hạn
+                propNames.push('intimeTask');
+            }
+        }
+    }
+
+    if (task && task.status === "finished") {
+        propNames.push('taskFinished');
+    }
+    if (task && task.status === "inprocess") {
+        propNames.push('taskInprocess');
+    }
+    return propNames
+
+}
+
+
+const freshListEmployee = (listEmployee) => {
+    let arr = [];
+    let result = [];
+    listEmployee && listEmployee.forEach((x, index) => {
+        if (x.managers) {
+            for (const [key, value] of Object.entries(x.managers)) {
+                if (value.members && value.members.length > 0) {
+                    value.members.forEach((o) => {
+                        arr = [...arr, o];
+                    });
+                }
+            }
+        }
+
+        if (x.deputyManagers) {
+            for (const [key, value] of Object.entries(x.deputyManagers)) {
+                if (value.members && value.members.length > 0) {
+                    value.members.forEach((o) => {
+                        arr = [...arr, o];
+                    });
+                }
+            }
+        }
+
+        if (x.employees) {
+            for (const [key, value] of Object.entries(x.employees)) {
+                if (value.members && value.members.length > 0) {
+                    value.members.forEach((o) => {
+                        arr = [...arr, o];
+                    });
+                }
+            }
+        }
+
+        // Lọc các nhân viên trùng nhau sau khi thực hiện ở trên
+        // vì 1 nhân viên có thể có nhiều chức ở các đơn vị khác nhau nên chỉ lọc lấy 1 cái
+        const seen = new Set();
+        const filteredArr = arr.filter((el) => {
+            const duplicate = seen.has(el._id);
+            seen.add(el._id);
+            return !duplicate;
+        });
+        result = [...filteredArr];
+    })
+    return result;
+}
 
 const GeneralTaskChart = (props) => {
     const tableId = "general-list-task";
@@ -16,163 +165,15 @@ const GeneralTaskChart = (props) => {
     const { translate } = props;
     const dataTable = []
     const [state, setState] = useState([]);
-    const [collapse, setCollapse] = useState({
+    // const [collapse, setCollapse] = useState({
 
-    });
+    // });
     const [showDetailTask, setShowTask] = useState({
         tasks: [],
         nameUnit: "",
     });
 
     const checkExport = useRef(false);
-
-    const countTask = (tasklist, name) => {
-        let confirmedTask = [], noneUpdateTask = [], intimeTask = [], delayTask = [], overdueTask = [], taskFinished = [], taskInprocess = [];
-
-        for (let i in tasklist) {
-            let start = moment(tasklist[i]?.startDate);
-            let end = moment(tasklist[i]?.endDate);
-            let lastUpdate = moment(tasklist[i]?.updatedAt);
-            let now = moment(new Date());
-            let duration = end.diff(start, 'days');
-            let uptonow = now.diff(lastUpdate, 'days');
-            if (tasklist[i]?.confirmedByEmployees?.length) {
-                confirmedTask = [...confirmedTask, tasklist[i]];
-            }
-            if (uptonow >= 7) {
-                noneUpdateTask = [...noneUpdateTask, tasklist[i]];
-            }
-            if (tasklist[i]?.status === 'inprocess') {
-                if (now > end) {
-                    // Quá hạn
-                    overdueTask = [...overdueTask, tasklist[i]];
-                }
-                else {
-                    let processDay = Math.floor(tasklist[i]?.progress * duration / 100);
-                    let startToNow = now.diff(start, 'days');
-
-                    if (startToNow > processDay) {
-                        // Trễ hạn
-                        delayTask = [...delayTask, tasklist[i]];
-                    }
-                    else if (startToNow <= processDay) {
-                        // Đúng hạn
-                        intimeTask = [...intimeTask, tasklist[i]];
-                    }
-                }
-            }
-            if (tasklist[i] && tasklist[i].status === "finished") {
-                taskFinished = [...taskFinished, tasklist[i]];
-            }
-            if (tasklist[i] && tasklist[i].status === "inprocess") {
-                taskInprocess = [...taskInprocess, tasklist[i]];
-            }
-        }
-        return {
-            name: name ? name : "",
-            totalTask: tasklist,
-            confirmedTask,
-            noneUpdateTask,
-            intimeTask,
-            delayTask,
-            overdueTask,
-            taskFinished,
-            taskInprocess,
-            organization: true,
-            show: true,
-        }
-    }
-
-    const processTask = (task) => {
-        let propNames = ['totalTask'];
-        let start = moment(task?.startDate);
-        let end = moment(task?.endDate);
-        let lastUpdate = moment(task?.updatedAt);
-        let now = moment(new Date());
-        let duration = end.diff(start, 'days');
-        let uptonow = now.diff(lastUpdate, 'days');
-        if (task?.confirmedByEmployees?.length) {
-            propNames.push('confirmedTask');
-        }
-        if (uptonow >= 7) {
-            propNames.push('noneUpdateTask');
-        }
-        if (task?.status === 'inprocess') {
-            if (now > end) {
-                // Quá hạn
-                propNames.push('overdueTask');
-            }
-            else {
-                let processDay = Math.floor(task?.progress * duration / 100);
-                let startToNow = now.diff(start, 'days');
-
-                if (startToNow > processDay) {
-                    // Trễ hạn
-                    propNames.push('delayTask');
-                }
-                else if (startToNow <= processDay) {
-                    // Đúng hạn
-                    propNames.push('intimeTask');
-                }
-            }
-        }
-
-        if (task && task.status === "finished") {
-            propNames.push('taskFinished');
-        }
-        if (task && task.status === "inprocess") {
-            propNames.push('taskInprocess');
-        }
-        return propNames
-
-    }
-
-    const freshListEmployee = (listEmployee) => {
-        let arr = [];
-        let result = [];
-        listEmployee && listEmployee.forEach((x, index) => {
-            if (x.managers) {
-                for (const [key, value] of Object.entries(x.managers)) {
-                    if (value.members && value.members.length > 0) {
-                        value.members.forEach((o) => {
-                            arr = [...arr, o];
-                        });
-                    }
-                }
-            }
-
-            if (x.deputyManagers) {
-                for (const [key, value] of Object.entries(x.deputyManagers)) {
-                    if (value.members && value.members.length > 0) {
-                        value.members.forEach((o) => {
-                            arr = [...arr, o];
-                        });
-                    }
-                }
-            }
-
-            if (x.employees) {
-                for (const [key, value] of Object.entries(x.employees)) {
-                    if (value.members && value.members.length > 0) {
-                        value.members.forEach((o) => {
-                            arr = [...arr, o];
-                        });
-                    }
-                }
-            }
-
-            // Lọc các nhân viên trùng nhau sau khi thực hiện ở trên
-            // vì 1 nhân viên có thể có nhiều chức ở các đơn vị khác nhau nên chỉ lọc lấy 1 cái
-            const seen = new Set();
-            const filteredArr = arr.filter((el) => {
-                const duplicate = seen.has(el._id);
-                seen.add(el._id);
-                return !duplicate;
-            });
-            result = [...filteredArr];
-        })
-        return result;
-    }
 
 
     useLayoutEffect(() => {
@@ -182,7 +183,6 @@ const GeneralTaskChart = (props) => {
     }, [state])
 
     useEffect(() => {
-        console.count();
         const { tasks, units, unitSelected, employees } = props;
 
         const listEmployee = {};
@@ -386,27 +386,27 @@ const GeneralTaskChart = (props) => {
     }
 
     // Xử lý click vào row unit show hide row children
-    const toggleCollapse = (idParent, parent) => {
-        let cloneArr = _cloneDeep(state);
-        // Chỉ có những row nào mà có parent, tức là tên unit
-        if (parent) {
-            cloneArr = cloneArr.map(obj => {
-                // check con của unit click set laij biến show
-                if (idParent === obj.parent) {
-                    obj.show = !obj.show;
-                }
-                return obj;
-            })
-            // cập nhật state
-            setState(cloneArr);
+    // const toggleCollapse = (idParent, parent) => {
+    //     let cloneArr = _cloneDeep(state);
+    //     // Chỉ có những row nào mà có parent, tức là tên unit
+    //     if (parent) {
+    //         cloneArr = cloneArr.map(obj => {
+    //             // check con của unit click set laij biến show
+    //             if (idParent === obj.parent) {
+    //                 obj.show = !obj.show;
+    //             }
+    //             return obj;
+    //         })
+    //         // cập nhật state
+    //         setState(cloneArr);
 
-            let title = `collapse${idParent}`;
-            setCollapse({
-                ...collapse,
-                [title]: !collapse.hasOwnProperty([title]) ? false : !collapse[title]
-            })
-        }
-    }
+    //         let title = `collapse${idParent}`;
+    //         setCollapse({
+    //             ...collapse,
+    //             [title]: !collapse.hasOwnProperty([title]) ? false : !collapse[title]
+    //         })
+    //     }
+    // }
 
     const handleShowGeneralTask = (tasks, name, index, type) => {
         if (tasks?.length > 0) {
@@ -422,11 +422,11 @@ const GeneralTaskChart = (props) => {
         }
     }
 
-    const removeTaskStatusFinished = (data) => {
-        if (data && data.length > 0) {
-            return data.filter(o => o.status !== "finished");
-        } else return data;
-    }
+    // const removeTaskStatusFinished = (data) => {
+    //     if (data && data.length > 0) {
+    //         return data.filter(o => o.status !== "finished");
+    //     } else return data;
+    // }
 
     let column = [
         { name: translate('task.task_dashboard.unit'), key: "name" },

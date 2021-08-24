@@ -8,12 +8,11 @@ import 'moment/locale/vi';
 import parse from 'html-react-parser';
 import './actionTab.css';
 import FilePreview from './FilePreview';
-import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel, DialogModal } from '../../../../common-components';
+import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
 
 import { performTaskAction } from '../redux/actions';
-import { taskManagementActions } from "../../task-management/redux/actions";
 import { AuthActions } from '../../../auth/redux/actions';
 import { ModalEditDateCreatedAction } from './modalEditDateCreatedAction';
 import { SubTaskTab } from './subTaskTab';
@@ -25,7 +24,7 @@ import ModalAddLogTime from './modalAddLogTime';
 
 function ActionTab(props) {
     let idUser = getStorage("userId");
-    const { tasks, performtasks, notifications, user, auth, translate, role, id } = props;
+    const { performtasks, notifications, user, auth, translate, role, id } = props;
 
     const [state, setState] = useState(() => {
         let lang = getStorage("lang")
@@ -2165,8 +2164,8 @@ function ActionTab(props) {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, auth, notifications } = state;
-    return { tasks, performtasks, auth, notifications };
+    const { performtasks, auth, notifications } = state;
+    return { performtasks, auth, notifications };
 }
 
 const actionCreators = {
