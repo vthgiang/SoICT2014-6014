@@ -7,12 +7,28 @@ import { SelectBox, SelectMulti } from '../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
 import { filterDifference } from '../../../../helpers/taskModuleHelpers';
+import dayjs from 'dayjs';
+
+const ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
+const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
+
+let INFO_SEARCH = {
+    role: [ROLE.RESPONSIBLE],
+    criteria: CRITERIA.NOT_COEFFICIENT
+}
+
+const averageFunction = (sum, coefficient) => {
+    if (coefficient !== 0) {
+        return sum / coefficient;
+    } else {
+        return null;
+    }
+}
 
 function AverageResultsOfTask(props) {
     // Khai báo props
     const { translate, tasks } = props;
 
-    const ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
     const ROLE_SELECTBOX = [
         {
             text: translate('task.task_management.responsible'),
@@ -28,7 +44,6 @@ function AverageResultsOfTask(props) {
         }
     ];
 
-    const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
     const CRITERIA_SELECTBOX = [
         {
             text: translate('task.task_management.detail_not_coefficient'),
@@ -46,74 +61,16 @@ function AverageResultsOfTask(props) {
 
         startMonth: null,
         endMonth: null,
+        role: [ROLE.RESPONSIBLE],
+        criteria: CRITERIA.NOT_COEFFICIENT
     });
-    const [role, setRole] = useState([ROLE.RESPONSIBLE]);
-    const [criteria, setCriteria] = useState(CRITERIA.NOT_COEFFICIENT);
 
     // Khai báo state
-    const { userId, startMonth, endMonth } = state;
+    const { userId, role, criteria } = state;
 
-    // Khởi tạo ref lưu infosearch cũ
-    const ref = useRef({
-        criteria: criteria,
-        role: role
-    });
-    const currentState = ref.current;
-
-    useEffect(() => {
-        if (currentState.criteria === criteria && currentState.role === role) {
-            if (tasks.responsibleTasks
-                && tasks.accountableTasks
-                && tasks.consultedTasks
-            ) {
-                averageChart();
-            }
-        }
-
-        // Cập nhật ref
-        ref.current = {
-            criteria: criteria,
-            role: role
-        }
-    })
-
-    if (props.startMonth !== startMonth || props.endMonth !== endMonth) {
-        setState({
-            ...state,
-            startMonth: props.startMonth,
-            endMonth: props.endMonth
-        })
-    }
-
-    const handleSelectRole = (value) => {
-        let roleSelect = value.map(item => Number(item));
-        setRole(roleSelect);
-    }
-
-    const handleSelectCriteria = (value) => {
-        setCriteria(Number(value[0]));
-    }
-
-    const handleSearchData = () => {
-        setState({
-            ...state,
-            infoSearch: {
-                criteria: criteria,
-                role: role
-            }
-        })
-    }
-
-    const averageFunction = (sum, coefficient) => {
-        if (coefficient !== 0) {
-            return sum / coefficient;
-        } else {
-            return null;
-        }
-    }
 
     // Hàm lọc các công việc theo từng tháng
-    const filterTasksByMonth = (currentMonth, nextMonth) => {
+    const filterTasksByMonth = (startMonth, endMonth) => {
         const { loadingResponsible, loadingConsulted, loadingAccountable } = tasks;
         let averageAutomatic, averageEmployee, averageApproved;
         let sumAutomaticPointNotCoefficient = 0, sumAutomaticPointCoefficient = 0, sumNotCoefficientAutomatic = 0, sumCoefficientAutomatic = 0;
@@ -139,18 +96,8 @@ function AverageResultsOfTask(props) {
         if (listTask) {
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
-                    let date = new Date(nextMonth)
-                    let month = date.getMonth() + 1
-                    let day;
-                    if (month === 1 || month === 3 || month === 5 || month === 7 || month === 8 || month === 10 || month === 12) {
-                        day = 31;
-                    } else if (month === 2) {
-                        day = 28;
-                    } else {
-                        day = 30;
-                    }
-                    let dateNextMonth = date.getFullYear() + '-' + month + '-' + day;
-                    if (new Date(evaluation.date) < new Date(dateNextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
+                    let evaluatingMonth = dayjs(evaluation.evaluatingMonth).format("YYYY-MM");
+                    if (dayjs(evaluatingMonth).isBetween(startMonth, endMonth, null, '[]')) { // '[]': tham số này check cho phép evaluatingMonth = startMonth hoặ startMonth = endMOnth, ko muốn thì set '()'
                         return 1;
                     }
 
@@ -164,38 +111,19 @@ function AverageResultsOfTask(props) {
                     }).map(result => {
                         if (criteria === CRITERIA.COEFFICIENT) {
                             let totalDay = 0;
-                            let startDate = task.startDate && new Date(task.startDate);
-                            let endDate = task.endDate && new Date(task.endDate);
-                            let dateEvaluation = evaluation.date && new Date(evaluation.date);
+                            let startEvaluation = evaluation.startDate && new Date(evaluation.startDate);
+                            let endEvaluation = evaluation.endDate && new Date(evaluation.endDate);
+                            totalDay = Math.round((endEvaluation.getTime() - startEvaluation.getTime()) / 1000 / 60 / 60 / 24);
 
-                            // Trường hợp công việc hoàn thành trong 1 tháng
-                            if (startDate && endDate && dateEvaluation && startDate.getMonth() === dateEvaluation.getMonth() && endDate.getMonth() === dateEvaluation.getMonth()) {
-                                totalDay = Math.round((endDate.getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24);
-                            }   // Trường hợp ngày đánh giá cùng tháng vs ngày bắt đầu
-                            else if (startDate && dateEvaluation && startDate.getMonth() === dateEvaluation.getMonth()) {
-                                let lastDayInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-                                totalDay = Math.round((lastDayInMonth.getTime() - startDate.getTime()) / 1000 / 60 / 60 / 24);
-                            }   // Trường hợp ngày đánh giá cùng tháng vs ngày kết thúc
-                            else if (endDate && dateEvaluation && endDate.getMonth() === dateEvaluation.getMonth()) {
-                                let firstDayInMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
-                                totalDay = Math.round((endDate.getTime() - firstDayInMonth.getTime()) / 1000 / 60 / 60 / 24);
-                            }   // Trường hợp còn lại
-                            else if (dateEvaluation) {
-                                let firstDayInMonth = new Date(dateEvaluation.getFullYear(), dateEvaluation.getMonth(), 1);
-                                let lastDayInMonth = new Date(dateEvaluation.getFullYear(), dateEvaluation.getMonth() + 1, 0);
-                                totalDay = Math.round((lastDayInMonth.getTime() - firstDayInMonth.getTime()) / 1000 / 60 / 60 / 24);
-                            }
-
-
-                            if (result.automaticPoint && result.taskImportanceLevel) {
+                            if (result.automaticPoint && result?.taskImportanceLevel) {
                                 sumAutomaticPointCoefficient = sumAutomaticPointCoefficient + result.automaticPoint * result.taskImportanceLevel * totalDay;
                                 sumCoefficientAutomatic = sumCoefficientAutomatic + result.taskImportanceLevel * totalDay;
                             }
-                            if (result.employeePoint) {
+                            if (result.employeePoint && result?.taskImportanceLevel) {
                                 sumEmployeePointCoefficient = sumEmployeePointCoefficient + result.employeePoint * result.taskImportanceLevel * totalDay;
                                 sumCoefficientEmployee = sumCoefficientEmployee + result.taskImportanceLevel * totalDay;
                             }
-                            if (result.approvedPoint) {
+                            if (result.approvedPoint && result?.taskImportanceLevel) {
                                 sumApprovedPointCoefficient = sumApprovedPointCoefficient + result.approvedPoint * result.taskImportanceLevel * totalDay;
                                 sumCoefficientApproved = sumCoefficientApproved + result.taskImportanceLevel * totalDay;
                             }
@@ -229,54 +157,50 @@ function AverageResultsOfTask(props) {
         }
 
         return {
-            'month': new Date(currentMonth),
             'automaticPoint': averageAutomatic,
             'employeePoint': averageEmployee,
             'approvedPoint': averageApproved
         }
     }
 
-    const setDataAverageChart = () => {
-        let month = ['x'], averageAutomatic = [translate('task.task_management.detail_auto_point')], averageEmployee = [translate('task.task_management.detail_emp_point')], averageApproved = [translate('task.task_management.detail_acc_point')];
-        let monthIndex = startMonth;
-        while (new Date(monthIndex) <= new Date(endMonth)) {
-            let data, nextMonthIndex;
 
-            if (new Number(monthIndex.slice(5, 7)) < 9) {
-                nextMonthIndex = monthIndex.slice(0, 4) + '-0' + (new Number(monthIndex.slice(5, 7)) + 1);
-            } else if (new Number(monthIndex.slice(5, 7)) < 12) {
-                nextMonthIndex = monthIndex.slice(0, 4) + '-' + (new Number(monthIndex.slice(5, 7)) + 1);
-            } else {
-                nextMonthIndex = (new Number(monthIndex.slice(0, 4)) + 1) + '-' + '01';
+    useEffect(() => {
+        const { startMonth, endMonth } = props;
+        let months = [], averageAutomatic = [translate('task.task_management.detail_auto_point')], averageEmployee = [translate('task.task_management.detail_emp_point')], averageApproved = [translate('task.task_management.detail_acc_point')];
+
+        const period = dayjs(endMonth).diff(startMonth, 'month');
+        for (let i = 0; i <= period; i++) {
+            let currentMonth = dayjs(startMonth).add(i, 'month').format("YYYY-MM");
+            months = [
+                ...months,
+                dayjs(startMonth).add(i, 'month').format("MM-YYYY"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+            ];
+
+            const data = filterTasksByMonth(currentMonth, currentMonth);
+            if (data) {
+                averageAutomatic.push(data.automaticPoint || 0);
+                averageEmployee.push(data.employeePoint || 0)
+                averageApproved.push(data.approvedPoint || 0)
             }
-
-            data = filterTasksByMonth(monthIndex, nextMonthIndex);
-
-            month.push(data.month);
-            averageAutomatic.push(data.automaticPoint || 0);
-            averageEmployee.push(data.employeePoint || 0)
-            averageApproved.push(data.approvedPoint || 0)
-
-            monthIndex = nextMonthIndex;
         }
-        return [
-            month,
-            averageAutomatic,
-            averageEmployee,
-            averageApproved
-        ]
-    }
 
-    const removePreviosChart = () => {
-        const chart = document.getElementById('average-chart');
-        while (chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild);
-        }
-    }
+        months.unshift("x");
+        if (months?.length)
+            setState({
+                ...state,
+                dataChart: [
+                    months,
+                    averageAutomatic,
+                    averageEmployee,
+                    averageApproved
+                ]
+            })
+    }, [JSON.stringify(props?.tasks?.responsibleTasks), JSON.stringify(props?.tasks?.accountableTasks), JSON.stringify(props?.tasks?.consultedTasks), state.role, state.criteria, props?.startMonth, props?.endMonth])
+
 
     const averageChart = () => {
         removePreviosChart();
-        let dataChart = setDataAverageChart();
+        const { dataChart } = state;
         let chart = c3.generate({
             bindto: document.getElementById('average-chart'),             // Đẩy chart vào thẻ div có id="chart"
 
@@ -294,10 +218,7 @@ function AverageResultsOfTask(props) {
 
             axis: {                                // Config trục tọa độ
                 x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
-                    }
+                    type: 'categories',
                 },
                 y: {
                     max: 100,
@@ -320,6 +241,41 @@ function AverageResultsOfTask(props) {
                 }
             }
         })
+    }
+
+    useEffect(() => {
+        if (state?.dataChart)
+            averageChart();
+    }, [state.dataChart])
+
+    const handleSelectRole = (value) => {
+        INFO_SEARCH = {
+            ...INFO_SEARCH,
+            role: value,
+        }
+    }
+
+    const handleSelectCriteria = (value) => {
+        INFO_SEARCH = {
+            ...INFO_SEARCH,
+            criteria: Number(value[0]),
+        }
+    }
+
+    const handleSearchData = () => {
+        const { criteria, role } = INFO_SEARCH;
+        setState({
+            ...state,
+            criteria,
+            role
+        })
+    }
+
+    const removePreviosChart = () => {
+        const chart = document.getElementById('average-chart');
+        while (chart.hasChildNodes()) {
+            chart.removeChild(chart.lastChild);
+        }
     }
 
     return (

@@ -496,6 +496,7 @@ function TaskOrganizationUnitDashboard(props) {
                     </div>
 
 
+                    {/* Biểu đồ gantt */}
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box box-primary">
@@ -550,6 +551,7 @@ function TaskOrganizationUnitDashboard(props) {
                         </div>
                     </div>
 
+                    {/* Tiến độ công việc */}
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="box box-primary">
