@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { withTranslate } from 'react-redux-multilingual';
 
 import { performTaskAction } from '../../task-perform/redux/actions';
@@ -58,8 +58,8 @@ function GanttCalendar(props) {
     if (taskFilter[0]) splitTask[0] = [taskFilter[0]];
 
     for (let i in taskFilter) {
-      let left = moment(taskFilter[i].startDate);
-      let right = moment(taskFilter[i].endDate);
+      let left = dayjs(taskFilter[i].startDate);
+      let right = dayjs(taskFilter[i].endDate);
       let intersect;
 
       if (i == 0) continue;
@@ -69,8 +69,8 @@ function GanttCalendar(props) {
         for (let j in currentLine) {
           // Kiem tra xem co trung cong viec nao k
           intersect = false;
-          let currentLeft = moment(currentLine[j].startDate);
-          let currentRight = moment(currentLine[j].endDate);
+          let currentLeft = dayjs(currentLine[j].startDate);
+          let currentRight = dayjs(currentLine[j].endDate);
 
           if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
             intersect = true;
@@ -104,10 +104,10 @@ function GanttCalendar(props) {
     }
 
     for (let i in taskFilterSplit) {
-      let start = moment(taskFilterSplit[i].startDate);
-      let end = moment(taskFilterSplit[i].endDate);
-      let now = moment(new Date());
-      let duration = end.diff(start, 'days');
+      let start = dayjs(taskFilterSplit[i].startDate);
+      let end = dayjs(taskFilterSplit[i].endDate);
+      let now = dayjs(new Date());
+      let duration = end.diff(start, 'day');
       if (duration == 0) duration = 1;
       let process = 0;
 
@@ -149,9 +149,9 @@ function GanttCalendar(props) {
       data.push({
         id: `${groupName}-${taskFilterSplit[i]._id}`,
         text: taskFilterSplit[i].status == "inprocess" ? `${taskFilterSplit[i].name} - ${taskFilterSplit[i].progress}%` : `${taskFilterSplit[i].name}`,
-        start_date: moment(taskFilterSplit[i].startDate).format("YYYY-MM-DD HH:mm"),
+        start_date: dayjs(taskFilterSplit[i].startDate).format("YYYY-MM-DD HH:mm"),
         // duration: duration,
-        end_date: moment(taskFilterSplit[i].endDate).format("YYYY-MM-DD HH:mm"),
+        end_date: dayjs(taskFilterSplit[i].endDate).format("YYYY-MM-DD HH:mm"),
         progress: taskFilterSplit[i].status === "inprocess" ? taskFilterSplit[i].progress / 100 : 0,
         process: process,
         parent: `${groupName}-${taskFilterSplit[i].parentSplit}`
@@ -459,7 +459,7 @@ function GanttCalendar(props) {
         unit={unit}
         onZoomChange={handleZoomChange}
         attachEvent={attachEvent}
-        checkFromHome={props?.checkFromHome?props?.checkFromHome:false}
+        checkFromHome={props?.checkFromHome ? props?.checkFromHome : false}
       />
 
       <div className="form-inline" style={{ textAlign: 'center' }}>
