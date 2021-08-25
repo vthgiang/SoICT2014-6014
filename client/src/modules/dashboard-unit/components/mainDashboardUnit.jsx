@@ -207,38 +207,7 @@ class MainDashboardUnit extends Component {
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-
-        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        // let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
         let listEmployee = user.employees;
-        // let employeeTasks = [];
-        // for (let i in listEmployee) {
-        //     let tasks = [];
-        //     let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
-        //     taskListByStatus && taskListByStatus.forEach(task => {
-        //         if (task?.accountableEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-        //             accountableTask = [...accountableTask, task._id]
-        //         }
-        //         if (task?.consultedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-        //             consultedTask = [...consultedTask, task._id]
-        //         }
-        //         if (task?.responsibleEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-        //             responsibleTask = [...responsibleTask, task._id]
-        //         }
-        //         if (task?.informedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-        //             informedTask = [...informedTask, task._id]
-        //         }
-        //     });
-        //     tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
-        //     let totalTask = tasks.filter(function (item, pos) {
-        //         return tasks.indexOf(item) === pos;
-        //     })
-        //     employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i].userId?.name, totalTask: totalTask?.length }]
-        // };
-        // if (employeeTasks.length !== 0) {
-        //     employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
-
-        // };
 
         return (
             <React.Fragment>
