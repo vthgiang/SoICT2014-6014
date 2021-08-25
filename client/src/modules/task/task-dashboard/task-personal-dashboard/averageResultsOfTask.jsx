@@ -119,11 +119,11 @@ function AverageResultsOfTask(props) {
                                 sumAutomaticPointCoefficient = sumAutomaticPointCoefficient + result.automaticPoint * result.taskImportanceLevel * totalDay;
                                 sumCoefficientAutomatic = sumCoefficientAutomatic + result.taskImportanceLevel * totalDay;
                             }
-                            if (result.employeePoint && result?.taskImportanceLevel) {
+                            if (result.employeePoint) {
                                 sumEmployeePointCoefficient = sumEmployeePointCoefficient + result.employeePoint * result.taskImportanceLevel * totalDay;
                                 sumCoefficientEmployee = sumCoefficientEmployee + result.taskImportanceLevel * totalDay;
                             }
-                            if (result.approvedPoint && result?.taskImportanceLevel) {
+                            if (result.approvedPoint) {
                                 sumApprovedPointCoefficient = sumApprovedPointCoefficient + result.approvedPoint * result.taskImportanceLevel * totalDay;
                                 sumCoefficientApproved = sumCoefficientApproved + result.taskImportanceLevel * totalDay;
                             }

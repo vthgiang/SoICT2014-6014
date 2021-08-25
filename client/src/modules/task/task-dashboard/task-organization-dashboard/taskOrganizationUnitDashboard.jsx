@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import isEqual from 'lodash/isEqual';
+import dayjs from 'dayjs';
 
 import { taskManagementActions } from '../../task-management/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
@@ -23,52 +24,25 @@ import { SelectMulti, DatePicker, LazyLoadComponent, ExportExcel } from '../../.
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
-const formatMonth = (value) => {
-    let monthTitle = value.slice(5, 7) + '-' + value.slice(0, 4);
-    return monthTitle
+let INFO_SEARCH = {
+    startMonth: dayjs().subtract(3, 'month').format("YYYY-MM"),
+    endMonth: dayjs().format("YYYY-MM"),
+    idsUnit: null,
+
 }
+
+const formatString = (value) => {
+    if (value && typeof value === 'string') {
+        let part = value.split('-');
+        return [part[1], part[0]].join('-');
+    }
+    return value
+}
+
 function TaskOrganizationUnitDashboard(props) {
     const { taskDashboardChart } = props.tasks
     const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = props;
-    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-
-    const [infoSearch, setInfoSearch] = useState(() => initInfoSearch())
-    const [state, setState] = useState(() => initState())
-
-    const { idsUnit, startMonth, endMonth, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit, dataExport } = state;
-    const { startMonthTitle, endMonthTitle } = infoSearch;
-    function initState() {
-        let DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonth, endMonth, startYear;
-
-        if (month > 3) {
-            startMonth = month - 3;
-            startYear = year;
-        } else {
-            startMonth = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonth < 10)
-            startMonth = '0' + startMonth;
-        if (month < 10) {
-            endMonth = '0' + month;
-        } else {
-            endMonth = month;
-        }
-        let infoSearch = {
-            idsUnit: null,
-            checkUnit: 0,
-            startMonth: [startYear, startMonth].join('-'),
-            endMonth: [year, endMonth].join('-'),
-
-            startMonthTitle: [startMonth, startYear].join('-'),
-            endMonthTitle: [endMonth, year].join('-'),
-        }
-
+    const [state, setState] = useState(() => {
         const defaultConfig = { limit: 10 }
         const allTimeSheetLogsByUnitId = "all-time-sheet-logs"
         const allTimeSheetLogsByUnitIdPerPage = getTableConfiguration(allTimeSheetLogsByUnitId, defaultConfig).limit;
@@ -77,62 +51,20 @@ function TaskOrganizationUnitDashboard(props) {
 
         return {
             userID: "",
-            idsUnit: infoSearch.idsUnit,
-            dataStatus: DATA_STATUS.NOT_AVAILABLE,
-
-            willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false,
-
-            checkUnit: infoSearch.checkUnit,
-            startMonth: infoSearch.startMonth,
-            endMonth: infoSearch.endMonth,
-
+            idsUnit: INFO_SEARCH.idsUnit,
+            startMonth: INFO_SEARCH.startMonth,
+            startMonthTitle: formatString(INFO_SEARCH.startMonth),
+            endMonth: INFO_SEARCH.endMonth,
+            endMonthTitle: formatString(INFO_SEARCH.endMonth),
             allTimeSheetLogsByUnitIdPerPage: allTimeSheetLogsByUnitIdPerPage,
             distributionOfEmployeeChartPerPage: distributionOfEmployeeChartPerPage
         };
-    }
-    function initInfoSearch() {
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonth, endMonth, startYear;
+    })
 
-        if (month > 3) {
-            startMonth = month - 3;
-            startYear = year;
-        } else {
-            startMonth = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonth < 10)
-            startMonth = '0' + startMonth;
-        if (month < 10) {
-            endMonth = '0' + month;
-        } else {
-            endMonth = month;
-        }
-        return {
-            idsUnit: null,
-            checkUnit: 0,
-            startMonth: [startYear, startMonth].join('-'),
-            endMonth: [year, endMonth].join('-'),
+    const { idsUnit, startMonth, startMonthTitle, endMonth, endMonthTitle, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit, dataExport } = state;
 
-            startMonthTitle: [startMonth, startYear].join('-'),
-            endMonthTitle: [endMonth, year].join('-'),
-        }
-    }
     useEffect(() => {
-        async function fetchMyAPI() {
-            await props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-
-            setState({
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-                willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            });
-
-        }
-        fetchMyAPI()
+        props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }, [])
 
     useEffect(() => {
@@ -166,14 +98,6 @@ function TaskOrganizationUnitDashboard(props) {
                 }
             }
 
-            setState({
-                ...state,
-                startMonth: state.startMonth,
-                endMonth: state.endMonth,
-                checkUnit: state.checkUnit,
-                idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : state.idsUnit,
-                selectBoxUnit: childrenOrganizationalUnit
-            });
             let data = {
                 organizationalUnitId: childrenOrganizationalUnit?.[0]?.id,
                 startMonth: state.startMonth,
@@ -182,22 +106,14 @@ function TaskOrganizationUnitDashboard(props) {
             // service mới, lưu vào state redux : props.tasks.taskDashboardChart:[ general-task-chart, ]
             props.getOrganizationTaskDashboardChart(data);
 
-        }
-        else if (state.dataStatus === DATA_STATUS.QUERYING) {
             setState({
                 ...state,
-                dataStatus: DATA_STATUS.AVAILABLE,
-                callAction: true
+                idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : state.idsUnit,
+                selectBoxUnit: childrenOrganizationalUnit
             });
         }
-        else if (state.dataStatus === DATA_STATUS.AVAILABLE && state.willUpdate) {
-            setState({
-                ...state,
-                dataStatus: DATA_STATUS.FINISHED,
-                willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            });
-        }
-    }, [idsUnit, dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit, state.dataStatus, state.willUpdate])
+    }, [JSON.stringify(idsUnit), JSON.stringify(dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit)])
+
 
     useEffect(() => {
         if ((!distributionOfEmployeeChart?.employees || !allTimeSheetLogsByUnit?.employees) && user?.employees) {
@@ -217,37 +133,33 @@ function TaskOrganizationUnitDashboard(props) {
         }
     }, [distributionOfEmployeeChart?.employees, allTimeSheetLogsByUnit?.employees, user?.employees])
 
-    const handleChangeOrganizationUnit = async (value) => {
-        let checkUnit = state.checkUnit + 1;
-        setInfoSearch({
-            ...infoSearch,
-            checkUnit: checkUnit,
+    const handleChangeOrganizationUnit = (value) => {
+        INFO_SEARCH = {
+            ...INFO_SEARCH,
             idsUnit: value
-        })
+        }
     }
 
-    const handleSelectMonthStart = async (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        setInfoSearch({
-            ...infoSearch,
-            startMonth: month,
-        })
+    const handleSelectMonthStart = (value) => {
+        INFO_SEARCH = {
+            ...INFO_SEARCH,
+            startMonth: value ? formatString(value) : value,
+        }
     }
 
-    const handleSelectMonthEnd = async (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        setInfoSearch({
-            ...infoSearch,
-            endMonth: month,
-        })
+    const handleSelectMonthEnd = (value) => {
+        INFO_SEARCH = {
+            ...INFO_SEARCH,
+            endMonth: value ? formatString(value) : value,
+        }
     }
 
     const handleSearchData = async () => {
         const { allTimeSheetLogsByUnitIdPerPage, distributionOfEmployeeChartPerPage } = state;
-        const { idsUnit, startMonth, endMonth, checkUnit } = infoSearch
+        const { idsUnit, startMonth, endMonth } = INFO_SEARCH;
 
-        let startMonthObj = new Date(infoSearch.startMonth);
-        let endMonthObj = new Date(infoSearch.endMonth);
+        let startMonthObj = new Date(startMonth);
+        let endMonthObj = new Date(endMonth);
 
         if (startMonthObj.getTime() > endMonthObj.getTime()) {
             const { translate } = props;
@@ -261,14 +173,10 @@ function TaskOrganizationUnitDashboard(props) {
             setState({
                 ...state,
                 startMonth: startMonth,
+                startMonthTitle: formatString(startMonth),
                 endMonth: endMonth,
-                checkUnit: checkUnit,
+                endMonthTitle: formatString(endMonth),
                 idsUnit: idsUnit
-            })
-            setInfoSearch({
-                ...infoSearch,
-                startMonthTitle: formatMonth(startMonth),
-                endMonthTitle: formatMonth(endMonth),
             })
 
             let data = {
@@ -276,13 +184,13 @@ function TaskOrganizationUnitDashboard(props) {
                 page: 1
             }
 
-            await props.getAllEmployeeOfUnitByIds({
+            props.getAllEmployeeOfUnitByIds({
                 ...data,
                 type: "forDistributionChart",
                 perPage: distributionOfEmployeeChartPerPage
             });
 
-            await props.getAllEmployeeOfUnitByIds({
+            props.getAllEmployeeOfUnitByIds({
                 ...data,
                 type: "forAllTimeSheetLogs",
                 perPage: allTimeSheetLogsByUnitIdPerPage
@@ -293,7 +201,7 @@ function TaskOrganizationUnitDashboard(props) {
                 startMonth: startMonth,
                 endMonth: endMonth
             }
-            await props.getOrganizationTaskDashboardChart(dataQuery);
+            props.getOrganizationTaskDashboardChart(dataQuery);
         }
     }
 
@@ -403,6 +311,7 @@ function TaskOrganizationUnitDashboard(props) {
         currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
     }
 
+    console.log('state', state);
     return (
         <React.Fragment>
             {currentOrganizationalUnit
@@ -478,7 +387,7 @@ function TaskOrganizationUnitDashboard(props) {
                                 </div>
 
                                 <div className="box-body qlcv">
-                                    {state.callAction && taskDashboardChart?.length &&
+                                    {taskDashboardChart?.length &&
                                         <GeneralTaskChart
                                             tasks={getDataTask("general-task-chart")}
                                             units={selectBoxUnit}
@@ -574,7 +483,7 @@ function TaskOrganizationUnitDashboard(props) {
                                     </div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    {state.callAction && taskDashboardChart?.length &&
+                                    {taskDashboardChart?.length &&
                                         <LazyLoadComponent once={true}>
                                             <InprocessOfUnitTask
                                                 tasks={getDataTask("in-process-unit-chart")}
@@ -609,17 +518,15 @@ function TaskOrganizationUnitDashboard(props) {
                                     </div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    {state.callAction &&
-                                        <LazyLoadComponent once={true}>
-                                            <DomainOfTaskResultsChart
-                                                organizationUnitTasks={getDataTask("task-results-domain-chart")}
-                                                TaskOrganizationUnitDashboard={true}
-                                                units={idsUnit}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                            />
-                                        </LazyLoadComponent>
-                                    }
+                                    <LazyLoadComponent once={true}>
+                                        <DomainOfTaskResultsChart
+                                            organizationUnitTasks={getDataTask("task-results-domain-chart")}
+                                            TaskOrganizationUnitDashboard={true}
+                                            units={idsUnit}
+                                            startMonth={startMonth}
+                                            endMonth={endMonth}
+                                        />
+                                    </LazyLoadComponent>
                                 </div>
                             </div>
                         </div>
@@ -644,18 +551,15 @@ function TaskOrganizationUnitDashboard(props) {
                                     </div>
                                 </div>
                                 <div className="box-body qlcv" style={{ maxHeight: '384px' }}>
-                                    {state.callAction &&
-                                        <LazyLoadComponent once={true}>
-                                            <TaskStatusChart
-                                                organizationUnitTasks={getDataTask("task-status-chart")}
-                                                callAction={!state.willUpdate}
-                                                TaskOrganizationUnitDashboard={true}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                                units={idsUnit}
-                                            />
-                                        </LazyLoadComponent>
-                                    }
+                                    <LazyLoadComponent once={true}>
+                                        <TaskStatusChart
+                                            organizationUnitTasks={getDataTask("task-status-chart")}
+                                            TaskOrganizationUnitDashboard={true}
+                                            startMonth={startMonth}
+                                            endMonth={endMonth}
+                                            units={idsUnit}
+                                        />
+                                    </LazyLoadComponent>
                                 </div>
                             </div>
                         </div>
