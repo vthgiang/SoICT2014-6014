@@ -10,6 +10,8 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 
 const EmployeeManagement = (props) => {
 
@@ -137,21 +139,6 @@ const EmployeeManagement = (props) => {
         setState(state => ({
             ...state,
             organizationalUnits: value
-        }))
-    }
-
-    /**
-     * Function lưu giá trị chức vụ vào state khi thay đổi
-     * @param {*} value : Array id chức vụ
-     */
-    // 
-    const handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        setState(state => ({
-            ...state,
-            position: value
         }))
     }
 
@@ -882,6 +869,34 @@ const EmployeeManagement = (props) => {
 
     }, [props.employeesManager.exportData]);
 
+
+    const handleShowEmployeesExpiresContract = (data) => {
+        Swal.fire({
+            html: `<h3 style="color: red"><div>Danh sách nhân viên hết hạn hợp đồng tháng ${dayjs().format("MM-YYYY")}</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+           `+ `<ul>
+            ${data?.length && data.map(x => (
+                `<li style="margin-bottom: 5px">${x.fullName} (${x.employeeNumber})}, hết hợp đồng vào ngày: <b>${formatDate(x?.contractEndDate)}</b></li>`
+            )).join(" ")}
+            </ul>`,
+            width: "50%",
+        })
+    }
+
+    const handleShowEmployeesHaveBirthDate = (data) => {
+        Swal.fire({
+            html: `<h3 style="color: red"><div>Danh sách nhân viên có sinh nhật tháng ${dayjs().format("MM-YYYY")}</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+           `+ `<ul>
+            ${data?.length && data.map(x => (
+                `<li style="margin-bottom: 5px">${x.fullName} (${x.employeeNumber}), sinh nhật vào ngày: <b>${formatDate(x?.birthdate)}</b></li>`
+            )).join(" ")}
+            </ul>`,
+            width: "50%",
+        })
+    }
+
+
     const { employeesManager, translate, department, field } = props;
 
     const { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status } = state;
@@ -1025,26 +1040,26 @@ const EmployeeManagement = (props) => {
                 </div>
 
                 <div className="form-group col-md-12 row" >
-                    {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
+                    {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
                         <span>{translate('human_resource.profile.employee_management.have')}&nbsp;</span>
                     }
-                    {Number(employeesManager.expiresContract) > 0 &&
+                    {Number(employeesManager?.expiresContract?.length) > 0 &&
                         <React.Fragment>
-                            <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} ${translate('human_resource.profile.employee_management.staff')}`}</span>
+                            <span className="text-danger" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer', color: "#dd4b39" }} onClick={() => handleShowEmployeesExpiresContract(employeesManager?.expiresContract)}>{` ${employeesManager?.expiresContract?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
                             <span>&nbsp;{translate('human_resource.profile.employee_management.contract_expiration')}</span>
                         </React.Fragment>
                     }
-                    {(Number(employeesManager.expiresContract) > 0 && Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
+                    {(Number(employeesManager?.expiresContract?.length) > 0 && Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
                         <span>&nbsp;{translate('human_resource.profile.employee_management.and')}&nbsp;</span>
                     }
                     {
-                        Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
+                        Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0 &&
                         <React.Fragment>
-                            <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} ${translate('human_resource.profile.employee_management.staff')}`}</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer' }} onClick={() => handleShowEmployeesHaveBirthDate(employeesManager?.employeesHaveBirthdateInCurrentMonth)}>{` ${employeesManager?.employeesHaveBirthdateInCurrentMonth?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
                             <span>&nbsp;{translate('human_resource.profile.employee_management.have_birthday')}</span>
                         </React.Fragment>
                     }
-                    {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth)) > 0 &&
+                    {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length)) > 0 &&
                         <span>&nbsp;{`${translate('human_resource.profile.employee_management.this_month')} (${formatDate(Date.now(), true)})`}</span>
                     }
                 </div>

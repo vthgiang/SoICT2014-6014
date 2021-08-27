@@ -361,7 +361,7 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
 exports.getEmployeeNumberExpiresContractInCurrentMonth = async (portal, company, month = new Date()) => {
     let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
     let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
-    let results = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
+    let results = await Employee(connect(DB_CONNECTION, portal)).find({
         company: company,
         status: {
             $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
@@ -380,7 +380,7 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (portal, company,
  * @param {*} month 
  */
 exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (portal, company, month = new Date()) => {
-    return await Employee(connect(DB_CONNECTION, portal)).countDocuments({
+    return await Employee(connect(DB_CONNECTION, portal)).find({
         company: company,
         status: {
             $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
