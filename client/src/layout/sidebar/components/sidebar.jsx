@@ -787,7 +787,7 @@ class SideBar extends Component {
                                             name: "menu.manage_transport_schedule",
                                             icon: "fa fa-calendar-o",
                                             path: "/manage-transport-schedule",
-                                        },                                        
+                                        },
                                         {
                                             name: "menu.manage_transport_route",
                                             icon: "fa fa-calendar-o",
@@ -806,7 +806,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.carrier_today_transport_mission",
                                             icon: "fa fa-calendar-o",
-                                            path: "/carrier-today-transport-mission", 
+                                            path: "/carrier-today-transport-mission",
                                         },
                                         // {
                                         //     name: "menu.carrier_all_times_transport_mission",
@@ -863,11 +863,6 @@ class SideBar extends Component {
                                     name: "menu.account",
                                     icon: "fa fa-user-circle",
                                     list: [
-                                        {
-                                            name: "menu.detail_employee",
-                                            icon: "fa fa-user-o",
-                                            path: "/hr-detail-employee",
-                                        },
                                         {
                                             name: "menu.update_employee",
                                             icon: "fa fa-pencil-square-o",

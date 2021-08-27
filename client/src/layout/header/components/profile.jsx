@@ -3,12 +3,18 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ApiImage } from '../../../common-components';
 import { AuthActions } from '../../../modules/auth/redux/actions';
-
 class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
+
+    _checkLink = (url) => {
+        const arr = this.props.auth.links.filter((item) => item.url === url);
+        if (arr.length > 0) return true;
+        else return false;
+    };
+
     render() {
         const { auth, translate } = this.props;
         return (
@@ -28,6 +34,12 @@ class Profile extends Component {
                     <li className="user-footer">
 
                         <div className="row">
+                            {
+                                this._checkLink("/hr-detail-employee") &&
+                                <div style={{ marginTop: '10px' }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <a style={{ width: '100%' }} href="/hr-detail-employee" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i>Thông tin cá nhân</a>
+                                </div>
+                            }
                             <div style={{ marginTop: '10px' }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <a style={{ width: '100%' }} href="#modal-profile" data-toggle="modal" className="btn btn-default btn-flat"><i className="fa fa-info-circle"></i> {translate('auth.profile.title')} </a>
                             </div>
