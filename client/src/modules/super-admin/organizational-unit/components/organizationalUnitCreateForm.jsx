@@ -72,9 +72,9 @@ function DepartmentCreateForm(props) {
     const handleChangeEmployee = (e, index) => {
         let { employees } = state;
         employees[index] = e.target.value;
-        setState({ 
+        setState({
             ...state,
-            employees 
+            employees
         });
     }
 
@@ -150,13 +150,12 @@ function DepartmentCreateForm(props) {
             <DialogModal
                 isLoading={department.isLoading}
                 modalID="modal-create-department"
-                formID="form-create-department"
                 title={translate('manage_department.add_title')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
                 {/* Form thêm đơn vị mới */}
-                <form id="form-create-department">
+                <div id="form-create-department">
 
                     {/* Thông tin về đơn vị */}
                     <fieldset className="scheduler-border">
@@ -304,7 +303,7 @@ function DepartmentCreateForm(props) {
                             </table>
                         </div>
                     </fieldset>
-                </form>
+                </div>
             </DialogModal>
         </React.Fragment>
     );
@@ -319,4 +318,4 @@ const getState = {
     create: DepartmentActions.create
 }
 
-export default connect(mapState, getState)(withTranslate(DepartmentCreateForm)); 
+export default connect(mapState, getState)(withTranslate(DepartmentCreateForm));

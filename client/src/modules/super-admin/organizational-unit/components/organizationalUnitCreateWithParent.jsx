@@ -170,13 +170,12 @@ function DepartmentCreateWithParent(props) {
             <DialogModal
                 isLoading={department.isLoading}
                 modalID="modal-create-department-with-parent"
-                formID="form-create-department-with-parent"
                 title={translate('manage_department.add_title')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
                 {/* Form thêm đơn vị mới */}
-                <form id="form-create-department-with-parent">
+                <div id="form-create-department-with-parent">
 
                     {/* Thông tin về đơn vị */}
                     <fieldset className="scheduler-border">
@@ -325,7 +324,7 @@ function DepartmentCreateWithParent(props) {
                             </table>
                         </div>
                     </fieldset>
-                </form>
+                </div>
             </DialogModal>
         </React.Fragment>
     );
@@ -340,4 +339,4 @@ const getState = {
     create: DepartmentActions.create
 }
 
-export default connect(mapState, getState)(withTranslate(DepartmentCreateWithParent)); 
+export default connect(mapState, getState)(withTranslate(DepartmentCreateWithParent));

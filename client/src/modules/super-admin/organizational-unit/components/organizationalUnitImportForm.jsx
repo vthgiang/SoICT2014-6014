@@ -180,13 +180,12 @@ function DepartmentImportForm(props) {
         <React.Fragment>
             <DialogModal
                 modalID={`modal_import_file`} isLoading={false}
-                formID={`form_import_file`}
                 title="Thêm cơ cấu tổ chức bằng import file excel"
                 func={save}
                 disableSubmit={false}
                 size={75}
             >
-                <form className="form-group" id={`form_import_file`}>
+                <div className="form-group" id={`form_import_file`}>
                     <ConFigImportFile
                         id="import_organizationalUnit_config"
                         configData={configData}
@@ -220,7 +219,7 @@ function DepartmentImportForm(props) {
                             />
                         </div>
                     </div>
-                </form>
+                </div>
             </DialogModal>
         </React.Fragment>
     )

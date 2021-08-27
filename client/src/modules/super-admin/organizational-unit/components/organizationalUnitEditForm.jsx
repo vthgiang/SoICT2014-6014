@@ -22,18 +22,18 @@ function DepartmentEditForm(props) {
     const handleChangeManager = (e, index) => {
         let { managers } = state;
         managers[index].name = e.target.value;
-        setState({ 
+        setState({
             ...state,
-            managers 
+            managers
         });
     }
 
     const handleRemoveManager = (index) => {
         let { managers } = state;
         managers.splice(index, 1);
-        setState({ 
+        setState({
             ...state,
-            managers 
+            managers
         });
     }
 
@@ -47,18 +47,18 @@ function DepartmentEditForm(props) {
     const handleChangeDeputyManager = (e, index) => {
         let { deputyManagers } = state;
         deputyManagers[index].name = e.target.value;
-        setState({ 
+        setState({
             ...state,
-            deputyManagers 
+            deputyManagers
         });
     }
 
     const handleRemoveDeputyManager = (index) => {
         let { deputyManagers } = state;
         deputyManagers.splice(index, 1);
-        setState({ 
+        setState({
             ...state,
-            deputyManagers 
+            deputyManagers
         });
     }
 
@@ -72,18 +72,18 @@ function DepartmentEditForm(props) {
     const handleChangeEmployee = (e, index) => {
         let { employees } = state;
         employees[index].name = e.target.value;
-        setState({ 
+        setState({
             ...state,
-            employees 
+            employees
         });
     }
 
     const handleRemoveEmployee = (index) => {
         let { employees } = state;
         employees.splice(index, 1);
-        setState({ 
+        setState({
             ...state,
-            employees 
+            employees
         });
     }
 
@@ -178,13 +178,12 @@ function DepartmentEditForm(props) {
             <DialogModal
                 isLoading={department.isLoading}
                 modalID="modal-edit-department"
-                formID="form-edit-department"
                 title={translate('manage_department.info')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
                 {/* Form chỉnh sửa thông tin về đơn vị */}
-                <form id="form-edit-department">
+                <div id="form-edit-department">
 
                     {/* Thông tin về đơn vị */}
                     <fieldset className="scheduler-border">
@@ -332,7 +331,7 @@ function DepartmentEditForm(props) {
                             </table>
                         </div>
                     </fieldset>
-                </form>
+                </div>
             </DialogModal>
         </React.Fragment>
     );
@@ -346,4 +345,4 @@ function mapState(state) {
 const getState = {
     edit: DepartmentActions.edit
 }
-export default connect(mapState, getState)(withTranslate(DepartmentEditForm)); 
+export default connect(mapState, getState)(withTranslate(DepartmentEditForm));
