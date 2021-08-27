@@ -10,7 +10,7 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import _cloneDeep from 'lodash/cloneDeep';
 const DepartmentManage = (props) => {
-    
+
     const [state, setState] = useState({});
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const DepartmentManage = (props) => {
 
     useEffect(() => {
         window.$('#employee-tree-table').css({ "border": "1px solid #9E9E9E", 'backgroundColor': 'whitesmoke' });
-        window.$('#employee-tree-table th').css({ "border": "1px solid #9E9E9E" });
+        window.$('#employee-tree-table th').css({ "border": "1px solid #9E9E9E", "position": "sticky", "top": "-0.1em", "background": "#fff", "z-index": "1" });
         window.$('#employee-tree-table td').css({ "border": "1px solid #9E9E9E" });
     })
 
@@ -119,9 +119,10 @@ const DepartmentManage = (props) => {
         { name: translate('manage_department.total_employee'), key: "totalEmployee" },
     ];
 
+
     return (
         <div>
-            <div className="qlcv">
+            <div className="qlcv StyleScrollDiv StyleScrollDiv-y" style={{ maxHeight: '600px' }}>
                 <TreeTable
                     behaviour="show-children"
                     tableId='employee-tree-table'
