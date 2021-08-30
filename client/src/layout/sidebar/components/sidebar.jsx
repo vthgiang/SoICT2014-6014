@@ -864,6 +864,11 @@ class SideBar extends Component {
                                     icon: "fa fa-user-circle",
                                     list: [
                                         {
+                                            name: "menu.detail_employee",
+                                            icon: "fa fa-user-o",
+                                            path: "/hr-detail-employee",
+                                        },
+                                        {
                                             name: "menu.update_employee",
                                             icon: "fa fa-pencil-square-o",
                                             path: "/hr-update-employee",
