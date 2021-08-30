@@ -24,7 +24,6 @@ const EducationProgramSchema = new Schema({ // Chương trình đào tạo
     }],
     detailsOfProgram: {
         type: String,
-        required: true
     }
 }, {
     timestamps: true,
