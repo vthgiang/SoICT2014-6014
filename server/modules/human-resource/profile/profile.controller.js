@@ -111,6 +111,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 endDateOfContract: req.query.endDateOfContract,
                 birthdate: req.query.birthdate,
                 typeOfContract: req.query.typeOfContract,
+                certificates: req.query.certificates,
+                degrees: req.query.degrees,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }

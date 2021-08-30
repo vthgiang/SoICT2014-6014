@@ -33,6 +33,8 @@ function getAll(data) {
             endDateOfContract: data ? data.endDateOfContract : data,
             birthdate: data ? data.birthdate : data,
             typeOfContract: data ? data.typeOfContract : data,
+            certificates: data ? data.certificates: null,
+            degrees: data ? data.degrees: null,
             page: data ? data.page : data,
             limit: data ? data.limit : data
         }

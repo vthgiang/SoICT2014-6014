@@ -115,7 +115,7 @@ class DataTableSetting extends Component {
         const { hiddenColumns, limit } = this.state;
         return (
             <React.Fragment>
-                <button type="button" data-toggle="collapse" data-target={`#setting-${tableId}`} className={className ? className : 'pull-right'} style={style ? style : { border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize }}></i> {text}</button>
+                <button type="button" data-toggle="collapse" data-target={`#setting-${tableId}`} className={className ? className : 'pull-right'} style={style ? style : { border: "none", background: "none", padding: "0px", display: 'flex', alignItems: 'center' }}><i className="fa fa-gear" style={{ fontSize }}></i> {text}</button>
 
                 <div className="collapse setting-table" id={`setting-${tableId}`}>
                     <button type="button" className="btn-close" data-toggle="collapse" data-target={`#setting-${tableId}`} ><i className="fa fa-times"></i></button>

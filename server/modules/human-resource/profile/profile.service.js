@@ -668,6 +668,21 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
         }
     }
 
+
+    if (params?.certificates) {
+        keySearch = {
+            ...keySearch,
+            certificates: { $elemMatch: { name: { $regex: params.certificates, $options: "i" } } }
+        }
+    }
+
+    if (params?.degrees) {
+        keySearch = {
+            ...keySearch,
+            degrees: { $elemMatch: { name: { $regex: params.degrees, $options: "i" } } }
+        }
+    }
+
     // Lấy danh sách nhân viên
     let listEmployees = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
         field1: 1,

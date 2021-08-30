@@ -922,19 +922,21 @@ const EmployeeManagement = (props) => {
     return (
         <div className="box">
             <div className="box-body qlcv">
-                <div className="form-inline">
-                    {/* Button thêm mới nhân viên */}
-                    <div className="dropdown pull-right">
-                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
-                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={_importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
-                        </ul>
+                <div className="row">
+                    <div className="col-lg-12 col-md-12 col-sm-12">
+                        {/* Button thêm mới nhân viên */}
+                        <div className="dropdown">
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={_importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                            </ul>
+                        </div>
+                        {/* <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button> */}
                     </div>
-                    <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button>
                 </div>
 
-                <div className="form-inline">
+                <div className="form-inline" style={{ marginTop: '10px' }}>
                     {/* Đơn vị */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.unit')}</label>
@@ -949,13 +951,13 @@ const EmployeeManagement = (props) => {
                         <label className="form-control-static">{translate('page.staff_number')}</label>
                         <input type="text" className="form-control" name="employeeNumber" onChange={handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                     </div>
-                </div>
-                <div className="form-inline">
                     {/* Tên nhân viên  */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('human_resource.staff_name')}</label>
                         <input type="text" className="form-control" name="employeeName" onChange={handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
                     </div>
+                </div>
+                <div className="form-inline">
                     {/* Trạng thái */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
@@ -973,9 +975,7 @@ const EmployeeManagement = (props) => {
                             onChange={handleStatusChange}>
                         </SelectMulti>
                     </div>
-                </div>
 
-                <div className="form-inline">
                     {/* Giới tính */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('human_resource.profile.gender')}</label>
@@ -984,6 +984,7 @@ const EmployeeManagement = (props) => {
                             items={[{ value: "male", text: translate('human_resource.profile.male') }, { value: "female", text: translate('human_resource.profile.female') }]} onChange={handleGenderChange}>
                         </SelectMulti>
                     </div>
+
                     {/* Tháng sinh */}
                     <div className="form-group">
                         <label title={translate('human_resource.profile.employee_management.brithday_lable_title')} className="form-control-static">{translate('human_resource.profile.employee_management.brithday_lable')}</label>
@@ -1013,8 +1014,6 @@ const EmployeeManagement = (props) => {
                         />
                     </div>
 
-                </div>
-                <div className="form-inline" style={{ marginBottom: 15 }}>
                     {/* Trình độ chuyên môn */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('human_resource.profile.qualification')}</label>
@@ -1024,8 +1023,10 @@ const EmployeeManagement = (props) => {
                             onChange={handleProfessionalSkillChange}>
                         </SelectMulti>
                     </div>
+                </div>
+                <div className="form-inline">
                     {/* Trình độ chuyên ngành */}
-                    <div className="form-group">
+                    <div className="form-group" style={{ height: '45px' }}>
                         <label className="form-control-static">{translate('human_resource.profile.career_fields')}</label>
                         <SelectMulti id={`multiSelectCareerFields`} multiple="multiple"
                             options={{ nonSelectedText: 'Chọn chuyên ngành', allSelectedText: 'Chọn tất cả chuyên ngành' }}
@@ -1033,35 +1034,73 @@ const EmployeeManagement = (props) => {
                             onChange={handleCareerFieldChange}>
                         </SelectMulti>
                     </div>
-                    {/* Button tìm kiếm */}
+
+                    {/* chứng chỉ  */}
                     <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.profile.certificate')}</label>
+                        <input type="text" className="form-control" name="certificates" onChange={handleChange} placeholder={'Nhập tên chứng chỉ'} autoComplete="off" />
+                    </div>
+                    {/* Bằng cấp */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.profile.diploma')}</label>
+                        <input type="text" className="form-control" name="degrees" onChange={handleChange} placeholder={'Nhập tên bằng cấp'} autoComplete="off" />
+                    </div>
+                </div>
+
+                <div className="row" style={{ marginBottom: '15px', marginTop: '10px' }}>
+                    <div className="col-md-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <button type="button" className="btn btn-success" title={translate('general.search')} onClick={handleSunmitSearch} >{translate('general.search')}</button>
                     </div>
                 </div>
 
-                <div className="form-group col-md-12 row" >
-                    {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
-                        <span>{translate('human_resource.profile.employee_management.have')}&nbsp;</span>
-                    }
-                    {Number(employeesManager?.expiresContract?.length) > 0 &&
-                        <React.Fragment>
-                            <span className="text-danger" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer', color: "#dd4b39" }} onClick={() => handleShowEmployeesExpiresContract(employeesManager?.expiresContract)}>{` ${employeesManager?.expiresContract?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
-                            <span>&nbsp;{translate('human_resource.profile.employee_management.contract_expiration')}</span>
-                        </React.Fragment>
-                    }
-                    {(Number(employeesManager?.expiresContract?.length) > 0 && Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
-                        <span>&nbsp;{translate('human_resource.profile.employee_management.and')}&nbsp;</span>
-                    }
-                    {
-                        Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0 &&
-                        <React.Fragment>
-                            <span className="text-success" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer' }} onClick={() => handleShowEmployeesHaveBirthDate(employeesManager?.employeesHaveBirthdateInCurrentMonth)}>{` ${employeesManager?.employeesHaveBirthdateInCurrentMonth?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
-                            <span>&nbsp;{translate('human_resource.profile.employee_management.have_birthday')}</span>
-                        </React.Fragment>
-                    }
-                    {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length)) > 0 &&
-                        <span>&nbsp;{`${translate('human_resource.profile.employee_management.this_month')} (${formatDate(Date.now(), true)})`}</span>
-                    }
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-6">
+                        <div>
+                            {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
+                                <span>{translate('human_resource.profile.employee_management.have')}&nbsp;</span>
+                            }
+                            {Number(employeesManager?.expiresContract?.length) > 0 &&
+                                <React.Fragment>
+                                    <span className="text-danger" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer', color: "#dd4b39" }} onClick={() => handleShowEmployeesExpiresContract(employeesManager?.expiresContract)}>{` ${employeesManager?.expiresContract?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
+                                    <span>&nbsp;{translate('human_resource.profile.employee_management.contract_expiration')}</span>
+                                </React.Fragment>
+                            }
+                            {(Number(employeesManager?.expiresContract?.length) > 0 && Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
+                                <span>&nbsp;{translate('human_resource.profile.employee_management.and')}&nbsp;</span>
+                            }
+                            {
+                                Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0 &&
+                                <React.Fragment>
+                                    <span className="text-success" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer' }} onClick={() => handleShowEmployeesHaveBirthDate(employeesManager?.employeesHaveBirthdateInCurrentMonth)}>{` ${employeesManager?.employeesHaveBirthdateInCurrentMonth?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
+                                    <span>&nbsp;{translate('human_resource.profile.employee_management.have_birthday')}</span>
+                                </React.Fragment>
+                            }
+                            {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length)) > 0 &&
+                                <span>&nbsp;{`${translate('human_resource.profile.employee_management.this_month')} (${formatDate(Date.now(), true)})`}</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div className="col-md-6" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <a style={{ cursor: 'pointer', marginRight: '7px' }} title="Xuất ra file excell">
+                            <i className="fa fa-fw fa-download"></i> Xuất báo cáo
+                        </a>
+
+                        <DataTableSetting
+                            tableId={tableId}
+                            columnArr={[
+                                'STT',
+                                translate('human_resource.staff_number'),
+                                translate('human_resource.staff_name'),
+                                translate('human_resource.profile.gender'),
+                                translate('human_resource.profile.date_birth'),
+                                translate('human_resource.profile.contract_end_date'),
+                                translate('human_resource.profile.type_contract'),
+                                translate('human_resource.status'),
+                            ]}
+                            setLimit={setLimit}
+                        />
+                    </div>
                 </div>
 
                 <table id={tableId} className="table table-striped table-bordered table-hover">
@@ -1075,22 +1114,7 @@ const EmployeeManagement = (props) => {
                             <th>{translate('human_resource.profile.contract_end_date')}</th>
                             <th>{translate('human_resource.profile.type_contract')}</th>
                             <th>{translate('human_resource.status')}</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        'STT',
-                                        translate('human_resource.staff_number'),
-                                        translate('human_resource.staff_name'),
-                                        translate('human_resource.profile.gender'),
-                                        translate('human_resource.profile.date_birth'),
-                                        translate('human_resource.profile.contract_end_date'),
-                                        translate('human_resource.profile.type_contract'),
-                                        translate('human_resource.status'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                         </tr>
                     </thead>
                     <tbody>
