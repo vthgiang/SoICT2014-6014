@@ -162,14 +162,14 @@ exports.getTaskById = async (portal, id, userId) => {
     informedEmployees = task.informedEmployees;
     let flag = 0;
     for (let n in responsibleEmployees) {
-        if (responsibleEmployees[n]._id.equals(userId)) {
+        if (responsibleEmployees[n]?._id?.toString() === userId?.toString()) {
             flag = 1;
             break;
         }
     }
     if (!flag) {
         for (let n in accountableEmployees) {
-            if (accountableEmployees[n]._id.equals(userId)) {
+            if (accountableEmployees[n]?._id?.toString() === userId?.toString()) {
                 flag = 1;
                 break;
             }
@@ -177,7 +177,7 @@ exports.getTaskById = async (portal, id, userId) => {
     }
     if (!flag) {
         for (let n in consultedEmployees) {
-            if (consultedEmployees[n]._id.equals(userId)) {
+            if (consultedEmployees[n]?._id?.toString() === userId?.toString()) {
                 flag = 1;
                 break;
             }
@@ -185,14 +185,16 @@ exports.getTaskById = async (portal, id, userId) => {
     }
     if (!flag) {
         for (let n in informedEmployees) {
-            if (informedEmployees[n]._id.equals(userId)) {
+            if (informedEmployees[n]?._id?.toString() === userId?.toString()) {
                 flag = 1;
                 break;
             }
         }
     }
-    if (task.creator._id.equals(userId)) {
-        flag = 1;
+    if(!flag){
+        if (task?.creator?._id?.toString() === userId?.toString()) {
+            flag = 1;
+        }
     }
 
     if (!flag) {
@@ -204,25 +206,16 @@ exports.getTaskById = async (portal, id, userId) => {
         });
         let listRole = role.map((item) => item.roleId);
 
-        let company = [];
-
-        // Tìm ra các đơn vị có role là manager
-        for (let i in listRole) {
-            let roles = await Role(connect(DB_CONNECTION, portal)).findById(
-                listRole[i]
-            );
-            company[i] = roles.company;
-        }
-
         // Tìm cây đơn vị mà đơn vị gốc có userId có role managers
         let tree = [];
         let k = 0;
-        for (let i = 0; i < listRole.length; i++) {
-            let r = listRole[i];
+        const listRoleLength = listRole?.length;
+        for (let i = 0; i < listRoleLength; i++) {
             let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(
                 portal,
-                r
+                listRole[i]
             );
+
             if (tr) {
                 tree[k] = tr;
                 k++;
@@ -236,10 +229,11 @@ exports.getTaskById = async (portal, id, userId) => {
                 for (let j = 0; j < tree.length; j++) {
                     if (tree[j].managers.indexOf(rol) !== -1) {
                         let v = tree[j];
-                        let f = await _checkManagers(
+                        let f = _checkManagers(
                             v,
                             task.organizationalUnit._id
                         );
+
                         if (!f) {
                             // Check trưởng đơn vị phối hợp
                             for (
@@ -256,7 +250,7 @@ exports.getTaskById = async (portal, id, userId) => {
                                     task.collaboratedWithOrganizationalUnits[k]
                                         .organizationalUnit
                                 ) {
-                                    f = await _checkManagers(
+                                    f =  _checkManagers(
                                         v,
                                         task
                                             .collaboratedWithOrganizationalUnits[
@@ -290,14 +284,17 @@ exports.getTaskById = async (portal, id, userId) => {
 /**
  * Hàm duyệt cây đơn vị - kiểm tra trong cây có đơn vị của công việc được lấy ra hay không (đệ quy)
  */
-_checkManagers = async (v, id) => {
+_checkManagers = (v, id) => {
     if (v) {
-        if (JSON.stringify(v.id) === JSON.stringify(id)) {
+        if (v?.id?.toString() === id?.toString()) {
             return 1;
         }
-        if (v.children) {
+        
+        if (v?.children?.length) {
             for (let k = 0; k < v.children.length; k++) {
-                return _checkManagers(v.children[k], id);
+                const result = _checkManagers(v.children[k], id);
+                if (result === 1)
+                    return result;
             }
         }
     }
