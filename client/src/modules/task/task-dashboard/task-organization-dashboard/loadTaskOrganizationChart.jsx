@@ -257,22 +257,22 @@ const LoadTaskOrganizationChart = (props) => {
             <div className="box box-primary">
                 <div className="box-header with-border">
                     <div className="box-title" >
-                        {translate('task.task_management.load_task_chart_unit')} {typeChart === "followTime" ? <>{startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</> : <>{startMonthTitle}</>}
+                        {translate('task.task_management.load_task_chart_unit')}
                         {
                             idsUnit && idsUnit.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${props.getUnitName(units, idsUnit).map(o => o).join(", ")}`}</span>
+                                    <span>{` ${props.getUnitName(units, idsUnit).map(o => o).join(", ")} `}</span>
                                 </>
                                 :
                                 <span onClick={() => props.showUnitTask(units, idsUnit)} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                 </span>
                         }
-                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showLoadTaskDoc()}>
-                            <i className="fa fa-question-circle" style={{ cursor: 'pointer', color: '#dd4b39', marginLeft: '5px' }} />
+                        {typeChart === "followTime" ? <>{startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</> : <>{startMonthTitle}</>}
+
+                        <a onClick={() => showLoadTaskDoc()}>
+                            <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                         </a>
                     </div>
                 </div>

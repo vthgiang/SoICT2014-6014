@@ -354,17 +354,15 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                     {
                         organizationalUnitsName && organizationalUnitsName.length < 2 ?
                             <>
-                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                <span style={{ fontWeight: 'bold' }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                <span>{` ${organizationalUnitsName?.[0]} `}</span>
                             </>
                             :
                             <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                 <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                             </span>
                     }
-                    <span>{` từ ${formatString(state.startMonth)} đến ${formatString(state.endMonth)}`}</span>
+                    {formatString(state.startMonth)}<i className="fa fa-fw fa-caret-right"></i>{formatString(state.endMonth)}
                 </div>
                 {
                     state.exportData && props?.dashboardPage === 'KPI' &&

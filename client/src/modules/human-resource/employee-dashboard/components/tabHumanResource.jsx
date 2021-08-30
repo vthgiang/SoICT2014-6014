@@ -8,7 +8,7 @@ import {
     HumanResourceChartBySalary, HumanResourceIncreaseAndDecreaseChart, QualificationChart, AgePyramidChart
 } from './combinedContent';
 
-const TabHumanResource = (props) =>  {
+const TabHumanResource = (props) => {
     const { organizationalUnits, monthShow, childOrganizationalUnit, defaultUnit, handleMonthChange } = props;
 
     return (

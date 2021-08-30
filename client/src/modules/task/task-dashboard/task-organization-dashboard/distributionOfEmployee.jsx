@@ -284,20 +284,17 @@ class DistributionOfEmployee extends Component {
             <React.Fragment>
                 <div className="box-header with-border">
                     <div className="box-title">
-                        {translate('task.task_management.distribution_Of_Employee')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                        {translate('task.task_management.distribution_Of_Employee')}
                         {
                             unitIds && unitIds.length < 2 ?
-                                <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
-                                </>
+                                <span>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")} `}</span>
                                 :
                                 <span onClick={() => this.props.showUnitGeneraTask(selectBoxUnit, unitIds)} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitIds && unitIds.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                 </span>
                         }
+                        {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                     </div>
                     <DataTableSetting
                         tableId={this.distributionOfEmployeeChartId}

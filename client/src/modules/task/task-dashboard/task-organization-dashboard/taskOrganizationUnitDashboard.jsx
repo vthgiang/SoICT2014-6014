@@ -384,14 +384,15 @@ function TaskOrganizationUnitDashboard(props) {
                                                         {
                                                             idsUnit && idsUnit.length < 2 ?
                                                                 <>
-                                                                    <span>{`${translate('task.task_dashboard.general_unit_task')} ${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle} ${translate('task.task_dashboard.of')}`}</span>
-                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                                    <span>{`${translate('task.task_dashboard.general_unit_task')} ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")} `}</span>
+                                                                    <span>{`${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle}`}</span>
                                                                 </>
                                                                 :
                                                                 <span onClick={() => showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                                    <span>{`${translate('task.task_dashboard.general_unit_task')} ${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
+                                                                    <span>{`${translate('task.task_dashboard.general_unit_task')} `}</span>
                                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{idsUnit && idsUnit.length}</a>
-                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                                                                    <span>{`${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle}`} </span>
                                                                 </span>
                                                         }
 
@@ -446,20 +447,17 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        {translate('task.task_management.calc_progress')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                                                        {translate('task.task_management.calc_progress')}
                                                         {
                                                             idsUnit && idsUnit.length < 2 ?
-                                                                <>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
-                                                                </>
+                                                                <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")} `}</span>
                                                                 :
                                                                 <span onClick={() => showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
-                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                                 </span>
                                                         }
+                                                        {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                                     </div>
                                                 </div>
                                                 <div className="box-body qlcv">
@@ -483,20 +481,20 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        {translate('task.task_management.dashboard_area_result')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                                                        {translate('task.task_management.dashboard_area_result')}
                                                         {
                                                             idsUnit && idsUnit.length < 2 ?
                                                                 <>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")} `}</span>
                                                                 </>
                                                                 :
                                                                 <span onClick={() => showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
                                                                     <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
-                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                                 </span>
                                                         }
+                                                        {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                                     </div>
                                                 </div>
                                                 <div className="box-body qlcv">
@@ -516,20 +514,19 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        {translate('task.task_management.detail_status')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                                                        {translate('task.task_management.detail_status_task')}
                                                         {
                                                             idsUnit && idsUnit.length < 2 ?
                                                                 <>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")} `}</span>
                                                                 </>
                                                                 :
                                                                 <span onClick={() => showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
-                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                                 </span>
                                                         }
+                                                        {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                                     </div>
                                                 </div>
                                                 <div className="box-body qlcv" style={{ height: '384px' }}>
@@ -553,20 +550,20 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        Kết quả trung bình công việc {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                                                        {translate('task.task_management.detail_average_results')}
                                                         {
                                                             idsUnit && idsUnit.length < 2 ?
                                                                 <>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")} `}</span>
                                                                 </>
                                                                 :
                                                                 <span onClick={() => showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
-                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                                 </span>
                                                         }
+                                                        {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+
                                                     </div>
                                                 </div>
                                                 <div className="box-body qlcv">
@@ -651,20 +648,19 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        {translate('task.task_management.tasks_calendar')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                                                        {translate('task.task_management.tasks_calendar')}
                                                         {
                                                             idsUnit && idsUnit.length < 2 ?
                                                                 <>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                                    <span>{` ${getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")} `}</span>
                                                                 </>
                                                                 :
                                                                 <span onClick={() => showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
-                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                                 </span>
                                                         }
+                                                        {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                                     </div>
                                                 </div>
                                                 <LazyLoadComponent once={true}>

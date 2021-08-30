@@ -558,23 +558,20 @@ class TaskOrganizationalUnitsChart extends Component {
                         {
                             singleUnit ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span style={{ fontWeight: 'bold' }}>{` ${childOrganizationalUnit?.[0]?.name ? childOrganizationalUnit?.[0]?.name : ""}`}</span>
-                                    <span>{` từ ${startDate} đến ${endDate}`}</span>
+                                    <span>{` ${childOrganizationalUnit?.[0]?.name ? childOrganizationalUnit?.[0]?.name : ""} `}</span>
+                                    {startDate}<i className="fa fa-fw fa-caret-right"></i>{endDate}
                                 </>
                                 :
                                 (advancedMode && searchAdvanceMode) ?
                                     <span onClick={() => showListInSwal(childOrganizationalUnit.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                         <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {childOrganizationalUnit?.length}</a>
-                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                        <span>{` từ ${startDate} đến ${endDate}`}</span>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                                        {startDate}<i className="fa fa-fw fa-caret-right"></i>{endDate}
                                     </span>
                                     :
                                     <span onClick={() => showListInSwal(childOrganizationalUnit.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                         <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {childOrganizationalUnit?.length}</a>
-                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                         <span>{` tháng ${this.formatString(this.state?.month)}`}</span>
                                     </span>
                         }

@@ -200,25 +200,23 @@ class QualificationChart extends Component {
                 <div className="box box-solid">
                     <div className="box-header with-border">
                         <div className="box-title">
-                            {`Trình độ chuyên môn của nhân sự `}
+                            {`Trình độ chuyên môn nhân sự `}
                             {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                        <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                        <span>{`${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                     </>
                                     :
                                     <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                         <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                     </span>
                             }
                         </div>
                     </div>
                     {employeesManager.isLoading
                         ? <p>{translate('general.loading')}</p>
-                        : <div className="box-body">
+                        : employeesManager.listEmployeesOfOrganizationalUnits?.length ? <div className="box-body">
                             <div className="box-tools pull-left" >
                                 <div className="btn-group pull-left">
                                     <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
@@ -237,7 +235,7 @@ class QualificationChart extends Component {
                                     />
                                 </div>
                             </section>
-                        </div>
+                        </div> : <p style={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}>Không có dữ liệu</p>
                     }
                 </div>
             </React.Fragment>

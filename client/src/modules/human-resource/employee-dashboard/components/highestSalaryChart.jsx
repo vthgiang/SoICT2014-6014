@@ -63,17 +63,15 @@ const HighestSalaryChart = (props) => {
                         {
                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                 </>
                                 :
                                 <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                 </span>
                         }
-                        {` tháng ${monthShow}`}
+                        {monthShow}
                     </div>
                 </div>
                 <div className="box-body no-parding">

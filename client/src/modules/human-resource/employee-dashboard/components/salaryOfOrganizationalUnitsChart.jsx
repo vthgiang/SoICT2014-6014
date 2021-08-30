@@ -137,17 +137,15 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                         {
                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${organizationalUnitsName?.[0]?.name ? organizationalUnitsName?.[0]?.name : ""}`}</span>
+                                    <span>{` ${organizationalUnitsName?.[0]?.name ? organizationalUnitsName?.[0]?.name : ""} `}</span>
                                 </>
                                 :
                                 <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                 </span>
                         }
-                        {` tháng ${monthShow}`}
+                        {monthShow}
                     </div>
                     <a title={'Giải thích'} onClick={showDetailSalary}>
                         <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />

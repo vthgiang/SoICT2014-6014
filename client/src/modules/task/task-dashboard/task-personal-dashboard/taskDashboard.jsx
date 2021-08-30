@@ -272,6 +272,24 @@ function TaskDashboard(props) {
         })
     }
 
+    // const showAverageResultDescriptions = () => {
+    //     Swal.fire({
+    //         icon: "question",
+
+    //         html: `<h3 style="color: red"><div>Kết quả trung bình công việc cá nhân</div> </h3>
+    //         <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+    //         <p>Kết quả trung bình công việc trong 1 tháng được tính như sau</p>
+    //         <ul>
+    //             <li>Lấy tất cả các công việc đã có kết quả đánh giá mà người dùng tham gia với vai trò đã chọn</li>
+    //             <p>Nếu người dùng chọn tiêu chí <b>không theo hệ số</b> thì tính như sau:</p>
+    //             <li>Kết quả trung bình công việc = lần lượt tính trung bình cộng của 3 loại điểm (điểm tự động/điểm tự đánh giá/điểm người phê duyệt) thẻ hiện trên biểu đồ là 3 đường</li>
+    //             <p>Nếu người dùng chọn tiêu chí <b>theo hệ số</b> thì tính như sau:</p>
+    //             <li>Kết quả trung bình công việc = tổng </li>
+    //             </ul>`,
+    //         width: "50%",
+    //     })
+    // }
+
     const showDetailInprocessChart = () => {
         Swal.fire({
             icon: "question",
@@ -503,8 +521,10 @@ function TaskDashboard(props) {
                 <div className="col-md-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">{`Tổng quan công việc `} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle} {`(${listTasksGeneral ? listTasksGeneral.length : 0} công việc)`}</div>
-                            <a title={translate('task.task_management.explain')} onClick={() => showGeneralTaskDescription()}>
+                            <div className="box-title">
+                                {`Tổng quan công việc `}
+                                {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle} {`(${listTasksGeneral ? listTasksGeneral.length : 0} công việc)`}</div>
+                            <a onClick={() => showGeneralTaskDescription()}>
                                 <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                             </a>
                         </div>
@@ -527,7 +547,7 @@ function TaskDashboard(props) {
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            <div className="box-title">{translate('task.task_management.tasks_calendar')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
                         </div>
                         <LazyLoadComponent once={true}>
                             <GanttCalendar
@@ -545,7 +565,7 @@ function TaskDashboard(props) {
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            <div className="box-title">{translate('task.task_management.dashboard_area_result')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
                         </div>
                         <div className="box-body qlcv">
                             <LazyLoadComponent once={true}>
@@ -562,7 +582,10 @@ function TaskDashboard(props) {
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.detail_average_results')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            <div className="box-title">{translate('task.task_management.detail_average_results')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                            {/* <a onClick={showAverageResultDescriptions}>
+                                <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                            </a> */}
                         </div>
                         <div className="box-body">
                             <LazyLoadComponent once={true}>
@@ -579,7 +602,7 @@ function TaskDashboard(props) {
                 <div className="col-xs-12 col-sm-12 col-md-6">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            <div className="box-title">{translate('task.task_management.detail_status_task')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
                         </div>
                         <div className="box-body qlcv">
                             <LazyLoadComponent once={true}>
@@ -594,8 +617,8 @@ function TaskDashboard(props) {
                 <div className="col-xs-12 col-sm-12 col-md-6">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title" style={{ marginRight: '5px' }}>{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            <a title={'Giải thích các nhóm tài sản'} onClick={showDetailInprocessChart}>
+                            <div className="box-title" style={{ marginRight: '5px' }}>{translate('task.task_management.calc_progress')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                            <a onClick={showDetailInprocessChart}>
                                 <i className="fa fa-question-circle" style={{ cursor: 'pointer' }} />
                             </a>
                         </div>
@@ -617,8 +640,8 @@ function TaskDashboard(props) {
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <a title={translate('task.task_management.explain')} onClick={() => showLoadTaskDoc()}>
+                            <div className="box-title">{translate('task.task_management.load_task_chart')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</div>
+                            <a onClick={() => showLoadTaskDoc()}>
                                 <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                             </a>
                         </div>

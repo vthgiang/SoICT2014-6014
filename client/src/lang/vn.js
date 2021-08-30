@@ -3210,6 +3210,7 @@ export default {
                 detail_link: "Công việc",
                 detail_priority: "Độ ưu tiên",
                 detail_status: "Trạng thái",
+                detail_status_task: "Trạng thái công việc",
                 average_task_result: "Kết quả trung bình công việc",
                 detail_time: "Thời gian thực hiện",
                 detail_average_results: "Kết quả trung bình công việc",

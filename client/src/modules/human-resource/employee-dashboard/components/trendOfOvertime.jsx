@@ -252,14 +252,12 @@ const TrendOfOvertime = (props) => {
                         {
                             unitName && unitName.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${unitName?.[0] ? unitName?.[0] : ""}`}</span>
+                                    <span>{` ${unitName?.[0] ? unitName?.[0] : ""} `}</span>
                                 </>
                                 :
                                 <span onClick={() => showListInSwal(unitName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitName?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                 </span>
                         }
                         {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}
