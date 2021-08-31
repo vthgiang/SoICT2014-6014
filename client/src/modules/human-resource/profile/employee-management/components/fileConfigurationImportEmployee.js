@@ -379,11 +379,6 @@ function configurationDegree(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
             value: translate(`human_resource.profile.diploma_issued_by`)
         },
-        issuedBy: { // Nơi đào tạo
-            columnName: translate(`human_resource.profile.diploma_issued_by`),
-            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
-            value: translate(`human_resource.profile.diploma_issued_by`)
-        },
         field:{ // Ngành nghề/ lĩnh vực
             columnName: translate(`human_resource.profile.career_fields`),
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.career_fields`).toLowerCase()}`,
