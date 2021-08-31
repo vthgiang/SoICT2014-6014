@@ -1707,7 +1707,7 @@ export default {
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
                         is_hh: 'Là chủ hộ',
-                        cnss: 'CNSS',
+                        ccns: 'Chỉ có năm sinh',
                         rwhh: 'Quan hệ với chủ hộ',
                         birth: 'Ngày sinh',
                         pob: 'Nơi cấp giấy khai sinh',

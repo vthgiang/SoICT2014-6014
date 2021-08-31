@@ -17,7 +17,7 @@ const initMember = {
     gender: 'male',
     isHeadHousehold: 'no',
     relationshipWithHeadHousehold: '',
-    cnss: '',
+    ccns: '',
     birth: '',
     placeOfBirthCertificate: '',
     nationality: '',

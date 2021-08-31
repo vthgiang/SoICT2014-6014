@@ -757,7 +757,7 @@ const EmployeeManagement = (props) => {
                                 { key: "isHeadHousehold", value: translate('human_resource.profile.house_hold.members.is_hh') },
                                 { key: "relationshipWithHeadHousehold", value: translate('human_resource.profile.house_hold.members.rwhh') },
                                 { key: "birth", value: translate('human_resource.profile.house_hold.members.birth') },
-                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.cnss') },
+                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.ccns') },
                                 { key: "placeOfBirthCertificate", value: translate('human_resource.profile.house_hold.members.pob') },
                                 { key: "nationality", value: translate('human_resource.profile.house_hold.members.nationality') },
                                 { key: "nation", value: translate('human_resource.profile.house_hold.members.nation') },

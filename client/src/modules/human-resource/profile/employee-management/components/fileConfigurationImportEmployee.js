@@ -641,9 +641,9 @@ function configurationFamilyMembers(translate) {
             value: translate(`human_resource.profile.house_hold.members.birth`)
         },
         ccns: {
-            columnName: translate(`human_resource.profile.house_hold.members.cnss`),
-            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.cnss').toLowerCase()}`,
-            value: translate(`human_resource.profile.house_hold.members.cnss`)
+            columnName: translate(`human_resource.profile.house_hold.members.ccns`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.ccns').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.ccns`)
         },
         placeOfBirthCertificate: {
             columnName: translate(`human_resource.profile.house_hold.members.pob`),
@@ -1099,7 +1099,7 @@ function templateImport(translate) {
                                 { key: "isHeadHousehold", value: translate('human_resource.profile.house_hold.members.is_hh') },
                                 { key: "relationshipWithHeadHousehold", value: translate('human_resource.profile.house_hold.members.rwhh') },
                                 { key: "birth", value: translate('human_resource.profile.house_hold.members.birth')},
-                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.cnss')},
+                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.ccns')},
                                 { key: "placeOfBirthCertificate", value: translate('human_resource.profile.house_hold.members.pob')},
                                 { key: "nationality", value: translate('human_resource.profile.house_hold.members.nationality')},
                                 { key: "nation", value: translate('human_resource.profile.house_hold.members.nation')},

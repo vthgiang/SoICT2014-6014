@@ -166,7 +166,7 @@ const FamilyMemberTab = ({
                                     <th className="not-sort">{translate('human_resource.profile.house_hold.members.gender')}</th>
                                     <th className="not-sort">{translate('human_resource.profile.house_hold.members.is_hh')}</th>
                                     <th className="not-sort">{translate('human_resource.profile.house_hold.members.rwhh')}</th>
-                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.cnss')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.ccns')}</th>
                                     <th className="not-sort">{translate('human_resource.profile.house_hold.members.birth')}</th>
                                     <th className="not-sort">{translate('human_resource.profile.house_hold.members.pob')}</th>
                                     <th className="not-sort">{translate('human_resource.profile.house_hold.members.nationality')}</th>
@@ -193,8 +193,8 @@ const FamilyMemberTab = ({
                                             <td>{_showMemberGender(member.gender)}</td>
                                             <td>{_showIsHeadHouseHold(member.isHeadHousehold)}</td>
                                             <td>{member.relationshipWithHeadHousehold}</td>
-                                            <td>{member.cnss}</td>
-                                            <td><DateTimeConverter dateTime={member.birth} type="DD-MM-YYYY" /></td>
+                                            <td>{member.ccns}</td>
+                                            <td> {member.birth ? <DateTimeConverter dateTime={member.birth} type="DD-MM-YYYY" /> : null}</td>
                                             <td>{member.placeOfBirthCertificate}</td>
                                             <td>{member.nationality}</td>
                                             <td>{member.nation}</td>

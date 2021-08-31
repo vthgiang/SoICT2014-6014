@@ -16,7 +16,7 @@ const FamilyMemberEdit = ({
     const [gender, setGender] = useState('male');
     const [isHeadHousehold, setIsHeadHousehold] = useState('no');
     const [relationshipWithHeadHousehold, setRelationshipWithHeadHousehold] = useState('');
-    const [cnss, setCnss] = useState('');
+    const [ccns, setCcns] = useState('');
     const [birth, setBirth] = useState('');
     const [placeOfBirthCertificate, setPlaceOfBirthCertificate] = useState('');
     const [nationality, setNationality] = useState('');
@@ -60,7 +60,7 @@ const FamilyMemberEdit = ({
 
     const _handleCurCnss = (e) => {
         let { value } = e.target;
-        setCnss(value)
+        setCcns(value)
     }
 
     const _handleCurPlaceOfBirthCertificate = (e) => {
@@ -97,7 +97,7 @@ const FamilyMemberEdit = ({
             gender,
             isHeadHousehold,
             relationshipWithHeadHousehold,
-            cnss,
+            ccns,
             birth: getTimeFromFormatDate(birth, 'dd-mm-yyyy'),
             placeOfBirthCertificate,
             nationality,
@@ -115,7 +115,7 @@ const FamilyMemberEdit = ({
         setGender(editMember.gender)
         setIsHeadHousehold(editMember.isHeadHousehold)
         setRelationshipWithHeadHousehold(editMember.relationshipWithHeadHousehold)
-        setCnss(editMember.cnss)
+        setCcns(editMember.ccns)
         setBirth(getFormatDateFromTime(editMember.birth, 'dd-mm-yyyy'))
         setPlaceOfBirthCertificate(editMember.placeOfBirthCertificate)
         setNationality(editMember.nationality)
@@ -179,8 +179,8 @@ const FamilyMemberEdit = ({
                         </div>
                         <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                             <div className="form-group">
-                                <label>{translate('human_resource.profile.house_hold.members.cnss')}</label>
-                                <input className="form-control" onChange={_handleCurCnss} value={cnss} />
+                                <label>{translate('human_resource.profile.house_hold.members.ccns')}</label>
+                                <input className="form-control" onChange={_handleCurCnss} value={ccns} />
                             </div>
                         </div>
                     </div>
