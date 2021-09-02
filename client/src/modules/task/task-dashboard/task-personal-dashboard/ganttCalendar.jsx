@@ -459,7 +459,6 @@ function GanttCalendar(props) {
         unit={unit}
         onZoomChange={handleZoomChange}
         attachEvent={attachEvent}
-        checkFromHome={props?.checkFromHome ? props?.checkFromHome : false}
       />
 
       <div className="form-inline" style={{ textAlign: 'center' }}>

@@ -2591,6 +2591,8 @@ export default {
                 other: "Other",
 
                 //Thông điệp trả về từ server
+                get_asset_group_success:"Get asset group successfully",
+                get_asset_group_fail:"Get asset group fail",
                 get_list_asset_success: "Get list asset successfully",
                 get_list_asset_faile: "Get list asset faile",
                 create_asset_success: "Create asset successfully",

@@ -4,7 +4,7 @@ const initState = {
     isLoading: false,
     totalList: '',
     totalAllAsset: '',
-
+    chartAsset:[],
     listAssets: [],
     listAllAssets: [],
     buildingAsset: [],
@@ -105,7 +105,20 @@ export function assetsManager(state = initState, action) {
                 listAssets: state.listAssets.filter(asset=> !action.assetIds.includes(asset?._id)),
                 isLoading: false
             };
-
+        case AssetConstants.GET_ASSET_GROUP_FAILURE:
+        case AssetConstants.GET_ASSET_GROUP_SUCCESS: 
+        case AssetConstants.GET_ASSET_GROUP_SUCCESS:   
+            
+                return {
+                    ...state,
+                    chartAsset: action.payload,
+                    
+                    isLoading: false
+                }
+                
+           
+            
+        case AssetConstants.GET_ASSET_GROUP_REQUEST:
         case AssetConstants.GETALL_FAILURE:
         case AssetConstants.GET_LIST_BUILDING_AS_TREE_FAILURE:
         case AssetConstants.UPDATE_INFOR_ASSET_FAILURE:

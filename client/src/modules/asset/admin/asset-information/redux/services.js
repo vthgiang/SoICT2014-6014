@@ -6,6 +6,7 @@ export const AssetService = {
     updateInformationAsset,
     deleteAsset,
     getListBuildingAsTree,
+    getAllAssetGroup
 };
 
 /**
@@ -126,6 +127,29 @@ function deleteAsset(data) {
             }
         },
         true,
+        true,
+        "asset.asset_info"
+    );
+}
+
+function getAllAssetGroup(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/assets_group`,
+            method: "GET",
+            params: {
+
+                assetName: data ? data.assetName : data,
+                status: data ? data.status : data,
+                group: data ? data.group : data,
+                startDepreciation: data ? data.startDepreciation : data,
+                depreciationType: data ? data.depreciationType : data,
+
+                // hình thức lấy danh sách tài sản (bình thường, tài sản có thông tin khấu hao, v.v.)
+                getType: data ? data.getType : undefined,
+            },
+        },
+        false,
         true,
         "asset.asset_info"
     );
