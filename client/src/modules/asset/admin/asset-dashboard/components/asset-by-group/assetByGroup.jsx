@@ -11,6 +11,7 @@ import DepreciationPieChart from './depreciationPieChart';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import _isEqual from 'lodash/isEqual';
 import StatisticalAssetByGroup from './statisticalAssetByGroup';
+import { AssetManagerActions } from '../../../asset-information/redux/actions';
 
 class AssetByGroup extends Component {
 
@@ -27,7 +28,8 @@ class AssetByGroup extends Component {
             listAssets: [],
             amountOfAsset: [],
             depreciationOfAsset: [],
-            valueOfAsset: []
+            valueOfAsset: [],
+            
         }
     }
 
@@ -46,7 +48,9 @@ class AssetByGroup extends Component {
         }).catch(err => {
             console.log(err);
         });
-
+        
+        this.props.getAllAssetGroup()
+        console.log("props",this.props)
         AssetTypeService.getAssetTypes().then(res => {
             if (res.data.success) {
                 this.setState({ assetType: res.data.content.tree })
@@ -102,9 +106,9 @@ class AssetByGroup extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate ,chartAsset} = this.props;
         const { listAssets, assetType, amountOfAsset, valueOfAsset, depreciationOfAsset } = this.state;
-
+        console.log("chartAsset",chartAsset)
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -131,6 +135,7 @@ class AssetByGroup extends Component {
                                     <AmountPieChart
                                         listAssets={listAssets}
                                         setAmountOfAsset={this.setAmountOfAsset}
+                                        chartAsset={this.props.chartAsset.numberAsset}
                                     />
                                 </div>
                             </div>
@@ -147,6 +152,7 @@ class AssetByGroup extends Component {
                                         listAssets={listAssets}
                                         assetType={assetType}
                                         setValueOfAsset={this.setValueOfAsset}
+                                        chartAsset={this.props.chartAsset.valueAsset}
                                     />
                                 </div>
                             </div>
@@ -176,10 +182,12 @@ class AssetByGroup extends Component {
     }
 }
 function mapState(state) {
-    const { listAssets } = state.assetsManager;
+    const { listAssets,chartAsset } = state.assetsManager;
     const { assetType } = state;
-    return { listAssets, assetType };
+    return { listAssets, assetType,chartAsset };
 }
-
-const AssetByGroupConnect = connect(mapState)(withTranslate(AssetByGroup));
+const mapDispatchToProps = {
+    getAllAssetGroup: AssetManagerActions.getAllAssetGroup
+}
+const AssetByGroupConnect = connect(mapState,mapDispatchToProps)(withTranslate(AssetByGroup));
 export { AssetByGroupConnect as AssetByGroup };

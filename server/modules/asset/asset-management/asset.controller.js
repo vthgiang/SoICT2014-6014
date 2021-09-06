@@ -467,7 +467,15 @@ exports.createIncident = async (req, res) => {
  */
 exports.updateIncident = async (req, res) => {
     try {
-        let data = await AssetService.updateIncident(req.portal, req.params.id, req.body);
+        const chartAsset = await DocumentServices.chartDataDocument(
+            req.portal,
+            req.user.company._id,
+        );
+        let chartDocChart = chartDoc.result
+        let docList = chartDocChart.document
+        let result = {}
+
+
         res.status(200).json({
             success: true,
             messages: ["edit_incident_success"],
@@ -498,6 +506,101 @@ exports.deleteIncident = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ["delete_incident_false"],
+            content: { error: error }
+        });
+    }
+}
+
+exports.chartAssetGroup = async (req, res) => {
+
+    try {
+        let Assetchart = await AssetService.chartAssetGroup(req.portal, req.user.company._id);
+        
+        let chartAssetChart = Assetchart.result
+
+        let result = {}
+        let numberOfAsset, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOther = 0;
+        
+        if (chartAssetChart) {
+            chartAssetChart.chartAssets.map(asset => {
+                switch (asset.group) {
+                    case "building":
+                        numberOfBuilding++;
+                        break;
+                    case "vehicle":
+                        numberOfVehicle++;
+                        break;
+                    case "machine":
+                        numberOfMachine++;
+                        break;
+                    case "other":
+                        numberOfOther++;
+                        break;
+                }
+            });
+        }
+        
+        numberOfAsset = [
+            ['asset.dashboard.building', numberOfBuilding],
+            ['asset.asset_info.vehicle', numberOfVehicle],
+            ['asset.dashboard.machine', numberOfMachine],
+            ['asset.dashboard.other', numberOfOther],
+        ];
+        console.log("result",result)
+        result = {
+            
+            ...result,
+           numberAsset : numberOfAsset
+        }
+            
+        
+
+        console.log("result",result)
+
+        let valueOfAsset, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOther = 0;
+
+        if (chartAssetChart) {
+            chartAssetChart.chartAssets.map(asset => {
+                switch (asset.group) {
+                    case "building":
+                        valueOfBuilding += asset.cost;
+                        break;
+                    case "vehicle":
+                        valueOfVehicle += asset.cost;
+                        break;
+                    case "machine":
+                        valueOfMachine += asset.cost;
+                        break;
+                    case "other":
+                        valueOfOther += asset.cost;
+                        break;
+                }
+            });
+        }
+
+        valueOfAsset = [
+            ['asset.dashboard.building', valueOfBuilding],
+            ['asset.asset_info.vehicle', valueOfVehicle],
+            ['asset.dashboard.machine', valueOfMachine],
+            ['asset.dashboard.other', valueOfOther],
+        ];
+
+        result = {
+            ...result,
+           valueAsset : valueOfAsset}
+            
+        
+        console.log("result2",result)
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_asset_group_success"],
+            content: result
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ["get_asset_group_fail"],
             content: { error: error }
         });
     }

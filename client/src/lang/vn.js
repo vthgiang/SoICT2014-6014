@@ -2762,6 +2762,8 @@ export default {
                 other: "Khác",
 
                 //Thông điệp trả về từ server
+                get_asset_group_success:"Lấy thông tin nhóm tài sản thành công",
+                get_asset_group_fail:"Lấy thông tin nhóm tài sản thất bại",
                 get_list_asset_success: "Lấy thông tin tài sản thành công",
                 get_list_asset_faile: "Lấy thông tin tài sản thất bại",
                 create_asset_success: "Thêm tài sản thành công",

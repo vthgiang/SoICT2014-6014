@@ -431,6 +431,7 @@ exports.links = [
 
             // Asset
             { path: '/asset/assets', method: 'GET' },
+            { path: '/asset/assets_group', method: 'GET' },
             { path: '/asset/assets', method: 'POST' },
             { path: '/asset/assets/:id', method: 'PATCH' },
             { path: '/asset/assets/:id', method: 'DELETE' },

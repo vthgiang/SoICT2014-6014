@@ -1582,3 +1582,10 @@ exports.deleteIncident = async (portal, incidentIds) => {
 
     return  incidentIds;
 }
+
+
+exports.chartAssetGroup = async (portal,company,listChart) => {
+    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost")
+    let result = {chartAssets:chartAssets}
+    return {result}
+}

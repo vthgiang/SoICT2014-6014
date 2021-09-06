@@ -7,6 +7,7 @@ export const AssetManagerActions = {
     updateInformationAsset,
     deleteAsset,
     getListBuildingAsTree,
+    getAllAssetGroup
 };
 
 /**
@@ -141,4 +142,26 @@ function deleteAsset(data) {
                 });
             });
     }
+}
+
+function getAllAssetGroup(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_GROUP_REQUEST,
+        });
+        AssetService.getAllAssetGroup(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_GROUP_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_GROUP_FAILURE,
+                    error: err,
+                });
+            });
+    };
 }
