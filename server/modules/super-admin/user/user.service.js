@@ -278,7 +278,7 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
             return item.user[0]
         }
     });
-    await User(connect(DB_CONNECTION, portal)).populate(employees, { path: "userId" });
+    await User(connect(DB_CONNECTION, portal)).populate(employees, { path: "userId", select: "email _id name avatar" });
     await Role(connect(DB_CONNECTION, portal)).populate(employees, { path: 'roleId', populate: { path: "parents" } });
     countDocument = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyCountDocument);
     let totalEmployee = countDocument?.[0]?.totalEmployee;

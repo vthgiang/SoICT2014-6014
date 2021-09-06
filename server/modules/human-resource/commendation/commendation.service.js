@@ -73,7 +73,7 @@ exports.getTotalCommendation = async (portal, company, organizationalUnits, mont
     }
     let totalList = await Commendation(connect(DB_CONNECTION, portal)).find(keySearch).populate({
         path: 'employee',
-        select: 'fullName employeeNumber'
+        select: 'fullName employeeNumber emailInCompany'
     });
     return {
         totalList,
