@@ -9,9 +9,7 @@ import { customAxisC3js } from '../../../helpers/customAxisC3js';
 
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
-import { UserActions } from '../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
-import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
 
 import { AnnualLeaveChartAndTable } from '../../human-resource/employee-dashboard/components/combinedContent';
 import { LoadTaskOrganizationChart } from '../../task/task-dashboard/task-organization-dashboard/loadTaskOrganizationChart'
@@ -23,16 +21,17 @@ import { StatisticsTaskUnits } from './statisticsTaskUnits'
 import c3 from 'c3';
 import "./dashboardUnit.css";
 
+let INFO_SEARCH = {
+    organizationalUnits: null,
+}
+
 function DashboardUnitForAdmin(props) {
-    const { translate, department, employeesManager, user, tasks } = props;
+    const { translate, department, user, tasks } = props;
 
     const [state, setState] = useState({
         monthTitle: formatDate(Date.now(), true),
         month: formatDate(Date.now(), true, true),
-        organizationalUnits: null,
-        infoSearch: {
-            organizationalUnits: null,
-        },
+        organizationalUnits: INFO_SEARCH.organizationalUnits,
         // Biểu đồ khẩn cấp / cần làm
         currentDate: formatDate(Date.now(), false),
         listUnit: null,
@@ -41,66 +40,52 @@ function DashboardUnitForAdmin(props) {
         listUnitSelect: [],
     })
 
-    const { listUnit, urgent, taskNeedToDo,
+    const {
         organizationalUnits, monthTitle, month,
         currentDate, clickUrgentChart, clickNeedTodoChart,
-        listUnitSelect, infoSearch
-    } = state
+        listUnitSelect
+    } = state;
 
-    if (tasks && tasks.organizationUnitTasksChart && props.childOrganizationalUnit
-        && (!listUnit || !urgent || !taskNeedToDo)
-    ) {
-        setState({
-            ...state,
-            listUnit: props.childOrganizationalUnit,
-            urgent: tasks.organizationUnitTasksChart.urgent,
-            taskNeedToDo: tasks.organizationUnitTasksChart.taskNeedToDo,
-        })
-    }
+    useEffect(() => {
+        if (props.tasks?.organizationUnitTasksChart?.urgent || props.tasks?.organizationUnitTasksChart?.taskNeedToDo)
+            setState({
+                ...state,
+                urgent: props.tasks?.organizationUnitTasksChart?.urgent,
+                taskNeedToDo: props.tasks?.organizationUnitTasksChart?.taskNeedToDo,
+            })
+    }, [JSON.stringify(props.tasks?.organizationUnitTasksChart?.urgent, props.tasks?.organizationUnitTasksChart?.taskNeedToDo)])
+
 
     useEffect(() => {
         props.getAllUnit();
     }, [])
 
-    useEffect(() => {
-        setState({
-            ...state,
-            organizationalUnits: null,
-            infoSearch: {
-                ...state.infoSearch,
-                organizationalUnits: null,
-            },
-        })
-    }, [department.list])
 
     useEffect(() => {
-        if (!infoSearch?.organizationalUnits && department?.list) {
+        if (props?.department?.list?.length && !organizationalUnits) {
             let unit = department.list.map(item => item?._id)
 
-            /* Lấy danh sách nhân viên  */
-            props.getAllEmployee({ organizationalUnits: unit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
+            if (unit) {
+                /* Lấy danh sách nhân viên  */
+                props.getAllEmployee({ organizationalUnits: unit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
-            /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-            props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: unit });
-            props.getTaskInOrganizationUnitByMonth(unit, month, month, "in_month");
+                /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
+                props.getTaskInOrganizationUnitByMonth(unit, month, month, "in_month");
 
-            let partDate = currentDate.split('-');
-            let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-            props.getTaskInOrganizationUnitByDateNow(unit, newDate)
+                let partDate = currentDate.split('-');
+                let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
+                props.getTaskInOrganizationUnitByDateNow(unit, newDate)
+            }
 
             setState({
                 ...state,
                 organizationalUnits: unit,
-                infoSearch: {
-                    ...state.infoSearch,
-                    organizationalUnits: unit,
-                },
                 listUnitSelect: department.list.map(item => {
                     return { text: item?.name, value: item?._id }
                 })
             })
         }
-    })
+    }, [JSON.stringify(props?.department?.list)])
 
     useEffect(() => {
         pieChartNeedTodo();
@@ -297,13 +282,9 @@ function DashboardUnitForAdmin(props) {
     }
 
     const handleSelectOrganizationalUnitUrgent = (value) => {
-        setState({
-            ...state,
-            infoSearch: {
-                ...state.infoSearch,
-                organizationalUnits: value,
-            }
-        });
+        INFO_SEARCH = {
+            organizationalUnits: value
+        }
     }
 
     const convertDataUrgentPieChart = (data) => {
@@ -323,8 +304,7 @@ function DashboardUnitForAdmin(props) {
                 urgentPieChartDataData.push(result[key])
             }
         }
-        console.log('urgentPieChartDataAxis', urgentPieChartDataAxis)
-        console.log('urgentPieChartDataData', urgentPieChartDataData)
+
         return [
             urgentPieChartDataAxis,
             urgentPieChartDataData
@@ -361,9 +341,9 @@ function DashboardUnitForAdmin(props) {
 
         setState({
             ...state,
-            organizationalUnits: state.infoSearch?.organizationalUnits,
+            organizationalUnits: INFO_SEARCH.organizationalUnits,
         })
-        props.getTaskInOrganizationUnitByDateNow(infoSearch?.organizationalUnits, newDate);
+        props.getTaskInOrganizationUnitByDateNow(INFO_SEARCH.organizationalUnits, newDate);
     }
 
     const handleClickshowTaskUrgent = () => {
@@ -486,43 +466,6 @@ function DashboardUnitForAdmin(props) {
         }
     }
 
-
-
-    let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
-        employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-
-    /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-    let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
-    let listEmployee = user?.employees;
-    let employeeTasks = [];
-    for (let i in listEmployee) {
-        let tasks = [];
-        let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
-        taskListByStatus && taskListByStatus.forEach(task => {
-            if (task?.accountableEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                accountableTask = [...accountableTask, task._id]
-            }
-            if (task?.consultedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                consultedTask = [...consultedTask, task._id]
-            }
-            if (task?.responsibleEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                responsibleTask = [...responsibleTask, task._id]
-            }
-            if (task?.informedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                informedTask = [...informedTask, task._id]
-            }
-        });
-        tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
-        let totalTask = tasks.filter(function (item, pos) {
-            return tasks.indexOf(item) === pos;
-        })
-        employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i]?.userId?.name, totalTask: totalTask.length }]
-    };
-    if (employeeTasks.length !== 0) {
-        employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
-
-    };
-
     return (
         <React.Fragment>
             <div className="qlcv" style={{ marginBottom: "10px" }}>
@@ -536,7 +479,7 @@ function DashboardUnitForAdmin(props) {
                                 allSelectedText: translate('page.all_unit'),
                             }}
                             onChange={handleSelectOrganizationalUnitUrgent}
-                            value={infoSearch?.organizationalUnits}
+                            value={state?.organizationalUnits ? state?.organizationalUnits : []}
                         >
                         </SelectMulti>
                     </div>
@@ -659,8 +602,6 @@ function DashboardUnitForAdmin(props) {
                             <LoadTaskOrganizationChart
                                 getUnitName={getUnitName}
                                 showUnitTask={showUnitTask}
-                                tasks={tasks?.organizationUnitTasks}
-                                listEmployee={user && user.employees}
                                 units={listUnitSelect}
                                 startMonth={month}
                                 endMonth={month}
@@ -737,16 +678,14 @@ function DashboardUnitForAdmin(props) {
 }
 
 function mapState(state) {
-    const { department, employeesManager, tasks, user } = state;
-    return { department, employeesManager, tasks, user };
+    const { department, tasks, user } = state;
+    return { department, tasks, user };
 }
 
 const actionCreators = {
     getAllUnit: DepartmentActions.get,
 
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
-
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
