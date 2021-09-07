@@ -8,6 +8,8 @@ import UserDocumentsData from './documents';
 // import DocumentNew from '../../components/user/history-statistics/documentNew';
 import DocumentShow from './history-statistics/documentShow';
 
+import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components';
+
 function Document(props) {
     const { translate } = props;
     return (
@@ -23,13 +25,13 @@ function Document(props) {
                     <UserDocumentsData />
                 </div>
                 <div className="tab-pane" id="user-document-history-document-downloaded">
-                <DocumentShow type="downloaded" type="downloaded" />
+                    <DocumentShow type="downloaded" type="downloaded" />
                 </div>
                 <div className="tab-pane" id="user-document-history-document-common">
-                    <DocumentShow type="common" typeId="common"/>
+                    <DocumentShow type="common" typeId="common" />
                 </div>
                 <div className="tab-pane" id="user-document-history-document-new">
-                <DocumentShow type="latest" typeId="new" />
+                    <DocumentShow type="latest" typeId="new" />
                 </div>
             </div>
         </div>

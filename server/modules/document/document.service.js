@@ -95,6 +95,7 @@ exports.getDocuments = async (
             { path: "category", select: "name id" },
             { path: "domains", select: "name id" },
             { path: "archives", select: "name id path" },
+            { path: "userCanView", select: "_id name email avatar" },
             { path: "views.viewer", select: "name id" },
             { path: "downloads.downloader", select: "name id" },
             {
@@ -793,12 +794,24 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
                 "id name archives category domains numberOfDownload numberOfView "
             );
     } else {
-        let option = {
-            $or: [
-                { roles: { $in: roleArr } },
-                { userCanView: id }
-            ]
-        };
+        let option = {};
+
+        if (query.roleId && id) {
+            option = {
+                $or: [
+                    { roles: { $in: roleArr } },
+                    { userCanView: id }
+                ]
+            }
+        }
+
+        if (!query.roleId && id) {
+            option = {
+                ...option,
+                userCanView: id
+            }
+        }
+
         if (query.category) {
             option.category = query.category;
         }
@@ -836,6 +849,7 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
             { path: "category", select: "name id" },
             { path: "domains", select: "name id" },
             { path: "archives", select: "name id path" },
+            { path: "userCanView", select: "_id name email avatar" },
             { path: "views.viewer", select: "name id" },
             { path: "downloads.downloader", select: "name id" },
             {

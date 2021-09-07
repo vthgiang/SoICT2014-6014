@@ -10,7 +10,7 @@ import DocumentInformation from '../documents/documentInformation';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function DocumentShow(props) {
-    const { type,typeId }= props
+    const { type, typeId } = props
     const TableId = `table-manage-document-${typeId}`;
     const defaultConfig = { limit: 5 }
     const Limit = getTableConfiguration(TableId, defaultConfig).limit;
@@ -24,11 +24,11 @@ function DocumentShow(props) {
     useEffect(() => {
         props.getAllRoles();
         props.getAllDepartments();
-        props.getAllDocuments(getStorage('currentRole'));
-        props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
-        props.getUserDocumentStatistics(getStorage('currentRole'),type, { page: state.page, limit: state.limit });
+        // props.getAllDocuments(getStorage('currentRole'));
+        // props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
+        props.getUserDocumentStatistics(getStorage('currentRole'), type, { page: state.page, limit: state.limit });
     }, [])
-    
+
     const toggleDocumentInformation = async (data) => {
         await setState({
             ...state,
@@ -363,12 +363,12 @@ function DocumentShow(props) {
     const { translate, department } = props;
     const { user } = props.documents;
     const { common } = user;
-    let dataShow=null
-    switch(type){
+    let dataShow = null
+    switch (type) {
         case "common":
             dataShow = user.common
             break
-            
+
         case "downloaded":
             dataShow = user.downloaded
             break
@@ -380,7 +380,7 @@ function DocumentShow(props) {
     }
     let paginate = dataShow.paginate;
     console.log(paginate);
-    
+
     const { isLoading } = props.documents;
     const { domains, categories, archives } = props.documents.administration;
     const docs = props.documents.user.data;
@@ -526,27 +526,27 @@ function DocumentShow(props) {
                     <tbody>
                         {
                             paginate && paginate.length > 0 &&
-                                paginate.map(doc =>
-                                    <tr key={doc._id}>
-                                        <td>{doc.name}</td>
-                                        <td>{doc.description}</td>
-                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
-                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
-                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
-                                        <td>
-                                            <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
-                                            </a>
-                                        </td>
-                                        <td style={{ width: '10px' }}>
-                                            <a className="text-green" title={translate('document.edit')} onClick={() => toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                        </td>
-                                    </tr>) 
+                            paginate.map(doc =>
+                                <tr key={doc._id}>
+                                    <td>{doc.name}</td>
+                                    <td>{doc.description}</td>
+                                    <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
+                                    <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
+                                    <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
+                                    <td>
+                                        <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                        </a>
+                                    </td>
+                                    <td style={{ width: '10px' }}>
+                                        <a className="text-green" title={translate('document.edit')} onClick={() => toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                    </td>
+                                </tr>)
                         }
                     </tbody>
                 </table>
@@ -559,7 +559,7 @@ function DocumentShow(props) {
             </React.Fragment>
         </div>
     )
-    
+
 }
 
 const mapStateToProps = state => state;

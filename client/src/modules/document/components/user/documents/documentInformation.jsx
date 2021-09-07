@@ -125,7 +125,7 @@ function DocumentInformation(props) {
     }
 
     const findDocumentRole = (roles, arr_id) => {
-        if (arr_id){
+        if (arr_id) {
             let data = arr_id.map(id => {
                 let name = roles.filter(role => id && id === role.value);
                 return name.map(x => x.text);
@@ -159,7 +159,7 @@ function DocumentInformation(props) {
     const userList = user.list.map(role => { return { value: role._id, text: role.name } });
     const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
     let roles = findDocumentRole(roleList, documentRoles);
-    let users = findUser(userList, documentUserCanView);
+    // let users = findUser(userList, documentUserCanView);
     // let users = findUser()
     let logs = documentLogs.reverse();
     return (
@@ -303,8 +303,8 @@ function DocumentInformation(props) {
                                 <div className="row">
                                     <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                                         <strong>{translate('document.users')}&emsp; </strong>
-                                        {users && users.length ? users.map(y =>
-                                            <div>{y[0]}</div>
+                                        {documentUserCanView && documentUserCanView.length ? documentUserCanView.map(y =>
+                                            <div key={y._id}>{y.name}</div>
                                         ) : translate('general.no_data')}
                                     </div>
 
@@ -323,8 +323,8 @@ function DocumentInformation(props) {
                                 <div key={item._id} className="item-box">
                                     <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                     {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
-                                                ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
-                                                <div>
+                                    ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
+                                    <div>
                                         {item.description ? item.description : translate("task.task_perform.none_description")}
                                     </div>
                                 </div>
