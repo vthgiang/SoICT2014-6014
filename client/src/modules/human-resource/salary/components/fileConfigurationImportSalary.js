@@ -79,7 +79,7 @@ function templateImport(translate, deparmentList) {
         STT: index + 1,
         unit: x?.name
     })) : [];
-        console.log('list',list)
+    
     let templateImport = {
         fileName: translate('human_resource.salary.file_name_export'),
         dataSheets: [{

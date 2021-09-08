@@ -4,7 +4,9 @@ const {
     AnnualLeave,
     Privilege,
     UserRole,
-    Link
+    Link,
+    User,
+    OrganizationalUnit
 } = require('../../../models');
 
 const {
@@ -482,13 +484,11 @@ const fetchNumberOfWaitForAppoval = async (portal, params, company) => {
  */
 exports.searchAnnualLeaves = async (portal, params, company) => {
     let keySearch = {
-        company: company
     };
 
     // Bắt sựu kiện MSNV hoặc tên nhân viên tìm kiếm khác undefined
     if (params.employeeNumber || params.employeeName) {
         let keySearchEmployee = {
-            company: company
         };
         if(params.employeeNumber){
             keySearchEmployee = {
@@ -599,7 +599,7 @@ exports.createAnnualLeave = async (portal, data, company) => {
     // Tạo mới thông tin nghỉ phép vào database
     let createAnnualLeave = await AnnualLeave(connect(DB_CONNECTION, portal)).create({
         employee: data.employee,
-        company: company,
+        // company: company,
         organizationalUnit: data.organizationalUnit,
         startDate: data.startDate,
         endDate: data.endDate,
@@ -683,36 +683,137 @@ exports.updateAnnualLeave = async (portal, id, data) => {
  * @param {*} company : Id công ty
  */
 exports.importAnnualLeave = async (portal, data, company) => {
-    let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
-        ids: [data[0].organizationalUnit]
-    });
-    users = users?.employees?.map(x => x.userId.email);
+    // lâys danh sách tất cả employees
     let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find({
-        company: company,
-        emailInCompany: {
-            $in: users
-        }
     }, {
         employeeNumber: 1,
         _id: 1
     });
 
-    let rowError = [];
+
+    //Lấy danh sách đơn vị
+    let organizationalUnitId = [];
+    data.forEach(x => {
+        organizationalUnitId = [...organizationalUnitId, x.organizationalUnitId]
+    })
+
+
+    // loại bỏ đơn vị trùng lặp
+    const seen = new Set();
+    organizationalUnitId = organizationalUnitId.filter((el) => {
+        const duplicate = seen.has(el);
+        seen.add(el);
+        return !duplicate;
+    });
+
+
+    let listEmployeeUnits = [];
+    let users = [], rowError = [];
+
+    if (organizationalUnitId?.length) {
+        console.log("4")
+        for (let k = 0; k < organizationalUnitId?.length; k++) {
+            // ----Lấy danh sách nhân viên của các đơn vị
+            let roles = [];
+            let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ '_id': organizationalUnitId[k] });
+            for (let i = 0; i < units.length; i++) {
+                roles = [
+                    ...roles,
+                    ...units[i].employees,
+                    ...units[i].managers,
+                    ...units[i].deputyManagers
+                ]
+            }
+
+            // laays danh sach user thuoc don vi
+            users = await UserRole(connect(DB_CONNECTION, portal)).aggregate([
+                {
+                    
+                    $match: {'roleId': { $in: roles }}
+                },
+                {
+                    $group: {
+                        '_id': '$userId',
+                        'user': { $push: "$$ROOT" }
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": "organizationalunits",
+                        "let": { "roleId": "$user.roleId" },
+                        "pipeline": [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $or: [
+                                            { $eq: ["$managers", "$$roleId"] },
+                                            { $eq: ["$deputyManagers", "$$roleId"] },
+                                            { $eq: ["$employees", "$$roleId"] }
+                                        ]
+                                    }
+                                }
+                            },
+                        ],
+                        "as": "organizationalUnit"
+                    }
+                }
+            ])
+console.log("5")
+            users = users.map(item => {
+                if (item?.user?.[0]) {
+                    item.user[0].idUnit = item?.organizationalUnit?.[0]?._id
+                    return item.user[0]
+                }
+            });
+console.log("6")
+            await User(connect(DB_CONNECTION, portal)).populate(users, { path: "userId", select: "email" });
+
+            let listMail = [];
+            users?.length && users.forEach(x => listMail = [...listMail, x?.userId?.email]);
+
+            // timf danh sach nhan vien thong qua danh sach email
+            let listEmployeeInUnit = await Employee(connect(DB_CONNECTION, portal)).find({
+                emailInCompany: {
+                    $in: listMail
+                }
+            }, {
+                employeeNumber: 1,
+                _id: 1
+            });
+
+            listEmployeeUnits[organizationalUnitId[k]] = listEmployeeInUnit
+        }
+    }
+
+    // validate dữ liệu
     data = data.map((x, index) => {
-        let employee = employeeInfo.filter(y => y.employeeNumber === x.employeeNumber);
-        if (employee.length === 0) {
+        let checkEmployeeNumber = employeeInfo.filter(y => y.employeeNumber.toString() === x.employeeNumber.toString());
+        
+        // kiểm tra nhân viên có tồn tại hay chưa
+        if (checkEmployeeNumber?.length === 0) { // nếu chưa có trả về lôix
             x = {
                 ...x,
                 errorAlert: [...x.errorAlert, "staff_code_not_find"],
                 error: true
-            };
+            }
             rowError = [...rowError, index + 1];
         } else {
-            x = {
-                ...x,
-                employee: employee[0]._id,
-                company: company
-            };
+            let checkEmployeeNumberInUnit = listEmployeeUnits[x.organizationalUnitId].some(y => y.employeeNumber.toString() === x.employeeNumber.toString());
+            // nếu nhân vien ko thuộc đơn vị đã điền trong excell thì trar về loõi
+            if (!checkEmployeeNumberInUnit) {
+                x = {
+                    ...x,
+                    errorAlert: [...x.errorAlert, "staff_non_unit"],
+                    error: true,
+                };
+                rowError = [...rowError, index + 1];
+            } else {
+                x = {
+                    ...x,
+                    employee: checkEmployeeNumber[0]._id.toString(),
+                    organizationalUnit: x.organizationalUnitId
+                }
+            }
         }
         return x;
     })

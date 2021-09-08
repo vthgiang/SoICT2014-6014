@@ -1572,6 +1572,7 @@ export default {
                 employee_number_required: "Mã nhân viên không được để trống",
                 staff_non_unit: "Nhân viên không thuộc đơn vị",
                 organizationalUnit_not_found: "Đơn vị không tồn tại",
+                organizationalUnit_not_empty: "Đơn vị không được để trống",
                 staff_code_not_special:
                     "Mã nhân viên không được chứ ký tự đặc biệt",
                 staff_code_not_find: "Mã nhân viên không tồn tại",
@@ -1627,6 +1628,7 @@ export default {
                 add_annual_leave: "Thêm đơn xin nghỉ",
                 add_annual_leave_title: "Thêm mới đơn xin nghỉ phép",
 
+                staff_non_unit: "Nhân viên không thuộc đơn vị",
                 // Thông điệp trả về từ server
                 employee_code_duplicated: "Mã số nhân viên bị trùng lặp",
                 employee_name_required: "Tên nhân viên không được để trống",

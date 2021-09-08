@@ -1475,6 +1475,7 @@ export default {
                 employee_number_required: "Staff code required",
                 staff_non_unit: "Staff non unit",
                 organizationalUnit_not_found: "OrganizationalUnit not found",
+                organizationalUnit_not_empty: "OrganizationalUnit not empty",
                 staff_code_not_special:
                     "Staff code does not contain special characters",
                 staff_code_not_find: "Staff code does not exist",
@@ -1534,6 +1535,7 @@ export default {
                 employee_code_duplicated: "Staff code is duplicated",
                 employee_name_required: "Staff name required",
                 employee_number_required: "Staff code required",
+                staff_non_unit: "Nhân viên không thuộc đơn vị",
                 staff_code_not_special:
                     "Staff code does not contain special characters",
                 staff_code_not_find: "Staff code does not exist",

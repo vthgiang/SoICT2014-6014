@@ -338,6 +338,7 @@ exports.importAnnualLeave = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('error', error)
         await Log.error(req.user.email, 'IMPORT_ANNUAL_LEAVE', req.portal);
         res.status(400).json({
             success: false,
