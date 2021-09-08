@@ -2280,7 +2280,7 @@ export default {
                 hours: "giờ",
                 total_time_annual_leave: "Tổng thời gian nghỉ phép tháng",
                 fullname: "Họ và tên",
-                task_total: "Số công việc",
+                task_total: "Tổng số công việc",
                 general_task: "Tổng hợp công việc tháng",
                 see_all: "Xem tất cả",
                 general_commendation: "Tổng hợp khen thưởng tháng",
