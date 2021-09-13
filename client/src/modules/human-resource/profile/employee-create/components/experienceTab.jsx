@@ -107,9 +107,14 @@ function ExperienceTab(props) {
      * Function thêm mới kinh nghiệm làm việc
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      */
-    const handleAddExperience = async (data) => {
+    const handleAddExperience = (data) => {
         let { experiences } = state;
         props.handleAddExperience([...experiences, data], data);
+
+        setState({
+            ...state,
+            experiences: [...experiences, data]
+        })
     }
 
     /**
