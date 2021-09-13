@@ -108,28 +108,8 @@ function ExperienceTab(props) {
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      */
     const handleAddExperience = async (data) => {
-        const { translate } = props;
         let { experiences } = state;
-
-        let checkData = checkForDuplicate(data, experiences);
-        if (checkData) {
-            await setState({
-                ...state,
-                experiences: [...experiences, {
-                    ...data
-                }]
-            })
-            props.handleAddExperience([...experiences, data], data);
-        } else {
-            toast.error(
-                <ServerResponseAlert
-                    type='error'
-                    title={'general.error'}
-                    content={[translate('human_resource.profile.time_experience_duplicate')]}
-                />,
-                { containerId: 'toast-notification' }
-            );
-        }
+        props.handleAddExperience([...experiences, data], data);
     }
 
     /**
@@ -137,28 +117,15 @@ function ExperienceTab(props) {
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      */
     const handleEditExperience = async (data) => {
-        const { translate } = props;
         let { experiences } = state;
+        experiences[data.index] = data;
 
-        let experiencesNew = [...experiences];
-        let checkData = checkForDuplicate(data, experiencesNew.filter((x, index) => index !== data.index));
-        if (checkData) {
-            experiences[data.index] = data;
-            await setState({
-                ...state,
-                experiences: experiences
-            });
-            props.handleEditExperience(experiences, data);
-        } else {
-            toast.error(
-                <ServerResponseAlert
-                    type='error'
-                    title={'general.error'}
-                    content={[translate('human_resource.profile.time_experience_duplicate')]}
-                />,
-                { containerId: 'toast-notification' }
-            );
-        }
+        props.handleEditExperience(experiences, data);
+
+        setState({
+            ...state,
+            experiences: experiences
+        });
     }
 
     /**
