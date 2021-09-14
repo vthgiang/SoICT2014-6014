@@ -1558,6 +1558,9 @@ export default {
                     "Send application annual leave success",
                 import_annual_leave_success: "Add data from file success",
                 import_annual_leave_faile: "Add data from file faile",
+
+                request_to_change_annualeave_success:"Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
+                request_to_change_annualeave_faile:"Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
             },
 
             // Quản lý khen thưởng kỷ luật

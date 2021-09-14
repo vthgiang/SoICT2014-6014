@@ -7,6 +7,7 @@ export const AnnualLeaveService = {
     deleteAnnualLeave,
     updateAnnualLeave,
     importAnnualLeave,
+    requestToChangeAnnuaLeave,
 }
 
 /**
@@ -77,6 +78,16 @@ function updateAnnualLeave(id, data) {
 function importAnnualLeave(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves/import`,
+        method: 'POST',
+        data: data,
+    }, true, false, 'human_resource.annual_leave');
+}
+
+
+function requestToChangeAnnuaLeave(id, data) {
+    console.log('id, data',id, data)
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves/${id}/request-to-change`,
         method: 'POST',
         data: data,
     }, true, false, 'human_resource.annual_leave');

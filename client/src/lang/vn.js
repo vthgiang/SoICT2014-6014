@@ -1657,6 +1657,9 @@ export default {
                 import_annual_leave_success: "Thêm dữ liệu từ file thành công",
                 import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
 
+                request_to_change_annualeave_success:"Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
+                request_to_change_annualeave_faile:"Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
+
                 employee_invalid: 'Tài khoản chưa đăng ký thông tin nhân viên. Vui lòng kiểm tra lại',
             },
 

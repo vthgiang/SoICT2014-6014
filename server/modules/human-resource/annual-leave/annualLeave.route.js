@@ -16,4 +16,6 @@ router.delete('/annualLeaves/:id', auth, AnnualLeaveController.deleteAnnualLeave
 // Import nghỉ phép
 router.post('/annualLeaves/import', auth, AnnualLeaveController.importAnnualLeave);
 
+router.post('/annualLeaves/:id/request-to-change', auth, AnnualLeaveController.requestToChangeAnnuaLeave);
+
 module.exports = router;

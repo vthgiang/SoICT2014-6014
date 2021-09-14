@@ -9,7 +9,8 @@ export const AnnualLeaveActions = {
     createAnnualLeave,
     deleteAnnualLeave,
     updateAnnualLeave,
-    importAnnualLeave
+    importAnnualLeave,
+    requestToChangeAnnuaLeave,
 };
 
 /**
@@ -135,6 +136,28 @@ function importAnnualLeave(data) {
                 dispatch({
                     type: AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_FAILURE,
                     error: err.response.data.content
+                });
+            })
+    };
+}
+
+
+function requestToChangeAnnuaLeave(id, data) {
+    return dispatch => {
+        dispatch({
+            type: AnnualLeaveConstants.REQUEST_TO_CHANGE_ANNUALEAVE_REQUEST
+        });
+        AnnualLeaveService.requestToChangeAnnuaLeave(id, data)
+            .then(res => {
+                dispatch({
+                    type: AnnualLeaveConstants.REQUEST_TO_CHANGE_ANNUALEAVE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AnnualLeaveConstants.REQUEST_TO_CHANGE_ANNUALEAVE_FAILURE,
+                    error: err
                 });
             })
     };

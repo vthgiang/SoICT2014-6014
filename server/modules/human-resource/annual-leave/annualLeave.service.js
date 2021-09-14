@@ -22,7 +22,6 @@ exports.getAnnaulLeaveBeforAndAfterOneWeek =async (portal, organizationalUnits,c
     firstDay = new Date(firstDay.setDate(dateNow.getDate() - 6))
     lastDay = new Date(lastDay.setDate(dateNow.getDate() + 6))
     let keySearch = {
-        company: company,
         "$or": [{
             startDate: {
                 "$gte": firstDay,
@@ -55,7 +54,6 @@ exports.getAnnaulLeaveBeforAndAfterOneWeek =async (portal, organizationalUnits,c
  */
 exports.getNumberAnnaulLeave = async (portal, email, year, company) => {
     let employee = await Employee(connect(DB_CONNECTION, portal)).findOne({
-        company: company,
         emailInCompany: email
     }, {
         _id: 1
@@ -66,7 +64,6 @@ exports.getNumberAnnaulLeave = async (portal, email, year, company) => {
         let lastDay = new Date(Number(year) + 1, 0, 1);
 
         let annulLeaves = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-            company: company,
             employee: employee._id,
             status: 'approved',
             startDate: {
@@ -76,7 +73,6 @@ exports.getNumberAnnaulLeave = async (portal, email, year, company) => {
         });
 
         let listAnnualLeavesOfOneYear = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-            company: company,
             employee: employee._id,
             startDate: {
                 "$gt": firstDay,
@@ -128,7 +124,6 @@ exports.getNumberAnnaulLeave = async (portal, email, year, company) => {
  */
 exports.getTotalAnnualLeave = async (portal, company, organizationalUnits, month) => {
     let keySearch = {
-        company: company
     };
 
     // Bắt sựu kiện tìm kiếm theo đơn vị 
@@ -264,7 +259,6 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
 
         if (organizationalUnits) {
             let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-                company: company,
                 status: 'approved',
                 organizationalUnit: {
                     $in: organizationalUnits
@@ -281,7 +275,6 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
             }
         } else {
             let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-                company: company,
                 status: 'approved',
                 "$or": querys
             }, {
@@ -363,7 +356,6 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
 
         if (organizationalUnits) {
             let keySearchEmployee = {
-                company: company
             };
             if(email){
                 keySearchEmployee = {
@@ -378,7 +370,6 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
                 _id: 1
             });
             let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-                company: company,
                 status: 'approved',
                 organizationalUnit: {
                     $in: organizationalUnits
@@ -395,7 +386,6 @@ exports.getAnnualLeaveByStartDateAndEndDate = async (portal, organizationalUnits
             }
         } else {
             let listAnnualLeaveOfNumberMonth = await AnnualLeave(connect(DB_CONNECTION, portal)).find({
-                company: company,
                 status: 'approved',
                 "$or": querys
             }, {
@@ -483,6 +473,7 @@ const fetchNumberOfWaitForAppoval = async (portal, params, company) => {
  * @company : Id công ty người dùng
  */
 exports.searchAnnualLeaves = async (portal, params, company) => {
+    console.log("DMDMMDMDMD MAY")
     let keySearch = {
     };
 
@@ -826,4 +817,10 @@ console.log("6")
     } else {
         return await AnnualLeave(connect(DB_CONNECTION, portal)).insertMany(data);
     }
+}
+
+exports.getAnnualLeaveById = async (portal, id) => {
+    return await AnnualLeave(connect(DB_CONNECTION, portal))
+        .findById(id)
+    .populate({path: "employee", select : "fullName employeeNumber"})
 }
