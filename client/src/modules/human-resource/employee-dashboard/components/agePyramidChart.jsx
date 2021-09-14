@@ -110,6 +110,9 @@ const AgePyramidChart = (props) => {
                     value: function (value, ratio, id) {
                         var format = function (d) { return (parseInt(d) === d) ? Math.abs(d) : null; }
                         return format(value) + ' nhân viên';
+                    },
+                    title: function (d, index) {
+                        return ['65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '18-19', 'Chưa xác định độ tuổi'][index]
                     }
                 }
             }
@@ -149,6 +152,13 @@ const AgePyramidChart = (props) => {
         let maleEmployees = listAllEmployees.filter(x => x.gender === 'male' && x.birthdate);
         let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female' && x.birthdate);
 
+        let maleEmployeesUndefined = listAllEmployees.filter(x => x.gender === 'male' && !x.birthdate);
+        let femaleEmployeesUndefined = listAllEmployees.filter(x => x.gender === 'female' && !x.birthdate);
+
+        console.log('listAllEmployees', listAllEmployees)
+        console.log('maleEmployeesUndefined', maleEmployeesUndefined)
+        console.log('femaleEmployeesUndefined', femaleEmployeesUndefined)
+
         // Start Định dạng dữ liệu cho biểu đồ tháp tuổi
         let age = 69, i = 0, data1AgePyramid = [], data2AgePyramid = [];
         while (age > 18) {
@@ -168,11 +178,13 @@ const AgePyramidChart = (props) => {
         data1AgePyramid.unshift('Nữ');
         data2AgePyramid.unshift('Nam');
         // End Định dạng dữ liệu cho biểu đồ tháp tuổi
+        data1AgePyramid = [...data1AgePyramid, femaleEmployeesUndefined?.length]
+        data2AgePyramid = [...data2AgePyramid, maleEmployeesUndefined?.length]
 
         let data = {
             nameData1: 'Nữ',
             nameData2: 'Nam',
-            ageRanges: ['65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '18-19'],
+            ageRanges: ['65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '18-19', 'Chưa xác định...'],
             data1: data1AgePyramid,
             data2: data2AgePyramid,
         }
