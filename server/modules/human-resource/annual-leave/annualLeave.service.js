@@ -647,7 +647,7 @@ exports.createAnnualLeave = async (portal, data, company) => {
 exports.deleteAnnualLeave = async (portal, id) => {
     return await AnnualLeave(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
-    });
+    }).populate({path: "employee", select: "emailInCompany fullName employeeNumber"});
 }
 
 /**
