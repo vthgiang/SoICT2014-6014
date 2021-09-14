@@ -1821,6 +1821,50 @@ exports.importExperience = async (portal, company, data) => {
 
 }
 
+
+exports.importWorkProcess = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            workProcess: data,
+            rowErrorOfExperience: rowErrorOfWorkProcess
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                workProcess: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.workProcess.push(y);
+                }
+            })
+            return result;
+        })
+
+        for (let x of importData) {
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
+                _id: x._id
+            });
+            editEmployee.workProcess = editEmployee.workProcess.concat(x.workProcess);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
+
+
 /**
  * Import thông tin bằng cấp
  * @param {*} company : Id công ty

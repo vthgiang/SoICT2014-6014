@@ -354,6 +354,9 @@ exports.importEmployees = async (req, res) => {
         if (req.body.importType === 'Experience') {
             data = await EmployeeService.importExperience(req.portal, req.user.company._id, req.body.importData);
         };
+        if (req.body.importType === 'WorkProcess') {
+            data = await EmployeeService.importWorkProcess(req.portal, req.user.company._id, req.body.importData);
+        };
         if (req.body.importType === 'Degree') {
             data = await EmployeeService.importDegree(req.portal, req.user.company._id, req.body.importData);
         };
