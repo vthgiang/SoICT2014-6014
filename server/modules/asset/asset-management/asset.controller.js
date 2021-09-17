@@ -591,7 +591,77 @@ exports.chartAssetGroup = async (req, res) => {
             
         
         console.log("result2",result)
+        // chia theo thể loại 
+        let typeName = [], shortName = [], countAssetType = [], countAssetValue=[],countDepreciation = [], idAssetType = [], idAssetTypeTest = [];
+        const listAssetTypes = chartAssetChart.listType;
+        let listAssetTypeSort = [];
 
+        for (let i in listAssetTypes) {
+            let count = { ...listAssetTypes[i], countAsset: 0 };
+            for (let j in chartAssetChart.chartAssets) {
+                if (chartAssetChart.chartAssets[j].assetType.some(item => JSON.stringify(listAssetTypes[i]._id) === JSON.stringify(item._id))){
+                    count = { ...count, countAsset: count.countAsset + 1 }
+                }
+            }
+            listAssetTypeSort = [
+                ...listAssetTypeSort,
+                count,
+            ];
+        }
+        listAssetTypeSort = listAssetTypeSort.sort((a, b) => (a.countAsset < b.countAsset) ? 1 : ((b.countAsset < a.countAsset) ? -1 : 0))
+        listAssetTypeSortShow = listAssetTypeSort.map((value,index) =>{
+            return(value._doc)
+        })
+        for (let i in listAssetTypeSortShow) {
+            countAssetType[i] = 0;
+            countAssetValue[i] = 0;
+            countDepreciation[i] = 0;
+            idAssetType.push(listAssetTypeSortShow[i]._id)
+            idAssetTypeTest.push(JSON.stringify(listAssetTypeSortShow[i]._id))
+        }
+
+        if (chartAssetChart.chartAssets) {
+            chartAssetChart.chartAssets.forEach(asset => {
+                for (let k in asset.assetType) {
+                    let idx = idAssetTypeTest.indexOf(JSON.stringify(asset.assetType[k]._id));
+                    countAssetType[idx]++;
+                }
+            })
+            chartAssetChart.chartAssets.forEach(asset => {
+                for (let k in asset.assetType) {
+                    let idx =  idAssetTypeTest.indexOf(JSON.stringify(asset.assetType[k]._id));
+                    countAssetValue[idx] += asset.cost / 1000000;
+                }
+            })
+            chartAssetChart.chartAssets.forEach(asset => {
+                for (let k in asset.assetType) {
+                    let idx = idAssetTypeTest.indexOf(JSON.stringify(asset.assetType[k]._id));
+                    countDepreciation[idx] += calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation) / 1000000;
+                }
+            })
+            for (let i in listAssetTypeSortShow) {
+                let longName = listAssetTypeSortShow[i].typeName.slice(0, 20) + "...";
+                let name = listAssetTypeSortShow[i].typeName.length > 20 ? longName : listAssetTypeSortShow[i].typeName;
+                shortName.push(name);
+                typeName.push(listAssetTypeSortShow[i].typeName);
+
+            }
+        }
+        let dataChartType ={listType :listAssetTypeSortShow}
+        dataChartType = {
+            ...dataChartType,
+            amountType:{
+                typeName:typeName,
+                shortName:shortName,
+                countAssetType:countAssetType,
+                countAssetValue:countAssetValue,
+                countDepreciation:countDepreciation,
+                idAssetType:idAssetType,
+            }
+        }
+        result = {
+            ...result,
+            dataChartType : dataChartType}
         res.status(200).json({
             success: true,
             messages: ["get_asset_group_success"],
@@ -604,4 +674,70 @@ exports.chartAssetGroup = async (req, res) => {
             content: { error: error }
         });
     }
+}
+calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
+    let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
+
+    if (depreciationType === "straight_line") { // Phương pháp khấu hao theo đường thẳng
+        annualDepreciation = ((12 * cost) / usefulLife);
+        monthlyDepreciation = cost / usefulLife;
+        remainingValue = cost - (cost / usefulLife) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()));
+
+    } else if (depreciationType === "declining_balance") { // Phương pháp khấu hao theo số dư giảm dần
+        let lastYears = false,
+            t,
+            usefulYear = usefulLife / 12,
+            usedTime = (new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth());
+
+        if (usefulYear < 4) {
+            t = (1 / usefulYear) * 1.5;
+        } else if (usefulYear >= 4 && usefulYear <= 6) {
+            t = (1 / usefulYear) * 2;
+        } else if (usefulYear > 6) {
+            t = (1 / usefulYear) * 2.5;
+        }
+
+        // Tính khấu hao đến năm hiện tại
+        for (let i = 1; i <= usedTime / 12; i++) {
+            if (!lastYears) {
+                if (remainingValue * t > (remainingValue / (usefulYear - i + 1))) {
+                    annualDepreciation = remainingValue * t;
+                } else {
+                    annualDepreciation = (remainingValue / (usefulYear - i + 1));
+                    lastYears = true;
+                }
+            }
+
+            remainingValue = remainingValue - annualDepreciation;
+        }
+
+        // Tính khấu hao đến tháng hiện tại
+        if (usedTime % 12 !== 0) {
+            if (!lastYears) {
+                if (remainingValue * t > (remainingValue / (usefulYear - Math.floor(usedTime / 12)))) {
+                    annualDepreciation = remainingValue * t;
+                } else {
+                    annualDepreciation = (remainingValue / (usefulYear - Math.floor(usedTime / 12)));
+                    lastYears = true;
+                }
+            }
+
+            monthlyDepreciation = annualDepreciation / 12;
+            remainingValue = remainingValue - (monthlyDepreciation * (usedTime % 12))
+        }
+
+    } else if (depreciationType === "units_of_production") { // Phương pháp khấu hao theo sản lượng
+        let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
+        let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
+        let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
+
+        for (let i = 0; i < monthTotal; i++) {
+            accumulatedDepreciation += unitsProducedDuringTheYears[i].unitsProducedDuringTheYear * productUnitDepreciation;
+        }
+
+        remainingValue = cost - accumulatedDepreciation;
+        annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
+    }
+    // console.log('cost', parseInt(cost - remainingValue));
+    return parseInt(cost - remainingValue);
 }
