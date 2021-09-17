@@ -20,52 +20,35 @@ class ValueBarChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
-        const { listAssets, assetType, setValueOfAsset, translate, depreciationOfAsset, crrValue } = this.props;
+        const { setValueOfAsset, translate, depreciationOfAsset, crrValue, listAssetsAmount } = this.props;
 
         let typeName = [], shortName = [], countAssetValue = [], idAssetType = [], currentValue = [];
-        for (let i in assetType) {
-            countAssetValue[i] = 0;
-            idAssetType.push(assetType[i]._id)
-        }
-
-        let chart = [];
-        if (listAssets) {
-            listAssets.map(asset => {
-                for (let k in asset.assetType) {
-                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
-                    countAssetValue[idx] += asset.cost / 1000000;
-                }
-            })
-
+        let countAssetValueShow
+        if (listAssetsAmount) {
+            typeName = listAssetsAmount.typeName
+            shortName = listAssetsAmount.shortName
+            countAssetValue = listAssetsAmount.countAssetValue
+            idAssetType = listAssetsAmount.idAssetType
             if (crrValue) {
                 if (depreciationOfAsset && depreciationOfAsset.length > 0) {
                     currentValue = countAssetValue.map((o, i) => o - (depreciationOfAsset[i] / 1000000));
                 }
                 currentValue.unshift(translate('asset.dashboard.sum_value'));
             } else {
-                countAssetValue.unshift(translate('asset.dashboard.sum_value'))
+                countAssetValueShow=  [translate('asset.dashboard.sum_value')].concat(countAssetValue)
             }
-
-            for (let i in assetType) {
-
-                let longName = assetType[i].typeName.slice(0, 16) + "...";
-                let name = assetType[i].typeName.length > 16 ? longName : assetType[i].typeName;
-                shortName.push(name);
-                typeName.push(assetType[i].typeName);
-
-            }
+           
         }
 
         let data = {
-            count: crrValue ? currentValue : countAssetValue,
+            count: crrValue ? currentValue : countAssetValueShow,
             type: typeName,
             shortName: shortName
         }
 
-        if (listAssets && assetType && setValueOfAsset) {
+        if (listAssetsAmount && setValueOfAsset) {
             setValueOfAsset(data);
         }
-
         return data;
     }
 

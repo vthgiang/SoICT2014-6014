@@ -95,36 +95,26 @@ class DepreciationTree extends Component {
     }
 
     render() {
-        const { assetType, listAssets, translate, setDepreciationOfAsset } = this.props;
+        const { assetType, listAssets, translate, setDepreciationOfAsset, listAssetsAmount } = this.props;
         const { tree } = this.state;
-        let typeName = [], countAssetDepreciation = [], idAssetType = [];
+        // let typeName = listAssetsAmount.typeName, countAssetDepreciation = listAssetsAmount.countAssetDepreciation, idAssetType = listAssetsAmount.idAssetType;
 
-        for (let i in assetType) {
-            countAssetDepreciation[i] = 0;
-            idAssetType.push(assetType[i]._id)
-        }
 
         let chart = [];
-        if (listAssets) {
-            listAssets.forEach(asset => {
-                for (let k in asset.assetType) {
-                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
-                    countAssetDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation);
-                }
-            })
-            for (let i in assetType) {
+        if (listAssetsAmount) {
+            for (let i in listAssetsAmount.listType) {
 
-                let val = d3.format(",")(countAssetDepreciation[i])
-                let title = `${assetType[i].typeName} - ${val} `
-
-                typeName.push(assetType[i].typeName);
+                let val = d3.format(",")(listAssetsAmount.countAssetDepreciation[i])
+                let title = `${listAssetsAmount.listType[i].typeName} - ${val} `
 
                 chart.push({
-                    id: assetType[i]._id,
+                    id: listAssetsAmount.listType[i]._id,
                     typeName: title,
-                    parentId: assetType[i].parent,
+                    parentId: listAssetsAmount.listType[i].parent,
                 })
             }
+            if (listAssetsAmount.countAssetDepreciation.length > 0)
+            this.props.getDepreciationOfAsset(listAssetsAmount.countAssetDepreciation)
         }
 
         let dataTree = chart && chart.map(node => {
@@ -136,8 +126,7 @@ class DepreciationTree extends Component {
             }
         })
 
-        if (countAssetDepreciation.length > 0)
-            this.props.getDepreciationOfAsset(countAssetDepreciation)
+       
 
         return (
             <div className="depreciation-asset" id="depreciation-asset">
@@ -160,6 +149,7 @@ class DepreciationTree extends Component {
                             />
                         </div> :
                         <DepreciationBarChart
+                            listAssetsAmount = {listAssetsAmount}
                             listAssets={listAssets}
                             assetType={assetType}
                             setDepreciationOfAsset={setDepreciationOfAsset}
