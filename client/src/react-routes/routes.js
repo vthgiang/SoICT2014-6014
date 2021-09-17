@@ -25,7 +25,7 @@ const ManageDepartment = lazy(() => import("../modules/super-admin/organizationa
 const ManageComponent = lazy(() => import("../modules/super-admin/component/components"))
 const ConfigurationManager = lazy(() => import("../modules/super-admin/module-configuration/components"))
 
-const AnnualLeaveManager = lazy(() => import("../modules/human-resource/annual-leave/components"))
+const AnnualLeaveManager = lazy(() => import("../modules/human-resource/annual-leave/components/annualLeaveManagement"))
 const ManagerPraiseDiscipline = lazy(() => import("../modules/human-resource/commendation-discipline/components"))
 const EmployeeDashBoard = lazy(() => import("../modules/human-resource/employee-dashboard/components"))
 const DepartmentManage = lazy(() => import("../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit"))

@@ -824,3 +824,39 @@ exports.getAnnualLeaveById = async (portal, id) => {
         .findById(id)
     .populate({path: "employee", select : "fullName employeeNumber"})
 }
+
+
+exports.requestToChangeAnnuaLeave = async (portal, data, id) => {
+    const { type, startTime, endTime, totalHours, startDate, endDate, reason } = data;
+    let request = {
+        type, startTime, endTime, totalHours, startDate, endDate, reason
+    }
+
+    let  result =  await AnnualLeave(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: {
+            requestToChange: request
+        }
+    }, { new: true })
+    
+    let userReceiveds = [];
+    let userEmailReceiveds = [];
+    const link = await Link(connect(DB_CONNECTION, portal)).find({ url: "/hr-annual-leave" });
+    if (link.length) {
+        const privilege = await Privilege(connect(DB_CONNECTION, portal)).find({ resourceId: link[0]._id });
+        if (privilege.length) {
+            let roleIds = [];
+            for (let i in privilege) {
+                roleIds.push(privilege[i].roleId);
+            }
+            const userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({ roleId: { $in: roleIds } }).populate({path: "userId", select: "name email"})
+            if (userRoles && userRoles.length > 0) {
+                for (let j in userRoles) {
+                    userReceiveds = [...userReceiveds, userRoles[j].userId._id];
+                    userEmailReceiveds= [...userEmailReceiveds, userRoles[j].userId.email]
+                }
+            }
+        }
+    }
+    
+    return {userReceiveds, result, userEmailReceiveds }
+}

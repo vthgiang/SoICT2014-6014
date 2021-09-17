@@ -54,6 +54,29 @@ exports.searchAnnualLeaves = async (req, res) => {
     }
 }
 
+
+exports.getAnnualLeaveById = async (req, res) => {
+    try {
+        let data = await AnnualLeaveService.getAnnualLeaveById(req.portal, req.params.id);
+        await Log.info(req.user.email, 'get_annual_leave_by_id_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_annual_leave_by_id_success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, 'get_annual_leave_by_id_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_annual_leave_by_id_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
+
+
 /** Tạo mới thông tin nghỉ phép */
 exports.createAnnualLeave = async (req, res) => {
     try {
@@ -354,6 +377,7 @@ exports.updateAnnualLeave = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('errror', error)
         await Log.error(req.user.email, 'EDIT_ANNUALLEAVE', req.portal);
         res.status(400).json({
             success: false,
@@ -400,53 +424,41 @@ exports.importAnnualLeave = async (req, res) => {
 
 exports.requestToChangeAnnuaLeave = async (req, res) => {
     try {
-        const { description  } = req.body;
         const { id } = req.params;
+
+        let result = await AnnualLeaveService.requestToChangeAnnuaLeave(req.portal, req.body, id);
+        let userReceiveds = result.userReceiveds;
+        let userEmailReceiveds = result.userEmailReceiveds;
+
+
         if (id) {
             let annualLeave = await AnnualLeaveService.getAnnualLeaveById(req.portal, id);
             if (annualLeave) {
-                let users = await UserService.getUserIsManagerOfOrganizationalUnit(req.portal, annualLeave.organizationalUnit);
-
-                if (users) {
+                if (userEmailReceiveds) {
                     let html = `
                         <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
                         <p>Nhân viên <strong> ${annualLeave?.employee?.fullName} - ${annualLeave?.employee?.employeeNumber} </strong> gửi yêu cầu chỉnh sửa đơn xin nghỉ phép: </p>
-                        <p><strong>Thông tin đơn nghỉ phép:</strong> </p>
-                        <ul>
-                        <li>Thời gian nghỉ từ ${annualLeave.startTime} ${dayjs(annualLeave.startDate).format("DD-MM-YYYY")} đến ${annualLeave.endTime} ${dayjs(annualLeave.endDate).format("DD-MM-YYYY")}</li>
-                        <li>Lý do: ${annualLeave.reason}</li>
-                        </ul>
-                        <p><strong>Thông tin muốn chỉnh sửa:</strong> <p>
-                        ${description}
-                        <br/>
+                        <p>Để xem yêu cầu thay đổi đơn xin nghỉ. <a target="_blank" href="${process.env.WEBSITE}/hr-annual-leave?annualeaveId=${id}">Hãy click vào đây</a><p>
                     `
-                    users.forEach(x => {
-                        sendEmail(x.email, 'Yêu cầu chỉnh sửa đơn xin nghỉ phép', "", html);
+                    userEmailReceiveds.forEach(x => {
+                        sendEmail(x, 'Yêu cầu chỉnh sửa đơn xin nghỉ phép', "", html);
                     })
+
 
                     let content = `
                         <p>Nhân viên <strong>${annualLeave?.employee?.fullName} - ${annualLeave?.employee?.employeeNumber}</strong> gửi yêu cầu chỉnh sửa đơn xin nghỉ phép: </p>
-                        <p><strong>Thông tin đơn nghỉ phép: </strong></p>
-                        <ul>
-                        <li>Thời gian nghỉ từ ${annualLeave.startTime} ${dayjs(annualLeave.startDate).format("DD-MM-YYYY")} đến ${annualLeave.endTime} ${dayjs(annualLeave.endDate).format("DD-MM-YYYY")}</li>
-                        <li>Lý do: ${annualLeave.reason}</li>
-                        </ul>
-                        <p><strong>Thông tin muốn chỉnh sửa:</strong> <p>
-                        ${description}
+                        <p>Để xem yêu cầu thay đổi đơn xin nghỉ. <a target="_blank" href="${process.env.WEBSITE}/hr-annual-leave?annualeaveId=${id}">Hãy click vào đây</a><p>
                     `
-                        let usersId = [];
-                        users.forEach(element => {
-                            usersId = [...usersId, element._id];
-                        });
-
+                    
                     let notification = {
-                        users: usersId,
+                        users: userReceiveds,
                         organizationalUnits: [],
                         title: 'Yêu cầu chỉnh sửa đơn nghỉ phép',
                         level: "important",
                         content: content,
                         sender: annualLeave?.employee?.fullName,
                     }
+
                     await NotificationServices.createNotification(req.portal, req.user.company._id, notification, undefined)
                 }
             }
@@ -457,7 +469,7 @@ exports.requestToChangeAnnuaLeave = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ["request_to_change_annualeave_success"],
-            content: {}
+            content: result.result,
         });
         
     } catch (error) {

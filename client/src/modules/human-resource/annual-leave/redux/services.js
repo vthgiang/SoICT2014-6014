@@ -3,6 +3,7 @@ import {
 } from '../../../../helpers/requestHelper';
 export const AnnualLeaveService = {
     searchAnnualLeaves,
+    getAnnualLeave,
     createAnnualLeave,
     deleteAnnualLeave,
     updateAnnualLeave,
@@ -36,6 +37,13 @@ function searchAnnualLeaves(data) {
     }, false, true, 'human_resource.annual_leave');
 }
 
+
+function getAnnualLeave(id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/annualLeave/annualLeaves/${id}`,
+        method: 'GET'
+    }, false, true, 'human_resource.annual_leave');
+}
 /**
  * Tạo mới thông tin nghỉ phép
  * @data : Dữ liệu tạo mới thông tin nghỉ phép

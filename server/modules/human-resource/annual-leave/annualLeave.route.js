@@ -6,6 +6,7 @@ const { auth } = require(`../../../middleware`);
 
 
 router.get('/annualLeaves', auth, AnnualLeaveController.searchAnnualLeaves);
+router.get('/annualLeaves/:id', auth, AnnualLeaveController.getAnnualLeaveById);
 
 
 router.post('/annualLeaves', auth, AnnualLeaveController.createAnnualLeave);
