@@ -43,7 +43,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 incidentDate: req.query.incidentDate,
                 getType: req.query.getType
             }
-            
+
             data = await AssetService.searchAssetProfiles(req.portal, req.user.company._id, params);
 
         }
@@ -515,12 +515,12 @@ exports.chartAssetGroup = async (req, res) => {
 
     try {
         let Assetchart = await AssetService.chartAssetGroup(req.portal, req.user.company._id);
-        
+
         let chartAssetChart = Assetchart.result
 
         let result = {}
         let numberOfAsset, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOther = 0;
-        
+        let assetChart = chartAssetChart.chartAssets
         if (chartAssetChart) {
             chartAssetChart.chartAssets.map(asset => {
                 switch (asset.group) {
@@ -539,23 +539,23 @@ exports.chartAssetGroup = async (req, res) => {
                 }
             });
         }
-        
+
         numberOfAsset = [
             ['asset.dashboard.building', numberOfBuilding],
             ['asset.asset_info.vehicle', numberOfVehicle],
             ['asset.dashboard.machine', numberOfMachine],
             ['asset.dashboard.other', numberOfOther],
         ];
-        console.log("result",result)
+        console.log("result", result)
         result = {
-            
-            ...result,
-           numberAsset : numberOfAsset
-        }
-            
-        
 
-        console.log("result",result)
+            ...result,
+            numberAsset: numberOfAsset
+        }
+
+
+
+        console.log("result", result)
 
         let valueOfAsset, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOther = 0;
 
@@ -587,19 +587,62 @@ exports.chartAssetGroup = async (req, res) => {
 
         result = {
             ...result,
-           valueAsset : valueOfAsset}
-            
-        
-        console.log("result2",result)
+            valueAsset: valueOfAsset
+        }
+
+        let depreciationAsset, depreciationExpenseOfBuilding = 0, depreciationExpenseOfVehicle = 0, depreciationExpenseOfMachine = 0, depreciationExpenseOfOther = 0;
+        let depreciationOfAsset = [];
+        if (chartAssetChart) {
+            assetChart.map(asset => {
+                depreciationOfAsset.push({
+                    names: asset.assetName,
+                    types: asset.assetType,
+                    groups: asset.group,
+                    depreciationExpense: calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation)
+                })
+
+            })
+
+        }
+        if (depreciationOfAsset.length) {
+            depreciationOfAsset.map(asset => {
+                switch (asset.groups) {
+                    case "building":
+                        depreciationExpenseOfBuilding += asset.depreciationExpense;
+                        break;
+                    case "vehicle":
+                        depreciationExpenseOfVehicle += asset.depreciationExpense;
+                        break;
+                    case "machine":
+                        depreciationExpenseOfMachine += asset.depreciationExpense;
+                        break;
+                    case "other":
+                        depreciationExpenseOfOther += asset.depreciationExpense;
+                        break;
+                }
+            });
+        }
+
+        depreciationAsset = [
+            ['asset.dashboard.building', depreciationExpenseOfBuilding > 0 ? depreciationExpenseOfBuilding : 0],
+            ['asset.asset_info.vehicle', depreciationExpenseOfVehicle],
+            ['asset.dashboard.machine', depreciationExpenseOfMachine],
+            ['asset.dashboard.other', depreciationExpenseOfOther],
+        ];
+
+        result = {
+            ...result,
+            depreciationAssets: depreciationAsset
+        }
         // chia theo thể loại 
-        let typeName = [], shortName = [], countAssetType = [], countAssetValue=[],countDepreciation = [], idAssetType = [], idAssetTypeTest = [];
+        let typeName = [], shortName = [], countAssetType = [], countAssetValue = [], countDepreciation = [], idAssetType = [], idAssetTypeTest = [];
         const listAssetTypes = chartAssetChart.listType;
         let listAssetTypeSort = [];
 
         for (let i in listAssetTypes) {
             let count = { ...listAssetTypes[i], countAsset: 0 };
             for (let j in chartAssetChart.chartAssets) {
-                if (chartAssetChart.chartAssets[j].assetType.some(item => JSON.stringify(listAssetTypes[i]._id) === JSON.stringify(item._id))){
+                if (chartAssetChart.chartAssets[j].assetType.some(item => JSON.stringify(listAssetTypes[i]._id) === JSON.stringify(item._id))) {
                     count = { ...count, countAsset: count.countAsset + 1 }
                 }
             }
@@ -609,8 +652,8 @@ exports.chartAssetGroup = async (req, res) => {
             ];
         }
         listAssetTypeSort = listAssetTypeSort.sort((a, b) => (a.countAsset < b.countAsset) ? 1 : ((b.countAsset < a.countAsset) ? -1 : 0))
-        listAssetTypeSortShow = listAssetTypeSort.map((value,index) =>{
-            return(value._doc)
+        listAssetTypeSortShow = listAssetTypeSort.map((value, index) => {
+            return (value._doc)
         })
         for (let i in listAssetTypeSortShow) {
             countAssetType[i] = 0;
@@ -629,7 +672,7 @@ exports.chartAssetGroup = async (req, res) => {
             })
             chartAssetChart.chartAssets.forEach(asset => {
                 for (let k in asset.assetType) {
-                    let idx =  idAssetTypeTest.indexOf(JSON.stringify(asset.assetType[k]._id));
+                    let idx = idAssetTypeTest.indexOf(JSON.stringify(asset.assetType[k]._id));
                     countAssetValue[idx] += asset.cost / 1000000;
                 }
             })
@@ -647,21 +690,22 @@ exports.chartAssetGroup = async (req, res) => {
 
             }
         }
-        let dataChartType ={listType :listAssetTypeSortShow}
+        let dataChartType = { listType: listAssetTypeSortShow }
         dataChartType = {
             ...dataChartType,
-            amountType:{
-                typeName:typeName,
-                shortName:shortName,
-                countAssetType:countAssetType,
-                countAssetValue:countAssetValue,
-                countDepreciation:countDepreciation,
-                idAssetType:idAssetType,
+            amountType: {
+                typeName: typeName,
+                shortName: shortName,
+                countAssetType: countAssetType,
+                countAssetValue: countAssetValue,
+                countDepreciation: countDepreciation,
+                idAssetType: idAssetType,
             }
         }
         result = {
             ...result,
-            dataChartType : dataChartType}
+            dataChartType: dataChartType
+        }
         res.status(200).json({
             success: true,
             messages: ["get_asset_group_success"],
