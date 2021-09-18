@@ -227,7 +227,7 @@ class ManufacturingMillCreateForm extends Component {
                     formID="form-create-mill"
                     title={translate('manufacturing.manufacturing_mill.create_manufacturing_mill')}
                     msg_success={translate('manufacturing.manufacturing_mill.create_mill_successfully')}
-                    msg_faile={translate('manufacturing.manufacturing_mill.create_mill_failed')}
+                    msg_failure={translate('manufacturing.manufacturing_mill.create_mill_failed')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}

@@ -44,7 +44,7 @@ class StockDetailForm extends Component {
                     formID={`form-detail-stock`}
                     title={translate('manage_warehouse.stock_management.detail_stock')}
                     msg_success={translate('manage_warehouse.stock_management.add_success')}
-                    msg_faile={translate('manage_warehouse.stock_management.add_faile')}
+                    msg_failure={translate('manage_warehouse.stock_management.add_faile')}
                     size={75}
                     hasSaveButton={false}
                     hasNote={false}

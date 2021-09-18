@@ -56,7 +56,7 @@ function QualityControlForm(props) {
                 formID="form-quality-control-bill"
                 title={translate('manage_warehouse.bill_management.quality_control_bill')}
                 msg_success={translate('manage_warehouse.bill_management.edit_successfully')}
-                msg_faile={translate('manage_warehouse.bill_management.edit_failed')}
+                msg_failure={translate('manage_warehouse.bill_management.edit_failed')}
                 func={save}
                 // disableSubmit={!this.isFormValidated()}
                 size={50}

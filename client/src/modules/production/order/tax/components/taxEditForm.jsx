@@ -551,7 +551,7 @@ function TaxEditForm(props) {
                 formID="form-edit-tax"
                 title="Chỉnh sửa thuế"
                 msg_success="Chỉnh sửa thành công"
-                msg_faile="Chỉnh sửa không thành công"
+                msg_failure="Chỉnh sửa không thành công"
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}

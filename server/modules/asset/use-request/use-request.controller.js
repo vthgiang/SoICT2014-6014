@@ -23,7 +23,7 @@ exports.searchUseRequests = async (req, res) => {
             await Logger.error(req.user.email, 'GET_USE_REQUEST', req.portal);
             res.status(400).json({
                 success: false,
-                messages: ["get_use_request_faile"],
+                messages: ["get_use_request_failure"],
                 content: {
                     error: error
                 }
@@ -91,7 +91,7 @@ exports.createUseRequest = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_USE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ["create_use_request_faile"],
+            messages: Array.isArray(error) ? error : ["create_use_request_failure"],
             content: {
                 inputData: req.body
             }
@@ -159,7 +159,7 @@ exports.updateUseRequest = async (req, res) => {
         await Logger.error(req.user.email, 'EDIT_USE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_use_request_faile'],
+            messages: ['edit_use_request_failure'],
             content: {
                 error: error
             }

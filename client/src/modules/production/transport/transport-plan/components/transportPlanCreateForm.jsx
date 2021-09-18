@@ -296,7 +296,7 @@ function TransportPlanCreateForm(props) {
                 formID="form-create-transport-requirements"
                 title={"Thêm kế hoạch vận chuyển"}
                 msg_success={"success"}
-                msg_faile={"fail"}
+                msg_failure={"fail"}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={100}

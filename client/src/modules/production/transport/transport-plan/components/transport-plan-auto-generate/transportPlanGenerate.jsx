@@ -293,7 +293,7 @@ function TransportPlanGenerate(props) {
                 formID="form-generate-transport-plans"
                 title={"Tạo kế hoạch vận chuyển tự động"}
                 msg_success={"success"}
-                msg_faile={"fail"}
+                msg_failure={"fail"}
                 // disableSubmit={!isFormValidated()}
                 size={100}
                 maxWidth={500}

@@ -189,7 +189,7 @@ function CreateApiRegistrationModal(props) {
                 formID="form-create-api-registration"
                 title={translate('system_admin.system_api.modal.create_title')}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-                msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
+                msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
             >
                 {/* Form them phan quyen API */}
