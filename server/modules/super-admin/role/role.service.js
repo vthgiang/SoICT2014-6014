@@ -1,6 +1,7 @@
 const Terms = require('../../../helpers/config');
 const { OrganizationalUnit, Role, RoleType, UserRole, Privilege } = require('../../../models');
 const { connect } = require('../../../helpers/dbHelper');
+const RoleService = require('./role.service');
 
 /**
  * Lấy danh sách tất cả các role của 1 công ty
@@ -306,6 +307,71 @@ exports.deleteRole = async(portal, id) => {
 
     return id; // trả về id của role vừa xóa
     
+}
+
+exports.importRoles = async(portal, data) => {
+    let rowError = [], roleTuTao;
+    let dataConvert = [];
+
+    if (data?.length) {
+        roleTuTao = await RoleType(connect(DB_CONNECTION, portal))
+            .findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
+        
+        const roles = await Role(connect(DB_CONNECTION, portal))
+            .find({});
+        
+
+        data.forEach((x, index) => {
+            let item = x;
+            if (roles?.length) {
+                for (let i = 0; i < roles.length; i++){
+                    if (roles[i].name.trim() === x.name.trim()) {
+                        item = {
+                            ...item,
+                            errorAlert: ["role_name_exist"],
+                            error: true
+                        }
+                        rowError = [...rowError, index + 1];
+                        break;
+                    }
+                }
+            }
+            item = {
+                ...item,
+                type: roleTuTao?._id
+            }
+            dataConvert = [...dataConvert, item];
+        })
+    }
+
+    if (rowError.length !== 0) {
+        return {
+            data: dataConvert,
+            rowError
+        }
+    } else {
+        const role = await Role(connect(DB_CONNECTION, portal)).insertMany(dataConvert)
+        let roleNames = [];
+        if (role?.length) {
+            for (let k = 0; k < role.length; k++){
+                roleNames = [...roleNames, role[k].name];
+                await RoleService.editRelationshipUserRole(portal, role[k]._id, dataConvert[k].users);
+            }
+        }
+
+        
+        const roleImports = await Role(connect(DB_CONNECTION, portal)).find({
+            name: {
+                $in: roleNames
+            }
+        }).populate([
+            { path: 'users' , populate: {path: 'userId' }},
+            { path: 'parents' },
+            { path: 'type' }
+        ]);
+
+        return roleImports;
+    }
 }
 
 

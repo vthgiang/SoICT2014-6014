@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 import { RoleActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
+import ModalImportRole from './modalImportRole';
 
 function RoleCreateForm(props) {
     const [state, setState] = useState({
@@ -13,7 +14,7 @@ function RoleCreateForm(props) {
 
     useEffect(() => {
         props.get();
-    },[])
+    }, [])
 
     const handleRoleName = (e) => {
         let { value } = e.target;
@@ -67,13 +68,35 @@ function RoleCreateForm(props) {
         }
     }
 
+    const handleOpenModalCreate = () => {
+        window.$(`#modal-create-role`).modal('show')
+    }
+    console.log('state', state);
+
+    const handleOpenModalImport = () => {
+        window.$(`#modal-import-role`).modal('show')
+    }
+
     const { translate, role, user } = props;
     const { roleNameError } = state;
 
     return (
         <React.Fragment>
             {/* Button thêm phân quyền mới */}
-            <ButtonModal modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')} />
+            <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
+                {
+                    <div className="dropdown">
+                        <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true">Thêm phân quyền</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#" onClick={handleOpenModalCreate}>Thêm một phân quyền</a></li>
+                            <li><a href="#" onClick={handleOpenModalImport}>Thêm phân quyền từ file</a></li>
+                        </ul>
+                    </div>
+                }
+            </div>
+
+            <ModalImportRole />
+            {/* <ButtonModal modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')} /> */}
 
             <DialogModal
                 modalID="modal-create-role" isLoading={role.isLoading}

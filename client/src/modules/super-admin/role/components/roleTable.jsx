@@ -153,8 +153,8 @@ function RoleTable(props) {
                         role.listPaginate.map(role =>
                             <tr key={`roleList${role._id}`}>
                                 <td> {role.name} </td>
-                                <td><ToolTip dataTooltip={role.parents.map(parent => parent ? parent.name : "")} /></td>
-                                <td><ToolTip dataTooltip={role.users.map(user => user && user.userId ? user.userId.name : "")} /></td>
+                                <td><ToolTip dataTooltip={role?.parents?.length ? role.parents.map(parent => parent ? parent.name : "") : []} /></td>
+                                <td><ToolTip dataTooltip={role?.users?.length ? role.users.map(user => user && user.userId ? user.userId.name : "") : []} /></td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" href={`#${role._id}`} onClick={() => handleEdit(role)}><i className="material-icons">edit</i></a>
                                     {
