@@ -97,7 +97,7 @@ function ModalCreateEmployeeKpiSet(props) {
                 formID="formCreateEmployeeKpiSet"
                 title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.initialize_kpi_set')}
                 msg_success={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.success')}
-                msg_faile={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.failure')}
+                msg_failure={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.failure')}
                 func={handleCreateEmployeeKpiSet}
             >
                 <form className="form-group" id="formCreateEmployeeKpiSet" onSubmit={() => handleCreateEmployeeKpiSet(translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.success'))}>

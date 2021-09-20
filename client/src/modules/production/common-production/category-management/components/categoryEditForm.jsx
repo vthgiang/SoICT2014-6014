@@ -105,7 +105,7 @@ function CategoryEditForm(props) {
                 formID="form-edit-category"
                 title={translate('manage_warehouse.category_management.edit')}
                 msg_success={translate('manage_warehouse.category_management.edit_success')}
-                msg_faile={translate('manage_warehouse.category_management.edit_faile')}
+                msg_failure={translate('manage_warehouse.category_management.edit_faile')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}

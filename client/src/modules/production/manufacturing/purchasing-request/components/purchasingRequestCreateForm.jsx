@@ -312,7 +312,7 @@ class PurchasingRequestCreateForm extends Component {
                     formID="form-create-purchasing-request"
                     title={translate('manufacturing.purchasing_request.add_purchasing_request')}
                     msg_success={translate('manufacturing.purchasing_request.create_successfully')}
-                    msg_faile={translate('manufacturing.purchasing_request.create_failed')}
+                    msg_failure={translate('manufacturing.purchasing_request.create_failed')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={bigModal ? 75 : 50}

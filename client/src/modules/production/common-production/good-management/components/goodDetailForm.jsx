@@ -62,7 +62,7 @@ function GoodDetailForm(props) {
                 formID={`form-detail-good`}
                 title={translate("manage_warehouse.good_management.add_title")}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
-                msg_faile={translate("manage_warehouse.good_management.add_faile")}
+                msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 size={50}
                 hasSaveButton={false}
                 hasNote={false}

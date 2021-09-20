@@ -150,7 +150,7 @@ exports.importTaskTemplate = async (req, res) => {
         await Logger.error(req.user.email, 'import_task_template', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["import_task_template_faile"],
+            messages: ["import_task_template_failure"],
             content: error
         });
     }

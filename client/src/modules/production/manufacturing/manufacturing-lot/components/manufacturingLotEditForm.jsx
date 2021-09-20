@@ -111,7 +111,7 @@ function ManufacturingLotEditFrom(props) {
                 formID="form-edit-manufacturing-lot"
                 title={translate('manufacturing.lot.lot_edit')}
                 msg_success={translate('manufacturing.lot.create_manufacturing_lot_successfully')}
-                msg_faile={translate('manufacturing.lot.create_manufacturing_lot_failed')}
+                msg_failure={translate('manufacturing.lot.create_manufacturing_lot_failed')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}

@@ -436,7 +436,7 @@ function TransportRequirementsCreateForm(props) {
                 formID="form-create-transport-requirements"
                 title={translate('manage_transport.transportRequirement.add_requirements')}
                 // msg_success={translate('manage_transport.add_success')}
-                // msg_faile={translate('manage_transport.add_fail')}
+                // msg_failure={translate('manage_transport.add_fail')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={100}

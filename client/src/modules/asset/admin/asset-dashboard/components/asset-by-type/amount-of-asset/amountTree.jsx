@@ -28,37 +28,25 @@ class AmountTree extends Component {
     }
 
     render() {
-        const { assetType, listAssets, translate, setAmountOfAsset } = this.props;
+        const { translate, setAmountOfAsset ,listAssetsAmount} = this.props;
         const { tree } = this.state;
-        let typeName = [], countAssetType = [], idAssetType = [];
-
-        for (let i in assetType) {
-            countAssetType[i] = 0;
-            idAssetType.push(assetType[i]._id)
-        }
-
+        let typeName = []
         let chart = [];
-        if (listAssets) {
-            listAssets.map(asset => {
-                for (let k in asset.assetType) {
-                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
-                    countAssetType[idx]++;
-                }
-            })
-            for (let i in assetType) {
+        if (listAssetsAmount) {
+            for (let i in listAssetsAmount.listType) {
+                let val = d3.format(",")(listAssetsAmount.countAssetType[i])
+                let title = `${listAssetsAmount.listType[i].typeName} - ${val} `
 
-                let val = d3.format(",")(countAssetType[i])
-                let title = `${assetType[i].typeName} - ${val} `
-
-                typeName.push(assetType[i].typeName);
+                typeName.push(listAssetsAmount.listType[i].typeName);
 
                 chart.push({
-                    id: assetType[i]._id,
+                    id: listAssetsAmount.listType[i]._id,
                     typeName: title,
-                    parentId: assetType[i].parent,
+                    parentId: listAssetsAmount.listType[i].parent,
                 })
             }
         }
+        
         let dataTree = chart && chart.map(node => {
             return {
                 ...node,
@@ -67,7 +55,6 @@ class AmountTree extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
-
         return (
             <div className="amout-asset" id="amout-asset">
                 <div className="box-tools pull-right">
@@ -88,8 +75,7 @@ class AmountTree extends Component {
                             />
                         </div> :
                         <AmountBarChart
-                            listAssets={listAssets}
-                            assetType={assetType}
+                            listAssetsAmount={listAssetsAmount}
                             setAmountOfAsset={setAmountOfAsset}
                         />
                 }

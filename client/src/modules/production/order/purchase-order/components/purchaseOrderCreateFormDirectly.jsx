@@ -624,7 +624,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
                     formID={`form-add-purchase-order-directly`}
                     title={"Tạo đơn mua nguyên vật liệu"}
                     msg_success={"Tạo thành công"}
-                    msg_faile={"Tạo không thành công"}
+                    msg_failure={"Tạo không thành công"}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="75"

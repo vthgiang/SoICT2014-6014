@@ -385,7 +385,7 @@ class LotEditForm extends Component {
                     formID={`form-edit-lot`}
                     title={translate('manage_warehouse.inventory_management.edit_title')}
                     msg_success={translate('manage_warehouse.inventory_management.edit_success')}
-                    msg_faile={translate('manage_warehouse.inventory_management.edit_faile')}
+                    msg_failure={translate('manage_warehouse.inventory_management.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={75}

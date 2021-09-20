@@ -705,7 +705,7 @@ function QuoteCreateForm(props) {
                 formID={`form-add-quote`}
                 title={"Đơn báo giá mới"}
                 msg_success={"Thêm đơn thành công"}
-                msg_faile={"Thêm đơn không thành công"}
+                msg_failure={"Thêm đơn không thành công"}
                 // disableSubmit={!isFormValidated()}
                 // func={save}
                 size="100"

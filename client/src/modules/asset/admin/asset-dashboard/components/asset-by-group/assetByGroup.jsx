@@ -171,6 +171,7 @@ class AssetByGroup extends Component {
                                         listAssets={listAssets}
                                         assetType={assetType}
                                         setDepreciationOfAsset={this.setDepreciationOfAsset}
+                                        chartAsset={this.props.chartAsset.depreciationAssets}
                                     />
                                 </div>
                             </div>

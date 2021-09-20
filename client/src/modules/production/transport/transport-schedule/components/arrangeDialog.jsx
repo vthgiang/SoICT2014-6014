@@ -104,7 +104,7 @@ function ArrangeDialog(props) {
                 formID="form-arrange-good-vehicle-ordinal-transport"
                 title={"Thêm lịch vận chuyển"}
                 msg_success={"success"}
-                msg_faile={"fail"}
+                msg_failure={"fail"}
                 hasSaveButton={true}
                 hasNote={false}
                 func={save}

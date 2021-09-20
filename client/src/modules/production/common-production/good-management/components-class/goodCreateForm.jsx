@@ -324,7 +324,7 @@ class GoodCreateForm extends Component {
                     formID={`form-create-${type}`}
                     title={translate("manage_warehouse.good_management.add_title")}
                     msg_success={translate("manage_warehouse.good_management.add_success")}
-                    msg_faile={translate("manage_warehouse.good_management.add_faile")}
+                    msg_failure={translate("manage_warehouse.good_management.add_faile")}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={50}

@@ -748,7 +748,7 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
                 formID={`form-add-purchase-order-from-puchasing-request`}
                 title={"Tạo từ đơn đề nghị"}
                 msg_success={"Tạo thành công"}
-                msg_faile={"Tạo không thành công"}
+                msg_failure={"Tạo không thành công"}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="75"

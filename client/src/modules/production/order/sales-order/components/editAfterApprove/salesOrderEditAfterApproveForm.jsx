@@ -208,7 +208,7 @@ function SalesOrderEditAfterApproveForm(props) {
                 formID={`modal-edit-sales-order-after-aprrove`}
                 title={"Đơn hàng mới"}
                 msg_success={"Chỉnh sửa đơn bán hàng"}
-                msg_faile={"Chỉnh sửa đơn bán hàng"}
+                msg_failure={"Chỉnh sửa đơn bán hàng"}
                 size="50"
                 style={{ backgroundColor: "green" }}
                 func={save}

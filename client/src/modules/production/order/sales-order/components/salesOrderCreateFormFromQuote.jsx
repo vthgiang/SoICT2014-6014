@@ -431,7 +431,7 @@ function SalesOrderCreateFormFromQuote(props) {
                 formID={`form-add-sales-order-from-quote`}
                 title={"Đơn hàng mới"}
                 msg_success={"Thêm đơn thành công"}
-                msg_faile={"Thêm đơn không thành công"}
+                msg_failure={"Thêm đơn không thành công"}
                 size="50"
                 style={{ backgroundColor: "green" }}
                 disableSubmit={!isFormValidated()}

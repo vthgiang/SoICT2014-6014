@@ -43,7 +43,7 @@ class BillDetailForm extends Component {
                     formID={`form-detail-bill`}
                     title={translate(`manage_warehouse.bill_management.detail_title.${billDetail.group}`)}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
-                    msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
+                    msg_failure={translate('manage_warehouse.bin_location_management.add_faile')}
                     size={75}
                     hasSaveButton={false}
                     hasNote={false}

@@ -197,32 +197,39 @@ class AssetByType extends Component {
     }
 
     render() {
-        const { translate, assetType } = this.props;
+        const { translate, assetType ,chartAsset} = this.props;
         let { listAssets, type, depreciationOfAsset, amountOfAsset, valueOfAsset, depreciation, page, limit, listAssetTypes } = this.state;
-
         let listAssetTypeConvert = listAssetTypes && listAssetTypes.length > 0 ?
             this.getAssetTypes(listAssetTypes) : [];
         let assetTypes;
-
-        let pageTotal = ((assetType?.administration?.types?.totalList % limit) === 0) ?
-            parseInt(assetType?.administration?.types?.totalList / limit) :
-            parseInt((assetType?.administration?.types?.totalList / limit) + 1);
+        let pageTotal = 0, totalItems = 0
+        if (chartAsset.dataChartType.listType){
+            pageTotal = ((chartAsset.dataChartType.listType.length % limit) === 0) ?
+            parseInt(chartAsset.dataChartType.listType.length / limit) :
+            parseInt((chartAsset.dataChartType.listType.length / limit) + 1);
+            totalItems = chartAsset.dataChartType.listType.length;
+        }
         let currentPage = parseInt((page / limit) + 1);
-
-        const totalItems = assetType?.administration?.types?.totalList;
 
         // calculate start and end item indexes
         const startIndex = (currentPage - 1) * limit;
         const endIndex = Math.min(startIndex + limit - 1, totalItems - 1);
 
         const listAssetTypePaginate = listAssetTypeConvert && listAssetTypeConvert.slice(startIndex, endIndex + 1);
-
+        let listAssetsAmount = {
+            countAssetType : chartAsset.dataChartType.amountType.countAssetType.slice(startIndex, endIndex + 1),
+            countAssetValue : chartAsset.dataChartType.amountType.countAssetValue.slice(startIndex, endIndex + 1),
+            countAssetDepreciation : chartAsset.dataChartType.amountType.countDepreciation.slice(startIndex, endIndex + 1),
+            idAssetType : chartAsset.dataChartType.amountType.idAssetType.slice(startIndex, endIndex + 1),
+            shortName : chartAsset.dataChartType.amountType.shortName.slice(startIndex, endIndex + 1),
+            typeName : chartAsset.dataChartType.amountType.typeName.slice(startIndex, endIndex + 1),
+            listType : chartAsset.dataChartType.listType.slice(startIndex, endIndex + 1)
+            }
         if (type && JSON.parse(type).length > 0 && listAssetTypePaginate && listAssetTypePaginate.length > 0) {
             assetTypes = listAssetTypePaginate.filter((obj, index) => JSON.parse(type).some(item => obj._id === item));
         } else {
             assetTypes = listAssetTypePaginate;
         }
-
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -278,8 +285,7 @@ class AssetByType extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <AmountTree
-                                        listAssets={listAssets ? listAssets : []}
-                                        assetType={assetTypes ? assetTypes : []}
+                                        listAssetsAmount = {listAssetsAmount}
                                         setAmountOfAsset={this.setAmountOfAsset}
                                     />
                                 </div>
@@ -293,8 +299,7 @@ class AssetByType extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <ValueTree
-                                        listAssets={listAssets ? listAssets : []}
-                                        assetType={assetTypes ? assetTypes : []}
+                                        listAssetsAmount = {listAssetsAmount}
                                         setValueOfAsset={this.setValueOfAsset}
                                         depreciationOfAsset={depreciationOfAsset}
                                     />
@@ -312,6 +317,7 @@ class AssetByType extends Component {
                                     <DepreciationTree
                                         listAssets={listAssets ? listAssets : []}
                                         assetType={assetTypes ? assetTypes : []}
+                                        listAssetsAmount = {listAssetsAmount}
                                         setDepreciationOfAsset={this.setDepreciationOfAsset}
                                         getDepreciationOfAsset={this.getDepreciationOfAsset}
                                     />
@@ -325,9 +331,9 @@ class AssetByType extends Component {
     }
 }
 function mapState(state) {
-    const { listAssets } = state.assetsManager;
+    const { listAssets, chartAsset } = state.assetsManager;
     const { assetType } = state;
-    return { listAssets, assetType };
+    return { listAssets, assetType, chartAsset };
 }
 
 const mapDispatchToProps = {

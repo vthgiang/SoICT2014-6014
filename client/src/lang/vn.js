@@ -2718,15 +2718,17 @@ export default {
                 get_asset_type_success: "Lấy thông tin loại tài sản thành công",
                 get_asset_type_faile: "Lấy thông tin loại tài sản thất bại",
                 create_asset_type_success: "Thêm loại tài sản thành công",
-                create_asset_type_faile: "Thêm loại tài sản thất bại",
+                create_asset_type_failure: "Thêm loại tài sản thất bại",
                 delete_asset_type_success: "Xoá loại tài sản thành công",
-                delete_asset_type_faile: "Xoá loại tài sản thất bại",
+                delete_asset_type_failure: "Xoá loại tài sản thất bại",
                 edit_asset_type_success:
                     "Chỉnh sửa thông tin loại tài sản thành công",
                 edit_asset_type_faile:
                     "Chỉnh sửa thông tin loại tài sản thất bại",
                 asset_type_name_exist: "Tên loại tài sản đã tồn tại",
                 asset_type_number_exist: "Mã loại tài sản đã tồn tại",
+                import_asset_type_success: "Nhập loại tài sản từ file thành công",
+                import_asset_type_failure: "Nhập loại tài sản từ file thất bại",
             },
 
             // Quản lý thông tin tài sản
@@ -2853,14 +2855,14 @@ export default {
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: "Lấy thông tin khấu hao thành công",
-                get_depreciation_faile: "Lấy thông tin khấu hao thất bại",
+                get_depreciation_failure: "Lấy thông tin khấu hao thất bại",
                 create_depreciation_success:
                     "Thêm thông tin khấu hao tài sản thành công",
-                create_depreciation_faile:
+                create_depreciation_failure:
                     "Thêm thông tin khấu hao tài sản thất bại",
                 delete_depreciation_success:
                     "Xoá thông tin khấu hao tài sản thành công",
-                delete_depreciation_faile:
+                delete_depreciation_failure:
                     "Xoá thông tin khấu hao tài sản thất bại",
                 edit_depreciation_success:
                     "Chỉnh sửa thông tin khấu hao tài sản thành công",
@@ -2906,19 +2908,19 @@ export default {
                 //Thông điệp trả về từ server
                 get_use_request_success:
                     "Lấy thông tin đề nghị cấp phát thiết bị thành công",
-                get_use_request_faile:
+                get_use_request_failure:
                     "Lấy thông tin đề nghị cấp phát thiết bị thất bại",
                 create_use_request_success:
                     "Thêm phiếu đề nghị cấp phát thiết bị thành công",
-                create_use_request_faile:
+                create_use_request_failure:
                     "Thêm phiếu đề nghị cấp phát thiết bị thất bại",
                 delete_use_request_success:
                     "Xoá phiếu đề nghị cấp phát thiết bị thành công",
-                delete_use_request_faile:
+                delete_use_request_failure:
                     "Xoá phiếu đề nghị cấp phát thiết bị thất bại",
                 edit_use_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
-                edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
+                edit_use_request_failure: "Chỉnh sửa thông tin phiếu thất bại",
             },
 
             // Đăng ký mua sắm thiết bị
@@ -2926,19 +2928,19 @@ export default {
                 //Thông điệp trả về từ server
                 get_purchase_request_success:
                     "Lấy thông tin đề nghị mua sắm thiết bị thành công",
-                get_purchase_request_faile:
+                get_purchase_request_failure:
                     "Lấy thông tin đề nghị mua sắm thiết bị thất bại",
                 create_purchase_request_success:
                     "Thêm phiếu đề nghị mua sắm thiết bị thành công",
-                create_purchase_request_faile:
+                create_purchase_request_failure:
                     "Thêm phiếu đề nghị mua sắm thiết bị thất bại",
                 delete_purchase_request_success:
                     "Xoá phiếu đề nghị mua sắm thiết bị thành công",
-                delete_purchase_request_faile:
+                delete_purchase_request_failure:
                     "Xoá phiếu đề nghị mua sắm thiết bị thất bại",
                 edit_purchase_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
-                edit_purchase_request_faile:
+                edit_purchase_request_failure:
                     "Chỉnh sửa thông tin phiếu thất bại",
                 recommend_number_exist: "Mã phiếu đăng ký đã tồn tại",
             },
@@ -2948,19 +2950,19 @@ export default {
                 //Thông điệp trả về từ server
                 get_use_request_success:
                     "Lấy thông tin đề nghị cấp phát thiết bị thành công",
-                get_use_request_faile:
+                get_use_request_failure:
                     "Lấy thông tin đề nghị cấp phát thiết bị thất bại",
                 create_use_request_success:
                     "Thêm phiếu đề nghị cấp phát thiết bị thành công",
-                create_use_request_faile:
+                create_use_request_failure:
                     "Thêm phiếu đề nghị cấp phát thiết bị thất bại",
                 delete_use_request_success:
                     "Xoá phiếu đề nghị cấp phát thiết bị thành công",
-                delete_use_request_faile:
+                delete_use_request_failure:
                     "Xoá phiếu đề nghị cấp phát thiết bị thất bại",
                 edit_use_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
-                edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
+                edit_use_request_failure: "Chỉnh sửa thông tin phiếu thất bại",
                 recommendNumber_exists: "Mã phiếu đăng kí sử dụng tài sản đã tồn tại",
                 dayUse_exists: "Thời gian sử dụng tài sản đã tồn tại",
             },
@@ -3782,7 +3784,7 @@ export default {
                     "Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !",
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
-                import_task_template_faile: "Thêm mẫu công việc thất bại !",
+                import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
             task_dashboard: {

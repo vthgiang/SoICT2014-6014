@@ -701,7 +701,7 @@ class goodIssueCreateForm extends Component {
                     formID={`form-create-bill-issue-material`}
                     title={translate(`manage_warehouse.bill_management.add_material_bill`)}
                     msg_success={translate('manage_warehouse.bill_management.create_product_bill_successfully')}
-                    msg_faile={translate('manage_warehouse.bill_management.create_product_bill_failed')}
+                    msg_failure={translate('manage_warehouse.bill_management.create_product_bill_failed')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={100}
