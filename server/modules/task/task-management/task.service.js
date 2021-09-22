@@ -3012,7 +3012,35 @@ exports.importTasks = async (data, portal, user) => {
             });
         }
     }
-    console.log('done')
+    console.log('done_import_task')
+}
+
+exports.importTaskActions = async (data, portal, user) => {
+    if (data) {
+        let groupByTask = [];
+        data.forEach((x,index)=>{
+            if (!groupByTask[x.taskName]) {
+                groupByTask[x.taskName] = [x]
+            } else {
+                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+            }
+        })
+
+        // console.log('groupByTask', groupByTask);
+
+        for (let k in groupByTask) {
+            let task;
+            if (k)
+                task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
+            
+            if (task) {
+                task.taskActions = task.taskActions.concat(groupByTask[k]);
+                task.save();
+            }
+        }
+    }
+    console.log("DONE_IMPORT_TASK_ACTION!!!")
+
 }
 
 

@@ -127,6 +127,40 @@ function TaskManagementImportForm(props) {
         return config;
     }
 
+    function configurationTaskActions() {
+        let config = {
+            sheets: { // Tên các sheet
+                description: 'Thông tin hoạt động',
+                value: ["Thông tin hoạt động"]
+            },
+            rowHeader: { // Số dòng tiêu đề của bảng
+                description: 'Số dòng tiêu đề của bảng',
+                value: 1
+            },
+            taskName: {
+                columnName: 'Tên công việc',
+                description: 'Tên công việc',
+                value: 'Tên công việc',
+            },
+            description: {
+                columnName: 'Tên hoạt động',
+                description: 'Tên hoạt động',
+                value: 'Tên hoạt động',
+            },
+            createBy: {
+                columnName: 'Người tạo',
+                description: 'Người tạo',
+                value: 'Người tạo',
+            },
+            createdAt: {
+                columnName: 'Thời gian tạo',
+                description: 'Thời gian tạo',
+                value: 'Thời gian tạo',
+            },
+        }
+        return config;
+    }
+
     /**
      * Function chuyển dữ liệu date trong excel thành dạng dd-mm-yyyy
      * @param {*} serial :số serial của ngày
@@ -315,7 +349,13 @@ function TaskManagementImportForm(props) {
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        let strDateTime;
+        if (time) {
+            strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        } else {
+            strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]}`;
+        }
+
         return new Date(strDateTime);
     }
 
@@ -380,47 +420,47 @@ function TaskManagementImportForm(props) {
             if (o.organizationalUnit === null)
                 errorAlert = [...errorAlert, 'Đơn vị quản lý công việc không được để trống'];
             if (o.organizationalUnit && getIdUnitFromName(o.organizationalUnit) === -1)
-                errorAlert = [errorAlert, 'Đơn vị quản lý công việc không hợp lệ'];
+                errorAlert = [...errorAlert, 'Đơn vị quản lý công việc không hợp lệ'];
 
             if (o.priority === null)
-                errorAlert = [errorAlert, 'Độ ưu tiên không được để trống'];
+                errorAlert = [...errorAlert, 'Độ ưu tiên không được để trống'];
             if (o.priority && convertPriority(o.priority) === -1)
-                errorAlert = [errorAlert, 'Độ ưu tiên không hợp lệ'];
+                errorAlert = [...errorAlert, 'Độ ưu tiên không hợp lệ'];
 
             if (o.startDate === null)
-                errorAlert = [errorAlert, 'Ngày bắt đầu công việc không được để trống'];
+                errorAlert = [...errorAlert, 'Ngày bắt đầu công việc không được để trống'];
             if (o.endDate === null)
-                errorAlert = [errorAlert, 'Ngày kết thúc công việc không được để trống']
+                errorAlert = [...errorAlert, 'Ngày kết thúc công việc không được để trống']
 
             if (o.responsibleEmployees === null)
-                errorAlert = [errorAlert, 'Người thực hiện công việc không được để trống'];
+                errorAlert = [...errorAlert, 'Người thực hiện công việc không được để trống'];
             if (o.responsibleEmployees && (getUserIdFromEmail(o.responsibleEmployees) === -1 || getUserIdFromEmail(o.responsibleEmployees).indexOf(-1) !== -1))
-                errorAlert = [errorAlert, 'Người thực hiện công việc không hợp lệ'];
+                errorAlert = [...errorAlert, 'Người thực hiện công việc không hợp lệ'];
 
             if (o.accountableEmployees === null)
-                errorAlert = [errorAlert, 'Người phê duyệt công việc không được để trống'];
+                errorAlert = [...errorAlert, 'Người phê duyệt công việc không được để trống'];
             if (o.accountableEmployees && (getUserIdFromEmail(o.accountableEmployees) === -1 || getUserIdFromEmail(o.accountableEmployees).indexOf(-1) !== -1))
-                errorAlert = [errorAlert, 'Người phê duyệt công việc không hợp lệ'];
+                errorAlert = [...errorAlert, 'Người phê duyệt công việc không hợp lệ'];
 
             if (o.consultedEmployees && (getUserIdFromEmail(o.consultedEmployees) === -1 || getUserIdFromEmail(o.consultedEmployees).indexOf(-1) !== -1))
-                errorAlert = [errorAlert, 'Người tư vấn công việc không hợp lệ'];
+                errorAlert = [...errorAlert, 'Người tư vấn công việc không hợp lệ'];
 
             if (o.informedEmployees && (getUserIdFromEmail(o.informedEmployees) === -1 || getUserIdFromEmail(o.informedEmployees).indexOf(-1) !== -1))
-                errorAlert = [errorAlert, 'Người quan sát công việc không hợp lệ'];
+                errorAlert = [...errorAlert, 'Người quan sát công việc không hợp lệ'];
 
             if (o.collaboratedWithOrganizationalUnits && (getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) === -1 || getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits).indexOf(-1) !== -1)) {
-                errorAlert = [errorAlert, 'Đơn vị phối hợp thực hiện công việc không hợp lệ'];
+                errorAlert = [...errorAlert, 'Đơn vị phối hợp thực hiện công việc không hợp lệ'];
             }
 
             if (convertTaskStatus(o.status) === -1) {
-                errorAlert = [errorAlert, 'Trạng thái không hợp lệ'];
+                errorAlert = [...errorAlert, 'Trạng thái không hợp lệ'];
             }
 
             // if (x.parent && (getTaskParentId(x.parent) === -1))
             //     errorAlert = [errorAlert, 'Công việc cha không hợp lệ'];
 
             if ((o.taskProject && getProjectId(o.taskProject) === -1))
-                errorAlert = [errorAlert, 'Dự án không hợp lệ'];
+                errorAlert = [...errorAlert, 'Dự án không hợp lệ'];
 
 
             valueImport = [...valueImport, {
@@ -459,10 +499,68 @@ function TaskManagementImportForm(props) {
         })
     }
 
+
+    const handleImportTaskActionsExcel = (value, checkFileImport = true) => {
+        let valueImportTaskActions = [], showValueImportTaskActions = [], rowErrorTaskActions = [];
+        console.log('value', value);
+
+        if (value) {
+            value.forEach((o, index) => {
+                let errorAlert = [];
+                let createdAt = o?.createdAt ? convertExcelDateToJSDate(o.createdAt) : null;
+                let creator = o?.createBy ? getUserIdFromEmail(o.createBy)[0] : [];
+
+                if (o?.taskName === null || o?.description === null || o?.createBy === null || (o.createBy && getUserIdFromEmail(o.createBy) === -1) || getUserIdFromEmail(o.createBy).indexOf(-1) !== -1) {
+                    rowErrorTaskActions = [...rowErrorTaskActions, index + 1];
+                    o = { ...o, error: true };
+                }
+
+                if (o?.taskName === null)
+                    errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
+
+                if (o?.description === null)
+                    errorAlert = [...errorAlert, 'Tên hoạt động không được để trống'];
+                if (o?.createBy === null) {
+                    errorAlert = [...errorAlert, 'Người tạo hoạt động không được để trống'];
+                }
+                if (o.createBy && getUserIdFromEmail(o.createBy) === -1 || o.createBy && getUserIdFromEmail(o.createBy).indexOf(-1) !== -1) {
+                    errorAlert = [...errorAlert, 'Người tạo hoạt động không hợp lệ'];
+                }
+
+                valueImportTaskActions = [...valueImportTaskActions, {
+                    description: o?.description ? o.description.toString().trim() : "",
+                    creator,
+                    createdAt: createdAt ? convertDateTime(createdAt) : null,
+                    taskName: o?.taskName,
+                }];
+
+                showValueImportTaskActions = [...showValueImportTaskActions, {
+                    ...o,
+                    errorAlert: errorAlert,
+                    createdAt: convertExcelDateToJSDate(o.createdAt),
+                }]
+            })
+
+            setState({
+                ...state,
+                showValueImportTaskActions,
+                valueImportTaskActions,
+                rowErrorTaskActions,
+            })
+        }
+    }
+
+
     const handleImport = () => {
         const { valueImport } = state;
         if (valueImport?.length)
-            props.importTasks(valueImport);
+            props.importTasks({ importType: 'task_info', importData: valueImport });
+    }
+
+    const handleImportTaskActions = () => {
+        const { valueImportTaskActions } = state;
+        if (valueImportTaskActions?.length)
+            props.importTasks({ importType: 'task_actions', importData: valueImportTaskActions });
     }
 
     const handleDownloadFileImport = () => {
@@ -471,8 +569,10 @@ function TaskManagementImportForm(props) {
     }
 
     const config = configurationImport();
+    const configTaskActions = configurationTaskActions();
 
     const note = <p className="text-left"><span className="text-red">Sau khi tiến hành import xong, F5 lại trang để xem dữ liệu vừa cập nhật</span></p>;
+
     return <DialogModal modalID={`modal_import_tasks`} isLoading={false}
         formID={`form_import_tasks`}
         title={'Thêm dữ liệu từ file excel'}
@@ -480,35 +580,73 @@ function TaskManagementImportForm(props) {
         note={note}
         // hasNote={false}
         size={75}>
-        <div className="box-body row">
-            {/* File import */}
-            <div className="form-group col-md-4 col-xs-12">
-                <ImportFileExcel
-                    configData={config}
-                    handleImportExcel={handleImportExcel}
-                />
-            </div>
-            <div className="form-group col-md-8 col-xs-12">
-                <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
-                <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} >Thêm mới</button>
-            </div>
 
+        {/* Hiện thị data import */}
+        <div className="nav-tabs-custom row" >
+            <ul className="nav nav-tabs">
+                <li className="active"><a data-toggle="tab" href="#import_task_general">Thông tin chung</a></li>
+                <li><a data-toggle="tab" href="#import_task_actions"> Thông tin hoạt động</a></li>
+            </ul>
+            <div className="tab-content">
+                <div id="import_task_general" className="tab-pane active">
+                    <div className="row">
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-xs-12">
+                            <ImportFileExcel
+                                configData={config}
+                                handleImportExcel={handleImportExcel}
+                            />
+                        </div>
+                        <div className="form-group col-md-8 col-xs-12">
+                            <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} >Thêm mới thông tin chung</button>
+                        </div>
+                    </div>
 
-            {/* Hiện thị data import */}
+                    <div className="col-md-12 col-xs-12">
+                        <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
+                        <ShowImportData
+                            id={`import_list_task`}
+                            configData={config}
+                            importData={state.showValueImport}
+                            rowError={state.rowError}
+                            scrollTable={true}
+                            checkFileImport={true}
+                            limit={limit}
+                            page={page}
+                            scrollTableWidth={2500}
+                        />
+                    </div>
+                </div>
+                <div id="import_task_actions" className="tab-pane">
+                    <div className="row">
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-xs-12">
+                            <ImportFileExcel
+                                configData={configTaskActions}
+                                handleImportExcel={handleImportTaskActionsExcel}
+                            />
+                        </div>
+                        <div className="form-group col-md-8 col-xs-12">
+                            <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportTaskActions} >Thêm mới thông tin hoạt động</button>
+                        </div>
+                    </div>
 
-            <div className="col-md-12 col-xs-12">
-                <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
-                <ShowImportData
-                    id={`import_list_task`}
-                    configData={config}
-                    importData={state.showValueImport}
-                    rowError={state.rowError}
-                    scrollTable={true}
-                    checkFileImport={true}
-                    limit={limit}
-                    page={page}
-                    scrollTableWidth={2500}
-                />
+                    <div className="col-md-12 col-xs-12">
+                        <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
+                        <ShowImportData
+                            id={`import_list_task_actions`}
+                            configData={configTaskActions}
+                            importData={state.showValueImportTaskActions}
+                            rowError={state.rowErrorTaskActions}
+                            scrollTable={true}
+                            checkFileImport={true}
+                            limit={limit}
+                            page={page}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     </DialogModal>

@@ -1070,7 +1070,14 @@ getTasksByProject = async (req, res) => {
 
 exports.importTasks = async (req, res) => {
     try {
-        const data = await TaskManagementService.importTasks(req.body, req.portal, req.user);
+        let data;
+        if (req?.body?.importType === "task_info") {
+            data = await TaskManagementService.importTasks(req.body?.importData, req.portal, req.user);
+        } 
+        if (req?.body?.importType === "task_actions") {
+            data = await TaskManagementService.importTaskActions(req.body?.importData, req.portal, req.user);
+        }
+
         await Logger.info(req.user.email, 'import_task_success', req.portal)
         res.status(200).json({
             success: true,
