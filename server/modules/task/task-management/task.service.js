@@ -2965,14 +2965,16 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
 }
 
 exports.importTasks = async (data, portal, user) => {
-    let dataImport = [];
-    if (data?.length) {
-        let dataLength = data.length;
-        for (let x = 0; x < dataLength; x++) {
-            let level = 1;
-            if (mongoose.Types.ObjectId.isValid(data[x].parent)) {
-                const parent = await Task(connect(DB_CONNECTION, portal)).findById(data[x].parent);
-                if (parent) level = parent.level + 1;
+    let dataLength = data.length;
+    if(data.length){
+        for(let x = 0; x < dataLength; x ++){
+            let level = 1, parent = null;
+            if (data[x].parent) {
+                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({name: data[x].parent}).select("_id level name parent");
+                if (taskParent) {
+                    level = taskParent.level + 1;
+                    parent = taskParent._id;
+                }
             }
 
             let startDate, endDate;
@@ -2997,22 +2999,23 @@ exports.importTasks = async (data, portal, user) => {
                 })
             }
 
-            dataImport = [...dataImport, {
+            await Task(connect(DB_CONNECTION, portal)).create({
                 ...data[x],
                 creator: user._id,
                 level: level,
+                parent: parent,
                 startDate: startDate,
                 endDate: endDate,
                 formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
                 taskInformations: [],
                 collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-            }];
+            });
         }
     }
-
-    if (dataImport?.length)
-        return await Task(connect(DB_CONNECTION, portal)).insertMany(dataImport);
+    console.log('done')
 }
+
+
 exports.getOrganizationTaskDashboardChartData = async (data, portal, user) => {
     // return organizationUnitTasks
 
