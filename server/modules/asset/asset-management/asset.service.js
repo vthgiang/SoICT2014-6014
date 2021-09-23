@@ -4,7 +4,7 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
 const { freshObject } = require(`../../../helpers/functionHelper`);
 
-const { Asset, User, Role, Link, Privilege, UserRole } = Models;
+const { Asset, User, Role, Link, Privilege, UserRole, AssetType } = Models;
 
 /**
  * Gửi email khi báo cáo sự cố
@@ -67,7 +67,6 @@ exports.getAssetInforById = async (portal, id) => {
 exports.searchAssetProfiles = async (portal, company, params) => {
     let { getType } = params;
     let keySearch = {};
-
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } };
@@ -1585,7 +1584,18 @@ exports.deleteIncident = async (portal, incidentIds) => {
 
 
 exports.chartAssetGroup = async (portal,company,listChart) => {
-    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost")
-    let result = {chartAssets:chartAssets}
+    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation")
+    let listType = await AssetType(connect(DB_CONNECTION, portal)).find({}).sort({ 'createDate': 'desc' }).populate({ path: 'parent' });
+    // let listAssets = await Asset(connect(DB_CONNECTION, portal))
+            // .find(keySearch)
+            // .populate([
+            //     {path: "assetType assignedToOrganizationalUnit" },
+            //     {path: "managedBy", select: "_id name email avatar"}
+            // ])
+            // .sort({ createdAt: "desc" })
+            // .skip(params.page)
+            // .limit(params.limit);
+    // console.log(listAssets);
+    let result = {chartAssets:chartAssets, listType:listType }
     return {result}
 }

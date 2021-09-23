@@ -450,7 +450,7 @@ function GoodReceiptCreateFrom(props) {
                 formID={`form-create-bill-issue-product`}
                 title={translate(`manage_warehouse.bill_management.add_product_bill`)}
                 msg_success={translate('manage_warehouse.bill_management.create_product_bill_successfully')}
-                msg_faile={translate('manage_warehouse.bill_management.create_product_bill_failed')}
+                msg_failure={translate('manage_warehouse.bill_management.create_product_bill_failed')}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size={75}

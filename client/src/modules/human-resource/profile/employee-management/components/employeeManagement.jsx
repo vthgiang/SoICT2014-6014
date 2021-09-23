@@ -266,6 +266,7 @@ const EmployeeManagement = (props) => {
     }
 
     const handleExportExcel = async () => {
+        console.log("EXPORT EXCELL")
         const { employeesManager } = props;
         let arrEmail = employeesManager.listEmployees.map(x => x.emailInCompany);
         await setState(state => ({
@@ -347,11 +348,25 @@ const EmployeeManagement = (props) => {
             };
         })
 
-        let experiencesSheet = [], degreesSheet = [], certificatesSheet = [], contractsSheet = [], socialInsuranceDetailsSheet = [],
+        let workProcessSheet = [], experiencesSheet = [], degreesSheet = [], certificatesSheet = [], contractsSheet = [], socialInsuranceDetailsSheet = [],
             filesSheet = [], commendationsSheet = [], disciplinesSheet = [], salarysSheet = [], annualLeavesSheet = [], coursesSheet = [], familysSheet = [];
 
         data.forEach(x => {
             let employee = x.employees[0];
+            let workProcess = employee.workProcess.map(y => {
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    startDate: formatDate(y.startDate, true),
+                    endDate: formatDate(y.endDate, true),
+                    company: y.company,
+                    position: y.position,
+                    referenceInformation: y.referenceInformation,
+                }
+            })
+
+
             let experiences = employee.experiences.map(y => {
                 return {
                     ...y,
@@ -359,8 +374,15 @@ const EmployeeManagement = (props) => {
                     fullName: employee.fullName,
                     startDate: formatDate(y.startDate, true),
                     endDate: formatDate(y.endDate, true),
+                    company: y.company,
+                    project: y.project,
+                    position: y.position,
+                    customer: y.customer,
+                    address: y.address,
+                    jobDescription: y.jobDescription,
                 }
             });
+
             let degrees = employee.degrees.map(y => {
                 return {
                     ...y,
@@ -464,6 +486,7 @@ const EmployeeManagement = (props) => {
                 }
             });
 
+            workProcessSheet = workProcessSheet.concat(workProcess);
             experiencesSheet = experiencesSheet.concat(experiences);
             degreesSheet = degreesSheet.concat(degrees);
             certificatesSheet = certificatesSheet.concat(certificates);
@@ -478,6 +501,9 @@ const EmployeeManagement = (props) => {
             familysSheet = familysSheet.concat(familys);
         });
 
+        workProcessSheet = workProcessSheet.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
         experiencesSheet = experiencesSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
@@ -635,7 +661,7 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 2.HS Nhân viên - Kinh nghiệm
+                    // 2.Nhân viên - Quá trình CT
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
                     tables: [
                         {
@@ -646,15 +672,38 @@ const EmployeeManagement = (props) => {
                                 { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
                                 { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
                                 { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 }
+                                { key: "position", value: translate(`human_resource.position`), width: 25 },
+                                { key: "referenceInformation", value: translate(`human_resource.profile.reference_information`), width: 25 },
+                            ],
+                            data: workProcessSheet
+                        }
+                    ]
+                },
+                {
+                    // 3.HS Nhân viên - Kinh nghiệm
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
+                                { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
+                                { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
+                                { key: "position", value: translate(`human_resource.profile.position_in_task`), width: 25 },
+                                { key: "project", value: translate(`human_resource.profile.project`), width: 25 },
+                                { key: "customer", value: translate(`human_resource.profile.customer`), width: 25 },
+                                { key: "address", value: translate(`human_resource.profile.address`), width: 25 },
+                                { key: "jobDescription", value: translate(`human_resource.profile.job_description`), width: 25 },
                             ],
                             data: experiencesSheet
                         }
                     ]
                 },
                 {
-                    // 3.HS Nhân viên - Bằng cấp
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
+                    // 4.HS Nhân viên - Bằng cấp
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
                     tables: [
                         {
                             columns: [
@@ -671,8 +720,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 4.HS Nhân viên - Chứng chỉ
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
+                    // 5.HS Nhân viên - Chứng chỉ
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
                     tables: [
                         {
                             columns: [
@@ -689,8 +738,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 5.HS Nhân viên - Hợp đồng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
+                    // 6.HS Nhân viên - Hợp đồng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
                     tables: [
                         {
                             columns: [
@@ -707,8 +756,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 6.HS Nhân viên - Bảo hiểm XH
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
+                    // 7.HS Nhân viên - Bảo hiểm XH
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
                     tables: [
                         {
                             columns: [
@@ -725,8 +774,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 7.HS Nhân viên - Tài liệu
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
+                    // 8.HS Nhân viên - Tài liệu
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
                     tables: [
                         {
                             columns: [
@@ -743,8 +792,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 8.HS Nhân viên - Thành viên hộ gia đình
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
+                    // 9.HS Nhân viên - Thành viên hộ gia đình
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                     tables: [
                         {
                             columns: [
@@ -769,8 +818,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 9.HS Nhân viên - Khen thưởng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
+                    // 10.HS Nhân viên - Khen thưởng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
                     tables: [
                         {
                             columns: [
@@ -788,8 +837,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 10.HS Nhân viên - Kỷ luật
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
+                    // 11.HS Nhân viên - Kỷ luật
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
                     tables: [
                         {
                             columns: [
@@ -808,8 +857,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 11.HS Nhân viên - Lương thưởng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
+                    // 12.HS Nhân viên - Lương thưởng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet12`),
                     tables: [
                         {
                             rowHeader: 2,
@@ -836,8 +885,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 12.HS Nhân viên - Nghỉ phép
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet12`),
+                    // 13.HS Nhân viên - Nghỉ phép
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet13`),
                     tables: [
                         {
                             columns: [
@@ -1082,7 +1131,7 @@ const EmployeeManagement = (props) => {
                     </div>
 
                     <div className="col-md-6" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <a style={{ cursor: 'pointer', marginRight: '7px' }} title="Xuất ra file excell">
+                        <a style={{ cursor: 'pointer', marginRight: '7px' }} title="Xuất ra file excell" onClick={handleExportExcel}>
                             <i className="fa fa-fw fa-download"></i> Xuất báo cáo
                         </a>
 

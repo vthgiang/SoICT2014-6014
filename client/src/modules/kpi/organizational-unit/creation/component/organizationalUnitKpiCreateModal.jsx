@@ -73,7 +73,7 @@ function OrganizationalUnitKpiCreateModal(props) {
                 formID="formStartKPIUnit"
                 title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.initialize_kpi_set')}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-                msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
+                msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
             >
                 {/* Form khởi tạo KPI đơn vị */}

@@ -37,45 +37,35 @@ class ValueTree extends Component {
     }
 
     render() {
-        const { assetType, listAssets, translate, setValueOfAsset, depreciationOfAsset } = this.props;
+        const { assetType, listAssets, translate, setValueOfAsset, depreciationOfAsset,listAssetsAmount } = this.props;
         const { tree, crrValue } = this.state;
-        let typeName = [], countAssetValue = [], idAssetType = [], currentValue = [];
-
-        for (let i in assetType) {
-            countAssetValue[i] = 0;
-            idAssetType.push(assetType[i]._id)
-        }
+        let typeName = [], currentValue = [];
 
         let chart = [];
-        if (listAssets) {
-            listAssets.map(asset => {
-                for (let k in asset.assetType) {
-                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
-                    countAssetValue[idx] += asset.cost;
-                }
-            })
+        if (listAssetsAmount) {
+            
             if (crrValue) {
                 if (depreciationOfAsset && depreciationOfAsset.length > 0) {
-                    currentValue = countAssetValue.map((o, i) => o - depreciationOfAsset[i]);
+                    currentValue = listAssetsAmount.countAssetValue.map((o, i) => o - depreciationOfAsset[i]);
                 }
             }
 
-            for (let i in assetType) {
+            for (let i in listAssetsAmount.listType) {
                 let val;
                 if (crrValue) {
                     val = d3.format(",")(currentValue[i])
                 } else {
-                    val = d3.format(",")(countAssetValue[i])
+                    val = d3.format(",")(listAssetsAmount.countAssetValue[i])
                 }
 
-                let title = `${assetType[i].typeName} - ${val} `
+                let title = `${listAssetsAmount.listType[i].typeName} - ${val} `
 
-                typeName.push(assetType[i].typeName);
+                typeName.push(listAssetsAmount.listType[i].typeName);
 
                 chart.push({
-                    id: assetType[i]._id,
+                    id: listAssetsAmount.listType[i]._id,
                     typeName: title,
-                    parentId: assetType[i].parent,
+                    parentId: listAssetsAmount.listType[i].parent,
                 })
             }
         }
@@ -113,8 +103,7 @@ class ValueTree extends Component {
                                 plugins={false}
                             />
                         </div> : <ValueBarChart
-                            listAssets={listAssets}
-                            assetType={assetType}
+                            listAssetsAmount = {listAssetsAmount}
                             setValueOfAsset={setValueOfAsset}
                             depreciationOfAsset={depreciationOfAsset}
                             crrValue={crrValue}

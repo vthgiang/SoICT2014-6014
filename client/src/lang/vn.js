@@ -1503,6 +1503,7 @@ export default {
             stt: "STT",
             unit: "Đơn vị",
             position: "Chức danh",
+            references: 'Thông tin tham chiếu',
             month: "Tháng",
             status: "Trạng thái",
             staff_number: "Mã nhân viên",
@@ -1655,6 +1656,9 @@ export default {
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
                 import_annual_leave_success: "Thêm dữ liệu từ file thành công",
                 import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
+
+                request_to_change_annualeave_success:"Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
+                request_to_change_annualeave_faile:"Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
 
                 employee_invalid: 'Tài khoản chưa đăng ký thông tin nhân viên. Vui lòng kiểm tra lại',
             },
@@ -2069,17 +2073,18 @@ export default {
                     file_export_name: "Thông tin nhân viên",
                     export: {
                         sheet1: "1.Nhân viên",
-                        sheet2: "2.HS Nhân viên - Kinh nghiệm",
-                        sheet3: "3.HS Nhân viên - Bằng cấp",
-                        sheet4: "4.HS Nhân viên - Chứng chỉ",
-                        sheet5: "5.HS Nhân viên - Hợp đồng",
-                        sheet6: "6.HS Nhân viên - Bảo hiểm XH",
-                        sheet7: "7.HS Nhân viên - Tài liệu",
-                        sheet8: "8.HS Nhân viên - Gia đình",
-                        sheet9: "9.HS Nhân viên - Khen thưởng",
-                        sheet10: "10.HS Nhân viên - Kỷ luật",
-                        sheet11: "11.HS Nhân viên - Lương thưởng",
-                        sheet12: "12.HS Nhân viên - Nghỉ phép",
+                        sheet2: "2.HS Nhân viên - Quá trình CT",
+                        sheet3: "3.HS Nhân viên - Kinh nghiệm",
+                        sheet4: "4.HS Nhân viên - Bằng cấp",
+                        sheet5: "5.HS Nhân viên - Chứng chỉ",
+                        sheet6: "6.HS Nhân viên - Hợp đồng",
+                        sheet7: "7.HS Nhân viên - Bảo hiểm XH",
+                        sheet8: "8.HS Nhân viên - Tài liệu",
+                        sheet9: "9.HS Nhân viên - Gia đình",
+                        sheet10: "10.HS Nhân viên - Khen thưởng",
+                        sheet11: "11.HS Nhân viên - Kỷ luật",
+                        sheet12: "12.HS Nhân viên - Lương thưởng",
+                        sheet13: "13.HS Nhân viên - Nghỉ phép",
 
                         emergency_contact_person: "Người liên hệ khẩn cấp",
                         relation_with_emergency_contact_person:
@@ -2101,6 +2106,7 @@ export default {
                     import: {
                         import_general_infor: "Thông tin cơ bản",
                         import_experience: "Kinh nghiệm làm việc",
+                        import_work_process: "Quá trình công tác",
                         import_degree: "Bằng cấp",
                         import_certificate: "Chứng chỉ",
                         import_contract: "Hợp đồng lao động",
@@ -2111,6 +2117,7 @@ export default {
                         import_general_infor_title:
                             "Import thông tin nhân viên",
                         import_experience_title: "Import kinh nghiệm làm việc",
+                        import_work_process_title: "Import quá trình công tác",
                         import_degree_title: "Import bằng cấp",
                         import_certificate_title: "Import chứng chỉ",
                         import_contract_title: "Import hợp đồng lao động",
@@ -2711,15 +2718,17 @@ export default {
                 get_asset_type_success: "Lấy thông tin loại tài sản thành công",
                 get_asset_type_faile: "Lấy thông tin loại tài sản thất bại",
                 create_asset_type_success: "Thêm loại tài sản thành công",
-                create_asset_type_faile: "Thêm loại tài sản thất bại",
+                create_asset_type_failure: "Thêm loại tài sản thất bại",
                 delete_asset_type_success: "Xoá loại tài sản thành công",
-                delete_asset_type_faile: "Xoá loại tài sản thất bại",
+                delete_asset_type_failure: "Xoá loại tài sản thất bại",
                 edit_asset_type_success:
                     "Chỉnh sửa thông tin loại tài sản thành công",
                 edit_asset_type_faile:
                     "Chỉnh sửa thông tin loại tài sản thất bại",
                 asset_type_name_exist: "Tên loại tài sản đã tồn tại",
                 asset_type_number_exist: "Mã loại tài sản đã tồn tại",
+                import_asset_type_success: "Nhập loại tài sản từ file thành công",
+                import_asset_type_failure: "Nhập loại tài sản từ file thất bại",
             },
 
             // Quản lý thông tin tài sản
@@ -2846,14 +2855,14 @@ export default {
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: "Lấy thông tin khấu hao thành công",
-                get_depreciation_faile: "Lấy thông tin khấu hao thất bại",
+                get_depreciation_failure: "Lấy thông tin khấu hao thất bại",
                 create_depreciation_success:
                     "Thêm thông tin khấu hao tài sản thành công",
-                create_depreciation_faile:
+                create_depreciation_failure:
                     "Thêm thông tin khấu hao tài sản thất bại",
                 delete_depreciation_success:
                     "Xoá thông tin khấu hao tài sản thành công",
-                delete_depreciation_faile:
+                delete_depreciation_failure:
                     "Xoá thông tin khấu hao tài sản thất bại",
                 edit_depreciation_success:
                     "Chỉnh sửa thông tin khấu hao tài sản thành công",
@@ -2899,19 +2908,19 @@ export default {
                 //Thông điệp trả về từ server
                 get_use_request_success:
                     "Lấy thông tin đề nghị cấp phát thiết bị thành công",
-                get_use_request_faile:
+                get_use_request_failure:
                     "Lấy thông tin đề nghị cấp phát thiết bị thất bại",
                 create_use_request_success:
                     "Thêm phiếu đề nghị cấp phát thiết bị thành công",
-                create_use_request_faile:
+                create_use_request_failure:
                     "Thêm phiếu đề nghị cấp phát thiết bị thất bại",
                 delete_use_request_success:
                     "Xoá phiếu đề nghị cấp phát thiết bị thành công",
-                delete_use_request_faile:
+                delete_use_request_failure:
                     "Xoá phiếu đề nghị cấp phát thiết bị thất bại",
                 edit_use_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
-                edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
+                edit_use_request_failure: "Chỉnh sửa thông tin phiếu thất bại",
             },
 
             // Đăng ký mua sắm thiết bị
@@ -2919,19 +2928,19 @@ export default {
                 //Thông điệp trả về từ server
                 get_purchase_request_success:
                     "Lấy thông tin đề nghị mua sắm thiết bị thành công",
-                get_purchase_request_faile:
+                get_purchase_request_failure:
                     "Lấy thông tin đề nghị mua sắm thiết bị thất bại",
                 create_purchase_request_success:
                     "Thêm phiếu đề nghị mua sắm thiết bị thành công",
-                create_purchase_request_faile:
+                create_purchase_request_failure:
                     "Thêm phiếu đề nghị mua sắm thiết bị thất bại",
                 delete_purchase_request_success:
                     "Xoá phiếu đề nghị mua sắm thiết bị thành công",
-                delete_purchase_request_faile:
+                delete_purchase_request_failure:
                     "Xoá phiếu đề nghị mua sắm thiết bị thất bại",
                 edit_purchase_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
-                edit_purchase_request_faile:
+                edit_purchase_request_failure:
                     "Chỉnh sửa thông tin phiếu thất bại",
                 recommend_number_exist: "Mã phiếu đăng ký đã tồn tại",
             },
@@ -2941,19 +2950,19 @@ export default {
                 //Thông điệp trả về từ server
                 get_use_request_success:
                     "Lấy thông tin đề nghị cấp phát thiết bị thành công",
-                get_use_request_faile:
+                get_use_request_failure:
                     "Lấy thông tin đề nghị cấp phát thiết bị thất bại",
                 create_use_request_success:
                     "Thêm phiếu đề nghị cấp phát thiết bị thành công",
-                create_use_request_faile:
+                create_use_request_failure:
                     "Thêm phiếu đề nghị cấp phát thiết bị thất bại",
                 delete_use_request_success:
                     "Xoá phiếu đề nghị cấp phát thiết bị thành công",
-                delete_use_request_faile:
+                delete_use_request_failure:
                     "Xoá phiếu đề nghị cấp phát thiết bị thất bại",
                 edit_use_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
-                edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
+                edit_use_request_failure: "Chỉnh sửa thông tin phiếu thất bại",
                 recommendNumber_exists: "Mã phiếu đăng kí sử dụng tài sản đã tồn tại",
                 dayUse_exists: "Thời gian sử dụng tài sản đã tồn tại",
             },
@@ -3775,7 +3784,7 @@ export default {
                     "Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !",
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
-                import_task_template_faile: "Thêm mẫu công việc thất bại !",
+                import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
             task_dashboard: {

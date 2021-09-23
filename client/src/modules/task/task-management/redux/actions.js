@@ -616,7 +616,7 @@ function importTasks(data) {
             .catch(err => {
                 dispatch({
                     type: taskManagementConstants.IMPORT_TASKS_FAILURE,
-                    error: err.response.data.content
+                    error: err?.response?.data?.content
                 });
             })
     }

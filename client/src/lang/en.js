@@ -14,7 +14,7 @@ export default {
             pick_image: "Pick Image",
             crop: "Crop",
             action: "Action",
-            name: "name",
+            name: "Name",
             description: "Description",
             search: "Search",
             add: "Add",
@@ -34,37 +34,37 @@ export default {
             no_data: "No data",
             success: "Successfully",
             error: "Error",
-            new_notification: "You have new notification!",
+            new_notification: "You have a new notification!",
             month: "in",
             value: "Value",
             export: 'Export',
             add_tag: "Add a tag",
             auth_alert: {
-                title: "Current Session invalid. Please log in again",
-                reason: "Reasons maybe:",
+                title: "Current Session is invalid. Please log in again",
+                reason: "Reasons may be:",
                 content: [
-                    "Session to work invalid",
+                    "Session is invalid or expired",
                     "Access denied",
                     "Page access denied",
-                    "Role invalid",
-                    "Your permission changed",
-                    "Token invalid",
-                    "Company service stoped",
+                    "Role is invalid",
+                    "Your permission has changed",
+                    "Token is invalid",
+                    "Company service has stopped",
                 ],
             },
             server_disconnect: "Connection to server failed",
             check_connect_again: "Check the server connection again",
             validate: {
-                invalid_character_error: "Value invalid character error",
-                length_error: "Value should have length between {min} to {max}",
+                invalid_character_error: "Error: invalid character",
+                length_error: "Error: Value should have length between {min} to {max}",
                 minimum_length_error:
-                    "Value should have minimum length of {min}",
+                    "Error: Value should have minimum length of {min}",
                 maximum_length_error:
-                    "Value should have maximum length of {max}",
-                invalid_error: "Value invalid",
-                empty_error: "Value cannot be empty",
-                not_existing_error: "Value not existing",
-                existing_error: "Value existing",
+                    "Error: Value should have maximum length of {max}",
+                invalid_error: "Error: Value is invalid",
+                empty_error: "Error: Value cannot be empty",
+                not_existing_error: "Error: Value does not exist",
+                existing_error: "Value already exists",
                 number_input_error: "Value must be between {min} to {max}",
                 number_input_error_min: "Value must be greater than {min}",
                 number_input_error_max: "Value must be less than {max}"
@@ -402,10 +402,10 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid:
-                    "Confirm password invalid! Please input again",
+                    "Confirm password is invalid! Please input again",
                 password_length_error:
-                    "Password length not less 6 or more than 30 digit",
-                confirm_password_error: "Confirm password invalid",
+                    "Password length is not less than 6 or more than 30 digit",
+                confirm_password_error: "Confirm password is invalid",
             },
             security: {
                 label: "Security",
@@ -435,12 +435,12 @@ export default {
             change_user_password_faile: "Change password faile",
             user_not_found: "User not found",
             username_empty: "Username not empty",
-            username_invalid_length: "Username invalid length",
-            email_empty: "Email not empty",
-            email_invalid: "Email invalid",
-            email_not_found: "Email not found",
-            password_invalid: "Password invalid",
-            password2_empty: "Password2 not empty",
+            username_invalid_length: "Invalid length of username",
+            email_empty: "Email should not be empty",
+            email_invalid: "Email is invalid",
+            email_not_found: "Email is not found",
+            password_invalid: "Password is invalid",
+            password2_empty: "Password2 should not be empty",
             password2_invalid: "Password2 invalid",
             email_password_invalid: "Email or Password invalid",
             acc_blocked: "Account blocked",
@@ -514,10 +514,10 @@ export default {
                 edit_import_configuration_faile:
                     "Edit import file configuration faile",
 
-                email_exist: "Email exist",
+                email_exist: "Email already exists",
                 company_not_found: "Company not found",
-                link_exist: "Link exist",
-                component_exist: "Component exist",
+                link_exist: "Link already exists",
+                component_exist: "Component already exists",
 
                 update_company_links_success:
                     "Update company link successfully",
@@ -615,7 +615,7 @@ export default {
                 edit_system_link_success: "Edit system link success",
                 delete_system_link_success: "Delete system link success",
 
-                system_link_url_exist: "Url exist",
+                system_link_url_exist: "Url already exists",
             },
 
             system_component: {
@@ -648,7 +648,7 @@ export default {
                     "Delete system component success",
 
                 system_component_name_invalid: "Component name invalid",
-                system_component_name_exist: "Component name exist",
+                system_component_name_exist: "Component name already exists",
             },
 
             system_api: {
@@ -674,7 +674,7 @@ export default {
 
                 //Thông điệp trả về từ server
                 create_system_api_success: 'Create system API successfully',
-                create_system_api_failure: 'Create system API unsuccessfully',
+                create_system_api_failure: 'Can not create system API',
                 system_api_exist: 'System API already exists'
             },
 
@@ -715,13 +715,13 @@ export default {
                 edit_department_success: "Edit organizational unit success",
                 delete_department_success: "Delete organizational unit success",
 
-                department_name_exist: "Organizational unit name exist",
+                department_name_exist: "Organizational unit name already exists",
                 department_not_found: "Organizational unit not found",
                 department_has_user:
                     "Cannot delete. Organizational unit had employee",
-                role_manager_exist: "Manager role name exist",
-                role_deputy_manager_exist: "Deputy manager role name exist",
-                role_employee_exist: "Employee role name exist",
+                role_manager_exist: "Manager role name already exists",
+                role_deputy_manager_exist: "Deputy manager role name already exists",
+                role_employee_exist: "Employee role name already exists",
             },
             user: {
                 // Thông điệp trả về từ server
@@ -729,7 +729,7 @@ export default {
                 edit_user_success: "Edit user information successfully",
                 delete_user_success: "Delete user successfully",
 
-                email_exist: "Email exist",
+                email_exist: "Email already exists",
                 user_not_found: "User not found",
                 department_not_found: "Organizational unit of user not found",
             },
@@ -739,10 +739,10 @@ export default {
                 edit_role_success: "Edit role successfully",
                 delete_role_success: "Delete role successfully",
 
-                role_name_exist: "Role name exist",
-                role_manager_exist: "Manager role name exist",
-                role_deputy_manager_exist: "Deputy manager role name exist",
-                role_employee_exist: "Employee role name exist",
+                role_name_exist: "Role name already exists",
+                role_manager_exist: "Manager role name already exists",
+                role_deputy_manager_exist: "Deputy manager role name already exists",
+                role_employee_exist: "Employee role name already exists",
             },
             link: {
                 // Thông điệp trả về từ server
@@ -752,13 +752,13 @@ export default {
 
                 cannot_create_this_url: "Cannot create this url",
                 this_url_cannot_be_use: "This url cannot be use",
-                url_exist: "Url exist",
+                url_exist: "Url already exists",
             },
             component: {
                 // Thông điệp trả về từ server
                 edit_component_success: "Edit component successfully",
 
-                component_name_exist: "Component name exist",
+                component_name_exist: "Component name already exists",
             },
         },
 
@@ -840,8 +840,8 @@ export default {
             download: "Download",
             preview: "Preview",
             no_version: "Not have different version",
-            no_blank_description: "Description should'n empty",
-            no_blank_name: "Name shouldn't empty",
+            no_blank_description: "Description should not empty",
+            no_blank_name: "Name should not empty",
             infomation_docs: "Document Infomation",
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
@@ -868,18 +868,18 @@ export default {
                 exp_official_number: "Example: 05062020VN",
                 exp_signer: "Example: Peter Parker",
                 exp_version: "Version 1",
-                no_blank_issuingbody: "Issuing body should'n empty",
-                no_blank_version_name: "Version name should'n empty",
-                no_blank_official_number: "Official number should'n empty",
+                no_blank_issuingbody: "Issuing body should not empty",
+                no_blank_version_name: "Version name should not empty",
+                no_blank_official_number: "Official number should not empty",
                 error_office_number:
                     "Offical must have at least one number character",
-                no_blank_issuingdate: "Issuing date shouldn't empty",
-                no_blank_effectivedate: "Effective date shouldn't empty",
-                no_blank_expired_date: "Expired date shouldn't empty",
-                no_blank_signer: "Signer shouldn't empty",
+                no_blank_issuingdate: "Issuing date should not empty",
+                no_blank_effectivedate: "Effective date should not empty",
+                no_blank_expired_date: "Expired date should not empty",
+                no_blank_signer: "Signer should not empty",
                 no_blank_file: "Not have file",
                 no_blank_file_scan: "Note have file scan",
-                no_blank_category: "Categoty shouldn't empty",
+                no_blank_category: "Categoty should not empty",
             },
             relationship: {
                 title: "Document relationship",
@@ -998,11 +998,11 @@ export default {
             cannot_delete_category: "Cannot delete this category",
             document_domain_not_found: "Domain not found",
             document_archive_not_found: "Archive not found",
-            domain_name_exist: "Domain name exist",
-            category_name_exist: "Category name exist",
-            name_exist: "Name exist",
-            document_exist: "Document name exist",
-            document_number_exist: "Document officical number exist",
+            domain_name_exist: "Domain name already exists",
+            category_name_exist: "Category name already exists",
+            name_exist: "Name already exists",
+            document_exist: "Document name already exists",
+            document_number_exist: "Document officical number already exists",
         },
 
         crm: {
@@ -1402,6 +1402,7 @@ export default {
             stt: "Count",
             unit: "Unit",
             position: "Position",
+            references: "References",
             month: "Month",
             status: "Status",
             staff_number: "Staff code",
@@ -1474,8 +1475,8 @@ export default {
                 employee_name_required: "Staff name required",
                 employee_number_required: "Staff code required",
                 staff_non_unit: "Staff non unit",
-                organizationalUnit_not_found: "OrganizationalUnit not found",
-                organizationalUnit_not_empty: "OrganizationalUnit not empty",
+                organizationalUnit_not_found: "OrganizationalUnit was not found",
+                organizationalUnit_not_empty: "OrganizationalUnit should not be empty",
                 staff_code_not_special:
                     "Staff code does not contain special characters",
                 staff_code_not_find: "Staff code does not exist",
@@ -1483,7 +1484,7 @@ export default {
                 money_other_salary_required: "Money other salary required",
                 month_salary_required: "Month salary required",
                 money_salary_required: "Money_salary required",
-                month_salary_have_exist: "Month salary have exist",
+                month_salary_have_exist: "Month salary already exists",
                 get_salary_success: "Get salary success",
                 get_salary_faile: "Get salary faile",
                 create_salary_success: "Create salary success",
@@ -1557,6 +1558,9 @@ export default {
                     "Send application annual leave success",
                 import_annual_leave_success: "Add data from file success",
                 import_annual_leave_faile: "Add data from file faile",
+
+                request_to_change_annualeave_success:"Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
+                request_to_change_annualeave_faile:"Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1589,7 +1593,7 @@ export default {
                         "Staff code does not contain special characters",
                     staff_code_not_find: "Staff code does not exist",
                     number_decisions_required: "Decision number required",
-                    number_decisions_have_exist: "Decision number have exist",
+                    number_decisions_have_exist: "Decision number already exists",
                     unit_decisions_required: "Decision unit required",
                     type_commendations_required: "Commendation forms required",
                     reason_commendations_required: "Reason required",
@@ -1635,7 +1639,7 @@ export default {
                         "Staff code does not contain special characters",
                     staff_code_not_find: "Staff code does not exist",
                     number_decisions_required: "Decision number required",
-                    number_decisions_have_exist: "Decision number have exist",
+                    number_decisions_have_exist: "Decision number already exists",
                     unit_decisions_required: "Decision unit required",
                     type_discipline_required: "Discipline forms required",
                     reason_discipline_required: "Reason required",
@@ -1651,10 +1655,10 @@ export default {
                     edit_discipline_faile: "Edit discipline faile",
 
                     update_major_success: "Edit major successfully",
-                    update_major_failure: "Edit major unsuccessfully",
+                    update_major_failure: "Can not edit major",
 
                     delete_major_success: "Delete major successfully",
-                    delete_major_failure: "Delete major unsuccessfully"
+                    delete_major_failure: "Can not delete major"
                 },
             },
 
@@ -1952,17 +1956,18 @@ export default {
                     file_export_name: "Staffs imformation",
                     export: {
                         sheet1: "1.Staffs",
-                        sheet2: "2.Staffs - Experiences",
-                        sheet3: "3.Staffs - Degrees",
-                        sheet4: "4.Staffs - Certificates",
-                        sheet5: "5.Staffs - Labor contracts",
-                        sheet6: "6.Staffs - Social insurances",
-                        sheet7: "7.Staffs - Attachments",
-                        sheet8: "8.Staffs - Family Members",
-                        sheet9: "9.Staffs - Commendations",
-                        sheet10: "10.Staffs - Disciplines",
-                        sheet11: "11.Staffs - Salaries",
-                        sheet12: "12.Staffs - Annual Leave",
+                        sheet2: "2.Staffs - Work process",
+                        sheet3: "3.Staffs - Experiences",
+                        sheet4: "4.Staffs - Degrees",
+                        sheet5: "5.Staffs - Certificates",
+                        sheet6: "6.Staffs - Labor contracts",
+                        sheet7: "7.Staffs - Social insurances",
+                        sheet8: "8.Staffs - Attachments",
+                        sheet9: "9.Staffs - Family Members",
+                        sheet10: "10.Staffs - Commendations",
+                        sheet11: "11.Staffs - Disciplines",
+                        sheet12: "12.Staffs - Salaries",
+                        sheet13: "13.Staffs - Annual Leave",
 
 
                         emergency_contact_person: "Emergency contact person",
@@ -1987,6 +1992,7 @@ export default {
                     import: {
                         import_general_infor: "Staff basic information",
                         import_experience: "Work experiences",
+                        import_work_process: "Work process",
                         import_degree: "Degree",
                         import_certificate: "Certificate",
                         import_contract: "Labor contracts",
@@ -1997,6 +2003,7 @@ export default {
                         import_general_infor_title:
                             "Import staff basic information",
                         import_experience_title: "Import work experience",
+                        import_work_process_title: "Import work process",
                         import_degree_title: "Import Degree",
                         import_certificate_title: "Import certificate",
                         import_contract_title: "Import labor contract",
@@ -2050,13 +2057,13 @@ export default {
                     import_employee_faile: "Import employee faile",
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
-                    employee_number_have_exist: "Employee number have exist",
-                    staff_code_not_find: 'Employee number does have exist',
-                    email_in_company_have_exist: "Email in company have exist",
-                    email_in_company_not_have_exist: "Email in company have not exist",
+                    employee_number_have_exist: "Employee number already exists",
+                    staff_code_not_find: 'Employee number does not exist',
+                    email_in_company_have_exist: "Email in company already exists",
+                    email_in_company_not_have_exist: "Email in company does not exist",
                     employee_timesheet_id_required: "Employee timesheet id required",
-                    employee_timesheet_id_have_exist: "Employee timesheet have exist",
-                    employee_timesheet_id_not_have_exist: "Employee timesheet have not exist",
+                    employee_timesheet_id_have_exist: "Employee timesheet already exists",
+                    employee_timesheet_id_not_have_exist: "Employee timesheet does not exist",
                     full_name_required: "Full name required",
                     birthdate_required: "Birthdate required",
                     starting_date_required: "Starting date required",
@@ -2218,7 +2225,7 @@ export default {
                 employee_number_required: "Staff code required",
                 month_timesheets_required: "Month timesheets required",
                 staff_code_not_find: "Staff code does not exist",
-                month_timesheets_have_exist: "Month timesheets have exist",
+                month_timesheets_have_exist: "Month timesheets already exists",
                 get_timesheets_success: "Get timesheets success",
                 get_timesheets_faile: "Get timesheets faile",
                 create_timesheets_success: "Create timesheets success",
@@ -2366,7 +2373,7 @@ export default {
                 apply_for_positions_required: "Apply for positions required",
                 program_id_required: "Program id required",
                 name_required: "Program name required",
-                program_id_have_exist: "Program id already exist",
+                program_id_have_exist: "Program id already exists",
 
                 get_education_program_success: "Get education program success",
                 get_education_program_faile: "Get education program faile",
@@ -2542,13 +2549,15 @@ export default {
                 get_asset_type_success: "Get asset type successfully",
                 get_asset_type_faile: "Get asset type fail",
                 create_asset_type_success: "Create asset type successfully",
-                create_asset_type_faile: "Create asset type fail",
+                create_asset_type_failure: "Create asset type fail",
                 delete_asset_type_success: "Delete asset type successfully",
-                delete_asset_type_faile: "Delete asset type fail",
+                delete_asset_type_failure: "Delete asset type fail",
                 edit_asset_type_success: "Edit asset type successfully",
                 edit_asset_type_faile: "Edit asset type fail",
-                asset_type_name_exist: "Asset type name exist",
-                asset_type_number_exist: "Asset type number exist",
+                asset_type_name_exist: "Asset type name already exists",
+                asset_type_number_exist: "Asset type number already exists",
+                import_asset_type_success: "Import asset type successfully from file",
+                import_asset_type_failure: "Failed to import asset type from file",
             },
 
             // Quản lý thông tin tài sản
@@ -2603,7 +2612,7 @@ export default {
                 delete_asset_faile: "Delete asset faile",
                 edit_asset_success: "Edit asset successfully",
                 edit_asset_faile: "Edit asset faile",
-                asset_code_exist: "Asset code exist",
+                asset_code_exist: "Asset code already exists",
             },
 
             // Quản lý bảo trì
@@ -2632,13 +2641,13 @@ export default {
 
                 //Thông điệp trả về từ server
                 get_usage_success: "Get usage successfully",
-                get_usage_faile: "Get usage faile",
+                get_usage_faile: "Get usage failed",
                 create_usage_success: "Create usage successfully",
-                create_usage_faile: "Create usage faile",
+                create_usage_faile: "Create usage failed",
                 delete_usage_success: "Delete usage successfully",
-                delete_usage_faile: "Delete usage faile",
+                delete_usage_faile: "Delete usage failed",
                 edit_usage_success: "Edit usage successfully",
-                edit_usage_faile: "Edit usage faile",
+                edit_usage_faile: "Edit usage failed",
             },
 
             // Quản lý khấu hao
@@ -2659,11 +2668,11 @@ export default {
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: "Get depreciation successfully",
-                get_depreciation_faile: "Get depreciation faile",
+                get_depreciation_failure: "Get depreciation faile",
                 create_depreciation_success: "Create depreciation successfully",
-                create_depreciation_faile: "Create depreciation faile",
+                create_depreciation_failure: "Create depreciation faile",
                 delete_depreciation_success: "Delete depreciation successfully",
-                delete_depreciation_faile: "Delete depreciation faile",
+                delete_depreciation_failure: "Delete depreciation faile",
                 edit_depreciation_success: "Edit depreciation successfully",
                 edit_depreciation_faile: "Edit depreciation faile",
             },
@@ -2701,13 +2710,13 @@ export default {
             manage_use_request: {
                 //Thông điệp trả về từ server
                 get_use_request_success: "Get use request successfully",
-                get_use_request_faile: "Get use request faile",
+                get_use_request_failure: "Get use request faile",
                 create_use_request_success: "Edit use request successfully",
-                create_use_request_faile: "Edit use request faile",
+                create_use_request_failure: "Edit use request faile",
                 delete_use_request_success: "Delete use request successfully",
-                delete_use_request_faile: "Delete use request faile",
+                delete_use_request_failure: "Delete use request faile",
                 edit_use_request_success: "Edit use request successfully",
-                edit_use_request_faile: "Edit use request faile",
+                edit_use_request_failure: "Edit use request faile",
             },
 
             // Đăng ký mua sắm thiết bị
@@ -2715,30 +2724,30 @@ export default {
                 //Thông điệp trả về từ server
                 get_purchase_request_success:
                     "Get purchase request successfully",
-                get_purchase_request_faile: "Get purchase request faile",
+                get_purchase_request_failure: "Get purchase request faile",
                 create_purchase_request_success:
                     "Create purchase request successfully",
-                create_purchase_request_faile: "Create purchase request faile",
+                create_purchase_request_failure: "Create purchase request faile",
                 delete_purchase_request_success:
                     "Delete purchase request successfully",
-                delete_purchase_request_faile: "Delete purchase request faile",
+                delete_purchase_request_failure: "Delete purchase request faile",
                 edit_purchase_request_success:
                     "Edit purchase request successfully",
-                edit_purchase_request_faile: "Edit purchase request faile",
-                recommend_number_exist: "Recommend number exist",
+                edit_purchase_request_failure: "Edit purchase request faile",
+                recommend_number_exist: "Recommend number already exists",
             },
 
             // Đăng ký sử dụng thiết bị
             use_request: {
                 //Thông điệp trả về từ server
                 get_use_request_success: "Get use request successfully",
-                get_use_request_faile: "Get use request faile",
+                get_use_request_failure: "Get use request failed",
                 create_use_request_success: "Create use request successfully",
-                create_use_request_faile: "Create use request faile",
+                create_use_request_failure: "Create use request failed",
                 delete_use_request_success: "Delete use request successfully",
-                delete_use_request_faile: "Delete use request faile",
+                delete_use_request_failure: "Delete use request failed",
                 edit_use_request_success: "Edit use request successfully",
-                edit_use_request_faile: "Edit use request faile",
+                edit_use_request_failure: "Edit use request failed",
             },
         },
 
@@ -3146,7 +3155,7 @@ export default {
                 edit_employee_collaborated_success:
                     "Edit employees to join task successfully",
                 edit_employee_collaborated_failure:
-                    "Edit employees to join task unsuccessfully",
+                    "Can not edit employees to join task",
 
                 add_new_task: "Add new task",
                 // add_err:
@@ -3174,21 +3183,21 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Confirm task successfully",
-                confirm_task_failure: "Confirm task unsuccessfully",
+                confirm_task_failure: "Can not onfirm task",
 
                 // yêu cầu kết thúc công việc
                 request_close_task_success: "Send request to close task successfully",
                 cancel_request_close_task_success: "Cancel request to close task successfully",
                 approval_close_task_success: "Approve request to close task successfully",
                 decline_close_task_success: "Decline request to close task successfully",
-                request_close_task_failure: "Send request to close task unsuccessfully",
-                cancel_request_close_task_failure: "Cancel request to close task unsuccessfully",
-                approval_close_task_failure: "Approve request to close task unsuccessfully",
-                decline_close_task_failure: "Decline request to close task unsuccessfully",
+                request_close_task_failure: "Can not send request to close task",
+                cancel_request_close_task_failure: "Can not cancel request to close task",
+                approval_close_task_failure: "Can not approve request to close task",
+                decline_close_task_failure: "Can not decline request to close task",
 
                 // Mở lại công việc
                 open_task_again_success: 'Open task again successfully',
-                open_task_again_failure: 'Open task again unsuccessfully',
+                open_task_again_failure: 'Can not open task again',
                 confirm_open_task: 'Are you sure you want to open this task again?',
 
                 // warning
@@ -3373,9 +3382,9 @@ export default {
                 create_task_log_fail: "Create task log fail",
                 get_task_log_fail: "get_task_log_fail",
                 edit_task_information_failure:
-                    "Edit information unsuccessfully",
+                    "Can not edit information",
                 edit_document_task_comment_failure:
-                    "Edit document unsuccessfully",
+                    "Can not edit document",
                 time_overlapping: 'Start time invalid. Overlapping time with different time sheet log',
 
 
@@ -3397,7 +3406,7 @@ export default {
                 modal_approve_task: {
                     title: "Request to finish task",
                     msg_success: "Approved success",
-                    msg_faile: "Approved failure",
+                    msg_failure: "Approved failure",
 
                     task_info: "Information of task",
                     percent: "Progress of task",
@@ -3514,10 +3523,10 @@ export default {
                 delete_task_template_success: "Delete task template success !",
                 delete_task_template_fail: "Delete task template fail !",
                 error_task_template_creator_null:
-                    "Creator of this task template does not exist or has deleted",
+                    "Creator of this task template does not exist or has been deleted",
                 view_task_process_template: "View task process template",
                 import_task_template_success: "Import task template success",
-                import_task_template_faile: "Import task template faile",
+                import_task_template_failure: "Import task template failure",
             },
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
@@ -3675,13 +3684,13 @@ export default {
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null:
-                                "Error! The approver of this KPI set is not exist or was deleted",
+                                "Error! The approver of this KPI set does not exist or was deleted",
                             error_kpi_organizational_unit_null:
-                                "Error! The organizational unit of this KPI set is not exist or was deleted",
+                                "Error! The organizational unit of this KPI set does not exist or was deleted",
                             error_kpi_parent_target_null:
-                                "Error! The parent target of this KPI set is not exist or was deleted",
+                                "Error! The parent target of this KPI set does not exist or was deleted",
                             error_kpi_targets_list_null:
-                                "Error! The list targets of this KPI set is not exist or was deleted",
+                                "Error! The list targets of this KPI set does not exist or was deleted",
                         },
                     },
 
@@ -3740,36 +3749,36 @@ export default {
                         initialize_employee_kpi_set_success:
                             "Initialize employee KPI set successfully",
                         initialize_employee_kpi_set_failure:
-                            "Initialize employee KPI set unsuccessfully",
+                            "Can not initialize employee KPI set",
 
                         create_employee_kpi_success:
                             "Add KPI target successfully",
                         create_employee_kpi_failure:
-                            "Add KPI target unsuccessfully",
+                            "Can not add KPI target",
 
                         edit_employee_kpi_set_success:
                             "Edit employee KPI set successfully",
                         edit_employee_kpi_set_failure:
-                            "Edit employee KPI set unsuccessfully",
+                            "Can not edit employee KPI set",
                         delete_employee_kpi_set_success:
                             "Delete employee KPI set successfully",
                         delete_employee_kpi_set_failure:
-                            "Delete employee KPI set unsuccessfully",
+                            "Can not delete employee KPI set",
 
                         approve_success:
                             "Confirm request approval successfully",
                         approve_failure:
-                            "Confirm request approval unsuccessfully",
+                            "Can not confirm request approval",
 
                         delete_employee_kpi_success:
-                            "Delete KPI target successfully",
+                            "KPI target has been deleted",
                         delete_employee_kpi_failure:
-                            "Delete KPI target unsuccessfully",
+                            "Can not delete KPI target",
 
                         edit_employee_kpi_success:
-                            "Edit KPI target successfully",
+                            "KPI target has been edited",
                         edit_employee_kpi_failure:
-                            "Edit KPI target unsuccessfully",
+                            "Can not edit KPI target",
                     },
                 },
             },
@@ -3933,21 +3942,21 @@ export default {
                 approve_all_kpi_target_fail: "Approve all KPI target fail",
                 edit_kpi_target_member_success:
                     "Edit KPI member target successfully",
-                edit_kpi_target_member_fail: "Edit KPI member target fail",
+                edit_kpi_target_member_fail: "Can not edit KPI member target",
                 edit_status_target_success: "Edit status target successfully",
-                edit_status_target_fail: "Edit status target fail",
+                edit_status_target_fail: "Can not edit status target",
                 get_task_by_id_success: "Get all tasks by Id successfully",
-                get_task_by_id_fail: "Get all tasks by Id fail",
+                get_task_by_id_fail: "Can not get all tasks by Id",
                 get_system_point_success: "Get system point successfully",
-                get_system_point_fail: "Get system point fail",
+                get_system_point_fail: "Can not get system point",
                 set_task_importance_level_success:
                     "Set task importance level and evalutate KPI successfully",
                 set_task_importance_level_fail:
-                    "Set task importance level and evalutate KPI fail",
+                    "Can not set task importance level and evalutate KPI",
                 set_point_kpi_success:
-                    "Evalutate all kpis successfully",
+                    "Evalutate all KPIs successfully",
                 set_point_kpi_fail:
-                    "Evalutate all kpis fail",
+                    "Can not evalutate all KPIs",
             },
             organizational_unit: {
                 // Module chính
@@ -3965,10 +3974,10 @@ export default {
                         "Are you sure you want to delete this entire KPI?",
                     time: "Time",
                     initialize_kpi_newmonth: "Initialize KPI",
-                    edit_kpi_success: "Editing KPI successful",
-                    edit_kpi_failure: "Editing KPI falied",
-                    delete_kpi_success: "Delete KPI successfully",
-                    delete_kpi_failure: "Delete KPI unsuccessfully",
+                    edit_kpi_success: "KPI has been successfully edited",
+                    edit_kpi_failure: "Can not edit KPI",
+                    delete_kpi_success: "KPI has been successfully deleted",
+                    delete_kpi_failure: "Can not delete KPI",
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
                     organizational_unit_importance: "Children organizational unit importances",
@@ -3991,27 +4000,27 @@ export default {
                     evaluation_criteria: "Evalution criteria",
                     weight: "Weight",
                     action: "Action",
-                    not_initialize: "No KPI have been initialized in ",
+                    not_initialize: "No KPI has been initialized in ",
 
                     // Nhóm dành cho các handle
                     confirm_approve_already: "KPI is approved!",
                     confirm_approve:
-                        "Are you sure you want to be approved this KPI?",
+                        "Are you sure you want to approve this KPI?",
                     confirm_not_enough_weight: "The total weight must be 100",
                     confirm_cancel_approve:
                         "Are you sure you want to cancel this KPI?",
-                    confirm_edit_status_success: "Edit status KPI successfully",
+                    confirm_edit_status_success: "KPI status has been successfully edited",
                     confirm_edit_status_failure:
-                        "Edit status KPI unsuccessfully",
+                        "Can not edit KPI status",
 
                     confirm_kpi:
                         "Are you sure you want to delete this KPI target?",
                     confirm_approving:
                         "KPI has been activated, you can not delete!",
                     confirm_delete_target_success:
-                        "Delete KPI target successful",
+                        "KPI target has been successful deleted",
                     confirm_delete_target_failure:
-                        "Delete KPI target unsuccessfully",
+                        "Can not delete KPI target",
 
                     // Nhóm các title
                     edit: "Edit",
@@ -4030,7 +4039,7 @@ export default {
                     parents: "Parents target",
                     evaluation_criteria: "Evaluation criteria",
                     weight: "Weight",
-                    create_target_success: "Add KPI target successful",
+                    create_target_success: "KPI target has been successfully added",
                     create_target_failure:
                         "You have not entered enough information",
                     organizational_unit_kpi_exist: "Organizational Unit KPI already exists",
@@ -4074,7 +4083,7 @@ export default {
                     month: "Month",
                     default_target: "Default target",
                     create_organizational_unit_kpi_set_success:
-                        "Initialize KPI successful",
+                        "KPI has been successfully initialized",
                     create_organizational_unit_kpi_set_failure:
                         "You have not entered enough information",
                 },
@@ -4087,10 +4096,10 @@ export default {
                     parents: "Parents target",
                     evaluation_criteria: "Evaluation criteria",
                     weight: "Weight",
-                    edit_target_success: "Edit KPI target successful",
+                    edit_target_success: "KPI target has been successfully edited",
                     edit_target_failure:
                         "You have not entered enough information",
-                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại"
+                    organizational_unit_kpi_exist: "Organizational Unit KPI Target already exists"
                 },
                 // Dashboard KPI Unit
                 dashboard: {
@@ -4208,26 +4217,26 @@ export default {
                 get_parent_by_unit_success:
                     "Get KPI by parent unit successfully",
                 get_parent_by_unit_failure:
-                    "Get KPI by parent unit unsuccessfully",
+                    "Can not get KPI by parent unit",
                 get_kpi_unit_success: "Get all KPI unit successfully",
-                get_kpi_unit_fail: "Get all KPI unit fail",
+                get_kpi_unit_fail: "Can not get all KPI unit",
                 get_kpiunit_by_role_success:
                     "Get KPI unit by role successfully",
                 get_kpiunit_by_role_fail: "Get KPI unit by role fail",
                 create_kpi_unit_success: "Create KPI unit successfully",
-                create_kpi_unit_fail: "Create KPI unit fail",
+                create_kpi_unit_fail: "Can not create KPI unit",
                 update_evaluate_kpi_unit_success:
                     "Update KPI unit evaluation successfully",
                 update_evaluate_kpi_unit_fail:
-                    "Update KPI unit evaluation fail",
+                    "Can not update KPI unit evaluation",
                 copy_kpi_unit_success: "Copy organizational unit KPI set successfully",
-                copy_kpi_unit_failure: "Copy organizational unit KPI set unsuccessfully",
+                copy_kpi_unit_failure: "Can not copy organizational unit KPI set",
                 copy_employee_kpi_success: "Copy employee KPI set successfully",
-                copy_employee_kpi_failure: "Copy employee KPI set unsuccessfully",
+                copy_employee_kpi_failure: "Can not copy employee KPI set",
                 organizatinal_unit_kpi_set_exist: "Organizational unit KPI set already exists",
                 employee_kpi_set_exist: "Employee KPI set already exists",
                 calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
-                calculate_kpi_unit_failure: "Calculate organizational unit KPI unsuccessfully"
+                calculate_kpi_unit_failure: "Can not calculate organizational unit KPI"
             },
         },
 

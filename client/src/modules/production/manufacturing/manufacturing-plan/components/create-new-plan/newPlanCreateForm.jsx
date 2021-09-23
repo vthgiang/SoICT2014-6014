@@ -471,7 +471,7 @@ class NewPlanCreateForm extends Component {
                     formID="form-create-new-plan"
                     title={translate("manufacturing.plan.create_plan_title")}
                     msg_success={translate("manufacturing.plan.create_successfully")}
-                    msg_faile={translate("manufacturing.plan.create_failed")}
+                    msg_failure={translate("manufacturing.plan.create_failed")}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={100}

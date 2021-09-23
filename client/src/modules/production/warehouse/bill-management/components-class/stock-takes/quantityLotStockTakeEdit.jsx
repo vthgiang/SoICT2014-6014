@@ -212,7 +212,7 @@ class QuantityLotStockTakeEdit extends Component {
                     formID={`form-edit-quantity-take`}
                     title="Sửa số lượng kiểm kê theo lô"
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
-                    msg_faile={translate('manage_warehouse.bill_management.add_faile')}
+                    msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="50"

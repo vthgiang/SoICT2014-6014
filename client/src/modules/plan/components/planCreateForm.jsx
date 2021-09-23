@@ -71,7 +71,7 @@ class PlanCreateForm extends Component {
                     formID="form-create-plan"
                     title={translate('manage_plan.add_title')}
                     msg_success={translate('manage_plan.add_success')}
-                    msg_faile={translate('manage_plan.add_fail')}
+                    msg_failure={translate('manage_plan.add_fail')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}

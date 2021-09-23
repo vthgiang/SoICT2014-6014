@@ -39,7 +39,7 @@ exports.createAssetTypes = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_ASSET_TYPE', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_asset_type_faile'],
+            messages: Array.isArray(error) ? error : ['create_asset_type_failure'],
             content: error
         });
     }
@@ -57,10 +57,10 @@ exports.importAssetTypes = async (req, res) => {
         });
     } catch (error) {
         console.log('eoror', error)
-        await Logger.error(req.user.email, 'import_asset_type_faile', req.portal);
+        await Logger.error(req.user.email, 'import_asset_type_failure', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['import_asset_type_faile'],
+            messages: Array.isArray(error) ? error : ['import_asset_type_failure'],
             content: error
         });
     }
@@ -101,7 +101,7 @@ exports.deleteAssetTypes = async (req, res) => {
         await Logger.error(req.user.email, 'DELETE_ASSET_TYPE', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_asset_type_faile'],
+            messages: Array.isArray(error) ? error : ['delete_asset_type_failure'],
             content: error
         });
     }
@@ -122,7 +122,7 @@ exports.deleteManyAssetType = async (req, res) => {
         await Logger.error(req.user.email, 'DELETE_MANY_ASSET_TYPE', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_asset_type_faile'],
+            messages: Array.isArray(error) ? error : ['delete_asset_type_failure'],
             content: error
         });
     }

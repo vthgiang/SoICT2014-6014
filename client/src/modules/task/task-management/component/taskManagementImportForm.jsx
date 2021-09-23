@@ -31,7 +31,7 @@ function TaskManagementImportForm(props) {
             },
             rowHeader: { // Số dòng tiêu đề của bảng
                 description: 'Số dòng tiêu đề của bảng',
-                value: 2
+                value: 1
             },
             name: {
                 columnName: 'Tên công việc',
@@ -52,6 +52,16 @@ function TaskManagementImportForm(props) {
                 columnName: 'Độ ưu tiên',
                 description: 'Độ ưu tiên',
                 value: 'Độ ưu tiên',
+            },
+            progress: {
+                columnName: 'Tiến độ',
+                description: 'Tiến độ',
+                value: 'Tiến độ',
+            },
+            status: {
+                columnName: 'Trạng thái',
+                description: 'Trạng thái',
+                value: 'Trạng thái',
             },
             startDate: {
                 columnName: 'Ngày bắt đầu',
@@ -113,10 +123,39 @@ function TaskManagementImportForm(props) {
                 description: 'Tags',
                 value: 'Tags',
             },
-            taskActions: {
-                columnName: "Danh sách hoạt động",
-                description: "Danh sách hoạt động",
-                value: ["Nội dung hoạt động", "Người tạo", "Thời gian tạo"]
+        }
+        return config;
+    }
+
+    function configurationTaskActions() {
+        let config = {
+            sheets: { // Tên các sheet
+                description: 'Thông tin hoạt động',
+                value: ["Thông tin hoạt động"]
+            },
+            rowHeader: { // Số dòng tiêu đề của bảng
+                description: 'Số dòng tiêu đề của bảng',
+                value: 1
+            },
+            taskName: {
+                columnName: 'Tên công việc',
+                description: 'Tên công việc',
+                value: 'Tên công việc',
+            },
+            description: {
+                columnName: 'Tên hoạt động',
+                description: 'Tên hoạt động',
+                value: 'Tên hoạt động',
+            },
+            createBy: {
+                columnName: 'Người tạo',
+                description: 'Người tạo',
+                value: 'Người tạo',
+            },
+            createdAt: {
+                columnName: 'Thời gian tạo',
+                description: 'Thời gian tạo',
+                value: 'Thời gian tạo',
             },
         }
         return config;
@@ -127,19 +166,32 @@ function TaskManagementImportForm(props) {
      * @param {*} serial :số serial của ngày
      */
     function convertExcelDateToJSDate(serial, type) {
-        let utc_days = Math.floor(serial - 25569);
-        let utc_value = utc_days * 86400;
-        let date_info = new Date(utc_value * 1000);
-        let month = date_info.getMonth() + 1;
-        let day = date_info.getDate();
-        if (month.toString().length < 2)
-            month = '0' + month;
-        if (day.toString().length < 2)
-            day = '0' + day;
-        if (type === "YYYY-MM-DD")
-            return [date_info.getFullYear(), month, day].join("-");
-
-        return [day, month, date_info.getFullYear()].join('-');
+        // nếu người dùng nhập thời gan trong file excell là string và ngăn cách bỏi dấu /
+        if (serial && typeof serial === 'string') {
+            if (serial.includes("/")) {
+                const date = serial.split("/");
+                if (date?.length) {
+                    let month = date[1], day = date[0];
+                    if (date[1]?.toString()?.length < 2)
+                        month = '0' + date[1];
+                    if (date[0]?.toString()?.length < 2)
+                        day = '0' + date[0];
+                    return [day, month, date[2]].join('-')
+                }
+                return null;
+            }
+        } else {
+            let utc_days = Math.floor(serial - 25569);
+            let utc_value = utc_days * 86400;
+            let date_info = new Date(utc_value * 1000);
+            let month = date_info.getMonth() + 1;
+            let day = date_info.getDate();
+            if (month.toString().length < 2)
+                month = '0' + month;
+            if (day.toString().length < 2)
+                day = '0' + day;
+            return [day, month, date_info.getFullYear()].join('-');
+        }
     }
 
     function convertTimeExcelToJSDate(fromExcel) {
@@ -242,6 +294,36 @@ function TaskManagementImportForm(props) {
         return numberPriority;
     }
 
+    function convertTaskStatus(status) {
+        if (!status)
+            return -1;
+        status = status.toLowerCase();
+        let statusConvert;
+
+        switch (status) {
+            case "đang thực hiện":
+                statusConvert = "inprocess";
+                break;
+            case "chờ phê duyệt":
+                statusConvert = "wait_for_approval";
+                break;
+            case "đã hoàn thành":
+                statusConvert = "finished";
+                break;
+            case "tạm hoãn":
+                statusConvert = "delayed";
+                break;
+            case "Bị hủy":
+                statusConvert = "canceled";
+                break;
+            default:
+                statusConvert = -1;
+        }
+        if (!statusConvert)
+            return -1;
+        return statusConvert;
+    }
+
     // thêm creatỏ
 
     const getUserIdFromEmail = (email) => {
@@ -267,7 +349,13 @@ function TaskManagementImportForm(props) {
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        let strDateTime;
+        if (time) {
+            strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        } else {
+            strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]}`;
+        }
+
         return new Date(strDateTime);
     }
 
@@ -294,162 +382,185 @@ function TaskManagementImportForm(props) {
     // Function thay đổi file import
     const handleImportExcel = (value, checkFileImport = true) => {
         let valueImport = [], showValueImport = [], rowError = [], checkImportData = value;
-        console.log('value', value)
         value.forEach((o, index) => {
-            let flag = -1;
-            flag = flag + 1;
+            let errorAlert = [];
+            let priority = o?.priority ? convertPriority(o.priority) : 3,
+                status = o?.status ? convertTaskStatus(o.status) : "inprocess",
+                progress = o?.progress ? o.progress : 0,
+                startDate = o?.startDate ? convertDateTime(convertExcelDateToJSDate(o.startDate), o?.startTime ? convertTimeExcelToJSDate(o.startTime) : "08:00 AM") : null,
+                endDate = o?.endDate ? convertDateTime(convertExcelDateToJSDate(o.endDate), o?.endTime ? convertTimeExcelToJSDate(o.endTime) : "05:30 PM") : null,
+                organizationalUnit = o?.organizationalUnit ? getIdUnitFromName(o.organizationalUnit) : null,
+                name = o?.name ? o.name : '',
+                description = o?.description ? o.description : '',
+                responsibleEmployees = o?.responsibleEmployees ? getUserIdFromEmail(o.responsibleEmployees) : [],
+                accountableEmployees = o?.accountableEmployees ? getUserIdFromEmail(o.accountableEmployees) : [],
+                consultedEmployees = o?.consultedEmployees ? getUserIdFromEmail(o.consultedEmployees) : [],
+                informedEmployees = o?.informedEmployees ? getUserIdFromEmail(o.informedEmployees) : [],
+                collaboratedWithOrganizationalUnits = o?.collaboratedWithOrganizationalUnits ? getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) : [],
+                tags = o?.tags && typeof (o.tags) === 'string' ? o.tags.split(',') : [],
+                taskProject = o.taskProject ? getProjectId(o.taskProject) : null;
 
-            if (o.name) {
-                let taskActions = [];
-                if (o.taskActions && o.taskActions.indexOf(null) === -1) { // NẾu taskAction có giá trị, 3 trường nhập đầy đủ
-                    taskActions = [
-                        ...taskActions, {
-                            description: o.taskActions[0],
-                            creator: getUserIdFromEmail(o.taskActions[1]),
-                            createdAt: new Date(convertExcelDateToJSDate(o.taskActions[2], "YYYY-MM-DD")) // format lại đúng định dạng
-                        }
-                    ]
-                }
-                valueImport = [...valueImport, {
-                    ...o,
-                    taskActions: taskActions,
-                    startDate: o.startDate ? convertDateTime(convertExcelDateToJSDate(o.startDate), o.startTime ? convertTimeExcelToJSDate(o.startTime) : "08:00 AM") : null,
-                    endDate: o.endDate ? convertDateTime(convertExcelDateToJSDate(o.endDate), o.endTime ? convertTimeExcelToJSDate(o.endTime) : "05:30 PM") : null,
-                    organizationalUnit: o.organizationalUnit ? getIdUnitFromName(o.organizationalUnit) : null,
-                    name: o.name ? o.name : '',
-                    description: o.description ? o.description : '',
-                    priority: o.priority ? convertPriority(o.priority) : 3,
-                    responsibleEmployees: o?.responsibleEmployees ? getUserIdFromEmail(o.responsibleEmployees) : [],
-                    accountableEmployees: o?.accountableEmployees ? getUserIdFromEmail(o.accountableEmployees) : [],
-                    consultedEmployees: o?.consultedEmployees ? getUserIdFromEmail(o.consultedEmployees) : [],
-                    informedEmployees: o?.informedEmployees ? getUserIdFromEmail(o.informedEmployees) : [],
-                    collaboratedWithOrganizationalUnits: o?.collaboratedWithOrganizationalUnits ? getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) : [],
-                    tags: o.tags ? o.tags.split(',') : [],
-                    parent: o.parent ? getTaskParentId(o.parent) : null,
-                    taskProject: o.taskProject ? getProjectId(o.taskProject) : null
-                }];
 
-                showValueImport = [...showValueImport, {
-                    ...o,
-                    taskActions: o.taskActions.map((x, index) => index === 2 && x ? convertExcelDateToJSDate(x) : x),
-                    startDate: o.startDate ? convertExcelDateToJSDate(o.startDate) : null,
-                    startTime: o.startTime ? convertTimeExcelToJSDate(o.startTime) : "08:00",
-                    endDate: o.endDate ? convertExcelDateToJSDate(o.endDate) : null,
-                    endTime: o.endTime ? convertTimeExcelToJSDate(o.endTime) : "17:30"
-                }]; // Dữ liệu hiển thị
-            } else {
-                if (o.taskActions && o.taskActions.indexOf(null) === -1) {
-                    valueImport[flag] = {
-                        ...valueImport[flag],
-                        taskActions: [...valueImport[flag].taskActions,
-                        {
-                            description: o.taskActions[0],
-                            creator: getUserIdFromEmail(o.taskActions[1]),
-                            createdAt: new Date(convertExcelDateToJSDate(o.taskActions[2], "YYYY-MM-DD")) // format lại đúng định dạng
-                        }]
-                    }
-                    showValueImport = [...showValueImport, { // dòng nào mà ko có tên và có taskActions thì set value required bằng "" để tí tránh validate
-                        ...o,
-                        name: "",
-                        organizationalUnit: "",
-                        priority: "",
-                        startDate: "",
-                        endDate: "",
-                        responsibleEmployees: "",
-                        accountableEmployees: "",
-                        taskActions: o.taskActions.map((x, index) => index === 2 ? convertExcelDateToJSDate(x) : x),
-                    }]
-                } else {
-                    // Trường hợp không có name công việc và taskAction thì bỏ qua
-                    showValueImport = [...showValueImport, o]
-                }
+            if (o.name === null || o.organizationalUnit === null || (o.organizationalUnit && getIdUnitFromName(o.organizationalUnit) === -1) || convertTaskStatus(o.status) === -1 ||
+                o.priority === null || (o.priority && convertPriority(o.priority) === -1) || o.startDate === null || o.endDate === null || o.responsibleEmployees === null
+                || (o.responsibleEmployees && (getUserIdFromEmail(o.responsibleEmployees) === -1 || getUserIdFromEmail(o.responsibleEmployees).indexOf(-1) !== -1)) || o.accountableEmployees === null ||
+                (o.accountableEmployees && (getUserIdFromEmail(o.accountableEmployees) === -1 || getUserIdFromEmail(o.accountableEmployees).indexOf(-1) !== -1))
+                || (o.consultedEmployees && (getUserIdFromEmail(o.consultedEmployees) === -1 || getUserIdFromEmail(o.consultedEmployees).indexOf(-1) !== -1))
+                || (o.informedEmployees && (getUserIdFromEmail(o.informedEmployees) === -1 || getUserIdFromEmail(o.informedEmployees).indexOf(-1) !== -1))
+                || (o.collaboratedWithOrganizationalUnits && (getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) === -1 || getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits).indexOf(-1) !== -1))
+                || (o.taskProject && getProjectId(o.taskProject) === -1)) {
+                rowError = [...rowError, index + 1];
+                o = { ...o, error: true };
             }
+
+            if (o.name === null) {
+                errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
+            }
+
+            if (o.organizationalUnit === null)
+                errorAlert = [...errorAlert, 'Đơn vị quản lý công việc không được để trống'];
+            if (o.organizationalUnit && getIdUnitFromName(o.organizationalUnit) === -1)
+                errorAlert = [...errorAlert, 'Đơn vị quản lý công việc không hợp lệ'];
+
+            if (o.priority === null)
+                errorAlert = [...errorAlert, 'Độ ưu tiên không được để trống'];
+            if (o.priority && convertPriority(o.priority) === -1)
+                errorAlert = [...errorAlert, 'Độ ưu tiên không hợp lệ'];
+
+            if (o.startDate === null)
+                errorAlert = [...errorAlert, 'Ngày bắt đầu công việc không được để trống'];
+            if (o.endDate === null)
+                errorAlert = [...errorAlert, 'Ngày kết thúc công việc không được để trống']
+
+            if (o.responsibleEmployees === null)
+                errorAlert = [...errorAlert, 'Người thực hiện công việc không được để trống'];
+            if (o.responsibleEmployees && (getUserIdFromEmail(o.responsibleEmployees) === -1 || getUserIdFromEmail(o.responsibleEmployees).indexOf(-1) !== -1))
+                errorAlert = [...errorAlert, 'Người thực hiện công việc không hợp lệ'];
+
+            if (o.accountableEmployees === null)
+                errorAlert = [...errorAlert, 'Người phê duyệt công việc không được để trống'];
+            if (o.accountableEmployees && (getUserIdFromEmail(o.accountableEmployees) === -1 || getUserIdFromEmail(o.accountableEmployees).indexOf(-1) !== -1))
+                errorAlert = [...errorAlert, 'Người phê duyệt công việc không hợp lệ'];
+
+            if (o.consultedEmployees && (getUserIdFromEmail(o.consultedEmployees) === -1 || getUserIdFromEmail(o.consultedEmployees).indexOf(-1) !== -1))
+                errorAlert = [...errorAlert, 'Người tư vấn công việc không hợp lệ'];
+
+            if (o.informedEmployees && (getUserIdFromEmail(o.informedEmployees) === -1 || getUserIdFromEmail(o.informedEmployees).indexOf(-1) !== -1))
+                errorAlert = [...errorAlert, 'Người quan sát công việc không hợp lệ'];
+
+            if (o.collaboratedWithOrganizationalUnits && (getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) === -1 || getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits).indexOf(-1) !== -1)) {
+                errorAlert = [...errorAlert, 'Đơn vị phối hợp thực hiện công việc không hợp lệ'];
+            }
+
+            if (convertTaskStatus(o.status) === -1) {
+                errorAlert = [...errorAlert, 'Trạng thái không hợp lệ'];
+            }
+
+            // if (x.parent && (getTaskParentId(x.parent) === -1))
+            //     errorAlert = [errorAlert, 'Công việc cha không hợp lệ'];
+
+            if ((o.taskProject && getProjectId(o.taskProject) === -1))
+                errorAlert = [...errorAlert, 'Dự án không hợp lệ'];
+
+
+            valueImport = [...valueImport, {
+                ...o,
+                startDate: startDate,
+                endDate: endDate,
+                organizationalUnit: organizationalUnit,
+                name: name,
+                description: description,
+                priority: priority,
+                responsibleEmployees: responsibleEmployees,
+                accountableEmployees: accountableEmployees,
+                consultedEmployees: consultedEmployees,
+                informedEmployees: informedEmployees,
+                collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
+                tags: tags,
+                parent: o?.parent && typeof o.parent === 'string' ? o.parent.trim() : null, // xử lý lấy id bên server 
+                taskProject: taskProject,
+                status: status,
+                progress: progress,
+            }];
+
+            showValueImport = [...showValueImport, {
+                ...o,
+                errorAlert: errorAlert,
+                startDate: convertExcelDateToJSDate(o.startDate),
+                endDate: convertExcelDateToJSDate(o.endDate),
+            }]
         })
-
-        console.log('ImportCount', valueImport);
-        console.log('ShowvalueImportCount', showValueImport);
-        let showValue = [];
-
-        if (showValueImport?.length) {
-            showValueImport.forEach((x, index) => {
-                let errorAlert = [];
-                if (x.name === null || x.organizationalUnit === null || (x.organizationalUnit && getIdUnitFromName(x.organizationalUnit) === -1) ||
-                    x.priority === null || (x.priority && convertPriority(x.priority) === -1) || x.startDate === null || x.endDate === null || x.responsibleEmployees === null
-                    || (x.responsibleEmployees && (getUserIdFromEmail(x.responsibleEmployees) === -1 || getUserIdFromEmail(x.responsibleEmployees).indexOf(-1) !== -1)) || x.accountableEmployees === null ||
-                    (x.accountableEmployees && (getUserIdFromEmail(x.accountableEmployees) === -1 || getUserIdFromEmail(x.accountableEmployees).indexOf(-1) !== -1))
-                    || (x.consultedEmployees && (getUserIdFromEmail(x.consultedEmployees) === -1 || getUserIdFromEmail(x.consultedEmployees).indexOf(-1) !== -1))
-                    || (x.informedEmployees && (getUserIdFromEmail(x.informedEmployees) === -1 || getUserIdFromEmail(x.informedEmployees).indexOf(-1) !== -1))
-                    || (x.collaboratedWithOrganizationalUnits && (getDataCollaboratedWithUnits(x.collaboratedWithOrganizationalUnits) === -1 || getDataCollaboratedWithUnits(x.collaboratedWithOrganizationalUnits).indexOf(-1) !== -1))
-                    || (x.parent && (getTaskParentId(x.parent) === -1))
-                    || (x.taskProject && getProjectId(x.taskProject) === -1)) {
-                    rowError = [...rowError, index + 1];
-                    x = { ...x, error: true };
-                }
-                if (x.name === null) {
-                    errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
-                }
-
-                if (x.organizationalUnit === null)
-                    errorAlert = [...errorAlert, 'Đơn vị quản lý công việc không được để trống'];
-                if (x.organizationalUnit && getIdUnitFromName(x.organizationalUnit) === -1)
-                    errorAlert = [errorAlert, 'Đơn vị quản lý công việc không hợp lệ'];
-
-                if (x.priority === null)
-                    errorAlert = [errorAlert, 'Độ ưu tiên không được để trống'];
-                if (x.priority && convertPriority(x.priority) === -1)
-                    errorAlert = [errorAlert, 'Độ ưu tiên không hợp lệ'];
-
-                if (x.startDate === null)
-                    errorAlert = [errorAlert, 'Ngày bắt đầu công việc không được để trống'];
-                if (x.endDate === null)
-                    errorAlert = [errorAlert, 'Ngày kết thúc công việc không được để trống']
-
-                if (x.responsibleEmployees === null)
-                    errorAlert = [errorAlert, 'Người thực hiện công việc không được để trống'];
-                if (x.responsibleEmployees && (getUserIdFromEmail(x.responsibleEmployees) === -1 || getUserIdFromEmail(x.responsibleEmployees).indexOf(-1) !== -1))
-                    errorAlert = [errorAlert, 'Người thực hiện công việc không hợp lệ'];
-
-                if (x.accountableEmployees === null)
-                    errorAlert = [errorAlert, 'Người phê duyệt công việc không được để trống'];
-                if (x.accountableEmployees && (getUserIdFromEmail(x.accountableEmployees) === -1 || getUserIdFromEmail(x.accountableEmployees).indexOf(-1) !== -1))
-                    errorAlert = [errorAlert, 'Người phê duyệt công việc không hợp lệ'];
-
-                if (x.consultedEmployees && (getUserIdFromEmail(x.consultedEmployees) === -1 || getUserIdFromEmail(x.consultedEmployees).indexOf(-1) !== -1))
-                    errorAlert = [errorAlert, 'Người tư vấn công việc không hợp lệ'];
-
-                if (x.informedEmployees && (getUserIdFromEmail(x.informedEmployees) === -1 || getUserIdFromEmail(x.informedEmployees).indexOf(-1) !== -1))
-                    errorAlert = [errorAlert, 'Người quan sát công việc không hợp lệ'];
-
-                if (x.collaboratedWithOrganizationalUnits && (getDataCollaboratedWithUnits(x.collaboratedWithOrganizationalUnits) === -1 || getDataCollaboratedWithUnits(x.collaboratedWithOrganizationalUnits).indexOf(-1) !== -1)) {
-                    errorAlert = [errorAlert, 'Đơn vị phối hợp thực hiện công việc không hợp lệ'];
-                }
-
-                if (x.parent && (getTaskParentId(x.parent) === -1))
-                    errorAlert = [errorAlert, 'Công việc cha không hợp lệ'];
-
-                if ((x.taskProject && getProjectId(x.taskProject) === -1))
-                    errorAlert = [errorAlert, 'Dự án không hợp lệ'];
-
-                showValue = [...showValue, {
-                    ...x,
-                    errorAlert: errorAlert
-                }]
-            })
-        }
 
         setState({
             ...state,
             valueImport,
-            showValueImport: showValue,
+            showValueImport,
             rowError: rowError,
         })
     }
 
+
+    const handleImportTaskActionsExcel = (value, checkFileImport = true) => {
+        let valueImportTaskActions = [], showValueImportTaskActions = [], rowErrorTaskActions = [];
+        console.log('value', value);
+
+        if (value) {
+            value.forEach((o, index) => {
+                let errorAlert = [];
+                let createdAt = o?.createdAt ? convertExcelDateToJSDate(o.createdAt) : null;
+                let creator = o?.createBy ? getUserIdFromEmail(o.createBy)[0] : [];
+
+                if (o?.taskName === null || o?.description === null || o?.createBy === null || (o.createBy && getUserIdFromEmail(o.createBy) === -1) || getUserIdFromEmail(o.createBy).indexOf(-1) !== -1) {
+                    rowErrorTaskActions = [...rowErrorTaskActions, index + 1];
+                    o = { ...o, error: true };
+                }
+
+                if (o?.taskName === null)
+                    errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
+
+                if (o?.description === null)
+                    errorAlert = [...errorAlert, 'Tên hoạt động không được để trống'];
+                if (o?.createBy === null) {
+                    errorAlert = [...errorAlert, 'Người tạo hoạt động không được để trống'];
+                }
+                if (o.createBy && getUserIdFromEmail(o.createBy) === -1 || o.createBy && getUserIdFromEmail(o.createBy).indexOf(-1) !== -1) {
+                    errorAlert = [...errorAlert, 'Người tạo hoạt động không hợp lệ'];
+                }
+
+                valueImportTaskActions = [...valueImportTaskActions, {
+                    description: o?.description ? o.description.toString().trim() : "",
+                    creator,
+                    createdAt: createdAt ? convertDateTime(createdAt) : null,
+                    taskName: o?.taskName,
+                }];
+
+                showValueImportTaskActions = [...showValueImportTaskActions, {
+                    ...o,
+                    errorAlert: errorAlert,
+                    createdAt: convertExcelDateToJSDate(o.createdAt),
+                }]
+            })
+
+            setState({
+                ...state,
+                showValueImportTaskActions,
+                valueImportTaskActions,
+                rowErrorTaskActions,
+            })
+        }
+    }
+
+
     const handleImport = () => {
         const { valueImport } = state;
-        console.log('valueImport', valueImport);
         if (valueImport?.length)
-            props.importTasks(valueImport);
+            props.importTasks({ importType: 'task_info', importData: valueImport });
+    }
+
+    const handleImportTaskActions = () => {
+        const { valueImportTaskActions } = state;
+        if (valueImportTaskActions?.length)
+            props.importTasks({ importType: 'task_actions', importData: valueImportTaskActions });
     }
 
     const handleDownloadFileImport = () => {
@@ -458,38 +569,84 @@ function TaskManagementImportForm(props) {
     }
 
     const config = configurationImport();
+    const configTaskActions = configurationTaskActions();
+
+    const note = <p className="text-left"><span className="text-red">Sau khi tiến hành import xong, F5 lại trang để xem dữ liệu vừa cập nhật</span></p>;
 
     return <DialogModal modalID={`modal_import_tasks`} isLoading={false}
         formID={`form_import_tasks`}
         title={'Thêm dữ liệu từ file excel'}
         hasSaveButton={false}
-        hasNote={false}
+        note={note}
+        // hasNote={false}
         size={75}>
-        <div className="box-body row">
-            {/* File import */}
-            <div className="form-group col-md-4 col-xs-12">
-                <ImportFileExcel
-                    configData={config}
-                    handleImportExcel={handleImportExcel}
-                />
-            </div>
-            <div className="form-group col-md-8 col-xs-12">
-                <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
-                <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} >Thêm mới</button>
-            </div>
-            {/* Hiện thị data import */}
-            <div className="col-md-12 col-xs-12">
-                <ShowImportData
-                    id={`import_list_task`}
-                    configData={config}
-                    importData={state.showValueImport}
-                    rowError={state.rowError}
-                    scrollTable={true}
-                    checkFileImport={true}
-                    limit={limit}
-                    page={page}
-                    scrollTableWidth={2500}
-                />
+
+        {/* Hiện thị data import */}
+        <div className="nav-tabs-custom row" >
+            <ul className="nav nav-tabs">
+                <li className="active"><a data-toggle="tab" href="#import_task_general">Thông tin chung</a></li>
+                <li><a data-toggle="tab" href="#import_task_actions"> Thông tin hoạt động</a></li>
+            </ul>
+            <div className="tab-content">
+                <div id="import_task_general" className="tab-pane active">
+                    <div className="row">
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-xs-12">
+                            <ImportFileExcel
+                                configData={config}
+                                handleImportExcel={handleImportExcel}
+                            />
+                        </div>
+                        <div className="form-group col-md-8 col-xs-12">
+                            <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} >Thêm mới thông tin chung</button>
+                        </div>
+                    </div>
+
+                    <div className="col-md-12 col-xs-12">
+                        <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
+                        <ShowImportData
+                            id={`import_list_task`}
+                            configData={config}
+                            importData={state.showValueImport}
+                            rowError={state.rowError}
+                            scrollTable={true}
+                            checkFileImport={true}
+                            limit={limit}
+                            page={page}
+                            scrollTableWidth={2500}
+                        />
+                    </div>
+                </div>
+                <div id="import_task_actions" className="tab-pane">
+                    <div className="row">
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-xs-12">
+                            <ImportFileExcel
+                                configData={configTaskActions}
+                                handleImportExcel={handleImportTaskActionsExcel}
+                            />
+                        </div>
+                        <div className="form-group col-md-8 col-xs-12">
+                            <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportTaskActions} >Thêm mới thông tin hoạt động</button>
+                        </div>
+                    </div>
+
+                    <div className="col-md-12 col-xs-12">
+                        <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
+                        <ShowImportData
+                            id={`import_list_task_actions`}
+                            configData={configTaskActions}
+                            importData={state.showValueImportTaskActions}
+                            rowError={state.rowErrorTaskActions}
+                            scrollTable={true}
+                            checkFileImport={true}
+                            limit={limit}
+                            page={page}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     </DialogModal>

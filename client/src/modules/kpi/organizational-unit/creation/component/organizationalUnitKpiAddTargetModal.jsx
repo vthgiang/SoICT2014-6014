@@ -137,7 +137,7 @@ function OrganizationalUnitKpiAddTargetModal(props) {
                 formID="form-add-target"
                 title={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.create_organizational_unit_kpi')}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.success')}
-                msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.failure')}
+                msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.failure')}
                 func={onAddItem}
                 disableSubmit={!isFormValidated()}>
 

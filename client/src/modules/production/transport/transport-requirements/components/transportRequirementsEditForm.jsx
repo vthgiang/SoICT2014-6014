@@ -195,7 +195,7 @@ function TransportRequirementsEditForm(props) {
                 formID="modal-edit-example-hooks"
                 title={'Chỉnh sửa yêu cầu vận chuyển'}
                 // msg_success={translate('manage_example.add_success')}
-                // msg_faile={translate('manage_example.add_fail')}
+                // msg_failure={translate('manage_example.add_fail')}
                 func={save}
                 // disableSubmit={!isFormValidated()}
                 size={100}

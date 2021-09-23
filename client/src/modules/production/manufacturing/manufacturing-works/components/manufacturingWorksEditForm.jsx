@@ -238,7 +238,7 @@ class ManufacturingWorksEditForm extends Component {
                     formID="form-edit-works"
                     title={translate('manufacturing.manufacturing_works.create_works')}
                     msg_success={translate('manufacturing.manufacturing_works.create_successfully')}
-                    msg_faile={translate('manufacturing.manufacturing_works.create_failed')}
+                    msg_failure={translate('manufacturing.manufacturing_works.create_failed')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}

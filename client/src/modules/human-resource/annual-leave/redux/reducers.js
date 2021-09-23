@@ -25,6 +25,7 @@ const initState = {
 export function annualLeave(state = initState, action) {
     switch (action.type) {
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_REQUEST:
+        case AnnualLeaveConstants.GET_ANNUAL_LEAVE_BY_ID_REQUEST:
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_REQUEST:
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_REQUEST:
         case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_REQUEST:
@@ -42,6 +43,14 @@ export function annualLeave(state = initState, action) {
                     arrMonth: [],
             };
             
+        case AnnualLeaveConstants.GET_ANNUAL_LEAVE_BY_ID_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                annualLeaveById: action.payload
+            }
+        
+        
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS:
             if(action.beforAndAfterOneWeek){
                 return {
@@ -104,6 +113,7 @@ export function annualLeave(state = initState, action) {
                 importAnnualLeave: action.payload.content,
             };
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE:
+        case AnnualLeaveConstants.GET_ANNUAL_LEAVE_BY_ID_FAILURE:
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE:
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_FAILURE:
         case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_FAILURE:

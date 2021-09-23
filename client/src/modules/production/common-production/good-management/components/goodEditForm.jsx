@@ -280,7 +280,7 @@ function GoodEditForm(props) {
                 formID={`form-edit-good`}
                 title={translate("manage_warehouse.good_management.add_title")}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
-                msg_faile={translate("manage_warehouse.good_management.add_faile")}
+                msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size={50}
