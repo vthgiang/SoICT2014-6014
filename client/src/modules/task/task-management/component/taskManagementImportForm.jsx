@@ -7,6 +7,9 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import cloneDeep from 'lodash/cloneDeep';
 import { taskManagementActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+dayjs.extend(isSameOrAfter)
 
 function TaskManagementImportForm(props) {
     const [state, setState] = useState({
@@ -286,6 +289,8 @@ function TaskManagementImportForm(props) {
             return -1;
         return unitId;
     }
+
+
     const getTaskParentId = (taskName) => {
         const listTasks = tasks.tasks;
         if (!taskName)
@@ -458,7 +463,7 @@ function TaskManagementImportForm(props) {
                 consultedEmployees = o?.consultedEmployees ? getUserIdFromEmail(o.consultedEmployees) : [],
                 informedEmployees = o?.informedEmployees ? getUserIdFromEmail(o.informedEmployees) : [],
                 creator = o?.creator ? getUserIdFromEmail(o.creator)[0] : null,
-                createdAt = o.createdAt ? convertDateTime(convertExcelDateToJSDate(o.createdAt)) : new Date(),
+                createdAt = o.createdAt ? convertDateTime(convertExcelDateToJSDate(o.createdAt)) : null,
 
                 collaboratedWithOrganizationalUnits = o?.collaboratedWithOrganizationalUnits ? getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) : [],
                 tags = o?.tags && typeof (o.tags) === 'string' ? o.tags.split(',') : [],
@@ -554,7 +559,7 @@ function TaskManagementImportForm(props) {
                 errorAlert: errorAlert,
                 startDate: convertExcelDateToJSDate(o.startDate),
                 endDate: convertExcelDateToJSDate(o.endDate),
-                createdAt: convertExcelDateToJSDate(o.createdAt),
+                createdAt: o.createdAt ? convertExcelDateToJSDate(o.createdAt) : "",
             }]
         })
 
@@ -627,11 +632,19 @@ function TaskManagementImportForm(props) {
                 let date = o?.date ? convertExcelDateToJSDate(o.date) : null;
                 let timeFrom = o?.from ? convertTimeExcelToJSDate(o.from) : "";
                 let timeTo = o?.to ? convertTimeExcelToJSDate(o.to) : "";
-                if (o?.taskName === null || o?.createdBy === null || o?.date === null || o?.from === null || o?.to == null || (o.createdBy && getUserIdFromEmail(o.createdBy) === -1) || (o.createdBy && getUserIdFromEmail(o.createdBy).indexOf(-1) !== -1)) {
+                if (o?.taskName === null || o?.createdBy === null || o?.date === null || o?.from === null || o?.to == null
+                    || (o.createdBy && getUserIdFromEmail(o.createdBy) === -1)
+                    || (o.createdBy && getUserIdFromEmail(o.createdBy).indexOf(-1) !== -1)
+                    || (date && !dayjs(convertDateTime(date, timeTo)).isSameOrAfter(dayjs(convertDateTime(date, timeFrom))))) {
+                    rowErrorTaskTimesheetLogs = [...rowErrorTaskTimesheetLogs, index + 1];
+                    o = { ...o, error: true };
+                }
+                if (!convertDateTime(date, timeFrom) || !convertDateTime(date, timeTo)) {
                     rowErrorTaskTimesheetLogs = [...rowErrorTaskTimesheetLogs, index + 1];
                     o = { ...o, error: true };
                 }
 
+                console.log(`duration${index}`, convertDateTime(date, timeTo) - convertDateTime(date, timeFrom))
                 if (o?.taskName === null)
                     errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
 
@@ -644,6 +657,9 @@ function TaskManagementImportForm(props) {
 
                 if (o?.from === null) {
                     errorAlert = [...errorAlert, 'Thời gian bắt đầu bấm giờ không được để trống'];
+                }
+                if ((date && !dayjs(convertDateTime(date, timeTo)).isSameOrAfter(dayjs(convertDateTime(date, timeFrom))))) {
+                    errorAlert = [...errorAlert, 'Thời gian bắt đầu phải trước thời gian kết thúc'];
                 }
 
                 if (o?.to === null) {
@@ -669,6 +685,7 @@ function TaskManagementImportForm(props) {
                     date,
                     from: timeFrom,
                     to: timeTo,
+
                 }]
             })
 

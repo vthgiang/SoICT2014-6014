@@ -3123,6 +3123,7 @@ exports.importUpdateTasks = async (data, portal, user) => {
                         delete valueImport[k][propName];
                     }
                 }
+
                 dataUpdate = { ...valueImport[k] };
                 if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
                     let collaboratedWithOrganizationalUnits = [];
@@ -3136,8 +3137,12 @@ exports.importUpdateTasks = async (data, portal, user) => {
                     dataUpdate ={...dataUpdate, collaboratedWithOrganizationalUnits}
                 }
 
-                dataUpdate = {...dataUpdate, createdAt: new Date(dataUpdate.createdAt)}
+                if(dataUpdate.createdAt){
+                    dataUpdate = {...dataUpdate, createdAt: new Date(dataUpdate.createdAt)}
+                }
 
+                
+                // console.log('dataUpdate',dataUpdate)
                 await Task(connect(DB_CONNECTION, portal)).bulkWrite([
                     {
                         updateOne: {
