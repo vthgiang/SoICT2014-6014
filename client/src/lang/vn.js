@@ -3045,6 +3045,7 @@ export default {
                 delete_success: "Xóa công việc thành công",
                 edit_status_of_task_success:
                     "Chỉnh sửa trạng thái công việc thành công",
+                edit_status_archived_of_task: "Thay đổi trạng thái lưu kho",
                 edit_status_archived_of_task_success:
                     "Chỉnh sửa trạng thái lưu kho của công việc thành công",
 
