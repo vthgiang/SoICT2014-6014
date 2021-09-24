@@ -103,6 +103,16 @@ function TaskManagementImportForm(props) {
                 description: 'Người quan sát',
                 value: 'Người quan sát',
             },
+            creator: {
+                columnName: 'Người thiết lập',
+                description: 'Người thiết lập',
+                value: 'Người thiết lập',
+            },
+            createdAt: {
+                columnName: 'Thời gian tạo',
+                description: 'Thời gian tạo',
+                value: 'Thời gian tạo',
+            },
             parent: {
                 columnName: 'Công việc cha',
                 description: 'Công việc cha',
@@ -157,6 +167,57 @@ function TaskManagementImportForm(props) {
                 description: 'Thời gian tạo',
                 value: 'Thời gian tạo',
             },
+        }
+        return config;
+    }
+
+
+    function configurationTaskTimeSheetLog() {
+        let config = {
+            sheets: { // Tên các sheet
+                description: 'Thông tin bấm giờ',
+                value: ["Thông tin bấm giờ"]
+            },
+            rowHeader: { // Số dòng tiêu đề của bảng
+                description: 'Số dòng tiêu đề của bảng',
+                value: 1
+            },
+
+            taskName: {
+                columnName: 'Tên công việc',
+                description: 'Tên công việc',
+                value: 'Tên công việc',
+            },
+
+            createdBy: {
+                columnName: 'Người bấm giờ',
+                description: 'Người bấm giờ',
+                value: 'Người bấm giờ',
+            },
+
+            date: {
+                columnName: 'Ngày bấm giờ',
+                description: 'Ngày bấm giờ',
+                value: 'Ngày bấm giờ',
+            },
+
+            from: {
+                columnName: 'Từ',
+                description: 'Từ',
+                value: 'Từ',
+            },
+
+            to: {
+                columnName: 'Đến',
+                description: 'Đến',
+                value: 'Đến',
+            },
+
+            description: {
+                columnName: 'Mô tả',
+                description: 'Mô tả',
+                value: 'Mô tả',
+            }
         }
         return config;
     }
@@ -396,6 +457,9 @@ function TaskManagementImportForm(props) {
                 accountableEmployees = o?.accountableEmployees ? getUserIdFromEmail(o.accountableEmployees) : [],
                 consultedEmployees = o?.consultedEmployees ? getUserIdFromEmail(o.consultedEmployees) : [],
                 informedEmployees = o?.informedEmployees ? getUserIdFromEmail(o.informedEmployees) : [],
+                creator = o?.creator ? getUserIdFromEmail(o.creator)[0] : null,
+                createdAt = o.createdAt ? convertDateTime(convertExcelDateToJSDate(o.createdAt)) : new Date(),
+
                 collaboratedWithOrganizationalUnits = o?.collaboratedWithOrganizationalUnits ? getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) : [],
                 tags = o?.tags && typeof (o.tags) === 'string' ? o.tags.split(',') : [],
                 taskProject = o.taskProject ? getProjectId(o.taskProject) : null;
@@ -481,6 +545,8 @@ function TaskManagementImportForm(props) {
                 taskProject: taskProject,
                 status: status,
                 progress: progress,
+                creator,
+                createdAt,
             }];
 
             showValueImport = [...showValueImport, {
@@ -488,6 +554,7 @@ function TaskManagementImportForm(props) {
                 errorAlert: errorAlert,
                 startDate: convertExcelDateToJSDate(o.startDate),
                 endDate: convertExcelDateToJSDate(o.endDate),
+                createdAt: convertExcelDateToJSDate(o.createdAt),
             }]
         })
 
@@ -502,7 +569,6 @@ function TaskManagementImportForm(props) {
 
     const handleImportTaskActionsExcel = (value, checkFileImport = true) => {
         let valueImportTaskActions = [], showValueImportTaskActions = [], rowErrorTaskActions = [];
-        console.log('value', value);
 
         if (value) {
             value.forEach((o, index) => {
@@ -551,16 +617,96 @@ function TaskManagementImportForm(props) {
     }
 
 
+    const handleImportTaskTimesheetLogsExcell = (value, checkFileImport = true) => {
+        let valueImportTaskTimesheetLog = [], showValueImportTaskTimeSheetLogs = [], rowErrorTaskTimesheetLogs = [];
+        console.log('value', value);
+        if (value) {
+            value.forEach((o, index) => {
+                let errorAlert = [];
+                let createdBy = o?.createdBy ? getUserIdFromEmail(o.createdBy)[0] : o?.createdBy;
+                let date = o?.date ? convertExcelDateToJSDate(o.date) : null;
+                let timeFrom = o?.from ? convertTimeExcelToJSDate(o.from) : "";
+                let timeTo = o?.to ? convertTimeExcelToJSDate(o.to) : "";
+                if (o?.taskName === null || o?.createdBy === null || o?.date === null || o?.from === null || o?.to == null || (o.createdBy && getUserIdFromEmail(o.createdBy) === -1) || (o.createdBy && getUserIdFromEmail(o.createdBy).indexOf(-1) !== -1)) {
+                    rowErrorTaskTimesheetLogs = [...rowErrorTaskTimesheetLogs, index + 1];
+                    o = { ...o, error: true };
+                }
+
+                if (o?.taskName === null)
+                    errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
+
+                if (o?.createdBy === null)
+                    errorAlert = [...errorAlert, 'Người bấm giờ không được để trống'];
+
+                if (o?.date === null) {
+                    errorAlert = [...errorAlert, 'Ngày bấm giờ không được để trống'];
+                }
+
+                if (o?.from === null) {
+                    errorAlert = [...errorAlert, 'Thời gian bắt đầu bấm giờ không được để trống'];
+                }
+
+                if (o?.to === null) {
+                    errorAlert = [...errorAlert, 'Thời gian kết thúc bấm giờ không được để trống'];
+                }
+
+                if (o.createdBy && getUserIdFromEmail(o.createdBy) === -1 || (o.createdBy && getUserIdFromEmail(o.createdBy).indexOf(-1) !== -1)) {
+                    errorAlert = [...errorAlert, 'Người bấm giờ không hợp lệ'];
+                }
+
+                valueImportTaskTimesheetLog = [...valueImportTaskTimesheetLog, {
+                    description: o?.description,
+                    employee: createdBy,
+                    addlogStartedAt: date && timeFrom && convertDateTime(date, timeFrom),
+                    addlogStoppedAt: date && timeTo && convertDateTime(date, timeTo),
+                    taskName: o?.taskName,
+                    autoStopped: 3,
+                }];
+
+                showValueImportTaskTimeSheetLogs = [...showValueImportTaskTimeSheetLogs, {
+                    ...o,
+                    errorAlert: errorAlert,
+                    date,
+                    from: timeFrom,
+                    to: timeTo,
+                }]
+            })
+
+            console.log('showValueImportTaskTimeSheetLogs', showValueImportTaskTimeSheetLogs);
+            console.log('valueImportTaskTimesheetLog', valueImportTaskTimesheetLog);
+            setState({
+                ...state,
+                showValueImportTaskTimeSheetLogs,
+                valueImportTaskTimesheetLog,
+                rowErrorTaskTimesheetLogs,
+            })
+        }
+    }
+
+
     const handleImport = () => {
         const { valueImport } = state;
         if (valueImport?.length)
-            props.importTasks({ importType: 'task_info', importData: valueImport });
+            props.importTasks({ importType: 'import_task_info', importData: valueImport });
+    }
+
+    const handleImportUpdate = () => {
+        const { valueImport } = state;
+        if (valueImport?.length)
+            props.importTasks({ importType: 'import_update_task_info', importData: valueImport });
     }
 
     const handleImportTaskActions = () => {
         const { valueImportTaskActions } = state;
         if (valueImportTaskActions?.length)
-            props.importTasks({ importType: 'task_actions', importData: valueImportTaskActions });
+            props.importTasks({ importType: 'import_task_actions', importData: valueImportTaskActions });
+    }
+
+    const handleImportTaskTimesheetLogs = () => {
+        const { valueImportTaskTimesheetLog } = state;
+
+        if (valueImportTaskTimesheetLog?.length)
+            props.importTasks({ importType: 'import_timeSheetLog', importData: valueImportTaskTimesheetLog });
     }
 
     const handleDownloadFileImport = () => {
@@ -570,8 +716,33 @@ function TaskManagementImportForm(props) {
 
     const config = configurationImport();
     const configTaskActions = configurationTaskActions();
+    const configTaskTimeSheetLog = configurationTaskTimeSheetLog();
 
     const note = <p className="text-left"><span className="text-red">Sau khi tiến hành import xong, F5 lại trang để xem dữ liệu vừa cập nhật</span></p>;
+
+    const isFormValidateImportTask = () => {
+        let { rowError = [], valueImport = [] } = state;
+
+        if (rowError.length === 0 && valueImport.length !== 0) {
+            return true
+        } return false
+    }
+    const isFormValidateImportTaskActions = () => {
+        let { rowErrorTaskActions = [], valueImportTaskActions = [] } = state;
+
+        if (rowErrorTaskActions.length === 0 && valueImportTaskActions.length !== 0) {
+            return true
+        } return false
+    }
+
+    const isFormValidateImportTaskTimesheetLogs = () => {
+        let { rowErrorTaskTimesheetLogs = [], valueImportTaskTimesheetLog = [] } = state;
+
+        if (rowErrorTaskTimesheetLogs.length === 0 && valueImportTaskTimesheetLog.length !== 0) {
+            return true
+        } return false
+    }
+
 
     return <DialogModal modalID={`modal_import_tasks`} isLoading={false}
         formID={`form_import_tasks`}
@@ -586,20 +757,22 @@ function TaskManagementImportForm(props) {
             <ul className="nav nav-tabs">
                 <li className="active"><a data-toggle="tab" href="#import_task_general">Thông tin chung</a></li>
                 <li><a data-toggle="tab" href="#import_task_actions"> Thông tin hoạt động</a></li>
+                <li><a data-toggle="tab" href="#import_timesheetlogs"> Thông tin bấm giờ</a></li>
             </ul>
             <div className="tab-content">
                 <div id="import_task_general" className="tab-pane active">
                     <div className="row">
                         {/* File import */}
-                        <div className="form-group col-md-4 col-xs-12">
+                        <div className="form-group col-md-6 col-xs-12">
                             <ImportFileExcel
                                 configData={config}
                                 handleImportExcel={handleImportExcel}
                             />
+                            <a style={{ cursor: 'pointer', }} onClick={handleDownloadFileImport} ><u>Tải xuống file mẫu<i className="fa fa-fw fa-file-excel-o"> </i></u> </a>
                         </div>
-                        <div className="form-group col-md-8 col-xs-12">
-                            <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
-                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} >Thêm mới thông tin chung</button>
+                        <div className="form-group col-md-6 col-xs-12">
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} disabled={!isFormValidateImportTask()}>Thêm mới thông tin chung</button>
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportUpdate} disabled={!isFormValidateImportTask()}>Cập nhật thông tin chung</button>
                         </div>
                     </div>
 
@@ -629,7 +802,7 @@ function TaskManagementImportForm(props) {
                         </div>
                         <div className="form-group col-md-8 col-xs-12">
                             <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
-                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportTaskActions} >Thêm mới thông tin hoạt động</button>
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportTaskActions} disabled={!isFormValidateImportTaskActions()}>Thêm mới thông tin hoạt động</button>
                         </div>
                     </div>
 
@@ -640,6 +813,37 @@ function TaskManagementImportForm(props) {
                             configData={configTaskActions}
                             importData={state.showValueImportTaskActions}
                             rowError={state.rowErrorTaskActions}
+                            scrollTable={true}
+                            checkFileImport={true}
+                            limit={limit}
+                            page={page}
+                        />
+                    </div>
+                </div>
+
+                <div id="import_timesheetlogs" className="tab-pane">
+                    <div className="row">
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-xs-12">
+                            <ImportFileExcel
+                                configData={configTaskTimeSheetLog}
+                                handleImportExcel={handleImportTaskTimesheetLogsExcell}
+                            />
+                        </div>
+                        <div className="form-group col-md-8 col-xs-12">
+                            <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
+                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportTaskTimesheetLogs} disabled={!isFormValidateImportTaskTimesheetLogs()}>Thêm mới thông tin bấm giờ</button>
+                        </div>
+                    </div>
+
+                    <div className="col-md-12 col-xs-12">
+                        <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
+
+                        <ShowImportData
+                            id={`import_list_task_actions`}
+                            configData={configTaskTimeSheetLog}
+                            importData={state.showValueImportTaskTimeSheetLogs}
+                            rowError={state.rowErrorTaskTimesheetLogs}
                             scrollTable={true}
                             checkFileImport={true}
                             limit={limit}

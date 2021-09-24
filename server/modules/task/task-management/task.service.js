@@ -3015,6 +3015,142 @@ exports.importTasks = async (data, portal, user) => {
     console.log('done_import_task')
 }
 
+// kiểm tra giá trị có nằm trong mảng hay ko. dùng tìm kiếm nhị phân : Độ phức tạp thời gian: O (logN)
+_checkItemInArray = (arr, x, getLevel = false) => {
+    let _id, level;
+    if (arr?.length) {
+        const arrLength = arr.length;
+        for (let i = 0; i < arrLength; i++){
+            if (arr[i]?.name?.toString().trim() === x?.toString()?.trim()) {
+                _id = arr[i]._id;
+                level = arr[i].level + 1;
+                break;
+            }
+        }
+    }
+    if (getLevel)
+        return { _id, level }
+    else
+        return _id;
+}
+
+
+exports.importUpdateTasks = async (data, portal, user) => {
+    let rowError = [], valueImport = [];
+    if (data) {
+        const allTask = await Task(connect(DB_CONNECTION, portal)).find({}, {
+            _id: 1,
+            name: 1,
+            level: 1,
+        })
+
+        // validate
+
+        if (allTask) {
+            data.forEach((x, index) => {
+                let item = { ...x };
+                if(!x.name){
+                    item = {
+                            ...item,
+                            errorAlert: ["name_task_not_empty"],
+                            error: true
+                        }
+                    rowError = [...rowError, index + 1];
+                } else {
+                    if (!_checkItemInArray(allTask, x.name)) {
+                        item = {
+                                ...item,
+                                errorAlert: ["name_task_not_found"],
+                                error: true
+                            }
+                        rowError = [...rowError, index + 1];
+                    } else {
+                        item={
+                            ...item,
+                            taskNameId: _checkItemInArray(allTask, x.name),
+                            name: null, 
+                        }
+                    }
+                }
+
+                
+
+                if (x.parent) {
+                    let checkParent = _checkItemInArray(allTask, x.parent, true);
+                    if ( !checkParent?._id) {
+                        item = {
+                                ...item,
+                                errorAlert: ["parent_task_not_found"],
+                                error: true
+                            }
+                        rowError = [...rowError, index + 1];
+                    }
+                    else {
+                        item={
+                            ...item,
+                            parent: checkParent?._id,
+                            level: checkParent?.level
+                        }
+                    }
+                }
+                
+                valueImport = [...valueImport, item];
+            })
+        }
+
+        console.log('rowError', rowError);
+        // console.log('valueImport', valueImport);
+
+        if (rowError.length !== 0) {
+            return {
+                data: valueImport,
+                rowError
+            }
+        } else {
+            const importLength = valueImport.length;
+            for (let k = 0; k < importLength; k++) {
+                let dataUpdate = {};
+
+                for (let propName in valueImport[k]) {
+                    if (valueImport[k][propName] === null ||
+                        valueImport[k][propName] === undefined ||
+                        valueImport[k][propName] === "" ||
+                        (Array.isArray(valueImport[k][propName]) && valueImport[k][propName]?.length === 0)
+                        ) {
+                        delete valueImport[k][propName];
+                    }
+                }
+                dataUpdate = { ...valueImport[k] };
+                if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                    let collaboratedWithOrganizationalUnits = [];
+                    if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                        dataUpdate.collaboratedWithOrganizationalUnits.forEach(y => {
+                            collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
+                                organizationalUnit: y,
+                            }]
+                        })
+                    }
+                    dataUpdate ={...dataUpdate, collaboratedWithOrganizationalUnits}
+                }
+
+                dataUpdate = {...dataUpdate, createdAt: new Date(dataUpdate.createdAt)}
+
+                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
+                    {
+                        updateOne: {
+                            filter: { _id: valueImport[k].taskNameId },
+                            update: dataUpdate,
+                            timestamps: false, //  set bằng false mới update được 2 trường updatedAt và createdAt
+                        }
+                    },
+                ])
+            }
+            console.log("DONE UPDATE TASK")
+        }
+    }
+}
+
+
 exports.importTaskActions = async (data, portal, user) => {
     if (data) {
         let groupByTask = [];
@@ -3040,6 +3176,68 @@ exports.importTaskActions = async (data, portal, user) => {
         }
     }
     console.log("DONE_IMPORT_TASK_ACTION!!!")
+
+}
+
+
+exports.importTimeSheetLogs = async (data, portal, user) => {
+    if (data) {
+        let groupByTask = [];
+        data.forEach((x,index)=>{
+            if (!groupByTask[x.taskName]) {
+                groupByTask[x.taskName] = [x]
+            } else {
+                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+            }
+        })
+
+        // console.log('groupByTask', groupByTask)
+        
+        for (let k in groupByTask) {
+            if (k) {
+                let infoTimesheetLog = [];
+                groupByTask[k].forEach(x => {
+                    const duration = new Date(x.addlogStoppedAt).getTime() - new Date(x.addlogStartedAt).getTime();
+                    // vì add log trong 1 ngày nên giờ ko quá 24 nên ko cần check acceptLog. default true
+                    infoTimesheetLog = [...infoTimesheetLog, {
+                        creator: x?.employee,
+                        startedAt: new Date(x?.addlogStartedAt),
+                        stoppedAt: new Date(x?.addlogStoppedAt),
+                        description: x?.description,
+                        duration,
+                        autoStopped: x?.autoStopped,
+                    }]
+                })
+
+                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
+                    {
+                        updateOne: {
+                            filter: { name: k?.trim() },
+                            update: {
+                                timesheetLogs: infoTimesheetLog
+                            },
+                            upsert: false
+                        }
+                    },
+               ])
+                
+            }
+            console.log('DONE IMPORT TIMESHEET')
+        }
+
+
+        // for (let k in groupByTask) {
+        //     let task;
+        //     if (k)
+        //         task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
+            
+        //     if (task) {
+        //         task.taskActions = task.taskActions.concat(groupByTask[k]);
+        //         task.save();
+        //     }
+        // }
+    }
+    console.log("DONE_IMPORT_TIME_SHEET!!!")
 
 }
 

@@ -1071,11 +1071,27 @@ getTasksByProject = async (req, res) => {
 exports.importTasks = async (req, res) => {
     try {
         let data;
-        if (req?.body?.importType === "task_info") {
+        if (req?.body?.importType === "import_task_info") {
             data = await TaskManagementService.importTasks(req.body?.importData, req.portal, req.user);
-        } 
-        if (req?.body?.importType === "task_actions") {
+        }
+        if (req?.body?.importType === "import_update_task_info") {
+            data = await TaskManagementService.importUpdateTasks(req.body?.importData, req.portal, req.user);
+        }
+
+        if (req?.body?.importType === "import_task_actions") {
             data = await TaskManagementService.importTaskActions(req.body?.importData, req.portal, req.user);
+        }
+        if (req?.body?.importType === "import_timeSheetLog") {
+            data = await TaskManagementService.importTimeSheetLogs(req.body?.importData, req.portal, req.user);
+        }
+
+        if (data?.rowError !== undefined) {
+            await Logger.error(req.user.email, 'import_task_faile', req.portal);
+            res.status(400).json({
+                success: false,
+                messages: ["import_task_faile"],
+                content: data
+            });
         }
 
         await Logger.info(req.user.email, 'import_task_success', req.portal)
@@ -1094,6 +1110,8 @@ exports.importTasks = async (req, res) => {
         })
     }
 }
+
+
 exports.getOrganizationTaskDashboardChartData = async (req, res) => {
     try {
         const data = await TaskManagementService.getOrganizationTaskDashboardChartData(req.query, req.portal, req.user);
