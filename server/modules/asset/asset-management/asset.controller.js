@@ -268,6 +268,7 @@ exports.createUsage = async (req, res) => {
             content: data
         });
     } catch (error) {
+        console.log('error', error);
         res.status(400).json({
             success: false,
             messages: ["create_usage_false"],

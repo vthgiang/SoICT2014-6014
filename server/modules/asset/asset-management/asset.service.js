@@ -1338,10 +1338,22 @@ exports.createUsage = async (portal, id, data) => {
             data.assignedToOrganizationalUnit !== "null"
             ? data.assignedToOrganizationalUnit
             : null;
+    
+    let usageLogs = [];
+    if (data?.usageLogs?.length) {
+        data.usageLogs.map((x => {
+            usageLogs = [...usageLogs, {
+                ...x,
+                usedByUser: x?.usedByUser ? x.usedByUser : null,
+                usedByOrganizationalUnit: x?.usedByOrganizationalUnit ? x.usedByOrganizationalUnit : null,
+            }]
+        }))
+    }
+
     await Asset(connect(DB_CONNECTION, portal)).updateOne(
         { _id: id },
         {
-            $addToSet: { usageLogs: data.usageLogs },
+            $addToSet: { usageLogs: usageLogs },
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
             status: data.status,
