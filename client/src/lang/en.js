@@ -2825,6 +2825,7 @@ export default {
                 create_task_success: "Create new task succesfully",
                 delete_success: "Delete task successfully",
                 edit_status_of_task_success: "Edit status of task successfully",
+                edit_status_archived_of_task: "Change archived status",
                 edit_status_archived_of_task_success:
                     "Edit archived status of task successfully",
                 get_task_dashboard_data_success: "Get task dashboard data success",

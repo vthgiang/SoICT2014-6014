@@ -316,7 +316,7 @@ exports.getPaginatedTasks = async (portal, task) => {
                     isArchived: true
                 };
             }
-            if (special[i] === "request_to_close") {
+            else if (special[i] === "request_to_close") {
                 keySearch = {
                     ...keySearch,
                     "requestToCloseTask.requestStatus": 1,
@@ -2267,17 +2267,20 @@ exports.createProjectTask = async (portal, task) => {
 /**
  * Xóa công việc
  */
-exports.deleteTask = async (portal, id) => {
-    //req.params.id
-    let tasks = await Task(connect(DB_CONNECTION, portal)).findById(id);
-    if (tasks.taskTemplate !== null) {
-        await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-            tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
-        );
-    }
+exports.deleteTask = async (portal, taskId) => {
+    //req.params.taskId
+    taskId = taskId.split(",");
+    for(let i in taskId) {
+        let tasks = await Task(connect(DB_CONNECTION, portal)).findById(taskId[i]);
+        if (tasks.taskTemplate !== null) {
+            await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+                tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
+            );
+        }
 
-    var task = await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(id); // xóa mẫu công việc theo id
-    return task;
+        await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
+    }
+    return taskId;
 }
 
 /**
