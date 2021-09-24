@@ -378,7 +378,7 @@ function editTask(taskId, newTask) {
 
 /**
  * xóa công việc theo id
- * @param {*} id id công việc 
+ * @param {*} taskId id công việc 
  */
 
 function deleteTaskById(taskId) {

@@ -84,7 +84,7 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
-                content={messages.map(message => `${module}.${message}`)}
+                content={messages.map(message => module ? `${module}.${message}`: message)}
             />,
             { containerId: 'toast-notification' }
         );
@@ -110,7 +110,7 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
                     <ServerResponseAlert
                         type='error'
                         title={errorTitle}
-                        content={messages.map(message => `${module}.${message}`)}
+                        content={messages.map(message => module ? `${module}.${message}`: message)}
                     />,
                     { containerId: 'toast-notification' }
                 );

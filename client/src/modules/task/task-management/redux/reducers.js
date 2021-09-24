@@ -323,7 +323,7 @@ export function tasks(state = {
             return {
                 ...state,
                 isLoading: false,
-                tasks: state.tasks.filter(task => task._id !== action.payload._id),
+                tasks: state.tasks.filter(task => !(action.payload._id.includes(task._id))),
             };
 
         case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE:
@@ -337,7 +337,7 @@ export function tasks(state = {
             return {
                 ...state,
                 tasks: state.tasks.map(task =>
-                    task._id === action.id
+                    task._id === action.id || (Array.isArray(action.id) && action.id.includes(task._id))
                         ? { ...task, deleting: true }
                         : task
                 ),
@@ -346,7 +346,7 @@ export function tasks(state = {
         case taskManagementConstants.DELETE_TASK_SUCCESS:
             return {
                 ...state,
-                tasks: state.tasks.filter(task => task._id !== action.id),
+                tasks: state.tasks.filter(task => task._id !== action.id && (!Array.isArray(action.id) || !action.id.includes(task._id))),
                 isLoading: false
             };
         case taskManagementConstants.DELETE_TASK_FAILURE:

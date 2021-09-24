@@ -496,23 +496,11 @@ const GeneralTaskChart = (props) => {
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
-            <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
-                columnArr={[
-                    translate('task.task_dashboard.unit'),
-                    translate('task.task_dashboard.all_tasks'),
-                    translate('task.task_dashboard.all_tasks_inprocess'),
-                    translate('task.task_dashboard.all_tasks_finished'),
-                    translate('task.task_dashboard.confirmed_task'),
-                    translate('task.task_dashboard.none_update_recently'),
-                    translate('task.task_dashboard.intime_task'),
-                    translate('task.task_dashboard.delay_task'),
-                    translate('task.task_dashboard.overdue_task')
-                ]}
-                linePerPageOption={false}
-            />
             <div className="general_task_unit" id="general-list-task-wrapper" style={{ marginTop: '20px' }}>
                 <TreeTable
                     tableId={tableId}
+                    tableSetting={true}
+                    rowPerPage={false}
                     behaviour="hide-children"
                     column={column}
                     data={data}

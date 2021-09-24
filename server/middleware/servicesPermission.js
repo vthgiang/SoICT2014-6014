@@ -339,6 +339,7 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-actions', method: 'POST' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'PATCH' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'DELETE' },
+            { path: '/performtask/tasks/:taskId/task-actions/:actionId/evaluation/:evaluationId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/files/:fileId', method: 'PATCH' },
 
 

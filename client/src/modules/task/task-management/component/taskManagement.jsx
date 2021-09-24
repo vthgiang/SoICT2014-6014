@@ -73,14 +73,14 @@ function TaskManagement(props) {
 
     const { tasks, user, translate, project } = props;
     const { currentTaskId, currentPage, currentTab,
-        parentTask, status, tableId, creatorTime,
+        parentTask, status, tableId, selectedData, creatorTime,
         projectSearch, tags
     } = state;
 
     function initState() {
         let userId = getStorage("userId");
         const tableId = "tree-table-task-management";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "3", "4", "7", "8"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["3", "4", "5", "8", "9"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
         // lấy giá trị từ dashboard công việc cá nhân
         const stateFromTaskDashboard = JSON.parse(localStorage.getItem("stateFromTaskDashboard"));
@@ -91,7 +91,7 @@ function TaskManagement(props) {
             perPage: limit,
             currentPage: 1,
             tableId,
-
+            selectedData: [],
             currentTab: stateFromTaskDashboard && stateFromTaskDashboard.roles && stateFromTaskDashboard.roles.length > 0 ? stateFromTaskDashboard.roles : ["responsible", "accountable"],
             organizationalUnit: [],
             status: stateFromTaskDashboard && stateFromTaskDashboard.status && stateFromTaskDashboard.status.length > 0 ? stateFromTaskDashboard.status : ["inprocess", "wait_for_approval"],
@@ -158,6 +158,15 @@ function TaskManagement(props) {
         }
     }
 
+    const onSelectedRowsChange = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                selectedData: value
+            }
+        })
+    }
+
     const startTimer = async (taskId, overrideTSLog = 'no') => {
         let userId = getStorage("userId");
         let timer = {
@@ -197,12 +206,27 @@ function TaskManagement(props) {
     // Hàm xóa một công việc theo id
     const handleDelete = async (id) => {
         const { tasks, translate } = props;
-        let currentTasks = tasks.tasks.find(task => task._id === id);
-        let progress = currentTasks.progress;
-        let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+        if (!Array.isArray(id)) {
+            let currentTasks = tasks.tasks.find(task => task._id === id);
+            let progress = currentTasks.progress;
+            let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: props.translate('general.no'),
+                confirmButtonText: props.translate('general.yes'),
+            }).then((result) => {
+                if (result.value) {
+                    props.deleteTaskById(id);
+                }
+            })
+        }
 
-        Swal.fire({
-            title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+        else Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa các công việc đã chọn?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -214,6 +238,7 @@ function TaskManagement(props) {
                 props.deleteTaskById(id);
             }
         })
+
     }
 
     const handleGetDataPagination = (index) => {
@@ -615,6 +640,22 @@ function TaskManagement(props) {
         window.$('#modal_import_tasks').modal('show');
     }
 
+    /**
+    * Function kiểm tra action tương ứng cho các dòng đã chọn
+    * @param {*} action : action cần kiểm tra
+    */
+
+    const validateAction = (action) => {
+        const { selectedData, data } = state;
+        if (selectedData.length === 0) return false;
+        else for (let i = 0; i < selectedData.length; i++) {
+            let actions = data.find(x => x._id === selectedData[i])?.action;
+            if (!actions || actions.length === 0) return false;
+            else if (!actions.flat(2).includes(action)) return false;
+        }
+        return true;
+    }
+
     let units = [];
 
     useEffect(() => {
@@ -809,13 +850,21 @@ function TaskManagement(props) {
                             }
 
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
-                        </div>
 
+                        </div>
 
                         <TaskManagementImportForm />
                         <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
+                    <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end", opacity: selectedData.length ? 1 : 0 }}>
+                        <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
+                            {translate("general.delete_option")}
+                        </button>
+                        <button disabled={!(validateAction("store") || validateAction("restore"))} style={{ margin: "5px" }} type="button" className="btn btn-info pull-right" title={translate("task.task_management.edit_status_archived_of_task")} onClick={() => handleStore(selectedData)}>
+                            {translate("task.task_management.edit_status_archived_of_task")}
+                        </button>
+                    </div>
 
                     <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                         <div className="form-group">
@@ -996,37 +1045,19 @@ function TaskManagement(props) {
                         />
                     }
 
-                    <DataTableSetting
-                        tableId={tableId}
-                        tableContainerId="tree-table-container"
-                        tableWidth="1300px"
-                        columnArr={[
-                            translate('task.task_management.col_name'),
-                            translate('task.task_management.detail_description'),
-                            translate('task.task_management.col_organization'),
-                            translate('task.task_management.col_project'),
-                            translate('task.task_management.col_priority'),
-                            translate('task.task_management.responsible'),
-                            translate('task.task_management.accountable'),
-                            translate('task.task_management.creator'),
-                            translate('task.task_management.col_start_date'),
-                            translate('task.task_management.col_end_date'),
-                            translate('task.task_management.col_status'),
-                            translate('task.task_management.col_progress'),
-                            translate('task.task_management.col_logged_time')
-                        ]}
-                        setLimit={setLimit}
-                    />
-
                     {/* Dạng bảng */}
                     <div id="tree-table-container" style={{ marginTop: '20px' }}>
                         {
                             tasks?.loadingPaginateTasks ? <div className="table-info-panel">{translate('general.loading')}</div> :
                                 <TreeTable
                                     tableId={tableId}
+                                    tableSetting={true}
+                                    allowSelectAll={true}
                                     behaviour="show-children"
                                     column={column}
                                     data={state?.data ? state.data : []}
+                                    onSetNumberOfRowsPerPage={setLimit}
+                                    onSelectedRowsChange={onSelectedRowsChange}
                                     openOnClickName={true}
                                     titleAction={{
                                         edit: translate('task.task_management.action_edit'),

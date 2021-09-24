@@ -20,12 +20,12 @@ function TaskManagementOfUnit(props) {
     const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = props;
     const { selectBoxUnit, currentTaskId, currentPage, startDate,
         endDate, perPage, status, tags,
-        organizationalUnit, tableId, organizationalUnitRole
+        organizationalUnit, tableId, selectedData, organizationalUnitRole
     } = state;
 
     function initState() {
         const tableId = "tree-table-task-management-of-unit";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "6", "7"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["3", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
         return {
@@ -33,6 +33,7 @@ function TaskManagementOfUnit(props) {
             perPage: limit,
             currentPage: 1,
             tableId,
+            selectedData: [],
             currentTab: "responsible",
             status: ["inprocess", "wait_for_approval"],
             priority: [],
@@ -159,6 +160,15 @@ function TaskManagementOfUnit(props) {
             // TODO: send query
             handleGetDataPerPage(Number(limit));
         }
+    }
+
+    const onSelectedRowsChange = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                selectedData: value
+            }
+        })
     }
 
     const handleGetDataPagination = (index) => {
@@ -413,12 +423,27 @@ function TaskManagementOfUnit(props) {
 
     const handleDelete = async (id) => {
         const { tasks, translate } = props;
-        let currentTasks = tasks.tasks.find(task => task._id === id);
-        let progress = currentTasks.progress;
-        let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+        if (!Array.isArray(id)) {
+            let currentTasks = tasks.tasks.find(task => task._id === id);
+            let progress = currentTasks.progress;
+            let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: props.translate('general.no'),
+                confirmButtonText: props.translate('general.yes'),
+            }).then((result) => {
+                if (result.value) {
+                    props.deleteTaskById(id);
+                }
+            })
+        }
 
-        Swal.fire({
-            title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+        else Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa các công việc đã chọn?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -516,6 +541,22 @@ function TaskManagementOfUnit(props) {
         )
     }
 
+    /**
+    * Function kiểm tra action tương ứng cho các dòng đã chọn
+    * @param {*} action : action cần kiểm tra
+    */
+
+    const validateAction = (action) => {
+        const { selectedData } = state;
+        if (selectedData.length === 0) return false;
+        else for (let i = 0; i < selectedData.length; i++) {
+            let actions = data.find(x => x._id === selectedData[i])?.action;
+            if (!actions || actions.length === 0) return false;
+            else if (!actions.flat(2).includes(action)) return false;
+        }
+        return true;
+    }
+
     let currentTasks, units = [];
     let data = [];
     let childrenOrganizationalUnit = [], queue = [];
@@ -587,8 +628,14 @@ function TaskManagementOfUnit(props) {
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
                         </div>
 
+                        <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end", opacity: selectedData.length ? 1 : 0 }}>
+                            <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
+                                {translate("general.delete_option")}
+                            </button>
+                        </div>
+
                         <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
-                            {/* Đợn vị tham gia công việc */}
+                            {/* Đơn vị tham gia công việc */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.department')}</label>
                                 {selectBoxUnit && selectBoxUnit.length !== 0
@@ -748,34 +795,17 @@ function TaskManagementOfUnit(props) {
                             </div>
                         </div>
 
-                        <DataTableSetting
-                            tableId={tableId}
-                            tableContainerId="tree-table-container"
-                            tableWidth="1300px"
-                            columnArr={[
-                                translate('task.task_management.col_name'),
-                                translate('task.task_management.detail_description'),
-                                translate('task.task_management.col_organization'),
-                                translate('task.task_management.col_priority'),
-                                translate('task.task_management.responsible'),
-                                translate('task.task_management.accountable'),
-                                translate('task.task_management.creator'),
-                                translate('task.task_management.col_start_date'),
-                                translate('task.task_management.col_end_date'),
-                                translate('task.task_management.col_status'),
-                                translate('task.task_management.col_progress'),
-                                translate('task.task_management.col_logged_time')
-                            ]}
-                            setLimit={setLimit}
-                        />
-
                         {/* Dạng bảng */}
                         <div id="tree-table-container">
                             <TreeTable
                                 tableId={tableId}
+                                tableSetting={true}
+                                allowSelectAll={true}
                                 behaviour="show-children"
                                 column={column}
                                 data={data}
+                                onSetNumberOfRowsPerPage={setLimit}
+                                onSelectedRowsChange={onSelectedRowsChange}
                                 openOnClickName={true}
                                 titleAction={{
                                     edit: translate('task.task_management.action_edit'),
