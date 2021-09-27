@@ -762,6 +762,8 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
 
             // Lưu vào timeSheetLog
             duration = new Date(getAddlogStoppedAt).getTime() - new Date(getAddlogStartedAt).getTime();
+            let checkDurationValid = duration / (60 * 60 * 1000);
+            
             const addLogTime = {
                 startedAt: getAddlogStartedAt,
                 stoppedAt: getAddlogStoppedAt,
@@ -769,6 +771,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                 autoStopped: body.autoStopped,
                 description: body.addlogDescription,
                 creator: user._id,
+                acceptLog: checkDurationValid > 24 ? false : true,
             }
             timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
                 params.taskId,

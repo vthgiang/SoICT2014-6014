@@ -138,6 +138,7 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
+        console.log('err', error)
         await Logger.error(req.user.email, 'stop_timer_faile', req.portal)
         res.status(400).json({
             success: false,
