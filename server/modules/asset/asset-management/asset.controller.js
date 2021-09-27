@@ -466,17 +466,9 @@ exports.createIncident = async (req, res) => {
 /**
  * Chỉnh sửa thông tin sự cố tài sản
  */
-exports.updateIncident = async (req, res) => {
+ exports.updateIncident = async (req, res) => {
     try {
-        const chartAsset = await DocumentServices.chartDataDocument(
-            req.portal,
-            req.user.company._id,
-        );
-        let chartDocChart = chartDoc.result
-        let docList = chartDocChart.document
-        let result = {}
-
-
+        let data = await AssetService.updateIncident(req.portal, req.params.id, req.body);
         res.status(200).json({
             success: true,
             messages: ["edit_incident_success"],
@@ -512,13 +504,12 @@ exports.deleteIncident = async (req, res) => {
     }
 }
 
-exports.chartAssetGroup = async (req, res) => {
+
+exports.getAssetGroupChart = async (req, res) => {
 
     try {
-        let Assetchart = await AssetService.chartAssetGroup(req.portal, req.user.company._id);
-
+        let Assetchart = await AssetService.chartAssetGroupData(req.portal, req.user.company._id);
         let chartAssetChart = Assetchart.result
-
         let result = {}
         let numberOfAsset, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOther = 0;
         let assetChart = chartAssetChart.chartAssets
@@ -547,17 +538,12 @@ exports.chartAssetGroup = async (req, res) => {
             ['asset.dashboard.machine', numberOfMachine],
             ['asset.dashboard.other', numberOfOther],
         ];
-        console.log("result", result)
+        
         result = {
 
             ...result,
             numberAsset: numberOfAsset
         }
-
-
-
-        console.log("result", result)
-
         let valueOfAsset, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOther = 0;
 
         if (chartAssetChart) {
@@ -605,6 +591,7 @@ exports.chartAssetGroup = async (req, res) => {
             })
 
         }
+        
         if (depreciationOfAsset.length) {
             depreciationOfAsset.map(asset => {
                 switch (asset.groups) {
@@ -635,16 +622,28 @@ exports.chartAssetGroup = async (req, res) => {
             ...result,
             depreciationAssets: depreciationAsset
         }
+
+        //chia theo status
+        
+
         // chia theo thể loại 
         let typeName = [], shortName = [], countAssetType = [], countAssetValue = [], countDepreciation = [], idAssetType = [], idAssetTypeTest = [];
         const listAssetTypes = chartAssetChart.listType;
         let listAssetTypeSort = [];
+        
+        /* for (let i in listAssetTypes){
+            console.log("typeName",listAssetTypes[i].typeName)
+        } */
+        
+
+
 
         for (let i in listAssetTypes) {
             let count = { ...listAssetTypes[i], countAsset: 0 };
             for (let j in chartAssetChart.chartAssets) {
                 if (chartAssetChart.chartAssets[j].assetType.some(item => JSON.stringify(listAssetTypes[i]._id) === JSON.stringify(item._id))) {
                     count = { ...count, countAsset: count.countAsset + 1 }
+                    
                 }
             }
             listAssetTypeSort = [
@@ -652,6 +651,7 @@ exports.chartAssetGroup = async (req, res) => {
                 count,
             ];
         }
+        
         listAssetTypeSort = listAssetTypeSort.sort((a, b) => (a.countAsset < b.countAsset) ? 1 : ((b.countAsset < a.countAsset) ? -1 : 0))
         listAssetTypeSortShow = listAssetTypeSort.map((value, index) => {
             return (value._doc)
@@ -703,10 +703,12 @@ exports.chartAssetGroup = async (req, res) => {
                 idAssetType: idAssetType,
             }
         }
+        
         result = {
             ...result,
             dataChartType: dataChartType
         }
+
         res.status(200).json({
             success: true,
             messages: ["get_asset_group_success"],
@@ -720,6 +722,9 @@ exports.chartAssetGroup = async (req, res) => {
         });
     }
 }
+
+
+
 calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
     let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
@@ -785,4 +790,152 @@ calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProdu
     }
     // console.log('cost', parseInt(cost - remainingValue));
     return parseInt(cost - remainingValue);
+}
+
+exports.getAssetStatisticChart = async (req, res) => {
+    try {
+        let AssetStatisticChart = await AssetService.chartAssetGroupData(req.portal,req.user.company._id);
+        let statisticChartdata = AssetStatisticChart.result
+        let result = {}
+        let statisticChart = statisticChartdata.chartAssets
+        const listAssetStatisticTypes = statisticChartdata.listType;
+        
+        let listAssetTypeSortStatistic = [];
+        for (let i in listAssetStatisticTypes) {
+            let count = { ...listAssetStatisticTypes[i], countAsset: 0 };
+            for (let j in statisticChartdata.chartAssets) {
+                if (statisticChartdata.chartAssets[j].assetType.some(item => JSON.stringify(listAssetStatisticTypes[i]._id) === JSON.stringify(item._id))) {
+                    count = { ...count, countAsset: count.countAsset + 1 }
+                    
+                }
+            }
+            listAssetTypeSortStatistic = [
+                ...listAssetTypeSortStatistic,
+                count,
+            ];
+        }
+        
+        listAssetTypeSortStatistic = listAssetTypeSortStatistic.sort((a, b) => (a.countAsset < b.countAsset) ? 1 : ((b.countAsset < a.countAsset) ? -1 : 0))
+        listAssetTypeSortShowStatistic = listAssetTypeSortStatistic.map((value, index) => {
+            return (value._doc)
+        })
+        let numberOfReadyToUse = [], numberOfInUse = [], numberOfBroken = [], numberOfLost = [], numberOfDisposed = [], idAssetTypes = [], idAssetTypeTests = [];
+        
+        for (let i in listAssetTypeSortShowStatistic) {
+            numberOfReadyToUse[i] = 0;
+            numberOfInUse[i] = 0;
+            numberOfBroken[i] = 0;
+            numberOfLost[i] = 0;
+            numberOfDisposed[i] = 0;
+            idAssetTypes.push(listAssetTypeSortShowStatistic[i]._id)
+            idAssetTypeTests.push(JSON.stringify(listAssetTypeSortShowStatistic[i]._id))
+        }
+        
+        if (statisticChartdata.chartAssets) {
+            statisticChartdata.chartAssets.forEach(asset => {
+                for (let k in asset.assetType) {
+                    let item = idAssetTypeTests.indexOf(JSON.stringify(asset.assetType[k]._id));
+                    if(asset.status === "ready_to_use"){
+                        numberOfReadyToUse[item]++;
+                    } else if (asset.status === "disposed"){
+                        numberOfDisposed[item]++;
+                    } else if (asset.status === "in_use"){
+                        numberOfInUse[item]++;
+                    } else if (asset.status === "broken"){
+                        numberOfBroken[item]++;
+                    } else if (asset.status === "lost"){
+                        numberOfLost[item]++;
+                    } 
+                    
+                }
+            })
+        }
+        let dataStatusOfAsset = {}
+        
+        dataStatusOfAsset = {
+            ...dataStatusOfAsset,
+            statusOfAsset: {
+                numberOfReadyToUse : numberOfReadyToUse,
+                numberOfInUse : numberOfInUse,
+                numberOfBroken : numberOfBroken,
+                numberOfLost : numberOfLost,
+                numberOfDisposed : numberOfDisposed,
+                idAssetTypes: idAssetTypes,
+            }
+        }
+        result = {
+            ...result,
+            dataStatusOfAsset: dataStatusOfAsset
+        }
+        
+        let lessThanOneHundred = [], oneHundred = [], twoHundred = [], fiveHundred = [], oneBillion = [], twoBillion = [], fiveBillion = [], tenBillion = [], idAssetTypeCost = [],idAssetTypeTestCost = [];
+        for (let j in listAssetTypeSortShowStatistic) {
+            lessThanOneHundred[j] = 0;
+            oneHundred[j] = 0;
+            twoHundred[j] = 0;
+            fiveHundred[j] = 0;
+            oneBillion[j] = 0;
+            twoBillion[j] = 0;
+            fiveBillion[j] = 0;
+            tenBillion[j] = 0;
+            idAssetTypeCost.push(listAssetTypeSortShowStatistic[j]._id)
+            idAssetTypeTestCost.push(JSON.stringify(listAssetTypeSortShowStatistic[j]._id))
+        }
+        if (statisticChart){
+            statisticChart.forEach(asset => {
+                for (let k in asset.assetType){
+                    let index = idAssetTypeTestCost.indexOf(JSON.stringify(asset.assetType[k]._id));
+                    if (asset.cost < 100000000){
+                        lessThanOneHundred[index]++
+                    } else if (asset.cost >= 100000000 && asset.cost < 200000000 ){
+                        oneHundred[index]++
+                    } else if (asset.cost >= 200000000 && asset.cost < 500000000) {
+                        twoHundred[index]++
+                    } else if (asset.cost >= 500000000 && asset.cost < 1000000000){
+                        fiveHundred[index]++
+                    } else if (asset.cost >= 100000000 && asset.cost < 2000000000){
+                        oneBillion[index]++
+                    } else if (asset.cost >= 200000000 && asset.cost < 5000000000){
+                        twoBillion[index]++
+                    }  else if (asset.cost >= 500000000 && asset.cost < 10000000000){
+                        fiveBillion[index]++
+                    } else if (asset.cost >= 10000000000){
+                        tenBillion[index]++
+                    }
+                }
+            })
+        }
+        let dataCostOfAsset = {}
+        dataCostOfAsset = {
+            ...dataCostOfAsset,
+            costOfAssets: {
+                lessThanOneHundred : lessThanOneHundred,
+                oneHundred : oneHundred,
+                twoHundred : twoHundred,
+                fiveHundred : fiveHundred,
+                oneBillion : oneBillion,
+                twoBillion : twoBillion,
+                fiveBillion : fiveBillion,
+                tenBillion : tenBillion,
+                idAssetTypes: idAssetTypes,
+
+            }
+        }
+        result = {
+            ...result,
+            dataCostOfAsset: dataCostOfAsset
+        }
+        console.log("dataCostOfAsset",dataCostOfAsset)
+        res.status(200).json({
+            success: true,
+            messages: ["get_asset_statisitc_success"],
+            content: result
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ["get_asset_statistic_fail"],
+            content: { error: error }
+        });
+    }
 }
