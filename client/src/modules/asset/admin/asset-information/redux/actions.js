@@ -7,7 +7,8 @@ export const AssetManagerActions = {
     updateInformationAsset,
     deleteAsset,
     getListBuildingAsTree,
-    getAllAssetGroup
+    getAllAssetGroup,
+    getAllAssetStatistic
 };
 
 /**
@@ -160,6 +161,28 @@ function getAllAssetGroup(data) {
             .catch((err) => {
                 dispatch({
                     type: AssetConstants.GET_ASSET_GROUP_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetStatistic(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_STATISTIC_REQUEST,
+        });
+        AssetService.getAllAssetStatistic(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_STATISTIC_SUCCESS,
+                    payload: res.data.content,
+                });
+                console.log("res",res.data)
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_STATISTIC_FAILURE,
                     error: err,
                 });
             });

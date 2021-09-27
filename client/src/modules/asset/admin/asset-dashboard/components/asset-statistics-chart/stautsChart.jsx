@@ -16,54 +16,53 @@ class StautsChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { translate, getAssetStatusData, listAssets } = this.props;
+        const { translate, getAssetStatusData, listAssets ,chartAsset,statisticAsset} = this.props;
         const { type } = this.state;
-
-        let filterAsset = [], dataPieChart, numberOfReadyToUse = 0, numberOfInUse = 0, numberOfBroken = 0, numberOfLost = 0, numberOfDisposed = 0;
-
-        if (type && type.length) {
-            listAssets.map(x => {
-                if (x.assetType.length) {
-                    for (let i in x.assetType) {
-                        for (let j in type) {
-                            type[j] === x.assetType[i]._id && filterAsset.push(x);
-                        }
-                    }
-                }
-            })
-        }
-        else {
-            filterAsset = listAssets;
-        }
-
-        if (filterAsset) {
-            for (let i in filterAsset) {
-                switch (filterAsset[i].status) {
-                    case "ready_to_use":
-                        numberOfReadyToUse++;
-                        break;
-                    case "in_use":
-                        numberOfInUse++;
-                        break;
-                    case "broken":
-                        numberOfBroken++;
-                        break;
-                    case "lost":
-                        numberOfLost++;
-                        break;
-                    case "disposed":
-                        numberOfDisposed++;
-                        break;
-                }
+        let filterAsset = {
+            numberOfInUse : [],
+            numberOfBroken : [],
+            numberOfReadyToUse : [],
+            numberOfLost : [],
+            numberOfDisposed : []
+        }, dataPieChart, numberOfReadyToUses = 0, numberOfInUses = 0, numberOfBrokens = 0, numberOfLosts = 0, numberOfDisposeds = 0;
+        if (statisticAsset){
+            let assetList = statisticAsset.statusOfAsset
+            console.log("assetList",assetList)
+            if (type && type.length){
+                type.map((i)=>{
+                    let index = assetList.idAssetTypes?.indexOf(i);
+                    filterAsset.numberOfReadyToUse.push(assetList.numberOfReadyToUse[index]);
+                    filterAsset.numberOfBroken.push(assetList.numberOfBroken[index]);
+                    filterAsset.numberOfInUse.push(assetList.numberOfInUse[index]);
+                    filterAsset.numberOfLost.push(assetList.numberOfLost[index]);
+                    filterAsset.numberOfDisposed.push(assetList.numberOfDisposed[index]);
+                })
+            } else{
+                filterAsset = assetList;
+            }
+           
+            for (let i in filterAsset.numberOfReadyToUse){
+                numberOfReadyToUses += filterAsset.numberOfReadyToUse[i]
+            }
+            for (let i in filterAsset.numberOfReadyToUse){
+                numberOfInUses += filterAsset.numberOfInUse[i]
+            }
+            for (let i in filterAsset.numberOfReadyToUse){
+                numberOfBrokens += filterAsset.numberOfBroken[i]
+            }
+            for (let i in filterAsset.numberOfReadyToUse){
+                numberOfLosts += filterAsset.numberOfLost[i]
+            }
+            for (let i in filterAsset.numberOfReadyToUse){
+                numberOfDisposeds += filterAsset.numberOfDisposed[i]
             }
         }
-
         dataPieChart = [
-            [translate('asset.general_information.ready_use'), numberOfReadyToUse],
-            [translate('asset.general_information.using'), numberOfInUse],
-            [translate('asset.general_information.damaged'), numberOfBroken],
-            [translate('asset.general_information.lost'), numberOfLost],
-            [translate('asset.general_information.disposal'), numberOfDisposed],
+            [translate('asset.general_information.ready_use'), numberOfReadyToUses],
+            [translate('asset.general_information.using'), numberOfInUses],
+            [translate('asset.general_information.damaged'), numberOfBrokens],
+            [translate('asset.general_information.lost'), numberOfLosts],
+            [translate('asset.general_information.disposal'), numberOfDisposeds],
         ];
 
         if (getAssetStatusData && listAssets) {

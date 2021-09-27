@@ -1338,22 +1338,10 @@ exports.createUsage = async (portal, id, data) => {
             data.assignedToOrganizationalUnit !== "null"
             ? data.assignedToOrganizationalUnit
             : null;
-    
-    let usageLogs = [];
-    if (data?.usageLogs?.length) {
-        data.usageLogs.map((x => {
-            usageLogs = [...usageLogs, {
-                ...x,
-                usedByUser: x?.usedByUser ? x.usedByUser : null,
-                usedByOrganizationalUnit: x?.usedByOrganizationalUnit ? x.usedByOrganizationalUnit : null,
-            }]
-        }))
-    }
-
     await Asset(connect(DB_CONNECTION, portal)).updateOne(
         { _id: id },
         {
-            $addToSet: { usageLogs: usageLogs },
+            $addToSet: { usageLogs: data.usageLogs },
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
             status: data.status,
@@ -1595,8 +1583,8 @@ exports.deleteIncident = async (portal, incidentIds) => {
 }
 
 
-exports.chartAssetGroup = async (portal,company,listChart) => {
-    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation")
+exports.chartAssetGroupData = async (portal,company,listChart) => {
+    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation status assetName")
     let listType = await AssetType(connect(DB_CONNECTION, portal)).find({}).sort({ 'createDate': 'desc' }).populate({ path: 'parent' });
     // let listAssets = await Asset(connect(DB_CONNECTION, portal))
             // .find(keySearch)
@@ -1607,7 +1595,7 @@ exports.chartAssetGroup = async (portal,company,listChart) => {
             // .sort({ createdAt: "desc" })
             // .skip(params.page)
             // .limit(params.limit);
-    // console.log(listAssets);
+    
     let result = {chartAssets:chartAssets, listType:listType }
     return {result}
 }
