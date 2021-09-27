@@ -613,7 +613,9 @@ const LINKS = [{
     description: 'Kế hoạch đào tạo',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
-        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name
     ],
     components: getComponentsInLink('/hr-training-plan-employee')
 },
