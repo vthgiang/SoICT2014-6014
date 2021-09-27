@@ -251,6 +251,15 @@ function ListAsset(props) {
         }
     }
 
+    const converttypeRegisterForUseAsset = (value) => {
+        if (value === 3) {
+            return "Đăng ký sử dụng lâu dài";
+        }
+        else if (value === 2) {
+            return "Đăng ký sử dụng theo giờ";
+        }
+    }
+
 
     var lists = "";
     var userlist = user.list;
@@ -330,7 +339,6 @@ function ListAsset(props) {
                             options={{ nonSelectedText: "Chọn quyền sử dụng", allSelectedText: "Chọn tất cả" }}
                             style={{ width: "100%" }}
                             items={[
-                                { value: 1, text: 'Không được đăng ký sử dụng' },
                                 { value: 2, text: 'Đăng ký sử dụng theo giờ' },
                                 { value: 3, text: 'Đăng ký sử dụng lâu dài' },
                             ]}
@@ -370,9 +378,7 @@ function ListAsset(props) {
                             <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
                             <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
                             <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                            <th style={{ width: "20%" }}>{translate('asset.general_information.handover_from_date')}</th>
-                            <th style={{ width: "20%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                            <th style={{ width: "10%" }}>{translate('asset.general_information.can_register')}</th>
                             <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                 <DataTableSetting
@@ -382,9 +388,7 @@ function ListAsset(props) {
                                         translate('asset.general_information.asset_name'),
                                         translate('asset.general_information.asset_group'),
                                         translate('asset.general_information.asset_type'),
-                                        translate('asset.general_information.user'),
-                                        translate('asset.general_information.handover_from_date'),
-                                        translate('asset.general_information.handover_to_date'),
+                                        translate('asset.general_information.can_register'),
                                         translate('asset.general_information.status')
                                     ]}
                                     setLimit={setLimit}
@@ -400,9 +404,7 @@ function ListAsset(props) {
                                     <td>{x.assetName}</td>
                                     <td>{convertGroupAsset(x.group)}</td>
                                     <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
-                                    <td>{x.assignedToUser ? (userlist.length && userlist.filter(item => item._id === x.assignedToUser).pop() ? userlist.filter(item => item._id === x.assignedToUser).pop().name : '') : ''}</td>
-                                    <td>{x.handoverFromDate ? formatDate2(x.handoverFromDate) : ''}</td>
-                                    <td>{x.handoverToDate ? formatDate2(x.handoverToDate) : ''}</td>
+                                    <td>{x.typeRegisterForUse ? converttypeRegisterForUseAsset(x.typeRegisterForUse) : ''}</td>
                                     <td>{convertStatusAsset(x.status)}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
