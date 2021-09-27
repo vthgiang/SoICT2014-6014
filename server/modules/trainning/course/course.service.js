@@ -358,7 +358,14 @@ exports.updateCourse = async (portal, id, data) => {
                 ...courseChange,
                 registeredEmployees: data.registeredEmployees
             }
-        }
+        } else {
+            courseChange = {
+              ...courseChange,
+              registeredEmployees: data.registeredEmployees.filter(
+                (i) => i.user.toString() != isRegistered.user.toString()
+              ),
+            };
+         }
     }
 
     const updateCourse = await Course(connect(DB_CONNECTION, portal)).findOneAndUpdate({

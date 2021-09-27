@@ -2468,6 +2468,7 @@ export default {
                 delete_course: "Xoá khoá đào tạo",
                 view_course: "Thông tin khoá đào tạo",
                 register: "Đăng ký",
+                cancel_register: "Hủy đăng ký",
 
                 // Thông điệp trả về từ server
                 name_required: "Tên khoá đào tạo không được để trống",
