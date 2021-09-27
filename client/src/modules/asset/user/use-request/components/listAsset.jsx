@@ -234,19 +234,19 @@ function ListAsset(props) {
 
     const convertStatusAsset = (status) => {
         const { translate } = props;
-        if (status === 'ready_use') {
+        if (status === 'ready_to_use') {
             return translate('asset.general_information.ready_use');
         }
-        else if (status === 'using') {
+        else if (status === 'in_use') {
             return translate('asset.general_information.using');
         }
-        else if (status === 'damaged') {
+        else if (status === 'broken') {
             return translate('asset.general_information.damaged');
         }
         else if (status === 'lost') {
             return translate('asset.general_information.lost');
         }
-        else if (status === 'disposal') {
+        else if (status === 'disposed') {
             return translate('asset.general_information.disposal')
         }
     }
