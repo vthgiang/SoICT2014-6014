@@ -40,6 +40,9 @@ const UserSchema = new Schema(
             type: Number,
             default: 0,
         },
+        tokens: [{
+            type: String,
+        }],
         resetPasswordToken: {
             type: String,
         },
@@ -48,7 +51,6 @@ const UserSchema = new Schema(
             default: "/upload/avatars/user.png",
         },
         pushNotificationTokens: [{ type: String }],
-
         // mật khẩu cấp 2
         password2: {
             type: String
