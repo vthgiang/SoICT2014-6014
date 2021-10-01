@@ -584,7 +584,7 @@ function TaskManagementOfUnit(props) {
     ];
     if (currentTasks && currentTasks.length !== 0) {
         let dataTemp = currentTasks;
-
+        let parents = currentTasks.map(task => task._id)
         for (let n in dataTemp) {
             data[n] = {
                 ...dataTemp[n],
@@ -600,7 +600,7 @@ function TaskManagementOfUnit(props) {
                 status: checkTaskRequestToClose(dataTemp[n]),
                 progress: convertProgressData(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                 totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
-                parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
+                parent: dataTemp[n].parent && parents.includes(dataTemp[n].parent._id) ? dataTemp[n].parent._id : null,
             }
         }
 

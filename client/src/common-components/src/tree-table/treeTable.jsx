@@ -16,30 +16,33 @@ class TreeTable extends Component {
     }
 
     componentDidUpdate() {
-        const { tableId } = this.props;
-        // Cho phép sử dụng shift chọn nhiều check box
-        window.$(`#${tableId}`).checkboxes('range', true);
+        const { tableId, allowSelectAll = false } = this.props;
 
-        const checkBoxes = document.querySelectorAll('.task-table input[type="checkbox"]');
+        if (allowSelectAll) {
+            // Cho phép sử dụng shift chọn nhiều check box
+            window.$(`#${tableId}`).checkboxes('range', true);
 
-        let results = []
+            const checkBoxes = document.querySelectorAll('.task-table input[type="checkbox"]');
 
-        checkBoxes.forEach(checkbox => {
-            // Bắt sự kiện click checkbox
-            checkbox.addEventListener('click', this.onChangeCheckBox)
-            if (checkbox.checked && checkbox.getAttribute("value")) {
-                results.push(checkbox.getAttribute("value"))
-            }
-        });
+            let results = []
 
-        if (!_isEqual(this.state.selectedRows, results)) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    selectedRows: results
+            checkBoxes.forEach(checkbox => {
+                // Bắt sự kiện click checkbox
+                checkbox.addEventListener('click', this.onChangeCheckBox)
+                if (checkbox.checked && checkbox.getAttribute("value")) {
+                    results.push(checkbox.getAttribute("value"))
                 }
-            })
-            this.props.onSelectedRowsChange(results)
+            });
+
+            if (!_isEqual(this.state.selectedRows, results)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        selectedRows: results
+                    }
+                })
+                this.props.onSelectedRowsChange(results)
+            }
         }
 
         if (this.props.data !== null && this.props.behaviour === "show-children") {

@@ -664,6 +664,7 @@ function TaskManagement(props) {
             let data = [], dataTree = [];
 
             if (currentTasks && currentTasks.length) {
+                let parents = currentTasks.map(task => task._id)
                 let idTaskProjectRoot = 'task-project-root';
                 for (let n in currentTasks) {
                     data[n] = {
@@ -681,7 +682,7 @@ function TaskManagement(props) {
                         status: checkTaskRequestToClose(currentTasks[n]),
                         progress: convertProgressData(currentTasks[n].progress, currentTasks[n].startDate, currentTasks[n].endDate),
                         totalLoggedTime: getTotalTimeSheetLogs(currentTasks[n].timesheetLogs),
-                        parent: currentTasks[n].parent ? currentTasks[n].parent._id : null
+                        parent: currentTasks[n].parent && parents.includes(currentTasks[n].parent._id) ? currentTasks[n].parent._id : null
                     }
                     let archived = "store";
                     if (currentTasks[0].isArchived === true) {
