@@ -14,7 +14,7 @@ exports.login = async (req, res) => {
             content: loginUser
         });
     } catch (error) {
-
+        console.log('errorLogIn', error)
         await Logger.error(req.body.email, 'login_faile', req.body.portal);
         res.status(400).json({
             success: false,
@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
     try {
-        const logout = await AuthService.logout(req.portal, req.user._id);
+        const logout = await AuthService.logout(req.portal, req.user._id, req.token);
 
         await Logger.info(req.user.email, 'logout_suscess', req.portal);
         res.status(200).json({
@@ -35,7 +35,7 @@ exports.logout = async (req, res) => {
             content: logout
         });
     } catch (error) {
-
+        console.log('errorLogOut', error)
         await Logger.error(req.user.email, 'logout_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -56,7 +56,7 @@ exports.logoutAllAccount = async (req, res) => {
             content: logout
         });
     } catch (error) {
-
+        console.log('errorLogOutALl', error)
         await Logger.error(req.user.email, 'logout_all_faile', req.portal);
         res.status(400).json({
             success: false,

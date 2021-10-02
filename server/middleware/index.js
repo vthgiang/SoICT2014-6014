@@ -43,6 +43,23 @@ exports.authFunc = (checkPage = true) => {
             req.user = verified;
             req.token = token;
             req.thirdParty = verified.thirdParty
+            req.portal = req.thirdParty ? verified.portal : (!req.user.company
+                ? process.env.DB_NAME
+                : req.user.company.shortName);
+                
+            // Kiểm tra xem token có nằm trong mảng tokens model User
+            if (req.user) {
+                const user = await User(
+                    connect(DB_CONNECTION, req.portal)
+                ).findById(req.user._id).select("tokens");
+
+                let userParse = user.toObject();
+                
+                const checkToken = userParse?.tokens?.find(element => element === req.token);
+                if (!checkToken)
+                    throw ['access_denied']
+            }
+            
 
             // Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
             if (!req.thirdParty) {
@@ -61,9 +78,6 @@ exports.authFunc = (checkPage = true) => {
                 /**
                  * Xác định db truy vấn cho request
                  */
-                req.portal = !req.user.company
-                    ? process.env.DB_NAME
-                    : req.user.company.shortName;
                 initModels(connect(DB_CONNECTION, req.portal), Models);
 
                 if (crtp !== "/") {
@@ -150,7 +164,6 @@ exports.authFunc = (checkPage = true) => {
                     }
                 }
             } else {
-                req.portal = verified.portal
                 const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
 
                 let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))

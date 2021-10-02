@@ -696,7 +696,7 @@ function SalesOrderCreateForm(props) {
                 formID={`form-add-sales-order`}
                 title={"Đơn hàng mới"}
                 msg_success={"Thêm đơn thành công"}
-                msg_faile={"Thêm đơn không thành công"}
+                msg_failure={"Thêm đơn không thành công"}
                 // disableSubmit={!isFormValidated()}
                 // func={save}
                 size="100"

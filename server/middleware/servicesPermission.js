@@ -339,6 +339,7 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-actions', method: 'POST' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'PATCH' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'DELETE' },
+            { path: '/performtask/tasks/:taskId/task-actions/:actionId/evaluation/:evaluationId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/files/:fileId', method: 'PATCH' },
 
 
@@ -431,7 +432,8 @@ exports.links = [
 
             // Asset
             { path: '/asset/assets', method: 'GET' },
-            { path: '/asset/assets_group', method: 'GET' },
+            { path: '/asset/assets-group', method: 'GET' },
+            { path: '/asset/assets-statistic', method: 'GET' },
             { path: '/asset/assets', method: 'POST' },
             { path: '/asset/assets/:id', method: 'PATCH' },
             { path: '/asset/assets/:id', method: 'DELETE' },

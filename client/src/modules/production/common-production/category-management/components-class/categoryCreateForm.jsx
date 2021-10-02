@@ -103,7 +103,7 @@ class CategoryCreateForm extends Component {
                     formID="form-create-category"
                     title={translate('manage_warehouse.category_management.add_title')}
                     msg_success={translate('manage_warehouse.category_management.add_success')}
-                    msg_faile={translate('manage_warehouse.category_management.add_faile')}
+                    msg_failure={translate('manage_warehouse.category_management.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}

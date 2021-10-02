@@ -84,7 +84,6 @@ const EmployeeImportForm = (props) => {
      * @param {*} data 
      */
     const convertStringToDate = (data, monthYear = false) => {
-        console.log('data', data)
         if (data) {
             data = data.split('-');
             let date;
@@ -303,6 +302,58 @@ const EmployeeImportForm = (props) => {
         setState(state => ({
             ...state,
             importDataOfExperience: value
+        }))
+        return { importData: value, rowError: rowError }
+    }
+
+
+    const handleCheckImportDataOfWorkProcess = (value) => {
+        const { translate } = props;
+        value = value.map(x => {
+            let startDate = (!x.startDate) ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate) ? x.endDate : convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: convertStringToDate(startDate, true),
+                endDate: convertStringToDate(endDate, true),
+            }
+        });
+
+        // Check dữ liệu import có hợp lệ hay không
+        let rowError = [];
+        value = value.map((x, index) => {
+            let errorAlert = [];
+            if (x.employeeNumber === null || x.fullName === null || x.startDate === null || x.endDate === null
+                || x.company === null || x.position === null) {
+                rowError = [...rowError, index + 1]
+                x = { ...x, error: true }
+            }
+            if (x.employeeNumber === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+            if (x.fullName === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.full_name')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+            if (x.startDate === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.from_month_year')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+            if (x.endDate === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.to_month_year')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+            if (x.company === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.unit')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+            if (x.position === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.position')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+            x = { ...x, errorAlert: errorAlert }
+            return x;
+        });
+
+
+        setState(state => ({
+            ...state,
+            importDataOfWorkProcess: value
         }))
         return { importData: value, rowError: rowError }
     }
@@ -674,12 +725,18 @@ const EmployeeImportForm = (props) => {
         props.importEmployees({ importType: "Experience", importData: importDataOfExperience });
     }
 
+
+    const handleImportWorkProcess = () => {
+        let { importDataOfWorkProcess } = state;
+        notify();
+        props.importEmployees({ importType: "WorkProcess", importData: importDataOfWorkProcess });
+    }
+
     /**
     * Function bắt sự kiện import thông tin bằng cấp
     */
     const handleImportDegree = () => {
         let { importDataOfDegree } = state;
-        console.log('importDataOfDegree', importDataOfDegree);
         notify();
         props.importEmployees({ importType: "Degree", importData: importDataOfDegree });
     }
@@ -732,6 +789,7 @@ const EmployeeImportForm = (props) => {
     const { employeesManager, translate, field } = props;
     let configurationEmployeeInfo = configurationEmployee.configurationEmployeeInfo(translate),
         configurationExperience = configurationEmployee.configurationExperience(translate),
+        configurationWorkProcess = configurationEmployee.configurationWorkProcess(translate),
         configurationSocialInsuranceDetails = configurationEmployee.configurationSocialInsuranceDetails(translate),
         configurationDegree = configurationEmployee.configurationDegree(translate),
         configurationCertificate = configurationEmployee.configurationCertificate(translate),
@@ -740,6 +798,8 @@ const EmployeeImportForm = (props) => {
         configurationFamilyMembers = configurationEmployee.configurationFamilyMembers(translate),
         teamplateImport = configurationEmployee.templateImport(translate);
     let listFields = field.listFields
+
+    console.log('configurationExperience', configurationExperience)
     return (
         <React.Fragment>
             <DialogModal
@@ -754,6 +814,7 @@ const EmployeeImportForm = (props) => {
                     <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate(`human_resource.profile.employee_management.import.import_general_infor_title`)} data-toggle="tab" href="#import_employee_general_infor">{translate(`human_resource.profile.employee_management.import.import_general_infor`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_work_process_title`)} data-toggle="tab" href="#import_employee_workProcess">{translate(`human_resource.profile.employee_management.import.import_work_process`)}</a></li>
                             <li><a title={translate(`human_resource.profile.employee_management.import.import_experience_title`)} data-toggle="tab" href="#import_employee_experience">{translate(`human_resource.profile.employee_management.import.import_experience`)}</a></li>
                             <li><a title={translate(`human_resource.profile.employee_management.import.import_degree_title`)} data-toggle="tab" href="#import_employee_degree">{translate(`human_resource.profile.employee_management.import.import_degree`)}</a></li>
                             <li><a title={translate(`human_resource.profile.employee_management.import.import_certificate_title`)} data-toggle="tab" href="#import_employee_certificate">{translate(`human_resource.profile.employee_management.import.import_certificate`)}</a></li>
@@ -777,6 +838,18 @@ const EmployeeImportForm = (props) => {
                                 handleCheckImportData={handleCheckImportDataOfEmployeeInfor}
                                 handleImport={handleImportEmployeeInfor}
                                 handleImportUpdate={handleImportUpdateEmployeeInfor}
+                            />
+                            <EmployeeImportTab
+                                id="import_employee_workProcess"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                rowErrorOfReducer={employeesManager?.error?.rowErrorOfWorkProcess}
+                                dataOfReducer={employeesManager?.error?.workProcess}
+                                configuration={configurationWorkProcess}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfWorkProcess}
+                                handleImport={handleImportWorkProcess}
                             />
                             <EmployeeImportTab
                                 id="import_employee_experience"

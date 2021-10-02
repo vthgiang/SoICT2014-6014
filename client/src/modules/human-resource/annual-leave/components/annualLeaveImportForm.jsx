@@ -81,21 +81,6 @@ function AnnualLeaveImportForm(props) {
         return date;
     }
 
-    /**
-     * Bắt sự kiện thay đổi giá trị đơn vị
-     * @param {*} value : Giá trị đơn vị
-     */
-    const handleOrganizationalUnitChange = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                organizationalUnit: value[0],
-                importData: [],
-                changeMonth: true,
-            }
-        });
-        window.$('#file-import-annual-leave').val('');
-    }
 
     /** Function kiểm tra lỗi trước khi submit form*/
     const isFormValidated = () => {
@@ -117,7 +102,7 @@ function AnnualLeaveImportForm(props) {
             let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
             let partEnd = data[n].endDate.split('-');
             let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-            data[n] = { ...data[n], startDate: startDate, endDate: endDate, organizationalUnit: organizationalUnit };
+            data[n] = { ...data[n], startDate: startDate, endDate: endDate };
         };
         props.importAnnualLeave(data);
     }
@@ -136,6 +121,27 @@ function AnnualLeaveImportForm(props) {
         })
     }
 
+
+    const checkUserOfUnits = (unitName) => {
+        const { department } = props;
+        if (unitName && department?.list?.length) {
+            const unitLength = department.list.length;
+            let unitId;
+            for (let i = 0; i < unitLength; i++) {
+                if (typeof unitName === 'string' && unitName?.trim().toLowerCase() === department.list[i]?.name?.trim()?.toLowerCase()) {
+                    unitId = department.list[i]._id;
+                    break;
+                }
+            }
+            if (unitId) {
+                return unitId;
+            }
+        } else {
+            return unitName
+        }
+    }
+
+
     /**
      * Function thay đổi file import
      * @param {*} value : Dữ liệu file import
@@ -144,6 +150,8 @@ function AnnualLeaveImportForm(props) {
     const handleImportExcel = (value, checkFileImport) => {
         const { translate } = props;
         value = value.map(x => {
+            const organizationalUnitId = x?.orgUnit ? checkUserOfUnits(x.orgUnit) : x?.orgUnit;
+
             let startDate = typeof x.startDate === 'string' ? x.startDate : convertExcelDateToJSDate(x.startDate);
             let endDate = typeof x.endDate === 'string' ? x.endDate : convertExcelDateToJSDate(x.endDate);
             let startTime = typeof x.startTime === "number" ? convertTimeExcelToJSDate(x.startTime) : x.startTime;
@@ -167,7 +175,7 @@ function AnnualLeaveImportForm(props) {
                     status = null;
                     break;
             };
-            return { ...x, status: status, startDate: startDate, endDate: endDate, type: type, startTime, endTime };
+            return { ...x, organizationalUnitId, status: status, startDate: startDate, endDate: endDate, type: type, startTime, endTime };
         })
 
         if (checkFileImport) {
@@ -176,12 +184,18 @@ function AnnualLeaveImportForm(props) {
             let checkImportData = value;
             value = value.map((x, index) => {
                 let errorAlert = [];
-                if (x.employeeNumber === null || x.employeeName === null) {
+                if (x.employeeNumber === null || x.employeeName === null || x.orgUnit === null || !checkUserOfUnits(x.orgUnit)) {
                     rowError = [...rowError, index + 1]
                     x = { ...x, error: true }
                 }
                 if (x.employeeNumber === null) {
                     errorAlert = [...errorAlert, translate('human_resource.salary.employee_number_required')];
+                }
+                if (!checkUserOfUnits(x.orgUnit)) {
+                    errorAlert = [...errorAlert, "Đơn vị không chính xác"];
+                }
+                if (x.orgUnit === null) {
+                    errorAlert = [...errorAlert, translate('human_resource.salary.organizationalUnit_not_empty')];
                 }
                 if (x.employeeName === null)
                     errorAlert = [...errorAlert, translate('human_resource.salary.employee_name_required')];
@@ -189,6 +203,8 @@ function AnnualLeaveImportForm(props) {
                 x = { ...x, errorAlert: errorAlert }
                 return x;
             });
+
+            console.log('value', value)
             setState(state => {
                 return {
                     ...state,
@@ -223,7 +239,7 @@ function AnnualLeaveImportForm(props) {
 
     importData = importData.map(x => { return { ...x, status: translate(`human_resource.annual_leave.status.${x.status}`) } })
 
-    let exportData = configurationAnnualLeave.templateImport(translate);
+    let exportData = configurationAnnualLeave.templateImport(translate, department?.list);
     return (
         <React.Fragment>
             <DialogModal
@@ -231,7 +247,6 @@ function AnnualLeaveImportForm(props) {
                 formID={`form_import_file`}
                 title={translate('human_resource.add_data_by_excel')}
                 func={save}
-                disableSubmit={!isFormValidated()}
                 closeOnSave={false}
                 size={75}
             >
@@ -244,20 +259,7 @@ function AnnualLeaveImportForm(props) {
                         scrollTable={false}
                         handleChangeConfig={handleChangeConfig}
                     />
-                    <div className="row">
-                        {/* Đơn vị */}
-                        <div className="form-group col-md-4 col-sm-12 col-xs-12">
-                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`import-annual-leave-unit`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={organizationalUnit}
-                                items={department.list.map(y => { return { value: y._id, text: y.name } })}
-                                onChange={handleOrganizationalUnitChange}
-                            />
-                        </div>
-                    </div>
+
                     <div className="row">
                         {/* File import */}
                         <div className="form-group col-md-4 col-sm-12 col-xs-12">

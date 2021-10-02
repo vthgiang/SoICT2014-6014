@@ -8,6 +8,7 @@ export const RoleServices = {
     create,
     edit,
     destroy,
+    importRoles,
 };
 
 function get(params) {
@@ -52,5 +53,14 @@ function destroy(roleId) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/role/roles/${roleId}`,
         method: 'DELETE',
+    }, true, true, 'super_admin.role');
+}
+
+
+function importRoles(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/role/roles/imports`,
+        method: 'POST',
+        data: data
     }, true, true, 'super_admin.role');
 }

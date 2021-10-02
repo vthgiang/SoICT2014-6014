@@ -273,7 +273,7 @@ function DiscountEditForm(props) {
             formID="form-edit-discount"
             title="Chỉnh sửa giảm giá"
             msg_success="Chỉnh sửa thành công"
-            msg_faile="Chỉnh sửa không thành công"
+            msg_failure="Chỉnh sửa không thành công"
             func={save}
             disableSubmit={!isFormValidated()}
             size={75}

@@ -185,7 +185,7 @@ class ManufacturingLotCreateForm extends Component {
                     formID="form-create-manufacturing-lot"
                     title={translate('manufacturing.lot.add_lot')}
                     msg_success={translate('manufacturing.lot.create_manufacturing_lot_successfully')}
-                    msg_faile={translate('manufacturing.lot.create_manufacturing_lot_failed')}
+                    msg_failure={translate('manufacturing.lot.create_manufacturing_lot_failed')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}

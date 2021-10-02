@@ -161,7 +161,7 @@ function OrganizationalUnitImportancesModal(props) {
                 formID="form-organizational-unit-importances"
                 title={`Độ quan trọng đơn vị con của ${organizationalUnit && organizationalUnit.name} tháng ${formatDate(month)}`}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-                msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
+                msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
                 hasNote={false}
                 disableSubmit={isFormValidated()}

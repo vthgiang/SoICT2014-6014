@@ -273,7 +273,7 @@ function SlaEditForm(props) {
                 formID={`form-edit-sla`}
                 title={"Sửa cam kết"}
                 msg_success={"Sửa thành công"}
-                msg_faile={"Sửa không thành công"}
+                msg_failure={"Sửa không thành công"}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="50"

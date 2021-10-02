@@ -14,6 +14,22 @@ import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from
 import qs from 'qs';
 import { getFormatDateFromTime, getPropertyOfValue } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import Swal from 'sweetalert2';
+
+const getAssetName = (listAsset, idAsset) => {
+    let assetName;
+    if (listAsset?.length && idAsset) {
+        for (let i = 0; i < listAsset.length; i++) {
+            if (listAsset[i]?._id === idAsset) {
+                assetName = `${listAsset[i].code} - ${listAsset[i].assetName}`;
+                break;
+            }
+        }
+    }
+    return assetName;
+}
+
+
 function AssetManagement(props) {
     const tableId_constructor = "table-asset-manager";
     const defaultConfig = { limit: 5 }
@@ -42,9 +58,26 @@ function AssetManagement(props) {
     }
 
     const handleDeleteOptions = () => {
-       props.deleteAsset({
-           assetIds: selectedData
-       });
+        console.log('selectedData', selectedData)
+        const shortTitle = `<h4 style="color: red"><div>${translate('asset.general_information.delete_info')} "${selectedData?.length && selectedData.length === 1 ? getAssetName(props.assetsManager?.listAssets, selectedData[0]) : ""}" ?</div></h4>`;
+        const longTitle = `<h4 style="color: red"><div>Xóa thông tin ${selectedData?.length > 1 ? selectedData.length : ""} tài sản ?</div></h4>`;
+
+        Swal.fire({
+            html: selectedData?.length === 1 ? shortTitle : longTitle,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value && selectedData.length > 0) {
+                props.deleteAsset({
+                    assetIds: selectedData
+                });
+            }
+        })
+
     }
 
     const handleDeleteAnAsset = (id) => {
@@ -763,7 +796,7 @@ function AssetManagement(props) {
             parent: node.location,
         }
     })
-    
+
     var pageTotal = ((assetsManager.totalList % limit) === 0) ?
         parseInt(assetsManager.totalList / limit) :
         parseInt((assetsManager.totalList / limit) + 1);
@@ -992,11 +1025,11 @@ function AssetManagement(props) {
                     tableBodyData={lists?.length > 0 && lists.map((x, index) => {
                         return {
                             id: x?._id,
-                            index: <td>{index+1}</td>,
+                            index: <td>{index + 1}</td>,
                             assetCode: <td>{x.code}</td>,
                             assetName: <td>{x.assetName}</td>,
                             assetGroup: <td>{convertGroupAsset(x.group)}</td>,
-                            assetType:<td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>,
+                            assetType: <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>,
                             assetPurchaseDate: <td>{formatDate(x.purchaseDate)}</td>,
                             assetManager: <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>,
                             assetUser: <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>,
@@ -1021,7 +1054,7 @@ function AssetManagement(props) {
                     onSetNumberOfRowsPerpage={setLimit}
                     onSelectedRowsChange={onSelectedRowsChange}
                 />
-                
+
                 {assetsManager.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>

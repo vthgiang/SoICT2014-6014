@@ -49,9 +49,11 @@ class DialogModal extends Component {
 
     render() {
         const { translate } = this.props;
-        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, hasCloseButton = true, size, styleCustom, maxWidth, hasNote = true, receiveEventClose, marginTop, bodyStyle = {}, title, isLoading, modalID, saveText = undefined } = this.props;
+        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, hasCloseButton = true, size, styleCustom, maxWidth, hasNote = true, receiveEventClose, marginTop, bodyStyle = {}, title, isLoading, modalID, saveText = undefined, note } = this.props;
 
         const { isClose } = this.state;
+
+        const defaultNote = <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>;
 
         return (
             <React.Fragment>
@@ -73,12 +75,12 @@ class DialogModal extends Component {
                             </div>
                             <div className="modal-footer">
                                 <div className="row">
-                                    <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                         {
-                                            hasNote && <p className="text-left">(<span className="text-red"> * </span>) : <span className="text-red">{translate('form.required')}</span></p>
+                                            hasNote ? note ? note : defaultNote : ""
                                         }
                                     </div>
-                                    <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                         {
                                             hasSaveButton && <button type="button" disabled={disableSubmit} className="btn btn-success" onClick={this.save}>{saveText || translate('form.save')}</button>
                                         }

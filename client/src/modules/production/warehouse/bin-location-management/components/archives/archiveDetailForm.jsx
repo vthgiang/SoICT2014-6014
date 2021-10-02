@@ -20,7 +20,7 @@ function ArchiveDetailForm(props){
                     formID={`form-detail-archive-bin`}
                     title={translate('manage_warehouse.bin_location_management.detail_title')}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
-                    msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
+                    msg_failure={translate('manage_warehouse.bin_location_management.add_faile')}
                     size={75}
                     hasSaveButton={false}
                     hasNote={false}

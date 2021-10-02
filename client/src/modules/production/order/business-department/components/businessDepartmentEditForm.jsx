@@ -138,7 +138,7 @@ function BusinessDepartmentEditForm(props) {
                 formID="form-edit-business-department"
                 title={"Chỉnh sửa thông tin phòng ban"}
                 msg_success={"Chỉnh sửa thành công"}
-                msg_faile={"Chỉnh sửa không thành công"}
+                msg_failure={"Chỉnh sửa không thành công"}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}

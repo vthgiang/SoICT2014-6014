@@ -320,7 +320,7 @@ exports.getPaginatedTasks = async (portal, task) => {
                     isArchived: true
                 };
             }
-            if (special[i] === "request_to_close") {
+            else if (special[i] === "request_to_close") {
                 keySearch = {
                     ...keySearch,
                     "requestToCloseTask.requestStatus": 1,
@@ -2271,17 +2271,20 @@ exports.createProjectTask = async (portal, task) => {
 /**
  * Xóa công việc
  */
-exports.deleteTask = async (portal, id) => {
-    //req.params.id
-    let tasks = await Task(connect(DB_CONNECTION, portal)).findById(id);
-    if (tasks.taskTemplate !== null) {
-        await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-            tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
-        );
-    }
+exports.deleteTask = async (portal, taskId) => {
+    //req.params.taskId
+    taskId = taskId.split(",");
+    for (let i in taskId) {
+        let tasks = await Task(connect(DB_CONNECTION, portal)).findById(taskId[i]);
+        if (tasks.taskTemplate !== null) {
+            await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+                tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
+            );
+        }
 
-    var task = await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(id); // xóa mẫu công việc theo id
-    return task;
+        await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
+    }
+    return taskId;
 }
 
 /**
@@ -2969,14 +2972,16 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
 }
 
 exports.importTasks = async (data, portal, user) => {
-    let dataImport = [];
-    if (data?.length) {
-        let dataLength = data.length;
+    let dataLength = data.length;
+    if (data.length) {
         for (let x = 0; x < dataLength; x++) {
-            let level = 1;
-            if (mongoose.Types.ObjectId.isValid(data[x].parent)) {
-                const parent = await Task(connect(DB_CONNECTION, portal)).findById(data[x].parent);
-                if (parent) level = parent.level + 1;
+            let level = 1, parent = null;
+            if (data[x].parent) {
+                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({ name: data[x].parent }).select("_id level name parent");
+                if (taskParent) {
+                    level = taskParent.level + 1;
+                    parent = taskParent._id;
+                }
             }
 
             let startDate, endDate;
@@ -3001,24 +3006,252 @@ exports.importTasks = async (data, portal, user) => {
                 })
             }
 
-            dataImport = [...dataImport, {
+            await Task(connect(DB_CONNECTION, portal)).create({
                 ...data[x],
                 creator: user._id,
                 level: level,
+                parent: parent,
                 startDate: startDate,
                 endDate: endDate,
                 formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
                 taskInformations: [],
                 collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-            }];
+            });
         }
     }
+    console.log('done_import_task')
+}
 
-    if (dataImport?.length)
-        return await Task(connect(DB_CONNECTION, portal)).insertMany(dataImport);
+// kiểm tra giá trị có nằm trong mảng hay ko. dùng tìm kiếm nhị phân : Độ phức tạp thời gian: O (logN)
+_checkItemInArray = (arr, x, getLevel = false) => {
+    let _id, level;
+    if (arr?.length) {
+        const arrLength = arr.length;
+        for (let i = 0; i < arrLength; i++) {
+            if (arr[i]?.name?.toString().trim() === x?.toString()?.trim()) {
+                _id = arr[i]._id;
+                level = arr[i].level + 1;
+                break;
+            }
+        }
+    }
+    if (getLevel)
+        return { _id, level }
+    else
+        return _id;
 }
 
 
+exports.importUpdateTasks = async (data, portal, user) => {
+    let rowError = [], valueImport = [];
+    if (data) {
+        const allTask = await Task(connect(DB_CONNECTION, portal)).find({}, {
+            _id: 1,
+            name: 1,
+            level: 1,
+        })
+
+        // validate
+
+        if (allTask) {
+            data.forEach((x, index) => {
+                let item = { ...x };
+                if (!x.name) {
+                    item = {
+                        ...item,
+                        errorAlert: ["name_task_not_empty"],
+                        error: true
+                    }
+                    rowError = [...rowError, index + 1];
+                } else {
+                    if (!_checkItemInArray(allTask, x.name)) {
+                        item = {
+                            ...item,
+                            errorAlert: ["name_task_not_found"],
+                            error: true
+                        }
+                        rowError = [...rowError, index + 1];
+                    } else {
+                        item = {
+                            ...item,
+                            taskNameId: _checkItemInArray(allTask, x.name),
+                            name: null,
+                        }
+                    }
+                }
+
+
+
+                if (x.parent) {
+                    let checkParent = _checkItemInArray(allTask, x.parent, true);
+                    if (!checkParent?._id) {
+                        item = {
+                            ...item,
+                            errorAlert: ["parent_task_not_found"],
+                            error: true
+                        }
+                        rowError = [...rowError, index + 1];
+                    }
+                    else {
+                        item = {
+                            ...item,
+                            parent: checkParent?._id,
+                            level: checkParent?.level
+                        }
+                    }
+                }
+
+                valueImport = [...valueImport, item];
+            })
+        }
+
+        console.log('rowError', rowError);
+        // console.log('valueImport', valueImport);
+
+        if (rowError.length !== 0) {
+            return {
+                data: valueImport,
+                rowError
+            }
+        } else {
+            const importLength = valueImport.length;
+            for (let k = 0; k < importLength; k++) {
+                let dataUpdate = {};
+
+                for (let propName in valueImport[k]) {
+                    if (valueImport[k][propName] === null ||
+                        valueImport[k][propName] === undefined ||
+                        valueImport[k][propName] === "" ||
+                        (Array.isArray(valueImport[k][propName]) && valueImport[k][propName]?.length === 0)
+                    ) {
+                        delete valueImport[k][propName];
+                    }
+                }
+
+                dataUpdate = { ...valueImport[k] };
+                if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                    let collaboratedWithOrganizationalUnits = [];
+                    if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                        dataUpdate.collaboratedWithOrganizationalUnits.forEach(y => {
+                            collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
+                                organizationalUnit: y,
+                            }]
+                        })
+                    }
+                    dataUpdate = { ...dataUpdate, collaboratedWithOrganizationalUnits }
+                }
+
+                if (dataUpdate.createdAt) {
+                    dataUpdate = { ...dataUpdate, createdAt: new Date(dataUpdate.createdAt) }
+                }
+
+
+                // console.log('dataUpdate',dataUpdate)
+                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
+                    {
+                        updateOne: {
+                            filter: { _id: valueImport[k].taskNameId },
+                            update: dataUpdate,
+                            timestamps: false, //  set bằng false mới update được 2 trường updatedAt và createdAt
+                        }
+                    },
+                ])
+            }
+            console.log("DONE UPDATE TASK")
+        }
+    }
+}
+
+
+exports.importTaskActions = async (data, portal, user) => {
+    if (data) {
+        let groupByTask = [];
+        data.forEach((x, index) => {
+            if (!groupByTask[x.taskName]) {
+                groupByTask[x.taskName] = [x]
+            } else {
+                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+            }
+        })
+
+        // console.log('groupByTask', groupByTask);
+
+        for (let k in groupByTask) {
+            let task;
+            if (k)
+                task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
+
+            if (task) {
+                task.taskActions = task.taskActions.concat(groupByTask[k]);
+                task.save();
+            }
+        }
+    }
+    console.log("DONE_IMPORT_TASK_ACTION!!!")
+
+}
+
+
+exports.importTimeSheetLogs = async (data, portal, user) => {
+    if (data) {
+        let groupByTask = [];
+        data.forEach((x, index) => {
+            if (!groupByTask[x.taskName]) {
+                groupByTask[x.taskName] = [x]
+            } else {
+                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+            }
+        })
+
+        // console.log('groupByTask', groupByTask)
+
+        for (let k in groupByTask) {
+            if (k) {
+                let infoTimesheetLog = [];
+                groupByTask[k].forEach(x => {
+                    const duration = new Date(x.addlogStoppedAt).getTime() - new Date(x.addlogStartedAt).getTime();
+                    // vì add log trong 1 ngày nên giờ ko quá 24 nên ko cần check acceptLog. default true
+                    infoTimesheetLog = [...infoTimesheetLog, {
+                        creator: x?.employee,
+                        startedAt: new Date(x?.addlogStartedAt),
+                        stoppedAt: new Date(x?.addlogStoppedAt),
+                        description: x?.description,
+                        duration,
+                        autoStopped: x?.autoStopped,
+                    }]
+                })
+
+                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
+                    {
+                        updateOne: {
+                            filter: { name: k?.trim() },
+                            update: {
+                                timesheetLogs: infoTimesheetLog
+                            },
+                            upsert: false
+                        }
+                    },
+                ])
+
+            }
+            console.log('DONE IMPORT TIMESHEET')
+        }
+
+
+        // for (let k in groupByTask) {
+        //     let task;
+        //     if (k)
+        //         task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
+
+        //     if (task) {
+        //         task.taskActions = task.taskActions.concat(groupByTask[k]);
+        //         task.save();
+        //     }
+        // }
+    }
+    console.log("DONE_IMPORT_TIME_SHEET!!!")
+
+}
 
 exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 

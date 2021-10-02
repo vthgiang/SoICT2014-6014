@@ -171,7 +171,7 @@ function EmployeeImportancesModal(props) {
                 formID="form-employee-importances"
                 title={`Độ quan trọng nhân viên ${organizationalUnit && organizationalUnit.name} tháng ${formatDate(month)}`}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-                msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
+                msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
                 hasNote={false}
                 disableSubmit={isFormValidated()}

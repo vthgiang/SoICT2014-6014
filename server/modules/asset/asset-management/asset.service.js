@@ -4,7 +4,7 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
 const { freshObject } = require(`../../../helpers/functionHelper`);
 
-const { Asset, User, Role, Link, Privilege, UserRole } = Models;
+const { Asset, User, Role, Link, Privilege, UserRole, AssetType } = Models;
 
 /**
  * Gửi email khi báo cáo sự cố
@@ -67,7 +67,6 @@ exports.getAssetInforById = async (portal, id) => {
 exports.searchAssetProfiles = async (portal, company, params) => {
     let { getType } = params;
     let keySearch = {};
-
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } };
@@ -321,8 +320,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                {path: "assetType assignedToOrganizationalUnit" },
-                {path: "managedBy", select: "_id name email avatar"}
+                { path: "assetType assignedToOrganizationalUnit" },
+                { path: "managedBy", select: "_id name email avatar" }
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)
@@ -334,8 +333,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                {path: "assetType assignedToOrganizationalUnit" },
-                {path: "managedBy", select: "_id name email avatar"}
+                { path: "assetType assignedToOrganizationalUnit" },
+                { path: "managedBy", select: "_id name email avatar" }
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)
@@ -1339,10 +1338,21 @@ exports.createUsage = async (portal, id, data) => {
             data.assignedToOrganizationalUnit !== "null"
             ? data.assignedToOrganizationalUnit
             : null;
+
+    let usageLogs = [];
+    if (data?.usageLogs?.length) {
+        data.usageLogs.map((x => {
+            usageLogs = [...usageLogs, {
+                ...x,
+                usedByUser: x?.usedByUser ? x.usedByUser : null,
+                usedByOrganizationalUnit: x?.usedByOrganizationalUnit ? x.usedByOrganizationalUnit : null,
+            }]
+        }))
+    }
     await Asset(connect(DB_CONNECTION, portal)).updateOne(
         { _id: id },
         {
-            $addToSet: { usageLogs: data.usageLogs },
+            $addToSet: { usageLogs: usageLogs },
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
             status: data.status,
@@ -1460,7 +1470,7 @@ exports.getIncidents = async (portal, params) => {
     if (dataType === "get_by_user") { // trường gợp từng người get thông tin sự cố tài sản mình quản lý
         aggregateQuery = [...aggregateQuery, { $match: { 'managedBy': mongoose.Types.ObjectId(userId) } }]
     }
-        
+
     if (assetSearch && assetSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }];
     }
@@ -1504,7 +1514,7 @@ exports.getIncidents = async (portal, params) => {
             }
             if (dataType === "get_by_user")// không phải admin thì get sự cố theo người quản lý
                 keySearch = { ...keySearch, managedBy: managedBy }
-            
+
             let asset = await Asset(connect(DB_CONNECTION, portal)).findOne(keySearch);
 
             if (asset) {
@@ -1573,19 +1583,30 @@ exports.updateIncident = async (portal, incidentId, data) => {
 
 exports.deleteIncident = async (portal, incidentIds) => {
     console.log(incidentIds);
-     incidentIds.forEach(async (incidentId) => {
-         await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-            {incidentLogs : {$elemMatch: { _id:  mongoose.Types.ObjectId(incidentId)}}},
+    incidentIds.forEach(async (incidentId) => {
+        await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { incidentLogs: { $elemMatch: { _id: mongoose.Types.ObjectId(incidentId) } } },
             { $pull: { incidentLogs: { _id: incidentId } } }
         )
     })
 
-    return  incidentIds;
+    return incidentIds;
 }
 
 
-exports.chartAssetGroup = async (portal,company,listChart) => {
-    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost")
-    let result = {chartAssets:chartAssets}
-    return {result}
+exports.chartAssetGroupData = async (portal, company, listChart) => {
+    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation status assetName")
+    let listType = await AssetType(connect(DB_CONNECTION, portal)).find({}).sort({ 'createDate': 'desc' }).populate({ path: 'parent' });
+    // let listAssets = await Asset(connect(DB_CONNECTION, portal))
+    // .find(keySearch)
+    // .populate([
+    //     {path: "assetType assignedToOrganizationalUnit" },
+    //     {path: "managedBy", select: "_id name email avatar"}
+    // ])
+    // .sort({ createdAt: "desc" })
+    // .skip(params.page)
+    // .limit(params.limit);
+
+    let result = { chartAssets: chartAssets, listType: listType }
+    return { result }
 }

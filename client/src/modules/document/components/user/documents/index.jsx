@@ -44,7 +44,7 @@ function UserDocumentsData(props) {
     useEffect(() => {
         props.getAllRoles();
         props.getAllDepartments();
-        props.getAllDocuments(getStorage('currentRole'));
+        // props.getAllDocuments(getStorage('currentRole'));
         props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
         props.getDocumentDomains();
         props.getDocumentArchive();
@@ -423,7 +423,7 @@ function UserDocumentsData(props) {
         })
     }
 
-    const searchWithOption = async () => {
+    const searchWithOption = () => {
         let path = state.archive ? findPath(state.archive) : "";
         const data = {
             limit: state.limit,
@@ -435,7 +435,7 @@ function UserDocumentsData(props) {
             issuingBody: state.issuingBody ? state.issuingBody : "",
             organizationUnit: state.organizationUnit ? state.organizationUnit : "",
         };
-        await props.getAllDocuments(getStorage('currentRole'), data);
+        props.getAllDocuments(getStorage('currentRole'), data);
     }
 
     const { translate, department } = props;
@@ -491,6 +491,7 @@ function UserDocumentsData(props) {
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                         documentLogs={currentRow.logs}
+                        documentUserCanView={currentRow.userCanView}
                     />
                 }
                 {<ExportExcel id="export-document" exportData={exportData} style={{ marginLeft: 5 }} />}

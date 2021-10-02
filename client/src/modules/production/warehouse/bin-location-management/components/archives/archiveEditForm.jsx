@@ -262,7 +262,7 @@ function ArchiveEditForm(props) {
                     formID={`form-edit-archive-stock`}
                     title={translate('manage_warehouse.bin_location_management.edit_title')}
                     msg_success={translate('manage_warehouse.bin_location_management.edit_success')}
-                    msg_faile={translate('manage_warehouse.bin_location_management.edit_faile')}
+                    msg_failure={translate('manage_warehouse.bin_location_management.edit_faile')}
                     disableSubmit={!isFormValidated()}
                     func={save}
                     size={75}

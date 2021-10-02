@@ -679,7 +679,7 @@ class StockRotateEditForm extends Component {
                     formID={`form-edit-bill-rotate`}
                     title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
-                    msg_faile={translate('manage_warehouse.bill_management.add_faile')}
+                    msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={75}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,6 +8,8 @@ import { DatePicker } from '../../../../common-components';
 import { WorkPlanActions } from '../../work-plan/redux/actions';
 import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import RequestToChangeAnnualLeave from './requestToChangeAnnualLeave';
+
 
 function AnnualLeave(props) {
     const [state, setState] = useState({
@@ -96,6 +98,20 @@ function AnnualLeave(props) {
         props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: year });
     }
 
+    const handleEdit = (data) => {
+        setState({
+            ...state,
+            requestToChangeItem: data,
+            requestToChangeId: data._id,
+        });
+
+        window.$(`#modal-request-to-change-annualLeave-${data._id}`).modal('show');
+    }
+
+    useLayoutEffect(() => {
+        window.$(`#modal-request-to-change-annualLeave-${state.requestToChangeId}`).modal('show');
+    }, [state.requestToChangeId])
+
     return (
         <div className="box" >
             <div className=" row box-body qlcv">
@@ -124,16 +140,16 @@ function AnnualLeave(props) {
                         <div>
                             <strong>
                                 {translate('human_resource.annual_leave_personal.total_number_leave_of_year')}:
-                                </strong>
-                                &nbsp;&nbsp;
-                                <span>{`${maximumNumberOfLeaveDays} ${translate('human_resource.annual_leave_personal.day')}`}</span>
+                            </strong>
+                            &nbsp;&nbsp;
+                            <span>{`${maximumNumberOfLeaveDays} ${translate('human_resource.annual_leave_personal.day')}`}</span>
                         </div>
                         <div>
                             <strong>
                                 {translate('human_resource.annual_leave_personal.leaved')}:
-                                </strong>
-                                &nbsp;&nbsp;
-                                <span>{`${annualLeave.numberAnnulLeave} ${translate('human_resource.annual_leave_personal.day')}`}</span>
+                            </strong>
+                            &nbsp;&nbsp;
+                            <span>{`${annualLeave.numberAnnulLeave} ${translate('human_resource.annual_leave_personal.day')}`}</span>
                         </div>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
@@ -144,6 +160,7 @@ function AnnualLeave(props) {
                                     <th>{translate('human_resource.unit')}</th>
                                     <th>{translate('human_resource.annual_leave.table.reason')}</th>
                                     <th>{translate('human_resource.status')}</th>
+                                    <th>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -160,6 +177,7 @@ function AnnualLeave(props) {
                                                 <td>{organizationalUnit ? organizationalUnit.name : null}</td>
                                                 <td>{x.reason}</td>
                                                 <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
+                                                <td><a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={"yêu cầu chỉnh sửa"}><i className="material-icons">edit</i></a></td>
                                             </tr>
                                         )
                                     })
@@ -172,6 +190,11 @@ function AnnualLeave(props) {
                                 (!listAnnualLeavesOfOneYear || listAnnualLeavesOfOneYear.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
+
+                    {
+                        state.requestToChangeId &&
+                        <RequestToChangeAnnualLeave id={state.requestToChangeId} data={state.requestToChangeItem} />
+                    }
                     <div className="description-box" style={{ paddingRight: 10, marginTop: 25 }}>
                         <h4>{translate('human_resource.annual_leave_personal.list_annual_leave')}</h4>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>

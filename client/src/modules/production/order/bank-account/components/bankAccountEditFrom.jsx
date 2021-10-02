@@ -135,7 +135,7 @@ function BankAccountEditForm(props) {
                 formID={`form-add-bank-account`}
                 title={"Chỉnh sửa tài khoản ngân hàng"}
                 msg_success={"Thêm thành công"}
-                msg_faile={"Thêm không thành công"}
+                msg_failure={"Thêm không thành công"}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="50"

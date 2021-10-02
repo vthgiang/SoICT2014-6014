@@ -11,6 +11,7 @@ export const RoleActions = {
     edit,
     create,
     destroy,
+    importRoles,
 }
 
 /**
@@ -150,6 +151,28 @@ function destroy(roleId) {
             .catch(err => {
                 dispatch({
                     type: RoleConstants.DELETE_ROLE_FAILE
+                });
+            })
+    }
+}
+
+
+function importRoles(data) {
+    return dispatch => {
+        dispatch({
+            type: RoleConstants.IMPORT_ROLE_REQUEST
+        });
+        RoleServices.importRoles(data)
+            .then(res => {
+                dispatch({
+                    type: RoleConstants.IMPORT_ROLE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: RoleConstants.IMPORT_ROLE_FAILE,
+                    error: err?.response?.data?.content
                 });
             })
     }

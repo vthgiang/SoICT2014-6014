@@ -236,7 +236,7 @@ exports.importOrganizationalUnits = async (req, res) => {
             content: data
         });
     } catch (error) {
-
+        console.log('error', error);
         await Logger.error(req.user.email, 'import_department_faile', req.portal);
         res.status(400).json({
             success: false,

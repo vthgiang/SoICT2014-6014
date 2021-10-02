@@ -139,7 +139,7 @@ function DepartmentTreeView(props) {
     }
 
     const handleCreateWithParent = async (department) => {
-         await setState({
+        await setState({
             ...state,
             currentRow: department
         });
@@ -159,15 +159,15 @@ function DepartmentTreeView(props) {
             setState({
                 ...state,
                 zoom: state.zoom + 1
-             });
+            });
         }
     }
 
     const zoomOut = () => {
         if (state.zoom > 0) {
-            setState({ 
+            setState({
                 ...state,
-                zoom: state.zoom - 1 
+                zoom: state.zoom - 1
             });
         }
     }
@@ -345,9 +345,9 @@ function DepartmentTreeView(props) {
                                         <label style={{ marginBottom: 0 }} className="custom-file-input" htmlFor="files">
                                             <span className="material-icons icon_upload">
                                                 cloud_upload
-                                                </span>
-                                                Cập nhật ảnh cơ cấu tổ chức
-                                            </label>
+                                            </span>
+                                            Cập nhật ảnh cơ cấu tổ chức
+                                        </label>
                                         <button style={{ marginLeft: '10px' }} type="button" className="btn btn-success pull-right" title='Thêm' onClick={handleUploadImage}>Lưu</button>
                                     </>
                                 }
@@ -373,7 +373,7 @@ function DepartmentTreeView(props) {
                 currentRow &&
                 <React.Fragment>
                     <DepartmentCreateWithParent
-                        departmentId={currentRow.id}
+                        // departmentId={currentRow.id}
                         departmentParent={currentRow.id}
                     />
                     <DepartmentEditForm
@@ -402,4 +402,4 @@ const getState = {
     getCompanyInformation: CompanyActions.getCompanyInformation
 }
 
-export default connect(mapState, getState)(withTranslate(DepartmentTreeView)); 
+export default connect(mapState, getState)(withTranslate(DepartmentTreeView));

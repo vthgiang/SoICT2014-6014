@@ -89,10 +89,9 @@ function DepartmentCreateWithParent(props) {
 
     // Thiet lap cac gia tri tu props vao state
     useEffect(() => {
-        if (props.departmentId !== state.departmentId) {
+        if (props.departmentParent !== state.departmentParent) {
             setState({
                 ...state,
-                departmentId: props.departmentId,
                 departmentParent: props.departmentParent,
                 departmentNameError: undefined,
                 departmentDescriptionError: undefined,
@@ -101,7 +100,7 @@ function DepartmentCreateWithParent(props) {
                 departmentEmployeeError: undefined,
             })
         }
-    }, [props.departmentId])
+    }, [props.departmentParent])
 
     /**
      * Validate form
@@ -130,7 +129,6 @@ function DepartmentCreateWithParent(props) {
     }
 
     const handleParent = (value) => {
-        console.log(value);
         setState({
             ...state,
             departmentParent: value[0]
@@ -161,9 +159,7 @@ function DepartmentCreateWithParent(props) {
 
     const { translate, department } = props;
 
-    const { departmentId } = props;
     const { departmentParent, departmentNameError, departmentDescriptionError } = state;
-    console.log("state create organ:", state)
 
     return (
         <React.Fragment>
@@ -199,14 +195,15 @@ function DepartmentCreateWithParent(props) {
                         <div className="form-group">
                             <label>{translate('manage_department.parent')}</label>
                             <SelectBox
-                                id={`cowp-${departmentId}`}
+                                id={`cowp-${state.departmentParent}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "" } })
+                                    { text: "Không có phòng ban cha" },
+                                    ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "" } })
                                 ]}
                                 onChange={handleParent}
-                                value={departmentParent}
+                                value={state.departmentParent ? state.departmentParent : ""}
                                 multiple={false}
                             />
                         </div>

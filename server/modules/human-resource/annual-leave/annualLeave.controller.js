@@ -2,7 +2,7 @@ const AnnualLeaveService = require('./annualLeave.service');
 const UserService = require(`../../super-admin/user/user.service`);
 const NotificationServices = require(`../../notification/notification.service`);
 const EmployeeService = require('../profile/profile.service');
-
+const dayjs = require('dayjs');
 const {
     sendEmail
 } = require(`../../../helpers/emailHelper`);
@@ -53,6 +53,29 @@ exports.searchAnnualLeaves = async (req, res) => {
         });
     }
 }
+
+
+exports.getAnnualLeaveById = async (req, res) => {
+    try {
+        let data = await AnnualLeaveService.getAnnualLeaveById(req.portal, req.params.id);
+        await Log.info(req.user.email, 'get_annual_leave_by_id_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_annual_leave_by_id_success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, 'get_annual_leave_by_id_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_annual_leave_by_id_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
+
 
 /** Tạo mới thông tin nghỉ phép */
 exports.createAnnualLeave = async (req, res) => {
@@ -174,6 +197,7 @@ exports.createAnnualLeave = async (req, res) => {
             }
         }
     } catch (error) {
+        console.log('error', error)
         await Log.error(req.user.email, 'CREATE_ANNUALLEAVE', req.portal);
         res.status(400).json({
             success: false,
@@ -189,6 +213,52 @@ exports.createAnnualLeave = async (req, res) => {
 exports.deleteAnnualLeave = async (req, res) => {
     try {
         let annualleaveDelete = await AnnualLeaveService.deleteAnnualLeave(req.portal, req.params.id);
+        if (annualleaveDelete) {
+            let status_vi, status_en;
+
+            if (annualleaveDelete.status === 'approved') {
+                status_vi = 'Được chấp nhận';
+                status_en = 'Accepted';
+            } else {
+                if (annualleaveDelete.status === 'disapproved') {
+                    status_vi = 'Không chấp nhận';
+                    status_en = 'Not Accepted';
+                } else {
+                    status_vi = 'Chờ phê duyệt';
+                    status_en = 'Waiting for approval';
+                }
+            }
+            
+            console.log('annualleaveDelete', annualleaveDelete);
+            let html = `
+                <h3><strong>Thông báo từ hệ thống ${process.env.WEBSITE}.</strong></h3>
+                <p>Đơn xin nghỉ phép của bạn từ ${annualleaveDelete.startTime? annualleaveDelete.startTime + ":": ''} ${dayjs(annualleaveDelete.startDate).format("DD-MM-YYYY")} đến ${annualleaveDelete.startTime? annualleaveDelete.endTime + ":": ''} ${dayjs(annualleaveDelete.endDate).format("DD-MM-YYYY")} đã bị xóa bởi <strong>${req.user.name} - ${req.user.email}</strong></p>
+                
+                <h3><strong>Notification from system ${process.env.WEBSITE}.</strong></h3>
+                <p>Your application for leave from ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} to ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate} deleted by <strong>${req.user.name} - ${req.user.email}</strong> </p>
+            `
+            sendEmail(annualleaveDelete.employee.emailInCompany, 'Xóa đơn xin nghỉ phép', "", html);
+            let user = await UserService.getUserInformByEmail(req.portal, annualleaveDelete.employee.emailInCompany, req.user.company._id);
+            let content = `
+                <p>Đơn xin nghỉ phép của bạn từ ${annualleaveDelete.startTime? annualleaveDelete.startTime + ":" : ''} ${dayjs(annualleaveDelete.startDate).format("DD-MM-YYYY")} đến ${annualleaveDelete.startTime? annualleaveDelete.endTime + ":": ''} ${dayjs(annualleaveDelete.endDate).format("DD-MM-YYYY")} đã bị xóa bởi <strong>${req.user.name} - ${req.user.email}</strong></p>
+                <br/>
+                <br/>
+                <p>Your application for leave from ${annualleaveDelete.startTime? annualleaveDelete.startTime + ":": ''} ${dayjs(annualleaveDelete.startDate).format("DD-MM-YYYY")} to ${annualleaveDelete.startTime? annualleaveDelete.endTime + ":": ''} ${dayjs(annualleaveDelete.endDate).format("DD-MM-YYYY")} deleted by <strong>${req.user.name} - ${req.user.email}</strong></p>
+            `
+            let notification = {
+                users: user ? [user._id] : [],
+                organizationalUnits: [],
+                title: 'Xóa đơn xin nghỉ phép',
+                level: "important",
+                content: content,
+                sender: req.user.name,
+            }
+
+            console.log('notification', notification);
+            await NotificationServices.createNotification(req.portal, req.user.company._id, notification, undefined);
+        }
+
+
         await Log.info(req.user.email, 'DELETE_ANNUALLEAVE', req.portal);
         res.status(200).json({
             success: true,
@@ -307,6 +377,7 @@ exports.updateAnnualLeave = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('errror', error)
         await Log.error(req.user.email, 'EDIT_ANNUALLEAVE', req.portal);
         res.status(400).json({
             success: false,
@@ -338,10 +409,75 @@ exports.importAnnualLeave = async (req, res) => {
             });
         }
     } catch (error) {
+        console.log('error', error)
         await Log.error(req.user.email, 'IMPORT_ANNUAL_LEAVE', req.portal);
         res.status(400).json({
             success: false,
             messages: ["import_annual_leave_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
+
+
+exports.requestToChangeAnnuaLeave = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        let result = await AnnualLeaveService.requestToChangeAnnuaLeave(req.portal, req.body, id);
+        let userReceiveds = result.userReceiveds;
+        let userEmailReceiveds = result.userEmailReceiveds;
+
+
+        if (id) {
+            let annualLeave = await AnnualLeaveService.getAnnualLeaveById(req.portal, id);
+            if (annualLeave) {
+                if (userEmailReceiveds) {
+                    let html = `
+                        <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
+                        <p>Nhân viên <strong> ${annualLeave?.employee?.fullName} - ${annualLeave?.employee?.employeeNumber} </strong> gửi yêu cầu chỉnh sửa đơn xin nghỉ phép: </p>
+                        <p>Để xem yêu cầu thay đổi đơn xin nghỉ. <a target="_blank" href="${process.env.WEBSITE}/hr-annual-leave?annualeaveId=${id}">Hãy click vào đây</a><p>
+                    `
+                    userEmailReceiveds.forEach(x => {
+                        sendEmail(x, 'Yêu cầu chỉnh sửa đơn xin nghỉ phép', "", html);
+                    })
+
+
+                    let content = `
+                        <p>Nhân viên <strong>${annualLeave?.employee?.fullName} - ${annualLeave?.employee?.employeeNumber}</strong> gửi yêu cầu chỉnh sửa đơn xin nghỉ phép: </p>
+                        <p>Để xem yêu cầu thay đổi đơn xin nghỉ. <a target="_blank" href="${process.env.WEBSITE}/hr-annual-leave?annualeaveId=${id}">Hãy click vào đây</a><p>
+                    `
+                    
+                    let notification = {
+                        users: userReceiveds,
+                        organizationalUnits: [],
+                        title: 'Yêu cầu chỉnh sửa đơn nghỉ phép',
+                        level: "important",
+                        content: content,
+                        sender: annualLeave?.employee?.fullName,
+                    }
+
+                    await NotificationServices.createNotification(req.portal, req.user.company._id, notification, undefined)
+                }
+            }
+        }
+
+        
+        await Log.info(req.user.email, 'request_to_change_annualeave_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["request_to_change_annualeave_success"],
+            content: result.result,
+        });
+        
+    } catch (error) {
+        console.log('error', error)
+        await Log.error(req.user.email, 'request_to_change_annualeave_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["request_to_change_annualeave_faile"],
             content: {
                 error: error
             }

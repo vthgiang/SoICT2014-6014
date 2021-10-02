@@ -44,7 +44,7 @@ class CategoryDetailForm extends Component {
                     formID="form-detail-category"
                     title={translate('manage_warehouse.category_management.detail')}
                     msg_success={translate('manage_warehouse.category_management.detail_success')}
-                    msg_faile={translate('manage_warehouse.category_management.detail_faile')}
+                    msg_failure={translate('manage_warehouse.category_management.detail_faile')}
                     size={50}
                     maxWidth={500}
                     hasSaveButton={false}

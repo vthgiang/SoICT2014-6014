@@ -49,7 +49,14 @@ export function timesheets(state = initState, action) {
                     isLoading: true
                 };
         case TimesheetsConstants.GET_TIMESHEETS_SUCCESS:
-            if(action.callApiByEmployeeId){
+            if (action.callApiByDashboardPersional) {
+                return {
+                    ...state,
+                    isLoading: false,
+                    listOvertimeOfCurrentUnitByStartDateAndEndDate: action.payload.listOvertimeOfUnitsByStartDateAndEndDate
+                }
+            }
+           else if(action.callApiByEmployeeId){
                 return {
                     ...state,
                     isLoading: false,

@@ -37,6 +37,7 @@ export function role(state = initState, action) {
         case RoleConstants.EDIT_ROLE_REQUEST:
         case RoleConstants.GET_ROLES_PAGINATE_REQUEST:
         case RoleConstants.DELETE_ROLE_REQUEST:
+        case RoleConstants.IMPORT_ROLE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -138,6 +139,21 @@ export function role(state = initState, action) {
                 ...state,
                 filter: action.payload
             };
+        
+        case RoleConstants.IMPORT_ROLE_SUCCESS:
+            return {
+                ...state,
+                listPaginate: [...action.payload, ...state.listPaginate],
+                totalDocs: state.totalDocs + action.payload.length,
+                isLoading: false,
+            }
+        
+        case RoleConstants.IMPORT_ROLE_FAILE:
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false,
+            }
 
         default:
             return state;
