@@ -73,7 +73,10 @@ function Gantt(props) {
         if (gantt) {
             gantt.clearAll();
             gantt.init(`gantt-${ganttId}`);
-            gantt.parse(ganttData);
+            if (ganttData) {
+                gantt.parse(ganttData);
+            }
+
 
             // Thêm marker thời gian hiện tại
             const dateToStr = gantt.date.date_to_str(gantt.config.task_date);
@@ -87,14 +90,14 @@ function Gantt(props) {
         }
 
         let outer = window.$(`#gantt-${ganttId}`);
-        console.log(outer.css("height"), window.innerHeight / 2);
+        //console.log(outer.css("height"), window.innerHeight / 2);
         let lenghHeight = outer.css("height")
         lenghHeight = lenghHeight.slice(0, lenghHeight.length - 2)
         lenghHeight = parseInt(lenghHeight)
         if (lenghHeight > window.innerHeight / 2) {
             outer.css({ "max-height": `${window.innerHeight / 2}px` });
         }
-        console.log(outer[0]);
+        //console.log(outer[0]);
         // Focus vào ngày hiện tại
         let date = new Date();
         let date_x = gantt.posFromDate(date);

@@ -192,7 +192,8 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
  */
 exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
     let { ids, page, perPage } = query;
-
+    perPage = Number(perPage)
+    console.log("query", query)
     let employees = [], roles = [], countDocument;
     let organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .find({
@@ -241,7 +242,8 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
                 ],
                 "as": "organizationalUnit"
             }
-        }
+        },
+        { $sort: { _id: 1 } }
     ]
     let keyCountDocument = [
         ...keyQuery,
@@ -268,7 +270,6 @@ exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
     }
 
     employees = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyQuery)
-
     employees = employees.map(item => {
         let roleId = item?.user?.map(item => item?.roleId)
 
@@ -815,7 +816,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
  * Hàm tiện ích dùng trong service ở trên
  * Khác với hàm bên module User: nhận vào 1 mảng các department và trả về 1 mảng với mỗi ptu là tất cả các nhân viên trong từng 1 phòng ban
  */
-_getAllUsersInOrganizationalUnits = async (portal, data) => {
+module.exports._getAllUsersInOrganizationalUnits = _getAllUsersInOrganizationalUnits = async (portal, data) => {
     var userArray = [];
     for (let i = 0; i < data.length; i++) {
         var department = data[i];

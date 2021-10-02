@@ -505,13 +505,10 @@ function importTasks(data) {
 }
 
 function getOrganizationTaskDashboardChart(data) {
+
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/task-dashboard`,
+        url: `${process.env.REACT_APP_SERVER}/task/organization-task-dashboard-chart-data`,
         method: 'GET',
-        params: {
-            organizationalUnitId: data.organizationalUnitId,
-            startMonth: data.startMonth,
-            endMonth: data.endMonth
-        }
+        params: data
     }, false, true, 'task.task_management');
 }

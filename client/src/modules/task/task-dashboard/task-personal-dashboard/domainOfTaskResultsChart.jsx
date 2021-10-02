@@ -9,9 +9,15 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween)
 
+const ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
+const TYPEPOINT = { AUTOMATIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
+let DATA_SEARCH = {
+    role: [ROLE.RESPONSIBLE],
+    typePoint: TYPEPOINT.AUTOMATIC_POINT,
+};
 function DomainOfTaskResultsChart(props) {
     const { translate, TaskOrganizationUnitDashboard } = props;
-    const ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
+    const { taskDashboardCharts } = props.tasks
     const ROLE_SELECTBOX = [
         {
             text: translate('task.task_management.responsible'),
@@ -26,11 +32,10 @@ function DomainOfTaskResultsChart(props) {
             value: ROLE.CONSULTED
         }
     ];
-    const TYPEPOINT = { AUTOMAIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
     const TYPEPOINT_SELECTBOX = [
         {
             text: translate('task.task_management.detail_auto_point'),
-            value: TYPEPOINT.AUTOMAIC_POINT
+            value: TYPEPOINT.AUTOMATIC_POINT
         },
         {
             text: translate('task.task_management.detail_emp_point'),
@@ -41,11 +46,11 @@ function DomainOfTaskResultsChart(props) {
             value: TYPEPOINT.APPROVED_POINT
         }
     ];
+    const LABEL = {
+        MAX: translate('task.task_management.dashboard_max'),
+        MIN: translate('task.task_management.dashboard_min')
+    }
 
-    let DATA_SEARCH = {
-        role: [ROLE.RESPONSIBLE],
-        typePoint: TYPEPOINT.AUTOMAIC_POINT,
-    };
     const CHART = React.createRef();
 
     const [state, setState] = useState(() => {
@@ -56,21 +61,16 @@ function DomainOfTaskResultsChart(props) {
             typePoint: DATA_SEARCH.typePoint,
         }
     })
-    const { typePoint, role } = state;
 
     // Hàm lọc các công việc theo từng tháng
     const filterTasksByMonth = (startMonth, endMonth) => {
-        console.log('=============================', startMonth)
-        const { tasks, TaskOrganizationUnitDashboard, units, organizationUnitTasks } = props;
-        const { role, userId, typePoint } = state;
-
+        const { tasks, units } = props;
+        const { userId } = state;
+        const { typePoint, role } = DATA_SEARCH;
         let results = [], maxResult, minResult;
         let listTask = [], listTaskByRole = [];
 
-        if (TaskOrganizationUnitDashboard) {
-            listTask = organizationUnitTasks;
-        }
-        else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks) {
+        if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks) {
             listTaskByRole[ROLE.RESPONSIBLE] = tasks.responsibleTasks;
             listTaskByRole[ROLE.ACCOUNTABLE] = tasks.accountableTasks;
             listTaskByRole[ROLE.CONSULTED] = tasks.consultedTasks;
@@ -80,7 +80,6 @@ function DomainOfTaskResultsChart(props) {
                     listTask = listTask.concat(listTaskByRole[role]);
                 })
             }
-            // console.log('listTaskByRole', listTaskByRole)
             listTask = filterDifference(listTask);
         };
 
@@ -88,7 +87,6 @@ function DomainOfTaskResultsChart(props) {
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
                     let evaluatingMonth = dayjs(evaluation.evaluatingMonth).format("YYYY-MM");
-                    // console.log('evaluatingMonth', evaluatingMonth, task.name)
                     if (dayjs(evaluatingMonth).isBetween(startMonth, endMonth, null, '[]')) { // '[]': tham số này check cho phép evaluatingMonth = startMonth hoặ startMonth = endMOnth, ko muốn thì set '()'
                         return 1;
                     }
@@ -102,7 +100,7 @@ function DomainOfTaskResultsChart(props) {
                     }).map(result => {
                         // console.log('resultEvalue', result, typePoint);
                         switch (typePoint) {
-                            case TYPEPOINT.AUTOMAIC_POINT:
+                            case TYPEPOINT.AUTOMATIC_POINT:
                                 results.push(result.automaticPoint);
                                 break;
                             case TYPEPOINT.EMPLOYEE_POINT:
@@ -133,38 +131,53 @@ function DomainOfTaskResultsChart(props) {
     }
 
     useEffect(() => {
-        const { translate } = props;
-        const { startMonth, endMonth } = props; // cha truyền xuống
-
-        let month = [], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
-
-        const period = dayjs(endMonth).diff(startMonth, 'month');
-        let data;
-
-        for (let i = 0; i <= period; i++) {
-            let currentMonth = dayjs(startMonth).add(i, 'month').format("YYYY-MM");
-            month = [
-                ...month,
-                dayjs(startMonth).add(i, 'month').format("MM-YYYY"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
-            ];
-            data = filterTasksByMonth(currentMonth, currentMonth);
-            if (data) {
-                maxResults.push(data.max);
-                minResults.push(data.min)
+        if (TaskOrganizationUnitDashboard) {
+            let dataChart = getDataChart("task-results-domain-chart");
+            if (dataChart) {
+                dataChart[1][0] = LABEL.MAX;
+                dataChart[2][0] = LABEL.MIN;
+                setState({
+                    ...state,
+                    dataChart: dataChart
+                })
             }
-        }
-        month.unshift("x");
 
-        if (month?.length)
-            setState({
-                ...state,
-                dataChart: [
-                    month,
-                    maxResults,
-                    minResults
-                ]
-            })
-    }, [props?.startMonth, props?.endMonth, JSON.stringify(props?.units), state.role, state.typePoint, JSON.stringify(props?.organizationUnitTasks),
+        }
+        else {
+            const { translate } = props;
+            const { startMonth, endMonth } = props; // cha truyền xuống
+
+            let month = [], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
+
+            const period = dayjs(endMonth).diff(startMonth, 'month');
+            let data;
+
+            for (let i = 0; i <= period; i++) {
+                let currentMonth = dayjs(startMonth).add(i, 'month').format("YYYY-MM");
+                month = [
+                    ...month,
+                    dayjs(startMonth).add(i, 'month').format("MM-YYYY"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+                ];
+                data = filterTasksByMonth(currentMonth, currentMonth);
+                if (data) {
+                    maxResults.push(data.max);
+                    minResults.push(data.min)
+                }
+            }
+            month.unshift("x");
+
+            if (month?.length)
+                setState({
+                    ...state,
+                    dataChart: [
+                        month,
+                        maxResults,
+                        minResults
+                    ]
+                })
+        }
+
+    }, [props?.startMonth, props?.endMonth, state.role, state.typePoint, JSON.stringify(taskDashboardCharts),
     JSON.stringify(props?.tasks?.responsibleTasks), JSON.stringify(props?.tasks?.accountableTasks), JSON.stringify(props?.tasks?.consultedTasks)])
 
     useEffect(() => {
@@ -172,28 +185,54 @@ function DomainOfTaskResultsChart(props) {
             domainChart();
     }, [state.dataChart])
 
-
+    function getDataChart(chartName) {
+        let dataChart;
+        let data = taskDashboardCharts?.[chartName]
+        if (data) {
+            dataChart = data.dataChart
+        }
+        return dataChart;
+    }
     const handleSelectRole = (value) => {
         let role = value.map(item => Number(item));
-        DATA_SEARCH.role = role;
+        DATA_SEARCH = {
+            ...DATA_SEARCH,
+            role: role
+        }
     }
 
     const handleSelectTypePoint = (value) => {
-        DATA_SEARCH.typePoint = Number(value[0]);
+        DATA_SEARCH = {
+            ...DATA_SEARCH,
+            typePoint: Number(value[0])
+        }
+        if (TaskOrganizationUnitDashboard) {
+            props.handleChangeDataSearch("task-results-domain-chart", { typePoint: Number(value[0]) })
+        }
     }
 
     const handleSearchData = () => {
-        setState(state => {
-            return {
+        //dashboard cv đơn vị
+        if (TaskOrganizationUnitDashboard) {
+            let dataSearch = {
+                "task-results-domain-chart": {
+                    typePoint: DATA_SEARCH.typePoint
+                }
+            }
+            props.getDataSearchChart(dataSearch)
+        }
+        //dashboard cv cá nhân
+        else {
+            setState({ //setState để component render lại, vẽ ra biểu đồ mới 
                 ...state,
                 role: DATA_SEARCH.role,
                 typePoint: DATA_SEARCH.typePoint
-            }
-        })
+            })
+        }
     }
 
 
-    const removePreviosChart = () => {
+    const removePreviousChart = () => {
         const chart = CHART.current;
         while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
@@ -201,7 +240,7 @@ function DomainOfTaskResultsChart(props) {
     }
 
     const domainChart = () => {
-        removePreviosChart();
+        removePreviousChart();
         const { dataChart } = state;
         c3.generate({
             bindto: CHART.current,
@@ -239,7 +278,6 @@ function DomainOfTaskResultsChart(props) {
             },
         })
     }
-
     return (
         <React.Fragment>
             <div className="qlcv">
@@ -253,14 +291,14 @@ function DomainOfTaskResultsChart(props) {
                                 items={ROLE_SELECTBOX}
                                 onChange={handleSelectRole}
                                 options={{ allSelectedText: translate('task.task_management.select_all_status') }}
-                                value={role}
+                                value={DATA_SEARCH.role}
                             />
                         </div>
                     </div>
                 }
                 <div className="form-inline" >
                     <div className="form-group">
-                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                        <label style={{ width: "auto" }}>{translate('task.task_management.type_of_point')}</label>
                         <SelectBox
                             id={`typePointOfResultsTaskSelectBox`}
                             className="form-control select2"
@@ -268,7 +306,7 @@ function DomainOfTaskResultsChart(props) {
                             items={TYPEPOINT_SELECTBOX}
                             multiple={false}
                             onChange={handleSelectTypePoint}
-                            value={typePoint}
+                            value={DATA_SEARCH.typePoint}
                         />
                     </div>
                     <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>

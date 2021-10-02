@@ -9,25 +9,16 @@ import 'c3/c3.css';
 import dayjs from 'dayjs';
 
 const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
-const TYPEPOINT = { AUTOMAIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
+const TYPEPOINT = { AUTOMATIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
 
-let INFO_SEARCH = {
-    typePoint: TYPEPOINT.AUTOMAIC_POINT,
+let DATA_SEARCH = {
+    typePoint: TYPEPOINT.AUTOMATIC_POINT,
     criteria: CRITERIA.NOT_COEFFICIENT
 }
-
-
-const averageFunction = (sum, coefficient) => {
-    if (coefficient !== 0) {
-        return sum / coefficient;
-    } else {
-        return null;
-    }
-}
-
 function AverageResultsOfTaskInOrganizationalUnit(props) {
     // Khai báo props
-    const { translate, tasks, dashboardEvaluationEmployeeKpiSet, organizationUnitTasks } = props;
+    const { translate } = props;
+    const { taskDashboardCharts } = props.tasks
 
     // Khởi tạo dữ liệu select box
     const CRITERIA_SELECTBOX = [
@@ -44,7 +35,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
     const TYPEPOINT_SELECTBOX = [
         {
             text: translate('task.task_management.detail_auto_point'),
-            value: TYPEPOINT.AUTOMAIC_POINT
+            value: TYPEPOINT.AUTOMATIC_POINT
         },
         {
             text: translate('task.task_management.detail_emp_point'),
@@ -58,248 +49,78 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 
     // Khởi tạo state
     const [state, setState] = useState({
-        userId: localStorage.getItem("userId"),
-
-        criteria: CRITERIA.NOT_COEFFICIENT,
-        typePoint: TYPEPOINT.AUTOMAIC_POINT,
-        legend: []
+        dataChart: [],
+        legend: [],
     });
 
     // Khai báo state
-    const { criteria, typePoint, legend } = state;
-    const { units } = props;
+    const { legend } = state;
 
-    const chart = useRef();
-
-    // Hàm lọc các công việc theo từng tháng
-    const filterTasksByMonth = (startMonth, endMonth) => {
-        let dataSumPointAndCoefficient = {}, resultAverage = {};
-        let listTask = [];
-        if (units && units.length !== 0) {
-            units.map(unit => {
-                dataSumPointAndCoefficient[unit] = {
-                    sumAutomaticPointNotCoefficient: 0, sumAutomaticPointCoefficient: 0, sumNotCoefficientAutomatic: 0, sumCoefficientAutomatic: 0,
-                    sumEmployeePointNotCoefficient: 0, sumEmployeePointCoefficient: 0, sumNotCoefficientEmployee: 0, sumCoefficientEmployee: 0,
-                    sumApprovedPointNotCoefficient: 0, sumApprovedPointCoefficient: 0, sumNotCoefficientApproved: 0, sumCoefficientApproved: 0
-                }
-            })
-        }
-        if (organizationUnitTasks) {
-            listTask = organizationUnitTasks;
-        };
-
-        if (listTask) {
-            listTask.filter(task => {
-                return task?.organizationalUnit?._id
-                    && units?.indexOf(task.organizationalUnit._id) !== -1;
-            }).map(task => {
-                if (task?.evaluations?.length > 0) {
-                    task.evaluations.filter(evaluation => {
-                        let evaluatingMonth = dayjs(evaluation.evaluatingMonth).format("YYYY-MM");
-                        if (dayjs(evaluatingMonth).isBetween(startMonth, endMonth, null, '[]')) { // '[]': tham số này check cho phép evaluatingMonth = startMonth hoặ startMonth = endMOnth, ko muốn thì set '()'
-                            return 1;
-                        }
-
-                        return 0;
-                    }).map(evaluation => {
-                        if (evaluation.results && evaluation.results.length !== 0) {
-                            evaluation.results.map(result => {
-                                if (task?.organizationalUnit?._id) {
-                                    if (criteria === CRITERIA.COEFFICIENT) {
-                                        let totalDay = 0;
-                                        let startEvaluation = evaluation.startDate && new Date(evaluation.startDate);
-                                        let endEvaluation = evaluation.endDate && new Date(evaluation.endDate);
-                                        totalDay = Math.round((endEvaluation.getTime() - startEvaluation.getTime()) / 1000 / 60 / 60 / 24);
-
-                                        if (result?.automaticPoint && result?.taskImportanceLevel && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient >= 0
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic >= 0
-                                        ) {
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumAutomaticPointCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient + result?.automaticPoint * result?.taskImportanceLevel * totalDay;
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientAutomatic = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic + result?.taskImportanceLevel * totalDay;
-                                        }
-                                        if (result?.employeePoint && dataSumPointAndCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointCoefficient >= 0
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientEmployee >= 0
-                                        ) {
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumEmployeePointCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointCoefficient + result?.employeePoint * result?.taskImportanceLevel * totalDay;
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientEmployee = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientEmployee + result?.taskImportanceLevel * totalDay;
-                                        }
-                                        if (result?.approvedPoint && dataSumPointAndCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointCoefficient >= 0
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientApproved >= 0
-                                        ) {
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumApprovedPointCoefficient = dataSumPointAndCoefficient?.[task.organizationalUnit?._id]?.sumApprovedPointCoefficient + result?.approvedPoint * result?.taskImportanceLevel * totalDay;
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientApproved = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientApproved + result?.taskImportanceLevel * totalDay;
-                                        }
-                                    } else {
-                                        if (result?.automaticPoint
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointNotCoefficient >= 0
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientAutomatic >= 0
-                                        ) {
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumAutomaticPointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointNotCoefficient + result?.automaticPoint;
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientAutomatic++;
-                                        }
-                                        if (result.employeePoint
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointNotCoefficient >= 0
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientEmployee >= 0
-                                        ) {
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumEmployeePointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit._id]?.sumEmployeePointNotCoefficient + result?.employeePoint;
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientEmployee++;
-                                        }
-                                        if (result.approvedPoint
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointNotCoefficient >= 0
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientApproved >= 0
-                                        ) {
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumApprovedPointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointNotCoefficient + result?.approvedPoint;
-                                            dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientApproved++;
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    })
-                }
-            });
-        }
-
-        if (units && units.length !== 0) {
-            units.map(unit => {
-                let average;
-
-                if (criteria === CRITERIA.COEFFICIENT) {
-                    if (dataSumPointAndCoefficient[unit]) {
-                        if (typePoint === TYPEPOINT.AUTOMAIC_POINT) {
-                            average = averageFunction(dataSumPointAndCoefficient[unit].sumAutomaticPointCoefficient, dataSumPointAndCoefficient[unit].sumCoefficientAutomatic);
-                        } else if (typePoint === TYPEPOINT.APPROVED_POINT) {
-                            average = averageFunction(dataSumPointAndCoefficient[unit].sumApprovedPointCoefficient, dataSumPointAndCoefficient[unit].sumCoefficientApproved);
-                        } else if (typePoint === TYPEPOINT.EMPLOYEE_POINT) {
-                            average = averageFunction(dataSumPointAndCoefficient[unit].sumEmployeePointCoefficient, dataSumPointAndCoefficient[unit].sumCoefficientEmployee)
-                        }
-                    }
-
-                    resultAverage[unit] = average;
-                } else {
-                    if (dataSumPointAndCoefficient[unit]) {
-                        if (typePoint === TYPEPOINT.AUTOMAIC_POINT) {
-                            average = averageFunction(dataSumPointAndCoefficient[unit].sumAutomaticPointNotCoefficient, dataSumPointAndCoefficient[unit].sumNotCoefficientAutomatic);
-                        } else if (typePoint === TYPEPOINT.APPROVED_POINT) {
-                            average = averageFunction(dataSumPointAndCoefficient[unit].sumApprovedPointNotCoefficient, dataSumPointAndCoefficient[unit].sumNotCoefficientApproved);
-                        } else if (typePoint === TYPEPOINT.EMPLOYEE_POINT) {
-                            average = averageFunction(dataSumPointAndCoefficient[unit].sumEmployeePointNotCoefficient, dataSumPointAndCoefficient[unit].sumNotCoefficientEmployee);
-                        }
-                    }
-
-                    resultAverage[unit] = average;
-                }
-            })
-        }
-        return {
-            ...resultAverage
-        }
-    }
-
+    const CHART = useRef()
+    const refMultiLineChart = React.createRef()
     useEffect(() => {
-        let month = ['x'], dataChart = {};
-        let childrenOrganizationalUnit = [], currentOrganizationalUnit, queue = [];
-
-        if (dashboardEvaluationEmployeeKpiSet) {
-            currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
-        }
-        if (currentOrganizationalUnit) {
-            childrenOrganizationalUnit.push(currentOrganizationalUnit);
-            queue.push(currentOrganizationalUnit);
-            while (queue.length > 0) {
-                let v = queue.shift();
-                if (v.children) {
-                    for (let i = 0; i < v.children.length; i++) {
-                        let u = v.children[i];
-                        queue.push(u);
-                        childrenOrganizationalUnit.push(u);
-                    }
-                }
-            }
-        }
-
-        let legend = [];
-        if (childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0 && units && units.length !== 0) {
-            childrenOrganizationalUnit.filter(unit => {
-                return units.indexOf(unit.id) !== -1;
-            }).map(unit => {
-                dataChart[unit.id] = [unit.name];
-                legend = [...legend, unit.name]
-            })
-
-        }
-
-        const period = dayjs(props?.endMonth).diff(props?.startMonth, 'month');
-        for (let i = 0; i <= period; i++) {
-            let currentMonth = dayjs(props?.startMonth).add(i, 'month').format("YYYY-MM");
-            month = [
-                ...month,
-                dayjs(props?.startMonth).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
-            ];
-
-            const data = filterTasksByMonth(currentMonth, currentMonth);
-            if (units && units.length !== 0) {
-                units.map(item => {
-                    dataChart[item] && dataChart[item].push(data[item] || 0)
-                })
-            }
+        let data = getData("average-results-chart")
+        if (data)
             setState({
                 ...state,
-                legend,
-                dataChart: [
-                    month,
-                    ...Object.values(dataChart)
-                ]
+                dataChart: data.dataChart,
+                legend: data.legend
             })
-        }
-    }, [JSON.stringify(props?.organizationUnitTasks), JSON.stringify(props?.dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit), state.typePoint, state.criteria, props.startMonth, props.endMonth])
-
+    }, [JSON.stringify(taskDashboardCharts)])
 
     useEffect(() => {
         if (state.dataChart)
             averageChart();
-    }, [state.dataChart])
+    }, [JSON.stringify(state.dataChart)])
 
     const handleSelectCriteria = (value) => {
         value = value[0];
-        INFO_SEARCH = {
-            ...INFO_SEARCH,
+        DATA_SEARCH = {
+            ...DATA_SEARCH,
             criteria: Number(value)
         }
+        props.handleChangeDataSearch("average-results-chart", { criteria: Number(value) })
     }
 
     const handleSelectTypePoint = (value) => {
         value = value[0];
-        INFO_SEARCH = {
-            ...INFO_SEARCH,
+        DATA_SEARCH = {
+            ...DATA_SEARCH,
             typePoint: Number(value)
         }
+        props.handleChangeDataSearch("average-results-chart", { typePoint: Number(value) })
     }
 
     const handleSearchData = () => {
-        const { criteria, typePoint } = INFO_SEARCH;
-        console.log("INFO_SEARCH_HANDLE", INFO_SEARCH)
-        setState({
-            ...state,
-            typePoint,
-            criteria
-        })
-    }
-
-    const removePreviosChart = () => {
-        let chart = document.getElementById('averageChartUnitChart');
-        while (chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild);
+        let dataSearch = {
+            "average-results-chart": {
+                typePoint: DATA_SEARCH.typePoint,
+                criteria: DATA_SEARCH.criteria
+            }
         }
+        props.getDataSearchChart(dataSearch)
     }
 
+    const removePreviousChart = () => {
+        const chart = refMultiLineChart.current;
+        if (chart)
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+    }
+    function getData(chartName) {
+        let dataChart;
+        let data = taskDashboardCharts?.[chartName]
+        if (data) {
+            dataChart = data
+        }
+        return dataChart;
+    }
     const averageChart = () => {
-        removePreviosChart();
-        let { dataChart } = state;
-        chart.current = c3.generate({
-            bindto: document.getElementById('averageChartUnitChart'),             // Đẩy chart vào thẻ div có id="chart"
+        removePreviousChart();
+        const { dataChart } = state;
+        CHART.current = c3.generate({
+            bindto: refMultiLineChart.current,             // Đẩy chart vào thẻ div có id="chart"
 
             data: {
                 x: 'x',
@@ -347,13 +168,12 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
             }
         })
     }
-
     return (
         <React.Fragment>
             <div className="qlcv">
                 <div className="form-inline" >
                     <div className="form-group">
-                        <label>Tiêu chí</label>
+                        <label>{translate('task.task_management.criteria')}</label>
                         <SelectBox
                             id={`criteriaOfAverageUnitSelectBox`}
                             className="form-control select2"
@@ -361,13 +181,13 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                             items={CRITERIA_SELECTBOX}
                             multiple={false}
                             onChange={handleSelectCriteria}
-                            value={criteria}
+                            value={DATA_SEARCH.criteria}
                         />
                     </div>
                 </div>
                 <div className="form-inline" >
                     <div className="form-group">
-                        <label>Loại điểm</label>
+                        <label>{translate('task.task_management.type_of_point')}</label>
                         <SelectBox
                             id={`typePointOfAverageResultsTaskSelectBox`}
                             className="form-control select2"
@@ -375,7 +195,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                             items={TYPEPOINT_SELECTBOX}
                             multiple={false}
                             onChange={handleSelectTypePoint}
-                            value={typePoint}
+                            value={DATA_SEARCH.typePoint}
                         />
                     </div>
                     <div className="form-group">
@@ -385,13 +205,13 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
             </div>
 
             <section id={"averageChartUnit"} className="c3-chart-container">
-                <div id="averageChartUnitChart"></div>
+                <div ref={refMultiLineChart}></div>
                 <CustomLegendC3js
-                    chart={chart.current}
+                    chart={CHART.current}
                     chartId={"averageChartUnit"}
                     legendId={"averageChartUnitLegend"}
-                    title={legend && `${translate('general.list_unit')} (${legend?.length - 1})`}
-                    dataChartLegend={legend && legend.map(item => item)}
+                    title={legend && `${translate('general.list_unit')} (${legend?.length})`}
+                    dataChartLegend={legend && legend}
                 />
             </section>
         </React.Fragment>
@@ -399,8 +219,8 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 }
 
 function mapState(state) {
-    const { tasks, dashboardEvaluationEmployeeKpiSet } = state;
-    return { tasks, dashboardEvaluationEmployeeKpiSet }
+    const { tasks } = state
+    return { tasks }
 }
 const actions = {
 

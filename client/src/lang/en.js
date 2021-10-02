@@ -2591,8 +2591,8 @@ export default {
                 other: "Other",
 
                 //Thông điệp trả về từ server
-                get_asset_group_success:"Get asset group successfully",
-                get_asset_group_fail:"Get asset group fail",
+                get_asset_group_success: "Get asset group successfully",
+                get_asset_group_fail: "Get asset group fail",
                 get_list_asset_success: "Get list asset successfully",
                 get_list_asset_faile: "Get list asset faile",
                 create_asset_success: "Create asset successfully",
@@ -3210,6 +3210,9 @@ export default {
 
                 project: 'Project name (if you have)',
 
+                //dashboard cv đơn vị
+                type_of_point: "Type of point",
+                criteria: "Criteria",
                 load_task: "Load task",
                 time: "Time",
                 load_task_chart: "Dashboard load task",
@@ -4062,6 +4065,22 @@ export default {
                     result: "Result",
                     approve: "Approve",
                     evaluate: "Evaluate",
+                },
+
+                kpi_organizational_unit_manager: {
+                    index: "Index",
+                    time: "Date",
+                    employee_name: "Employee Name",
+                    target_number: "Target Number",
+                    kpi_status: "KPI Status",
+                    result: "Result",
+                    approve: "Approve",
+                    evaluate: "Evaluate",
+                    target_name: "Target Name",
+                    creator: "Creator",
+                    organization_unit: "Organization Unit",
+                    criteria: "Criteria",
+                    no_data: "No data",
                 },
 
                 create_organizational_unit_kpi_set_modal: {

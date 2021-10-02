@@ -201,6 +201,7 @@ function AverageResultsOfTask(props) {
     const averageChart = () => {
         removePreviosChart();
         const { dataChart } = state;
+        console.log('dataChart :>> ', dataChart);
         let chart = c3.generate({
             bindto: document.getElementById('average-chart'),             // Đẩy chart vào thẻ div có id="chart"
 
