@@ -40,7 +40,6 @@ const InprocessOfUnitTask = (props) => {
 
     const barChart = () => {
         const { dataChart } = state
-        console.log("inprocess dataChart", dataChart)
         let height = unitNameSelected?.length ? unitNameSelected.length * 60 : 0;
         let heightOfChart = height > 500 ? height : 500;
         c3.generate({

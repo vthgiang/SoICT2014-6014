@@ -696,7 +696,6 @@ export function tasks(state = {
 
         case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_SUCCESS:
             let result = action.payload;
-            console.log("action.payload", result)
             if (Object.keys(result).length === 1) {
                 const data = Object.values(result)[0];
                 let charts = state.taskDashboardCharts

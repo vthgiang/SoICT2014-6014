@@ -46,8 +46,6 @@ const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
 const TYPEPOINT = { AUTOMATIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
 
 // giá trị tìm kiếm mặc định mỗi khi search
-
-
 let DEFAULT_SEARCH = {
     "general-task-chart": {},
     "gantt-chart": {
@@ -216,19 +214,6 @@ function TaskOrganizationUnitDashboard(props) {
         }
     }
 
-    // function filterArraySkipAndLimit(arrays, page, limit) {
-    //     let employees;
-    //     if (arrays?.length > 0) {
-    //         employees = arrays.filter((item, index) => {
-    //             if (index >= (page - 1) * limit && index < page * limit) {
-    //                 return true;
-    //             }
-    //             else return false;
-    //         })
-    //     }
-    //     return employees;
-    // }
-
     const getUnitName = (arrayUnit, arrUnitId) => {
         let data = [];
         arrayUnit && arrayUnit.forEach(x => {
@@ -282,23 +267,6 @@ function TaskOrganizationUnitDashboard(props) {
         props.getOrganizationTaskDashboardChart(data1)
     }
 
-    function getDataTask(chartName) {
-        let dataChart;
-        let data = taskDashboardCharts?.[chartName]
-        if (data) {
-            dataChart = data.organizationUnitTasks
-        }
-        return dataChart;
-    }
-
-    function getDataEmployee(chartName) {
-        let dataChart;
-        let data = taskDashboardCharts?.[chartName]
-        if (data) {
-            dataChart = data.usersInUnitsOfCompany
-        }
-        return dataChart;
-    }
     const isLoading = (chartName) => {
         let x = taskDashboardCharts?.[chartName]?.isLoading
         return x

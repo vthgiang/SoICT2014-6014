@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { UserActions } from '../../../super-admin/user/redux/actions';
-
 import { SelectMulti, PaginateBar, DataTableSetting } from '../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
@@ -26,15 +24,13 @@ function DistributionOfEmployee(props) {
         const distributionOfEmployeeChartPerPage = getTableConfiguration(distributionOfEmployeeChartId, defaultConfig).limit;
 
         return {
-            dataChart: {},
             perPage: distributionOfEmployeeChartPerPage,
         }
     }
     useEffect(() => {
-        const dataX = getDataChart("employee-distribution-chart")
-        console.log("data00000000000", dataX)
-        if (dataX) {
-            let data = _deepClone(dataX)
+        const dataChart = getDataChart("employee-distribution-chart")
+        if (dataChart) {
+            let data = _deepClone(dataChart)
             let nameEmployee = data.nameEmployee.slice(0, perPage)
             let taskCount = data.taskCount
             for (let i in taskCount) {
@@ -42,7 +38,6 @@ function DistributionOfEmployee(props) {
             }
             setState({
                 ...state,
-                dataChart: data,
                 nameEmployee: nameEmployee,
                 taskCount: taskCount,
                 total: data?.totalEmployee,
@@ -85,10 +80,9 @@ function DistributionOfEmployee(props) {
     }
 
     const handlePaginationDistributionOfEmployeeChart = (page) => {
-        const dataY = getDataChart("employee-distribution-chart")
-        console.log("data111111111111", dataY)
-        if (dataY) {
-            let data = _deepClone(dataY)
+        const dataChart = getDataChart("employee-distribution-chart")
+        if (dataChart) {
+            let data = _deepClone(dataChart)
             let begin = (Number(page) - 1) * perPage
             let end = (Number(page) - 1) * perPage + perPage
             let nameEmployee = data?.nameEmployee.slice(begin, end)
@@ -104,27 +98,16 @@ function DistributionOfEmployee(props) {
                 display: nameEmployee.length
             })
         }
-        // let status = infoSearch.status;
-        // let dataSearch = {
-        //     "employee-distribution-chart": {
-        //         status: status,
-        //         page: Number(page),
-        //         perPage: perPage
-        //     }
-        // }
-        // props.getDataSearchChart(dataSearch)
-        // props.handleChangeDataSearch("employee-distribution-chart", { status: status, page: Number(page), perPage: perPage })
 
     }
     const setLimitDistributionOfEmployeeChart = (limit) => {
-        const dataZ = getDataChart("employee-distribution-chart")
-        if (dataZ) {
-            let data = _deepClone(dataZ)
+        const dataChart = getDataChart("employee-distribution-chart")
+        if (dataChart) {
+            let data = _deepClone(dataChart)
             let nameEmployee = data?.nameEmployee.slice(0, Number(limit))
             let taskCount = data.taskCount
             for (let i in taskCount) {
                 taskCount[i] = taskCount[i].slice(0, 1).concat(taskCount[i].slice(1, Number(limit) + 1))
-                console.log("taskCOunt", taskCount[i].slice(1, Number(limit) + 1))
             }
 
             setState({
@@ -137,23 +120,9 @@ function DistributionOfEmployee(props) {
                 pageTotal: Math.ceil(data.totalEmployee / limit)
             })
         }
-        // let status = infoSearch.status;
-        // let dataSearch = {
-        //     "employee-distribution-chart": {
-        //         status: status,
-        //         page: 1,
-        //         perPage: Number(limit)
-        //     }
-        // }
-        // props.getDataSearchChart(dataSearch)
-        // setState({
-        //     ...state,
-        //     perPage: Number(limit)
-        // });
     }
 
     function getDataChart(chartName) {
-        console.log("Xxxxxxxxxxx", taskDashboardCharts?.[chartName])
         let dataChart;
         let data = taskDashboardCharts?.[chartName]
         if (data) {
@@ -220,9 +189,6 @@ function DistributionOfEmployee(props) {
             },
         });
     }
-
-
-    console.log("state distribution", state)
     return (
         <React.Fragment>
             <DataTableSetting

@@ -193,7 +193,6 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
 exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
     let { ids, page, perPage } = query;
     perPage = Number(perPage)
-    console.log("query", query)
     let employees = [], roles = [], countDocument;
     let organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .find({

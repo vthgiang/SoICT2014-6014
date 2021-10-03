@@ -3259,7 +3259,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         query[key] = JSON.parse(query[key])
     });
     const data = query;
-    console.log("newData", data)
+    console.log("data", data)
     const chartArr = Object.keys(data);
     let result = {};
     const { organizationalUnitId, startMonth, endMonth } = data["common-params"]
@@ -3308,7 +3308,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         connect(DB_CONNECTION, portal)
     ).find(); // { company: id }
     const unitsNameId = allUnits.map(a => ({ id: a._id, name: a.name }))
-    const newData = allUnits.map((department) => {
+    const newDataUnit = allUnits.map((department) => {
         return {
             id: department._id.toString(),
             name: department.name,
@@ -3326,7 +3326,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 
     //data cho tổng quan công việc
     if (chartArr.includes('general-task-chart')) {
-        userArray = await UserService._getAllUsersInOrganizationalUnits(portal, newData);
+        userArray = await UserService._getAllUsersInOrganizationalUnits(portal, newDataUnit);
         const listEmployee = {}, dataTable = [];
         //Lay cac cong viec cua cac unit da chon
         const tasksOfSelectedUnit = organizationUnitTasks?.filter(x =>
@@ -3348,7 +3348,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                 listEmployee[x._id] = x.name;
             }
         }
-        console.log("listEmployee", listEmployee)
         let data1 = {};
         for (let i in tasksOfSelectedUnit) {
             let result = _processTask(tasksOfSelectedUnit[i])
@@ -3604,14 +3603,11 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
             nameEmployee: nameEmployee,
             taskCount: [numOfResponsibleTask, numOfAccountableTask, numOfConsultedTask, numOfInformedTask],
             totalEmployee: employeeListDistribution?.totalEmployee,
-            // totalPage: employeeListDistribution?.totalPage,
-            // page: dataSearch?.page
         }
         resultDistribution = {
             dataChart: dataChart,
         }
         result["employee-distribution-chart"] = resultDistribution
-        //console.log("resultDistribution", resultDistribution)
     }
 
     //data cho tiến độ công việc
@@ -3916,7 +3912,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         result['all-time-sheet-log-by-unit'] = resultAllTimeSheetLog
         //console.log("resultAllTimeSheetLog dataChart", resultAllTimeSheetLog.dataChart)
     }
-    console.log("resultArr", result)
+    console.log("result", result)
     return result
 
 
