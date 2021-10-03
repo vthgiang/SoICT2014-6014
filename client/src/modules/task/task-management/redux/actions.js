@@ -624,7 +624,8 @@ function importTasks(data) {
 function getOrganizationTaskDashboardChart(data) {
     return dispatch => {
         dispatch({
-            type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST
+            type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST,
+            chartNameArr: Object.keys(data),
         });
 
         taskManagementService.getOrganizationTaskDashboardChart(data)

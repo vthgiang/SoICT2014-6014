@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import { connect } from 'react-redux';
 import dayjs from 'dayjs'
 import { SlimScroll, DataTableSetting, TreeTable } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -8,163 +9,17 @@ import _cloneDeep from 'lodash/cloneDeep';
 // import useDeepCompareEffect from 'use-deep-compare-effect'
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 
-const countTask = (tasklist, name) => {
-    let confirmedTask = [], noneUpdateTask = [], intimeTask = [], delayTask = [], overdueTask = [], taskFinished = [], taskInprocess = [];
 
-    for (let i in tasklist) {
-        let start = dayjs(tasklist[i]?.startDate);
-        let end = dayjs(tasklist[i]?.endDate);
-        let lastUpdate = dayjs(tasklist[i]?.updatedAt);
-        let now = dayjs(new Date());
-        let duration = end.diff(start, 'day');
-        let uptonow = now.diff(lastUpdate, 'day');
-        if (tasklist[i]?.confirmedByEmployees?.length) {
-            confirmedTask = [...confirmedTask, tasklist[i]];
-        }
-        if (uptonow >= 7) {
-            noneUpdateTask = [...noneUpdateTask, tasklist[i]];
-        }
-        if (tasklist[i]?.status === 'inprocess') {
-            if (now > end) {
-                // Quá hạn
-                overdueTask = [...overdueTask, tasklist[i]];
-            }
-            else {
-                let processDay = Math.floor(tasklist[i]?.progress * duration / 100);
-                let startToNow = now.diff(start, 'day');
-
-                if (startToNow > processDay) {
-                    // Trễ hạn
-                    delayTask = [...delayTask, tasklist[i]];
-                }
-                else if (startToNow <= processDay) {
-                    // Đúng hạn
-                    intimeTask = [...intimeTask, tasklist[i]];
-                }
-            }
-        }
-        if (tasklist[i] && tasklist[i].status === "finished") {
-            taskFinished = [...taskFinished, tasklist[i]];
-        }
-        if (tasklist[i] && tasklist[i].status === "inprocess") {
-            taskInprocess = [...taskInprocess, tasklist[i]];
-        }
-    }
-    return {
-        name: name ? name : "",
-        totalTask: tasklist,
-        confirmedTask,
-        noneUpdateTask,
-        intimeTask,
-        delayTask,
-        overdueTask,
-        taskFinished,
-        taskInprocess,
-        organization: true,
-        show: true,
-    }
-}
-
-const processTask = (task) => {
-    let propNames = ['totalTask'];
-    let start = dayjs(task?.startDate);
-    let end = dayjs(task?.endDate);
-    let lastUpdate = dayjs(task?.updatedAt);
-    let now = dayjs(new Date());
-    let duration = end.diff(start, 'day');
-    let uptonow = now.diff(lastUpdate, 'day');
-    if (task?.confirmedByEmployees?.length) {
-        propNames.push('confirmedTask');
-    }
-    if (uptonow >= 7) {
-        propNames.push('noneUpdateTask');
-    }
-    if (task?.status === 'inprocess') {
-        if (now > end) {
-            // Quá hạn
-            propNames.push('overdueTask');
-        }
-        else {
-            let processDay = Math.floor(task?.progress * duration / 100);
-            let startToNow = now.diff(start, 'day');
-
-            if (startToNow > processDay) {
-                // Trễ hạn
-                propNames.push('delayTask');
-            }
-            else if (startToNow <= processDay) {
-                // Đúng hạn
-                propNames.push('intimeTask');
-            }
-        }
-    }
-
-    if (task && task.status === "finished") {
-        propNames.push('taskFinished');
-    }
-    if (task && task.status === "inprocess") {
-        propNames.push('taskInprocess');
-    }
-    return propNames
-
-}
-
-
-const freshListEmployee = (listEmployee) => {
-    let arr = [];
-    let result = [];
-    listEmployee && listEmployee.forEach((x, index) => {
-        if (x.managers) {
-            for (const [key, value] of Object.entries(x.managers)) {
-                if (value.members && value.members.length > 0) {
-                    value.members.forEach((o) => {
-                        arr = [...arr, o];
-                    });
-                }
-            }
-        }
-
-        if (x.deputyManagers) {
-            for (const [key, value] of Object.entries(x.deputyManagers)) {
-                if (value.members && value.members.length > 0) {
-                    value.members.forEach((o) => {
-                        arr = [...arr, o];
-                    });
-                }
-            }
-        }
-
-        if (x.employees) {
-            for (const [key, value] of Object.entries(x.employees)) {
-                if (value.members && value.members.length > 0) {
-                    value.members.forEach((o) => {
-                        arr = [...arr, o];
-                    });
-                }
-            }
-        }
-
-        // Lọc các nhân viên trùng nhau sau khi thực hiện ở trên
-        // vì 1 nhân viên có thể có nhiều chức ở các đơn vị khác nhau nên chỉ lọc lấy 1 cái
-        const seen = new Set();
-        const filteredArr = arr.filter((el) => {
-            const duplicate = seen.has(el._id);
-            seen.add(el._id);
-            return !duplicate;
-        });
-        result = [...filteredArr];
-    })
-    return result;
-}
 
 const GeneralTaskChart = (props) => {
     const tableId = "general-list-task";
     const defaultConfig = { hiddenColumns: ["5", "6", "7", "8"] }
+
     getTableConfiguration(tableId, defaultConfig)
 
-    const { translate } = props;
-    const dataTable = []
-    const [state, setState] = useState([]);
+    const { translate, tasks } = props;
+    const { taskDashboardCharts } = tasks
+    const [state, setState] = useState({ dataTable: [] });
     // const [collapse, setCollapse] = useState({
 
     // });
@@ -175,149 +30,45 @@ const GeneralTaskChart = (props) => {
 
     const checkExport = useRef(false);
 
+    let column = [
+        { name: translate('task.task_dashboard.unit'), key: "name" },
+        { name: translate('task.task_dashboard.all_tasks'), key: "totalTask" },
+        { name: translate('task.task_dashboard.all_tasks_inprocess'), key: "taskInprocess" },
+        { name: translate('task.task_dashboard.all_tasks_finished'), key: "taskFinished" },
+        { name: translate('task.task_dashboard.confirmed_task'), key: "confirmedTask" },
+        { name: translate('task.task_dashboard.none_update_recently'), key: "noneUpdateTask" },
+        { name: translate('task.task_dashboard.intime_task'), key: "intimeTask" },
+        { name: translate('task.task_dashboard.delay_task'), key: "delayTask" },
+        { name: translate('task.task_dashboard.overdue_task'), key: "overdueTask" }
+    ];
+    const { dataTable } = state
 
     useLayoutEffect(() => {
         if (checkExport) {
-            state && state.length > 0 && convertDataExport(state);
+            dataTable && dataTable.length > 0 && convertDataExport(dataTable);
         }
-    }, [state])
+    }, [JSON.stringify(dataTable)])
 
     useEffect(() => {
-        const { tasks, units, unitSelected, employees } = props;
-
-        const listEmployee = {};
-        //Lay cac cong viec cua cac unit da chon
-        const tasksOfSelectedUnit = tasks?.filter(x =>
-            unitSelected?.includes(x?.organizationalUnit?._id))
-
-        // Dem cong viec cua tat ca cac unit da chon
-        let dataRow = countTask(tasksOfSelectedUnit, 'Tổng');
-        dataTable.push(dataRow);
-        // Dem cong viec cua tung unit da chon
-        let listUnit = [];
-        units && units.forEach(unit => {
-            if (unitSelected?.includes(unit && unit.id)) {
-                listUnit.push(unit);
-            }
-        });
-
-        const employeesNew = freshListEmployee(employees);
-        if (employeesNew && employeesNew.length) {
-            for (let i in employeesNew) {
-                let x = employeesNew[i]
-                listEmployee[x._id] = x.name;
-            }
+        let data1 = getData("general-task-chart")
+        if (data1) {
+            checkExport.current = true;
+            setState({
+                ...state,
+                dataTable: data1
+            })
         }
 
-        let data = {};
-        for (let i in tasksOfSelectedUnit) {
-            let result = processTask(tasksOfSelectedUnit[i])
-            let unitName = tasksOfSelectedUnit?.[i]?.organizationalUnit?.name;
+    }, [JSON.stringify(taskDashboardCharts)]);
 
-            for (let j in result) {
-                if (data && !data?.[unitName]) {
-                    data[unitName] = {};
-                }
-                if (data?.[unitName] && !data?.[unitName]?.[result?.[j]]) {
-                    data[unitName][result[j]] = [];
-                }
-
-                if (data[unitName]) {
-                    data[unitName][result[j]] = [...data[unitName][result[j]], tasksOfSelectedUnit[i]];
-                    data[unitName].name = unitName;
-                }
-
-                let resEmployee = tasksOfSelectedUnit[i].responsibleEmployees;
-                let employeeInTask = [];
-
-                for (let e in resEmployee) {
-                    employeeInTask.push(resEmployee[e].id)
-                }
-                // Loc cac id trung nhau
-                let uniqueEmployeeId = Array.from(new Set(employeeInTask));
-
-                for (let k in uniqueEmployeeId) {
-                    let idEmployee = uniqueEmployeeId[k];
-                    if (data?.[unitName] && !data[unitName][idEmployee]) {
-                        data[unitName][idEmployee] = {}
-                    }
-                    if (data?.[unitName]?.[idEmployee] && !data[unitName][idEmployee][result?.[j]]) {
-                        data[unitName][idEmployee][result[j]] = [];
-                    }
-                    if (data?.[unitName]?.[idEmployee]) {
-                        data[unitName][idEmployee][result[j]] = [...data[unitName][idEmployee][result[j]], tasksOfSelectedUnit[i]];
-                        data[unitName][idEmployee].name = idEmployee;
-                    }
-                }
-            }
+    function getData(chartName) {
+        let dataChart;
+        let data = taskDashboardCharts?.[chartName]
+        if (data) {
+            dataChart = data.dataChart
         }
-
-
-        for (let i in listUnit) {
-            let unitName = listUnit?.[i]?.name;
-            if (!Object.keys(data).includes(unitName)) {
-                dataTable.push({
-                    parent: true,
-                    _id: unitName,
-                    confirmedTask: [],
-                    delayTask: [],
-                    intimeTask: [],
-                    name: unitName,
-                    noneUpdateTask: [],
-                    overdueTask: [],
-                    totalTask: [],
-                    taskFinished: [],
-                    taskInprocess: [],
-                    organization: true,
-                    show: true,
-                });
-            }
-            else {
-                let unit = data[unitName];
-                // Thêm số công việc của cả phòng vào mảng dataTable
-                dataTable.push({
-                    parent: true,
-                    _id: unitName,
-                    confirmedTask: unit.confirmedTask ? unit.confirmedTask : [],
-                    delayTask: unit.delayTask ? unit.delayTask : [],
-                    intimeTask: unit.intimeTask ? unit.intimeTask : [],
-                    name: unitName,
-                    noneUpdateTask: unit.noneUpdateTask ? unit.noneUpdateTask : [],
-                    overdueTask: unit.overdueTask ? unit.overdueTask : [],
-                    totalTask: unit.totalTask ? unit.totalTask : [],
-                    taskFinished: unit.taskFinished ? unit.taskFinished : [],
-                    taskInprocess: unit.taskInprocess ? unit.taskInprocess : [],
-                    organization: true,
-                    show: true,
-                });
-                // Thêm số công việc tuwngf nhaan vieen trong phòng vào mảng dataTable
-                for (let key in unit) {
-                    if (unit[key].name) {
-                        dataTable.push({
-                            _id: unit?.[key]?.name,
-                            parent: unitName,
-                            confirmedTask: unit?.[key]?.confirmedTask ? unit[key].confirmedTask : [],
-                            delayTask: unit?.[key]?.delayTask ? unit[key].delayTask : [],
-                            intimeTask: unit?.[key]?.intimeTask ? unit[key].intimeTask : [],
-                            name: listEmployee?.[unit?.[key].name],
-                            noneUpdateTask: unit?.[key]?.noneUpdateTask ? unit[key].noneUpdateTask : [],
-                            overdueTask: unit?.[key]?.overdueTask ? unit[key].overdueTask : [],
-                            totalTask: unit?.[key]?.totalTask ? unit[key].totalTask : [],
-                            taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished : [],
-                            taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess : [],
-                            organization: false,
-                            show: false,
-                        });
-                    }
-                }
-            }
-        }
-
-        checkExport.current = true;
-
-        setState(dataTable);
-    }, [props.tasks]);
-
+        return dataChart;
+    }
 
     const convertDataExport = (data) => {
         const { translate, unitNameSelected, startMonthTitle, endMonthTitle } = props;
@@ -428,17 +179,6 @@ const GeneralTaskChart = (props) => {
     //     } else return data;
     // }
 
-    let column = [
-        { name: translate('task.task_dashboard.unit'), key: "name" },
-        { name: translate('task.task_dashboard.all_tasks'), key: "totalTask" },
-        { name: translate('task.task_dashboard.all_tasks_inprocess'), key: "taskInprocess" },
-        { name: translate('task.task_dashboard.all_tasks_finished'), key: "taskFinished" },
-        { name: translate('task.task_dashboard.confirmed_task'), key: "confirmedTask" },
-        { name: translate('task.task_dashboard.none_update_recently'), key: "noneUpdateTask" },
-        { name: translate('task.task_dashboard.intime_task'), key: "intimeTask" },
-        { name: translate('task.task_dashboard.delay_task'), key: "delayTask" },
-        { name: translate('task.task_dashboard.overdue_task'), key: "overdueTask" }
-    ];
 
     const bindTextToEvent = (key, text, data, name = "", index = 0, bold = "bold") => {
         let textColor = "";
@@ -469,10 +209,8 @@ const GeneralTaskChart = (props) => {
             <a onClick={() => handleShowGeneralTask(data, name, index, key)} style={{ color: textColor, fontWeight: bold }}>{text}</a>
         )
     }
-
     let data = [];
-    let dataTemp = state.filter(o => o.name);
-
+    let dataTemp = dataTable?.filter(o => o.name);
     for (let i in dataTemp) {
 
         let bold = dataTemp[i].parent && dataTemp[i].parent !== true ? "normal" : "bold";
@@ -491,8 +229,6 @@ const GeneralTaskChart = (props) => {
             _id: dataTemp[i]._id ? dataTemp[i]._id : -1
         }
     }
-
-
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
@@ -554,5 +290,12 @@ const GeneralTaskChart = (props) => {
         </React.Fragment>
     )
 }
+function mapState(state) {
+    const { tasks } = state;
+    return { tasks };
+}
+const actionCreators = {
 
-export default withTranslate(GeneralTaskChart);
+};
+
+export default connect(mapState, actionCreators)(withTranslate(GeneralTaskChart));

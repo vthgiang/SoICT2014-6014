@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { convertTime } from '../../../../helpers/stringMethod';
@@ -13,255 +13,159 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
-class AllTimeSheetLogsByUnit extends Component {
-    constructor(props) {
-        super(props);
-        let curTime = new Date();
-        let month = curTime.getMonth() + 1;
-        let year = curTime.getFullYear();
+function AllTimeSheetLogsByUnit(props) {
+    const { translate, tasks } = props;
+    const { taskDashboardCharts } = tasks
+    const [state, setState] = useState(() => initState())
 
+    function initState() {
         const defaultConfig = { limit: 10 }
-        this.allTimeSheetLogsByUnitId = "all-time-sheet-logs"
-        const allTimeSheetLogsByUnitIdPerPage = getTableConfiguration(this.allTimeSheetLogsByUnitId, defaultConfig).limit;
-
-        this.state = {
-            time: month + "-" + year,
+        const allTimeSheetLogsByUnitId = "all-time-sheet-logs"
+        const allTimeSheetLogsByUnitIdPerPage = getTableConfiguration(allTimeSheetLogsByUnitId, defaultConfig).limit;
+        return {
             currentRowTimeSheetLog: undefined,
-
-            type: "forAllTimeSheetLogs",
-            page: 1,
+            dataChart: {},
             perPage: allTimeSheetLogsByUnitIdPerPage
         }
     }
+    const { perPage, allTimeSheet, filterTimeSheetLogs, page, pageTotal, total, display, currentRowTimeSheetLog } = state;
 
-    componentDidMount() {
-        const { unitIds } = this.props;
-        const { type, page, perPage } = this.state;
-
-        let data = {
-            type: type,
-            organizationalUnitIds: unitIds,
-            page: page,
-            perPage: perPage
-        }
-
-        this.props.getAllEmployeeOfUnitByIds(data);
-    }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-        const { unitIds, user } = this.props;
-        const { type, page, perPage } = this.state;
-
-        if (nextProps.user?.employeeForAllTimeSheetLogs?.loading !== user?.employeeForAllTimeSheetLogs?.loading) {
-            return true
-        }
-
-        let data = {
-            type: type,
-            organizationalUnitIds: nextProps.unitIds,
-            page: page,
-            perPage: perPage
-        }
-
-        if (nextProps.unitIds && !user?.employeeForAllTimeSheetLogs?.employees && !user?.employeeForAllTimeSheetLogs?.loading) {
-            this.props.getAllEmployeeOfUnitByIds(data);
-
-            return true;
-        }
-
-        return true;
-    }
-
-    handleInforTimeSheet = async (value, filterTimeSheetLogs) => {
-        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator === value?.userId)
-        await this.setState(state => {
-            return {
+    useEffect(() => {
+        let data = getData("all-time-sheet-log-by-unit")
+        let dataTable = data
+        if (dataTable) {
+            let dataAllTimeSheet = dataTable.allTimeSheet.slice(0, perPage)
+            let dataFilterTimeSheetLogs = dataTable.filterTimeSheetLogs.slice(0, perPage)
+            setState({
                 ...state,
-                currentRowTimeSheetLog: {
-                    timesheetlogs: value,
-                    filterTimeSheetLogs
-                }
+                allTimeSheet: dataAllTimeSheet,
+                filterTimeSheetLogs: dataFilterTimeSheetLogs,
+                total: dataTable?.employeeLength,
+                pageTotal: Math.ceil(dataTable?.employeeLength / perPage),
+                page: 1,
+                display: dataAllTimeSheet.length
+            })
+        }
+
+    }, [JSON.stringify(taskDashboardCharts)])
+
+    function getData(chartName) {
+        let dataChart;
+        let data = taskDashboardCharts?.[chartName]
+        if (data) {
+            dataChart = data.dataChart
+        }
+        return dataChart;
+    }
+
+    const handleInforTimeSheet = (value, filterTimeSheetLogs) => {
+        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator === value?.userId)
+        setState({
+            ...state,
+            currentRowTimeSheetLog: {
+                timesheetlogs: value,
+                filterTimeSheetLogs
             }
         });
         window.$('#modal-infor-time-sheet-log').modal('show');
 
     }
 
-    handlePaginationAllTimeSheetLogs = (page) => {
-        const { unitIds } = this.props;
-        const { perPage, type } = this.state;
-
-        this.setState(state => {
-            return {
+    const handlePaginationAllTimeSheetLogs = (page) => {
+        let data = getData("all-time-sheet-log-by-unit")
+        let dataTable = data
+        if (dataTable) {
+            let begin = (Number(page) - 1) * perPage
+            let end = (Number(page) - 1) * perPage + perPage
+            let allTimeSheet = dataTable?.allTimeSheet.slice(begin, end)
+            let filterTimeSheetLogs = dataTable?.filterTimeSheetLogs.slice(begin, end)
+            setState({
                 ...state,
-                page: page
-            }
-        })
-
-        let data = {
-            type: type,
-            organizationalUnitIds: unitIds,
-            page: page,
-            perPage: perPage
+                allTimeSheet: allTimeSheet,
+                filterTimeSheetLogs: filterTimeSheetLogs,
+                page: page,
+                display: allTimeSheet.length
+            })
         }
-
-        this.props.getAllEmployeeOfUnitByIds(data);
     }
 
-    setLimitAllTimeSheetLogs = (limit) => {
-        const { unitIds } = this.props;
-        const { type, page } = this.state;
-
-        this.setState(state => {
-            return {
+    const setLimitAllTimeSheetLogs = (limit) => {
+        let data = getData("all-time-sheet-log-by-unit")
+        let dataTable = data
+        if (dataTable) {
+            let allTimeSheet = dataTable?.allTimeSheet.slice(0, limit)
+            let filterTimeSheetLogs = dataTable?.filterTimeSheetLogs.slice(0, limit)
+            setState({
                 ...state,
-                perPage: limit
-            }
-        })
-
-        let data = {
-            type: type,
-            organizationalUnitIds: unitIds,
-            page: page,
-            perPage: limit
+                allTimeSheet: allTimeSheet,
+                filterTimeSheetLogs: filterTimeSheetLogs,
+                page: 1,
+                perPage: Number(limit),
+                display: allTimeSheet.length,
+                pageTotal: Math.ceil(dataTable?.employeeLength / limit)
+            })
         }
 
-        this.props.getAllEmployeeOfUnitByIds(data);
     }
+    return (
+        <React.Fragment>
+            <DataTableSetting
+                tableId={"all-time-sheet-logs"}
+                setLimit={setLimitAllTimeSheetLogs}
+            />
 
-    render() {
-        const { translate, user } = this.props;
-        const { organizationUnitTasks, startMonthTitle, endMonthTitle, unitIds, selectBoxUnit, startMonth, endMonth } = this.props;
-        const { currentRowTimeSheetLog, page } = this.state;
-        let allTimeSheet = [], timesheetlogs = [];
-        let listEmployee;
-
-        if (user) {
-            listEmployee = user?.employeeForAllTimeSheetLogs?.employees;
-        }
-
-        if (listEmployee) {
-            for (let i in listEmployee) {
-                if (listEmployee[i] && listEmployee[i].userId && listEmployee[i].userId._id)
-                    allTimeSheet[listEmployee[i].userId._id] = {
-                        totalhours: 0,
-                        autotimer: 0,
-                        manualtimer: 0,
-                        logtimer: 0,
-                        name: listEmployee[i].userId.name,
-                        userId: listEmployee[i].userId._id
-                    }
-            }
-        }
-
-        let filterTimeSheetLogs = [];
-        organizationUnitTasks?.tasks && organizationUnitTasks.tasks.forEach((o, index) => {
-            if (o.timesheetLogs && o.timesheetLogs.length > 0) {
-                filterTimeSheetLogs = [
-                    ...filterTimeSheetLogs,
-                    ...o.timesheetLogs.map(x => ({ ...x, taskName: o.name, taskId: o._id })),
-                ]
-            }
-        });
-
-        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog && dayjs(o.startedAt).isSameOrAfter(startMonth, 'month') && dayjs(o.stoppedAt).isSameOrBefore(endMonth, 'month'));
-
-        for (let i in filterTimeSheetLogs) {
-            let autoStopped = filterTimeSheetLogs[i].autoStopped;
-            let creator = filterTimeSheetLogs[i].creator;
-
-            if (allTimeSheet[creator]) {
-                if (autoStopped === 1) {
-                    allTimeSheet[creator].manualtimer += filterTimeSheetLogs[i].duration
-                } else if (autoStopped === 2) {
-                    allTimeSheet[creator].autotimer += filterTimeSheetLogs[i].duration
-                } else if (autoStopped === 3) {
-                    allTimeSheet[creator].logtimer += filterTimeSheetLogs[i].duration
-                }
-            }
-        }
-
-        allTimeSheet = Object.entries(allTimeSheet).map(([key, value]) => {
-            if (value.totalhours >= 0) {
-                value.totalhours = value?.manualtimer + value?.logtimer + value?.autotimer;
-            }
-            return value;
-        })
-
-        return (
             <React.Fragment>
-                <div className="box-header with-border">
-                    <div className="box-title">
-                        Thống kê bấm giờ
+                <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+                    <thead>
+                        <tr>
+                            <th style={{ width: '60px' }}>STT</th>
+                            <th>Họ và tên</th>
+                            <th>Tổng thời gian bấm giờ</th>
+                            <th>Bấm giờ</th>
+                            <th>Bấm hẹn giờ</th>
+                            <th>Bấm bù giờ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {
-                            unitIds && unitIds.length < 2 ?
-                                <>
-                                    <span>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")} `}</span>
-                                </>
-                                :
-                                <span onClick={() => this.props.showUnitGeneraTask(selectBoxUnit, unitIds)} style={{ cursor: 'pointer' }}>
-                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitIds && unitIds.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                                </span>
+                            allTimeSheet?.length > 0 && allTimeSheet.map((tsl, index) => {
+                                return (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td><a onClick={() => handleInforTimeSheet(tsl, filterTimeSheetLogs)}>{tsl.name}</a></td>
+                                        <td>{convertTime(tsl.totalhours)}</td>
+                                        <td>{convertTime(tsl.manualtimer)}</td>
+                                        <td>{convertTime(tsl.autotimer)}</td>
+                                        <td>{convertTime(tsl.logtimer)}</td>
+                                    </tr>
+                                )
+                            })
                         }
-                        {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
-                    </div>
-                    <DataTableSetting
-                        tableId={this.allTimeSheetLogsByUnitId}
-                        setLimit={this.setLimitAllTimeSheetLogs}
-                    />
-                </div>
-                <div className="box-body qlcv">
-                    <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '60px' }}>STT</th>
-                                <th>Họ và tên</th>
-                                <th>Tổng thời gian bấm giờ</th>
-                                <th>Bấm giờ</th>
-                                <th>Bấm hẹn giờ</th>
-                                <th>Bấm bù giờ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                allTimeSheet?.length > 0 && allTimeSheet.map((tsl, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td><a onClick={() => this.handleInforTimeSheet(tsl, filterTimeSheetLogs)}>{tsl.name}</a></td>
-                                            <td>{convertTime(tsl.totalhours)}</td>
-                                            <td>{convertTime(tsl.manualtimer)}</td>
-                                            <td>{convertTime(tsl.autotimer)}</td>
-                                            <td>{convertTime(tsl.logtimer)}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
-                    {currentRowTimeSheetLog &&
-                        <InforTimeSheetLog
-                            timesheetlogs={currentRowTimeSheetLog.timesheetlogs}
-                            filterTimeSheetLogs={currentRowTimeSheetLog.filterTimeSheetLogs}
-                        />
-                    }
-                    <PaginateBar
-                        display={user?.employeeForAllTimeSheetLogs?.employees?.length}
-                        total={user?.employeeForAllTimeSheetLogs?.totalEmployee}
-                        pageTotal={user?.employeeForAllTimeSheetLogs?.totalPage}
-                        currentPage={page}
-                        func={this.handlePaginationAllTimeSheetLogs}
-                    />
-                </div>
+                    </tbody>
+                </table>
             </React.Fragment>
-        )
-    }
+
+            {currentRowTimeSheetLog &&
+                <InforTimeSheetLog
+                    timesheetlogs={currentRowTimeSheetLog.timesheetlogs}
+                    filterTimeSheetLogs={currentRowTimeSheetLog.filterTimeSheetLogs}
+                />
+            }
+            <PaginateBar
+                display={display}
+                total={total}
+                pageTotal={pageTotal}
+                currentPage={page}
+                func={handlePaginationAllTimeSheetLogs}
+            />
+        </React.Fragment>
+    )
 }
 
+
 const mapState = (state) => {
-    const { tasks, user } = state;
-    return { tasks, user };
+    const { tasks } = state;
+    return { tasks };
 }
 const actionCreators = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds
