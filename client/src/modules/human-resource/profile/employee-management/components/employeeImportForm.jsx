@@ -177,8 +177,8 @@ const EmployeeImportForm = (props) => {
 
             return {
                 ...x,
-                employeeNumber: x?.employeeNumber?.trim(),
-                employeeTimesheetId: x?.employeeTimesheetId?.trim(),
+                employeeNumber: x?.employeeNumber?.toString()?.trim(),
+                employeeTimesheetId: x?.employeeTimesheetId?.toString()?.trim(),
                 fullName: x?.fullName?.trim(),
                 emailInCompany: x?.emailInCompany?.trim(),
                 birthdate: convertStringToDate(birthdate, false),
