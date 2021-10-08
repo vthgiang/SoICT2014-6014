@@ -2267,18 +2267,35 @@ exports.createProjectTask = async (portal, task) => {
 /**
  * Xóa công việc
  */
-exports.deleteTask = async (portal, taskId) => {
+exports.deleteTask = async (portal, taskId, userId) => {
     //req.params.taskId
+    let allowDelete = false;
     taskId = taskId.split(",");
-    for(let i in taskId) {
+    userId = userId.toString();
+    for (let i in taskId) {
         let tasks = await Task(connect(DB_CONNECTION, portal)).findById(taskId[i]);
-        if (tasks.taskTemplate !== null) {
-            await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-                tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
-            );
+
+        //kiểm tra quyền được xoá của người dùng
+        if (tasks.creator && tasks.creator.toString() === userId || tasks.informedEmployees.map(o => o.toString()).indexOf(userId) !== -1) {
+            if (tasks.creator.toString() === userId) allowDelete = true;
+        }
+        if (tasks.responsibleEmployees && tasks.responsibleEmployees.map(o => o.toString()).indexOf(userId) !== -1 || tasks.consultedEmployees && tasks.consultedEmployees.map(o => o.toString()).indexOf(userId) !== -1) {
+            allowDelete = false;
+        }
+        if (tasks.accountableEmployees && tasks.accountableEmployees.map(o => o.toString()).filter(str => str === userId).length > 0) {
+            allowDelete = true;
         }
 
-        await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
+        if (allowDelete) {
+            if (tasks.taskTemplate !== null) {
+                await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+                    tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
+                );
+            }
+
+            await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
+        }
+
     }
     return taskId;
 }
@@ -2969,11 +2986,11 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
 
 exports.importTasks = async (data, portal, user) => {
     let dataLength = data.length;
-    if(data.length){
-        for(let x = 0; x < dataLength; x ++){
+    if (data.length) {
+        for (let x = 0; x < dataLength; x++) {
             let level = 1, parent = null;
             if (data[x].parent) {
-                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({name: data[x].parent}).select("_id level name parent");
+                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({ name: data[x].parent }).select("_id level name parent");
                 if (taskParent) {
                     level = taskParent.level + 1;
                     parent = taskParent._id;
@@ -3023,7 +3040,7 @@ _checkItemInArray = (arr, x, getLevel = false) => {
     let _id, level;
     if (arr?.length) {
         const arrLength = arr.length;
-        for (let i = 0; i < arrLength; i++){
+        for (let i = 0; i < arrLength; i++) {
             if (arr[i]?.name?.toString().trim() === x?.toString()?.trim()) {
                 _id = arr[i]._id;
                 level = arr[i].level + 1;
@@ -3052,51 +3069,51 @@ exports.importUpdateTasks = async (data, portal, user) => {
         if (allTask) {
             data.forEach((x, index) => {
                 let item = { ...x };
-                if(!x.name){
+                if (!x.name) {
                     item = {
-                            ...item,
-                            errorAlert: ["name_task_not_empty"],
-                            error: true
-                        }
+                        ...item,
+                        errorAlert: ["name_task_not_empty"],
+                        error: true
+                    }
                     rowError = [...rowError, index + 1];
                 } else {
                     if (!_checkItemInArray(allTask, x.name)) {
                         item = {
-                                ...item,
-                                errorAlert: ["name_task_not_found"],
-                                error: true
-                            }
+                            ...item,
+                            errorAlert: ["name_task_not_found"],
+                            error: true
+                        }
                         rowError = [...rowError, index + 1];
                     } else {
-                        item={
+                        item = {
                             ...item,
                             taskNameId: _checkItemInArray(allTask, x.name),
-                            name: null, 
+                            name: null,
                         }
                     }
                 }
 
-                
+
 
                 if (x.parent) {
                     let checkParent = _checkItemInArray(allTask, x.parent, true);
-                    if ( !checkParent?._id) {
+                    if (!checkParent?._id) {
                         item = {
-                                ...item,
-                                errorAlert: ["parent_task_not_found"],
-                                error: true
-                            }
+                            ...item,
+                            errorAlert: ["parent_task_not_found"],
+                            error: true
+                        }
                         rowError = [...rowError, index + 1];
                     }
                     else {
-                        item={
+                        item = {
                             ...item,
                             parent: checkParent?._id,
                             level: checkParent?.level
                         }
                     }
                 }
-                
+
                 valueImport = [...valueImport, item];
             })
         }
@@ -3119,7 +3136,7 @@ exports.importUpdateTasks = async (data, portal, user) => {
                         valueImport[k][propName] === undefined ||
                         valueImport[k][propName] === "" ||
                         (Array.isArray(valueImport[k][propName]) && valueImport[k][propName]?.length === 0)
-                        ) {
+                    ) {
                         delete valueImport[k][propName];
                     }
                 }
@@ -3134,14 +3151,14 @@ exports.importUpdateTasks = async (data, portal, user) => {
                             }]
                         })
                     }
-                    dataUpdate ={...dataUpdate, collaboratedWithOrganizationalUnits}
+                    dataUpdate = { ...dataUpdate, collaboratedWithOrganizationalUnits }
                 }
 
-                if(dataUpdate.createdAt){
-                    dataUpdate = {...dataUpdate, createdAt: new Date(dataUpdate.createdAt)}
+                if (dataUpdate.createdAt) {
+                    dataUpdate = { ...dataUpdate, createdAt: new Date(dataUpdate.createdAt) }
                 }
 
-                
+
                 // console.log('dataUpdate',dataUpdate)
                 await Task(connect(DB_CONNECTION, portal)).bulkWrite([
                     {
@@ -3162,7 +3179,7 @@ exports.importUpdateTasks = async (data, portal, user) => {
 exports.importTaskActions = async (data, portal, user) => {
     if (data) {
         let groupByTask = [];
-        data.forEach((x,index)=>{
+        data.forEach((x, index) => {
             if (!groupByTask[x.taskName]) {
                 groupByTask[x.taskName] = [x]
             } else {
@@ -3176,7 +3193,7 @@ exports.importTaskActions = async (data, portal, user) => {
             let task;
             if (k)
                 task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
-            
+
             if (task) {
                 task.taskActions = task.taskActions.concat(groupByTask[k]);
                 task.save();
@@ -3191,7 +3208,7 @@ exports.importTaskActions = async (data, portal, user) => {
 exports.importTimeSheetLogs = async (data, portal, user) => {
     if (data) {
         let groupByTask = [];
-        data.forEach((x,index)=>{
+        data.forEach((x, index) => {
             if (!groupByTask[x.taskName]) {
                 groupByTask[x.taskName] = [x]
             } else {
@@ -3200,7 +3217,7 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
         })
 
         // console.log('groupByTask', groupByTask)
-        
+
         for (let k in groupByTask) {
             if (k) {
                 let infoTimesheetLog = [];
@@ -3227,8 +3244,8 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
                             upsert: false
                         }
                     },
-               ])
-                
+                ])
+
             }
             console.log('DONE IMPORT TIMESHEET')
         }
@@ -3238,7 +3255,7 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
         //     let task;
         //     if (k)
         //         task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
-            
+
         //     if (task) {
         //         task.taskActions = task.taskActions.concat(groupByTask[k]);
         //         task.save();
