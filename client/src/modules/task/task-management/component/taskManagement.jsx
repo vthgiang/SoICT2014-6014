@@ -502,9 +502,11 @@ function TaskManagement(props) {
         let idValid = tasks?.tasks ? tasks.tasks.some(t => t._id === id) : null;
 
         if (id && idValid) {
-            setState({
-                ...state,
-                currentTaskId: id
+            setState(state => {
+                return {
+                    ...state,
+                    currentTaskId: id
+                }
             })
             window.$(`#modelPerformTask${id}`).modal('show')
         }
@@ -659,12 +661,11 @@ function TaskManagement(props) {
     let units = [];
 
     useEffect(() => {
-        if ((!props?.tasks?.loadingPaginateTasks && props?.tasks?.tasks?.length) || !props?.project?.isLoading) {
+        if ((!props?.tasks?.loadingPaginateTasks) || !props?.project?.isLoading) {
             const currentTasks = cloneDeep(props.tasks.tasks);
             let data = [], dataTree = [];
 
             if (currentTasks && currentTasks.length) {
-                let parents = currentTasks.map(task => task._id)
                 let idTaskProjectRoot = 'task-project-root';
                 for (let n in currentTasks) {
                     data[n] = {
@@ -682,7 +683,7 @@ function TaskManagement(props) {
                         status: checkTaskRequestToClose(currentTasks[n]),
                         progress: convertProgressData(currentTasks[n].progress, currentTasks[n].startDate, currentTasks[n].endDate),
                         totalLoggedTime: getTotalTimeSheetLogs(currentTasks[n].timesheetLogs),
-                        parent: currentTasks[n].parent && parents.includes(currentTasks[n].parent._id) ? currentTasks[n].parent._id : null
+                        parent: currentTasks[n].parent ? currentTasks[n].parent._id : null
                     }
                     let archived = "store";
                     if (currentTasks[0].isArchived === true) {
@@ -777,14 +778,13 @@ function TaskManagement(props) {
                     }
                 }
             }
-            if (data?.length || dataTree?.length) {
-                setState({
-                    ...state,
-                    data,
-                    dataTree,
-                    currentTasks,
-                })
-            }
+
+            setState({
+                ...state,
+                data,
+                dataTree,
+                currentTasks,
+            })
         }
 
     }, [JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)]);
@@ -858,14 +858,17 @@ function TaskManagement(props) {
                         <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
-                    <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end", opacity: selectedData.length ? 1 : 0 }}>
-                        <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
-                            {translate("general.delete_option")}
-                        </button>
-                        <button disabled={!(validateAction("store") || validateAction("restore"))} style={{ margin: "5px" }} type="button" className="btn btn-info pull-right" title={translate("task.task_management.edit_status_archived_of_task")} onClick={() => handleStore(selectedData)}>
-                            {translate("task.task_management.edit_status_archived_of_task")}
-                        </button>
-                    </div>
+                    {
+                        selectedData && selectedData.length > 0 &&
+                        <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
+                                {translate("general.delete_option")}
+                            </button>
+                            <button disabled={!(validateAction("store") || validateAction("restore"))} style={{ margin: "5px" }} type="button" className="btn btn-info pull-right" title={translate("task.task_management.edit_status_archived_of_task")} onClick={() => handleStore(selectedData)}>
+                                {translate("task.task_management.edit_status_archived_of_task")}
+                            </button>
+                        </div>
+                    }
 
                     <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                         <div className="form-group">
