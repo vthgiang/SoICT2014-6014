@@ -177,7 +177,7 @@ function DomainOfTaskResultsChart(props) {
                 })
         }
 
-    }, [props?.startMonth, props?.endMonth, state.role, state.typePoint, JSON.stringify(taskDashboardCharts),
+    }, [props?.startMonth, props?.endMonth, state.role, state.typePoint, JSON.stringify(taskDashboardCharts?.["task-results-domain-chart"]),
     JSON.stringify(props?.tasks?.responsibleTasks), JSON.stringify(props?.tasks?.accountableTasks), JSON.stringify(props?.tasks?.consultedTasks)])
 
     useEffect(() => {

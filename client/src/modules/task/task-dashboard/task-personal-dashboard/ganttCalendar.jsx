@@ -38,7 +38,7 @@ function GanttCalendar(props) {
 
         }
 
-    }, [JSON.stringify(taskDashboardCharts)])
+    }, [JSON.stringify(taskDashboardCharts?.["gantt-chart"])])
     useEffect(() => {
         if (!unit && tasks)
             setState({

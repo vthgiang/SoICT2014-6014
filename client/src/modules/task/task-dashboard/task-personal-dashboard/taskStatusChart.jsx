@@ -126,7 +126,7 @@ function TaskStatusChart(props) {
             });
         }
 
-    }, [JSON.stringify(taskDashboardCharts),
+    }, [JSON.stringify(taskDashboardCharts?.["task-status-chart"]),
     JSON.stringify(tasks?.responsibleTasks), JSON.stringify(tasks?.accountableTasks), JSON.stringify(tasks?.consultedTasks), state.role])
 
     useEffect(() => {

@@ -47,7 +47,7 @@ function AllTimeSheetLogsByUnit(props) {
             })
         }
 
-    }, [JSON.stringify(taskDashboardCharts)])
+    }, [JSON.stringify(taskDashboardCharts?.["all-time-sheet-log-by-unit"])])
 
     function getData(chartName) {
         let dataChart;

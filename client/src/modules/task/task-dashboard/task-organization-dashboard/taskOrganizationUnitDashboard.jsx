@@ -25,15 +25,7 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 const defaultConfig = { limit: 10 }
 const allTimeSheetLogsByUnitId = "all-time-sheet-logs"
-const allTimeSheetLogsByUnitIdPerPage = getTableConfiguration(allTimeSheetLogsByUnitId, defaultConfig).limit;
 const distributionOfEmployeeChartId = "distribution-of-employee-chart";
-const distributionOfEmployeeChartPerPage = getTableConfiguration(distributionOfEmployeeChartId, defaultConfig).limit;
-
-let INFO_SEARCH = {
-    unitsSelected: null,
-    startMonth: dayjs().subtract(3, 'month').format("YYYY-MM"),
-    endMonth: dayjs().format("YYYY-MM"),
-}
 
 const formatString = (value) => {
     if (value && typeof value === 'string') {
@@ -46,7 +38,7 @@ const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
 const TYPEPOINT = { AUTOMATIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
 
 // giá trị tìm kiếm mặc định mỗi khi search
-let DEFAULT_SEARCH = {
+const DEFAULT_SEARCH = {
     "general-task-chart": {},
     "gantt-chart": {
         status: ['inprocess'],
@@ -65,8 +57,13 @@ let DEFAULT_SEARCH = {
     },
     "load-task-organization-chart": {},
     "all-time-sheet-log-by-unit": {}
+}
 
-
+let dataSearch = DEFAULT_SEARCH // tham số các chart để search khi params ở component con thay đổi
+let INFO_SEARCH = { // bộ lọc tìm kiếm
+    unitsSelected: null,
+    startMonth: dayjs().subtract(3, 'month').format("YYYY-MM"),
+    endMonth: dayjs().format("YYYY-MM"),
 }
 
 function TaskOrganizationUnitDashboard(props) {
@@ -80,8 +77,6 @@ function TaskOrganizationUnitDashboard(props) {
             startMonthTitle: formatString(INFO_SEARCH.startMonth),
             endMonth: INFO_SEARCH.endMonth,
             endMonthTitle: formatString(INFO_SEARCH.endMonth),
-            allTimeSheetLogsByUnitIdPerPage: allTimeSheetLogsByUnitIdPerPage,
-            dataSearch: DEFAULT_SEARCH,
         };
     })
 
@@ -90,7 +85,6 @@ function TaskOrganizationUnitDashboard(props) {
 
     useEffect(() => {
         props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-
     }, [])
 
     useEffect(() => {
@@ -170,7 +164,7 @@ function TaskOrganizationUnitDashboard(props) {
     }
 
     const handleSearchData = async () => {
-        const { dataSearch } = state;
+        // const { dataSearch } = state;
         const { startMonth, endMonth, unitsSelected } = INFO_SEARCH;
 
         let startMonthObj = new Date(startMonth);
@@ -244,13 +238,10 @@ function TaskOrganizationUnitDashboard(props) {
     }
 
     const handleChangeDataSearch = (name, value) => {
-        setState({
-            ...state,
-            dataSearch: {
-                ...state.dataSearch,
-                [name]: value
-            }
-        })
+        dataSearch = {
+            ...dataSearch,
+            [name]: value
+        }
     }
     const getDataSearchChart = (data) => {
         const { startMonth, endMonth } = INFO_SEARCH;
@@ -286,6 +277,7 @@ function TaskOrganizationUnitDashboard(props) {
         }
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
+
     return (
         <React.Fragment>
             {currentOrganizationalUnit
