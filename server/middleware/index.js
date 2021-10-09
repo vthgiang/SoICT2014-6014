@@ -177,8 +177,11 @@ exports.authFunc = (checkPage = true) => {
                 let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, req.portal))
                     .findOne({
                         email: verified.email,
-                        apis: {
-                            $in: [systemApi?._id]
+                        apis: { 
+                            $elemMatch: { 
+                                path: apiCalled.toString(),
+                                method: req.method.toString()
+                            }
                         },
                         company: verified.company,
                         status: 3
