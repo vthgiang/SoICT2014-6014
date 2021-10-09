@@ -641,21 +641,25 @@ export function tasks(state = {
         case taskManagementConstants.IMPORT_TASKS_REQUEST:
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                isLoadingImport: true,
             };
 
         case taskManagementConstants.IMPORT_TASKS_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
+                isLoadingImport: false,
                 importTask: action.payload.content,
             }
 
         case taskManagementConstants.IMPORT_TASKS_FAILURE:
+            console.log('action.error', action.error)
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                isLoading: false,
+                isLoadingImport: false
             }
         case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST:
             if (action.chartNameArr) {

@@ -497,6 +497,7 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
 }
 
 function importTasks(data) {
+    console.log('data', data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/import`,
         method: 'POST',

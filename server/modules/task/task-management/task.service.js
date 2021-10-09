@@ -2971,64 +2971,173 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
     return tasks;
 }
 
-exports.importTasks = async (data, portal, user) => {
-    let dataLength = data.length;
-    if (data.length) {
-        for (let x = 0; x < dataLength; x++) {
-            let level = 1, parent = null;
-            if (data[x].parent) {
-                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({ name: data[x].parent }).select("_id level name parent");
-                if (taskParent) {
-                    level = taskParent.level + 1;
-                    parent = taskParent._id;
+exports.checkImportTasks = async (data, portal, user) => {
+    if (data?.length) {
+        let dataLength = data.length;
+        let rowError = [], arrTaskCode = [], arrayParentCode = [];
+
+        //Xử lý dữ liệu lấy code và parentCode công việc
+        for (let i = 0; i < dataLength; i++) {
+            if (data[i]?.code)
+                arrTaskCode = [...arrTaskCode, data[i].code];
+            if (data[i]?.parent)
+                arrayParentCode = [...arrayParentCode, data[i].parent];
+        }
+
+        // truy vấn lấy thêm thông tin của task dựa vào code lấy ở file excell
+        const taskCodeFilter = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrTaskCode } }).select("name parent level code");
+        const parentCodeFilter = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrayParentCode } }).select("name parent level code");
+
+        let dataConvert = []
+        data.forEach((element, index) => {
+            let errorAlert = [];
+            // kiểm tra code công việc trống
+            if (!element.code) {
+                errorAlert = [...errorAlert, "code_empty"];
+            }
+
+            // Kiểm tra code công việc đã tồn tại trên hệ thống
+            if (taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code)) {
+                errorAlert = [...errorAlert, "code_duplicate"];
+            }
+
+            // Kiểm tra parentCode 
+            const findParentCode = element.parent && parentCodeFilter?.length && parentCodeFilter.find(x => x.code === element.parent);
+
+            let checkParentCodeInFileExcell = false;
+
+            if (element.parent && !findParentCode) { // nếu chưa tồn tại trên hệ thống
+                for (let t = 0; t < dataLength; t++) {
+                    if (t < index) {
+                        if (data[t]?.code?.toString()?.trim() === element?.parent?.toString()?.trim()) {
+                            checkParentCodeInFileExcell = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!checkParentCodeInFileExcell) // và chưa tồn tại trong file thì sẽ báo lỗi
+                {
+                    errorAlert = [...errorAlert, "parent_code_not_found"]; // parent code ko tìm thấy được ở trên file và trên hệ thống.
                 }
             }
 
-            let startDate, endDate;
-            if (Date.parse(data[x].startDate)) startDate = new Date(data[x].startDate);
-            else {
-                const splitter = data[x].startDate.split("-");
-                startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            element = { ...element, errorAlert }
+            if (element.parent && findParentCode) {
+                element = { ...element, parentId: findParentCode._id }
             }
 
-            if (Date.parse(data[x].endDate)) endDate = new Date(data[x].endDate);
+            dataConvert = [...dataConvert, element];
+
+            if (!element.code || taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code) || (element.parent && !findParentCode && !checkParentCodeInFileExcell))
+                rowError = [...rowError, index + 1];
+        })
+
+        console.log('rowError', rowError);
+        if (rowError?.length !== 0) {
+            return {
+                data: dataConvert,
+                rowError
+            }
+        } else {
+            return {
+                data: dataConvert
+            }
+        }
+    }
+}
+
+exports.importTasks = async (dataConvert, portal, user) => {
+    if (dataConvert?.length) {
+        console.log("PROCESSS", dataConvert?.length)
+
+        let taskNotParentAndHasParentId = [], task = [];
+        dataConvert.forEach((x, index) => {
+            let startDate, endDate;
+            if (Date.parse(x.startDate)) startDate = new Date(x.startDate);
             else {
-                const splitter = data[x].endDate.split("-");
-                endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                if (x.startDate) {
+                    const splitter = x.startDate.split("-")
+                    startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                } else {
+                    startDate = null
+                }
+            }
+
+            if (Date.parse(x.endDate)) endDate = new Date(x.endDate);
+            else {
+                if (x.endDate) {
+                    const splitter = x.endDate.split("-");
+                    endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                } else {
+                    endDate = null;
+                }
             }
 
             let collaboratedWithOrganizationalUnits = [];
-            if (data[x].collaboratedWithOrganizationalUnits?.length) {
-                data[x].collaboratedWithOrganizationalUnits.forEach(y => {
+            if (x.collaboratedWithOrganizationalUnits?.length) {
+                x.collaboratedWithOrganizationalUnits.forEach(y => {
                     collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
                         organizationalUnit: y,
                     }]
                 })
             }
 
-            await Task(connect(DB_CONNECTION, portal)).create({
-                ...data[x],
-                creator: user._id,
-                level: level,
-                parent: parent,
-                startDate: startDate,
-                endDate: endDate,
-                formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
-                taskInformations: [],
-                collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-            });
+            if (!x.parent || x?.parentId) {
+                taskNotParentAndHasParentId = [...taskNotParentAndHasParentId, {
+                    ...x,
+                    creator: x?.creator ? x.creator : user._id,
+                    name: x?.name ? x.name.toString().trim() : "",
+                    parent: x?.parent ? x.parentId : null,
+                    startDate: startDate,
+                    endDate: endDate,
+                    formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+                    taskInformations: [],
+                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
+                }]
+            } else {
+                task = [...task, {
+                    ...x,
+                    creator: x?.creator ? x.creator : user._id,
+                    name: x?.name ? x.name.toString().trim() : "",
+                    startDate: startDate,
+                    endDate: endDate,
+                    formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+                    taskInformations: [],
+                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
+                }]
+            }
+        })
+
+
+        // những công việc ko có trường parent và 1 số trường parent đã tồn tại trên hệ thống rồi thì lưu thẳng
+        if (taskNotParentAndHasParentId?.length) {
+            await Task(connect(DB_CONNECTION, portal)).insertMany(taskNotParentAndHasParentId);
+        }
+
+        // các task còn lại những task có parent, parent có trong file và chưa có trên hệ thống
+        if (task?.length) {
+            const taskLength = task.length;
+            for (let ts = 0; ts < taskLength; ts++) {
+                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({ code: task[ts].parent }).select("_id name parent");
+
+                await Task(connect(DB_CONNECTION, portal)).create({
+                    ...task[ts],
+                    parent: taskParent ? taskParent._id : null
+                });
+            }
         }
     }
-    console.log('done_import_task')
+    console.log('DONE_IMPORT TASK')
 }
 
-// kiểm tra giá trị có nằm trong mảng hay ko. dùng tìm kiếm nhị phân : Độ phức tạp thời gian: O (logN)
+// kiểm tra giá trị có nằm trong mảng hay ko.
 _checkItemInArray = (arr, x, getLevel = false) => {
     let _id, level;
     if (arr?.length) {
         const arrLength = arr.length;
         for (let i = 0; i < arrLength; i++) {
-            if (arr[i]?.name?.toString().trim() === x?.toString()?.trim()) {
+            if (arr[i]?.code?.toString().trim() === x?.toString()?.trim()) {
                 _id = arr[i]._id;
                 level = arr[i].level + 1;
                 break;
@@ -3041,14 +3150,21 @@ _checkItemInArray = (arr, x, getLevel = false) => {
         return _id;
 }
 
-
-exports.importUpdateTasks = async (data, portal, user) => {
+exports.checkImportUpdateTasks = async (data, portal, user) => {
     let rowError = [], valueImport = [];
-    if (data) {
-        const allTask = await Task(connect(DB_CONNECTION, portal)).find({}, {
+    if (data?.length) {
+        let dataLength = data.length, arrTaskCode = [];
+        for (let i = 0; i < dataLength; i++) {
+            if (data[i]?.code)
+                arrTaskCode = [...arrTaskCode, data[i].code];
+            // if (data[i]?.parent)
+            //     arrayParentCode = [...arrayParentCode, data[i].parent];
+        }
+
+        const allTask = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrTaskCode } }, {
             _id: 1,
             name: 1,
-            level: 1,
+            code: 1,
         })
 
         // validate
@@ -3056,25 +3172,25 @@ exports.importUpdateTasks = async (data, portal, user) => {
         if (allTask) {
             data.forEach((x, index) => {
                 let item = { ...x };
-                if (!x.name) {
+                if (!x.code) {
                     item = {
                         ...item,
-                        errorAlert: ["name_task_not_empty"],
+                        errorAlert: ["code_task_not_empty"],
                         error: true
                     }
                     rowError = [...rowError, index + 1];
                 } else {
-                    if (!_checkItemInArray(allTask, x.name)) {
+                    if (!_checkItemInArray(allTask, x.code)) {
                         item = {
                             ...item,
-                            errorAlert: ["name_task_not_found"],
+                            errorAlert: ["code_task_not_found"],
                             error: true
                         }
                         rowError = [...rowError, index + 1];
                     } else {
                         item = {
                             ...item,
-                            taskNameId: _checkItemInArray(allTask, x.name),
+                            taskNameId: _checkItemInArray(allTask, x.code),
                             name: null,
                         }
                     }
@@ -3096,7 +3212,6 @@ exports.importUpdateTasks = async (data, portal, user) => {
                         item = {
                             ...item,
                             parent: checkParent?._id,
-                            level: checkParent?.level
                         }
                     }
                 }
@@ -3114,51 +3229,59 @@ exports.importUpdateTasks = async (data, portal, user) => {
                 rowError
             }
         } else {
-            const importLength = valueImport.length;
-            for (let k = 0; k < importLength; k++) {
-                let dataUpdate = {};
-
-                for (let propName in valueImport[k]) {
-                    if (valueImport[k][propName] === null ||
-                        valueImport[k][propName] === undefined ||
-                        valueImport[k][propName] === "" ||
-                        (Array.isArray(valueImport[k][propName]) && valueImport[k][propName]?.length === 0)
-                    ) {
-                        delete valueImport[k][propName];
-                    }
-                }
-
-                dataUpdate = { ...valueImport[k] };
-                if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
-                    let collaboratedWithOrganizationalUnits = [];
-                    if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
-                        dataUpdate.collaboratedWithOrganizationalUnits.forEach(y => {
-                            collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
-                                organizationalUnit: y,
-                            }]
-                        })
-                    }
-                    dataUpdate = { ...dataUpdate, collaboratedWithOrganizationalUnits }
-                }
-
-                if (dataUpdate.createdAt) {
-                    dataUpdate = { ...dataUpdate, createdAt: new Date(dataUpdate.createdAt) }
-                }
-
-
-                // console.log('dataUpdate',dataUpdate)
-                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
-                    {
-                        updateOne: {
-                            filter: { _id: valueImport[k].taskNameId },
-                            update: dataUpdate,
-                            timestamps: false, //  set bằng false mới update được 2 trường updatedAt và createdAt
-                        }
-                    },
-                ])
+            return {
+                data: valueImport,
             }
-            console.log("DONE UPDATE TASK")
         }
+    }
+}
+
+exports.importUpdateTasks = async (valueImport, portal, user) => {
+    if (valueImport?.length) {
+        const importLength = valueImport.length;
+        for (let k = 0; k < importLength; k++) {
+            let dataUpdate = {};
+
+            for (let propName in valueImport[k]) {
+                if (valueImport[k][propName] === null ||
+                    valueImport[k][propName] === undefined ||
+                    valueImport[k][propName] === "" ||
+                    (Array.isArray(valueImport[k][propName]) && valueImport[k][propName]?.length === 0)
+                ) {
+                    delete valueImport[k][propName];
+                }
+            }
+
+            dataUpdate = { ...valueImport[k] };
+            if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                let collaboratedWithOrganizationalUnits = [];
+                if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                    dataUpdate.collaboratedWithOrganizationalUnits.forEach(y => {
+                        collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
+                            organizationalUnit: y,
+                        }]
+                    })
+                }
+                dataUpdate = { ...dataUpdate, collaboratedWithOrganizationalUnits }
+            }
+
+            if (dataUpdate.createdAt) {
+                dataUpdate = { ...dataUpdate, createdAt: new Date(dataUpdate.createdAt) }
+            }
+
+
+            // console.log('dataUpdate',dataUpdate)
+            await Task(connect(DB_CONNECTION, portal)).bulkWrite([
+                {
+                    updateOne: {
+                        filter: { _id: valueImport[k].taskNameId },
+                        update: dataUpdate,
+                        timestamps: false, //  set bằng false mới update được 2 trường updatedAt và createdAt
+                    }
+                },
+            ])
+        }
+        console.log("DONE UPDATE TASK")
     }
 }
 
@@ -3166,29 +3289,53 @@ exports.importUpdateTasks = async (data, portal, user) => {
 exports.importTaskActions = async (data, portal, user) => {
     if (data) {
         let groupByTask = [];
+        // merge các hoạt động công việc lại
         data.forEach((x, index) => {
-            if (!groupByTask[x.taskName]) {
-                groupByTask[x.taskName] = [x]
+            if (!groupByTask[x?.code]) {
+                groupByTask[x?.code] = [x]
             } else {
-                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+                groupByTask[x?.code] = [...groupByTask[x?.code], x]
             }
         })
 
-        // console.log('groupByTask', groupByTask);
+        // lấy danh sách mảng các code công việc
+        let arrayCode = [];
+        for (let k in groupByTask) {
+            arrayCode = [...arrayCode, k];
+        }
+
+
+        // Lấy thông tin của các task dựa vào code lấy trong sheet thông tin hoạt động.
+        let getTaskInfo = [];
+        if (arrayCode?.length) {
+            getTaskInfo = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrayCode } }).select("code taskActions");
+        }
+
+        // start validate
+        // Sắp làm
+        // endValidate
+
+        let dataImport = [];
 
         for (let k in groupByTask) {
-            let task;
-            if (k)
-                task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
-
-            if (task) {
-                task.taskActions = task.taskActions.concat(groupByTask[k]);
-                task.save();
+            let findTask = getTaskInfo?.length && getTaskInfo.find(x => x?.code?.toString() === k.toString())
+            let taskActions = [];
+            if (k && findTask) {
+                taskActions = findTask.taskActions.concat(groupByTask[k]);
+                dataImport = [...dataImport, {
+                    updateOne: {
+                        filter: { _id: findTask._id },
+                        update: {
+                            taskActions
+                        },
+                    }
+                }]
             }
         }
-    }
-    console.log("DONE_IMPORT_TASK_ACTION!!!")
 
+        await Task(connect(DB_CONNECTION, portal)).bulkWrite(dataImport)
+    }
+    console.log("DONE_IMPORT_TASK_ACTIONS");
 }
 
 
@@ -3196,58 +3343,101 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
     if (data) {
         let groupByTask = [];
         data.forEach((x, index) => {
-            if (!groupByTask[x.taskName]) {
-                groupByTask[x.taskName] = [x]
+            if (!groupByTask[x?.code]) {
+                groupByTask[x?.code] = [x]
             } else {
-                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+                groupByTask[x?.code] = [...groupByTask[x?.code], x]
             }
         })
 
-        // console.log('groupByTask', groupByTask)
-
+        // lấy danh sách mảng các code công việc
+        let arrayCode = [];
         for (let k in groupByTask) {
-            if (k) {
-                let infoTimesheetLog = [];
-                groupByTask[k].forEach(x => {
-                    const duration = new Date(x.addlogStoppedAt).getTime() - new Date(x.addlogStartedAt).getTime();
-                    // vì add log trong 1 ngày nên giờ ko quá 24 nên ko cần check acceptLog. default true
-                    infoTimesheetLog = [...infoTimesheetLog, {
-                        creator: x?.employee,
-                        startedAt: new Date(x?.addlogStartedAt),
-                        stoppedAt: new Date(x?.addlogStoppedAt),
-                        description: x?.description,
-                        duration,
-                        autoStopped: x?.autoStopped,
-                    }]
-                })
-
-                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
-                    {
-                        updateOne: {
-                            filter: { name: k?.trim() },
-                            update: {
-                                timesheetLogs: infoTimesheetLog
-                            },
-                            upsert: false
-                        }
-                    },
-                ])
-
-            }
-            console.log('DONE IMPORT TIMESHEET')
+            arrayCode = [...arrayCode, k];
         }
 
 
-        // for (let k in groupByTask) {
-        //     let task;
-        //     if (k)
-        //         task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
+        // Lấy thông tin của các task dựa vào code lấy trong sheet thông tin hoạt động.
+        let getTaskInfo = [];
+        if (arrayCode?.length) {
+            getTaskInfo = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrayCode } }).select("code timesheetLogs");
+        }
 
-        //     if (task) {
-        //         task.taskActions = task.taskActions.concat(groupByTask[k]);
-        //         task.save();
-        //     }
-        // }
+
+        let dataImport = [];
+
+        for (let k in groupByTask) {
+            if (k) {
+                let findTask = getTaskInfo?.length && getTaskInfo.find(x => x?.code?.toString() === k.toString())
+                if (findTask) {
+
+                    // xử lý data lưu vào timeSheetLogs
+                    let infoTimesheetLog = [];
+                    if (findTask?.timesheetLogs?.length) {
+                        infoTimesheetLog = [...findTask.timesheetLogs];
+                    }
+
+                    let totalDurationNew = findTask?.hoursSpentOnTask?.totalHoursSpent ? findTask?.hoursSpentOnTask?.totalHoursSpent : 0;
+                    let contributionsnew = [];
+
+                    groupByTask[k].forEach(x => {
+                        const duration = new Date(x.addlogStoppedAt).getTime() - new Date(x.addlogStartedAt).getTime();
+                        totalDurationNew = totalDurationNew + duration;
+
+                        // vì add log trong 1 ngày nên giờ ko quá 24 nên ko cần check acceptLog. default true
+                        infoTimesheetLog = [...infoTimesheetLog, {
+                            creator: x?.employee,
+                            startedAt: new Date(x?.addlogStartedAt),
+                            stoppedAt: new Date(x?.addlogStoppedAt),
+                            description: x?.description,
+                            duration,
+                            autoStopped: x?.autoStopped,
+                        }]
+
+                        contributionsnew = [...contributionsnew, {
+                            employee: x?.employee,
+                            hoursSpent: duration
+                        }]
+                    })
+
+
+                    let result = [];
+                    // gom và tính totongr của những người bị có nhiều thời gian bấm giờ
+                    contributionsnew.reduce(function (res, value) {
+                        if (!res[value.employee]) {
+                            res[value.employee] = { employee: value.employee, hoursSpent: 0 };
+                            result.push(res[value.employee])
+                        }
+                        res[value.employee].hoursSpent += value.hoursSpent;
+                        return res;
+                    }, {});
+
+                    let ctr = [];
+                    if (findTask?.hoursSpentOnTask?.contributions) {
+                        ctr = [...ctr, ...findTask?.hoursSpentOnTask?.contributions];
+                    }
+                    if (result) {
+                        ctr = [...ctr, ...result];
+                    }
+
+                    // Xử lý dữ liệu đưa vào hoursSpentOnTask
+                    dataImport = [...dataImport, {
+                        updateOne: {
+                            filter: { _id: findTask._id },
+                            update: {
+                                timesheetLogs: infoTimesheetLog,
+                                hoursSpentOnTask: {
+                                    totalHoursSpent: totalDurationNew,
+                                    contributions: ctr
+                                }
+                            }
+                        }
+                    }]
+                }
+            }
+        }
+
+        await Task(connect(DB_CONNECTION, portal)).bulkWrite(dataImport);
     }
     console.log("DONE_IMPORT_TIME_SHEET!!!")
 
