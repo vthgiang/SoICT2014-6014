@@ -571,6 +571,8 @@ exports.getPaginatedTasks = async (portal, task) => {
             { path: 'creator', select: "_id name email avatar" },
             { path: 'responsibleEmployees', select: "_id name email avatar" },
             { path: 'accountableEmployees', select: "_id name email avatar" },
+            { path: 'consultedEmployees', select: "_id name email avatar" },
+            { path: 'informedEmployees', select: "_id name email avatar" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
