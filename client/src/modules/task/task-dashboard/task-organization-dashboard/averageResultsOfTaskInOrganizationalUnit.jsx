@@ -66,7 +66,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                 dataChart: data.dataChart,
                 legend: data.legend
             })
-    }, [JSON.stringify(taskDashboardCharts)])
+    }, [JSON.stringify(taskDashboardCharts?.["average-results-chart"])])
 
     useEffect(() => {
         if (state.dataChart)

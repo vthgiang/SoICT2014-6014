@@ -47,7 +47,7 @@ function DistributionOfEmployee(props) {
             })
         }
 
-    }, [JSON.stringify(taskDashboardCharts)])
+    }, [JSON.stringify(taskDashboardCharts?.["employee-distribution-chart"])])
 
     useEffect(() => {
         if (state.nameEmployee && state.taskCount)

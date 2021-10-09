@@ -3413,19 +3413,29 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
             }
             else {
                 let unit = data1[unitName];
+                // chỉ lấy các thuộc tính id, name, startDate, endDate, status, progress
+                const confirmedTask = unit.confirmedTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const delayTask = unit.delayTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const intimeTask = unit.intimeTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const noneUpdateTask = unit.noneUpdateTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const overdueTask = unit.overdueTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const totalTask = unit.totalTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const taskFinished = unit.taskFinished?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const taskInprocess = unit.taskInprocess?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                console.log("unit", confirmedTask)
                 // Thêm số công việc của cả phòng vào mảng dataTable
                 dataTable.push({
                     parent: true,
                     _id: unitName,
-                    confirmedTask: unit.confirmedTask ? unit.confirmedTask : [],
-                    delayTask: unit.delayTask ? unit.delayTask : [],
-                    intimeTask: unit.intimeTask ? unit.intimeTask : [],
+                    confirmedTask: confirmedTask ? confirmedTask : [],
+                    delayTask: delayTask ? delayTask : [],
+                    intimeTask: intimeTask ? intimeTask : [],
                     name: unitName,
-                    noneUpdateTask: unit.noneUpdateTask ? unit.noneUpdateTask : [],
-                    overdueTask: unit.overdueTask ? unit.overdueTask : [],
-                    totalTask: unit.totalTask ? unit.totalTask : [],
-                    taskFinished: unit.taskFinished ? unit.taskFinished : [],
-                    taskInprocess: unit.taskInprocess ? unit.taskInprocess : [],
+                    noneUpdateTask: noneUpdateTask ? noneUpdateTask : [],
+                    overdueTask: overdueTask ? overdueTask : [],
+                    totalTask: totalTask ? totalTask : [],
+                    taskFinished: taskFinished ? taskFinished : [],
+                    taskInprocess: taskInprocess ? taskInprocess : [],
                     organization: true,
                     show: true,
                 });
@@ -3435,15 +3445,15 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                         dataTable.push({
                             _id: unit?.[key]?.name,
                             parent: unitName,
-                            confirmedTask: unit?.[key]?.confirmedTask ? unit[key].confirmedTask : [],
-                            delayTask: unit?.[key]?.delayTask ? unit[key].delayTask : [],
-                            intimeTask: unit?.[key]?.intimeTask ? unit[key].intimeTask : [],
+                            confirmedTask: unit?.[key]?.confirmedTask ? unit[key].confirmedTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            delayTask: unit?.[key]?.delayTask ? unit[key].delayTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            intimeTask: unit?.[key]?.intimeTask ? unit[key].intimeTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
                             name: listEmployee?.[unit?.[key].name],
-                            noneUpdateTask: unit?.[key]?.noneUpdateTask ? unit[key].noneUpdateTask : [],
-                            overdueTask: unit?.[key]?.overdueTask ? unit[key].overdueTask : [],
-                            totalTask: unit?.[key]?.totalTask ? unit[key].totalTask : [],
-                            taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished : [],
-                            taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess : [],
+                            noneUpdateTask: unit?.[key]?.noneUpdateTask ? unit[key].noneUpdateTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            overdueTask: unit?.[key]?.overdueTask ? unit[key].overdueTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            totalTask: unit?.[key]?.totalTask ? unit[key].totalTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
                             organization: false,
                             show: false,
                         });

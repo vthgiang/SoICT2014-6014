@@ -30,7 +30,7 @@ const LoadTaskOrganizationChart = (props) => {
                 dataChart: data.dataChart,
                 legend: data.legend
             })
-    }, [JSON.stringify(taskDashboardCharts)])
+    }, [JSON.stringify(taskDashboardCharts?.["load-task-organization-chart"])])
 
     useEffect(() => {
         if (typeChart === "followTime") {

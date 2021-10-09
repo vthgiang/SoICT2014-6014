@@ -21,7 +21,7 @@ const InprocessOfUnitTask = (props) => {
             })
         }
 
-    }, [JSON.stringify(taskDashboardCharts)])
+    }, [JSON.stringify(taskDashboardCharts?.["in-process-unit-chart"])])
 
     useEffect(() => {
         if (state?.dataChart) {
@@ -77,7 +77,6 @@ const InprocessOfUnitTask = (props) => {
             }
         });
     }
-
     return (
         <React.Fragment>
             <section id="inprocessOfUnitTask"></section>

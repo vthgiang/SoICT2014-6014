@@ -59,7 +59,7 @@ const GeneralTaskChart = (props) => {
             })
         }
 
-    }, [JSON.stringify(taskDashboardCharts)]);
+    }, [JSON.stringify(taskDashboardCharts?.["general-task-chart"])]);
 
     function getData(chartName) {
         let dataChart;
@@ -229,6 +229,7 @@ const GeneralTaskChart = (props) => {
             _id: dataTemp[i]._id ? dataTemp[i]._id : -1
         }
     }
+
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
@@ -290,6 +291,7 @@ const GeneralTaskChart = (props) => {
         </React.Fragment>
     )
 }
+
 function mapState(state) {
     const { tasks } = state;
     return { tasks };
