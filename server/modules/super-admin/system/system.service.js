@@ -15,6 +15,7 @@ exports.getBackups = async (portal) => {
 
     let backupedList = [];
     list.forEach(version => {
+        // Nếu là thư mục có file README.txt -> là thư mục backup
         if (fs.existsSync(`${SERVER_BACKUP_DIR}/${portal}/${version}/README.txt`)) {
             const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/${portal}/${version}`);
             const description = fs.readFileSync(`${SERVER_BACKUP_DIR}/${portal}/${version}/README.txt`, { encoding: 'utf8', flag: 'r' });
