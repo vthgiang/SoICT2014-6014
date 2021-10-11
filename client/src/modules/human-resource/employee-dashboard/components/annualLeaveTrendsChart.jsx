@@ -40,7 +40,7 @@ const formatDate = (date, monthYear = false) => {
 }
 
 const AnnualLeaveTrendsChart = (props) => {
-    const { department, annualLeave, translate, timesheets, childOrganizationalUnit, idUnits, unitName } = props;
+    const { annualLeave, translate, timesheets, childOrganizationalUnit, idUnits, unitName } = props;
 
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
@@ -361,8 +361,8 @@ const AnnualLeaveTrendsChart = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, annualLeave, timesheets, department } = state;
-    return { employeesManager, annualLeave, timesheets, department };
+    const { annualLeave, timesheets } = state;
+    return { annualLeave, timesheets };
 }
 
 const actionCreators = {

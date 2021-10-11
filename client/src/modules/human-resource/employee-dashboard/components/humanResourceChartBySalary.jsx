@@ -1,5 +1,5 @@
 /* Biểu đồ nhân sự phân theo dải lương */
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -52,89 +52,6 @@ const HumanResourceChartBySalary = (props) => {
         });
     };
 
-    /**
-     * Function chyển dữ liệu thành dữ liệu chart
-     * @param {*} dataCovert 
-     */
-    const convertData = (dataCovert) => {
-        if (dataCovert.length !== 0) {
-            if (dataCovert[0].unit && dataCovert[0].unit === 'VND') {
-                let ratioX = [">100tr", "90tr-100tr", "80tr-90tr", "70tr-80tr", "60tr-70tr", "50tr-60tr", "40tr-50tr", "30tr-40tr", "20tr-30tr", "10tr-20tr", "<10tr"];
-                let data1 = ['data1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                dataCovert.forEach(x => {
-                    let check = x.total / 1000000;
-                    if (check > 100) {
-                        data1[1] = data1[1] + 1;
-                    } else if (90 < check && check <= 100) {
-                        data1[2] = data1[2] + 1;
-                    } else if (80 < check && check <= 90) {
-                        data1[3] = data1[3] + 1;
-                    } else if (70 < check && check <= 80) {
-                        data1[4] = data1[4] + 1;
-                    } else if (60 < check && check <= 70) {
-                        data1[5] = data1[5] + 1;
-                    } else if (50 < check && check <= 60) {
-                        data1[6] = data1[6] + 1;
-                    } else if (40 < check && check <= 50) {
-                        data1[7] = data1[7] + 1;
-                    } else if (30 < check && check <= 40) {
-                        data1[8] = data1[8] + 1;
-                    } else if (20 < check && check <= 30) {
-                        data1[9] = data1[9] + 1;
-                    } else if (10 < check && check <= 20) {
-                        data1[10] = data1[10] + 1;
-                    } else {
-                        data1[11] = data1[11] + 1;
-                    }
-                });
-                return {
-                    ratioX: ratioX,
-                    data1: data1,
-                    nameData: 'Nhân viên',
-                }
-            };
-            if (dataCovert[0].unit && dataCovert[0].unit === 'USD') {
-                let ratioX = [">5000", "4500-5000", "4000-4500", "3500-4000tr", "3000-3500", "2500-3000", "2000-2500", "1500-2000", "1000-1500", "500-1000", "<500"];
-                let data1 = ['data1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                dataCovert.forEach(x => {
-                    if (x.total > 5000) {
-                        data1[1] = data1[1] + 1;
-                    } else if (4500 < x.total && x.total <= 5000) {
-                        data1[2] = data1[2] + 1;
-                    } else if (4000 < x.total && x.total <= 4500) {
-                        data1[3] = data1[3] + 1;
-                    } else if (3500 < x.total && x.total <= 4000) {
-                        data1[4] = data1[4] + 1;
-                    } else if (3000 < x.total && x.total <= 3500) {
-                        data1[5] = data1[5] + 1;
-                    } else if (2500 < x.total && x.total <= 3000) {
-                        data1[6] = data1[6] + 1;
-                    } else if (2000 < x.total && x.total <= 2500) {
-                        data1[7] = data1[7] + 1;
-                    } else if (1500 < x.total && x.total <= 2000) {
-                        data1[8] = data1[8] + 1;
-                    } else if (1000 < x.total && x.total <= 1500) {
-                        data1[9] = data1[9] + 1;
-                    } else if (500 < x.total && x.total <= 1000) {
-                        data1[10] = data1[10] + 1;
-                    } else {
-                        data1[11] = data1[11] + 1;
-                    }
-                });
-                return {
-                    ratioX: ratioX,
-                    data1: data1,
-                    nameData: 'Nhân viên',
-                }
-            }
-        };
-        return {
-            ratioX: [">100tr", "90tr-100tr", "80tr-90tr", "70tr-80tr", "60tr-70tr", "50tr-60tr", "40tr-50tr", "30tr-40tr", "20tr-30tr", "10tr-20tr", "<10tr"],
-            data1: ['data1', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            nameData: 'Nhân viên',
-        }
-    }
-
     const isEqual = (items1, items2) => {
         if (!items1 || !items2) {
             return false;
@@ -160,7 +77,7 @@ const HumanResourceChartBySalary = (props) => {
         })
     }
 
-    const { translate, salary, department } = props;
+    const { translate, salary, department, employeeDashboardData } = props;
 
     const { monthShow, organizationalUnits } = props;
 
@@ -171,35 +88,12 @@ const HumanResourceChartBySalary = (props) => {
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
-    if (data.length !== 0) {
-        data = data.map(x => {
-            let total = x?.mainSalary ? parseInt(x.mainSalary) : 0;
-            if (x.bonus.length !== 0) {
-                for (let count in x.bonus) {
-                    total = total + parseInt(x.bonus[count].number)
-                }
-            };
-            return { ...x, total: total }
-        })
-    }
-
-    let result = [];
-    data.forEach(x => {
-        let check;
-        result.forEach(y => {
-            if (y._id === x._id) {
-                y.total = y.total + x.total;
-                check = y;
-            }
-        })
-        if (check) {
-            result = [...result, check];
-        } else {
-            result = [...result, x]
+    useEffect(() => {
+        if (employeeDashboardData.humanResourceChartBySalaryData.data1) {
+            renderChart(employeeDashboardData.humanResourceChartBySalaryData)
         }
-    });
+    }, [employeeDashboardData.humanResourceChartBySalaryData, employeeDashboardData.isLoading])
 
-    renderChart(convertData(result));
 
     return (
         <React.Fragment>
@@ -222,7 +116,7 @@ const HumanResourceChartBySalary = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    {salary.isLoading
+                    {employeeDashboardData.isLoading
                         ? <p>{translate('general.loading')}</p>
                         : <div className="dashboard_box_body">
                             <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
@@ -236,8 +130,8 @@ const HumanResourceChartBySalary = (props) => {
 }
 
 function mapState(state) {
-    const { salary, department } = state;
-    return { salary, department };
+    const { salary, department, employeeDashboardData } = state;
+    return { salary, department, employeeDashboardData };
 };
 
 const humanResourceChartBySalary = connect(mapState, null)(withTranslate(HumanResourceChartBySalary));

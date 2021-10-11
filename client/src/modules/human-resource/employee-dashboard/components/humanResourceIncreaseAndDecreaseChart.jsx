@@ -7,12 +7,14 @@ import { SelectMulti, DatePicker } from '../../../../common-components';
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
+import { getEmployeeDashboardActions } from "../redux/actions"
+
 import { formatDate } from '../../../../helpers/formatDate';
 import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
-    const { department, employeesManager, translate } = props;
+    const { department, employeesManager, translate, employeeDashboardData } = props;
     const { childOrganizationalUnit } = props;
 
     let date = new Date()
@@ -46,7 +48,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             ...state,
             organizationalUnits: organizationalUnitsTemp,
             organizationalUnitsSearch: organizationalUnitsTemp,
-        })
+        });
 
         let arrStart = startDate.split('-');
         let startDateNew = [arrStart[1], arrStart[0]].join('-');
@@ -54,36 +56,13 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
         props.getAllEmployee({ organizationalUnits: organizationalUnitsTemp, startDate: startDateNew, endDate: endDateNew });
-    }, [JSON.stringify(props.childOrganizationalUnit)])
+    }, [JSON.stringify(props.childOrganizationalUnit)]);
 
     useEffect(() => {
-        if (employeesManager?.arrMonth?.length > 0) {
-            let ratioX = ['x', ...employeesManager?.arrMonth];
-            let listEmployeesHaveStartingDateOfNumberMonth = employeesManager?.listEmployeesHaveStartingDateOfNumberMonth;
-            let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager?.listEmployeesHaveLeavingDateOfNumberMonth;
-            let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager?.totalEmployees];
-            employeesManager.arrMonth.forEach(x => {
-                let date = new Date(x);
-                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-                let total1 = 0, total2 = 0;
-                listEmployeesHaveStartingDateOfNumberMonth.forEach(y => {
-                    if (y.startingDate && firstDay.getTime() < new Date(y.startingDate).getTime() && new Date(y.startingDate).getTime() <= lastDay.getTime()) {
-                        total1 += 1;
-                    }
-                })
-                listEmployeesHaveLeavingDateOfNumberMonth.forEach(y => {
-                    if (y.leavingDate && firstDay.getTime() < new Date(y.leavingDate).getTime() && new Date(y.leavingDate).getTime() <= lastDay.getTime()) {
-                        total2 += 1;
-                    }
-                })
-                data1 = [...data1, total1];
-                data2 = [...data2, total2];
-            })
-            renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
+        if (employeeDashboardData.humanResourceIncreaseAndDecreaseChartData?.data1) {
+            renderChart({ nameData1, nameData2, nameData3, lineChart, ...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData });
         }
-    }, [JSON.stringify(employeesManager), lineChart])
-
+    }, [employeeDashboardData.humanResourceIncreaseAndDecreaseChartData, lineChart, employeeDashboardData.isLoading]);
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -106,7 +85,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         setState({
             ...state,
             startDate: value
-        })
+        });
     }
 
     /**
@@ -117,7 +96,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         setState({
             ...state,
             endDate: value,
-        })
+        });
     }
 
     /**
@@ -128,7 +107,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         setState({
             ...state,
             lineChart: value
-        })
+        });
     }
 
     const isEqual = (items1, items2) => {
@@ -160,7 +139,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             arrMonth: props.employeesManager.arrMonth,
             listEmployeesHaveStartingDateOfNumberMonth: props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth,
             listEmployeesHaveLeavingDateOfNumberMonth: props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth
-        })
+        });
     }
 
     const _chart = useRef(null);
@@ -246,6 +225,11 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
             props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
+            props.getEmployeeDashboardData({
+                searchChart: {
+                    increaseAndDecreaseChart: { organizationalUnits: organizationalUnits, startDate: startDateNew,endDate: endDateNew }
+                }
+            })
         }
     }
 
@@ -320,7 +304,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                         </div>
                     </div>
                 </div>
-                {employeesManager.isLoading
+                {employeeDashboardData.isLoading
                     ? <p>{translate('general.loading')}</p>
                     : <div className="dashboard_box_body" >
                         <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
@@ -339,12 +323,14 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, department } = state;
-    return { employeesManager, department };
+    const { employeesManager, department, employeeDashboardData } = state;
+    return { employeesManager, department, employeeDashboardData };
 }
 
 const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
+
 };
 
 const increaseAndDecreaseChart = connect(mapState, actionCreators)(withTranslate(HumanResourceIncreaseAndDecreaseChart));

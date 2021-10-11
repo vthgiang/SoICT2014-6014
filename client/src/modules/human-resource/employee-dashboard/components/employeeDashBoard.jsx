@@ -6,12 +6,10 @@ import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible } from 
 
 import { TabHumanResource, TabSalary, TabAnualLeave, TabIntegratedStatistics } from './combinedContent';
 
-import { TimesheetsActions } from '../../timesheets/redux/actions';
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
-import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { DisciplineActions } from '../../commendation-discipline/redux/actions';
 import { SalaryActions } from '../../salary/redux/actions';
-import { UserActions } from '../../../super-admin/user/redux/actions';
+import { getEmployeeDashboardActions } from "../redux/actions"
 import './employeeDashBoard.css';
 import Swal from 'sweetalert2';
 
@@ -46,24 +44,37 @@ let INFO_SEARCH = {
 
 const DashBoardEmployees = (props) => {
     const {
-        translate, employeesManager, annualLeave, discipline, timesheets,
-        childOrganizationalUnit,
+        translate, employeesManager, discipline, timesheets, employeeDashboardData,
+        childOrganizationalUnit, 
         getAllEmployee,
         getListPraise, getListDiscipline,
         searchSalary,
-    } = props;
+        getEmployeeDashboardData
+    } = props; 
 
     const [state, setState] = useState({
         month: formatDate(Date.now(), true),
         monthShow: formatDate(Date.now(), true),
         organizationalUnits: childOrganizationalUnit.map(x => x.id),
         arrayUnitShow: childOrganizationalUnit.map(x => x.id),
+        startDate: formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+        startDateIncreaseAndDecreaseChart: formatDate((new Date()).setMonth(new Date().getMonth() - 3), true),
+        endDate: formatDate(Date.now(), true)
     });
-    const { monthShow, month, organizationalUnits, arrayUnitShow } = state;
+    const { monthShow, month, organizationalUnits, arrayUnitShow, startDate, endDate, startDateIncreaseAndDecreaseChart } = state;
 
     useEffect(() => {
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
+
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+
+        let arrIncreaseAndDecreaseChart = startDateIncreaseAndDecreaseChart.split('-');
+        let startDateIncreaseAndDecreaseChartNew = [arrIncreaseAndDecreaseChart[1], arrIncreaseAndDecreaseChart[0]].join('-');
 
         INFO_SEARCH = {
             organizationalUnits,
@@ -78,10 +89,16 @@ const DashBoardEmployees = (props) => {
         /* Lấy dữ liệu lương nhân viên*/
         searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
         searchSalary({ callApiDashboard: true, month: newMonth });
+        getEmployeeDashboardData({
+            defaultParams: {
+                organizationalUnits: organizationalUnits,
+                month: newMonth, 
+                startDate: startDateNew,
+                endDate: endDateNew,
+                startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew
+            }
+        });
     }, []);
-
-
-
 
     /**
      * Function bắt sự kiện thay đổi đơn vị
@@ -113,6 +130,15 @@ const DashBoardEmployees = (props) => {
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+
+        let arrIncreaseAndDecreaseChart = startDateIncreaseAndDecreaseChart.split('-');
+        let startDateIncreaseAndDecreaseChartNew = [arrIncreaseAndDecreaseChart[1], arrIncreaseAndDecreaseChart[0]].join('-');
+
         if (organizationalUnits?.length > 0) {
             setState(state => ({
                 ...state,
@@ -133,6 +159,12 @@ const DashBoardEmployees = (props) => {
             /* Lấy dữ liệu lương nhân viên*/
             searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
             searchSalary({ callApiDashboard: true, month: newMonth });
+
+            getEmployeeDashboardData({
+                searchChart: {
+                    employeeDashboardChart: { month: newMonth, organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew }
+                } 
+            });
         }
     }
 
@@ -166,7 +198,7 @@ const DashBoardEmployees = (props) => {
 
     // Tab lương thưởng
     const tabSalary = useMemo(() => <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />, [organizationalUnits, monthShow]);
-
+    
     return (
         <React.Fragment>
             <div className="qlcv">
@@ -284,8 +316,8 @@ const DashBoardEmployees = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, annualLeave, discipline, timesheets } = state;
-    return { employeesManager, annualLeave, discipline, timesheets };
+    const { employeesManager, annualLeave, discipline, timesheets, employeeDashboardData } = state;
+    return { employeesManager, annualLeave, discipline, timesheets, employeeDashboardData };
 }
 
 const actionCreators = {
@@ -293,6 +325,7 @@ const actionCreators = {
     getListPraise: DisciplineActions.getListPraise,
     getListDiscipline: DisciplineActions.getListDiscipline,
     searchSalary: SalaryActions.searchSalary,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 const DashBoard = connect(mapState, actionCreators)(withTranslate(DashBoardEmployees));
 export { DashBoard as DashBoardEmployees };

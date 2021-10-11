@@ -14,7 +14,7 @@ import './employeeDashBoard.css';
 import Swal from 'sweetalert2';
 
 const AnnualLeaveChartAndTable = (props) => {
-    const { defaultUnit } = props
+    const { defaultUnit, employeeDashboardData } = props
     const [state, setState] = useState({
         organizationalUnitsSearch: null,
         organizationalUnits: null,
@@ -39,6 +39,12 @@ const AnnualLeaveChartAndTable = (props) => {
             })
         }
     }, [props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks]);
+
+    useEffect(() => {
+        if(employeeDashboardData.annualLeaveChartAndTableData?.data1) {
+            renderChart(employeeDashboardData.annualLeaveChartAndTableData);
+        }
+    }, [employeeDashboardData.annualLeaveChartAndTableData, props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks])
 
     /**
      * Function format dữ liệu Date thành string
@@ -360,8 +366,8 @@ const AnnualLeaveChartAndTable = (props) => {
 }
 
 function mapState(state) {
-    const { annualLeave, department } = state;
-    return { annualLeave, department };
+    const { annualLeave, department, employeeDashboardData } = state;
+    return { annualLeave, department, employeeDashboardData };
 }
 
 const actionCreators = {

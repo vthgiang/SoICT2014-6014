@@ -628,7 +628,15 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/hr-list-education')
 },
-
+{
+    url: '/get-employee-dashboard-data',
+    description: 'Lấy thông tin bảng tin nhân sự',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name
+    ],
+    component: getComponentsInLink('/hr-list-education')
+},
 
 // KPI
 {

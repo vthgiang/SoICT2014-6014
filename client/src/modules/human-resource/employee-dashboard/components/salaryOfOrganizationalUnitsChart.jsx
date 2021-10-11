@@ -79,40 +79,11 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 
     const { translate, salary, department } = props;
 
-    const { monthShow, organizationalUnits } = props;
+    const { monthShow, organizationalUnits, employeeDashboardData } = props;
     const { unit } = state;
 
     let organizationalUnitsName = department?.list?.filter(item => organizationalUnits?.includes(item?._id))?.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
-    let data = salary.listSalaryByMonth;
-    if (data.length !== 0) {
-        data = data.map(x => {
-            let total = x?.mainSalary ? parseInt(x.mainSalary) : 0;
-            if (x.bonus.length !== 0) {
-                for (let count in x.bonus) {
-                    total = total + parseInt(x.bonus[count].number)
-                }
-            };
-            return { ...x, total: unit ? total / 1000000000 : total / 1000000 }
-        })
-    };
-
-    organizationalUnitsName = organizationalUnitsName.map(x => {
-        data.forEach(y => {
-            if (x._id === y.organizationalUnit) {
-                x.salary = x.salary + y.total
-            }
-        })
-        return x;
-    })
-
-    let ratioX = organizationalUnitsName.map(x => x.name);
-    let data1 = organizationalUnitsName.map(x => x.salary);
-    let dataChart = {
-        nameData: 'Thu nhập',
-        ratioX: ratioX,
-        data1: ['data1', ...data1],
-    }
-
+    
     const showDetailSalary = () => {
         Swal.fire({
             icon: "question",
@@ -125,8 +96,15 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
             width: "50%",
         })
     }
+    useEffect(() => {
+        if (employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart1 && unit) {
+            renderChart(employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart1)
+        }
+        if (employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart1 && unit == false) {
+            renderChart(employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart2)
+        }
+    }, [employeeDashboardData.salaryOfOrganizationalUnitsChartData, unit])
 
-    renderChart(dataChart);
 
     return (
         <React.Fragment>
@@ -171,8 +149,8 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 }
 
 function mapState(state) {
-    const { salary, department } = state;
-    return { salary, department };
+    const { salary, department, employeeDashboardData } = state;
+    return { salary, department, employeeDashboardData };
 };
 
 const salaryOfOrganizationalUnits = connect(mapState, null)(withTranslate(SalaryOfOrganizationalUnitsChart));

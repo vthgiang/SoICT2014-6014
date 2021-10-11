@@ -1,10 +1,12 @@
 /* Biểu đồ xu làm thêm giờ của nhân viên */
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti, DatePicker } from '../../../../common-components';
 import { TimesheetsActions } from '../../timesheets/redux/actions';
+import { getEmployeeDashboardActions } from "../redux/actions"
+
 
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
@@ -38,8 +40,8 @@ const formatDate = (date, monthYear = false) => {
 }
 
 const TrendOfOvertime = (props) => {
-    const { department, timesheets, translate, childOrganizationalUnit, idUnits, unitName } = props;
-
+    
+    const { timesheets, translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData } = props;
     let date = new Date()
     let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
 
@@ -69,23 +71,10 @@ const TrendOfOvertime = (props) => {
     }, [JSON.stringify(props?.idUnits)]);
 
     useEffect(() => {
-        if (timesheets?.arrMonth?.length > 0) {
-            let ratioX = ['x', ...timesheets.arrMonth];
-            let listOvertimeOfUnitsByStartDateAndEndDate = timesheets.listOvertimeOfUnitsByStartDateAndEndDate;
-            let data1 = ['data1'];
-            timesheets.arrMonth.forEach(x => {
-                let overtime = 0;
-                listOvertimeOfUnitsByStartDateAndEndDate.forEach(y => {
-                    if (dayjs(y.month).format("MM-YYYY") === dayjs(x).format("MM-YYYY")) {
-                        let totalOvertime = y.totalOvertime ? y.totalOvertime : 0;
-                        overtime = overtime + totalOvertime
-                    };
-                })
-                data1 = [...data1, overtime]
-            })
-            renderChart({ nameData1, ratioX, data1, lineChart });
+        if (employeeDashboardData.trendOfOvertimeChartData?.data1) {
+            renderChart({ nameData1, lineChart, ...employeeDashboardData.trendOfOvertimeChartData });
         }
-    }, [JSON.stringify(props?.timesheets?.listOvertimeOfUnitsByStartDateAndEndDate), JSON.stringify(props?.timesheets?.arrMonth)])
+    }, [employeeDashboardData.trendOfOvertimeChartData?.data1, JSON.stringify(props?.timesheets?.arrMonth), JSON.stringify(props?.idUnits), props.timesheets.arrMonth, state.arrMonth, props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate])
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -232,6 +221,11 @@ const TrendOfOvertime = (props) => {
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
         if (new Date(startDateNew).getTime() < new Date(endDateNew).getTime()) {
             props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
+            props.getEmployeeDashboardData({
+                searchChart: {
+                    trendOfOvertimeChart: {organizationalUnits: props.idUnit, startDate: startDateNew, endDate: endDateNew}
+                }
+            })
         }
     }
 
@@ -242,7 +236,6 @@ const TrendOfOvertime = (props) => {
             width: "50%",
         })
     }
-
     return (
         <React.Fragment>
             <div className="box box-solid">
@@ -312,7 +305,7 @@ const TrendOfOvertime = (props) => {
                             </div>
                         </div>
                     </div>
-                    {timesheets.isLoading
+                    {employeeDashboardData.isLoading
                         ? <div>{translate('general.loading')}</div>
                         : timesheets?.arrMonth?.length > 0
                             ? <div className="dashboard_box_body">
@@ -334,12 +327,13 @@ const TrendOfOvertime = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, timesheets, department } = state;
-    return { employeesManager, timesheets, department };
+    const { timesheets, employeeDashboardData } = state;
+    return { timesheets, employeeDashboardData };
 }
 
 const actionCreators = {
     getTimesheets: TimesheetsActions.searchTimesheets,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 
 const trendOfOvertime = connect(mapState, actionCreators)(withTranslate(TrendOfOvertime));

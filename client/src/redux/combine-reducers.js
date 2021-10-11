@@ -29,6 +29,7 @@ import { discipline } from '../modules/human-resource/commendation-discipline/re
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers';
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
+import { employeeDashboardData } from '../modules/human-resource/employee-dashboard/redux/reducers'
 
 import { notifications } from '../modules/notification/redux/reducers';
 import { documents } from '../modules/document/redux/reducers';
@@ -164,6 +165,7 @@ const appReducer = combineReducers({
     workPlan,
     timesheets,
     field,
+    employeeDashboardData,
 
     // hr-tranning
     education,

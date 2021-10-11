@@ -110,22 +110,14 @@ class QualificationChart extends Component {
      * intermediate_degree - Trung cấp, colleges - Cao đẳng, university-Đại học, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có 
      */
     convertData = (data) => {
-        const { translate, field } = this.props;
+        const { translate, employeeDashboardData } = this.props;
         const { typeChart } = this.state;
-        let listFields = field.listFields;
         let intermediate_degree = 0, colleges = 0, university = 0, master_degree = 0, phd = 0, unavailable = 0, bachelor = 0, engineer = 0;
 
         if (typeChart) {
-            let degrees = [];
-            data.forEach(x => {
-                degrees = degrees.concat(x.degrees)
-            });
-
-            listFields = listFields.map(x => {
-                let total = degrees.filter(y => y.field && y.field.toString() === x._id.toString())
-                return [x.name, total.length]
-            })
-            return listFields
+            if (employeeDashboardData.qualificationChartData.listFields) {
+                return employeeDashboardData.qualificationChartData.listFields
+            }
         } else {
             data.forEach(x => {
                 switch (x.professionalSkill) {
@@ -172,8 +164,7 @@ class QualificationChart extends Component {
     }
 
     componentDidUpdate() {
-        const { employeesManager, department } = this.props;
-        const { organizationalUnits } = this.state;
+        const { employeesManager } = this.props;
 
         let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
 
@@ -186,7 +177,7 @@ class QualificationChart extends Component {
     }
 
     render() {
-        const { employeesManager, department, translate } = this.props;
+        const { employeesManager, department, translate, employeeDashboardData} = this.props;
         const { organizationalUnits, typeChart } = this.state;
 
         let organizationalUnitsName;
@@ -214,7 +205,7 @@ class QualificationChart extends Component {
                             }
                         </div>
                     </div>
-                    {employeesManager.isLoading
+                    {employeeDashboardData.isLoading
                         ? <p>{translate('general.loading')}</p>
                         : employeesManager.listEmployeesOfOrganizationalUnits?.length ? <div className="box-body">
                             <div className="box-tools pull-left" >
@@ -244,8 +235,8 @@ class QualificationChart extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, field, department } = state;
-    return { employeesManager, field, department };
+    const { employeesManager, field, department, employeeDashboardData } = state;
+    return { employeesManager, field, department, employeeDashboardData };
 }
 
 

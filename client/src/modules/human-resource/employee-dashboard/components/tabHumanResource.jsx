@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { LazyLoadComponent } from '../../../../common-components';
 
 import {
     HumanResourceChartBySalary, HumanResourceIncreaseAndDecreaseChart, QualificationChart, AgePyramidChart
@@ -10,7 +8,6 @@ import {
 
 const TabHumanResource = (props) => {
     const { organizationalUnits, monthShow, childOrganizationalUnit, defaultUnit, handleMonthChange } = props;
-
     return (
         <div className="row qlcv">
             <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">

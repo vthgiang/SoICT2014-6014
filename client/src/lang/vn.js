@@ -1538,6 +1538,11 @@ export default {
             end_date_after_start_date: "Ngày kết thúc phải sau ngày bắt đầu",
             cannot_be_empty: "không được để trống",
             value_duplicate: "bị trùng lặp",
+            //Lấy dữ liệu bảng tin quản lý nhân sự
+            get_human_resources_dashboard_data: {
+                get_human_resources_dashboard_success: "Lấy thông tin bảng tin quản lý nhân sự thành công",
+                get_human_resources_dashboard_failed: "Lấy thông tin bảng tin quản lý nhân sự thất bại"
+            },
 
             // Quản lý lương nhân viên
             salary: {
