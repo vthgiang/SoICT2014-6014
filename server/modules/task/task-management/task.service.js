@@ -2270,6 +2270,7 @@ exports.createProjectTask = async (portal, task) => {
 exports.deleteTask = async (portal, taskId, userId) => {
     //req.params.taskId
     let allowDelete = false;
+    let deleteSuccess = 0;
     taskId = taskId.split(",");
     userId = userId.toString();
     for (let i in taskId) {
@@ -2294,10 +2295,12 @@ exports.deleteTask = async (portal, taskId, userId) => {
             }
 
             await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
+            deleteSuccess = deleteSuccess + 1;
         }
 
     }
-    return taskId;
+    if (deleteSuccess === 0) throw ['delete_fail'];
+    else return taskId;
 }
 
 /**

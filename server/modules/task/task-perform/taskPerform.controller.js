@@ -1371,24 +1371,16 @@ editArchivedOfTask = async (req, res) => {
     try {
         let task = await PerformTaskService.editArchivedOfTask(req.portal, req.params.taskId);
         await Logger.info(req.user.email, ` edit status archived of task  `, req.portal);
-        let message, success, fail;
-        let total = req.params.taskId.split(",").length
-        if (task._id.length < total) {
-            success = task._id.length;
-            fail = total - success;
-            message = ['Lưu/xuất kho thành công : ' + success + ' công việc', 'Lưu/xuất kho thất bại : '
-                + fail + ' công việc']
-        }
         res.status(200).json({
             success: true,
-            messages: message ? message : ['Chỉnh sửa trạng thái lưu kho của công việc thành công'],
+            messages: ['edit_status_archived_of_task_success'],
             content: task
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit status of task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['Chỉnh sửa trạng thái lưu kho của công việc thất bại'],
+            messages: Array.isArray(error) ? error : ['edit_status_archived_of_task_fail'],
             content: error
         });
     }

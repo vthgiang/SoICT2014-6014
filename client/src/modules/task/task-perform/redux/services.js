@@ -522,7 +522,7 @@ function editArchivedOfTask(taskId) {
         data: {
             type: 'edit_archived',
         }
-    }, true, true, '');
+    }, true, true, 'task.task_management');
 }
 
 /**
