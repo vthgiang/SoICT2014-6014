@@ -102,6 +102,7 @@ const DepartmentManage = (props) => {
         for (let n in data) {
             data[n] = {
                 ...data[n],
+                rawData:data[n],
                 name: data[n].name,
                 manager: getRoleNameOfDepartment(data[n].managers),
                 deputyManager: getRoleNameOfDepartment(data[n].deputyManagers),

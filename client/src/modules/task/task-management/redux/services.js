@@ -382,9 +382,13 @@ function editTask(taskId, newTask) {
  */
 
 function deleteTaskById(taskId) {
+    let id = getStorage("userId")
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}`,
         method: 'DELETE',
+        params: {
+            userId: id,
+        }
     }, true, true, 'task.task_management');
 }
 

@@ -2273,20 +2273,40 @@ exports.createProjectTask = async (portal, task) => {
 /**
  * Xóa công việc
  */
-exports.deleteTask = async (portal, taskId) => {
+exports.deleteTask = async (portal, taskId, userId) => {
     //req.params.taskId
+    let allowDelete = false;
+    let deleteSuccess = 0;
     taskId = taskId.split(",");
+    userId = userId.toString();
     for (let i in taskId) {
         let tasks = await Task(connect(DB_CONNECTION, portal)).findById(taskId[i]);
-        if (tasks.taskTemplate !== null) {
-            await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-                tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
-            );
+
+        //kiểm tra quyền được xoá của người dùng
+        if (tasks.creator && tasks.creator.toString() === userId || tasks.informedEmployees.map(o => o.toString()).indexOf(userId) !== -1) {
+            if (tasks.creator.toString() === userId) allowDelete = true;
+        }
+        if (tasks.responsibleEmployees && tasks.responsibleEmployees.map(o => o.toString()).indexOf(userId) !== -1 || tasks.consultedEmployees && tasks.consultedEmployees.map(o => o.toString()).indexOf(userId) !== -1) {
+            allowDelete = false;
+        }
+        if (tasks.accountableEmployees && tasks.accountableEmployees.map(o => o.toString()).filter(str => str === userId).length > 0) {
+            allowDelete = true;
         }
 
-        await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
+        if (allowDelete) {
+            if (tasks.taskTemplate !== null) {
+                await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+                    tasks.taskTemplate, { $inc: { 'numberOfUse': -1 } }, { new: true }
+                );
+            }
+
+            await Task(connect(DB_CONNECTION, portal)).findByIdAndDelete(taskId[i]); // xóa mẫu công việc theo id
+            deleteSuccess = deleteSuccess + 1;
+        }
+
     }
-    return taskId;
+    if (deleteSuccess === 0) throw ['delete_fail'];
+    else return taskId;
 }
 
 /**
@@ -2972,6 +2992,7 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
         .populate({ path: "overallEvaluation.accountableEmployees.employee", select: "_id name" });
     return tasks;
 }
+
 
 exports.checkImportTasks = async (data, portal, user) => {
     if (data?.length) {
