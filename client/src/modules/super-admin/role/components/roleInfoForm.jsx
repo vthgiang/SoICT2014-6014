@@ -115,6 +115,7 @@ function RoleInfoForm(props) {
                                     .map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
                             }
                             onChange={handleParents}
+                            disabled={roleName === ROOT_ROLE.SUPER_ADMIN ? true : false}
                             value={roleParents}
                             multiple={true}
                         />
