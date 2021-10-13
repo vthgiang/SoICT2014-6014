@@ -22,7 +22,7 @@ function RoleInfoForm(props) {
                 roleNameError: undefined,
             })
         }
-    },[props.roleId])
+    }, [props.roleId])
 
     const handleRoleName = (e) => {
         let { value } = e.target;
@@ -132,6 +132,7 @@ function RoleInfoForm(props) {
                             }
                             onChange={handleUsers}
                             value={roleUsers}
+                            disabled={roleName === ROOT_ROLE.SUPER_ADMIN ? true : false}
                             multiple={roleName !== ROOT_ROLE.SUPER_ADMIN ? true : false}
                         />
                     </div>
