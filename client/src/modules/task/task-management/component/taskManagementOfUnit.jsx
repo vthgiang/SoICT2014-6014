@@ -307,12 +307,10 @@ function TaskManagementOfUnit(props) {
             }
         }
 
-        setState(state => {
-            return {
+        setState({
                 ...state,
                 currentTaskId: id,
                 taskName
-            }
         })
         window.$(`#modelPerformTask${id}`).modal('show');
     }

@@ -46,13 +46,12 @@ function TreeTable(props) {
     
         if (props.data !== null && props.behaviour === "show-children") {
             addScriptTreeTable(true);
-            
         }
 
         if (props.data !== null && props.behaviour === "hide-children") {
             addScriptTreeTable(false);
         }
-    }, [rawData]);
+    }, [JSON.stringify(rawData)]);
 
     /**
      * Function thêm script cho tree table
