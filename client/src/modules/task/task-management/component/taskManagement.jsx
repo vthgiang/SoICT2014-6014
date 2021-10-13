@@ -670,6 +670,7 @@ function TaskManagement(props) {
                 for (let n in currentTasks) {
                     data[n] = {
                         ...currentTasks[n],
+                        rawData : currentTasks[n],
                         name: currentTasks[n].name,
                         description: currentTasks[n].description ? parse(currentTasks[n].description) : null,
                         organization: currentTasks[n].organizationalUnit ? currentTasks[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
@@ -685,10 +686,15 @@ function TaskManagement(props) {
                         totalLoggedTime: getTotalTimeSheetLogs(currentTasks[n].timesheetLogs),
                         parent: currentTasks[n].parent ? currentTasks[n].parent._id : null
                     }
-                    let archived = "store";
-                    if (currentTasks[0].isArchived === true) {
-                        archived = "restore";
+                    let archived = null;
+
+                    if (currentTasks[n].status ==="finished"||currentTasks[n].status==="delayed"||currentTasks[n].status==="canceled"){
+                        if (currentTasks[n].isArchived === true) {
+                            archived = "restore";
+                        }
+                        else archived = "store";
                     }
+                    
                     if (currentTasks[n].creator && currentTasks[n].creator._id === userId || currentTasks[n].informedEmployees.indexOf(userId) !== -1) {
                         let del = null;
                         if (currentTasks[n].creator._id === userId) {
@@ -1062,7 +1068,7 @@ function TaskManagement(props) {
                                     data={state?.data ? state.data : []}
                                     onSetNumberOfRowsPerPage={setLimit}
                                     onSelectedRowsChange={onSelectedRowsChange}
-                                    openOnClickName={true}
+                                    viewWhenClickName={true}
                                     titleAction={{
                                         edit: translate('task.task_management.action_edit'),
                                         delete: translate('task.task_management.action_delete'),

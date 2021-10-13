@@ -593,6 +593,7 @@ function TaskManagementOfUnit(props) {
         for (let n in dataTemp) {
             data[n] = {
                 ...dataTemp[n],
+                rawData: dataTemp[n],
                 name: dataTemp[n].name,
                 description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                 organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
@@ -826,7 +827,7 @@ function TaskManagementOfUnit(props) {
                                 data={data}
                                 onSetNumberOfRowsPerPage={setLimit}
                                 onSelectedRowsChange={onSelectedRowsChange}
-                                openOnClickName={true}
+                                viewWhenClickName={true}
                                 titleAction={{
                                     edit: translate('task.task_management.action_edit'),
                                     delete: translate('task.task_management.action_delete'),

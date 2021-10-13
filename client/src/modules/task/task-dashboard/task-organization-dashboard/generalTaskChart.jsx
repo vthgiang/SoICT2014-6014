@@ -478,6 +478,7 @@ const GeneralTaskChart = (props) => {
         let bold = dataTemp[i].parent && dataTemp[i].parent !== true ? "normal" : "bold";
         data[i] = {
             ...dataTemp[i],
+            rawData:dataTemp[i],
             name: bindTextToEvent("name", dataTemp[i].name, dataTemp[i], bold),
             totalTask: bindTextToEvent("totalTask", dataTemp[i].totalTask.length, dataTemp[i].totalTask, dataTemp[i].name, i, bold),
             taskInprocess: bindTextToEvent("taskInprocess", dataTemp[i].taskInprocess.length, dataTemp[i].taskInprocess, dataTemp[i].name, i, bold),
