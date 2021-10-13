@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect, useRef, useLayoutEffect } from '
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, Loading } from '../../../../common-components';
-import { ShowImportData, ImportFileExcel, ConFigImportFile, ExportExcel } from '../../../../common-components';
+import { ShowImportData, ImportFileExcel, ConFigImportFile, ExportExcel, UploadFile } from '../../../../common-components';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import cloneDeep from 'lodash/cloneDeep';
 import { taskManagementActions } from '../redux/actions';
@@ -14,9 +14,11 @@ dayjs.extend(isSameOrAfter)
 function TaskManagementImportForm(props) {
     const [state, setState] = useState({
         checkFileImport: true,
-        limit: 100,
+        limit: 50,
         page: 0
     })
+
+    const { translate } = props;
 
 
     useEffect(() => {
@@ -35,6 +37,11 @@ function TaskManagementImportForm(props) {
             rowHeader: { // Số dòng tiêu đề của bảng
                 description: 'Số dòng tiêu đề của bảng',
                 value: 1
+            },
+            code: {
+                columnName: 'Code',
+                description: 'Code',
+                value: 'Code',
             },
             name: {
                 columnName: 'Tên công việc',
@@ -150,6 +157,11 @@ function TaskManagementImportForm(props) {
                 description: 'Số dòng tiêu đề của bảng',
                 value: 1
             },
+            code: {
+                columnName: 'Code',
+                description: 'Code',
+                value: 'Code',
+            },
             taskName: {
                 columnName: 'Tên công việc',
                 description: 'Tên công việc',
@@ -185,7 +197,11 @@ function TaskManagementImportForm(props) {
                 description: 'Số dòng tiêu đề của bảng',
                 value: 1
             },
-
+            code: {
+                columnName: 'Code',
+                description: 'Code',
+                value: 'Code',
+            },
             taskName: {
                 columnName: 'Tên công việc',
                 description: 'Tên công việc',
@@ -291,25 +307,25 @@ function TaskManagementImportForm(props) {
     }
 
 
-    const getTaskParentId = (taskName) => {
-        const listTasks = tasks.tasks;
-        if (!taskName)
-            return -1;
+    // const getTaskParentId = (taskName) => {
+    //     const listTasks = tasks.tasks;
+    //     if (!taskName)
+    //         return -1;
 
-        taskName = taskName.toString();
-        let result;
-        if (listTasks?.length) {
-            for (let i = 0; i < listTasks.length; i++) {
-                if (listTasks[i].name.trim().toLowerCase() === taskName.trim().toLowerCase()) {
-                    result = cloneDeep(listTasks[i]);
-                    break;
-                }
-            }
-        } else return -1;
-        if (!result)
-            return -1;
-        return result._id;
-    }
+    //     taskName = taskName.toString();
+    //     let result;
+    //     if (listTasks?.length) {
+    //         for (let i = 0; i < listTasks.length; i++) {
+    //             if (listTasks[i].name.trim().toLowerCase() === taskName.trim().toLowerCase()) {
+    //                 result = cloneDeep(listTasks[i]);
+    //                 break;
+    //             }
+    //         }
+    //     } else return -1;
+    //     if (!result)
+    //         return -1;
+    //     return result._id;
+    // }
 
     const getDataCollaboratedWithUnits = (data) => {
         if (!data)
@@ -414,15 +430,17 @@ function TaskManagementImportForm(props) {
     }
 
     const convertDateTime = (date, time) => {
-        let splitter = date.split("-");
-        let strDateTime;
-        if (time) {
-            strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
-        } else {
-            strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]}`;
-        }
+        if (date) {
+            let splitter = date.split("-");
+            let strDateTime;
+            if (time) {
+                strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+            } else {
+                strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]}`;
+            }
 
-        return new Date(strDateTime);
+            return new Date(strDateTime);
+        }
     }
 
     const getProjectId = (projectName) => {
@@ -447,9 +465,11 @@ function TaskManagementImportForm(props) {
 
     // Function thay đổi file import
     const handleImportExcel = (value, checkFileImport = true) => {
+        console.log('handleImportExcel', value)
         let valueImport = [], showValueImport = [], rowError = [], checkImportData = value;
         value.forEach((o, index) => {
             let errorAlert = [];
+            const checkCodeDuplicateInFileExcell = value.filter(k => k?.code?.toString().trim() === o?.code?.toString().trim());
             let priority = o?.priority ? convertPriority(o.priority) : 3,
                 status = o?.status ? convertTaskStatus(o.status) : "inprocess",
                 progress = o?.progress ? o.progress : 0,
@@ -470,20 +490,28 @@ function TaskManagementImportForm(props) {
                 taskProject = o.taskProject ? getProjectId(o.taskProject) : null;
 
 
-            if (o.name === null || o.organizationalUnit === null || (o.organizationalUnit && getIdUnitFromName(o.organizationalUnit) === -1) || convertTaskStatus(o.status) === -1 ||
+            if (o?.code === null || o.name === null || o.organizationalUnit === null || (o.organizationalUnit && getIdUnitFromName(o.organizationalUnit) === -1) || convertTaskStatus(o.status) === -1 ||
                 o.priority === null || (o.priority && convertPriority(o.priority) === -1) || o.startDate === null || o.endDate === null || o.responsibleEmployees === null
                 || (o.responsibleEmployees && (getUserIdFromEmail(o.responsibleEmployees) === -1 || getUserIdFromEmail(o.responsibleEmployees).indexOf(-1) !== -1)) || o.accountableEmployees === null ||
                 (o.accountableEmployees && (getUserIdFromEmail(o.accountableEmployees) === -1 || getUserIdFromEmail(o.accountableEmployees).indexOf(-1) !== -1))
                 || (o.consultedEmployees && (getUserIdFromEmail(o.consultedEmployees) === -1 || getUserIdFromEmail(o.consultedEmployees).indexOf(-1) !== -1))
                 || (o.informedEmployees && (getUserIdFromEmail(o.informedEmployees) === -1 || getUserIdFromEmail(o.informedEmployees).indexOf(-1) !== -1))
                 || (o.collaboratedWithOrganizationalUnits && (getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits) === -1 || getDataCollaboratedWithUnits(o.collaboratedWithOrganizationalUnits).indexOf(-1) !== -1))
-                || (o.taskProject && getProjectId(o.taskProject) === -1)) {
+                || (o.taskProject && getProjectId(o.taskProject) === -1) || checkCodeDuplicateInFileExcell?.length > 1) {
                 rowError = [...rowError, index + 1];
                 o = { ...o, error: true };
             }
 
             if (o.name === null) {
                 errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
+            }
+
+            if (o.code === null) {
+                errorAlert = [...errorAlert, 'Code không được để trống'];
+            }
+
+            if (o.code && checkCodeDuplicateInFileExcell?.length > 1) {
+                errorAlert = [...errorAlert, 'Code  của công việc trong file excell không được trùng lặp'];
             }
 
             if (o.organizationalUnit === null)
@@ -534,6 +562,7 @@ function TaskManagementImportForm(props) {
 
             valueImport = [...valueImport, {
                 ...o,
+                code: o?.code ? o?.code?.toString()?.trim() : null,
                 startDate: startDate,
                 endDate: endDate,
                 organizationalUnit: organizationalUnit,
@@ -563,31 +592,36 @@ function TaskManagementImportForm(props) {
             }]
         })
 
-        setState({
-            ...state,
-            valueImport,
-            showValueImport,
-            rowError: rowError,
+        setState(state => {
+            return {
+                ...state,
+                valueImport,
+                showValueImport,
+                rowError: rowError,
+            }
         })
     }
 
 
     const handleImportTaskActionsExcel = (value, checkFileImport = true) => {
         let valueImportTaskActions = [], showValueImportTaskActions = [], rowErrorTaskActions = [];
-
+        console.log('handleImportTaskActionsExcel', value)
         if (value) {
             value.forEach((o, index) => {
                 let errorAlert = [];
                 let createdAt = o?.createdAt ? convertExcelDateToJSDate(o.createdAt) : null;
                 let creator = o?.createBy ? getUserIdFromEmail(o.createBy)[0] : [];
 
-                if (o?.taskName === null || o?.description === null || o?.createBy === null || (o.createBy && getUserIdFromEmail(o.createBy) === -1) || getUserIdFromEmail(o.createBy).indexOf(-1) !== -1) {
+                if (o?.code === null || o?.taskName === null || o?.description === null || o?.createBy === null || (o.createBy && getUserIdFromEmail(o.createBy) === -1) || (o.createBy && getUserIdFromEmail(o.createBy).indexOf(-1) !== -1)) {
                     rowErrorTaskActions = [...rowErrorTaskActions, index + 1];
                     o = { ...o, error: true };
                 }
 
                 if (o?.taskName === null)
                     errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
+
+                if (o?.code === null)
+                    errorAlert = [...errorAlert, 'Code không được để trống'];
 
                 if (o?.description === null)
                     errorAlert = [...errorAlert, 'Tên hoạt động không được để trống'];
@@ -599,6 +633,7 @@ function TaskManagementImportForm(props) {
                 }
 
                 valueImportTaskActions = [...valueImportTaskActions, {
+                    code: o?.code,
                     description: o?.description ? o.description.toString().trim() : "",
                     creator,
                     createdAt: createdAt ? convertDateTime(createdAt) : null,
@@ -612,19 +647,21 @@ function TaskManagementImportForm(props) {
                 }]
             })
 
-            setState({
-                ...state,
-                showValueImportTaskActions,
-                valueImportTaskActions,
-                rowErrorTaskActions,
+            setState(state => {
+                return {
+                    ...state,
+                    showValueImportTaskActions,
+                    valueImportTaskActions,
+                    rowErrorTaskActions,
+                }
             })
         }
     }
 
 
     const handleImportTaskTimesheetLogsExcell = (value, checkFileImport = true) => {
+        console.log('handleImportTaskTimesheetLogsExcell', value)
         let valueImportTaskTimesheetLog = [], showValueImportTaskTimeSheetLogs = [], rowErrorTaskTimesheetLogs = [];
-        console.log('value', value);
         if (value) {
             value.forEach((o, index) => {
                 let errorAlert = [];
@@ -632,7 +669,7 @@ function TaskManagementImportForm(props) {
                 let date = o?.date ? convertExcelDateToJSDate(o.date) : null;
                 let timeFrom = o?.from ? convertTimeExcelToJSDate(o.from) : "";
                 let timeTo = o?.to ? convertTimeExcelToJSDate(o.to) : "";
-                if (o?.taskName === null || o?.createdBy === null || o?.date === null || o?.from === null || o?.to == null
+                if (o?.code === null || o?.taskName === null || o?.createdBy === null || o?.date === null || o?.from === null || o?.to == null
                     || (o.createdBy && getUserIdFromEmail(o.createdBy) === -1)
                     || (o.createdBy && getUserIdFromEmail(o.createdBy).indexOf(-1) !== -1)
                     || (date && !dayjs(convertDateTime(date, timeTo)).isSameOrAfter(dayjs(convertDateTime(date, timeFrom))))) {
@@ -644,7 +681,10 @@ function TaskManagementImportForm(props) {
                     o = { ...o, error: true };
                 }
 
-                console.log(`duration${index}`, convertDateTime(date, timeTo) - convertDateTime(date, timeFrom))
+                // console.log(`duration${index}`, convertDateTime(date, timeTo) - convertDateTime(date, timeFrom))
+                if (o?.code === null)
+                    errorAlert = [...errorAlert, 'TaskId công việc không được để trống'];
+
                 if (o?.taskName === null)
                     errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
 
@@ -671,6 +711,7 @@ function TaskManagementImportForm(props) {
                 }
 
                 valueImportTaskTimesheetLog = [...valueImportTaskTimesheetLog, {
+                    code: o?.code,
                     description: o?.description,
                     employee: createdBy,
                     addlogStartedAt: date && timeFrom && convertDateTime(date, timeFrom),
@@ -689,28 +730,22 @@ function TaskManagementImportForm(props) {
                 }]
             })
 
-            console.log('showValueImportTaskTimeSheetLogs', showValueImportTaskTimeSheetLogs);
-            console.log('valueImportTaskTimesheetLog', valueImportTaskTimesheetLog);
-            setState({
-                ...state,
-                showValueImportTaskTimeSheetLogs,
-                valueImportTaskTimesheetLog,
-                rowErrorTaskTimesheetLogs,
+            setState(state => {
+                return {
+                    ...state,
+                    showValueImportTaskTimeSheetLogs,
+                    valueImportTaskTimesheetLog,
+                    rowErrorTaskTimesheetLogs,
+                }
             })
         }
     }
 
 
-    const handleImport = () => {
-        const { valueImport } = state;
-        if (valueImport?.length)
-            props.importTasks({ importType: 'import_task_info', importData: valueImport });
-    }
-
     const handleImportUpdate = () => {
         const { valueImport } = state;
         if (valueImport?.length)
-            props.importTasks({ importType: 'import_update_task_info', importData: valueImport });
+            props.importTasks({ importType: 'import_update_task_info', importData: {valueImport} });
     }
 
     const handleImportTaskActions = () => {
@@ -760,6 +795,53 @@ function TaskManagementImportForm(props) {
         } return false
     }
 
+    const handleUploadFile = (files) => {
+        setState(state => {
+            return {
+                ...state,
+                showValueImportTaskTimeSheetLogs: [],
+                valueImportTaskTimesheetLog: [],
+
+                showValueImportTaskActions: [],
+                valueImportTaskActions: [],
+
+                valueImport: [],
+                showValueImport: [],
+            }
+        })
+
+        ImportFileExcel.importData(files[0], config, handleImportExcel);
+        ImportFileExcel.importData(files[0], configTaskActions, handleImportTaskActionsExcel);
+        ImportFileExcel.importData(files[0], configTaskTimeSheetLog, handleImportTaskTimesheetLogsExcell);
+    }
+
+    const isFormValidate = () => {
+        const { rowErrorTaskTimesheetLogs, rowErrorTaskActions, rowError } = state;
+        return (
+            rowErrorTaskTimesheetLogs?.length === 0 &&
+            rowErrorTaskActions?.length === 0
+            && rowError?.length === 0
+        )
+    }
+
+    const handleImport = () => {
+        const { valueImport, valueImportTaskTimesheetLog, valueImportTaskActions } = state;
+        let result = [];
+        valueImport.forEach((x, index) => {
+            if (x.parent) {
+                if (!result[x?.parent?.toString()?.trim()]) {
+                    result[x?.parent?.toString()?.trim()] = [x];
+                } else {
+                    result[x?.parent?.toString()?.trim()] = [...result[x?.parent?.toString()?.trim()], x];
+                }
+            }
+        })
+        console.log('result', result)
+        props.importTasks({ importType: 'import_tasks', importData: { valueImport, valueImportTaskActions, valueImportTaskTimesheetLog } });
+    }
+
+
+    console.log(JSON.parse(JSON.stringify(state)))
 
     return <DialogModal modalID={`modal_import_tasks`} isLoading={false}
         formID={`form_import_tasks`}
@@ -768,7 +850,22 @@ function TaskManagementImportForm(props) {
         note={note}
         // hasNote={false}
         size={75}>
-
+        <div className="box-body row">
+            <div className="row">
+                {/* File import */}
+                <div className="form-group col-md-6 col-xs-12">
+                    <label>{translate('human_resource.choose_file')}</label>
+                    <UploadFile
+                        importFile={handleUploadFile}
+                    />
+                    <a style={{ cursor: 'pointer', }} onClick={handleDownloadFileImport} ><u>Tải xuống file mẫu<i className="fa fa-fw fa-file-excel-o"> </i></u> </a>
+                </div>
+                <div className="form-group col-md-6 col-xs-12">
+                    <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} disabled={!isFormValidate()}>Thêm mới thông tin chung</button>
+                    <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportUpdate} disabled={!isFormValidate()}>Cập nhật thông tin chung</button>
+                </div>
+            </div>
+        </div>
         {/* Hiện thị data import */}
         <div className="nav-tabs-custom row" >
             <ul className="nav nav-tabs">
@@ -778,20 +875,7 @@ function TaskManagementImportForm(props) {
             </ul>
             <div className="tab-content">
                 <div id="import_task_general" className="tab-pane active">
-                    <div className="row">
-                        {/* File import */}
-                        <div className="form-group col-md-6 col-xs-12">
-                            <ImportFileExcel
-                                configData={config}
-                                handleImportExcel={handleImportExcel}
-                            />
-                            <a style={{ cursor: 'pointer', }} onClick={handleDownloadFileImport} ><u>Tải xuống file mẫu<i className="fa fa-fw fa-file-excel-o"> </i></u> </a>
-                        </div>
-                        <div className="form-group col-md-6 col-xs-12">
-                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImport} disabled={!isFormValidateImportTask()}>Thêm mới thông tin chung</button>
-                            <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportUpdate} disabled={!isFormValidateImportTask()}>Cập nhật thông tin chung</button>
-                        </div>
-                    </div>
+
 
                     <div className="col-md-12 col-xs-12">
                         <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
@@ -809,8 +893,7 @@ function TaskManagementImportForm(props) {
                     </div>
                 </div>
                 <div id="import_task_actions" className="tab-pane">
-                    <div className="row">
-                        {/* File import */}
+                    {/* <div className="row">
                         <div className="form-group col-md-4 col-xs-12">
                             <ImportFileExcel
                                 configData={configTaskActions}
@@ -821,7 +904,7 @@ function TaskManagementImportForm(props) {
                             <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
                             <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportTaskActions} disabled={!isFormValidateImportTaskActions()}>Thêm mới thông tin hoạt động</button>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="col-md-12 col-xs-12">
                         <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>
@@ -839,8 +922,7 @@ function TaskManagementImportForm(props) {
                 </div>
 
                 <div id="import_timesheetlogs" className="tab-pane">
-                    <div className="row">
-                        {/* File import */}
+                    {/* <div className="row">
                         <div className="form-group col-md-4 col-xs-12">
                             <ImportFileExcel
                                 configData={configTaskTimeSheetLog}
@@ -851,7 +933,7 @@ function TaskManagementImportForm(props) {
                             <button type="button" className="pull-right btn btn-success" onClick={handleDownloadFileImport} >Tải xuống file mẫu</button>
                             <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-success" onClick={handleImportTaskTimesheetLogs} disabled={!isFormValidateImportTaskTimesheetLogs()}>Thêm mới thông tin bấm giờ</button>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="col-md-12 col-xs-12">
                         <p style={{ textAlign: 'center', color: "#a4a3bc", fontWeight: 'bold' }}>{tasks.isLoading && 'Đang xử lý dữ liệu'}</p>

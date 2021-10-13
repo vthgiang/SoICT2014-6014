@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Terms = require('../helpers/config');
 const models = require('../models');
+const fs = require('fs');
+
 const { 
     User, 
     UserRole, 
@@ -12,6 +14,7 @@ const {
     RootRole, 
     SystemComponent, 
     SystemLink, 
+    SystemApi,
     Configuration
 } = models;
 
@@ -271,6 +274,12 @@ const initDB = async() => {
         }
     })
     let systemLinks = await SystemLink(systemDB).insertMany(dataSystemLinks);
+
+    // Tạo system api
+    let rawdata = fs.readFileSync('middleware/systemApi.json');
+    let systemApis = JSON.parse(rawdata);
+    await SystemApi(systemDB).insertMany(systemApis);
+
 
     // Thêm lại dữ liệu các links cho component
     for (let i = 0; i < systemComponents.length; i++) {

@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
+const dayjs = require("dayjs");
 const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole, Role } = require('../../../models');
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const overviewService = require(`../../kpi/employee/management/management.service`);
-
+const UserService = require(`../../super-admin/user/user.service`)
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
 const cloneDeep = require('lodash/cloneDeep');
+const isSameOrAfter = require('dayjs/plugin/isSameOrAfter')
+const isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
+dayjs.extend(isSameOrBefore)
+dayjs.extend(isSameOrAfter)
 
 /**
  * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
@@ -567,6 +571,8 @@ exports.getPaginatedTasks = async (portal, task) => {
             { path: 'creator', select: "_id name email avatar" },
             { path: 'responsibleEmployees', select: "_id name email avatar" },
             { path: 'accountableEmployees', select: "_id name email avatar" },
+            { path: 'consultedEmployees', select: "_id name email avatar" },
+            { path: 'informedEmployees', select: "_id name email avatar" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
@@ -2987,64 +2993,174 @@ exports.getTasksByProject = async (portal, projectId, page, perPage) => {
     return tasks;
 }
 
-exports.importTasks = async (data, portal, user) => {
-    let dataLength = data.length;
-    if (data.length) {
-        for (let x = 0; x < dataLength; x++) {
-            let level = 1, parent = null;
-            if (data[x].parent) {
-                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({ name: data[x].parent }).select("_id level name parent");
-                if (taskParent) {
-                    level = taskParent.level + 1;
-                    parent = taskParent._id;
+
+exports.checkImportTasks = async (data, portal, user) => {
+    if (data?.length) {
+        let dataLength = data.length;
+        let rowError = [], arrTaskCode = [], arrayParentCode = [];
+
+        //Xử lý dữ liệu lấy code và parentCode công việc
+        for (let i = 0; i < dataLength; i++) {
+            if (data[i]?.code)
+                arrTaskCode = [...arrTaskCode, data[i].code];
+            if (data[i]?.parent)
+                arrayParentCode = [...arrayParentCode, data[i].parent];
+        }
+
+        // truy vấn lấy thêm thông tin của task dựa vào code lấy ở file excell
+        const taskCodeFilter = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrTaskCode } }).select("name parent level code");
+        const parentCodeFilter = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrayParentCode } }).select("name parent level code");
+
+        let dataConvert = []
+        data.forEach((element, index) => {
+            let errorAlert = [];
+            // kiểm tra code công việc trống
+            if (!element.code) {
+                errorAlert = [...errorAlert, "code_empty"];
+            }
+
+            // Kiểm tra code công việc đã tồn tại trên hệ thống
+            if (taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code)) {
+                errorAlert = [...errorAlert, "code_duplicate"];
+            }
+
+            // Kiểm tra parentCode 
+            const findParentCode = element.parent && parentCodeFilter?.length && parentCodeFilter.find(x => x.code === element.parent);
+
+            let checkParentCodeInFileExcell = false;
+
+            if (element.parent && !findParentCode) { // nếu chưa tồn tại trên hệ thống
+                for (let t = 0; t < dataLength; t++) {
+                    if (t < index) {
+                        if (data[t]?.code?.toString()?.trim() === element?.parent?.toString()?.trim()) {
+                            checkParentCodeInFileExcell = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!checkParentCodeInFileExcell) // và chưa tồn tại trong file thì sẽ báo lỗi
+                {
+                    errorAlert = [...errorAlert, "parent_code_not_found"]; // parent code ko tìm thấy được ở trên file và trên hệ thống.
                 }
             }
 
-            let startDate, endDate;
-            if (Date.parse(data[x].startDate)) startDate = new Date(data[x].startDate);
-            else {
-                const splitter = data[x].startDate.split("-");
-                startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            element = { ...element, errorAlert }
+            if (element.parent && findParentCode) {
+                element = { ...element, parentId: findParentCode._id }
             }
 
-            if (Date.parse(data[x].endDate)) endDate = new Date(data[x].endDate);
+            dataConvert = [...dataConvert, element];
+
+            if (!element.code || taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code) || (element.parent && !findParentCode && !checkParentCodeInFileExcell))
+                rowError = [...rowError, index + 1];
+        })
+
+        console.log('rowError', rowError);
+        if (rowError?.length !== 0) {
+            return {
+                data: dataConvert,
+                rowError
+            }
+        } else {
+            return {
+                data: dataConvert
+            }
+        }
+    }
+}
+
+exports.importTasks = async (dataConvert, portal, user) => {
+    if (dataConvert?.length) {
+        console.log("PROCESSS", dataConvert?.length)
+
+        let taskNotParentAndHasParentId = [], task = [];
+        dataConvert.forEach((x, index) => {
+            let startDate, endDate;
+            if (Date.parse(x.startDate)) startDate = new Date(x.startDate);
             else {
-                const splitter = data[x].endDate.split("-");
-                endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                if (x.startDate) {
+                    const splitter = x.startDate.split("-")
+                    startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                } else {
+                    startDate = null
+                }
+            }
+
+            if (Date.parse(x.endDate)) endDate = new Date(x.endDate);
+            else {
+                if (x.endDate) {
+                    const splitter = x.endDate.split("-");
+                    endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                } else {
+                    endDate = null;
+                }
             }
 
             let collaboratedWithOrganizationalUnits = [];
-            if (data[x].collaboratedWithOrganizationalUnits?.length) {
-                data[x].collaboratedWithOrganizationalUnits.forEach(y => {
+            if (x.collaboratedWithOrganizationalUnits?.length) {
+                x.collaboratedWithOrganizationalUnits.forEach(y => {
                     collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
                         organizationalUnit: y,
                     }]
                 })
             }
 
-            await Task(connect(DB_CONNECTION, portal)).create({
-                ...data[x],
-                creator: user._id,
-                level: level,
-                parent: parent,
-                startDate: startDate,
-                endDate: endDate,
-                formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
-                taskInformations: [],
-                collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
-            });
+            if (!x.parent || x?.parentId) {
+                taskNotParentAndHasParentId = [...taskNotParentAndHasParentId, {
+                    ...x,
+                    creator: x?.creator ? x.creator : user._id,
+                    name: x?.name ? x.name.toString().trim() : "",
+                    parent: x?.parent ? x.parentId : null,
+                    startDate: startDate,
+                    endDate: endDate,
+                    formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+                    taskInformations: [],
+                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
+                }]
+            } else {
+                task = [...task, {
+                    ...x,
+                    creator: x?.creator ? x.creator : user._id,
+                    name: x?.name ? x.name.toString().trim() : "",
+                    startDate: startDate,
+                    endDate: endDate,
+                    formula: "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+                    taskInformations: [],
+                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
+                }]
+            }
+        })
+
+
+        // những công việc ko có trường parent và 1 số trường parent đã tồn tại trên hệ thống rồi thì lưu thẳng
+        if (taskNotParentAndHasParentId?.length) {
+            await Task(connect(DB_CONNECTION, portal)).insertMany(taskNotParentAndHasParentId);
+        }
+
+        // các task còn lại những task có parent, parent có trong file và chưa có trên hệ thống
+        if (task?.length) {
+            const taskLength = task.length;
+            for (let ts = 0; ts < taskLength; ts++) {
+                const taskParent = await Task(connect(DB_CONNECTION, portal)).findOne({ code: task[ts].parent }).select("_id name parent");
+
+                await Task(connect(DB_CONNECTION, portal)).create({
+                    ...task[ts],
+                    parent: taskParent ? taskParent._id : null
+                });
+            }
         }
     }
-    console.log('done_import_task')
+    console.log('DONE_IMPORT TASK')
 }
 
-// kiểm tra giá trị có nằm trong mảng hay ko. dùng tìm kiếm nhị phân : Độ phức tạp thời gian: O (logN)
+// kiểm tra giá trị có nằm trong mảng hay ko.
 _checkItemInArray = (arr, x, getLevel = false) => {
     let _id, level;
     if (arr?.length) {
         const arrLength = arr.length;
         for (let i = 0; i < arrLength; i++) {
-            if (arr[i]?.name?.toString().trim() === x?.toString()?.trim()) {
+            if (arr[i]?.code?.toString().trim() === x?.toString()?.trim()) {
                 _id = arr[i]._id;
                 level = arr[i].level + 1;
                 break;
@@ -3057,14 +3173,21 @@ _checkItemInArray = (arr, x, getLevel = false) => {
         return _id;
 }
 
-
-exports.importUpdateTasks = async (data, portal, user) => {
+exports.checkImportUpdateTasks = async (data, portal, user) => {
     let rowError = [], valueImport = [];
-    if (data) {
-        const allTask = await Task(connect(DB_CONNECTION, portal)).find({}, {
+    if (data?.length) {
+        let dataLength = data.length, arrTaskCode = [];
+        for (let i = 0; i < dataLength; i++) {
+            if (data[i]?.code)
+                arrTaskCode = [...arrTaskCode, data[i].code];
+            // if (data[i]?.parent)
+            //     arrayParentCode = [...arrayParentCode, data[i].parent];
+        }
+
+        const allTask = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrTaskCode } }, {
             _id: 1,
             name: 1,
-            level: 1,
+            code: 1,
         })
 
         // validate
@@ -3072,25 +3195,25 @@ exports.importUpdateTasks = async (data, portal, user) => {
         if (allTask) {
             data.forEach((x, index) => {
                 let item = { ...x };
-                if (!x.name) {
+                if (!x.code) {
                     item = {
                         ...item,
-                        errorAlert: ["name_task_not_empty"],
+                        errorAlert: ["code_task_not_empty"],
                         error: true
                     }
                     rowError = [...rowError, index + 1];
                 } else {
-                    if (!_checkItemInArray(allTask, x.name)) {
+                    if (!_checkItemInArray(allTask, x.code)) {
                         item = {
                             ...item,
-                            errorAlert: ["name_task_not_found"],
+                            errorAlert: ["code_task_not_found"],
                             error: true
                         }
                         rowError = [...rowError, index + 1];
                     } else {
                         item = {
                             ...item,
-                            taskNameId: _checkItemInArray(allTask, x.name),
+                            taskNameId: _checkItemInArray(allTask, x.code),
                             name: null,
                         }
                     }
@@ -3112,7 +3235,6 @@ exports.importUpdateTasks = async (data, portal, user) => {
                         item = {
                             ...item,
                             parent: checkParent?._id,
-                            level: checkParent?.level
                         }
                     }
                 }
@@ -3130,51 +3252,59 @@ exports.importUpdateTasks = async (data, portal, user) => {
                 rowError
             }
         } else {
-            const importLength = valueImport.length;
-            for (let k = 0; k < importLength; k++) {
-                let dataUpdate = {};
-
-                for (let propName in valueImport[k]) {
-                    if (valueImport[k][propName] === null ||
-                        valueImport[k][propName] === undefined ||
-                        valueImport[k][propName] === "" ||
-                        (Array.isArray(valueImport[k][propName]) && valueImport[k][propName]?.length === 0)
-                    ) {
-                        delete valueImport[k][propName];
-                    }
-                }
-
-                dataUpdate = { ...valueImport[k] };
-                if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
-                    let collaboratedWithOrganizationalUnits = [];
-                    if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
-                        dataUpdate.collaboratedWithOrganizationalUnits.forEach(y => {
-                            collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
-                                organizationalUnit: y,
-                            }]
-                        })
-                    }
-                    dataUpdate = { ...dataUpdate, collaboratedWithOrganizationalUnits }
-                }
-
-                if (dataUpdate.createdAt) {
-                    dataUpdate = { ...dataUpdate, createdAt: new Date(dataUpdate.createdAt) }
-                }
-
-
-                // console.log('dataUpdate',dataUpdate)
-                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
-                    {
-                        updateOne: {
-                            filter: { _id: valueImport[k].taskNameId },
-                            update: dataUpdate,
-                            timestamps: false, //  set bằng false mới update được 2 trường updatedAt và createdAt
-                        }
-                    },
-                ])
+            return {
+                data: valueImport,
             }
-            console.log("DONE UPDATE TASK")
         }
+    }
+}
+
+exports.importUpdateTasks = async (valueImport, portal, user) => {
+    if (valueImport?.length) {
+        const importLength = valueImport.length;
+        for (let k = 0; k < importLength; k++) {
+            let dataUpdate = {};
+
+            for (let propName in valueImport[k]) {
+                if (valueImport[k][propName] === null ||
+                    valueImport[k][propName] === undefined ||
+                    valueImport[k][propName] === "" ||
+                    (Array.isArray(valueImport[k][propName]) && valueImport[k][propName]?.length === 0)
+                ) {
+                    delete valueImport[k][propName];
+                }
+            }
+
+            dataUpdate = { ...valueImport[k] };
+            if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                let collaboratedWithOrganizationalUnits = [];
+                if (dataUpdate?.collaboratedWithOrganizationalUnits?.length) {
+                    dataUpdate.collaboratedWithOrganizationalUnits.forEach(y => {
+                        collaboratedWithOrganizationalUnits = [...collaboratedWithOrganizationalUnits, {
+                            organizationalUnit: y,
+                        }]
+                    })
+                }
+                dataUpdate = { ...dataUpdate, collaboratedWithOrganizationalUnits }
+            }
+
+            if (dataUpdate.createdAt) {
+                dataUpdate = { ...dataUpdate, createdAt: new Date(dataUpdate.createdAt) }
+            }
+
+
+            // console.log('dataUpdate',dataUpdate)
+            await Task(connect(DB_CONNECTION, portal)).bulkWrite([
+                {
+                    updateOne: {
+                        filter: { _id: valueImport[k].taskNameId },
+                        update: dataUpdate,
+                        timestamps: false, //  set bằng false mới update được 2 trường updatedAt và createdAt
+                    }
+                },
+            ])
+        }
+        console.log("DONE UPDATE TASK")
     }
 }
 
@@ -3182,29 +3312,53 @@ exports.importUpdateTasks = async (data, portal, user) => {
 exports.importTaskActions = async (data, portal, user) => {
     if (data) {
         let groupByTask = [];
+        // merge các hoạt động công việc lại
         data.forEach((x, index) => {
-            if (!groupByTask[x.taskName]) {
-                groupByTask[x.taskName] = [x]
+            if (!groupByTask[x?.code]) {
+                groupByTask[x?.code] = [x]
             } else {
-                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+                groupByTask[x?.code] = [...groupByTask[x?.code], x]
             }
         })
 
-        // console.log('groupByTask', groupByTask);
+        // lấy danh sách mảng các code công việc
+        let arrayCode = [];
+        for (let k in groupByTask) {
+            arrayCode = [...arrayCode, k];
+        }
+
+
+        // Lấy thông tin của các task dựa vào code lấy trong sheet thông tin hoạt động.
+        let getTaskInfo = [];
+        if (arrayCode?.length) {
+            getTaskInfo = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrayCode } }).select("code taskActions");
+        }
+
+        // start validate
+        // Sắp làm
+        // endValidate
+
+        let dataImport = [];
 
         for (let k in groupByTask) {
-            let task;
-            if (k)
-                task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
-
-            if (task) {
-                task.taskActions = task.taskActions.concat(groupByTask[k]);
-                task.save();
+            let findTask = getTaskInfo?.length && getTaskInfo.find(x => x?.code?.toString() === k.toString())
+            let taskActions = [];
+            if (k && findTask) {
+                taskActions = findTask.taskActions.concat(groupByTask[k]);
+                dataImport = [...dataImport, {
+                    updateOne: {
+                        filter: { _id: findTask._id },
+                        update: {
+                            taskActions
+                        },
+                    }
+                }]
             }
         }
-    }
-    console.log("DONE_IMPORT_TASK_ACTION!!!")
 
+        await Task(connect(DB_CONNECTION, portal)).bulkWrite(dataImport)
+    }
+    console.log("DONE_IMPORT_TASK_ACTIONS");
 }
 
 
@@ -3212,69 +3366,126 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
     if (data) {
         let groupByTask = [];
         data.forEach((x, index) => {
-            if (!groupByTask[x.taskName]) {
-                groupByTask[x.taskName] = [x]
+            if (!groupByTask[x?.code]) {
+                groupByTask[x?.code] = [x]
             } else {
-                groupByTask[x.taskName] = [...groupByTask[x.taskName], x]
+                groupByTask[x?.code] = [...groupByTask[x?.code], x]
             }
         })
 
-        // console.log('groupByTask', groupByTask)
-
+        // lấy danh sách mảng các code công việc
+        let arrayCode = [];
         for (let k in groupByTask) {
-            if (k) {
-                let infoTimesheetLog = [];
-                groupByTask[k].forEach(x => {
-                    const duration = new Date(x.addlogStoppedAt).getTime() - new Date(x.addlogStartedAt).getTime();
-                    // vì add log trong 1 ngày nên giờ ko quá 24 nên ko cần check acceptLog. default true
-                    infoTimesheetLog = [...infoTimesheetLog, {
-                        creator: x?.employee,
-                        startedAt: new Date(x?.addlogStartedAt),
-                        stoppedAt: new Date(x?.addlogStoppedAt),
-                        description: x?.description,
-                        duration,
-                        autoStopped: x?.autoStopped,
-                    }]
-                })
-
-                await Task(connect(DB_CONNECTION, portal)).bulkWrite([
-                    {
-                        updateOne: {
-                            filter: { name: k?.trim() },
-                            update: {
-                                timesheetLogs: infoTimesheetLog
-                            },
-                            upsert: false
-                        }
-                    },
-                ])
-
-            }
-            console.log('DONE IMPORT TIMESHEET')
+            arrayCode = [...arrayCode, k];
         }
 
 
-        // for (let k in groupByTask) {
-        //     let task;
-        //     if (k)
-        //         task = await Task(connect(DB_CONNECTION, portal)).findOne({ name: k }).select("_id taskActions");
+        // Lấy thông tin của các task dựa vào code lấy trong sheet thông tin hoạt động.
+        let getTaskInfo = [];
+        if (arrayCode?.length) {
+            getTaskInfo = await Task(connect(DB_CONNECTION, portal)).find({ code: { $in: arrayCode } }).select("code timesheetLogs");
+        }
 
-        //     if (task) {
-        //         task.taskActions = task.taskActions.concat(groupByTask[k]);
-        //         task.save();
-        //     }
-        // }
+
+        let dataImport = [];
+
+        for (let k in groupByTask) {
+            if (k) {
+                let findTask = getTaskInfo?.length && getTaskInfo.find(x => x?.code?.toString() === k.toString())
+                if (findTask) {
+
+                    // xử lý data lưu vào timeSheetLogs
+                    let infoTimesheetLog = [];
+                    if (findTask?.timesheetLogs?.length) {
+                        infoTimesheetLog = [...findTask.timesheetLogs];
+                    }
+
+                    let totalDurationNew = findTask?.hoursSpentOnTask?.totalHoursSpent ? findTask?.hoursSpentOnTask?.totalHoursSpent : 0;
+                    let contributionsnew = [];
+
+                    groupByTask[k].forEach(x => {
+                        const duration = new Date(x.addlogStoppedAt).getTime() - new Date(x.addlogStartedAt).getTime();
+                        totalDurationNew = totalDurationNew + duration;
+
+                        // vì add log trong 1 ngày nên giờ ko quá 24 nên ko cần check acceptLog. default true
+                        infoTimesheetLog = [...infoTimesheetLog, {
+                            creator: x?.employee,
+                            startedAt: new Date(x?.addlogStartedAt),
+                            stoppedAt: new Date(x?.addlogStoppedAt),
+                            description: x?.description,
+                            duration,
+                            autoStopped: x?.autoStopped,
+                        }]
+
+                        contributionsnew = [...contributionsnew, {
+                            employee: x?.employee,
+                            hoursSpent: duration
+                        }]
+                    })
+
+
+                    let result = [];
+                    // gom và tính totongr của những người bị có nhiều thời gian bấm giờ
+                    contributionsnew.reduce(function (res, value) {
+                        if (!res[value.employee]) {
+                            res[value.employee] = { employee: value.employee, hoursSpent: 0 };
+                            result.push(res[value.employee])
+                        }
+                        res[value.employee].hoursSpent += value.hoursSpent;
+                        return res;
+                    }, {});
+
+                    let ctr = [];
+                    if (findTask?.hoursSpentOnTask?.contributions) {
+                        ctr = [...ctr, ...findTask?.hoursSpentOnTask?.contributions];
+                    }
+                    if (result) {
+                        ctr = [...ctr, ...result];
+                    }
+
+                    // Xử lý dữ liệu đưa vào hoursSpentOnTask
+                    dataImport = [...dataImport, {
+                        updateOne: {
+                            filter: { _id: findTask._id },
+                            update: {
+                                timesheetLogs: infoTimesheetLog,
+                                hoursSpentOnTask: {
+                                    totalHoursSpent: totalDurationNew,
+                                    contributions: ctr
+                                }
+                            }
+                        }
+                    }]
+                }
+            }
+        }
+
+        await Task(connect(DB_CONNECTION, portal)).bulkWrite(dataImport);
     }
     console.log("DONE_IMPORT_TIME_SHEET!!!")
 
 }
 
+exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 
-exports.getOrganizationTaskDashboardChartData = async (data, portal, user) => {
-    // return organizationUnitTasks
+    Object.keys(query).forEach((key) => {
+        query[key] = JSON.parse(query[key])
+    });
+    const data = query;
+    console.log("data", data)
+    const chartArr = Object.keys(data);
+    let result = {};
+    const { organizationalUnitId, startMonth, endMonth } = data["common-params"]
 
-    let { organizationalUnitId, startMonth, endMonth } = data;
-    let organizationUnitTasks;
+    // const { organizationalUnitId, startMonth, endMonth, type } = data;
+    const userId = user._id
+
+    // const dataSearch = JSON.parse(data.dataSearch)
+
+    let userArray;
+    let resultDomain, resultGeneral, resultGantt, resultDistribution,
+        resultInprocess, resultStatus, resultAverage, resultLoad, resultAllTimeSheetLog;
+
     let keySearch = {};
 
     if (organizationalUnitId) {
@@ -3301,16 +3512,16 @@ exports.getOrganizationTaskDashboardChartData = async (data, portal, user) => {
         }
     }
 
-    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': -1 })
+    const organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': -1 })
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
 
-    // return usersInUnitsOfCompany - Lấy tất nhan vien trong moi đơn vị trong công ty
     const allUnits = await OrganizationalUnit(
         connect(DB_CONNECTION, portal)
     ).find(); // { company: id }
-    const newData = allUnits.map((department) => {
+    const unitsNameId = allUnits.map(a => ({ id: a._id, name: a.name }))
+    const newDataUnit = allUnits.map((department) => {
         return {
             id: department._id.toString(),
             name: department.name,
@@ -3325,145 +3536,1058 @@ exports.getOrganizationTaskDashboardChartData = async (data, portal, user) => {
         };
     });
 
-    let userArray = await _getAllUsersInOrganizationalUnits(portal, newData);
 
-    return [
-        {
-            name: "general-task-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
-                usersInUnitsOfCompany: userArray
+    //data cho tổng quan công việc
+    if (chartArr.includes('general-task-chart')) {
+        userArray = await UserService._getAllUsersInOrganizationalUnits(portal, newDataUnit);
+        const listEmployee = {}, dataTable = [];
+        //Lay cac cong viec cua cac unit da chon
+        const tasksOfSelectedUnit = organizationUnitTasks?.filter(x =>
+            organizationalUnitId?.includes(x?.organizationalUnit?._id.toString()))
+        // Dem cong viec cua tat ca cac unit da chon
+        let dataRow = _countTask(tasksOfSelectedUnit, 'Tổng');
+        dataTable.push(dataRow);
+        // Dem cong viec cua tung unit da chon
+        let listUnit = [];
+        unitsNameId && unitsNameId.forEach(unit => {
+            if (organizationalUnitId?.includes(unit?.id.toString())) {
+                listUnit.push(unit);
             }
-        },
-        {
-            name: "gantt-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+        });
+        const employeesNew = _freshListEmployee(userArray);
+        if (employeesNew && employeesNew.length) {
+            for (let i in employeesNew) {
+                let x = employeesNew[i]
+                listEmployee[x._id] = x.name;
             }
-        },
-        {
-            name: "employee-distribution-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+        }
+        let data1 = {};
+        for (let i in tasksOfSelectedUnit) {
+            let result = _processTask(tasksOfSelectedUnit[i])
+            let unitName = tasksOfSelectedUnit?.[i]?.organizationalUnit?.name;
+
+            for (let j in result) {
+                if (data1 && !data1?.[unitName]) {
+                    data1[unitName] = {};
+                }
+                if (data1?.[unitName] && !data1?.[unitName]?.[result?.[j]]) {
+                    data1[unitName][result[j]] = [];
+                }
+
+                if (data1[unitName]) {
+                    data1[unitName][result[j]] = [...data1[unitName][result[j]], tasksOfSelectedUnit[i]];
+                    data1[unitName].name = unitName;
+                }
+
+                let resEmployee = tasksOfSelectedUnit[i].responsibleEmployees;
+                let employeeInTask = [];
+
+                for (let e in resEmployee) {
+                    employeeInTask.push(resEmployee[e].id)
+                }
+                // Loc cac id trung nhau
+                let uniqueEmployeeId = Array.from(new Set(employeeInTask));
+
+                for (let k in uniqueEmployeeId) {
+                    let idEmployee = uniqueEmployeeId[k];
+                    if (data1?.[unitName] && !data1[unitName][idEmployee]) {
+                        data1[unitName][idEmployee] = {}
+                    }
+                    if (data1?.[unitName]?.[idEmployee] && !data1[unitName][idEmployee][result?.[j]]) {
+                        data1[unitName][idEmployee][result[j]] = [];
+                    }
+                    if (data1?.[unitName]?.[idEmployee]) {
+                        data1[unitName][idEmployee][result[j]] = [...data1[unitName][idEmployee][result[j]], tasksOfSelectedUnit[i]];
+                        data1[unitName][idEmployee].name = idEmployee;
+                    }
+                }
             }
-        },
-        {
-            name: "in-process-unit-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+        }
+
+
+        for (let i in listUnit) {
+            let unitName = listUnit?.[i]?.name;
+            if (!Object.keys(data1).includes(unitName)) {
+                dataTable.push({
+                    parent: true,
+                    _id: unitName,
+                    confirmedTask: [],
+                    delayTask: [],
+                    intimeTask: [],
+                    name: unitName,
+                    noneUpdateTask: [],
+                    overdueTask: [],
+                    totalTask: [],
+                    taskFinished: [],
+                    taskInprocess: [],
+                    organization: true,
+                    show: true,
+                });
             }
-        },
-        {
-            name: "task-results-domain-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+            else {
+                let unit = data1[unitName];
+                // chỉ lấy các thuộc tính id, name, startDate, endDate, status, progress
+                const confirmedTask = unit.confirmedTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const delayTask = unit.delayTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const intimeTask = unit.intimeTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const noneUpdateTask = unit.noneUpdateTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const overdueTask = unit.overdueTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const totalTask = unit.totalTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const taskFinished = unit.taskFinished?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                const taskInprocess = unit.taskInprocess?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
+                console.log("unit", confirmedTask)
+                // Thêm số công việc của cả phòng vào mảng dataTable
+                dataTable.push({
+                    parent: true,
+                    _id: unitName,
+                    confirmedTask: confirmedTask ? confirmedTask : [],
+                    delayTask: delayTask ? delayTask : [],
+                    intimeTask: intimeTask ? intimeTask : [],
+                    name: unitName,
+                    noneUpdateTask: noneUpdateTask ? noneUpdateTask : [],
+                    overdueTask: overdueTask ? overdueTask : [],
+                    totalTask: totalTask ? totalTask : [],
+                    taskFinished: taskFinished ? taskFinished : [],
+                    taskInprocess: taskInprocess ? taskInprocess : [],
+                    organization: true,
+                    show: true,
+                });
+                // Thêm số công việc tuwngf nhaan vieen trong phòng vào mảng dataTable
+                for (let key in unit) {
+                    if (unit[key].name) {
+                        dataTable.push({
+                            _id: unit?.[key]?.name,
+                            parent: unitName,
+                            confirmedTask: unit?.[key]?.confirmedTask ? unit[key].confirmedTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            delayTask: unit?.[key]?.delayTask ? unit[key].delayTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            intimeTask: unit?.[key]?.intimeTask ? unit[key].intimeTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            name: listEmployee?.[unit?.[key].name],
+                            noneUpdateTask: unit?.[key]?.noneUpdateTask ? unit[key].noneUpdateTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            overdueTask: unit?.[key]?.overdueTask ? unit[key].overdueTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            totalTask: unit?.[key]?.totalTask ? unit[key].totalTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })) : [],
+                            organization: false,
+                            show: false,
+                        });
+                    }
+                }
+            }
+        }
+
+        resultGeneral = {
+            dataChart: dataTable
+        }
+        result['general-task-chart'] = resultGeneral
+    }
+
+    //data cho gantt chart
+    if (chartArr.includes('gantt-chart')) {
+        let listTask = organizationUnitTasks
+        const tasksOfSelectedUnit = listTask?.filter(x =>
+            organizationalUnitId?.includes(x?.organizationalUnit?._id.toString()))
+
+        let line = 0;
+        let data1 = [];
+        let count = { delay: 0, intime: 0, notAchived: 0 };
+        let taskFilter = [];
+        let status = data["gantt-chart"].status;
+
+        // Lọc công việc theo trạng thái
+        for (let i in status) {
+            for (let j in tasksOfSelectedUnit) {
+                if (tasksOfSelectedUnit[j].status === status[i]) {
+                    taskFilter.push(tasksOfSelectedUnit[j])
+                }
+            }
+        }
+
+        // sắp xếp các công việc theo tên ngươi thực hiện
+        let sortTaskObj = {};
+        for (let i in taskFilter) {
+            let item = taskFilter[i];
+            if (item.responsibleEmployees) {
+                //cong viec 1 nguoi thuc hien
+                if (item.responsibleEmployees.length == 1) {
+                    let employee = item.responsibleEmployees[0].name;
+                    if (!sortTaskObj[employee]) sortTaskObj[employee] = [];
+                    sortTaskObj[employee].push(item)
+                }
+                // cong viec nhieu nguoi thuc hien
+                else {
+                    if (!sortTaskObj.multipleEmployee) sortTaskObj.multipleEmployee = [];
+                    sortTaskObj.multipleEmployee.push(item)
+                }
+            }
+        }
+
+        let dataEmployee;
+        for (let groupName in sortTaskObj) {
+            let label = groupName;
+
+            if (groupName == "multipleEmployee") {
+                label = "Nhiều người thực hiện";
+            }
+            dataEmployee = _getDataGroupByRole(data1, sortTaskObj[groupName], groupName, label, count, line, status)
+            data1 = dataEmployee.data;
+            count = dataEmployee.count;
+            line = dataEmployee.line;
+        }
+
+        let dataAllTask = dataEmployee ? dataEmployee.data : [];
+        let countAllTask = dataEmployee ? dataEmployee.count : {};
+        let lineAllTask = dataEmployee ? dataEmployee.line : {};
+
+        resultGantt = {
+            dataChart: {
+                dataAllTask,
+                countAllTask,
+                lineAllTask
+            }
+        }
+        result["gantt-chart"] = resultGantt
+    }
+
+    //data cho đóng góp công việc 
+    if (chartArr.includes('employee-distribution-chart')) {
+        let dataSearch = data['employee-distribution-chart']
+        let dataSearchDistribution = {
+            ids: organizationalUnitId,
+        }
+        const employeeListDistribution = await UserService.getAllEmployeeOfUnitByIds(portal, dataSearchDistribution)
+
+        let status = dataSearch?.status;
+        let taskListByStatus;
+        let taskListEmployee = [], numOfAccountableTask = [], numOfConsultedTask = [], numOfResponsibleTask = [], numOfInformedTask = [], nameEmployee = [];
+        let accountableEmployees = 0, consultedEmployees = 0, responsibleEmployees = 0, informedEmployees = 0;
+
+        let listEmployee = employeeListDistribution?.employees;
+        if (status) {
+            taskListByStatus = organizationUnitTasks?.filter((task) => {
+                let stt = status;
+                for (let i in stt) {
+                    if (task.status === stt[i])
+                        return true;
+                }
+            })
+        }
+
+        if (listEmployee) {
+            for (let i in listEmployee) {
+                taskListByStatus && taskListByStatus.map(task => {
+                    for (let j in task?.accountableEmployees)
+                        if (listEmployee?.[i]?.userId?._id && listEmployee?.[i]?.userId?._id.toString() == task?.accountableEmployees?.[j].toString()) {
+                            accountableEmployees += 1;
+                        }
+
+                    for (let j in task?.consultedEmployees)
+                        if (listEmployee?.[i]?.userId?._id && listEmployee?.[i]?.userId?._id.toString() == task?.consultedEmployees?.[j].toString()) {
+                            consultedEmployees += 1;
+                        }
+
+                    for (let j in task?.responsibleEmployees)
+                        if (listEmployee?.[i]?.userId?._id && listEmployee?.[i]?.userId?._id.toString() == task?.responsibleEmployees?.[j]._id.toString()) {
+                            responsibleEmployees += 1;
+                        }
+
+                    for (let j in task?.informedEmployees)
+                        if (listEmployee?.[i]?.userId?._id && listEmployee?.[i]?.userId?._id.toString() == task?.informedEmployees?.[j].toString()) {
+                            informedEmployees += 1;
+                        }
+
+                })
+                let employee = {
+                    infor: listEmployee?.[i],
+                    accountableEmployees: accountableEmployees,
+                    consultedEmployees: consultedEmployees,
+                    responsibleEmployees: responsibleEmployees,
+                    informedEmployees: informedEmployees,
+                }
+                taskListEmployee.push(employee);
+                accountableEmployees = 0;
+                consultedEmployees = 0;
+                responsibleEmployees = 0;
+                informedEmployees = 0;
+            }
+        }
+        numOfResponsibleTask.push("numOfResponsibleTask")
+        numOfAccountableTask.push("numOfAccountableTask")
+        numOfConsultedTask.push("numOfConsultedTask")
+        numOfInformedTask.push("numOfInformedTask")
+        for (let i in taskListEmployee) {
+            numOfAccountableTask.push(taskListEmployee?.[i]?.accountableEmployees)
+            numOfConsultedTask.push(taskListEmployee?.[i]?.consultedEmployees)
+            numOfResponsibleTask.push(taskListEmployee?.[i]?.responsibleEmployees)
+            numOfInformedTask.push(taskListEmployee?.[i]?.informedEmployees)
+            nameEmployee.push(taskListEmployee?.[i]?.infor?.userId?.name)
+        }
+
+        let dataChart = {
+            nameEmployee: nameEmployee,
+            taskCount: [numOfResponsibleTask, numOfAccountableTask, numOfConsultedTask, numOfInformedTask],
+            totalEmployee: employeeListDistribution?.totalEmployee,
+        }
+        resultDistribution = {
+            dataChart: dataChart,
+        }
+        result["employee-distribution-chart"] = resultDistribution
+    }
+
+    //data cho tiến độ công việc
+    if (chartArr.includes('in-process-unit-chart')) {
+        let taskList = organizationUnitTasks;
+        let delayed = ['Trễ tiến độ'];
+        let intime = ['Đúng tiến độ'];
+        let notAchived = ['Quá hạn'];
+        if (taskList && taskList.length !== 0) {
+            let selectedUnit = organizationalUnitId;
+            for (let i in selectedUnit) {
+                let delayedCnt = 0, intimeCnt = 0, notAchivedCnt = 0;
+                let currentTime = new Date();
+
+                for (let j in taskList) {
+                    if (taskList[j]?.organizationalUnit?._id.toString() === selectedUnit[i]) {
+                        let startTime = new Date(taskList[j].startDate);
+                        let endTime = new Date(taskList[j].endDate);
+
+                        if (currentTime > endTime && taskList[j].progress < 100) {
+                            notAchivedCnt++; // not achieved
+                        }
+                        else {
+                            let workingDayMin = (endTime - startTime) * taskList[j].progress / 100;
+                            let dayFromStartDate = currentTime - startTime;
+                            let timeOver = workingDayMin - dayFromStartDate;
+                            if (taskList[j].status === 'finished' || timeOver >= 0) {
+                                intimeCnt++;
+                            }
+                            else {
+                                delayedCnt++;
+                            }
+                        }
+                    }
+
+                }
+                delayed.push(delayedCnt);
+                intime.push(intimeCnt);
+                notAchived.push(notAchivedCnt);
+            }
+        }
+        resultInprocess = {
+            dataChart: [
+                delayed,
+                intime,
+                notAchived
+            ],
+        }
+        result['in-process-unit-chart'] = resultInprocess
+        //console.log("resultInprocess", resultInprocess)
+    }
+
+    // data cho domain chart
+    if (chartArr.includes("task-results-domain-chart")) {
+        let dataSearch = data["task-results-domain-chart"]
+        let month = [], maxResults = ["Lớn nhất"], minResults = ["Nhỏ nhất"];
+
+        const period = dayjs(endMonth).diff(startMonth, 'month');
+        let filteredTask;
+        for (let i = 0; i <= period; i++) {
+            let currentMonth = dayjs(startMonth).add(i, 'month').format("YYYY-MM");
+            month = [
+                ...month,
+                dayjs(startMonth).add(i, 'month').format("MM-YYYY"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+            ];
+            filteredTask = _filterTasksByMonthDomainChart(organizationalUnitId, dataSearch, userId, organizationUnitTasks, currentMonth)
+            if (filteredTask) {
+                maxResults.push(filteredTask.max);
+                minResults.push(filteredTask.min)
+            }
+        }
+        month.unshift("x");
+
+        if (month?.length) {
+            resultDomain = {
+                dataChart: [
+                    month,
+                    maxResults,
+                    minResults
+                ],
+            }
+            result["task-results-domain-chart"] = resultDomain
+        }
+
+    }
+    //data cho status chart
+    if (chartArr.includes('task-status-chart')) {
+        let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
+        let taskList = organizationUnitTasks
+        taskList.map(task => {
+            switch (task.status) {
+                case "inprocess":
+                    numberOfInprocess++;
+                    break;
+                case "wait_for_approval":
+                    numberOfWaitForApproval++;
+                    break;
+                case "finished":
+                    numberOfFinished++;
+                    break;
+                case "delayed":
+                    numberOfDelayed++;
+                    break;
+                case "canceled":
+                    numberOfCanceled++;
+                    break;
+            }
+        });
+        dataPieChart = [
+            ["numberOfInprocess", numberOfInprocess],
+            ["numberOfWaitForApproval", numberOfWaitForApproval],
+            ["numberOfFinished", numberOfFinished],
+            ["numberOfDelayed", numberOfDelayed],
+            ["numberOfCanceled", numberOfCanceled],
+        ];
+
+        resultStatus = {
+            dataChart: dataPieChart,
+        }
+        result["task-status-chart"] = resultStatus
+    }
+
+    // data cho average result chart
+    if (chartArr.includes('average-results-chart')) {
+        let dataSearch = data['average-results-chart']
+        let month = ['x'], dataChart = {};
+        let period = dayjs(endMonth).diff(startMonth, 'month');
+        let filteredData;
+        let legend = [];
+        if (unitsNameId && unitsNameId.length !== 0 && organizationalUnitId && organizationalUnitId.length !== 0) {
+            unitsNameId.filter(unit => {
+                return organizationalUnitId.includes(unit.id.toString());
+            }).map(unit => {
+                dataChart[unit.id] = [unit.name];
+                legend = [...legend, unit.name]
+            })
+
+        }
+        for (let i = 0; i <= period; i++) {
+            let currentMonth = dayjs(startMonth).add(i, 'month').format("YYYY-MM");
+            month = [
+                ...month,
+                dayjs(startMonth).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+            ];
+            filteredData = _filterTasksByMonthAverageChart(organizationalUnitId, dataSearch, organizationUnitTasks, currentMonth);
+            if (organizationalUnitId && organizationalUnitId.length !== 0) {
+                organizationalUnitId.map(item => {
+                    dataChart[item] && dataChart[item].push(filteredData[item] || 0)
+                })
+            }
+            resultAverage = {
+                dataChart: [
+                    month,
+                    ...Object.values(dataChart)
+                ],
+                legend,
 
             }
+            result["average-results-chart"] = resultAverage
+            //console.log('resultAverage :>> ', resultAverage);
+        }
+    }
+    if (chartArr.includes('load-task-organization-chart')) {
+        let dataLoadTask = [], month = [], monthArr = []
+        let newData = [];
+        let taskList = organizationUnitTasks
+        if (taskList?.length > 0) {
 
-        },
-        {
-            name: "task-status-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+            let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
+            let endTime = new Date(endMonth.split("-")[0], endMonth.split('-')[1] ? endMonth.split('-')[1] : 1, 1);
+            let m = startMonth.slice(5, 7);
+            let y = startMonth.slice(0, 4);
+            let period = Math.round((endTime - startTime) / 2592000000);
+            let array = [];
+            for (let i = 0; i < period; i++) {
+                month.push(dayjs([y, m].join('-')).format("M-YYYY"));
+                monthArr.push(dayjs([y, m].join('-')).format("YYYY-MM-DD"))
+                m++;
+                array[i] = 0;
+            }
+            for (let i in organizationalUnitId) {
+                dataLoadTask[i] = [];
+                array.fill(0, 0);
+                let findUnit = unitsNameId.find(elem => (elem.id.toString() === organizationalUnitId[i]))
+                if (findUnit) {
+                    dataLoadTask[i].push(findUnit.name);
+                }
 
-            }
-        },
-        {
-            name: "average-results-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+                for (let k in taskList) {
+                    if (taskList[k].organizationalUnit._id.toString() === organizationalUnitId[i]) {
+                        let inprocessDay = 0;
+                        let startDate = new Date(taskList[k].startDate);
+                        let endDate = new Date(taskList[k].endDate);
 
-            }
-        },
-        {
-            name: "load-task-organization-chart",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+                        if (startTime < endDate) {
+                            for (let j = 0; j < period; j++) {
+                                let tmpStartMonth = new Date(parseInt(month[j].split('-')[1]), parseInt(month[j].split('-')[0]) - 1, 1);
+                                let tmpEndMonth = new Date(parseInt(month[j].split('-')[1]), parseInt(month[j].split('-')[0]), 0);
 
+                                if (tmpStartMonth > startDate && tmpEndMonth < endDate) {
+                                    inprocessDay = tmpEndMonth.getDate();
+                                }
+                                // thang dau
+                                else if (tmpStartMonth < startDate && tmpEndMonth > startDate) {
+                                    inprocessDay = tmpEndMonth.getDate() - startDate.getDate();
+                                }
+                                else if (tmpStartMonth < endDate && endDate < tmpEndMonth) {
+                                    inprocessDay = endDate.getDate();
+                                }
+                                else {
+                                    inprocessDay = 0;
+                                }
+                                array[j] += Math.round(inprocessDay /
+                                    (taskList[k].accountableEmployees.length + taskList[k].consultedEmployees.length + taskList[k].responsibleEmployees.length))
+                            }
+
+                        }
+                    }
+
+                }
+
+                dataLoadTask[i] = [...dataLoadTask[i], ...array];
+                newData.push(dataLoadTask[i])
             }
-        },
-        {
-            name: "all-time-sheet-log-by-unit",
-            data: {
-                organizationUnitTasks: organizationUnitTasks,
+
+        }
+        monthArr.unshift("x")
+        newData.unshift(monthArr)
+
+
+        resultLoad = {
+            dataChart: newData,
+            legend: dataLoadTask?.map(item => item[0])
+        }
+        result["load-task-organization-chart"] = resultLoad
+    }
+
+    if (chartArr.includes('all-time-sheet-log-by-unit')) {
+        let dataSearchForAllTimeSheetLogs = {
+            ids: organizationalUnitId,
+        }
+        const employeeListDistribution = await UserService.getAllEmployeeOfUnitByIds(portal, dataSearchForAllTimeSheetLogs)
+        let listEmployee = employeeListDistribution?.employees;
+        let allTimeSheet = []
+        let taskList = organizationUnitTasks
+        if (listEmployee) {
+            for (let i in listEmployee) {
+                if (listEmployee[i] && listEmployee[i].userId && listEmployee[i].userId._id)
+                    allTimeSheet[listEmployee[i].userId._id.toString()] = {
+                        totalhours: 0,
+                        autotimer: 0,
+                        manualtimer: 0,
+                        logtimer: 0,
+                        name: listEmployee[i].userId.name,
+                        userId: listEmployee[i].userId._id.toString()
+                    }
             }
-        },
-    ]
+        }
+
+        let filterTimeSheetLogs = [];
+        taskList && taskList.forEach((o, index) => {
+            let timeSheetLog = o.timesheetLogs
+            if (timeSheetLog?.length > 0) {
+                for (let i in timeSheetLog) {
+                    filterTimeSheetLogs.push(timeSheetLog[i])
+                }
+            }
+        });
+
+        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog && dayjs(o.startedAt).isSameOrAfter(startMonth, 'month') && dayjs(o.stoppedAt).isSameOrBefore(endMonth, 'month'));
+
+        for (let i in filterTimeSheetLogs) {
+            let autoStopped = filterTimeSheetLogs[i].autoStopped;
+            let creator = filterTimeSheetLogs[i].creator;
+
+            if (allTimeSheet[creator]) {
+                if (autoStopped === 1) {
+                    allTimeSheet[creator].manualtimer += filterTimeSheetLogs[i].duration
+                } else if (autoStopped === 2) {
+                    allTimeSheet[creator].autotimer += filterTimeSheetLogs[i].duration
+                } else if (autoStopped === 3) {
+                    allTimeSheet[creator].logtimer += filterTimeSheetLogs[i].duration
+                }
+            }
+        }
+
+        allTimeSheet = Object.entries(allTimeSheet).map(([key, value]) => {
+            if (value.totalhours >= 0) {
+                value.totalhours = value?.manualtimer + value?.logtimer + value?.autotimer;
+            }
+            return value;
+        })
+        let dataChart = {
+            allTimeSheet,
+            filterTimeSheetLogs,
+            employeeLength: listEmployee.length,
+        }
+
+        resultAllTimeSheetLog = {
+            dataChart: dataChart
+        }
+        result['all-time-sheet-log-by-unit'] = resultAllTimeSheetLog
+        //console.log("resultAllTimeSheetLog dataChart", resultAllTimeSheetLog.dataChart)
+    }
+    console.log("result", result)
+    return result
+
+
+
+
+
+}
+_filterTasksByMonthDomainChart = (units, dataSearch, userId, organizationUnitTasks, currentMonth) => {
+    let a = { units, dataSearch, userId, currentMonth }
+    let results = [], maxResult, minResult;
+    const TYPEPOINT = { AUTOMATIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
+    organizationUnitTasks.map(task => {
+        task.evaluations.filter(evaluation => {
+            let evaluatingMonth = dayjs(evaluation.evaluatingMonth).format("YYYY-MM");
+            if (dayjs(currentMonth).isSame(evaluatingMonth)) {
+                return 1;
+            }
+            return 0;
+        }).map(evaluation => {
+            evaluation.results.filter(result => {
+                if (units || (result.employee === userId)) {
+                    return 1;
+                }
+                return 0;
+            }).map(result => {
+                switch (dataSearch.typePoint) {
+                    case TYPEPOINT.AUTOMATIC_POINT:
+                        results.push(result.automaticPoint);
+                        break;
+                    case TYPEPOINT.EMPLOYEE_POINT:
+                        results.push(result.employeePoint);
+                        break;
+                    case TYPEPOINT.APPROVED_POINT:
+                        results.push(result.approvedPoint);
+                        break;
+                }
+
+            });
+        })
+    });
+    if (results.length === 0) {
+        maxResult = null;
+        minResult = null;
+    } else {
+        maxResult = Math.max.apply(Math, results);
+        minResult = Math.min.apply(Math, results);
+    }
+    return {
+        'max': maxResult,
+        'min': minResult
+    };
+}
+
+_filterTasksByMonthAverageChart = (units, dataSearch, organizationUnitTasks, currentMonth) => {
+    const CRITERIA = { NOT_COEFFICIENT: 0, COEFFICIENT: 1 };
+    const TYPEPOINT = { AUTOMATIC_POINT: 0, EMPLOYEE_POINT: 1, APPROVED_POINT: 2 };
+
+    let dataSumPointAndCoefficient = {}, resultAverage = {};
+    let { criteria, typePoint } = dataSearch
+    typePoint = parseInt(typePoint)
+    criteria = parseInt(criteria)
+    if (units && units.length !== 0) {
+        units.map(unit => {
+            dataSumPointAndCoefficient[unit] = {
+                sumAutomaticPointNotCoefficient: 0, sumAutomaticPointCoefficient: 0, sumNotCoefficientAutomatic: 0, sumCoefficientAutomatic: 0,
+                sumEmployeePointNotCoefficient: 0, sumEmployeePointCoefficient: 0, sumNotCoefficientEmployee: 0, sumCoefficientEmployee: 0,
+                sumApprovedPointNotCoefficient: 0, sumApprovedPointCoefficient: 0, sumNotCoefficientApproved: 0, sumCoefficientApproved: 0
+            }
+        })
+    }
+    if (organizationUnitTasks) {
+        organizationUnitTasks.filter(task => {
+            return units.includes((task.organizationalUnit._id).toString())
+
+        }
+        ).map(task => {
+            if (task?.evaluations?.length > 0) {
+                task.evaluations.filter(evaluation => {
+                    let evaluatingMonth = dayjs(evaluation.evaluatingMonth).format("YYYY-MM");
+                    if (dayjs(currentMonth).isSame(evaluatingMonth)) {
+                        return 1;
+                    }
+
+                    return 0;
+                }).map(evaluation => {
+                    if (evaluation.results && evaluation.results.length !== 0) {
+                        evaluation.results.map(result => {
+                            if (task?.organizationalUnit?._id) {
+                                if (criteria === CRITERIA.COEFFICIENT) {
+                                    let totalDay = 0;
+                                    let startEvaluation = evaluation.startDate && new Date(evaluation.startDate);
+                                    let endEvaluation = evaluation.endDate && new Date(evaluation.endDate);
+                                    totalDay = Math.round((endEvaluation?.getTime() - startEvaluation?.getTime()) / 1000 / 60 / 60 / 24);
+
+                                    if (result?.automaticPoint && result?.taskImportanceLevel && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient >= 0
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic >= 0
+                                    ) {
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumAutomaticPointCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient + result?.automaticPoint * result?.taskImportanceLevel * totalDay;
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientAutomatic = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic + result?.taskImportanceLevel * totalDay;
+                                    }
+                                    if (result?.employeePoint && dataSumPointAndCoefficient
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointCoefficient >= 0
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientEmployee >= 0
+                                    ) {
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumEmployeePointCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointCoefficient + result?.employeePoint * result?.taskImportanceLevel * totalDay;
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientEmployee = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientEmployee + result?.taskImportanceLevel * totalDay;
+                                    }
+                                    if (result?.approvedPoint && dataSumPointAndCoefficient
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointCoefficient >= 0
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientApproved >= 0
+                                    ) {
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumApprovedPointCoefficient = dataSumPointAndCoefficient?.[task.organizationalUnit?._id]?.sumApprovedPointCoefficient + result?.approvedPoint * result?.taskImportanceLevel * totalDay;
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientApproved = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientApproved + result?.taskImportanceLevel * totalDay;
+                                    }
+                                } else {
+                                    if (result?.automaticPoint
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointNotCoefficient >= 0
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientAutomatic >= 0
+                                    ) {
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumAutomaticPointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointNotCoefficient + result?.automaticPoint;
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientAutomatic++;
+                                    }
+                                    if (result.employeePoint
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointNotCoefficient >= 0
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientEmployee >= 0
+                                    ) {
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumEmployeePointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit._id]?.sumEmployeePointNotCoefficient + result?.employeePoint;
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientEmployee++;
+                                    }
+                                    if (result.approvedPoint
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointNotCoefficient >= 0
+                                        && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientApproved >= 0
+                                    ) {
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumApprovedPointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointNotCoefficient + result?.approvedPoint;
+                                        dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientApproved++;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                })
+            }
+        });
+    };
+
+    if (units && units.length !== 0) {
+        units.map(unit => {
+            let average;
+            const averageFunction = (sum, coefficient) => {
+                if (coefficient !== 0) {
+                    return sum / coefficient;
+                } else {
+                    return null;
+                }
+            }
+            if (criteria === CRITERIA.COEFFICIENT) {
+                if (dataSumPointAndCoefficient[unit]) {
+                    if (typePoint === TYPEPOINT.AUTOMATIC_POINT) {
+                        average = averageFunction(dataSumPointAndCoefficient[unit].sumAutomaticPointCoefficient, dataSumPointAndCoefficient[unit].sumCoefficientAutomatic);
+                    } else if (typePoint === TYPEPOINT.APPROVED_POINT) {
+                        average = averageFunction(dataSumPointAndCoefficient[unit].sumApprovedPointCoefficient, dataSumPointAndCoefficient[unit].sumCoefficientApproved);
+                    } else if (typePoint === TYPEPOINT.EMPLOYEE_POINT) {
+                        average = averageFunction(dataSumPointAndCoefficient[unit].sumEmployeePointCoefficient, dataSumPointAndCoefficient[unit].sumCoefficientEmployee)
+                    }
+                }
+
+                resultAverage[unit] = average;
+            } else {
+                if (dataSumPointAndCoefficient[unit]) {
+                    if (typePoint === TYPEPOINT.AUTOMATIC_POINT) {
+                        average = averageFunction(dataSumPointAndCoefficient[unit].sumAutomaticPointNotCoefficient, dataSumPointAndCoefficient[unit].sumNotCoefficientAutomatic);
+                    } else if (typePoint === TYPEPOINT.APPROVED_POINT) {
+                        average = averageFunction(dataSumPointAndCoefficient[unit].sumApprovedPointNotCoefficient, dataSumPointAndCoefficient[unit].sumNotCoefficientApproved);
+                    } else if (typePoint === TYPEPOINT.EMPLOYEE_POINT) {
+                        average = averageFunction(dataSumPointAndCoefficient[unit].sumEmployeePointNotCoefficient, dataSumPointAndCoefficient[unit].sumNotCoefficientEmployee);
+                    }
+                }
+
+                resultAverage[unit] = average;
+            }
+        })
+    }
+    let object = { ...resultAverage }
+    return {
+        ...resultAverage
+    }
+}
+
+_getDataGroupByRole = (data, group, groupName, label, count, line, status) => {
+    let taskFilter = [];
+    let parentCount = 0, currentParent = -1;
+    let splitTask = {};
+
+    for (let i in status) {
+        for (let j in group) {
+            if (group[j].status === status[i]) {
+                taskFilter.push(group[j])
+            }
+        }
+    }
+
+    // split task
+    if (taskFilter[0]) splitTask[0] = [taskFilter[0]];
+
+    for (let i in taskFilter) {
+        let left = dayjs(taskFilter[i].startDate);
+        let right = dayjs(taskFilter[i].endDate);
+        let intersect;
+
+        if (i == 0) continue;
+        for (let parent in splitTask) {
+            let currentLine = splitTask[parent];
+
+            for (let j in currentLine) {
+                // Kiem tra xem co trung cong viec nao k
+                intersect = false;
+                let currentLeft = dayjs(currentLine[j].startDate);
+                let currentRight = dayjs(currentLine[j].endDate);
+
+                if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
+                    intersect = true;
+                    break;
+                }
+            }
+
+            if (!intersect) {
+                splitTask[parent].push(taskFilter[i]);
+                break;
+            }
+        }
+        if (intersect) {
+            let nextId = Object.keys(splitTask).length;
+
+            splitTask[nextId] = [];
+            splitTask[nextId].push(taskFilter[i])
+        }
+    }
+
+    let taskFilterSplit = [];
+    for (let key in splitTask) {
+        if (splitTask[key]) {
+            for (let i in splitTask[key]) {
+                if (splitTask[key][i]) {
+                    splitTask[key][i].parentSplit = parseInt(key);
+                    taskFilterSplit.push(splitTask[key][i]);
+                }
+            }
+        }
+    }
+
+    for (let i in taskFilterSplit) {
+        let start = dayjs(taskFilterSplit[i].startDate);
+        let end = dayjs(taskFilterSplit[i].endDate);
+        let now = dayjs(new Date());
+        let duration = end.diff(start, 'day');
+        if (duration == 0) duration = 1;
+        let process = 0;
+
+        // Tô màu công việc
+        if (taskFilterSplit[i].status != "inprocess") {
+            process = 3;
+        }
+        else if (now > end) {
+            process = 2; // Quá hạn
+            count.notAchived++;
+        }
+        else {
+            let processDay = Math.floor(taskFilterSplit[i].progress * duration / 100);
+            let uptonow = now.diff(start, 'days');
+
+            if (uptonow > processDay) {
+                process = 0; // Trễ hạn
+                count.delay++;
+            }
+            else if (uptonow <= processDay) {
+                process = 1; // Đúng hạn
+                count.intime++;
+            }
+        }
+        if (taskFilterSplit[i].parentSplit != currentParent) {
+
+            data.push({
+                id: `${groupName}-${taskFilterSplit[i].parentSplit}`,
+                text: "",
+                role: i == 0 ? label : "",
+                start_date: null,
+                duration: null,
+                render: "split"
+            });
+            currentParent++;
+            line++;
+        }
+
+        data.push({
+            id: `${groupName}-${taskFilterSplit[i]._id}`,
+            text: taskFilterSplit[i].status == "inprocess" ? `${taskFilterSplit[i].name} - ${taskFilterSplit[i].progress}%` : `${taskFilterSplit[i].name}`,
+            start_date: dayjs(taskFilterSplit[i].startDate).format("YYYY-MM-DD HH:mm"),
+            // duration: duration,
+            end_date: dayjs(taskFilterSplit[i].endDate).format("YYYY-MM-DD HH:mm"),
+            progress: taskFilterSplit[i].status === "inprocess" ? taskFilterSplit[i].progress / 100 : 0,
+            process: process,
+            parent: `${groupName}-${taskFilterSplit[i].parentSplit}`
+        });
+    }
+
+    return { data, count, line };
+}
+_countTask = (tasklist, name) => {
+    let confirmedTask = [], noneUpdateTask = [], intimeTask = [], delayTask = [], overdueTask = [], taskFinished = [], taskInprocess = [];
+
+    for (let i in tasklist) {
+        let start = dayjs(tasklist[i]?.startDate);
+        let end = dayjs(tasklist[i]?.endDate);
+        let lastUpdate = dayjs(tasklist[i]?.updatedAt);
+        let now = dayjs(new Date());
+        let duration = end.diff(start, 'day');
+        let uptonow = now.diff(lastUpdate, 'day');
+        if (tasklist[i]?.confirmedByEmployees?.length) {
+            confirmedTask = [...confirmedTask, tasklist[i]];
+        }
+        if (uptonow >= 7) {
+            noneUpdateTask = [...noneUpdateTask, tasklist[i]];
+        }
+        if (tasklist[i]?.status === 'inprocess') {
+            if (now > end) {
+                // Quá hạn
+                overdueTask = [...overdueTask, tasklist[i]];
+            }
+            else {
+                let processDay = Math.floor(tasklist[i]?.progress * duration / 100);
+                let startToNow = now.diff(start, 'day');
+
+                if (startToNow > processDay) {
+                    // Trễ hạn
+                    delayTask = [...delayTask, tasklist[i]];
+                }
+                else if (startToNow <= processDay) {
+                    // Đúng hạn
+                    intimeTask = [...intimeTask, tasklist[i]];
+                }
+            }
+        }
+        if (tasklist[i] && tasklist[i].status === "finished") {
+            taskFinished = [...taskFinished, tasklist[i]];
+        }
+        if (tasklist[i] && tasklist[i].status === "inprocess") {
+            taskInprocess = [...taskInprocess, tasklist[i]];
+        }
+    }
+    return {
+        name: name ? name : "",
+        totalTask: tasklist,
+        confirmedTask,
+        noneUpdateTask,
+        intimeTask,
+        delayTask,
+        overdueTask,
+        taskFinished,
+        taskInprocess,
+        organization: true,
+        show: true,
+    }
+}
+
+_processTask = (task) => {
+    let propNames = ['totalTask'];
+    let start = dayjs(task?.startDate);
+    let end = dayjs(task?.endDate);
+    let lastUpdate = dayjs(task?.updatedAt);
+    let now = dayjs(new Date());
+    let duration = end.diff(start, 'day');
+    let uptonow = now.diff(lastUpdate, 'day');
+    if (task?.confirmedByEmployees?.length) {
+        propNames.push('confirmedTask');
+    }
+    if (uptonow >= 7) {
+        propNames.push('noneUpdateTask');
+    }
+    if (task?.status === 'inprocess') {
+        if (now > end) {
+            // Quá hạn
+            propNames.push('overdueTask');
+        }
+        else {
+            let processDay = Math.floor(task?.progress * duration / 100);
+            let startToNow = now.diff(start, 'day');
+
+            if (startToNow > processDay) {
+                // Trễ hạn
+                propNames.push('delayTask');
+            }
+            else if (startToNow <= processDay) {
+                // Đúng hạn
+                propNames.push('intimeTask');
+            }
+        }
+    }
+
+    if (task && task.status === "finished") {
+        propNames.push('taskFinished');
+    }
+    if (task && task.status === "inprocess") {
+        propNames.push('taskInprocess');
+    }
+    return propNames
 
 }
 
-_getAllUsersInOrganizationalUnits = async (portal, data) => {
-    var userArray = [];
-    for (let i = 0; i < data.length; i++) {
-        var department = data[i];
-        if (department) {
-            var userRoles = await UserRole(connect(DB_CONNECTION, portal))
-                .find({
-                    roleId: {
-                        $in: [
-                            ...department.managers,
-                            ...department.deputyManagers,
-                            ...department.employees,
-                        ],
-                    },
-                })
-                .populate({
-                    path: "userId",
-                    select: "name",
-                });
 
-            var tmp = await Role(connect(DB_CONNECTION, portal)).find(
-                {
-                    _id: {
-                        $in: [
-                            ...department.managers,
-                            ...department.deputyManagers,
-                            ...department.employees,
-                        ],
-                    },
-                },
-                {
-                    name: 1,
+_freshListEmployee = (listEmployee) => {
+    let arr = [];
+    let result = [];
+    listEmployee && listEmployee.forEach((x, index) => {
+        if (x.managers) {
+            for (const [key, value] of Object.entries(x.managers)) {
+                if (value.members && value.members.length > 0) {
+                    value.members.forEach((o) => {
+                        arr = [...arr, o];
+                    });
                 }
-            );
-            var users = {
-                managers: {},
-                deputyManagers: {},
-                employees: {},
-                department: department.name,
-                id: department.id,
-            };
-            tmp.forEach((item) => {
-                let obj = {};
-                obj._id = item.id;
-                obj.name = item.name;
-                obj.members = [];
-
-                if (department.managers.includes(item._id.toString())) {
-                    users.managers[item._id.toString()] = obj;
-                } else if (department.deputyManagers.includes(item._id.toString())) {
-                    users.deputyManagers[item._id.toString()] = obj;
-                } else if (department.employees.includes(item._id.toString())) {
-                    users.employees[item._id.toString()] = obj;
-                }
-            });
-
-            userRoles.forEach((item) => {
-                if (users.managers[item.roleId.toString()] && item.userId) {
-                    users.managers[item.roleId.toString()].members.push(item.userId);
-                } else if (users.deputyManagers[item.roleId.toString()] && item.userId) {
-                    users.deputyManagers[item.roleId.toString()].members.push(
-                        item.userId
-                    );
-                } else if (users.employees[item.roleId.toString()] && item.userId) {
-                    users.employees[item.roleId.toString()].members.push(
-                        item.userId
-                    );
-                }
-            });
-
-            userArray.push(users);
+            }
         }
-    }
-    return userArray;
-};
+
+        if (x.deputyManagers) {
+            for (const [key, value] of Object.entries(x.deputyManagers)) {
+                if (value.members && value.members.length > 0) {
+                    value.members.forEach((o) => {
+                        arr = [...arr, o];
+                    });
+                }
+            }
+        }
+
+        if (x.employees) {
+            for (const [key, value] of Object.entries(x.employees)) {
+                if (value.members && value.members.length > 0) {
+                    value.members.forEach((o) => {
+                        arr = [...arr, o];
+                    });
+                }
+            }
+        }
+
+        // Lọc các nhân viên trùng nhau sau khi thực hiện ở trên
+        // vì 1 nhân viên có thể có nhiều chức ở các đơn vị khác nhau nên chỉ lọc lấy 1 cái
+        const seen = new Set();
+        const filteredArr = arr.filter((el) => {
+            const duplicate = seen.has(el._id);
+            seen.add(el._id);
+            return !duplicate;
+        });
+        result = [...filteredArr];
+    })
+    return result;
+}

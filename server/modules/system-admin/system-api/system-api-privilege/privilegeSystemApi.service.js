@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 
-const { PrivilegeApi, Company } = require(`../../../../models`);
+const { PrivilegeApi, Company, SystemApi } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 
 const getPrivilegeApis = async (portal, data) => {
@@ -86,6 +86,17 @@ const createPrivilegeApi = async (data) => {
         };
     } 
 
+    let systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+        .find({
+            _id: { $in: apis }
+        })
+    systemApis = systemApis.map(item => {
+        return {
+            path: item.path,
+            method: item.method
+        }
+    })
+
     if (role === 'system_admin' || role === 'admin') {
         // set time token
         let expiresIn = 0;
@@ -108,13 +119,14 @@ const createPrivilegeApi = async (data) => {
                 expiresIn: expiresIn 
             }
         );
+        console.log("role", role)
     
         if (role === 'system_admin') {
             // Them vao csdl system admin
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({
                     email: email,
-                    apis: apis,
+                    apis: systemApis,
                     company: companyId,
                     status: 3,
                     token: token,
@@ -128,7 +140,7 @@ const createPrivilegeApi = async (data) => {
             await PrivilegeApi(connect(DB_CONNECTION, company.shortName))
                 .create({
                     email: email,
-                    apis: apis,
+                    apis: systemApis,
                     company: companyId,
                     status: 3,
                     token: token,
@@ -139,7 +151,7 @@ const createPrivilegeApi = async (data) => {
             privilege = await PrivilegeApi(connect(DB_CONNECTION, company.shortName))
                 .create({
                     email: email,
-                    apis: apis,
+                    apis: systemApis,
                     company: companyId,
                     status: 3,
                     token: token,
@@ -156,7 +168,7 @@ const createPrivilegeApi = async (data) => {
                 email: email,
                 name: name,
                 description: description,
-                apis: apis,
+                apis: systemApis,
                 company: companyId,
                 status: 1,
                 startDate: startDate && new Date(startDate),

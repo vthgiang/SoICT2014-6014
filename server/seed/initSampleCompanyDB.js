@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Terms = require("../helpers/config");
+const linksPermission = require("../middleware/servicesPermission").links
 
 const {
     Component,
@@ -18,6 +19,7 @@ const {
     RootRole,
     SystemLink,
     SystemComponent,
+    SystemApi,
 
     Employee,
     Salary,
@@ -969,6 +971,8 @@ const initSampleCompanyDB = async () => {
                 path: "roles",
             });
 
+        let checkAllSystemApi = false
+        let dataApis = []
         let dataLinks = allLinks.map((link) => {
             if (checkIndex(link, activeLinks) === -1)
                 return {
@@ -977,6 +981,22 @@ const initSampleCompanyDB = async () => {
                     description: link.description,
                 };
             else
+                if (!checkAllSystemApi) {
+                    let url = linksPermission.filter(item => item.url === link.url)?.[0]
+                    if (url?.apis?.length === 1 && url.apis[0] === '@all') {
+                        checkAllSystemApi = true
+                    } else {
+                        if (url?.apis?.length > 0) {
+                            url.apis.map(api => {
+                                checkDuplicate = dataApis.filter(item => item.path === api.path && item.method === api.method)
+                                if (checkDuplicate?.length === 0) {
+                                    dataApis.push(api)
+                                }
+                            })
+                        }
+                    }
+                }
+                
                 return {
                     url: link.url,
                     category: link.category,
@@ -984,6 +1004,30 @@ const initSampleCompanyDB = async () => {
                     deleteSoft: false,
                 };
         });
+
+        if (checkAllSystemApi) {
+            let systemApis = await SystemApi(systemDB).find()
+            await Company(systemDB).update(
+                { shortName: 'vnist' },
+                {
+                    $set: {
+                        apis: systemApis.map(item => item._id)
+                    }
+                }
+            )
+        } else {
+            dataApis.map(async (item) => {
+                let systemApi = await SystemApi(systemDB).findOne({path: item.path, method: item.method})
+                await Company(systemDB).update(
+                    { shortName: 'vnist' },
+                    {
+                        $push: {
+                            apis: systemApi._id
+                        }
+                    }
+                )
+            })
+        }
 
         let links = await Link(vnistDB).insertMany(dataLinks);
 

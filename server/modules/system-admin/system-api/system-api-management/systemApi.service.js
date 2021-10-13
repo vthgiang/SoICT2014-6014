@@ -1,6 +1,7 @@
 const { SystemApi, Company, Api } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const getSystemApis = async (data) => {
     const { path, method, description, page = 1, perPage = 30 } = data
@@ -134,6 +135,8 @@ const updateSystemApiAutomatic = async (app) => {
     }
 
     app._router.stack.forEach(print.bind(null, []))
+
+    // fs.writeFileSync("middleware/systemApi.json", JSON.stringify(routes));
 }
 
 /** Chinh sua API */
