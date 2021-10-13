@@ -502,11 +502,9 @@ function TaskManagement(props) {
         let idValid = tasks?.tasks ? tasks.tasks.some(t => t._id === id) : null;
 
         if (id && idValid) {
-            setState(state => {
-                return {
+            setState({
                     ...state,
                     currentTaskId: id
-                }
             })
             window.$(`#modelPerformTask${id}`).modal('show')
         }
