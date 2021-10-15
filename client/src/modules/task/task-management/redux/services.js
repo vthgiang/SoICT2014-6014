@@ -378,13 +378,17 @@ function editTask(taskId, newTask) {
 
 /**
  * xóa công việc theo id
- * @param {*} id id công việc 
+ * @param {*} taskId id công việc 
  */
 
 function deleteTaskById(taskId) {
+    let id = getStorage("userId")
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}`,
         method: 'DELETE',
+        params: {
+            userId: id,
+        }
     }, true, true, 'task.task_management');
 }
 
@@ -497,6 +501,7 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
 }
 
 function importTasks(data) {
+    console.log('data', data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/import`,
         method: 'POST',
@@ -505,13 +510,10 @@ function importTasks(data) {
 }
 
 function getOrganizationTaskDashboardChart(data) {
+
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/task-dashboard`,
+        url: `${process.env.REACT_APP_SERVER}/task/organization-task-dashboard-chart-data`,
         method: 'GET',
-        params: {
-            organizationalUnitId: data.organizationalUnitId,
-            startMonth: data.startMonth,
-            endMonth: data.endMonth
-        }
+        params: data
     }, false, true, 'task.task_management');
 }

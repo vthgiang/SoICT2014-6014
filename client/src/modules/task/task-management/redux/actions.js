@@ -614,6 +614,8 @@ function importTasks(data) {
                 })
             })
             .catch(err => {
+                console.log("error", err)
+                console.log("errordata", err?.response?.data)
                 dispatch({
                     type: taskManagementConstants.IMPORT_TASKS_FAILURE,
                     error: err?.response?.data?.content
@@ -624,7 +626,8 @@ function importTasks(data) {
 function getOrganizationTaskDashboardChart(data) {
     return dispatch => {
         dispatch({
-            type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST
+            type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST,
+            chartNameArr: Object.keys(data),
         });
 
         taskManagementService.getOrganizationTaskDashboardChart(data)

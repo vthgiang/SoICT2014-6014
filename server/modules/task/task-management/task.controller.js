@@ -675,11 +675,11 @@ exports.createProjectTasksFromCPM = async (req, res) => {
 }
 
 /**
- *  Xóa một công việc đã thiết lập
+ *  Xóa một hoặc nhiều công việc đã thiết lập
  */
 exports.deleteTask = async (req, res) => {
     try {
-        TaskManagementService.deleteTask(req.portal, req.params.taskId);
+        TaskManagementService.deleteTask(req.portal, req.params.taskId,req.query.userId);
 
         await Logger.info(req.user.email, 'delete_task', req.portal)
         res.status(200).json({
@@ -1070,20 +1070,72 @@ getTasksByProject = async (req, res) => {
 
 exports.importTasks = async (req, res) => {
     try {
-        let data;
-        if (req?.body?.importType === "task_info") {
-            data = await TaskManagementService.importTasks(req.body?.importData, req.portal, req.user);
-        } 
-        if (req?.body?.importType === "task_actions") {
-            data = await TaskManagementService.importTaskActions(req.body?.importData, req.portal, req.user);
+        let data = {}, dataUpdate = {};
+        const { importData, importType } = req.body;
+
+        let checkImport;
+        if (importType === "import_tasks" && importData?.valueImport?.length) {
+            checkImport = await TaskManagementService.checkImportTasks(req.body?.importData?.valueImport, req.portal, req.user);
+        }
+        let checkImportUpdate;
+        if (importType === "import_update_task_info" && importData?.valueImport?.length) {
+            checkImportUpdate = await TaskManagementService.checkImportUpdateTasks(req.body?.importData?.valueImport, req.portal, req.user);
         }
 
-        await Logger.info(req.user.email, 'import_task_success', req.portal)
-        res.status(200).json({
-            success: true,
-            messages: ['import_task_success'],
-            content: data
-        })
+        if (importType === "import_tasks") {
+            if (checkImport?.data?.length && (!checkImport?.rowError || checkImport?.rowError?.length === 0)) {
+                await TaskManagementService.importTasks(checkImport.data, req.portal, req.user);
+
+                if (importData?.valueImportTaskActions?.length) {
+                    await TaskManagementService.importTaskActions(req.body?.importData?.valueImportTaskActions, req.portal, req.user);
+                }
+
+                if (importData?.valueImportTaskTimesheetLog?.length) {
+                    await TaskManagementService.importTimeSheetLogs(req.body?.importData?.valueImportTaskTimesheetLog, req.portal, req.user);
+                }
+
+                await Logger.info(req.user.email, 'import_task_success', req.portal);
+                res.status(200).json({
+                    success: true,
+                    messages: ['import_task_success'],
+                    content: []
+                })
+
+            } else {
+                // return lỗi về client
+                data = { ...checkImport }
+
+                await Logger.error(req.user.email, 'import_task_faile', req.portal);
+                res.status(400).json({
+                    success: false,
+                    messages: ["import_task_faile"],
+                    content: data
+                });
+            }
+        }
+
+        // trường hợp update import.
+        if (importType === "import_update_task_info") {
+            if (checkImportUpdate?.data?.length && (!checkImportUpdate?.rowError || checkImportUpdate?.rowError?.length === 0)) {
+                dataUpdate = await TaskManagementService.importUpdateTasks(checkImportUpdate.data, req.portal, req.user);
+                await Logger.info(req.user.email, 'import_task_success', req.portal);
+                res.status(200).json({
+                    success: true,
+                    messages: ['import_task_success'],
+                    content: []
+                })
+            } else {
+                // return lỗi về client
+                dataUpdate = { ...checkImportUpdate }
+
+                await Logger.error(req.user.email, 'import_update_task_faile', req.portal);
+                res.status(400).json({
+                    success: false,
+                    messages: ["import_update_task_faile"],
+                    content: dataUpdate
+                });
+            }
+        }
     } catch (error) {
         console.log('errror', error)
         await Logger.error(req.user.email, 'import_task_faile', req.portal)
@@ -1094,6 +1146,8 @@ exports.importTasks = async (req, res) => {
         })
     }
 }
+
+
 exports.getOrganizationTaskDashboardChartData = async (req, res) => {
     try {
         const data = await TaskManagementService.getOrganizationTaskDashboardChartData(req.query, req.portal, req.user);

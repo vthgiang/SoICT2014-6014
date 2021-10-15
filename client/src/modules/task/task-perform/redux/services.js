@@ -520,7 +520,7 @@ function editArchivedOfTask(taskId) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
-            type: 'edit_archived'
+            type: 'edit_archived',
         }
     }, true, true, 'task.task_management');
 }

@@ -1564,8 +1564,8 @@ export default {
                 import_annual_leave_success: "Add data from file success",
                 import_annual_leave_faile: "Add data from file faile",
 
-                request_to_change_annualeave_success:"Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
-                request_to_change_annualeave_faile:"Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
+                request_to_change_annualeave_success: "Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
+                request_to_change_annualeave_faile: "Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -2607,8 +2607,10 @@ export default {
                 other: "Other",
 
                 //Thông điệp trả về từ server
-                get_asset_group_success:"Get asset group successfully",
-                get_asset_group_fail:"Get asset group fail",
+                get_asset_group_success: "Get asset group successfully",
+                get_asset_group_fail: "Get asset group fail",
+                get_asset_statistic_success: "Get asset statistic successfully",
+                get_asset_statistic_fail: "Get asset statistic fail",
                 get_list_asset_success: "Get list asset successfully",
                 get_list_asset_faile: "Get list asset faile",
                 create_asset_success: "Create asset successfully",
@@ -2830,6 +2832,7 @@ export default {
                 create_task_success: "Create new task succesfully",
                 delete_success: "Delete task successfully",
                 edit_status_of_task_success: "Edit status of task successfully",
+                edit_status_archived_of_task: "Change archived status",
                 edit_status_archived_of_task_success:
                     "Edit archived status of task successfully",
                 get_task_dashboard_data_success: "Get task dashboard data success",
@@ -3226,6 +3229,9 @@ export default {
 
                 project: 'Project name (if you have)',
 
+                //dashboard cv đơn vị
+                type_of_point: "Type of point",
+                criteria: "Criteria",
                 load_task: "Load task",
                 time: "Time",
                 load_task_chart: "Dashboard load task",
@@ -4078,6 +4084,22 @@ export default {
                     result: "Result",
                     approve: "Approve",
                     evaluate: "Evaluate",
+                },
+
+                kpi_organizational_unit_manager: {
+                    index: "Index",
+                    time: "Date",
+                    employee_name: "Employee Name",
+                    target_number: "Target Number",
+                    kpi_status: "KPI Status",
+                    result: "Result",
+                    approve: "Approve",
+                    evaluate: "Evaluate",
+                    target_name: "Target Name",
+                    creator: "Creator",
+                    organization_unit: "Organization Unit",
+                    criteria: "Criteria",
+                    no_data: "No data",
                 },
 
                 create_organizational_unit_kpi_set_modal: {

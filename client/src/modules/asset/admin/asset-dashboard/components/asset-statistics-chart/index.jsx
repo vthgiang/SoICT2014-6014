@@ -7,6 +7,7 @@ import { AssetService } from '../../../asset-information/redux/services';
 import { StautsChart } from './stautsChart';
 import { CostChart } from './costChart';
 import { AssetTypeService } from '../../../asset-type/redux/services';
+import { AssetManagerActions } from '../../../asset-information/redux/actions';
 
 class AssetStatistics extends Component {
 
@@ -37,7 +38,9 @@ class AssetStatistics extends Component {
         }).catch(err => {
             console.log(err);
         });
-
+        this.props.getAllAssetGroup()
+        this.props.getAllAssetStatistic()
+        console.log("props",this.props)
         AssetTypeService.getAssetTypes().then(res => {
             if (res.data.success) {
                 this.setState({ assetType: res.data.content.list })
@@ -103,8 +106,9 @@ class AssetStatistics extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate ,chartAsset,statisticAsset} = this.props;
         const { listAssets, assetType } = this.state;
+        console.log("statisticAsset",statisticAsset)
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -120,6 +124,7 @@ class AssetStatistics extends Component {
                                         assetType={assetType}
                                         listAssets={listAssets}
                                         getAssetStatusData={this.getAssetStatusData}
+                                        statisticAsset = {this.props.statisticAsset.dataStatusOfAsset}
                                     />
                                 </div>
                             </div>
@@ -136,6 +141,7 @@ class AssetStatistics extends Component {
                                         assetType={assetType}
                                         listAssets={listAssets}
                                         getAssetCostData={this.getAssetCostData}
+                                        statisticAsset = {this.props.statisticAsset.dataCostOfAsset}
                                     />
                                 </div>
                             </div>
@@ -149,8 +155,12 @@ class AssetStatistics extends Component {
 
 function mapState(state) {
     const { assetType } = state;
-    return { assetType };
+    const { chartAsset,statisticAsset } = state.assetsManager;
+    return { assetType ,chartAsset,statisticAsset};
 }
-
-const AssetStatisticsConnect = connect(mapState)(withTranslate(AssetStatistics));
+const mapDispatchToProps = {
+    getAllAssetGroup : AssetManagerActions.getAllAssetGroup,
+    getAllAssetStatistic :AssetManagerActions.getAllAssetStatistic
+}
+const AssetStatisticsConnect = connect(mapState,mapDispatchToProps)(withTranslate(AssetStatistics));
 export { AssetStatisticsConnect as AssetStatistics };

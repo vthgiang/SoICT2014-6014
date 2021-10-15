@@ -1662,8 +1662,8 @@ export default {
                 import_annual_leave_success: "Thêm dữ liệu từ file thành công",
                 import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
 
-                request_to_change_annualeave_success:"Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
-                request_to_change_annualeave_faile:"Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
+                request_to_change_annualeave_success: "Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
+                request_to_change_annualeave_faile: "Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
 
                 employee_invalid: 'Tài khoản chưa đăng ký thông tin nhân viên. Vui lòng kiểm tra lại',
             },
@@ -2779,8 +2779,10 @@ export default {
                 other: "Khác",
 
                 //Thông điệp trả về từ server
-                get_asset_group_success:"Lấy thông tin nhóm tài sản thành công",
-                get_asset_group_fail:"Lấy thông tin nhóm tài sản thất bại",
+                get_asset_group_success: "Lấy thông tin nhóm tài sản thành công",
+                get_asset_group_fail: "Lấy thông tin nhóm tài sản thất bại",
+                get_asset_statistic_success: "Lấy thông tin trạng thái và giá trị tài sản thành công",
+                get_asset_statistic_fail: "Lấy thông tin trạng thái và giá trị tài sản thất bại",
                 get_list_asset_success: "Lấy thông tin tài sản thành công",
                 get_list_asset_faile: "Lấy thông tin tài sản thất bại",
                 create_asset_success: "Thêm tài sản thành công",
@@ -3051,6 +3053,7 @@ export default {
                 delete_success: "Xóa công việc thành công",
                 edit_status_of_task_success:
                     "Chỉnh sửa trạng thái công việc thành công",
+                edit_status_archived_of_task: "Thay đổi trạng thái lưu kho",
                 edit_status_archived_of_task_success:
                     "Chỉnh sửa trạng thái lưu kho của công việc thành công",
 
@@ -3459,12 +3462,18 @@ export default {
                 warning_minutes: "phút",
 
                 project: 'Thuộc dự án (nếu có)',
+
+                //dashboard cv đơn vị
+                type_of_point: "Loại điểm",
+                criteria: "Tiêu chí",
                 load_task: "Tải công việc",
                 time: "Thời gian",
                 load_task_chart: "Tải công việc cá nhân",
                 load_task_chart_unit: "Tải công việc đơn vị",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
+
+
             },
             task_perform: {
                 actions: "Hoạt động",

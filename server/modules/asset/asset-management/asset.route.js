@@ -15,7 +15,8 @@ const data = [{
 
 /* Tài sản */
 router.get('/assets', auth, AssetController.searchAssetProfiles);
-router.get('/assets_group', auth, AssetController.chartAssetGroup);
+router.get('/assets-group', auth, AssetController.getAssetGroupChart);
+router.get('/assets-statistic', auth, AssetController.getAssetStatisticChart);
 router.post('/assets', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 router.patch('/assets/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
 router.delete('/assets', auth, AssetController.deleteAsset);
