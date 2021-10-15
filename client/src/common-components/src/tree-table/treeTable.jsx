@@ -1,4 +1,5 @@
-import React, { useState,useEffect,useRef } from 'react';
+import React, { useState,useRef } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import './treeTable.css';
@@ -16,9 +17,8 @@ function TreeTable(props) {
 
     let columnArr = column?.map(col => col.name);
     if (allowSelectAll) columnArr.unshift('selectAll');
-    let rawData = data.map(o => o.rawData);
 
-    useEffect(() => {
+    useDeepCompareEffect(() => {
         if (allowSelectAll) {
             // Cho phép sử dụng shift chọn nhiều check box
             window.$(`#${tableId}`).checkboxes('range', true);
@@ -51,7 +51,7 @@ function TreeTable(props) {
         if (props.data !== null && props.behaviour === "hide-children") {
             addScriptTreeTable(false);
         }
-    }, [JSON.stringify(rawData)]);
+    }, [data.map(o => o.rawData)]);
 
     /**
      * Function thêm script cho tree table
@@ -368,7 +368,7 @@ function TreeTable(props) {
 
         }
 
-        if (results?.length === props.data?.length && results?.length >0 ) {
+        if (results?.length === props.data?.length && results?.length > 0 ) {
             setState(state => {
                 return {
                     ...state,
@@ -414,7 +414,7 @@ function TreeTable(props) {
                     <tr id="tree" key={`tree-table-head-${tableId}`}>
                         {allowSelectAll &&
                             <th className="col-fixed not-sort" style={{ width: 45 }}>
-                                <input type='checkbox' checked={checkAll && data.length} onChange={() => handleCheckAll()}></input>
+                                <input type='checkbox' checked={checkAll && data.length > 0} onChange={() => handleCheckAll()}></input>
                             </th>
                         }
                         {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
@@ -475,15 +475,9 @@ function mapState(state) {
 }
 
 function areEqual(prevProps, nextProps) {
-    let result = true;
-    if (nextProps.data) {
-        if (nextProps.data.length !== prevProps.data.length) result = false;
-        else for (let i = 0; i < nextProps.data.length; i++) {
-            if (!_isEqual(nextProps.data[i].rawData, prevProps.data[i].rawData)) result = false;
-                break;
-            }
-        }
-    return result;
+    let prevData = prevProps.data.map(o => o.rawData);
+    let nextData = nextProps.data.map(o => o.rawData);
+    return _isEqual(prevData,nextData);
 }
 
 const treeTable = React.memo(connect(mapState, null)(withTranslate(TreeTable)),areEqual);
