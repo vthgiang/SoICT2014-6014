@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { FieldsActions } from '../../field/redux/actions';
-
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 import { CustomLegendC3js } from '../../../../common-components/index';
 
@@ -39,7 +37,6 @@ class QualificationChart extends Component {
      * @param {*} value : chế độ xem biểu đồ (true or false)
      */
     handleChangeViewChart = (value) => {
-        this.props.getListFields();
         this.setState({
             ...this.state,
             typeChart: value
@@ -90,12 +87,12 @@ class QualificationChart extends Component {
         await this.props.searchSalary({ callApiDashboard: true, month: month });
     }
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.organizationalUnits !== prevState.organizationalUnits || !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
-            !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
+        if (nextProps.organizationalUnits !== prevState.organizationalUnits || !QualificationChart.isEqual(nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits, prevState.listAllEmployees) ||
+            !QualificationChart.isEqual(nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
             return {
                 organizationalUnits: nextProps.organizationalUnits,
-                listAllEmployees: nextProps.employeesManager.listAllEmployees,
-                listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
+                listAllEmployees: nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits,
+                listEmployeesOfOrganizationalUnits: nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits
             }
         }
         return null;
@@ -164,9 +161,9 @@ class QualificationChart extends Component {
     }
 
     componentDidUpdate() {
-        const { employeesManager } = this.props;
+        const { employeeDashboardData } = this.props;
 
-        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
+        let listAllEmployees = employeeDashboardData.listEmployeesOfOrganizationalUnits;
 
 
         if (listAllEmployees.length !== 0) {
@@ -177,7 +174,7 @@ class QualificationChart extends Component {
     }
 
     render() {
-        const { employeesManager, department, translate, employeeDashboardData} = this.props;
+        const { department, translate, employeeDashboardData } = this.props;
         const { organizationalUnits, typeChart } = this.state;
 
         let organizationalUnitsName;
@@ -207,7 +204,7 @@ class QualificationChart extends Component {
                     </div>
                     {employeeDashboardData.isLoading
                         ? <p>{translate('general.loading')}</p>
-                        : employeesManager.listEmployeesOfOrganizationalUnits?.length ? <div className="box-body">
+                        : employeeDashboardData.listEmployeesOfOrganizationalUnits?.length ? <div className="box-body">
                             <div className="box-tools pull-left" >
                                 <div className="btn-group pull-left">
                                     <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
@@ -235,14 +232,12 @@ class QualificationChart extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, field, department, employeeDashboardData } = state;
-    return { employeesManager, field, department, employeeDashboardData };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 }
 
 
-const actionCreators = {
-    getListFields: FieldsActions.getListFields,
-};
+const actionCreators = {};
 
 const qualificationChart = connect(mapState, actionCreators)(withTranslate(QualificationChart));
 export { qualificationChart as QualificationChart };

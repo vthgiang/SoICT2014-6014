@@ -3,119 +3,67 @@ import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
-import { TimesheetsActions } from '../../timesheets/redux/actions';
+
 import { SelectMulti, DatePicker } from '../../../../common-components';
+import { getEmployeeDashboardActions } from "../redux/actions"
 
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
 import 'c3/c3.css'
-import dayjs from 'dayjs';
-import cloneDeep from 'lodash/cloneDeep';
 import Swal from 'sweetalert2';
 
-/**
-* Function format dữ liệu Date thành string
-* @param {*} date : Ngày muốn format
-* @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-*/
-const formatDate = (date, monthYear = false) => {
-    if (date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
-    }
-    return date;
-}
-
 const AnnualLeaveTrendsChart = (props) => {
-    const { annualLeave, translate, timesheets, childOrganizationalUnit, idUnits, unitName } = props;
-
-    let date = new Date()
-    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
+    const { translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData, date } = props;
 
     const [state, setState] = useState({
         countAnnuaLeave: true,
-        startDate: _startDate,
-        startDateShow: _startDate,
-        endDate: formatDate(Date.now(), true),
-        endDateShow: formatDate(Date.now(), true),
+        startDate: date.startDate,
+        startDateShow: date.startDate,
+        endDate: date.endDate,
+        endDateShow: date.endDate,
         organizationalUnits: idUnits ? idUnits : [],
+        data1: employeeDashboardData.annualLeaveTrendChartData.data1 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1.data } : {ratioX: [], data: []},
+        data2: employeeDashboardData.annualLeaveTrendChartData.data2 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2.data } : {ratioX: [], data: []},
     })
     const { countAnnuaLeave, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow } = state;
 
     const barChart = useRef(null);
 
+    if ( props.nameChart !== state.nameChart
+        || props.nameData1 !== state.nameData1
+        || props.nameData2 !== state.nameData2
+    ) {
+        setState({
+            ...state,
+            nameChart: props.nameChart,
+            nameData1: props.nameData1,
+            nameData2: props.nameData2
+        });
+    }
     useEffect(() => {
-        const { startDate, endDate } = state;
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+        setState({
+            ...state,
+            data1: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1.data },
+            data2: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2.data }
+        })
+    }, [employeeDashboardData.annualLeaveTrendChartData.data1.data, employeeDashboardData.annualLeaveTrendChartData.data2.data])
 
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-        if (props?.idUnits?.length) {
-            props.getAnnualLeave({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew })
-            props.getTimesheets({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
-        }
-    }, [JSON.stringify(props?.idUnits)]);
-
-
+    const { data1, data2 } = state
     useEffect(() => {
-        if (annualLeave?.arrMonth?.length > 0) {
-            let arrMonth = cloneDeep(annualLeave?.arrMonth);
-            arrMonth = arrMonth.reverse();
-
-            let ratioX1 = [], ratioX2 = [];
-            if (countAnnuaLeave) {
-                // Xử lý dữ liệu lấy số lượt nghỉ phép.
-                let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
-                let data1 = ['data1']
-                arrMonth.forEach(x => {
-                    ratioX1 = [...ratioX1, dayjs(x).format("MM-YYYY")];
-                    let total = 0;
-                    let date = new Date(x);
-                    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-                    listAnnualLeaveOfNumberMonth.forEach(y => {
-                        if (firstDay.getTime() < new Date(y.startDate).getTime() && new Date(y.startDate).getTime() <= lastDay.getTime()) {
-                            total += 1;
-                        }
-                    })
-                    data1 = [...data1, total]
-                })
-                renderChart({ nameData: nameData1, ratioX: ratioX1, data: data1 });
-            } else {
-                // Xử lý dữ liệu lấy số giờ nghỉ phép
-                let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
-
-                let data2 = ['data2'];
-                arrMonth.forEach(x => {
-                    ratioX2 = [...ratioX2, dayjs(x).format("MM-YYYY")]
-                    let hoursOff = 0;
-                    listHoursOffOfUnitsByStartDateAndEndDate.forEach(y => {
-                        if (dayjs(y.month).format("MM-YYYY") === dayjs(x).format("MM-YYYY")) {
-                            let totalHoursOff = y.totalHoursOff ? y.totalHoursOff : 0;
-                            hoursOff = hoursOff + totalHoursOff
-                        };
-                    })
-                    data2 = [...data2, hoursOff]
-                })
-                renderChart({ nameData: nameData2, ratioX: ratioX2, data: data2, });
-            }
+        let nameData
+        let data = [], ratioX = [];
+        if (countAnnuaLeave) {
+            nameData = nameData1
+            data = [...data1.data]
+            ratioX = [...data1.ratioX]
+        } else {
+            nameData = nameData2
+            data = [...data2.data]
+            ratioX = [...data2.data]
         }
-    }, [JSON.stringify(props?.annualLeave?.listAnnualLeaveOfNumberMonth), JSON.stringify(props?.timesheets?.listHoursOffOfUnitsByStartDateAndEndDate), JSON.stringify(props?.annualLeave?.arrMonth), state.countAnnuaLeave])
-
+        renderChart({nameData, ratioX, data})
+    }, [countAnnuaLeave, data1, data2])
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -161,41 +109,6 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             countAnnuaLeave: value
         })
-    }
-
-    const isEqual = (items1, items2) => {
-        if (!items1 || !items2) {
-            return false;
-        }
-        if (items1.length !== items2.length) {
-            return false;
-        }
-
-        for (let i = 0; i < items1.length; ++i) {
-            if (items1[i].startDate !== items2[i].startDate || items1[i]._id !== items2[i]._id) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    if (!state.arrMonth
-        || props.annualLeave.arrMonth?.length !== state.arrMonth?.length
-        || !isEqual(props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth)
-        || !isEqual(props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate)
-        || props.nameChart !== state.nameChart
-        || props.nameData1 !== state.nameData1
-        || props.nameData2 !== state.nameData2
-    ) {
-        setState({
-            ...state,
-            nameChart: props.nameChart,
-            nameData1: props.nameData1,
-            nameData2: props.nameData2,
-            arrMonth: props.annualLeave.arrMonth,
-            listAnnualLeaveOfNumberMonth: props.annualLeave.listAnnualLeaveOfNumberMonth,
-            listHoursOffOfUnitsByStartDateAndEndDate: props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate,
-        });
     }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -251,8 +164,11 @@ const AnnualLeaveTrendsChart = (props) => {
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
         if (organizationalUnits?.length > 0) {
-            props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, })
-            props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
+            props.getEmployeeDashboardData({
+                searchChart: {
+                    annualLeaveTrendChart: { organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew }
+                }
+            })
         }
     }
 
@@ -339,9 +255,9 @@ const AnnualLeaveTrendsChart = (props) => {
                             </div>
                         </div>
                     </div>
-                    {annualLeave.isLoading
+                    {employeeDashboardData.isLoading
                         ? <div>{translate('general.loading')}</div>
-                        : annualLeave?.arrMonth?.length > 0
+                        : employeeDashboardData.annualLeaveTrendChartData?.arrMonth?.length > 0
                             ? <div className="dashboard_box_body">
                                 {/* <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p> */}
                                 <div className="box-tools pull-right" style={{ marginBottom: '10px' }}>
@@ -361,13 +277,12 @@ const AnnualLeaveTrendsChart = (props) => {
 }
 
 function mapState(state) {
-    const { annualLeave, timesheets } = state;
-    return { annualLeave, timesheets };
+    const { employeeDashboardData } = state;
+    return { employeeDashboardData };
 }
 
 const actionCreators = {
-    getAnnualLeave: AnnualLeaveActions.searchAnnualLeaves,
-    getTimesheets: TimesheetsActions.searchTimesheets,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 
 const barChart = connect(mapState, actionCreators)(withTranslate(AnnualLeaveTrendsChart));

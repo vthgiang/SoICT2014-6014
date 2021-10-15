@@ -18,7 +18,7 @@ const HighestSalaryChart = (props) => {
 
     const [dataSalary, setDataSalary] = useState([])
 
-    const { translate, salary, department, employeeDashboardData } = props;
+    const { translate, department, employeeDashboardData } = props;
 
     const { monthShow, organizationalUnits } = props;
 
@@ -57,7 +57,7 @@ const HighestSalaryChart = (props) => {
                 </div>
                 <div className="box-body no-parding">
                     <ul className="users-list clearfix">
-                        {salary.isLoading
+                        {employeeDashboardData.isLoading
                             ? <li>{translate('general.loading')}</li>
                             : (dataSalary && dataSalary?.length !== 0) ?
                                 dataSalary?.map((x, index) => (
@@ -82,8 +82,8 @@ const HighestSalaryChart = (props) => {
 }
 
 function mapState(state) {
-    const { salary, department, employeeDashboardData } = state;
-    return { salary, department, employeeDashboardData };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 };
 
 const highestSalaryChart = connect(mapState, null)(withTranslate(HighestSalaryChart));

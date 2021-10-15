@@ -127,20 +127,19 @@ const AgePyramidChart = (props) => {
 
     if (
         props.organizationalUnits !== state.organizationalUnits
-        || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees)
-        || !isEqual(props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)
+        || !isEqual(props.employeeDashboardData.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)
     ) {
         setState({
             ...state,
             organizationalUnits: props.organizationalUnits,
-            listAllEmployees: props.employeesManager.listAllEmployees,
-            listEmployeesOfOrganizationalUnits: props.employeesManager.listEmployeesOfOrganizationalUnits
+            listEmployeesOfOrganizationalUnits: props.employeeDashboardData.listEmployeesOfOrganizationalUnits
         })
     }
 
     useEffect(() => {
         if (employeeDashboardData.agePyramidChartData?.data) {
-            renderChart(employeeDashboardData.agePyramidChartData.data);
+            let data = {...JSON.parse(JSON.stringify(employeeDashboardData.agePyramidChartData.data))}
+            renderChart(data);
         }
     }, [employeeDashboardData.agePyramidChartData?.data])
 
@@ -199,8 +198,8 @@ const AgePyramidChart = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, department, employeeDashboardData } = state;
-    return { employeesManager, department, employeeDashboardData };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 }
 
 const agePyramidChart = connect(mapState, null)(withTranslate(AgePyramidChart));

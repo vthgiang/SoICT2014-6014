@@ -9,8 +9,16 @@ const initialState = {
     salaryOfOrganizationalUnitsChartData: {},
     highestSalaryChartData: [],
     qualificationChartData: {},
+    beforeAndAfterOneWeeks: [],
     annualLeaveChartAndTableData: {},
+    annualLeaveTrendChartData: {},
+    listEmployeesOfOrganizationalUnits: [],
+    dataHumanResourceIncreaseAndDecrease: {},
+    commendation: {},
+    discipline: {},
+    listSalaryByMonth: [],
     error: null,
+    dataOvertimeUnits: {}
 }
 
 export function employeeDashboardData(state = initialState, action) {
@@ -30,6 +38,14 @@ export function employeeDashboardData(state = initialState, action) {
                 highestSalaryChartData: action.payload.highestSalaryChartData ? action.payload.highestSalaryChartData : state.highestSalaryChartData,
                 qualificationChartData: action.payload.qualificationChartData ? action.payload.qualificationChartData : state.qualificationChartData,
                 annualLeaveChartAndTableData: action.payload.annualLeaveChartAndTableData ? action.payload.annualLeaveChartAndTableData : state.annualLeaveChartAndTableData,
+                listEmployeesOfOrganizationalUnits: action.payload.listEmployeesOfOrganizationalUnits ? action.payload.listEmployeesOfOrganizationalUnits : state.listEmployeesOfOrganizationalUnits,
+                dataHumanResourceIncreaseAndDecrease: action.payload.dataHumanResourceIncreaseAndDecrease ? action.payload.dataHumanResourceIncreaseAndDecrease : state.dataHumanResourceIncreaseAndDecrease,
+                commendation: action.payload.commendation ? action.payload.commendation : state.commendation,
+                discipline: action.payload.discipline ? action.payload.discipline : state.discipline,
+                listSalaryByMonth:action.payload.salaris ? action.payload.salaris : state.listSalaryByMonth,
+                beforeAndAfterOneWeeks: action.payload.beforeAndAfterOneWeeks ? action.payload.beforeAndAfterOneWeeks : state.beforeAndAfterOneWeeks,
+                annualLeaveTrendChartData: action.payload.annualLeaveTrendChartData ? action.payload.annualLeaveTrendChartData : state.annualLeaveTrendChartData,
+                dataOvertimeUnits: action.payload.dataOvertimeUnits ? action.payload.dataOvertimeUnits : state.dataOvertimeUnits,
                 isLoading: false
             }
         case getEmployeeDashboardDataConstant.GET_EMPLOYEE_DASHBOARD_DATA_FAILURE:

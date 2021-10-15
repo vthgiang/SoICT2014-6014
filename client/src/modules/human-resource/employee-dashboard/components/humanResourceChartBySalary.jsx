@@ -68,20 +68,19 @@ const HumanResourceChartBySalary = (props) => {
     }
 
     if (props.organizationalUnits !== state.organizationalUnits || props.monthShow !== state.monthShow ||
-        !isEqual(props.salary.listSalaryByMonthAndOrganizationalUnits, state.listSalaryByMonthAndOrganizationalUnits)) {
+        !isEqual(props.employeeDashboardData.listSalaryByMonth, state.listSalaryByMonthAndOrganizationalUnits)) {
         setState({
             ...state,
             monthShow: props.monthShow,
             organizationalUnits: props.organizationalUnits,
-            listSalaryByMonthAndOrganizationalUnits: props.salary.listSalaryByMonthAndOrganizationalUnits
+            listSalaryByMonthAndOrganizationalUnits: props.employeeDashboardData.listSalaryByMonth
         })
     }
 
-    const { translate, salary, department, employeeDashboardData } = props;
+    const { translate, department, employeeDashboardData } = props;
 
     const { monthShow, organizationalUnits } = props;
 
-    let data = salary.listSalaryByMonthAndOrganizationalUnits;
     let organizationalUnitsName;
     if (organizationalUnits && department?.list?.length > 0) {
         organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
@@ -93,7 +92,6 @@ const HumanResourceChartBySalary = (props) => {
             renderChart(employeeDashboardData.humanResourceChartBySalaryData)
         }
     }, [employeeDashboardData.humanResourceChartBySalaryData, employeeDashboardData.isLoading])
-
 
     return (
         <React.Fragment>
@@ -130,8 +128,8 @@ const HumanResourceChartBySalary = (props) => {
 }
 
 function mapState(state) {
-    const { salary, department, employeeDashboardData } = state;
-    return { salary, department, employeeDashboardData };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 };
 
 const humanResourceChartBySalary = connect(mapState, null)(withTranslate(HumanResourceChartBySalary));

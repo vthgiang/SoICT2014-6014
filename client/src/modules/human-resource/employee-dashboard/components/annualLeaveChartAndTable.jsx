@@ -2,7 +2,6 @@ import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { SelectMulti, SlimScroll } from '../../../../common-components';
 
 import { showListInSwal } from '../../../../helpers/showListInSwal';
@@ -20,7 +19,7 @@ const AnnualLeaveChartAndTable = (props) => {
         organizationalUnits: null,
         organizationalUnitsShow: null,
     });
-    const { organizationalUnits, organizationalUnitsShow, organizationalUnitsSearch } = state
+    const { organizationalUnits, organizationalUnitsSearch } = state
     const barChartAndTable = useRef(null);
 
     useEffect(() => {
@@ -28,47 +27,14 @@ const AnnualLeaveChartAndTable = (props) => {
             organizationalUnits: defaultUnit ? props.organizationalUnits : null,
             organizationalUnitsShow: defaultUnit ? props.organizationalUnits : props?.childOrganizationalUnit?.map(x => x.id),
         })
-
-        props.getAnnualLeave({ organizationalUnits: props.organizationalUnits, beforAndAfterOneWeek: true })
     }, [JSON.stringify(props.organizationalUnits)])
-
-    useEffect(() => {
-        if (!isEqual(props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks)) {
-            setState({
-                ...state
-            })
-        }
-    }, [props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks]);
 
     useEffect(() => {
         if(employeeDashboardData.annualLeaveChartAndTableData?.data1) {
             renderChart(employeeDashboardData.annualLeaveChartAndTableData);
         }
-    }, [employeeDashboardData.annualLeaveChartAndTableData, props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks])
+    }, [employeeDashboardData.annualLeaveChartAndTableData,employeeDashboardData.beforeAndAfterOneWeeks , state.beforeAndAfterOneWeeks, JSON.stringify(props.organizationalUnits)])
 
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, yearMonthDay = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (yearMonthDay === true) {
-                return [year, month, day].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    }
 
     /**
     * Function bắt sự kiện thay đổi unit
@@ -88,32 +54,8 @@ const AnnualLeaveChartAndTable = (props) => {
                 organizationalUnits: organizationalUnitsSearch,
                 organizationalUnitsShow: organizationalUnitsSearch
             })
-            props.getAnnualLeave({ organizationalUnits: organizationalUnitsSearch, beforAndAfterOneWeek: true })
         }
     }
-
-    function isEqual(items1, items2) {
-        if (!items1 || !items2) {
-            return false;
-        }
-        if (items1.length !== items2.length) {
-            return false;
-        }
-        for (let i = 0; i < items1.length; ++i) {
-            if (items1[i]._id !== items2[i]._id) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    if (!isEqual(props.annualLeave.beforAndAfterOneWeeks, state.beforAndAfterOneWeeks)) {
-        setState({
-            ...state,
-            beforAndAfterOneWeeks: props.annualLeave.beforAndAfterOneWeeks
-        })
-    }
-
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     const removePreviousChart = () => {
@@ -167,96 +109,8 @@ const AnnualLeaveChartAndTable = (props) => {
             },
         });
     }
+    const { translate, childOrganizationalUnit, department } = props;
 
-    const getDays = () => {
-        const days = [];
-        const dateNow = new Date();
-        for (let i = 1; i <= 13; i++) {
-            if (i !== 7) {
-                days.push(new Date())
-            } else {
-                days.push(formatDate(new Date(), true))
-            }
-        }
-        for (let i = 0; i < 6; i++) {
-            days[i] = formatDate(days[i].setDate(dateNow.getDate() - 6 + i), true)
-            days[days.length - 1 - i] = formatDate(days[days.length - 1 - i].setDate(dateNow.getDate() + 6 - i), true)
-        }
-        return days
-    }
-
-    const isEqualDate = (date1, date2) => {
-        const pathDate1 = formatDate(date1, true)
-        const pathDate2 = formatDate(date2, true)
-        if (!pathDate1 || !pathDate2) {
-            return false
-        };
-        if (new Date(pathDate1).getTime() === new Date(pathDate2).getTime()) {
-            return true
-        }
-        return false
-    }
-
-    /** Bắt sự kiện tìm kiếm */
-    const handleSunmitSearch = async () => { }
-
-    const { annualLeave, translate, childOrganizationalUnit, department } = props;
-    const listAnnual = organizationalUnitsShow?.map(x => {
-        const unit = childOrganizationalUnit?.find(y => y.id.toString() === x.toString())
-        return {
-            id: unit?.id,
-            name: unit?.name,
-            countPrev: 0,
-            countCurrent: 0,
-            countNext: 0
-        }
-    })
-
-    if (annualLeave?.beforAndAfterOneWeeks?.length > 0 && listAnnual) {
-        listAnnual.map(x => {
-            annualLeave.beforAndAfterOneWeeks.forEach(y => {
-                if (x.id.toString() === y.organizationalUnit.toString() && y.status === 'approved') {
-                    let datePrev = new Date().setDate(new Date().getDate() - 1);
-                    let dateNext = new Date().setDate(new Date().getDate() + 1);
-                    if (isEqualDate(y.startDate, new Date()) || isEqualDate(y.endDate, new Date())) {
-                        x.countCurrent++
-                    }
-                    if (isEqualDate(y.startDate, datePrev) || isEqualDate(y.endDate, datePrev)) {
-                        x.countPrev++
-                    }
-                    if (isEqualDate(y.startDate, dateNext) || isEqualDate(y.endDate, dateNext)) {
-                        x.countNext++
-                    }
-                }
-            })
-            return x
-        })
-    }
-
-    const arrdays = getDays();
-    let data1 = arrdays.map(x => 0), data2 = arrdays.map(x => 0);
-    if (annualLeave.beforAndAfterOneWeeks.length) {
-        data1 = arrdays.map(x => {
-            let count = 0;
-            annualLeave.beforAndAfterOneWeeks.forEach(y => {
-                if (isEqualDate(y.startDate, x) || isEqualDate(y.endDate, x)) {
-                    count++
-                }
-            })
-            return count
-        })
-
-        data2 = arrdays.map(x => {
-            let count = 0;
-            annualLeave.beforAndAfterOneWeeks.forEach(y => {
-                if ((isEqualDate(y.startDate, x) || isEqualDate(y.endDate, x)) && y.status === "approved") {
-                    count++
-                }
-            })
-            return count
-        })
-    }
-    renderChart({ ratioX: arrdays, nameData1: "Số đơn xin nghỉ", data1, nameData2: "Số đơn được duyệt", data2 });
 
     let organizationalUnitsName = [];
     if (organizationalUnits) {
@@ -318,45 +172,12 @@ const AnnualLeaveChartAndTable = (props) => {
                         </div>
                     }
                     <div className="dashboard_box_body">
-                        {annualLeave.isLoading
+                        {employeeDashboardData.isLoading
                             ? <div>{translate('general.loading')}</div>
-                            : annualLeave.beforAndAfterOneWeeks.length
+                            : employeeDashboardData.beforeAndAfterOneWeeks?.length
                                 ? <div ref={barChartAndTable}></div>
                                 : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
                         }
-                    </div>
-                    <div id="annualLeave-table">
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 20 }}>
-                            <thead>
-                                <tr>
-                                    <th>Đơn vị</th>
-                                    <th>Số nhân viên nghỉ hôm qua</th>
-                                    <th>Số nhân viên nghỉ hôm nay</th>
-                                    <th>Số nhân viên nghỉ ngày mai</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {annualLeave.isLoading
-                                    ? <tr>
-                                        <td colSpan="4">{translate('general.loading')}</td>
-                                    </tr>
-                                    : listAnnual?.length
-                                        ? listAnnual.map(x => {
-                                            return (
-                                                <tr key={x.id}>
-                                                    <td>{x.name}</td>
-                                                    <td>{x.countPrev}</td>
-                                                    <td>{x.countCurrent}</td>
-                                                    <td>{x.countNext}</td>
-                                                </tr>
-                                            )
-                                        })
-                                        : <tr>
-                                            <td colSpan="4">{translate('kpi.organizational_unit.dashboard.no_data')}</td>
-                                        </tr>
-                                }
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -366,13 +187,11 @@ const AnnualLeaveChartAndTable = (props) => {
 }
 
 function mapState(state) {
-    const { annualLeave, department, employeeDashboardData } = state;
-    return { annualLeave, department, employeeDashboardData };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 }
 
-const actionCreators = {
-    getAnnualLeave: AnnualLeaveActions.searchAnnualLeaves,
-};
+const actionCreators = {};
 
 const barChartAndTable = connect(mapState, actionCreators)(withTranslate(AnnualLeaveChartAndTable));
 export { barChartAndTable as AnnualLeaveChartAndTable };

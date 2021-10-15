@@ -6,61 +6,34 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components';
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
-import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 import { getEmployeeDashboardActions } from "../redux/actions"
 
-import { formatDate } from '../../../../helpers/formatDate';
 import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
-    const { department, employeesManager, translate, employeeDashboardData } = props;
+    const { employeesManager, translate, employeeDashboardData, date, organizationalUnits } = props;
     const { childOrganizationalUnit } = props;
-
-    let date = new Date()
-    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 3), true);
 
     const [state, setState] = useState({
         lineChart: false,
-        startDate: _startDate,
-        startDateShow: _startDate,
-        endDate: formatDate(Date.now(), true),
-        endDateShow: formatDate(Date.now(), true),
+        startDate: date.startDateIncreaseAndDecreaseChart,
+        startDateShow: date.startDateIncreaseAndDecreaseChart,
+        endDate: date.endDate,
+        endDateShow: date.endDate,
         organizationalUnits: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsSearch: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
+        organizationalUnitsName: []
     })
-    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
-
-    useEffect(() => {
-        const { organizationalUnits, startDate, endDate } = state;
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
-    }, [])
-
-    useEffect(() => {
-        let organizationalUnitsTemp = props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : []
-        setState({
-            ...state,
-            organizationalUnits: organizationalUnitsTemp,
-            organizationalUnitsSearch: organizationalUnitsTemp,
-        });
-
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-        props.getAllEmployee({ organizationalUnits: organizationalUnitsTemp, startDate: startDateNew, endDate: endDateNew });
-    }, [JSON.stringify(props.childOrganizationalUnit)]);
+    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow } = state;
 
     useEffect(() => {
         if (employeeDashboardData.humanResourceIncreaseAndDecreaseChartData?.data1) {
-            renderChart({ nameData1, nameData2, nameData3, lineChart, ...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData });
+            let data1 = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.data1]
+            let data2 = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.data2]
+            let data3 = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.data3]
+            let ratioX = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.ratioX]
+            renderChart({ nameData1, nameData2, nameData3, lineChart, data1: data1, data2: data2, data3: data3, ratioX: ratioX });
         }
     }, [employeeDashboardData.humanResourceIncreaseAndDecreaseChartData, lineChart, employeeDashboardData.isLoading]);
     /**
@@ -224,7 +197,6 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             let arrEnd = endDate.split('-');
             let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
-            props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
             props.getEmployeeDashboardData({
                 searchChart: {
                     increaseAndDecreaseChart: { organizationalUnits: organizationalUnits, startDate: startDateNew,endDate: endDateNew }
@@ -234,8 +206,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
     }
 
     let organizationalUnitsName = [];
-    if (organizationalUnitsSearch) {
-        organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
+    if (organizationalUnits) {
+        organizationalUnitsName = childOrganizationalUnit.filter(x => organizationalUnits.includes(x.id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
@@ -328,7 +300,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
     getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 
 };

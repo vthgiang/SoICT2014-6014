@@ -3,10 +3,12 @@ const { OrganizationalUnit } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 
 const ProfileService = require('../profile/profile.service');
-const SalaryService = require('../salary/salary.service')
-const AnnualLeaveService = require('../annual-leave/annualLeave.service')
-const TimesheetsService = require('../timesheets/timesheets.service')
-const FieldService = require('../field/field.service')
+const SalaryService = require('../salary/salary.service');
+const AnnualLeaveService = require('../annual-leave/annualLeave.service');
+const TimesheetsService = require('../timesheets/timesheets.service');
+const FieldService = require('../field/field.service');
+const CommendationService = require('../commendation/commendation.service');
+const DisciplineService = require('../discipline/discipline.service');
 
 const dayjs = require('dayjs');
 
@@ -72,6 +74,16 @@ exports.getChartData = async (portal, company, defaultParams, searchChart) => {
                 trendOfOvertimeChartData: trendOfOvertimeChartData
             }
         }
+        if (annualLeaveTrendChart) {
+            const { organizationalUnits, startDate, endDate } = annualLeaveTrendChart;
+            const annualLeave = await AnnualLeaveService.getAnnualLeaveByStartDateAndEndDate(portal, organizationalUnits, startDate, endDate, company);
+            const dataOvertimeUnits = await TimesheetsService.getOvertimeOfUnitsByStartDateAndEndDate(portal, organizationalUnits, startDate, endDate, company);
+            let annualLeaveTrendChartData = getAnnualLeaveTrendChartData(annualLeave, dataOvertimeUnits);
+            return {
+                annualLeaveTrendChartData: annualLeaveTrendChartData
+            }
+        }
+        return {}
     }
 }
 
@@ -82,33 +94,39 @@ const getEmployeeDashboardData = async (portal, company, params, list) => {
     const dataHumanResourceIncreaseAndDecrease = await ProfileService.getEmployeesByStartingAndLeaving(portal, organizationalUnits, startDateIncreaseAndDecreaseChart, endDate, company);
     const salaris = await SalaryService.getAllSalaryByMonthAndOrganizationalUnits(portal, organizationalUnits, month);
     const annualLeave = await AnnualLeaveService.getAnnualLeaveByStartDateAndEndDate(portal, organizationalUnits, startDate, endDate, company);
-    const beforAndAfterOneWeeks = await AnnualLeaveService.getAnnaulLeaveBeforAndAfterOneWeek(portal, organizationalUnits);
+    const beforeAndAfterOneWeeks = await AnnualLeaveService.getAnnaulLeaveBeforAndAfterOneWeek(portal, organizationalUnits);
     const dataOvertimeUnits = await TimesheetsService.getOvertimeOfUnitsByStartDateAndEndDate(portal, organizationalUnits, startDate, endDate, company);
     const listField = await FieldService.getAllFields(portal, {}, company);
-    
+    const commendation = await CommendationService.getTotalCommendation(portal, company, organizationalUnits, month);
+    const discipline = await DisciplineService.searchDisciplines(portal, company, organizationalUnits, month);
     //get age pyramid chart data
     let agePyramidChartData = getAgePyramidChartData(listEmployeesOfOrganizationalUnits);
     let humanResourceChartBySalaryData = getHumanResourcesChartBySalary(salaris);
     let qualificationChartData = getQualificationChartData(listEmployeesOfOrganizationalUnits, listField);
     let humanResourceIncreaseAndDecreaseChartData = getHumanResourceIncreaseAndDecreaseChartData(dataHumanResourceIncreaseAndDecrease);
-    // let annualLeaveTrendChartData = getAnnualLeaveTrendChartData(annualLeave)
-    // console.log(annualLeaveTrendChartData)
-    let annualLeaveChartAndTableData = getAnnualLeaveChartAndTableData(beforAndAfterOneWeeks, list);
+    let annualLeaveTrendChartData = getAnnualLeaveTrendChartData(annualLeave, dataOvertimeUnits);
+    let annualLeaveChartAndTableData = getAnnualLeaveChartAndTableData(beforeAndAfterOneWeeks, list);
     let trendOfOvertimeChartData = getTrendOfOvertimeChartData(dataOvertimeUnits);
     let salaryOfOrganizationalUnitsChartData = getSalaryOfOrganizationalUnitsChartData(salaris, list);
     let highestSalaryChartData = getHighestSalaryChartData(salaris);
-    
-    return { 
+    return {
         agePyramidChartData: agePyramidChartData,
         humanResourceChartBySalaryData: humanResourceChartBySalaryData,
         humanResourceIncreaseAndDecreaseChartData: humanResourceIncreaseAndDecreaseChartData,
         trendOfOvertimeChartData: trendOfOvertimeChartData,
+        annualLeaveTrendChartData: annualLeaveTrendChartData,
         salaryOfOrganizationalUnitsChartData: salaryOfOrganizationalUnitsChartData,
         highestSalaryChartData: highestSalaryChartData,
         qualificationChartData: qualificationChartData,
         annualLeaveChartAndTableData: annualLeaveChartAndTableData,
-        listEmployeesOfOrganizationalUnits: listEmployeesOfOrganizationalUnits
-    }
+        beforeAndAfterOneWeeks: beforeAndAfterOneWeeks,
+        listEmployeesOfOrganizationalUnits: listEmployeesOfOrganizationalUnits,
+        dataHumanResourceIncreaseAndDecrease: dataHumanResourceIncreaseAndDecrease,
+        commendation: commendation,
+        discipline: discipline,
+        salaris: salaris,
+        dataOvertimeUnits: dataOvertimeUnits
+    };
 }
 
 const formatDateHasDay = (date, yearMonthDay = false) => {
@@ -354,7 +372,7 @@ const getHumanResourceIncreaseAndDecreaseChartData = (dataHumanResourceIncreaseA
     }
 }
 
-const getAnnualLeaveTrendChartData = (annualLeave) => {
+const getAnnualLeaveTrendChartData = (annualLeave, timesheets) => {
     if (annualLeave?.arrMonth?.length > 0) {
         let arrMonth = annualLeave?.arrMonth
         arrMonth = arrMonth.reverse();
@@ -377,7 +395,7 @@ const getAnnualLeaveTrendChartData = (annualLeave) => {
             data1 = [...data1, total]
         })
         // Xử lý dữ liệu lấy số giờ nghỉ phép
-        let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
+        let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listOvertimeOfUnitsByStartDateAndEndDate));
 
         let data2 = ['data2'];
         arrMonth.forEach(x => {
@@ -391,10 +409,10 @@ const getAnnualLeaveTrendChartData = (annualLeave) => {
             })
             data2 = [...data2, hoursOff]
         })
-
         return {
             data1: { ratioX: ratioX1, data: data1 },
-            data2: { ratioX: ratioX2, data: data2 }
+            data2: { ratioX: ratioX2, data: data2 },
+            arrMonth
         }
     }
 }

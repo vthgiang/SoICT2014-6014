@@ -1,5 +1,5 @@
 /* Biểu đồ thể hiện lương thưởng các đơn vị trong công ty */
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -28,13 +28,13 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
     }
 
     useEffect(() => {
-        if (props.salary.listSalaryByMonth !== state.listSalaryByMonth) {
+        if (props.employeeDashboardData.listSalaryByMonth !== state.listSalaryByMonth) {
             setState({
                 ...state,
-                listSalaryByMonth: props.salary.listSalaryByMonth
+                listSalaryByMonth: props.employeeDashboardData.listSalaryByMonth
             })
         };
-    }, [props.salary.listSalaryByMonth, state.unit, state.listSalaryByMonth])
+    }, [props.employeeDashboardData.listSalaryByMonth, state.unit, state.listSalaryByMonth])
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     const removePreviousChart = () => {
@@ -77,7 +77,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         });
     };
 
-    const { translate, salary, department } = props;
+    const { translate, department } = props;
 
     const { monthShow, organizationalUnits, employeeDashboardData } = props;
     const { unit } = state;
@@ -129,7 +129,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
                         <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
                     </a>
                 </div>
-                {salary.isLoading
+                {employeeDashboardData.isLoading
                     ? <div style={{ marginLeft: "5px" }}>{translate('general.loading')}</div>
                     : <div className="box-body">
                         <div className="box-tools pull-right" >
@@ -149,8 +149,8 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 }
 
 function mapState(state) {
-    const { salary, department, employeeDashboardData } = state;
-    return { salary, department, employeeDashboardData };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 };
 
 const salaryOfOrganizationalUnits = connect(mapState, null)(withTranslate(SalaryOfOrganizationalUnitsChart));
