@@ -366,6 +366,19 @@ const LINKS = [{
     components: getComponentsInLink('/apis-registration')
 },
 {
+    url: '/apis-registration-employee',
+    description: 'Quản lý đăng ký sử dụng API của nhân viên',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink('/apis-registration-employee')
+},
+{
     url: '/components-management',
     description: 'Quản lý các thành phần UI trên trang web của công ty',
     category: LINK_CATEGORY.RBAC.name,

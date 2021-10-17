@@ -649,6 +649,9 @@ exports.links = [
         url: '/apis-registration',
         apis: ['@all']
     }, {
+        url: '/apis-registration-employee',
+        apis: ['@all']
+    }, {
         url: '/components-management',
         apis: ['@all']
     }, {

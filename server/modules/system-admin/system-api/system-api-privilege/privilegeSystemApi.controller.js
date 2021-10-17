@@ -25,7 +25,11 @@ const getPrivilegeApis = async (req, res) => {
 
 const createPrivilegeApi = async (req, res) => {
     try {
-        const privilegeApi = await SystemApiPrivilegeServices.createPrivilegeApi(req.body);
+        let data = {
+            ...req.body,
+            userId: req.user._id
+        }
+        const privilegeApi = await SystemApiPrivilegeServices.createPrivilegeApi(data);
         
         Logger.info(req.user.email, 'create privilege api');
         res.status(200).json({

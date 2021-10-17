@@ -98,6 +98,7 @@ export default {
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
             registration_api: "Manage API registration",
+            registration_api_employee: "Manage API employee registration",
             privilege_api: "Manage permissions API",
 
             manage_department: "Manage Departments",

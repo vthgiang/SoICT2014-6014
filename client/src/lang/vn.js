@@ -100,6 +100,7 @@ export default {
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
             registration_api: "Quản lý đăng ký API",
+            registration_api_employee: "Đăng ký sử dụng API",
             privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
