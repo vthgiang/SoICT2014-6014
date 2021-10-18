@@ -44,10 +44,10 @@ const AnnualLeaveTrendsChart = (props) => {
     useEffect(() => {
         setState({
             ...state,
-            data1: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1.data },
-            data2: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2.data }
+            data1: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1?.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1?.data },
+            data2: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2?.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2?.data }
         })
-    }, [employeeDashboardData.annualLeaveTrendChartData.data1.data, employeeDashboardData.annualLeaveTrendChartData.data2.data])
+    }, [employeeDashboardData.annualLeaveTrendChartData?.data1?.data, employeeDashboardData.annualLeaveTrendChartData?.data2?.data])
 
     const { data1, data2 } = state
     useEffect(() => {
@@ -186,6 +186,16 @@ const AnnualLeaveTrendsChart = (props) => {
             width: "50%",
         })
     }
+    
+    useEffect(() => {
+        setState({
+            ...state,
+            startDate: date.startDate,
+            startDateShow: date.startDate,
+            endDate: date.endDate,
+            endDateShow: date.endDate,
+        })
+    }, [date.month]);
     return (
         <React.Fragment>
             <div className="box box-solid">

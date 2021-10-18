@@ -120,7 +120,7 @@ const DashBoardEmployees = (props) => {
         let arrIncreaseAndDecreaseChart = startDateIncreaseAndDecreaseChart.split('-');
         let startDateIncreaseAndDecreaseChartNew = [arrIncreaseAndDecreaseChart[1], arrIncreaseAndDecreaseChart[0]].join('-');
 
-        if (organizationalUnits?.length > 0) {
+        if (organizationalUnits?.length > 0 && (month !== formatDate(Date.now(), true))) {
             setState(state => ({
                 ...state,
                 organizationalUnits: organizationalUnits,
@@ -257,7 +257,7 @@ const DashBoardEmployees = (props) => {
                                     defaultUnit={true} 
                                     organizationalUnits={organizationalUnits} 
                                     monthShow={monthShow} 
-                                    date={{startDate, endDate, startDateIncreaseAndDecreaseChart}}/>
+                                    date={{startDate, endDate, startDateIncreaseAndDecreaseChart, month}}/>
                             </LazyLoadComponent>
                         </div>
 
@@ -268,7 +268,7 @@ const DashBoardEmployees = (props) => {
                                     childOrganizationalUnit={childOrganizationalUnit}
                                     idUnits={props?.childOrganizationalUnit?.length && props.childOrganizationalUnit.filter(item => arrayUnitShow.includes(item?.id))}
                                     defaultUnit={true}
-                                    date={{startDate, endDate, startDateIncreaseAndDecreaseChart}}/>
+                                    date={{startDate, endDate, startDateIncreaseAndDecreaseChart, month}}/>
                             </LazyLoadComponent>
                         </div>
 

@@ -185,6 +185,16 @@ const TrendOfOvertime = (props) => {
             width: "50%",
         })
     }
+
+    useEffect(() => {
+        setState({
+            ...state,
+            startDate: date.startDate,
+            startDateShow: date.startDate,
+            endDate: date.endDate,
+            endDateShow: date.endDate,
+        })
+    }, [JSON.stringify(date.month)]);
     return (
         <React.Fragment>
             <div className="box box-solid">
