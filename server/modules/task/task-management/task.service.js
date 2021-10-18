@@ -3050,10 +3050,12 @@ exports.checkImportTasks = async (data, portal, user) => {
                 element = { ...element, parentId: findParentCode._id }
             }
 
-            dataConvert = [...dataConvert, element];
 
-            if (!element.code || taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code) || (element.parent && !findParentCode && !checkParentCodeInFileExcell))
+            if (!element.code || taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code) || (element.parent && !findParentCode && !checkParentCodeInFileExcell)) {
                 rowError = [...rowError, index + 1];
+                element = { ...element, error: true }
+            }
+            dataConvert = [...dataConvert, element];
         })
 
         console.log('rowError', rowError);
