@@ -798,7 +798,6 @@ function EmployeeKpiManagement(props) {
     }
 
     let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
-    console.log("unitMembers1", props);
 
     // Khởi tạo select box chọn nhân viên
     if (user?.error?.employees?.length > 0) {
@@ -809,7 +808,6 @@ function EmployeeKpiManagement(props) {
             }
         })
         unitMembers.unshift({ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 })
-        console.log("unitMembers", unitMembers);
     }
 
     // Khởi tạo select box chọn người phê duyệt
@@ -837,7 +835,6 @@ function EmployeeKpiManagement(props) {
             }
         });
         approverSelectBox.unshift({ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 });
-        console.log("approverSelectBox", approverSelectBox);
     }
 
     if (kpimembers.kpimembers) {
