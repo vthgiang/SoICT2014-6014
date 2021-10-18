@@ -798,21 +798,23 @@ function EmployeeKpiManagement(props) {
     }
 
     let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
+    console.log("unitMembers1", props);
 
     // Khởi tạo select box chọn nhân viên
-    if (user?.employees?.length > 0) {
-        unitMembers = user.employees.map(item => { 
+    if (user?.error?.employees?.length > 0) {
+        unitMembers = user.error.employees.map(item => { 
             return {
                 text: item?.userId?.name, 
                 value: item?.userId?._id
             }
         })
         unitMembers.unshift({ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 })
+        console.log("unitMembers", unitMembers);
     }
 
     // Khởi tạo select box chọn người phê duyệt
-    if (user?.employees?.length > 0) {
-        approverSelectBox = user.employees.filter(employee => { 
+    if (user?.error?.employees?.length > 0) {
+        approverSelectBox = user.error.employees.filter(employee => { 
             let checkManager = false
 
             if (employee?.roleId?.length > 0) {
@@ -835,6 +837,7 @@ function EmployeeKpiManagement(props) {
             }
         });
         approverSelectBox.unshift({ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 });
+        console.log("approverSelectBox", approverSelectBox);
     }
 
     if (kpimembers.kpimembers) {
