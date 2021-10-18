@@ -788,6 +788,14 @@ function TaskManagement(props) {
 
     }, [JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)]);
 
+    const checkHasComponent = (name) => {
+        let { auth } = props;
+        let result = false;
+        auth?.components?.length && auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+        return result;
+    }
 
     const { currentTasks } = state;
     // kiểm tra vai trò của người dùng
@@ -840,14 +848,21 @@ function TaskManagement(props) {
                         <div style={{ display: 'flex', marginBottom: 6 }}>
                             {
                                 currentTab !== "informed" &&
-                                <div className="dropdown">
-                                    <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
-                                    <ul className="dropdown-menu pull-right">
-                                        <li><a href="#" title="ImportForm" onClick={() => { handleAddTask("") }}>{translate('task_template.add')}</a></li>
-                                        <li><a href="#" title="Import file excell" onClick={handleOpenModalImport}>{translate('task_template.import')}</a></li>
-                                    </ul>
-                                </div>
+                                    <React.Fragment>
+                                    {
+                                        checkHasComponent("button-import-task") ?
+                                        <div className="dropdown">
+                                            <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                            <ul className="dropdown-menu pull-right">
+                                                <li><a href="#" title="ImportForm" onClick={() => { handleAddTask("") }}>{translate('task_template.add')}</a></li>
+                                                <li><a href="#" title="Import file excell" onClick={handleOpenModalImport}>{translate('task_template.import')}</a></li>
+                                            </ul>
+                                        </div>
+                                            : <button type="button" onClick={() => { handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
+                                    }
+                                    </React.Fragment>  
                             }
+                            
 
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
 
@@ -1116,8 +1131,8 @@ function TaskManagement(props) {
 }
 
 function mapState(state) {
-    const { tasks, user, department, project } = state;
-    return { tasks, user, department, project };
+    const { tasks, user, department, project, auth } = state;
+    return { tasks, user, department, project, auth };
 }
 
 const actionCreators = {

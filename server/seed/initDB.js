@@ -4,54 +4,54 @@ const Terms = require('../helpers/config');
 const models = require('../models');
 const fs = require('fs');
 
-const { 
-    User, 
-    UserRole, 
-    RoleType, 
-    Role, 
-    Link, 
-    Privilege, 
-    RootRole, 
-    SystemComponent, 
-    SystemLink, 
+const {
+    User,
+    UserRole,
+    RoleType,
+    Role,
+    Link,
+    Privilege,
+    RootRole,
+    SystemComponent,
+    SystemLink,
     SystemApi,
     Configuration
 } = models;
 
 require('dotenv').config();
 
-const initDB = async() => {
+const initDB = async () => {
     console.log("Starting init database. Please wait ...\n\n");
 
     /**
      * 1. Tạo kết nối đến cơ sở dữ liệu
      */
     let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user:process.env.DB_USERNAME,
-        pass:process.env.DB_PASSWORD,
-        auth: {
-            authSource: 'admin'
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+            user: process.env.DB_USERNAME,
+            pass: process.env.DB_PASSWORD,
+            auth: {
+                authSource: 'admin'
+            }
+        } : {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
         }
-    } : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-    }
     const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`, 
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`,
         connectOptions
     );
-    if(!systemDB) throw('Error! Cannot connect to MongoDB. Please check connection. :(');
+    if (!systemDB) throw ('Error! Cannot connect to MongoDB. Please check connection. :(');
 
-	/**
-	 * 2. Xóa dữ liệu db cũ và khởi tạo dữ liệu config 
-	 */
+    /**
+     * 2. Xóa dữ liệu db cũ và khởi tạo dữ liệu config 
+     */
     systemDB.dropDatabase();
     console.log("@Setup new database.");
 
@@ -73,39 +73,39 @@ const initDB = async() => {
     ]);
     console.log("@Initial configuration complete.");
 
-	/**
-	 * 3. Tạo các Role Type
-	 */
-	const roleType = await RoleType(systemDB).insertMany([
-        { name: Terms.ROLE_TYPES.ROOT }, 
+    /**
+     * 3. Tạo các Role Type
+     */
+    const roleType = await RoleType(systemDB).insertMany([
+        { name: Terms.ROLE_TYPES.ROOT },
         { name: Terms.ROLE_TYPES.POSITION },
         { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
     console.log("@Created ROLETYPE.");
-	
 
-	/**
-	 * 4. Tạo tài khoản system admin
-	 */
-	const salt = await bcrypt.genSaltSync(10);
+
+    /**
+     * 4. Tạo tài khoản system admin
+     */
+    const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync(process.env.SYSTEM_ADMIN_PASSWORD, salt);
     const systemAdmin = await User(systemDB).create({
         name: process.env.SYSTEM_ADMIN_NAME,
         email: process.env.SYSTEM_ADMIN_EMAIL,
         password: hash
     });
-	const roleAbstract = await RoleType(systemDB).findOne({ name: Terms.ROLE_TYPES.ROOT}); 
+    const roleAbstract = await RoleType(systemDB).findOne({ name: Terms.ROLE_TYPES.ROOT });
     const roleSystemAdmin = await Role(systemDB).create({ // Tạo role System Admin
         name: Terms.ROOT_ROLES.SYSTEM_ADMIN.name,
         type: roleAbstract._id
     });
     await UserRole(systemDB).create({ userId: systemAdmin._id, roleId: roleSystemAdmin._id });
     console.log("@Created SUPER ADMIN account.");
-	
-	/**
-	 * 5. Tạo các link và phân quyền truy cập cho system-admin
-	 */
-	const links = await Link(systemDB).insertMany([
+
+    /**
+     * 5. Tạo các link và phân quyền truy cập cho system-admin
+     */
+    const links = await Link(systemDB).insertMany([
         {
             url: '/home',
             description: 'Trang chủ hệ thống quản lý doanh nghiệp',
@@ -154,33 +154,43 @@ const initDB = async() => {
             resourceId: links[0]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
-        },{
+        }, {
             resourceId: links[1]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
-        },{
+        }, {
             resourceId: links[2]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
-        },{
+        }, {
             resourceId: links[3]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
-        },{
+        }, {
             resourceId: links[4]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
-        },{
+        }, {
             resourceId: links[5]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
+        }
+        , {
+            resourceId: links[6]._id,
+            resourceType: 'Link',
+            roleId: roleSystemAdmin._id
+        }
+        , {
+            resourceId: links[7]._id,
             resourceType: 'Link',
             roleId: roleSystemAdmin._id
         }
     ]);
 
 
-	/**
-	 * 6. Tạo các RootRole
-	 */
+    /**
+     * 6. Tạo các RootRole
+     */
     const roleSuperAdmin = await RootRole(systemDB).create({
         name: Terms.ROOT_ROLES.SUPER_ADMIN.name,
         description: Terms.ROOT_ROLES.SUPER_ADMIN.description
@@ -203,19 +213,19 @@ const initDB = async() => {
     });
     console.log("@Created ROOTROLES.");
 
-	/**
-	 * 7. Khởi tạo các system-link và system-component
-	 */
+    /**
+     * 7. Khởi tạo các system-link và system-component
+     */
     const convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
-        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){
+        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name) {
             return roleSuperAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name){
+        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name) {
             return roleAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.MANAGER.name){
+        } else if (roleName === Terms.ROOT_ROLES.MANAGER.name) {
             return roleManager._id;
-        } else if (roleName === Terms.ROOT_ROLES.DEPUTY_MANAGER.name){
+        } else if (roleName === Terms.ROOT_ROLES.DEPUTY_MANAGER.name) {
             return roleDeputyManager._id;
-        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name){
+        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name) {
             return roleEmployee._id;
         }
     }
@@ -223,7 +233,7 @@ const initDB = async() => {
     const convertComponentNameToId = (componentName, systemComponents) => {
         let id = null;
         for (let i = 0; i < systemComponents.length; i++) {
-            if(componentName === systemComponents[i].name){
+            if (componentName === systemComponents[i].name) {
                 id = systemComponents[i]._id;
                 break;
             }
@@ -235,7 +245,7 @@ const initDB = async() => {
     const getComponentDataByName = (name, componentArr) => {
         let component = null;
         for (let i = 0; i < componentArr.length; i++) {
-            if(name === componentArr[i].name){
+            if (name === componentArr[i].name) {
                 component = componentArr[i];
                 break;
             }
@@ -246,7 +256,7 @@ const initDB = async() => {
     const convertLinkUrltoLinkId = (linkUrl, systemLinks) => {
         let id = null;
         for (let i = 0; i < systemLinks.length; i++) {
-            if(linkUrl === systemLinks[i].url){
+            if (linkUrl === systemLinks[i].url) {
                 id = systemLinks[i]._id;
                 break;
             }
@@ -256,7 +266,7 @@ const initDB = async() => {
     }
 
     // Tạo các system component
-    const dataSystemComponents = Terms.COMPONENTS.map(component=>{
+    const dataSystemComponents = Terms.COMPONENTS.map(component => {
         return {
             name: component.name,
             roles: component.roles.map(name => convertRoleNameToRoleId(name)),
@@ -266,7 +276,7 @@ const initDB = async() => {
     const systemComponents = await SystemComponent(systemDB).insertMany(dataSystemComponents);
 
     // Tạo các system link
-    const dataSystemLinks = Terms.LINKS.map( systemLink => {
+    const dataSystemLinks = Terms.LINKS.map(systemLink => {
         return {
             ...systemLink,
             roles: systemLink.roles.map(name => convertRoleNameToRoleId(name)),
@@ -298,7 +308,7 @@ const initDB = async() => {
     console.log("\n\nDone. Initial database successfully.");
 }
 
-initDB().catch(err=>{
-	console.log(err);
-	process.exit(0)
+initDB().catch(err => {
+    console.log(err);
+    process.exit(0)
 });
