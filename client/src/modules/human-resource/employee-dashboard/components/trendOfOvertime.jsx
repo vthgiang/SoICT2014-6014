@@ -1,91 +1,66 @@
 /* Biểu đồ xu làm thêm giờ của nhân viên */
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti, DatePicker } from '../../../../common-components';
-import { TimesheetsActions } from '../../timesheets/redux/actions';
+import { getEmployeeDashboardActions } from "../redux/actions"
+
 
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
 
-/**
- * Function format dữ liệu Date thành string
- * @param {*} date : Ngày muốn format
- * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
- */
-const formatDate = (date, monthYear = false) => {
-    if (date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
-    }
-    return date;
-}
-
 const TrendOfOvertime = (props) => {
-    const { department, timesheets, translate, childOrganizationalUnit, idUnits, unitName } = props;
-
-    let date = new Date()
-    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
+    
+    const { translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData, date } = props;
 
     const [state, setState] = useState({
         lineChart: false,
-        startDate: _startDate,
-        startDateShow: _startDate,
-        endDate: formatDate(Date.now(), true),
-        endDateShow: formatDate(Date.now(), true),
+        startDate: date.startDate,
+        startDateShow: date.startDate,
+        endDate: date.endDate,
+        endDateShow: date.endDate,
         organizationalUnitsSearch: props.defaultUnit ? props.organizationalUnits : [],
         organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
+        trendOfOvertimeChartData: employeeDashboardData.trendOfOvertimeChartData?.data1 ? {ratioX: employeeDashboardData.trendOfOvertimeChartData.ratioX, data1: employeeDashboardData.trendOfOvertimeChartData.data1} : {ratioX: [], data1: []},
     })
-    const { lineChart, nameChart, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
+   
 
     const barChart = useRef(null)
 
     useEffect(() => {
-        const { startDate, endDate } = state;
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+        setState({
+            ...state,
+            trendOfOvertimeChartData: {
+                ratioX: employeeDashboardData.trendOfOvertimeChartData.ratioX,
+                data1: employeeDashboardData.trendOfOvertimeChartData.data1
+            }
+        })
+    }, [employeeDashboardData.trendOfOvertimeChartData.ratioX, employeeDashboardData.trendOfOvertimeChartData.data1])
 
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        if (props?.idUnits?.length)
-            props.getTimesheets({ organizationalUnits: props.idUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
-    }, [JSON.stringify(props?.idUnits)]);
+    const { lineChart, nameChart, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnits } = state;
+    const { trendOfOvertimeChartData } = state
 
     useEffect(() => {
-        if (timesheets?.arrMonth?.length > 0) {
-            let ratioX = ['x', ...timesheets.arrMonth];
-            let listOvertimeOfUnitsByStartDateAndEndDate = timesheets.listOvertimeOfUnitsByStartDateAndEndDate;
-            let data1 = ['data1'];
-            timesheets.arrMonth.forEach(x => {
-                let overtime = 0;
-                listOvertimeOfUnitsByStartDateAndEndDate.forEach(y => {
-                    if (dayjs(y.month).format("MM-YYYY") === dayjs(x).format("MM-YYYY")) {
-                        let totalOvertime = y.totalOvertime ? y.totalOvertime : 0;
-                        overtime = overtime + totalOvertime
-                    };
-                })
-                data1 = [...data1, overtime]
-            })
-            renderChart({ nameData1, ratioX, data1, lineChart });
-        }
-    }, [JSON.stringify(props?.timesheets?.listOvertimeOfUnitsByStartDateAndEndDate), JSON.stringify(props?.timesheets?.arrMonth)])
+        let ratioX = [...trendOfOvertimeChartData.ratioX]
+        let data1 = [...trendOfOvertimeChartData.data1]
+        
+        renderChart({ nameData1, lineChart, ratioX, data1 });
+    }, [lineChart, trendOfOvertimeChartData, employeeDashboardData.trendOfOvertimeChartData.ratioX, employeeDashboardData.trendOfOvertimeChartData.data1])
+
+    if ( props.nameChart !== state.nameChart
+        || props.nameData1 !== state.nameData1
+        || props.nameData2 !== state.nameData2
+    ) {
+        setState(state => ({
+            ...state,
+            nameChart: props.nameChart,
+            nameData1: props.nameData1,
+        }))
+    }
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -133,43 +108,7 @@ const TrendOfOvertime = (props) => {
         })
     }
 
-    const isEqual = (items1, items2) => {
-        if (!items1 || !items2) {
-            return false;
-        }
-        if (items1.length !== items2.length) {
-            return false;
-        }
-        for (let i = 0; i < items1.length; ++i) {
-            if (items1[i]._id !== items2[i]._id) {
-                return false;
-            }
-        }
-        return true;
-    }
 
-    if (!state.arrMonth
-        || props.timesheets.arrMonth?.length !== state.arrMonth?.length
-        || !isEqual(props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate)
-        || props.nameChart !== state.nameChart
-        || props.nameData1 !== state.nameData1
-        || props.nameData2 !== state.nameData2
-    ) {
-        setState(state => ({
-            ...state,
-            nameChart: props.nameChart,
-            nameData1: props.nameData1,
-            arrMonth: props.timesheets.arrMonth,
-            listOvertimeOfUnitsByStartDateAndEndDate: props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate,
-        }))
-    }
-
-    useEffect(() => {
-        if (props.timesheets.arrMonth?.length !== state.arrMonth?.length ||
-            !isEqual(props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate)) {
-            setState({ ...state });
-        }
-    }, [props.timesheets.arrMonth, state.arrMonth, state.lineChart, props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate])
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     const removePreviousChart = () => {
@@ -231,7 +170,11 @@ const TrendOfOvertime = (props) => {
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
         if (new Date(startDateNew).getTime() < new Date(endDateNew).getTime()) {
-            props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
+            props.getEmployeeDashboardData({
+                searchChart: {
+                    trendOfOvertimeChart: {organizationalUnits: props.idUnit, startDate: startDateNew, endDate: endDateNew}
+                }
+            })
         }
     }
 
@@ -243,6 +186,15 @@ const TrendOfOvertime = (props) => {
         })
     }
 
+    useEffect(() => {
+        setState({
+            ...state,
+            startDate: date.startDate,
+            startDateShow: date.startDate,
+            endDate: date.endDate,
+            endDateShow: date.endDate,
+        })
+    }, [JSON.stringify(date.month)]);
     return (
         <React.Fragment>
             <div className="box box-solid">
@@ -312,9 +264,9 @@ const TrendOfOvertime = (props) => {
                             </div>
                         </div>
                     </div>
-                    {timesheets.isLoading
+                    {employeeDashboardData.isLoading
                         ? <div>{translate('general.loading')}</div>
-                        : timesheets?.arrMonth?.length > 0
+                        : employeeDashboardData.trendOfOvertimeChartData?.ratioX?.length > 0
                             ? <div className="dashboard_box_body">
                                 <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
                                 <div className="box-tools pull-right">
@@ -334,12 +286,12 @@ const TrendOfOvertime = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, timesheets, department } = state;
-    return { employeesManager, timesheets, department };
+    const { employeeDashboardData } = state;
+    return { employeeDashboardData };
 }
 
 const actionCreators = {
-    getTimesheets: TimesheetsActions.searchTimesheets,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 
 const trendOfOvertime = connect(mapState, actionCreators)(withTranslate(TrendOfOvertime));

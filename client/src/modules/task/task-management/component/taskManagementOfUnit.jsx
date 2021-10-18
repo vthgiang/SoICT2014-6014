@@ -9,7 +9,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
 import { taskManagementActions } from '../redux/actions';
-
+import { getStorage } from '../../../../config';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import parse from 'html-react-parser';
@@ -308,9 +308,9 @@ function TaskManagementOfUnit(props) {
         }
 
         setState({
-            ...state,
-            currentTaskId: id,
-            taskName
+                ...state,
+                currentTaskId: id,
+                taskName
         })
         window.$(`#modelPerformTask${id}`).modal('show');
     }
@@ -565,6 +565,10 @@ function TaskManagementOfUnit(props) {
     if (tasks) {
         currentTasks = tasks.tasks;
     }
+
+    // kiểm tra vai trò của người dùng
+    let userId = getStorage("userId");
+
     if (user) units = user.organizationalUnitsOfUser;
 
     // khởi tạo dữ liệu TreeTable
@@ -584,10 +588,10 @@ function TaskManagementOfUnit(props) {
     ];
     if (currentTasks && currentTasks.length !== 0) {
         let dataTemp = currentTasks;
-
         for (let n in dataTemp) {
             data[n] = {
                 ...dataTemp[n],
+                rawData: dataTemp[n],
                 name: dataTemp[n].name,
                 description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                 organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
@@ -600,12 +604,24 @@ function TaskManagementOfUnit(props) {
                 status: checkTaskRequestToClose(dataTemp[n]),
                 progress: convertProgressData(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                 totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
-                parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
+                parent: dataTemp[n].parent ? dataTemp[n].parent._id : null,
             }
         }
 
         for (let i in data) {
-            data[i] = { ...data[i], action: ["edit", "delete"] }
+            if (dataTemp[i].creator && dataTemp[i].creator._id === userId || dataTemp[i].informedEmployees.indexOf(userId) !== -1) {
+                let del = null;
+                if (dataTemp[i].creator._id === userId) {
+                    del = "delete";
+                }
+                data[i] = { ...data[i], action: ["edit", del] }
+            }
+            if (dataTemp[i].responsibleEmployees && dataTemp[i].responsibleEmployees.find(e => e._id === userId) || dataTemp[i].consultedEmployees && dataTemp[i].consultedEmployees.indexOf(userId) !== -1) {
+                data[i] = { ...data[i], action: ["edit"] }
+            }
+            if (dataTemp[i].accountableEmployees && dataTemp[i].accountableEmployees.filter(o => o._id === userId).length > 0) {
+                data[i] = { ...data[i], action: ["edit", "delete"] }
+            }
         }
     }
 
@@ -620,7 +636,7 @@ function TaskManagementOfUnit(props) {
             {currentOrganizationalUnit
                 ? <div className="box">
                     <div className="box-body qlcv">
-                        <div style={{ height: "40px" }}>
+                        <div style={{ height: "40px", marginBottom: '10px' }}>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
                             {/* <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button> */}
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
@@ -628,11 +644,14 @@ function TaskManagementOfUnit(props) {
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
                         </div>
 
-                        <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end", opacity: selectedData.length ? 1 : 0 }}>
-                            <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
-                                {translate("general.delete_option")}
-                            </button>
-                        </div>
+                        {
+                            selectedData && selectedData.length > 0 &&
+                            <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
+                                    {translate("general.delete_option")}
+                                </button>
+                            </div>
+                        }
 
                         <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                             {/* Đơn vị tham gia công việc */}
@@ -806,7 +825,7 @@ function TaskManagementOfUnit(props) {
                                 data={data}
                                 onSetNumberOfRowsPerPage={setLimit}
                                 onSelectedRowsChange={onSelectedRowsChange}
-                                openOnClickName={true}
+                                viewWhenClickName={true}
                                 titleAction={{
                                     edit: translate('task.task_management.action_edit'),
                                     delete: translate('task.task_management.action_delete'),

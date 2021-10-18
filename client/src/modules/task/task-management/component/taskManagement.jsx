@@ -503,8 +503,8 @@ function TaskManagement(props) {
 
         if (id && idValid) {
             setState({
-                ...state,
-                currentTaskId: id
+                    ...state,
+                    currentTaskId: id
             })
             window.$(`#modelPerformTask${id}`).modal('show')
         }
@@ -659,7 +659,7 @@ function TaskManagement(props) {
     let units = [];
 
     useEffect(() => {
-        if ((!props?.tasks?.loadingPaginateTasks && props?.tasks?.tasks?.length) || !props?.project?.isLoading) {
+        if ((!props?.tasks?.loadingPaginateTasks) || !props?.project?.isLoading) {
             const currentTasks = cloneDeep(props.tasks.tasks);
             let data = [], dataTree = [];
 
@@ -668,6 +668,7 @@ function TaskManagement(props) {
                 for (let n in currentTasks) {
                     data[n] = {
                         ...currentTasks[n],
+                        rawData : currentTasks[n],
                         name: currentTasks[n].name,
                         description: currentTasks[n].description ? parse(currentTasks[n].description) : null,
                         organization: currentTasks[n].organizationalUnit ? currentTasks[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
@@ -683,10 +684,15 @@ function TaskManagement(props) {
                         totalLoggedTime: getTotalTimeSheetLogs(currentTasks[n].timesheetLogs),
                         parent: currentTasks[n].parent ? currentTasks[n].parent._id : null
                     }
-                    let archived = "store";
-                    if (currentTasks[0].isArchived === true) {
-                        archived = "restore";
+                    let archived = null;
+
+                    if (currentTasks[n].status ==="finished"||currentTasks[n].status==="delayed"||currentTasks[n].status==="canceled"){
+                        if (currentTasks[n].isArchived === true) {
+                            archived = "restore";
+                        }
+                        else archived = "store";
                     }
+                    
                     if (currentTasks[n].creator && currentTasks[n].creator._id === userId || currentTasks[n].informedEmployees.indexOf(userId) !== -1) {
                         let del = null;
                         if (currentTasks[n].creator._id === userId) {
@@ -776,14 +782,13 @@ function TaskManagement(props) {
                     }
                 }
             }
-            if (data?.length || dataTree?.length) {
-                setState({
-                    ...state,
-                    data,
-                    dataTree,
-                    currentTasks,
-                })
-            }
+
+            setState({
+                ...state,
+                data,
+                dataTree,
+                currentTasks,
+            })
         }
 
     }, [JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)]);
@@ -872,14 +877,17 @@ function TaskManagement(props) {
                         <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
-                    <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end", opacity: selectedData.length ? 1 : 0 }}>
-                        <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
-                            {translate("general.delete_option")}
-                        </button>
-                        <button disabled={!(validateAction("store") || validateAction("restore"))} style={{ margin: "5px" }} type="button" className="btn btn-info pull-right" title={translate("task.task_management.edit_status_archived_of_task")} onClick={() => handleStore(selectedData)}>
-                            {translate("task.task_management.edit_status_archived_of_task")}
-                        </button>
-                    </div>
+                    {
+                        selectedData && selectedData.length > 0 &&
+                        <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
+                                {translate("general.delete_option")}
+                            </button>
+                            <button disabled={!(validateAction("store") || validateAction("restore"))} style={{ margin: "5px" }} type="button" className="btn btn-info pull-right" title={translate("task.task_management.edit_status_archived_of_task")} onClick={() => handleStore(selectedData)}>
+                                {translate("task.task_management.edit_status_archived_of_task")}
+                            </button>
+                        </div>
+                    }
 
                     <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                         <div className="form-group">
@@ -1073,7 +1081,7 @@ function TaskManagement(props) {
                                     data={state?.data ? state.data : []}
                                     onSetNumberOfRowsPerPage={setLimit}
                                     onSelectedRowsChange={onSelectedRowsChange}
-                                    openOnClickName={true}
+                                    viewWhenClickName={true}
                                     titleAction={{
                                         edit: translate('task.task_management.action_edit'),
                                         delete: translate('task.task_management.action_delete'),

@@ -98,6 +98,7 @@ export default {
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
             registration_api: "Manage API registration",
+            registration_api_employee: "Manage API employee registration",
             privilege_api: "Manage permissions API",
 
             manage_department: "Manage Departments",
@@ -1442,6 +1443,11 @@ export default {
                 "The end date must be after the start date",
             cannot_be_empty: "cannot be empty",
             value_duplicate: "be duplicated",
+            // Lấy thông tin bảng tin quản lý nhân sự
+            get_human_resources_dashboard_data: {
+                get_human_resources_dashboard_success: "Get information on successful human resource management message board",
+                get_human_resources_dashboard_failed: "Retrieving information on human resource management message board failed"
+            },
 
             // Quản lý lương nhân viên
             salary: {

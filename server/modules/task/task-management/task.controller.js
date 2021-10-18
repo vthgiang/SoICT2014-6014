@@ -675,11 +675,11 @@ exports.createProjectTasksFromCPM = async (req, res) => {
 }
 
 /**
- *  Xóa một công việc đã thiết lập
+ *  Xóa một hoặc nhiều công việc đã thiết lập
  */
 exports.deleteTask = async (req, res) => {
     try {
-        TaskManagementService.deleteTask(req.portal, req.params.taskId);
+        TaskManagementService.deleteTask(req.portal, req.params.taskId,req.query.userId);
 
         await Logger.info(req.user.email, 'delete_task', req.portal)
         res.status(200).json({

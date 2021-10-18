@@ -373,6 +373,19 @@ const LINKS = [{
     components: getComponentsInLink('/apis-registration')
 },
 {
+    url: '/apis-registration-employee',
+    description: 'Quản lý đăng ký sử dụng API của nhân viên',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink('/apis-registration-employee')
+},
+{
     url: '/components-management',
     description: 'Quản lý các thành phần UI trên trang web của công ty',
     category: LINK_CATEGORY.RBAC.name,
@@ -620,7 +633,9 @@ const LINKS = [{
     description: 'Kế hoạch đào tạo',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
-        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name
     ],
     components: getComponentsInLink('/hr-training-plan-employee')
 },
@@ -633,7 +648,15 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/hr-list-education')
 },
-
+{
+    url: '/get-employee-dashboard-data',
+    description: 'Lấy thông tin bảng tin nhân sự',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name
+    ],
+    component: getComponentsInLink('/hr-list-education')
+},
 
 // KPI
 {

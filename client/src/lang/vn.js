@@ -100,6 +100,7 @@ export default {
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
             registration_api: "Quản lý đăng ký API",
+            registration_api_employee: "Đăng ký sử dụng API",
             privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
@@ -1538,6 +1539,11 @@ export default {
             end_date_after_start_date: "Ngày kết thúc phải sau ngày bắt đầu",
             cannot_be_empty: "không được để trống",
             value_duplicate: "bị trùng lặp",
+            //Lấy dữ liệu bảng tin quản lý nhân sự
+            get_human_resources_dashboard_data: {
+                get_human_resources_dashboard_success: "Lấy thông tin bảng tin quản lý nhân sự thành công",
+                get_human_resources_dashboard_failed: "Lấy thông tin bảng tin quản lý nhân sự thất bại"
+            },
 
             // Quản lý lương nhân viên
             salary: {
@@ -2468,6 +2474,7 @@ export default {
                 delete_course: "Xoá khoá đào tạo",
                 view_course: "Thông tin khoá đào tạo",
                 register: "Đăng ký",
+                cancel_register: "Hủy đăng ký",
 
                 // Thông điệp trả về từ server
                 name_required: "Tên khoá đào tạo không được để trống",
