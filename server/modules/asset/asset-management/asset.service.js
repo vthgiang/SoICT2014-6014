@@ -1594,8 +1594,12 @@ exports.deleteIncident = async (portal, incidentIds) => {
 }
 
 
-exports.chartAssetGroupData = async (portal, company, listChart) => {
-    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation status assetName")
+exports.chartAssetGroupData = async (portal, company,time) => {
+    
+    let result
+    
+
+    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation status assetName purchaseDate disposalDate disposalCost incidentLogs maintainanceLogs")
     let listType = await AssetType(connect(DB_CONNECTION, portal)).find({}).sort({ 'createDate': 'desc' }).populate({ path: 'parent' });
     // let listAssets = await Asset(connect(DB_CONNECTION, portal))
     // .find(keySearch)
@@ -1607,6 +1611,7 @@ exports.chartAssetGroupData = async (portal, company, listChart) => {
     // .skip(params.page)
     // .limit(params.limit);
 
-    let result = { chartAssets: chartAssets, listType: listType }
+    result = { chartAssets: chartAssets, listType: listType }
+
     return { result }
 }
