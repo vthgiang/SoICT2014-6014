@@ -25,7 +25,7 @@ function GoodCreateForm(props) {
         numberExpirationDate: ""
     })
 
-    useEffect(() => {
+    if (props.type !== state.type) {
         setState({
             ...state,
             type: props.type,
@@ -39,7 +39,7 @@ function GoodCreateForm(props) {
             salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
             numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : ""
         });
-    }, [props.type])
+    }
 
     const validatePrice = (value) => {
         let msg = undefined;
@@ -196,7 +196,6 @@ function GoodCreateForm(props) {
             ...state,
             manufacturingMills: data,
         });
-        console.log(state.manufacturingMills);
     };
 
     const handleNumberExpirationDateChange = (e) => {
@@ -243,6 +242,8 @@ function GoodCreateForm(props) {
                 validateNumberExpirationDate(numberExpirationDate, false)
         }
         return result;
+        // return true;
+
     };
 
     const save = () => {
@@ -285,7 +286,6 @@ function GoodCreateForm(props) {
 
     if (units) listUnit = units;
     if (materials) listMaterial = materials;
-    console.log('state', state);
     return (
         <React.Fragment>
             <ButtonModal
