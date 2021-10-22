@@ -493,7 +493,7 @@ function GoodIssueEditForm(props) {
         return false;
     }
 
-    useEffect(() => {
+    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
         let approver = [];
         let qualityControlStaffs = [];
         let responsibles = [];
@@ -571,7 +571,7 @@ function GoodIssueEditForm(props) {
             errorResponsibles: undefined
 
         })
-    }, [props.billId, props.oldStatus])
+    }
 
     const save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier,
