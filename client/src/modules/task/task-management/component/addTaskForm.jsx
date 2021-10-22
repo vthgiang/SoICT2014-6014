@@ -19,34 +19,31 @@ import dayjs from "dayjs";
 
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
-    const [state, setState] = useState(() => initState())
+    const [state, setState] = useState({
+        newTask: {
+            name: "",
+            description: "",
+            quillDescriptionDefault: "",
+            startDate: "",
+            endDate: "",
+            startTime: "",
+            endTime: "05:30 PM",
+            priority: 3,
+            responsibleEmployees: [],
+            accountableEmployees: [],
+            consultedEmployees: [],
+            informedEmployees: [],
+            creator: getStorage("userId"),
+            organizationalUnit: "",
+            collaboratedWithOrganizationalUnits: [],
+            taskTemplate: "",
+            parent: "",
+            taskProject: "",
+            tags: []
+        },
+        currentRole: getStorage('currentRole'),
+    })
 
-    function initState() {
-        return {
-            newTask: {
-                name: "",
-                description: "",
-                quillDescriptionDefault: "",
-                startDate: "",
-                endDate: "",
-                startTime: "",
-                endTime: "05:30 PM",
-                priority: 3,
-                responsibleEmployees: [],
-                accountableEmployees: [],
-                consultedEmployees: [],
-                informedEmployees: [],
-                creator: getStorage("userId"),
-                organizationalUnit: "",
-                collaboratedWithOrganizationalUnits: [],
-                taskTemplate: "",
-                parent: "",
-                taskProject: "",
-                tags: []
-            },
-            currentRole: getStorage('currentRole'),
-        }
-    }
     const { id, newTask } = state;
 
     useEffect(() => {
@@ -102,7 +99,7 @@ function AddTaskForm(props) {
             }
         }
     }, [props.id, props.isProcess])
-
+    console.log(state);
     useEffect(() => {
         if (props.task) {
             setState({
@@ -136,20 +133,25 @@ function AddTaskForm(props) {
 
     // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
     useEffect(() => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                parent: props.parentTask,
-            }
-        });
+        if (props.parentTask){
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    parent: props.parentTask,
+                }
+            });
+        }
     }, [props.parentTask])
 
     useEffect(() => {
-        props.handleChangeTaskData(state.newTask)
+        if (state.id){
+            props.handleChangeTaskData(state.newTask)
+        }
     }, [JSON.stringify(newTask)])
 
     useEffect(() => {
+        if (state.id){
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
         if (newTask.organizationalUnit === "" && department.list.length !== 0 && department.isLoading === false) {
             // Tìm unit mà currentRole của user đang thuộc về
@@ -173,6 +175,7 @@ function AddTaskForm(props) {
                 }
             });
         }
+    }
     }, [JSON.stringify(department?.list)])
 
     // convert ISODate to String dd-mm-yyyy

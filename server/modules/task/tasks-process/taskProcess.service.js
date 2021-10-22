@@ -648,7 +648,7 @@ exports.editProcessInfo = async (portal, params, body) => {
                 consultedEmployees:data.consultedEmployees,
                 // parent:data.parent,
                 // taskProject:data.taskProject,
-                codeInProcess:data.code,
+                codeInProcess:data.codeInProcess,
                 organizationalUnit:data.organizationalUnit,
                 collaboratedWithOrganizationalUnits:data.collaboratedWithOrganizationalUnits,
                 quillDescriptionDefault:data.quillDescriptionDefault,
