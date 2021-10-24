@@ -287,8 +287,8 @@ exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
     let queryData = {
         userId: query.userId,
         name: query.name,
-        // pageNumber : query.pageNumber,
-        pageNumber: 1,
+        pageNumber : query.pageNumber,
+        // pageNumber: 1,
         noResultsPerPage: query.noResultsPerPage,
     }
 
