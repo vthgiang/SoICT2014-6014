@@ -491,7 +491,7 @@ function AddTaskForm(props) {
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-
+        console.log(state.newTask);
         if (willUpdateState) {
             setState({
                 ...state,
@@ -501,7 +501,7 @@ function AddTaskForm(props) {
                     errorOnResponsibleEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeResponsible(state.newTask.responsibleEmployees)
+            props.isProcess && props.handleChangeResponsible(value)
         }
         return message === undefined;
     }
@@ -523,7 +523,7 @@ function AddTaskForm(props) {
                     errorOnAccountableEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeAccountable(state.newTask.accountableEmployees)
+            props.isProcess && props.handleChangeAccountable(value)
         }
         return message === undefined;
     }
