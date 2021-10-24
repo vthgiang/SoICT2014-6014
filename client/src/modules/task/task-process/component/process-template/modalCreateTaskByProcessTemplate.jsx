@@ -175,6 +175,13 @@ function ModalCreateTaskByProcessTemplate(props) {
             modeler.importXML(props.data.xmlDiagram, function (err) { });
         }
     }, [props.idProcess])
+    if (state.save === true) {
+		modeler.importXML(props.data.xmlDiagram);
+		setState({
+			...state,
+			save: false,
+		});
+	}
     // Các hàm xử lý sự kiện của form 
     const handleChangeContent = async (content) => {
         await setState(state => {
@@ -608,6 +615,22 @@ function ModalCreateTaskByProcessTemplate(props) {
         }
         let template;
         props.createTaskByProcess(data, state.idProcess, template = true);
+        setState({
+            userId: getStorage("userId"),
+            currentRole: getStorage('currentRole'),
+            showInfo: false,
+            info: props.data.tasks,
+            xmlDiagram: props.data.xmlDiagram,
+            selected: 'info',
+            save : true,
+            zlevel: 1,
+            startDate: "",
+            endDate: "",
+            manager: [],
+            viewer: [],
+            id:"",
+            indexRenderer: 0,
+        })
     }
 
     const { translate, role, user } = props;
