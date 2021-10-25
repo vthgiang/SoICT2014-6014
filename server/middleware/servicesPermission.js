@@ -141,6 +141,7 @@ exports.links = [
             { path: '/employee/employees/import', method: 'POST' },
 
             { path: '/salary/salaries', method: 'GET' },
+            { path: '/salary/salaries-chart', method: 'GET' },
             { path: '/salary/salaries', method: 'POST' },
             { path: '/salary/salaries/:id', method: 'PATCH' },
             { path: '/salary/salaries/:id', method: 'DELETE' },

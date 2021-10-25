@@ -7,7 +7,8 @@ export const SalaryService = {
     createSalary,
     deleteSalary,
     updateSalary,
-    importSalary
+    importSalary,
+    getAllSalaryChart
 }
 
 /**
@@ -76,4 +77,15 @@ function importSalary(data) {
         method: 'POST',
         data: data,
     }, true, false, 'human_resource.salary');
+}
+
+function getAllSalaryChart(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/salary/salaries-chart`,
+        method: 'GET',
+        params: {
+            time : data,
+            
+        }
+    }, false, true, 'human_resource.salary');
 }
