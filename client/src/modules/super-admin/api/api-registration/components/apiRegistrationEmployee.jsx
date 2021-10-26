@@ -10,7 +10,9 @@ import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 import { ApiRegistrationActions } from '../redux/actions'
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
 
-function ApiRegistration (props) {
+import { getStorage } from '../../../../../config';
+
+function ApiRegistrationEmployee (props) {
     const { translate, privilegeApis, company } = props
 
     const tableId = "table-api-registration";
@@ -21,12 +23,14 @@ function ApiRegistration (props) {
         email: null,
         companyId: localStorage.getItem("companyId"),
         page: 1,
-        perPage: limit
+        perPage: limit,
+        userId: getStorage('userId')
     })
-    const { email, companyId, page, perPage } = state;
+    const { email, companyId, page, perPage, userId } = state;
 
     useEffect(() => {
         props.getPrivilegeApis({
+            creator: userId,
             email: email,
             companyIds: [companyId],
             role: 'admin',
@@ -44,6 +48,7 @@ function ApiRegistration (props) {
 
     const handleSunmitSearch = () => {
         props.getPrivilegeApis({
+            creator: userId,
             email: email,
             companyIds: [companyId],
             role: 'admin',
@@ -81,6 +86,7 @@ function ApiRegistration (props) {
                 perPage: Number(value)
             })
             props.getPrivilegeApis({
+                creator: userId,
                 email: email,
                 companyIds: [companyId],
                 role: 'admin',
@@ -96,6 +102,7 @@ function ApiRegistration (props) {
             page: value
         })
         props.getPrivilegeApis({
+            creator: userId,
             email: email,
             companyIds: [companyId],
             role: 'admin',
@@ -117,7 +124,7 @@ function ApiRegistration (props) {
     return (
         <React.Fragment>
             <CreateApiRegistrationModal
-                role="admin"
+                role="employee"
             />
             
             <div className="box" >
@@ -162,12 +169,12 @@ function ApiRegistration (props) {
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745"}}>
+                                            {/* <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745"}}>
                                                 <i className="material-icons">check_circle_outline</i>
                                             </a>
                                             <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
                                                 <i className="material-icons">remove_circle_outline</i>
-                                            </a>
+                                            </a> */}
                                             <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585"}}>
                                                 <i className="material-icons">highlight_off</i>
                                             </a>
@@ -200,4 +207,4 @@ const actions = {
     updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi
 }
 
-export default connect(mapState, actions)(withTranslate(ApiRegistration))
+export default connect(mapState, actions)(withTranslate(ApiRegistrationEmployee))

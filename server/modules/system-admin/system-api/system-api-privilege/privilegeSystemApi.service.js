@@ -1,14 +1,21 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 
-const { PrivilegeApi, Company } = require(`../../../../models`);
+const { PrivilegeApi, Company, SystemApi } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 
 const getPrivilegeApis = async (portal, data) => {
-    const { email, companyIds, role, page = 1, perPage = 30 } = data
+    const { email, companyIds, role, page = 1, perPage = 30, creator } = data
 
     let privilegeApis, totalPrivilegeApis, totalPages
     let keySearch = {}
+
+    if (creator) {
+        keySearch = {
+            ...keySearch,
+            creator: mongoose.Types.ObjectId(creator)
+        }
+    }
 
     if (email) {
         keySearch = {
@@ -62,7 +69,7 @@ const getPrivilegeApis = async (portal, data) => {
  * @company công ty được lấy dữ liệu
  */
 const createPrivilegeApi = async (data) => {
-    const { email, name, apis, companyId, role, description, startDate, endDate } = data
+    const { email, name, apis, companyId, role, description, startDate, endDate, userId } = data
 
     // Check sự tồn tại của phân quyền
     let privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -86,6 +93,17 @@ const createPrivilegeApi = async (data) => {
         };
     } 
 
+    let systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+        .find({
+            _id: { $in: apis }
+        })
+    systemApis = systemApis.map(item => {
+        return {
+            path: item.path,
+            method: item.method
+        }
+    })
+
     if (role === 'system_admin' || role === 'admin') {
         // set time token
         let expiresIn = 0;
@@ -108,18 +126,20 @@ const createPrivilegeApi = async (data) => {
                 expiresIn: expiresIn 
             }
         );
+        console.log("role", role)
     
         if (role === 'system_admin') {
             // Them vao csdl system admin
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({
                     email: email,
-                    apis: apis,
+                    apis: systemApis,
                     company: companyId,
                     status: 3,
                     token: token,
                     startDate: startDate && new Date(startDate),
-                    endDate: endDate && new Date(endDate)
+                    endDate: endDate && new Date(endDate),
+                    creator: userId
                 })
             await Company(connect(DB_CONNECTION, process.env.DB_NAME))
                 .populate(privilege, { path: "company" })
@@ -128,23 +148,25 @@ const createPrivilegeApi = async (data) => {
             await PrivilegeApi(connect(DB_CONNECTION, company.shortName))
                 .create({
                     email: email,
-                    apis: apis,
+                    apis: systemApis,
                     company: companyId,
                     status: 3,
                     token: token,
                     startDate: startDate && new Date(startDate),
-                    endDate: endDate && new Date(endDate)
+                    endDate: endDate && new Date(endDate),
+                    creator: userId
                 })
         } else if (role === 'admin') {
             privilege = await PrivilegeApi(connect(DB_CONNECTION, company.shortName))
                 .create({
                     email: email,
-                    apis: apis,
+                    apis: systemApis,
                     company: companyId,
                     status: 3,
                     token: token,
                     startDate: startDate && new Date(startDate),
-                    endDate: endDate && new Date(endDate)
+                    endDate: endDate && new Date(endDate),
+                    creator: userId
                 })
                 
             await Company(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -156,11 +178,12 @@ const createPrivilegeApi = async (data) => {
                 email: email,
                 name: name,
                 description: description,
-                apis: apis,
+                apis: systemApis,
                 company: companyId,
                 status: 1,
                 startDate: startDate && new Date(startDate),
-                endDate: endDate && new Date(endDate)
+                endDate: endDate && new Date(endDate),
+                creator: userId
             })     
     }
      

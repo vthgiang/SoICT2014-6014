@@ -1,12 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal } from '../../../../common-components';
+import { DialogModal, PaginateBar } from '../../../../common-components';
 import dayjs from 'dayjs';
 
 const ViewAllGeneralTask = (props) => {
     const tasks = props && props.showDetailTask && props.showDetailTask.tasks;
+    const perPage = 5;
+    const [state, setState] = useState({})
+    useEffect(() => {
+        let tasksPaginated = tasks.slice(0, perPage)
+        setState({
+            ...state,
+            tasksPaginated: tasksPaginated,
+            total: tasks?.length,
+            pageTotal: Math.ceil(tasks.length / perPage),
+            page: 1,
+            display: tasksPaginated.length
+        })
+    }, [JSON.stringify(tasks)])
+    const { pageTotal, page, tasksPaginated, total, display } = state
     const unitName = props && props.showDetailTask && props.showDetailTask.nameUnit;
     const type = props && props.showDetailTask && props.showDetailTask.taskType;
     const { translate } = props;
@@ -48,7 +62,18 @@ const ViewAllGeneralTask = (props) => {
             case "canceled": return translate('task.task_management.canceled');
         }
     }
-
+    const handlePagination = (page) => {
+        let begin = (Number(page) - 1) * perPage
+        let end = (Number(page) - 1) * perPage + perPage
+        let tasksPaginated = tasks?.slice(begin, end)
+        setState({
+            ...state,
+            tasksPaginated: tasksPaginated,
+            page: page,
+            display: tasksPaginated.length
+        })
+    }
+    console.log("state", state)
     return (
         <React.Fragment>
             <DialogModal
@@ -71,7 +96,7 @@ const ViewAllGeneralTask = (props) => {
                         </thead>
                         <tbody>
                             {
-                                tasks && tasks.length > 0 && tasks.map((obj, index) => (
+                                tasksPaginated && tasksPaginated.length > 0 && tasksPaginated.map((obj, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td><a href={`/task?taskId=${obj._id}`} target="_blank">{obj.name}</a></td>
@@ -83,6 +108,13 @@ const ViewAllGeneralTask = (props) => {
                             }
                         </tbody>
                     </table>
+                    <PaginateBar
+                        display={display}
+                        total={total}
+                        pageTotal={pageTotal}
+                        currentPage={page}
+                        func={handlePagination}
+                    />
                 </div>
             </DialogModal>
         </React.Fragment>

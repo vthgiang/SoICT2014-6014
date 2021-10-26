@@ -76,7 +76,7 @@ const ListTrainingProgram = (props) => {
 
     const { translate, education, department } = props;
 
-    const { limit, page, organizationalUnit, currentEditRow, currentViewRow } = state;
+    const { limit, page, organizationalUnit, currentViewRow } = state;
 
     const { list } = department;
     let listEducations = [], listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }];
@@ -131,9 +131,9 @@ const ListTrainingProgram = (props) => {
                 <table id="education-table" className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th title={translate('training.education_program.education_program_code')}>{translate('training.education_program.table.program_code')}</th>
-                            <th title={translate('training.education_program.education_program_name')}>{translate('training.education_program.table.program_name')}</th>
-                            <th>{translate('training.education_program.table.total_courses')}</th>
+                            <th  style={{ textAlign: 'center'}} title={translate('training.education_program.education_program_code')}>{translate('training.education_program.table.program_code')}</th>
+                            <th  style={{ textAlign: 'center'}} title={translate('training.education_program.education_program_name')}>{translate('training.education_program.table.program_name')}</th>
+                            <th  style={{ textAlign: 'center'}} >{translate('training.education_program.table.total_courses')}</th>
                             <th style={{ width: '120px' }}>{translate('general.action')}
                                 <DataTableSetting
                                     tableId="education-table"
@@ -153,9 +153,9 @@ const ListTrainingProgram = (props) => {
                         {listEducations && listEducations.length !== 0 &&
                             listEducations.map((x, index) => (
                                 <tr key={index}>
-                                    <td>{x.programId}</td>
-                                    <td>{x.name}</td>
-                                    <td>{x.totalList}</td>
+                                    <td style={{textAlign: 'center'}}>{x.programId}</td>
+                                    <td style={{textAlign: 'center'}}>{x.name}</td>
+                                    <td style={{textAlign: 'center'}}>{x.totalList}</td>
                                     <td>
                                         <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('training.education_program.view_education_program')}><i className="material-icons">view_list</i></a>
                                     </td>

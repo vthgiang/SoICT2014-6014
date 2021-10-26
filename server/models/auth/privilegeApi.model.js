@@ -10,10 +10,12 @@ const PrivilegeApiSchema = new Schema({
         type: String
     },
     apis: [{
-        type: Schema.Types.ObjectId,
-        ref: 'SystemApi',
-        required: true
-        
+        path: {
+            type: String,
+        },
+        method: {
+            type: String
+        },
     }],
     company: {
         type: Schema.Types.ObjectId,
@@ -33,6 +35,11 @@ const PrivilegeApiSchema = new Schema({
     },
     endDate: {
         type: Date
+    },
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 

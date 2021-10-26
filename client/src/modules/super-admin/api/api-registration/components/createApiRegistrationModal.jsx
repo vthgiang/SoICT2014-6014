@@ -8,7 +8,7 @@ import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-
 import { ApiActions } from '../../api-management/redux/actions'
 
 function CreateApiRegistrationModal(props) {
-    const { translate, apis } = props;
+    const { translate, apis, role } = props;
 
     const [state, setState] = useState({
         companyId: localStorage.getItem("companyId"),
@@ -174,7 +174,7 @@ function CreateApiRegistrationModal(props) {
             description: description,
             companyId: companyId,
             apis: registrationApis,
-            role: 'admin'
+            role: role
         })
         window.$("#create-api-registration-modal").modal("hide");
     }

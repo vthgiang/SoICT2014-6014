@@ -123,12 +123,12 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, orga
  */
 exports.getEmployeeProfile = async (portal, email) => {
     let employees = await Employee(connect(DB_CONNECTION, portal)).find({
-            emailInCompany: email
-        }).populate([
-            { path: "career.field" },
-            { path: "career.position" },
-            { path: "career.action" },
-        ]);
+        emailInCompany: email
+    }).populate([
+        { path: "career.field" },
+        { path: "career.position" },
+        { path: "career.action" },
+    ]);
 
     if (employees.length === 0) {
         return {
@@ -766,7 +766,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     } = data;
 
     for (let i in career) {
-        if(career[i] && career[i].position === "undefined") {
+        if (career[i] && career[i].position === "undefined") {
             delete career[i].position;
         }
     }
@@ -774,7 +774,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         if (x.field === "")
             x.field = null;
         return x;
-    }) :[]
+    }) : []
 
 
     // career = this.mergeUrlFileToObject(fileCareer, career);
@@ -915,13 +915,15 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         let courses = data.courses;
         for (let x in courses) {
             Course.update(
-                { _id: course[x].course},
-                { '$push': {
-                    results: {
-                        employee: createEmployee._id,
-                        result: courses[x].result
+                { _id: course[x].course },
+                {
+                    '$push': {
+                        results: {
+                            employee: createEmployee._id,
+                            result: courses[x].result
+                        }
                     }
-                }}
+                }
             )
         }
     }
@@ -1194,14 +1196,14 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Course, deleteCourses, editCourses, createCourses);
-   
+
     if (employee.emailInCompany) {
         // Kiểm tra xem email mới của nhân viên có tồn tại trong bảng user hay chưa
         const user = await User(connect(DB_CONNECTION, portal)).findOne(
             {
                 email: employee.emailInCompany,
             });
-        
+
         // Kiểm tra nhân viên được edit  có tài khoản người dùng hay chưa.
         const oldUser = await User(connect(DB_CONNECTION, portal)).findOne({
             email: oldMailInCompany
@@ -1210,7 +1212,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
                 path: "roles",
                 populate: {
                     path: "roleId",
-                    populate: { path: "type"},
+                    populate: { path: "type" },
                 },
             },
         ]);
@@ -1229,16 +1231,16 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
             await User(connect(DB_CONNECTION, portal)).findOneAndUpdate({
                 email: oldMailInCompany
             }, {
-                $set: { email: employee.emailInCompany}
+                $set: { email: employee.emailInCompany }
             })
 
             await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
-                userId : oldUser._id
+                userId: oldUser._id
             });
 
             if (roles && roles.length > 0)
                 for (let x in roles) {
-                    if(roles[x])
+                    if (roles[x])
                         await RoleService.createRelationshipUserRole(portal, oldUser._id, roles[x]);
                 };
         }
@@ -1253,7 +1255,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
             let user = await UserService.createUser(portal, userInfo, company);
             if (roles && roles.length > 0)
                 for (let x in roles) {
-                    if(roles[x])
+                    if (roles[x])
                         await RoleService.createRelationshipUserRole(portal, user._id, roles[x]);
                 };
         }
@@ -1300,7 +1302,7 @@ exports.deleteEmployee = async (portal, id) => {
     await Timesheet(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id
     })
-    console.log('employee',employee)
+    console.log('employee', employee)
     if (employee?.avatar) {
         let deleteAvatar = `.${employee.avatar}`;
         if (deleteAvatar !== `./upload/human-resource/avatars/avatar5.png` && fs.existsSync(deleteAvatar)) {
@@ -1327,7 +1329,7 @@ exports.deleteEmployee = async (portal, id) => {
             }
         })
     }
-    
+
     if (employee?.contracts?.length) {
         employee.contracts.forEach(x => {
             if (x?.urlFile) {
@@ -1338,7 +1340,7 @@ exports.deleteEmployee = async (portal, id) => {
             }
         })
     }
-        
+
     if (employee?.files?.length) {
         employee.files.forEach(x => {
             if (x?.urlFile) {
@@ -1585,15 +1587,15 @@ exports.importEmployeeInfor = async (portal, company, data) => {
     data = data.map((x, index) => {
         // Check lỗi trùng mã nhân viên, mã chấm công, email
         let checkEmployeeNumber, checkEmailInCompany, checkEmployeeTimesheetId;
-        if(x.employeeNumber)
-            checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber.toString() === x.employeeNumber.toString());
-        
-        if(x.emailInCompany)
+        if (x.employeeNumber)
+            checkEmployeeNumber = employeeInfo.some(y => y?.employeeNumber?.toString() === x?.employeeNumber?.toString());
+
+        if (x.emailInCompany)
             checkEmailInCompany = employeeInfo.some(y => y.emailInCompany === x.emailInCompany);
-        
-        if(x.employeeTimesheetId)
-            checkEmployeeTimesheetId = employeeInfo.some(y => y.employeeTimesheetId.toString() === x.employeeTimesheetId.toString());
-        
+
+        if (x.employeeTimesheetId)
+            checkEmployeeTimesheetId = employeeInfo.some(y => y?.employeeTimesheetId?.toString() === x?.employeeTimesheetId?.toString());
+
         if (checkEmployeeNumber) {
             x = {
                 ...x,
@@ -1619,10 +1621,10 @@ exports.importEmployeeInfor = async (portal, company, data) => {
             rowError = [...rowError, index + 1];
         }
         return {
-                ...x,
-                avatar: '/upload/human-resource/avatars/avatar5.png',
-                company: company,
-            };
+            ...x,
+            avatar: '/upload/human-resource/avatars/avatar5.png',
+            company: company,
+        };
     })
 
     if (rowError.length !== 0) {
@@ -1641,7 +1643,7 @@ exports.importEmployeeInfor = async (portal, company, data) => {
  * @param {*} company : Id công ty
  * @param {*} data : Dữ liệu thông tin nhân viên cần import
  */
- exports.importUpdateEmployeeInfor = async (portal, company, data) => {
+exports.importUpdateEmployeeInfor = async (portal, company, data) => {
     let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find({
         company: company
     }, {
@@ -1652,22 +1654,22 @@ exports.importEmployeeInfor = async (portal, company, data) => {
     });
 
     const dataLength = data.length;
-    for (let i = 0; i < dataLength; i++){
+    for (let i = 0; i < dataLength; i++) {
         let checkEmployeeNumber, checkEmailInCompany, checkEmployeeTimesheetId;
         if (data[i].employeeNumber)
             checkEmployeeNumber = employeeInfo.filter(y => y.employeeNumber.toString() === data[i].employeeNumber.toString());
-   
+
         if (data[i].emailInCompany)
             checkEmailInCompany = employeeInfo.filter(y => y.emailInCompany === data[i].emailInCompany);
-        
+
         if (data[i].employeeTimesheetId)
             checkEmployeeTimesheetId = employeeInfo.filter(y => y.employeeTimesheetId.toString() === data[i].employeeTimesheetId.toString());
-        
+
         // Nếu mã NV tồn tại và duy nhất thì cập nhật, ko thì bỏ qua
-        if (checkEmployeeNumber?.length === 1 && (checkEmailInCompany?.length === 0 || checkEmployeeNumber[0]?.emailInCompany === data[i].emailInCompany) ) {
+        if (checkEmployeeNumber?.length === 1 && (checkEmailInCompany?.length === 0 || checkEmployeeNumber[0]?.emailInCompany === data[i].emailInCompany)) {
             data[i] = {
                 ...data[i],
-               updateFlag: true,
+                updateFlag: true,
             };
         }
 
@@ -1694,9 +1696,9 @@ exports.importEmployeeInfor = async (portal, company, data) => {
 
         Object.keys(data[i]).forEach((key) => (data[i][key] == null) && delete data[i][key]);
     }
-     
+
     for (let i = 0; i < data?.length; i++) {
-        if(data[i].updateFlag){
+        if (data[i].updateFlag) {
             await Employee(connect(DB_CONNECTION, portal)).updateOne(
                 { employeeNumber: data[i]?.employeeNumber },
                 data[i]
@@ -1707,25 +1709,25 @@ exports.importEmployeeInfor = async (portal, company, data) => {
         const checkEmployeeNumber = employeeInfo.filter(y => y.employeeNumber.toString() === data[i].employeeNumber.toString());
         if (checkEmployeeNumber?.length === 1 && data[i]?.positionId?.length) {
             const employee = employeeInfo.filter(y => y.employeeNumber.toString() === data[i].employeeNumber.toString());
-            
+
             if (employee?.length) {
                 const user = await User(connect(DB_CONNECTION, portal)).findOne({ email: employee[0]?.emailInCompany });
                 if (user) {
                     await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
-                        userId : user._id
+                        userId: user._id
                     });
 
-                    for (let k = 0; k < data[i]?.positionId?.length; k++){
-                    if(data[i]?.positionId[k])
-                        await UserRole(connect(DB_CONNECTION, portal))
-                        .create({
-                            userId: user._id,
-                            roleId: data[i].positionId[k]
-                        });
+                    for (let k = 0; k < data[i]?.positionId?.length; k++) {
+                        if (data[i]?.positionId[k])
+                            await UserRole(connect(DB_CONNECTION, portal))
+                                .create({
+                                    userId: user._id,
+                                    roleId: data[i].positionId[k]
+                                });
                     }
                 }
             }
-            
+
         }
 
         if (data[i].updateUserFlag) {
@@ -2190,7 +2192,7 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
     let pageNumber = parseInt(params.page);
     let keySearch = [
         { $match: { status: "active" } },
-        { $unwind: "$certificates"}
+        { $unwind: "$certificates" }
         // {
         //     $match: {
         //         "fullName": {
@@ -2429,37 +2431,37 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
 
 
     // Lấy danh sách nhân viên
-    let listData = []; 
+    let listData = [];
     let listEmployees = [];
     let totalList = 1000;
 
     // if (params.sameExp) {
-        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch);
+    listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch);
 
-        let listEmpId = [];
-        if(params.sameExp) {
-            listEmpId = listData.map(e => e._id.employee);
-        } else {
-            listEmpId = listData.map(e => e._id);
+    let listEmpId = [];
+    if (params.sameExp) {
+        listEmpId = listData.map(e => e._id.employee);
+    } else {
+        listEmpId = listData.map(e => e._id);
+    }
+
+    listEmployees = await Employee(connect(DB_CONNECTION, portal)).find({
+        _id: {
+            $in: listEmpId,
         }
+    }).populate([
+        { path: "career.field" },
+        { path: "career.position" },
+        { path: "career.action" },
+    ]).sort({
+        'createdAt': 1
+    }).skip(params.page * params.limit).limit(params.limit);
 
-        listEmployees = await Employee(connect(DB_CONNECTION, portal)).find({
-            _id: {
-                $in: listEmpId,
-            }
-        }).populate([
-            { path: "career.field" },
-            { path: "career.position" },
-            { path: "career.action" },
-        ]).sort({
-            'createdAt': 1
-        }).skip(params.page * params.limit).limit(params.limit);
-
-        totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
-            _id: {
-                $in: listEmpId,
-            }
-        });
+    totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
+        _id: {
+            $in: listEmpId,
+        }
+    });
     // }
     // else {
     //     console.log('không có KN tương đương');

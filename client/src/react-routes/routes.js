@@ -21,6 +21,7 @@ const ManageRole = lazy(() => import("../modules/super-admin/role/components"))
 const ManageLink = lazy(() => import("../modules/super-admin/link/components"))
 const ManageApi = lazy(() => import("../modules/super-admin/api/api-management/components/apiManagement"))
 const ApiRegistration = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistration"))
+const ApiRegistrationEmployee = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistrationEmployee"))
 const ManageDepartment = lazy(() => import("../modules/super-admin/organizational-unit/components"))
 const ManageComponent = lazy(() => import("../modules/super-admin/component/components"))
 const ConfigurationManager = lazy(() => import("../modules/super-admin/module-configuration/components"))
@@ -524,6 +525,29 @@ class Routes extends Component {
                         pageName={"registration_api"}
                         layout={Layout}
                         component={ApiRegistration}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.api?.isLoading}
+                        key={"apis-registration-employee"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/apis-registration-employee",
+                                name: "registration_api_employee",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/apis-registration-employee"}
+                        path={"/apis-registration-employee"}
+                        pageName={"registration_api_employee"}
+                        layout={Layout}
+                        component={ApiRegistrationEmployee}
                     />
                     <PrivateRoute
                         isLoading={this.props.department.isLoading}

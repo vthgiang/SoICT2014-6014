@@ -10,18 +10,20 @@ const versionName = () => {
         minute = time.getMinutes(),
         second = time.getSeconds();
 
-    return  `${year}.${month}.${date}.${hour}.${minute}.${second}`;
+    return `${year}.${month}.${date}.${hour}.${minute}.${second}`;
 }
 
-const checkDirectory = (path, description=undefined) => {
+/**
+ * Tạo thư mục nếu thư mục chưa tồn tại
+ * @param {*} path 
+ * @returns 
+ */
+const checkDirectory = (path) => {
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, {
             recursive: true
         });
     };
-    fs.appendFile(path+'/README.txt', description ? description :'', err => { 
-        if(err) throw err;
-    });
 
     return true;
 }
@@ -32,9 +34,9 @@ const checkDirectory = (path, description=undefined) => {
  * @param {*} portal db muốn chuyển
  */
 exports.connect = (db, portal) => {
-    if(db.name !== portal){
+    if (db.name !== portal) {
         return db.useDb(portal, { useCache: true });
-    }else{
+    } else {
         return db;
     }
 }
@@ -46,7 +48,7 @@ exports.connect = (db, portal) => {
  */
 exports.initModels = (db, models) => {
     for (const [key, model] of Object.entries(models)) {
-        if(!db.models[key]) model(db)
+        if (!db.models[key]) model(db)
     }
 }
 
@@ -56,40 +58,45 @@ exports.initModels = (db, models) => {
  */
 exports.restore = async (options) => {
     const commandRestoreDB = (options) => {
-        if(!options.db){
+        if (!options.db) { // Restore DB cho 1 portal (1 doanh nghiệp)
             return process.env.DB_AUTHENTICATION !== 'true' ?
-            `mongorestore --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database` : 
-            `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database`;
-        } else {
+                `mongorestore --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database` :
+                `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database`;
+        } else { // Restore DB cho cho toàn hệ thống
             return process.env.DB_AUTHENTICATION !== 'true' ?
-            `mongorestore  --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}` : 
-            `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}`;
+                `mongorestore  --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}` :
+                `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}`;
         }
     }
 
     const commandRestoreFile = (options) => {
-        if(options.db){
+        if (options.db) { // Restore file cho 1 portal (1 doanh nghiệp)
+            checkDirectory(`${SERVER_DIR}/upload/private/${options.db}`);
+            checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
+
             return {
                 delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
-                new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
+                new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
             }
         }
-        else 
+        else { // Restore file cho toàn hệ thống
+            checkDirectory(`${SERVER_DIR}`);
             return {
                 delete: `rm -rf ${SERVER_DIR}/upload`,
-                new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/upload ${SERVER_DIR}` 
+                new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload ${SERVER_DIR}`
             }
+        }
     }
-    
-    // 1. Khôi phục databse
+
+    // 1. Khôi phục database
     const command = commandRestoreDB(options);
     await exec(command, (error, stdout, stderr) => {
-        if(error !== null) console.log(error);
+        if (error !== null) console.log(error);
     })
 
-    // 2.Khôi phục các file ( image, video, file, doc, excel, v.v. )
+    // 2. Khôi phục các file ( image, video, file, doc, excel, v.v. )
     const command2 = commandRestoreFile(options);
-    exec(command2.delete, function (err) { 
+    exec(command2.delete, function (err) {
         exec(command2.new, function (err) { });
     });
 }
@@ -102,46 +109,47 @@ exports.backup = async (options) => {
     let limit = options.db ? BACKUP[options.db].limit : BACKUP['all'].limit;
     const version = versionName();
     const dbBackupPath = (options) => {
-        const path = `${SERVER_BACKUP_DIR}/${options.db}/${version}`;
+        const path = `${SERVER_BACKUP_DIR}/${options.db ? options.db : 'all'}/${version}`;
         checkDirectory(path);
-    
+
         return path;
     }
 
-    const backupPath = options.db ? dbBackupPath(options) : null;
+    const backupPath = dbBackupPath(options);
     const description = `Backup database ${options.db ? options.db : 'all'}`;
-    const commandBackupDB = (options) => {
-        if(options.db) {
-            fs.appendFile(backupPath+'/README.txt', description, err => { 
-                if(err) throw err;
-            });
-            return process.env.DB_AUTHENTICATION !== 'true' ? 
-            `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/data/database" --db="${options.db}"` :
-            `mongodump --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --host="${options.host}" --port="${options.port}" --out="${backupPath}/data/database" --db="${options.db}"`;
-        }else{
-            checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}`, description);
+    fs.appendFile(backupPath + '/README.txt', description, err => {
+        if (err) throw err;
+    });
 
-            return process.env.DB_AUTHENTICATION !== 'true' ? 
-            `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/data/database"` :
-            `mongodump --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/data/database"`;
+    const commandBackupDB = (options) => {
+        if (options.db) { // Backup DB cho 1 portal (1 doanh nghiệp)
+
+            return process.env.DB_AUTHENTICATION !== 'true' ?
+                `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/data/database" --db="${options.db}"` :
+                `mongodump --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --host="${options.host}" --port="${options.port}" --out="${backupPath}/data/database" --db="${options.db}"`;
+        } else { // Backup DB cho toàn hệ thống
+
+            return process.env.DB_AUTHENTICATION !== 'true' ?
+                `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/data/database"` :
+                `mongodump --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/data/database"`;
         }
     }
     const command = commandBackupDB(options);
-    
+
     // 1. Backup database
     await exec(command, (error, stdout, stderr) => {
-        if(error !== null) console.log(error);
+        if (error !== null) console.log(error);
     });
 
     const getCommandBackupFile = (options) => {
-        if(options.db) {
+        if (options.db) { // Backup file cho 1 portal (1 doanh nghiệp)
             checkDirectory(`${SERVER_DIR}/upload/private/${options.db}`);
             checkDirectory(`${backupPath}/data/private`);
             checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
             checkDirectory(`${backupPath}/data/avatars`);
 
             return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
-        }else{
+        } else { // Backup file cho toàn hệ thống
             checkDirectory(`${SERVER_DIR}/upload`);
             checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/data/upload`);
 
@@ -150,44 +158,44 @@ exports.backup = async (options) => {
     }
 
     // 2. Backup file dữ liệu trong thư mục upload
-    const commandBackupFile  = getCommandBackupFile(options);
+    const commandBackupFile = getCommandBackupFile(options);
     await exec(commandBackupFile, (error, stdout, stderr) => {
-        if(error) console.log(error);
+        if (error) console.log(error);
     });
     const folderInfo = options.db ?
-    fs.statSync(backupPath) :
-    fs.statSync(`${SERVER_BACKUP_DIR}/all/${version}`);
+        fs.statSync(backupPath) :
+        fs.statSync(`${SERVER_BACKUP_DIR}/all/${version}`);
 
     // 3. Kiểm tra giới hạn số lượng backup
-    if(limit){
+    if (limit) {
         const list = options.db ? fs.readdirSync(`${SERVER_BACKUP_DIR}/${options.db}`) : fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
-        const newList = list.map( folder => {
-            const folderInfo = options.db ? 
-                fs.statSync(`${SERVER_BACKUP_DIR}/${options.db}/${folder}`) : 
+        const newList = list.map(folder => {
+            const folderInfo = options.db ?
+                fs.statSync(`${SERVER_BACKUP_DIR}/${options.db}/${folder}`) :
                 fs.statSync(`${SERVER_BACKUP_DIR}/all/${folder}`);
             return {
                 version: folder,
                 createdAt: folderInfo.ctime
             }
         });
-        newList.sort(function(a, b){
+        newList.sort(function (a, b) {
             const dateA = new Date(a.createdAt);
             const dateB = new Date(b.createdAt);
-            if(dateA > dateB) return -1;
-            if(dateA < dateB) return 1;
+            if (dateA > dateB) return -1;
+            if (dateA < dateB) return 1;
             return 0;
         });
-        if(limit > 0 && newList.length > limit){
+        if (limit > 0 && newList.length > limit) {
             for (let i = 0; i < newList.length; i++) {
-                if(i > limit - 1){ //phiên bản cũ vượt quá số lượng backup lưu trữ (limit)
+                if (i > limit - 1) { //phiên bản cũ vượt quá số lượng backup lưu trữ (limit)
                     // xóa version backup cũ
-                    if(options.db) exec(`rm -rf ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { }); 
-                    else exec(`rm -rf ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { }); 
+                    if (options.db) exec(`rm -rf ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { });
+                    else exec(`rm -rf ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { });
                 }
             }
         }
     }
-    
+
     return {
         version,
         description: description,

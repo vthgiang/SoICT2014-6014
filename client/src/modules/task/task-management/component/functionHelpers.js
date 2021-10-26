@@ -4,10 +4,10 @@ import _cloneDeep from 'lodash/cloneDeep';
 /** Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
 export const convertDataToExportData = (translate, currentTasks, fileName) => {
     let data = _cloneDeep(currentTasks);
-
+    console.log('data', data)
     if (data?.length > 0) {
         data = data.map((item, index) => {
-            let responsibleEmployees = "", accountableEmployees = "", responsibleEmployeesaEmail = "", accountableEmployeesEmail = "";
+            let responsibleEmployees = "", accountableEmployees = "", responsibleEmployeesaEmail = "", accountableEmployeesEmail = "", consultedEmployees = "", consultedEmployeesEmail = "", informedEmployees = "", informedEmployeesEmail = "";
             item.responsibleEmployees?.length > 0 && item.responsibleEmployees.map((employee, index) => {
                 if (index > 0) {
                     responsibleEmployees = responsibleEmployees + ", ";
@@ -24,9 +24,29 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
                 accountableEmployees = accountableEmployees + employee?.name;
                 accountableEmployeesEmail = accountableEmployeesEmail + employee?.email;
             })
+
+            item.consultedEmployees?.length > 0 && item.consultedEmployees.map((employee, index) => {
+                if (index > 0) {
+                    consultedEmployees = consultedEmployees + ", ";
+                    consultedEmployeesEmail = consultedEmployeesEmail + ", ";
+                }
+                consultedEmployees = consultedEmployees + employee?.name;
+                consultedEmployeesEmail = consultedEmployeesEmail + employee?.email;
+            })
+
+            item.informedEmployees?.length > 0 && item.informedEmployees.map((employee, index) => {
+                if (index > 0) {
+                    informedEmployees = informedEmployees + ", ";
+                    informedEmployeesEmail = informedEmployeesEmail + ", ";
+                }
+                informedEmployees = informedEmployees + employee?.name;
+                informedEmployeesEmail = informedEmployeesEmail + employee?.email;
+            })
+
             return {
                 STT: index + 1,
                 ID: item?._id,
+                code: item?.code,
                 name: item?.name,
                 description: item?.description,
                 parent: item?.parent?.name,
@@ -38,9 +58,14 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
                 responsibleEmployeesaEmail: responsibleEmployeesaEmail,
                 accountableEmployees: accountableEmployees,
                 accountableEmployeesEmail: accountableEmployeesEmail,
+                consultedEmployees: consultedEmployees,
+                consultedEmployeesEmail: consultedEmployeesEmail,
+                informedEmployees: informedEmployees,
+                informedEmployeesEmail: informedEmployeesEmail,
                 creator: item?.creator?.name,
                 startDate: getFormatDateFromTime(item?.startDate, 'dd-mm-yyyy'),
                 endDate: getFormatDateFromTime(item?.endDate, 'dd-mm-yyyy'),
+                createdAt: getFormatDateFromTime(item?.createdAt, 'dd-mm-yyyy'),
                 status: formatStatus(translate, item?.status),
                 statusCode: formatStatusCode(translate, item?.status),
                 progress: item?.progress ? item?.progress + "%" : "0%",
@@ -49,6 +74,7 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
         })
     }
 
+    console.log("VVVdata", data)
     let exportData = {
         fileName: fileName,
         dataSheets: [
@@ -60,6 +86,7 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
                         columns: [
                             { key: "STT", value: "STT" },
                             { key: "ID", value: "ID" },
+                            { key: "code", value: "code" },
                             { key: "name", value: "Tên công việc" },
                             { key: "description", value: "Mô tả" },
                             { key: "parent", value: "Công việc cha" },
@@ -71,9 +98,14 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
                             { key: "responsibleEmployeesaEmail", value: "Email người thực hiện" },
                             { key: "accountableEmployees", value: "Người phê duyệt" },
                             { key: "accountableEmployeesEmail", value: "Email người phê duyệt" },
+                            { key: "consultedEmployees", value: "Người tư vấn" },
+                            { key: "consultedEmployeesEmail", value: "Email người tư vấn" },
+                            { key: "informedEmployees", value: "Người quan sát" },
+                            { key: "informedEmployeesEmail", value: "Email người quan sát" },
                             { key: "creator", value: "Người thiết lập" },
                             { key: "startDate", value: "Ngày bắt đầu" },
                             { key: "endDate", value: "Ngày kết thúc" },
+                            { key: "createdAt", value: "Ngày thiết lập" },
                             { key: "status", value: "Trạng thái" },
                             { key: "statusCode", value: "Mã trạng thái" },
                             { key: "progress", value: "Tiến độ" },
@@ -176,4 +208,4 @@ export const getNumsOfDaysWithoutGivenDay = (startDate, endDate, givenDay) => {
         startDate.setDate(startDate.getDate() + 1)
     }
     return numberOfDates
-} 
+}

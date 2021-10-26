@@ -70,8 +70,21 @@ exports.login = async (fingerprint, data) => {
         process.env.TOKEN_SECRET
     );
 
+    let tokenArr = [];
+    let userParse = user.toObject();
+    
+    if (userParse?.tokens?.length === 10) { // nếu mảng tokens đã có 10 token thì thay thế token đầu tiên trong mảng tokens thành  requestToken user vừa gừi lên
+        tokenArr = [...userParse.tokens, token]
+        tokenArr.shift();
+    } else { // chưa đủ 10 thì lại thêm tiếp
+        if (userParse.tokens)
+            tokenArr = [...userParse.tokens, token]
+        else
+            tokenArr = [token];
+    }
+
     user.status = 0;
-    user.numberDevice += 1;
+    user.tokens = tokenArr;
 
     if (data.pushNotificationToken) {
         var existTokens = user.pushNotificationTokens.filter(
@@ -109,12 +122,13 @@ exports.login = async (fingerprint, data) => {
  * @param {*} id : id người dùng
  * @param {*} token
  */
-exports.logout = async (portal, id) => {
-    var user = await User(connect(DB_CONNECTION, portal)).findById(id);
+exports.logout = async (portal, id, requestToken) => {
+    let user = await User(connect(DB_CONNECTION, portal)).findById(id);
 
-    if (user.numberDevice >= 1) user.numberDevice -= 1;
+    if (user?.tokens?.length) {
+        user.tokens = user?.tokens.filter(currentElement => currentElement !== requestToken);
+    }
     user.save();
-
     return user;
 };
 
@@ -123,8 +137,8 @@ exports.logout = async (portal, id) => {
  * @param {*} id : id người dùng
  */
 exports.logoutAllAccount = async (portal, id) => {
-    var user = await User(connect(DB_CONNECTION, portal)).findById(id);
-    user.numberDevice = 0;
+    let user = await User(connect(DB_CONNECTION, portal)).findById(id);
+    user.tokens = [];
     await user.save();
 
     return user;

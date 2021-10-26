@@ -9,7 +9,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
 import { taskManagementActions } from '../redux/actions';
-
+import { getStorage } from '../../../../config';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import parse from 'html-react-parser';
@@ -20,12 +20,12 @@ function TaskManagementOfUnit(props) {
     const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = props;
     const { selectBoxUnit, currentTaskId, currentPage, startDate,
         endDate, perPage, status, tags,
-        organizationalUnit, tableId, organizationalUnitRole
+        organizationalUnit, tableId, selectedData, organizationalUnitRole
     } = state;
 
     function initState() {
         const tableId = "tree-table-task-management-of-unit";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "6", "7"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["3", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
         return {
@@ -33,6 +33,7 @@ function TaskManagementOfUnit(props) {
             perPage: limit,
             currentPage: 1,
             tableId,
+            selectedData: [],
             currentTab: "responsible",
             status: ["inprocess", "wait_for_approval"],
             priority: [],
@@ -159,6 +160,15 @@ function TaskManagementOfUnit(props) {
             // TODO: send query
             handleGetDataPerPage(Number(limit));
         }
+    }
+
+    const onSelectedRowsChange = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                selectedData: value
+            }
+        })
     }
 
     const handleGetDataPagination = (index) => {
@@ -298,9 +308,9 @@ function TaskManagementOfUnit(props) {
         }
 
         setState({
-            ...state,
-            currentTaskId: id,
-            taskName
+                ...state,
+                currentTaskId: id,
+                taskName
         })
         window.$(`#modelPerformTask${id}`).modal('show');
     }
@@ -413,12 +423,27 @@ function TaskManagementOfUnit(props) {
 
     const handleDelete = async (id) => {
         const { tasks, translate } = props;
-        let currentTasks = tasks.tasks.find(task => task._id === id);
-        let progress = currentTasks.progress;
-        let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+        if (!Array.isArray(id)) {
+            let currentTasks = tasks.tasks.find(task => task._id === id);
+            let progress = currentTasks.progress;
+            let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: props.translate('general.no'),
+                confirmButtonText: props.translate('general.yes'),
+            }).then((result) => {
+                if (result.value) {
+                    props.deleteTaskById(id);
+                }
+            })
+        }
 
-        Swal.fire({
-            title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+        else Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa các công việc đã chọn?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -516,6 +541,22 @@ function TaskManagementOfUnit(props) {
         )
     }
 
+    /**
+    * Function kiểm tra action tương ứng cho các dòng đã chọn
+    * @param {*} action : action cần kiểm tra
+    */
+
+    const validateAction = (action) => {
+        const { selectedData } = state;
+        if (selectedData.length === 0) return false;
+        else for (let i = 0; i < selectedData.length; i++) {
+            let actions = data.find(x => x._id === selectedData[i])?.action;
+            if (!actions || actions.length === 0) return false;
+            else if (!actions.flat(2).includes(action)) return false;
+        }
+        return true;
+    }
+
     let currentTasks, units = [];
     let data = [];
     let childrenOrganizationalUnit = [], queue = [];
@@ -524,6 +565,10 @@ function TaskManagementOfUnit(props) {
     if (tasks) {
         currentTasks = tasks.tasks;
     }
+
+    // kiểm tra vai trò của người dùng
+    let userId = getStorage("userId");
+
     if (user) units = user.organizationalUnitsOfUser;
 
     // khởi tạo dữ liệu TreeTable
@@ -543,10 +588,10 @@ function TaskManagementOfUnit(props) {
     ];
     if (currentTasks && currentTasks.length !== 0) {
         let dataTemp = currentTasks;
-
         for (let n in dataTemp) {
             data[n] = {
                 ...dataTemp[n],
+                rawData: dataTemp[n],
                 name: dataTemp[n].name,
                 description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                 organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
@@ -559,12 +604,24 @@ function TaskManagementOfUnit(props) {
                 status: checkTaskRequestToClose(dataTemp[n]),
                 progress: convertProgressData(dataTemp[n].progress, dataTemp[n].startDate, dataTemp[n].endDate),
                 totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
-                parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
+                parent: dataTemp[n].parent ? dataTemp[n].parent._id : null,
             }
         }
 
         for (let i in data) {
-            data[i] = { ...data[i], action: ["edit", "delete"] }
+            if (dataTemp[i].creator && dataTemp[i].creator._id === userId || dataTemp[i].informedEmployees.indexOf(userId) !== -1) {
+                let del = null;
+                if (dataTemp[i].creator._id === userId) {
+                    del = "delete";
+                }
+                data[i] = { ...data[i], action: ["edit", del] }
+            }
+            if (dataTemp[i].responsibleEmployees && dataTemp[i].responsibleEmployees.find(e => e._id === userId) || dataTemp[i].consultedEmployees && dataTemp[i].consultedEmployees.indexOf(userId) !== -1) {
+                data[i] = { ...data[i], action: ["edit"] }
+            }
+            if (dataTemp[i].accountableEmployees && dataTemp[i].accountableEmployees.filter(o => o._id === userId).length > 0) {
+                data[i] = { ...data[i], action: ["edit", "delete"] }
+            }
         }
     }
 
@@ -579,7 +636,7 @@ function TaskManagementOfUnit(props) {
             {currentOrganizationalUnit
                 ? <div className="box">
                     <div className="box-body qlcv">
-                        <div style={{ height: "40px" }}>
+                        <div style={{ height: "40px", marginBottom: '10px' }}>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
                             {/* <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button> */}
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
@@ -587,8 +644,17 @@ function TaskManagementOfUnit(props) {
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
                         </div>
 
+                        {
+                            selectedData && selectedData.length > 0 &&
+                            <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
+                                    {translate("general.delete_option")}
+                                </button>
+                            </div>
+                        }
+
                         <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
-                            {/* Đợn vị tham gia công việc */}
+                            {/* Đơn vị tham gia công việc */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.department')}</label>
                                 {selectBoxUnit && selectBoxUnit.length !== 0
@@ -748,35 +814,18 @@ function TaskManagementOfUnit(props) {
                             </div>
                         </div>
 
-                        <DataTableSetting
-                            tableId={tableId}
-                            tableContainerId="tree-table-container"
-                            tableWidth="1300px"
-                            columnArr={[
-                                translate('task.task_management.col_name'),
-                                translate('task.task_management.detail_description'),
-                                translate('task.task_management.col_organization'),
-                                translate('task.task_management.col_priority'),
-                                translate('task.task_management.responsible'),
-                                translate('task.task_management.accountable'),
-                                translate('task.task_management.creator'),
-                                translate('task.task_management.col_start_date'),
-                                translate('task.task_management.col_end_date'),
-                                translate('task.task_management.col_status'),
-                                translate('task.task_management.col_progress'),
-                                translate('task.task_management.col_logged_time')
-                            ]}
-                            setLimit={setLimit}
-                        />
-
                         {/* Dạng bảng */}
                         <div id="tree-table-container">
                             <TreeTable
                                 tableId={tableId}
+                                tableSetting={true}
+                                allowSelectAll={true}
                                 behaviour="show-children"
                                 column={column}
                                 data={data}
-                                openOnClickName={true}
+                                onSetNumberOfRowsPerPage={setLimit}
+                                onSelectedRowsChange={onSelectedRowsChange}
+                                viewWhenClickName={true}
                                 titleAction={{
                                     edit: translate('task.task_management.action_edit'),
                                     delete: translate('task.task_management.action_delete'),

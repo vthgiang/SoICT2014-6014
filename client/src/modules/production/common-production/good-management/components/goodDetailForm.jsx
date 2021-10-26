@@ -10,8 +10,16 @@ function GoodDetailForm(props) {
     const [state, setState] = useState({
 
     })
-
-    useEffect(() => {
+    if (
+        props.goodId !== state.goodId ||
+        props.baseUnit !== state.baseUnit ||
+        props.units !== state.units ||
+        props.materials !== state.materials ||
+        props.code !== state.code ||
+        props.name !== state.name ||
+        props.category !== state.category ||
+        props.description !== state.description
+    ) {
         setState({
             ...state,
             goodId: props.goodId,
@@ -29,14 +37,7 @@ function GoodDetailForm(props) {
             salesPriceVariance: props.salesPriceVariance,
             numberExpirationDate: props.numberExpirationDate
         });
-    }, [props.goodId,
-    props.baseUnit,
-    props.units,
-    props.materials,
-    props.code,
-    props.name,
-    props.category,
-    props.description])
+    }
 
     const { translate, goods, type, categories } = props;
     const {

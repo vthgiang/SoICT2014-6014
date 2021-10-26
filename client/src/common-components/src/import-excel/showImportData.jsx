@@ -94,7 +94,7 @@ class ShowImportData extends Component {
                                         {
                                             importDataCurrentPage.map((row, index) => {
                                                 return (
-                                                    <tr key={index} style={row.error ? { color: "#dd4b39" } : { color: '' }} title={row.errorAlert.join(', ')}>
+                                                    <tr key={index} style={row.error ? { color: "#dd4b39" } : { color: '' }} title={row?.errorAlert?.join(', ')}>
                                                         <td>{row.STT !== undefined ? row.STT : page + index + 1}</td>
                                                         {headerTable.map((x, indexs) => {
                                                             if (Array.isArray(x.value)) {

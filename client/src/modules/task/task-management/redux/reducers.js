@@ -323,7 +323,7 @@ export function tasks(state = {
             return {
                 ...state,
                 isLoading: false,
-                tasks: state.tasks.filter(task => task._id !== action.payload._id),
+                tasks: state.tasks.filter(task => !(action.payload._id.includes(task._id))),
             };
 
         case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE:
@@ -337,7 +337,7 @@ export function tasks(state = {
             return {
                 ...state,
                 tasks: state.tasks.map(task =>
-                    task._id === action.id
+                    task._id === action.id || (Array.isArray(action.id) && action.id.includes(task._id))
                         ? { ...task, deleting: true }
                         : task
                 ),
@@ -346,7 +346,7 @@ export function tasks(state = {
         case taskManagementConstants.DELETE_TASK_SUCCESS:
             return {
                 ...state,
-                tasks: state.tasks.filter(task => task._id !== action.id),
+                tasks: state.tasks.filter(task => task._id !== action.id && (!Array.isArray(action.id) || !action.id.includes(task._id))),
                 isLoading: false
             };
         case taskManagementConstants.DELETE_TASK_FAILURE:
@@ -641,34 +641,90 @@ export function tasks(state = {
         case taskManagementConstants.IMPORT_TASKS_REQUEST:
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                isLoadingImport: true,
             };
 
         case taskManagementConstants.IMPORT_TASKS_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
+                isLoadingImport: false,
                 importTask: action.payload.content,
             }
 
         case taskManagementConstants.IMPORT_TASKS_FAILURE:
+            console.log('action.error', action.error)
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                isLoading: false,
+                isLoadingImport: false
             }
         case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST:
-            return {
-                ...state,
-                taskDashboardChart: null,
-                isLoading: true
+            if (action.chartNameArr) {
+                if (action.chartNameArr.length === 2) {
+                    let charts = state?.taskDashboardCharts
+                    for (const i of action.chartNameArr) {
+                        if (i !== "common-params") {
+                            for (const j of Object.keys(charts)) {
+                                if (i === j) {
+                                    charts = { ...charts, [i]: { ...state.taskDashboardCharts?.[i], isLoading: true } }
+                                }
+                            }
+
+                            return {
+                                ...state,
+                                taskDashboardCharts: charts,
+                                isLoading: true
+                            }
+                        }
+                    }
+                }
+                else {
+                    let charts = {}
+                    for (const i of action?.chartNameArr) {
+                        charts = { ...charts, [i]: { isLoading: true } }
+                    }
+
+                    return {
+                        ...state,
+                        taskDashboardCharts: charts,
+                        isLoading: true
+                    }
+
+                }
             }
+
+
+
         case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_SUCCESS:
-            return {
-                ...state,
-                taskDashboardChart: action.payload,
-                isLoading: false
+            let result = action.payload;
+            if (Object.keys(result).length === 1) {
+                const data = Object.values(result)[0];
+                let charts = state.taskDashboardCharts
+                for (const i of Object.keys(charts)) {
+                    if (i === Object.keys(result)[0]) {
+                        charts = { ...charts, [i]: { ...data, isLoading: false } }
+                    }
+                }
+                return {
+                    ...state,
+                    taskDashboardCharts: charts,
+                    isLoading: false
+                }
             }
+            else {
+                for (const i of Object.keys(result)) {
+                    result = { ...result, [i]: { ...result[i], isLoading: false } }
+                }
+                return {
+                    ...state,
+                    taskDashboardCharts: result,
+                    isLoading: false
+                }
+            }
+
         case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE:
             return {
                 ...state,

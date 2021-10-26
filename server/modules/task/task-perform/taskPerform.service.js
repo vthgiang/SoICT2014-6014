@@ -191,7 +191,7 @@ exports.getTaskById = async (portal, id, userId) => {
             }
         }
     }
-    if(!flag){
+    if (!flag) {
         if (task?.creator?._id?.toString() === userId?.toString()) {
             flag = 1;
         }
@@ -250,7 +250,7 @@ exports.getTaskById = async (portal, id, userId) => {
                                     task.collaboratedWithOrganizationalUnits[k]
                                         .organizationalUnit
                                 ) {
-                                    f =  _checkManagers(
+                                    f = _checkManagers(
                                         v,
                                         task
                                             .collaboratedWithOrganizationalUnits[
@@ -289,7 +289,7 @@ _checkManagers = (v, id) => {
         if (v?.id?.toString() === id?.toString()) {
             return 1;
         }
-        
+
         if (v?.children?.length) {
             for (let k = 0; k < v.children.length; k++) {
                 const result = _checkManagers(v.children[k], id);
@@ -762,6 +762,8 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
 
             // Lưu vào timeSheetLog
             duration = new Date(getAddlogStoppedAt).getTime() - new Date(getAddlogStartedAt).getTime();
+            let checkDurationValid = duration / (60 * 60 * 1000);
+            
             const addLogTime = {
                 startedAt: getAddlogStartedAt,
                 stoppedAt: getAddlogStoppedAt,
@@ -769,6 +771,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                 autoStopped: body.autoStopped,
                 description: body.addlogDescription,
                 creator: user._id,
+                acceptLog: checkDurationValid > 24 ? false : true,
             }
             timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
                 params.taskId,
@@ -2326,10 +2329,10 @@ exports.deleteActionEvaluation = async (portal, params) => {
         { $match: { _id: mongoose.Types.ObjectId(params.actionId) } },
         { $unwind: "$evaluations" },
         { $replaceRoot: { newRoot: "$evaluations" } },
-        { $match: {_id: mongoose.Types.ObjectId(params.evaluationId) } },
+        { $match: { _id: mongoose.Types.ObjectId(params.evaluationId) } },
     ]);
 
-    if (danhgia.length >0) {
+    if (danhgia.length > 0) {
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
                 _id: params.taskId,
@@ -2337,8 +2340,8 @@ exports.deleteActionEvaluation = async (portal, params) => {
                 "taskActions.evaluations._id": params.evaluationId,
             },
             {
-                $pull : {
-                    "taskActions.$.evaluations" : { _id: params.evaluationId },
+                $pull: {
+                    "taskActions.$.evaluations": { _id: params.evaluationId },
                 },
             },
             { safe: true }
@@ -6140,24 +6143,30 @@ exports.editTaskInformation = async (
 
 /**
  * Chinh sua trang thai luu kho cua cong viec
- * @param taskID id công việc
+ * @param taskId id công việc
  */
-exports.editArchivedOfTask = async (portal, taskID) => {
-    let task;
-    let t = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-        taskID
-    );
-
-    let isArchived = t.isArchived;
-    if (t.status === 'finished' || t.status === 'delayed' || t.status === 'canceled') {
-        task = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-            taskID,
-            { $set: { isArchived: !isArchived } },
-            { new: true }
+exports.editArchivedOfTask = async (portal, taskId) => {
+    taskId = taskId.split(",");
+    let task = {
+        _id: []
+    };
+    for(let i in taskId) {
+        let t = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+            taskId[i]
         );
-    } else {
-        throw ['task_status_error']
+
+        let isArchived = t.isArchived;
+        if (t.status === 'finished' || t.status === 'delayed' || t.status === 'canceled') {
+            await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+                taskId[i],
+                { $set: { isArchived: !isArchived } },
+                { new: true }
+            );
+            task._id.push(taskId[i]);
+        }
     }
+
+    if (task._id.length === 0) throw ['task_status_error']
     return task;
 };
 

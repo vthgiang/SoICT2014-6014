@@ -15,11 +15,11 @@ module.exports = async (server) => {
     // Socket.io realtime
     global.CONNECTED_CLIENTS = [];
 
-     /**
-     * docs setup socket:
-     * setup server (từ v3 trở lên phải setup cors): https://socket.io/docs/v4/server-initialization/
-     * setup client: https://socket.io/docs/v4/client-initialization/
-     */
+    /**
+    * docs setup socket:
+    * setup server (từ v3 trở lên phải setup cors): https://socket.io/docs/v4/server-initialization/
+    * setup client: https://socket.io/docs/v4/client-initialization/
+    */
     global.SOCKET_IO = require("socket.io")(server, {
         cors: {
             origin: [
@@ -33,7 +33,7 @@ module.exports = async (server) => {
             credentials: true
         }
     });
-    
+
     SOCKET_IO.on("connection", function (socket) {
         CONNECTED_CLIENTS.push({
             socketId: socket.id,
@@ -49,8 +49,10 @@ module.exports = async (server) => {
         console.log("User connected: ", CONNECTED_CLIENTS);
     });
 
+
+    let path = require("path");
     global.SERVER_DIR = __dirname;
-    global.SERVER_BACKUP_DIR = __dirname + "/../backup";
+    global.SERVER_BACKUP_DIR = path.resolve(__dirname, "..", "backup");
     global.SERVER_MODELS_DIR = SERVER_DIR + "/models";
     global.SERVER_MODULES_DIR = SERVER_DIR + "/modules";
     global.SERVER_HELPERS_DIR = SERVER_DIR + "/helpers";
@@ -58,27 +60,27 @@ module.exports = async (server) => {
     global.SERVER_SEED_DIR = SERVER_DIR + "/seed";
     global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
 
-    
+
     let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user:process.env.DB_USERNAME,
-        pass:process.env.DB_PASSWORD,
-        auth: {
-            authSource: 'admin'
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+            user: process.env.DB_USERNAME,
+            pass: process.env.DB_PASSWORD,
+            auth: {
+                authSource: 'admin'
+            }
+        } : {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
         }
-    } : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-    }
 
     global.DB_CONNECTION = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`, 
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`,
         connectOptions
     );
     initModels(DB_CONNECTION, models);

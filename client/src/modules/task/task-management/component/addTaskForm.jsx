@@ -20,7 +20,6 @@ import dayjs from "dayjs";
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
     const [state, setState] = useState(() => initState())
-
     function initState() {
         return {
             newTask: {
@@ -136,13 +135,15 @@ function AddTaskForm(props) {
 
     // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
     useEffect(() => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                parent: props.parentTask,
-            }
-        });
+        if (props.parentTask){
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    parent: props.parentTask,
+                }
+            });
+        }
     }, [props.parentTask])
 
     useEffect(() => {
@@ -490,7 +491,7 @@ function AddTaskForm(props) {
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-
+        console.log(state.newTask);
         if (willUpdateState) {
             setState({
                 ...state,
@@ -500,7 +501,7 @@ function AddTaskForm(props) {
                     errorOnResponsibleEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeResponsible(state.newTask.responsibleEmployees)
+            props.isProcess && props.handleChangeResponsible(value)
         }
         return message === undefined;
     }
@@ -522,7 +523,7 @@ function AddTaskForm(props) {
                     errorOnAccountableEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeAccountable(state.newTask.accountableEmployees)
+            props.isProcess && props.handleChangeAccountable(value)
         }
         return message === undefined;
     }

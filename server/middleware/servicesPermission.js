@@ -141,6 +141,7 @@ exports.links = [
             { path: '/employee/employees/import', method: 'POST' },
 
             { path: '/salary/salaries', method: 'GET' },
+            { path: '/salary/salaries-chart', method: 'GET' },
             { path: '/salary/salaries', method: 'POST' },
             { path: '/salary/salaries/:id', method: 'PATCH' },
             { path: '/salary/salaries/:id', method: 'DELETE' },
@@ -339,6 +340,7 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-actions', method: 'POST' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'PATCH' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'DELETE' },
+            { path: '/performtask/tasks/:taskId/task-actions/:actionId/evaluation/:evaluationId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/files/:fileId', method: 'PATCH' },
 
 
@@ -431,7 +433,12 @@ exports.links = [
 
             // Asset
             { path: '/asset/assets', method: 'GET' },
-            { path: '/asset/assets_group', method: 'GET' },
+            { path: '/asset/assets-group', method: 'GET' },
+            { path: '/asset/assets-statistic', method: 'GET' },
+            { path: '/asset/assets-purchase', method: 'GET' },
+            { path: '/asset/assets-disposal', method: 'GET' },
+            { path: '/asset/assets-incident', method: 'GET' },
+            { path: '/asset/assets-maintenance', method: 'GET' },
             { path: '/asset/assets', method: 'POST' },
             { path: '/asset/assets/:id', method: 'PATCH' },
             { path: '/asset/assets/:id', method: 'DELETE' },
@@ -645,6 +652,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/apis-registration',
+        apis: ['@all']
+    }, {
+        url: '/apis-registration-employee',
         apis: ['@all']
     }, {
         url: '/components-management',

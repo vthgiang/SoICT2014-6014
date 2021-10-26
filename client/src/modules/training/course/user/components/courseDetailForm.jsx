@@ -55,7 +55,7 @@ const CourseDetailForm = (props) => {
                 formID={`form-view-course${_id}`}
                 title={`${translate('training.course.view_course')}: ${name} - ${courseId}`}
                 hasSaveButton={false}
-                size={75}
+                size={25}
                 maxWidth={850}
                 hasNote={false}
             >
@@ -68,14 +68,14 @@ const CourseDetailForm = (props) => {
                         <span>{translate('training.course.to')}</span>
                         <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{endDate}&nbsp;</span>
                         {
-                            lecturer && <span>{translate('training.course.with_lecturer')} "{lecturer}"</span>
+                            lecturer && <span>{translate('training.course.with_lecturer')}<span className="text-success" style={{fontWeight: "bold"}}> {lecturer}</span></span>
                         }
                     </div>
                     <div className="form-group">
-                        <span>{translate('training.course.offered_by')} "{offeredBy}" - {translate('training.course.table.education_program')} "{educationProgram.name}"</span>
+                        <span>{translate('training.course.offered_by')} <span className="text-success" style={{fontWeight: "bold"}}>{offeredBy}</span> - {translate('training.course.table.education_program')} <span className="text-success" style={{fontWeight: "bold"}}>{educationProgram.name}</span></span>
                     </div>
                     <div className="form-group">
-                        <span>{translate('training.course.belong_type')} "{translate(`training.course.type.${type}`)}" {translate('training.course.with_cost')} "{formater.format(cost)} {unit}" {translate('training.course.commitment_time')} "{employeeCommitmentTime} {translate('training.course.month')}" </span>
+                        <span>{translate('training.course.belong_type')} <span className="text-success" style={{fontWeight: "bold"}}>{translate(`training.course.type.${type}`)}</span> {translate('training.course.with_cost')} <span className="text-success" style={{fontWeight: "bold"}}>{formater.format(cost)} {unit}</span> {translate('training.course.commitment_time')} <span className="text-success" style={{fontWeight: "bold"}}>{employeeCommitmentTime} {translate('training.course.month')}</span></span>
                     </div>
                 </form>
             </DialogModal>

@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 
 import { AssetService } from '../../../asset-information/redux/services';
 
-import AssetPurchaseChart from './assetPurchaseChart';
-import AssetDisposalChart from './assetDisposalChart';
-
+import {AssetDisposalChart} from './assetDisposalChart';
+import { AssetManagerActions } from '../../../asset-information/redux/actions';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { AssetTypeService } from '../../../asset-type/redux/services';
 import Swal from 'sweetalert2';
+import { AssetPurchaseChart } from './assetPurchaseChart';
+
 class PurchaseAndDisposal extends Component {
 
     constructor(props) {
@@ -39,7 +40,8 @@ class PurchaseAndDisposal extends Component {
         }).catch(err => {
             console.log(err);
         });
-
+        this.props.getAllAssetPurchase()
+        this.props.getAllAssetDisposal()
         AssetTypeService.getAssetTypes().then(res => {
             if (res.data.success) {
                 this.setState({ assetType: res.data.content.list })
@@ -75,9 +77,9 @@ class PurchaseAndDisposal extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate ,purchaseAsset} = this.props;
         const { listAssets, assetType } = this.state;
-
+        console.log("purchaseAsset",purchaseAsset)
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -90,7 +92,7 @@ class PurchaseAndDisposal extends Component {
                                     <div className="box-title">{translate('asset.dashboard.purchase_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    < AssetPurchaseChart
+                                    <AssetPurchaseChart
                                         assetType={assetType}
                                         listAssets={listAssets}
                                         getPurchaseData={this.getPurchaseData}
@@ -125,10 +127,13 @@ class PurchaseAndDisposal extends Component {
     }
 }
 function mapState(state) {
-    const { listAssets } = state.assetsManager;
+    const { listAssets,purchaseAsset } = state.assetsManager;
     const { assetType } = state;
-    return { listAssets, assetType };
+    return { listAssets, assetType ,purchaseAsset};
 }
-
-const PurchaseAndDisposalConnect = connect(mapState)(withTranslate(PurchaseAndDisposal));
+const mapDispatchToProps = {
+    getAllAssetPurchase : AssetManagerActions.getAllAssetPurchase,
+    getAllAssetDisposal : AssetManagerActions.getAllAssetDisposal
+}
+const PurchaseAndDisposalConnect = connect(mapState,mapDispatchToProps)(withTranslate(PurchaseAndDisposal));
 export { PurchaseAndDisposalConnect as PurchaseAndDisposal };

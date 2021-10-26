@@ -83,11 +83,11 @@ class MainDashboardUnit extends Component {
 
     /** Bắt sự kiện phân tích dữ liệu */
     handleUpdateData = () => {
-        const { department, childOrganizationalUnit } = this.props;
-        let { month, arrayUnitShow } = this.state;
+        const { department, childOrganizationalUnit ,salaryChart } = this.props;
+        let { month, arrayUnitShow,monthSearch,monthShow } = this.state;
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
-
+        //console.log("salaryChart",salaryChart)
         this.setState({
             organizationalUnits: arrayUnitShow,
             monthShow: month,
@@ -121,7 +121,7 @@ class MainDashboardUnit extends Component {
         /* Lấy dữ liệu lương nhân viên*/
         this.props.searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
-
+        this.props.getAllSalaryChart({name: "salary-date-data",monthTime: month})
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
         this.props.getTimesheets({
             organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
@@ -171,7 +171,7 @@ class MainDashboardUnit extends Component {
         /* Lấy dữ liệu lương nhân viên*/
         this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
-
+        this.props.getAllSalaryChart()
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
         this.props.getTimesheets({
             organizationalUnits: organizationalUnits, month: newMonth, page: 0,
@@ -199,8 +199,8 @@ class MainDashboardUnit extends Component {
     }
 
     render() {
-        const { translate, department, employeesManager, user, tasks, discipline } = this.props;
-
+        const { translate, department, employeesManager, user, tasks, discipline ,salaryChart } = this.props;
+        
         const { childOrganizationalUnit } = this.props;
 
         const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, monthSearch } = this.state;
@@ -340,7 +340,12 @@ class MainDashboardUnit extends Component {
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
                                 <LazyLoadComponent>
-                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                    organizationalUnits={organizationalUnits}
+                                    monthShow={monthShow}
+                                    salaryChart = {salaryChart}  
+
+                                       />
                                 </LazyLoadComponent>
                             </div>
 
@@ -359,8 +364,9 @@ class MainDashboardUnit extends Component {
 }
 
 function mapState(state) {
-    const { department, employeesManager, tasks, user, discipline } = state;
-    return { department, employeesManager, tasks, user, discipline };
+    const { department, employeesManager, tasks, user, discipline} = state;
+    const {salaryChart } = state.salary
+    return { department, employeesManager, tasks, user, discipline,salaryChart };
 }
 
 const actionCreators = {
@@ -369,8 +375,8 @@ const actionCreators = {
     getListDiscipline: DisciplineActions.getListDiscipline,
     searchSalary: SalaryActions.searchSalary,
     getTimesheets: TimesheetsActions.searchTimesheets,
-
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+    getAllSalaryChart: SalaryActions.getAllSalaryChart,
 };
 
 const mainDashboardUnit = connect(mapState, actionCreators)(withTranslate(MainDashboardUnit));
