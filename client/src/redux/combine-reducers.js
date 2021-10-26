@@ -104,6 +104,9 @@ import { example1 } from "../modules/example/example1/redux/reducers";
 //example2
 import { example2 } from "../modules/example/example2/redux/reducers";
 
+//example3
+import { example3 } from "../modules/example/example3/redux/reducers";
+
 // Manufacturing
 import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
 import { manufacturingMill } from "../modules/production/manufacturing/manufacturing-mill/redux/reducers";
@@ -236,6 +239,9 @@ const appReducer = combineReducers({
 
     //example2
     example2,
+
+    //example3
+    example3,
 
     // production - manufacturing works management
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { exampleActions } from '../redux/actions';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-
 import { DialogModal } from '../../../../common-components';
 
 class ExampleDetailInfo extends Component {
@@ -11,22 +11,21 @@ class ExampleDetailInfo extends Component {
         }
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.exampleID !== state.exampleID) {
-            return {
-                exampleID: props.exampleID,
-                exampleName: props.exampleName,
-                description: props.description,
-            }
-        } else {
-            return null;
+    shouldComponentUpdate(nextProps) {
+        if (nextProps.exampleId !== this.props.exampleId) {
+            this.props.getExampleDetail(nextProps.exampleId);
+            return false;
         }
+        return true;
     }
 
     render() {
         const { translate, example } = this.props;
-        const { exampleName, description } = this.state;
+        let currentDetailExample = {};
 
+        if (example.currentDetailExample) {
+            currentDetailExample = example.currentDetailExample;
+        }
         return (
             <React.Fragment>
                 <DialogModal
@@ -39,16 +38,13 @@ class ExampleDetailInfo extends Component {
                     hasNote={false}
                 >
                     <form id={`form-detail-example`}>
-                        {/* Tên ví dụ */}
                         <div className={`form-group`}>
-                            <label>{translate('manage_example.exampleName')}:</label>
-                            <span> {exampleName ? exampleName : null}</span>
+                            <label>{translate('manage_example.exampleName')}</label>
+                            <p>{currentDetailExample.exampleName}</p>
                         </div>
-
-                        {/* Mô tả ví dụ */}
                         <div className={`form-group`}>
-                            <label>{translate('manage_example.description')}:</label>
-                            <span> {description ? description : null}</span>
+                            <label>{translate('manage_example.description')}</label>
+                            <p>{currentDetailExample.description}</p>
                         </div>
                     </form>
                 </DialogModal>
@@ -58,8 +54,12 @@ class ExampleDetailInfo extends Component {
 }
 
 function mapStateToProps(state) {
-    const example = state.example1;
+    const example = state.example3;
     return { example };
 }
 
-export default connect(mapStateToProps, null)(withTranslate(ExampleDetailInfo));
+const mapDispatchToProps = {
+    getExampleDetail: exampleActions.getExampleDetail
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleDetailInfo));

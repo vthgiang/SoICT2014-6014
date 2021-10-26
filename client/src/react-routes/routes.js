@@ -131,9 +131,12 @@ const PlanManagement = lazy(() => import("../modules/plan/components"))
 // Example
 const ExampleManagement1 = lazy(() => import("../modules/example/example1/components"))
 const ExampleManagement2 = lazy(() => import("../modules/example/example2/components"))
+const ExampleManagement3 = lazy(() => import("../modules/example/example3/components"))
 
 const ExampleManagementHooks1 = lazy(() => import("../modules/example/example1/components-hooks"))
 const ExampleManagementHooks2 = lazy(() => import("../modules/example/example2/components-hooks"))
+const ExampleManagementHooks3 = lazy(() => import("../modules/example/example3/components-hooks"))
+
 
 // Manufacturing Managements
 
@@ -193,7 +196,7 @@ class Routes extends Component {
             employeesManager,
         } = this.props;
         return (
-            <Suspense fallback={<Layout/>}>
+            <Suspense fallback={<Layout />}>
                 <Switch>
                     <AuthRoute
                         exact
@@ -1057,7 +1060,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={CourseOfUser}
                     />
-                    
+
 
                     {/* kpi - routes */}
                     <PrivateRoute
@@ -2068,7 +2071,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={GeneralConfiguration}
                     />
-                   <PrivateRoute
+                    <PrivateRoute
                         isLoading={false}
                         key={"crmUnitConfiguration"}
                         arrPage={[
@@ -2351,7 +2354,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={ExampleManagement2}
                     />
-
+                    
                     {/* Example Management Hooks*/}
                     <PrivateRoute
                         isLoading={this.props.example1.isLoading}
@@ -2391,6 +2394,46 @@ class Routes extends Component {
                         pageName={"manage_examples_hooks_2"}
                         layout={Layout}
                         component={ExampleManagementHooks2}
+                    />
+                    {/* example 3 */}
+                    <PrivateRoute
+                        isLoading={this.props.example3.isLoading}
+                        key={"manage-examples-3"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-3",
+                                name: "manage_examples_3",
+                                icon: "fa fa-adjust",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-3"}
+                        path={"/manage-examples-3"}
+                        pageName={"manage_examples_3"}
+                        layout={Layout}
+                        component={ExampleManagement3}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.example3.isLoading}
+                        key={"manage-examples-3"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-hooks-3",
+                                name: "manage_examples_hooks_3",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-hooks-3"}
+                        path={"/manage-examples-hooks-3"}
+                        pageName={"manage_examples_hooks_3"}
+                        layout={Layout}
+                        component={ExampleManagementHooks3}
                     />
 
                     {/* Manufacturing-management */}
@@ -2670,7 +2713,7 @@ class Routes extends Component {
                         pageName={"manage_transport_route"}
                         layout={Layout}
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
-                    />                    
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"manage-transport-department"}
@@ -2708,7 +2751,7 @@ class Routes extends Component {
                         pageName={"carrier_today_transport_mission"}
                         layout={Layout}
                         component={CarrierTodayTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"carrier-all-times-transport-mission"}
@@ -2727,7 +2770,7 @@ class Routes extends Component {
                         pageName={"carrier_all_times_transport_mission"}
                         layout={Layout}
                         component={CarrierAllTimesTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
+                    />
 
 
                     {/* Quản lý dự án */}

@@ -843,6 +843,16 @@ class SideBar extends Component {
                                             icon: "fa fa-adjust",
                                             path: "/manage-examples-hooks-2",
                                         },
+                                        {
+                                            name: "menu.manage_examples_3",
+                                            icon: "fa fa-adjust",
+                                            path: "/manage-examples-3",
+                                        },
+                                        {
+                                            name: "menu.manage_examples_hooks_3",
+                                            icon: "fa fa-adjust",
+                                            path: "/manage-examples-hooks-3",
+                                        }
                                     ],
                                 }}
                             />

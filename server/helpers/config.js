@@ -1374,6 +1374,34 @@ const LINKS = [{
     components: getComponentsInLink('/manage-examples-hooks-2'),
 },
 {
+    url: "/manage-examples-3",
+    description: "Quản lý Ví dụ 3",
+    category: LINK_CATEGORY.EXAMPLE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-examples-3'),
+},
+
+{
+    url: "/manage-examples-hooks-3",
+    description: "Quản lý Ví dụ Hooks 3",
+    category: LINK_CATEGORY.EXAMPLE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-examples-hooks-3'),
+},
+
+{
     url: "/manage-manufacturing-plan",
     description: "Quản lý kế hoạch sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,

@@ -939,6 +939,13 @@ exports.links = [
     }, {
         url: '/manage-examples-hooks-2',
         apis: ['@all']
+    }
+    , {
+        url: '/manage-examples-3',
+        apis: ['@all']
+    }, {
+        url: '/manage-examples-hooks-3',
+        apis: ['@all']
     }, {
         url: '/manage-manufacturing-plan',
         apis: ['@all']

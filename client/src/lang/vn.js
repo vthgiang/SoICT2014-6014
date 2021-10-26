@@ -261,6 +261,8 @@ export default {
             manage_examples_2: "CRUD theo mô hình số 2",
             manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
             manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
+            manage_examples_3: "CRUD theo mô hình số 3",
+            manage_examples_hooks_3: "CRUD Hooks theo mô hình 3",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
