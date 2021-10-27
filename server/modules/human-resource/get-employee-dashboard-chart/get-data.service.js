@@ -88,14 +88,14 @@ exports.getChartData = async (portal, company, defaultParams, searchChart) => {
 }
 
 const getEmployeeDashboardData = async (portal, company, params, list) => {
-    const { month, organizationalUnits, startDate, endDate, startDateIncreaseAndDecreaseChart } = params;
+    const { month, organizationalUnits, startDateIncreaseAndDecreaseChart, endDateIncreaseAndDecreaseChart, startDateAnnualLeaveTrendsChart, endDateAnnualLeaveTrendsChart, startDateTrendOfOvertimeChart, endDateTrendOfOvertimeChart } = params;
     
     const { listEmployeesOfOrganizationalUnits, totalEmployee } = await ProfileService.getEmployees(portal, company, organizationalUnits);
-    const dataHumanResourceIncreaseAndDecrease = await ProfileService.getEmployeesByStartingAndLeaving(portal, organizationalUnits, startDateIncreaseAndDecreaseChart, endDate, company);
+    const dataHumanResourceIncreaseAndDecrease = await ProfileService.getEmployeesByStartingAndLeaving(portal, organizationalUnits, startDateIncreaseAndDecreaseChart, endDateIncreaseAndDecreaseChart, company);
     const salaris = await SalaryService.getAllSalaryByMonthAndOrganizationalUnits(portal, organizationalUnits, month);
-    const annualLeave = await AnnualLeaveService.getAnnualLeaveByStartDateAndEndDate(portal, organizationalUnits, startDate, endDate, company);
+    const annualLeave = await AnnualLeaveService.getAnnualLeaveByStartDateAndEndDate(portal, organizationalUnits, startDateAnnualLeaveTrendsChart, endDateAnnualLeaveTrendsChart, company);
     const beforeAndAfterOneWeeks = await AnnualLeaveService.getAnnaulLeaveBeforAndAfterOneWeek(portal, organizationalUnits);
-    const dataOvertimeUnits = await TimesheetsService.getOvertimeOfUnitsByStartDateAndEndDate(portal, organizationalUnits, startDate, endDate, company);
+    const dataOvertimeUnits = await TimesheetsService.getOvertimeOfUnitsByStartDateAndEndDate(portal, organizationalUnits, startDateTrendOfOvertimeChart, endDateTrendOfOvertimeChart, company);
     const listField = await FieldService.getAllFields(portal, {}, company);
     const commendation = await CommendationService.getTotalCommendation(portal, company, organizationalUnits, month);
     const discipline = await DisciplineService.searchDisciplines(portal, company, organizationalUnits, month);

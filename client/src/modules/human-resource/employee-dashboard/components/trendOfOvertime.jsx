@@ -19,17 +19,22 @@ const TrendOfOvertime = (props) => {
 
     const [state, setState] = useState({
         lineChart: false,
-        startDate: date.startDate,
-        startDateShow: date.startDate,
-        endDate: date.endDate,
-        endDateShow: date.endDate,
+        startDate: date.startDateTrendOfOvertimeChart,
+        startDateShow: date.startDateTrendOfOvertimeChart,
+        endDate: date.endDateTrendOfOvertimeChart,
+        endDateShow: date.endDateTrendOfOvertimeChart,
         organizationalUnitsSearch: props.defaultUnit ? props.organizationalUnits : [],
         organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
         trendOfOvertimeChartData: employeeDashboardData.trendOfOvertimeChartData?.data1 ? {ratioX: employeeDashboardData.trendOfOvertimeChartData.ratioX, data1: employeeDashboardData.trendOfOvertimeChartData.data1} : {ratioX: [], data1: []},
     })
-   
 
-    const barChart = useRef(null)
+
+    const barChart = useRef(null);
+
+    const formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1],partDate[0]].join('-');
+    }
 
     useEffect(() => {
         setState({
@@ -84,6 +89,7 @@ const TrendOfOvertime = (props) => {
             ...state,
             startDate: value
         })
+        props.date.handleChangeTrendOfOvertimeChartTime(value, endDate)
     }
 
     /**
@@ -95,6 +101,7 @@ const TrendOfOvertime = (props) => {
             ...state,
             endDate: value,
         })
+        props.date.handleChangeTrendOfOvertimeChartTime(startDate, endDate)
     }
 
     /**
@@ -164,15 +171,11 @@ const TrendOfOvertime = (props) => {
             endDateShow: endDate,
             organizationalUnitsSearch: organizationalUnits,
         })
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
 
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-        if (new Date(startDateNew).getTime() < new Date(endDateNew).getTime()) {
+        if (new Date(formatNewDate(startDate)).getTime() < new Date(formatNewDate(endDate)).getTime()) {
             props.getEmployeeDashboardData({
                 searchChart: {
-                    trendOfOvertimeChart: {organizationalUnits: props.idUnit, startDate: startDateNew, endDate: endDateNew}
+                    trendOfOvertimeChart: {organizationalUnits: props.organizationalUnits, startDate: formatNewDate(startDate), endDate: formatNewDate(endDate)}
                 }
             })
         }
@@ -189,10 +192,10 @@ const TrendOfOvertime = (props) => {
     useEffect(() => {
         setState({
             ...state,
-            startDate: date.startDate,
-            startDateShow: date.startDate,
-            endDate: date.endDate,
-            endDateShow: date.endDate,
+            startDate: date.startDateTrendOfOvertimeChart,
+            startDateShow: date.startDateTrendOfOvertimeChart,
+            endDate: date.endDateTrendOfOvertimeChart,
+            endDateShow: date.endDateTrendOfOvertimeChart,
         })
     }, [JSON.stringify(date.month)]);
     return (
