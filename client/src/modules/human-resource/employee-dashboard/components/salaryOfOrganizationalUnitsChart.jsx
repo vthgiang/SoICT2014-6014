@@ -1,5 +1,5 @@
 /* Biểu đồ thể hiện lương thưởng các đơn vị trong công ty */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -28,13 +28,13 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
     }
 
     useEffect(() => {
-        if (props.employeeDashboardData.listSalaryByMonth !== state.listSalaryByMonth) {
+        if (props.salary.listSalaryByMonth !== state.listSalaryByMonth) {
             setState({
                 ...state,
-                listSalaryByMonth: props.employeeDashboardData.listSalaryByMonth
+                listSalaryByMonth: props.salary.listSalaryByMonth
             })
         };
-    }, [props.employeeDashboardData.listSalaryByMonth, state.unit, state.listSalaryByMonth])
+    }, [props.salary.listSalaryByMonth, state.unit, state.listSalaryByMonth])
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     const removePreviousChart = () => {
@@ -46,7 +46,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 
     /** Render chart */
     const renderChart = (data) => {
-        data.data1.shift();
+        //data.data1.shift();
         let setHeightChart = (data.ratioX.length * 40) < 320 ? 320 : (data.ratioX.length * 40);
         removePreviousChart();
         let chart = c3.generate({
@@ -77,13 +77,53 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         });
     };
 
-    const { translate, department } = props;
+    const { translate, salary, department } = props;
 
-    const { monthShow, organizationalUnits, employeeDashboardData } = props;
+    const { monthShow, organizationalUnits, salaryChartData } = props;
     const { unit } = state;
-
-    let organizationalUnitsName = department?.list?.filter(item => organizationalUnits?.includes(item?._id))?.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
     
+    let dataChart = {}
+    let filterSalary = {
+        nameOfUnit: [],
+        salaryOfMonth: [],
+    }
+    if (salaryChartData.length!=0) {
+        if (organizationalUnits?.length) {
+            organizationalUnits.map((i) => {
+                
+                let index = salaryChartData.idSalaryTypePurchase?.indexOf(i);
+                
+                filterSalary.nameOfUnit.push(salaryChartData.nameOfUnit[index])
+                filterSalary.salaryOfMonth.push(salaryChartData.salaryOfMonth[index])
+
+            })
+        }
+
+    }
+    console.log("filterSalary", filterSalary)
+    if (filterSalary) {
+        console.log("filterSalary", filterSalary)
+        let dataNew = [];
+        if(filterSalary?.salaryOfMonth.length>0){
+        filterSalary.salaryOfMonth.map(i=>{
+            if(state?.unit)
+            {
+                dataNew.push(i/1000000000)
+            } else{
+                dataNew.push(i/1000000)
+            }
+        })
+    }
+        dataChart = {
+            nameData: 'Thu nhập',
+            ratioX: filterSalary.nameOfUnit,
+            data1: dataNew
+        }
+        
+
+    }
+   
+
     const showDetailSalary = () => {
         Swal.fire({
             icon: "question",
@@ -97,39 +137,22 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         })
     }
     useEffect(() => {
-        if (employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart1 && unit) {
-            renderChart(employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart1)
+        if (dataChart) {
+            renderChart(dataChart);
         }
-        if (employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart1 && unit == false) {
-            renderChart(employeeDashboardData.salaryOfOrganizationalUnitsChartData.dataChart2)
-        }
-    }, [employeeDashboardData.salaryOfOrganizationalUnitsChartData, unit])
+    }, [dataChart])
 
 
     return (
         <React.Fragment>
             <div className="box box-solid" style={{ paddingBottom: 20 }}>
                 <div className="box-header with-border">
-                    <div className="box-title" style={{ marginRight: '5px' }}>
-                        {`Biểu đồ thu nhập `}
-                        {
-                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
-                                <>
-                                    <span>{` ${organizationalUnitsName?.[0]?.name ? organizationalUnitsName?.[0]?.name : ""} `}</span>
-                                </>
-                                :
-                                <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
-                                </span>
-                        }
-                        {monthShow}
-                    </div>
+
                     <a title={'Giải thích'} onClick={showDetailSalary}>
                         <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
                     </a>
                 </div>
-                {employeeDashboardData.isLoading
+                {salary.isLoading
                     ? <div style={{ marginLeft: "5px" }}>{translate('general.loading')}</div>
                     : <div className="box-body">
                         <div className="box-tools pull-right" >
@@ -149,8 +172,8 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 }
 
 function mapState(state) {
-    const { department, employeeDashboardData } = state;
-    return { department, employeeDashboardData };
+    const { salary, department } = state;
+    return { salary, department };
 };
 
 const salaryOfOrganizationalUnits = connect(mapState, null)(withTranslate(SalaryOfOrganizationalUnitsChart));

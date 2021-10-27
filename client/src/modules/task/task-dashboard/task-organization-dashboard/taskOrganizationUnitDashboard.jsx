@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -22,10 +22,6 @@ import { CurrentTaskTimesheetLogInOrganizationalUnit } from './currentTaskTimesh
 import { SelectMulti, DatePicker, LazyLoadComponent, forceCheckOrVisible, ExportExcel } from '../../../../common-components/index';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { showListInSwal } from '../../../../helpers/showListInSwal';
-
-const defaultConfig = { limit: 10 }
-const allTimeSheetLogsByUnitId = "all-time-sheet-logs"
-const distributionOfEmployeeChartId = "distribution-of-employee-chart";
 
 const formatString = (value) => {
     if (value && typeof value === 'string') {
@@ -59,7 +55,7 @@ const DEFAULT_SEARCH = {
     "all-time-sheet-log-by-unit": {}
 }
 
-let dataSearch = DEFAULT_SEARCH // tham số các chart để search khi params ở component con thay đổi
+//let dataSearch = DEFAULT_SEARCH 
 let INFO_SEARCH = { // bộ lọc tìm kiếm
     unitsSelected: null,
     startMonth: dayjs().subtract(3, 'month').format("YYYY-MM"),
@@ -82,6 +78,15 @@ function TaskOrganizationUnitDashboard(props) {
 
     const { unitsSelected, startMonthTitle, endMonthTitle,
         selectBoxUnit, dataExport } = state;
+
+    // tham số các chart để search khi params ở component con thay đổi
+    const dataSearch = useRef(DEFAULT_SEARCH);
+    const handleChangeDataSearch = (name, value) => {
+        dataSearch.current = {
+            ...dataSearch.current,
+            [name]: value
+        }
+    }
 
     useEffect(() => {
         props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
@@ -164,7 +169,6 @@ function TaskOrganizationUnitDashboard(props) {
     }
 
     const handleSearchData = async () => {
-        // const { dataSearch } = state;
         const { startMonth, endMonth, unitsSelected } = INFO_SEARCH;
 
         let startMonthObj = new Date(startMonth);
@@ -197,7 +201,7 @@ function TaskOrganizationUnitDashboard(props) {
             })
 
             let data = {
-                ...dataSearch,
+                ...dataSearch.current,
                 "common-params": {
                     organizationalUnitId: unitsSelected,
                     startMonth: startMonth,
@@ -237,12 +241,12 @@ function TaskOrganizationUnitDashboard(props) {
         }
     }
 
-    const handleChangeDataSearch = (name, value) => {
-        dataSearch = {
-            ...dataSearch,
-            [name]: value
-        }
-    }
+    // const handleChangeDataSearch = (name, value) => {
+    //     dataSearch = {
+    //         ...dataSearch,
+    //         [name]: value
+    //     }
+    // }
     const getDataSearchChart = (data) => {
         const { startMonth, endMonth } = INFO_SEARCH;
         const { unitsSelected } = state
@@ -366,6 +370,7 @@ function TaskOrganizationUnitDashboard(props) {
 
                                                 <div className="box-body qlcv">
                                                     {!isLoading("general-task-chart") ?
+
                                                         <GeneralTaskChart
                                                             startMonthTitle={startMonthTitle}
                                                             endMonthTitle={endMonthTitle}
@@ -406,6 +411,7 @@ function TaskOrganizationUnitDashboard(props) {
                                                                 handleChangeDataSearch={handleChangeDataSearch}
                                                                 getDataSearchChart={getDataSearchChart}
                                                             />
+
                                                             :
                                                             <div>{translate('general.loading')}</div>
                                                         }
@@ -632,10 +638,7 @@ function TaskOrganizationUnitDashboard(props) {
 
                                                     {!isLoading("all-time-sheet-log-by-unit") ?
                                                         // <LazyLoadComponent once={true}>
-                                                        <AllTimeSheetLogsByUnit
-                                                            handleChangeDataSearch={handleChangeDataSearch}
-                                                            getDataSearchChart={getDataSearchChart}
-                                                        />
+                                                        <AllTimeSheetLogsByUnit />
                                                         // </LazyLoadComponent>
                                                         :
                                                         <div>{translate('general.loading')}</div>

@@ -6,7 +6,7 @@ const { auth } = require(`../../../middleware`);
 
 
 router.get('/salaries', auth, SalaryController.searchSalaries);
-
+router.get('/salaries-chart', auth, SalaryController.getSalaryChart);
 
 router.post('/salaries', auth, SalaryController.createSalary);
 

@@ -139,7 +139,7 @@ function UnitCreateForm(props) {
         return packingRule;
     }
 
-    useEffect(() => {
+    if (props.id !== state.id || props.baseUnit !== state.baseUnit) {
         setState({
             ...state,
             baseUnit: props.baseUnit,
@@ -147,7 +147,7 @@ function UnitCreateForm(props) {
             packingRule: props.packingRule,
             listUnit: props.initialData
         })
-    }, [props.id, props.baseUnit])
+    }
 
     const handleUnitNameChange = (e) => {
         let value = e.target.value;
@@ -208,11 +208,11 @@ function UnitCreateForm(props) {
 
     const handleAddUnit = async (e) => {
         e.preventDefault();
-        const listUnit = [...(state.listUnit), state.unit];
-
+        let { listUnit, unit } = state;
+        listUnit.push(unit);
         await setState({
             ...state,
-            listUnit: listUnit,
+            listUnit: [...listUnit],
             unit: Object.assign({}, EMPTY_UNIT),
         })
         props.onDataChange(state.listUnit);
@@ -230,16 +230,11 @@ function UnitCreateForm(props) {
 
     const handleSaveEditUnit = async (e) => {
         e.preventDefault();
-        const { indexInfo, listUnit } = state;
-        let newListUnit;
-        if (listUnit) {
-            newListUnit = listUnit.map((item, index) => {
-                return (index === indexInfo) ? state.unit : item;
-            })
-        }
+        const { listUnit, unit, indexInfo } = state;
+        listUnit[indexInfo] = unit;
         await setState({
             ...state,
-            listUnit: newListUnit,
+            listUnit: [...listUnit],
             editInfo: false,
             unit: Object.assign({}, EMPTY_UNIT),
         })

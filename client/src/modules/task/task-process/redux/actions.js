@@ -211,7 +211,6 @@ function editProcessInfo(processId, data) {
         TaskProcessService.editProcessInfo(processId, data)
             .then(
                 res => {dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS, payload: res.data, processId: processId })
-                console.log("object");
             },
                 error => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_FAIL })
             );

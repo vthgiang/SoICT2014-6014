@@ -34,7 +34,7 @@ const TabAnualLeave = (props) => {
             <LazyLoadComponent>
                 <TrendOfOvertime
                     defaultUnit={defaultUnit}
-                    childOrganizationalUnit={childOrganizationalUnit}
+                    childOrganizationalUnit={childOrganizationalUnit?.filter(item => organizationalUnits?.includes(item?.id))}
                     idUnits={idUnits.map(x => x.id)}
                     unitName={idUnits.map(x => x.name)}
                     organizationalUnits={organizationalUnits}

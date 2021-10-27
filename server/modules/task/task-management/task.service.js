@@ -3050,10 +3050,12 @@ exports.checkImportTasks = async (data, portal, user) => {
                 element = { ...element, parentId: findParentCode._id }
             }
 
-            dataConvert = [...dataConvert, element];
 
-            if (!element.code || taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code) || (element.parent && !findParentCode && !checkParentCodeInFileExcell))
+            if (!element.code || taskCodeFilter?.length && taskCodeFilter.find(x => x.code === element.code) || (element.parent && !findParentCode && !checkParentCodeInFileExcell)) {
                 rowError = [...rowError, index + 1];
+                element = { ...element, error: true }
+            }
+            dataConvert = [...dataConvert, element];
         })
 
         console.log('rowError', rowError);
@@ -3544,7 +3546,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         //Lay cac cong viec cua cac unit da chon
         const tasksOfSelectedUnit = organizationUnitTasks?.filter(x =>
             organizationalUnitId?.includes(x?.organizationalUnit?._id.toString()))
-            .map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
         // Dem cong viec cua tat ca cac unit da chon
         let dataRow = _countTask(tasksOfSelectedUnit, 'Tổng');
         dataTable.push(dataRow);
@@ -4488,14 +4489,14 @@ _countTask = (tasklist, name) => {
     }
     return {
         name: name ? name : "",
-        totalTask: tasklist,
-        confirmedTask,
-        noneUpdateTask,
-        intimeTask,
-        delayTask,
-        overdueTask,
-        taskFinished,
-        taskInprocess,
+        totalTask: tasklist.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
+        confirmedTask: confirmedTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
+        noneUpdateTask: noneUpdateTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
+        intimeTask: intimeTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
+        delayTask: delayTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
+        overdueTask: overdueTask.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
+        taskFinished: taskFinished.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
+        taskInprocess: taskFinished.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress })),
         organization: true,
         show: true,
     }

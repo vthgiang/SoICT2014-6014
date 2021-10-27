@@ -19,13 +19,13 @@ function QuantityLotGoodIssueEdit(props) {
         good: ''
     })
 
-    useEffect(() => {
+    if (props.good !== state.good) {
         setState({
             ...state,
             good: props.good,
             lots: props.initialData
         })
-    }, [props.good])
+    }
 
     const handleAddLotInfo = () => {
         setState({

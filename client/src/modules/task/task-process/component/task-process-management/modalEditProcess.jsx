@@ -348,11 +348,11 @@ function ModalEditProcess(props) {
     const handleChangeInfo = (value) => {
         let info = {
             ...value,
-            code: state.id
+            codeInProcess: state.id
         }
         let infos = state.info
         let id = infos[`${state.id}`]._id
-        // console.log(id,infos[`${state.id}`]);
+
         infos[`${state.id}`] = { ...info, _id: id };
         // state.info[`${state.id}`] = info
         // console.log(infos[`${state.id}`]);
@@ -543,7 +543,6 @@ function ModalEditProcess(props) {
     const { translate, role, user } = props;
     const { idProcess } = props;
     const { id, info, viewer, startDate, endDate, showInfo, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = state;
-
     // lấy danh sách các nhân viên trong cả công ty
     let listUserCompany = user?.usercompanys;
     let listItem = [];

@@ -17,6 +17,10 @@ const data = [{
 router.get('/assets', auth, AssetController.searchAssetProfiles);
 router.get('/assets-group', auth, AssetController.getAssetGroupChart);
 router.get('/assets-statistic', auth, AssetController.getAssetStatisticChart);
+router.get('/assets-purchase', auth, AssetController.getAssetPurchaseChart);
+router.get('/assets-disposal', auth, AssetController.getAssetDisposalChart);
+router.get('/assets-incident', auth, AssetController.getAssetIncidentChart);
+router.get('/assets-maintenance', auth, AssetController.getAssetMaintenanceChart);
 router.post('/assets', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 router.patch('/assets/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
 router.delete('/assets', auth, AssetController.deleteAsset);

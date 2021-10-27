@@ -11,7 +11,8 @@ export const SalaryActions = {
     createSalary,
     deleteSalary,
     updateSalary,
-    importSalary
+    importSalary,
+    getAllSalaryChart
 };
 
 /**
@@ -81,6 +82,7 @@ function deleteSalary(id) {
                     type: SalaryConstants.DELETE_SALARY_SUCCESS,
                     payload: res.data.content
                 })
+                
             })
             .catch(err => {
                 dispatch({
@@ -134,6 +136,28 @@ function importSalary(data) {
                 dispatch({
                     type: SalaryConstants.IMPORT_SALARY_FAILURE,
                     error: err.response.data.content
+                });
+            })
+    };
+}
+
+function getAllSalaryChart(data) {
+    return dispatch => {
+        dispatch({
+            type: SalaryConstants.GET_ALL_SALARY_CHART_REQUEST
+        });
+        SalaryService.getAllSalaryChart(data)
+            .then((res) => {
+                dispatch({
+                    type: SalaryConstants.GET_ALL_SALARY_CHART_SUCCESS,
+                    payload: res.data.content,
+                })
+                console.log("res.data.content",res.data.content)
+            })
+            .catch(err => {
+                dispatch({
+                    type: SalaryConstants.GET_ALL_SALARY_CHART_FAILURE,
+                    error: err
                 });
             })
     };

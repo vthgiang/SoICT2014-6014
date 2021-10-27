@@ -372,7 +372,7 @@ function GoodIssueCreateForm(props) {
             validateType(state.type, false) &&
             validateStock(state.fromStock, false) &&
             validateApprover(state.approver, false) &&
-            validatePartner(state.customer, false) &&
+            // validatePartner(state.customer, false) &&
             validateAccountables(state.accountables, false) &&
             validateQualityControlStaffs(state.qualityControlStaffs, false) &&
             validateResponsibles(state.responsibles, false);
@@ -495,37 +495,41 @@ function GoodIssueCreateForm(props) {
         return false;
     };
 
-    useEffect(() => {
-        let { salesOrderAddBill = { code: "" } } = props;
+    let { salesOrderAddBill = { code: "" } } = props;
 
-        if (props.createdSource === "salesOrder" && salesOrderAddBill.code !== "" && salesOrderAddBill.code !== state.salesOrderCode) {
-            setState({
-                ...state,
-                group: props.group,
-                code: props.billCode,
-                salesOrderId: salesOrderAddBill._id,
-                salesOrderCode: salesOrderAddBill.code,
-                type: "4",
-                customer: salesOrderAddBill.customer ? salesOrderAddBill.customer._id : "",
-                address: salesOrderAddBill.customerAddress,
-                listGood: salesOrderAddBill.goods
-                    ? salesOrderAddBill.goods.map((good) => {
-                        return {
-                            good: {
-                                _id: good.good._id,
-                                code: good.good.code,
-                                name: good.good.name,
-                                baseUnit: good.good.baseUnit,
-                            },
-                            quantity: good.quantity,
-                        };
-                    })
-                    : "",
-            });
-        }
-    }, [props.salesOrderAddBill])
+    if (props.createdSource === "salesOrder" && salesOrderAddBill.code !== "" && salesOrderAddBill.code !== state.salesOrderCode) {
+        setState({
+            ...state,
+            group: props.group,
+            code: props.billCode,
+            salesOrderId: salesOrderAddBill._id,
+            salesOrderCode: salesOrderAddBill.code,
+            type: "4",
+            customer: salesOrderAddBill.customer ? salesOrderAddBill.customer._id : "",
+            address: salesOrderAddBill.customerAddress,
+            listGood: salesOrderAddBill.goods
+                ? salesOrderAddBill.goods.map((good) => {
+                    return {
+                        good: {
+                            _id: good.good._id,
+                            code: good.good.code,
+                            name: good.good.name,
+                            baseUnit: good.good.baseUnit,
+                        },
+                        quantity: good.quantity,
+                    };
+                })
+                : "",
+        });
+    }
 
-    useEffect(() => {
+     //---Kết thúc phần lập phiếu từ đơn bán hàng---
+
+        //---Lập phiếu xuất nguyên vật liệu từ lệnh sản xuất---
+
+        //---Kế thúc lập phiếu xuất nguyên liệu từ lệnh sản xuất---
+
+    if (props.group !== state.group) {
         setState({
             ...state,
             group: props.group,
@@ -537,7 +541,7 @@ function GoodIssueCreateForm(props) {
             errorApprover: undefined,
             errorCustomer: undefined,
         });
-    }, [props.group])
+    }
 
     const save = async () => {
         const {

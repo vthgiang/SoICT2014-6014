@@ -141,6 +141,7 @@ exports.links = [
             { path: '/employee/employees/import', method: 'POST' },
 
             { path: '/salary/salaries', method: 'GET' },
+            { path: '/salary/salaries-chart', method: 'GET' },
             { path: '/salary/salaries', method: 'POST' },
             { path: '/salary/salaries/:id', method: 'PATCH' },
             { path: '/salary/salaries/:id', method: 'DELETE' },
@@ -434,6 +435,10 @@ exports.links = [
             { path: '/asset/assets', method: 'GET' },
             { path: '/asset/assets-group', method: 'GET' },
             { path: '/asset/assets-statistic', method: 'GET' },
+            { path: '/asset/assets-purchase', method: 'GET' },
+            { path: '/asset/assets-disposal', method: 'GET' },
+            { path: '/asset/assets-incident', method: 'GET' },
+            { path: '/asset/assets-maintenance', method: 'GET' },
             { path: '/asset/assets', method: 'POST' },
             { path: '/asset/assets/:id', method: 'PATCH' },
             { path: '/asset/assets/:id', method: 'DELETE' },

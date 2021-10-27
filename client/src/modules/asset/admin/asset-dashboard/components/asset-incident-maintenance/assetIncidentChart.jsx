@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DatePicker, SelectBox, TreeSelect } from '../../../../../../common-components';
 import Swal from 'sweetalert2';
-
+import { AssetManagerActions } from '../../../asset-information/redux/actions';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -47,117 +47,89 @@ class AssetIncidentChart extends Component {
         }
     }
 
-    setDataColumnChartForMonth = (listAssets) => {
-        const { translate, getIncidentData } = this.props;
-        let { incidentDateAfter, incidentDateBefore, type } = this.state;
+    setDataColumnChartForMonth = (type) => {
+        const { translate, getIncidentData ,incidentAsset} = this.props;
+        let category1 = [], count1 = ['Số lần'], yValue1 = [], max = []
+        const maxVa = (a, b) => Math.max(a, b)
+        if (incidentAsset.incidentChart) {
+            incidentAsset.incidentChart.forEach(element => {
+                if (type.length !== 0) {
+                    let sumCate = 0
+                    type.forEach(value => {
+                        let index = element.idAssetTypeIncident.indexOf(value)
+                        sumCate += element.countAssetcount[index]
+                    })
+                    category1.push(element.xType)
+                    count1.push(sumCate)
+                } else {
+                    const reducer = (a, b) => a + b
+                    category1.push(element.xType)
+                    count1.push(element.countAssetcount.reduce(reducer))
 
-        let startDate = new Date(incidentDateAfter);
-        let endDate = new Date(incidentDateBefore);
-        let period = Math.round((endDate - startDate) / 2592000000) + 1;
-        let listMonth = [], countAsset = [], category = [], arr = [];
-        let m = incidentDateAfter.slice(5, 7);
-        let y = incidentDateAfter.slice(0, 4);
-
-        for (let i = 0; i <= period; i++) {
-            if (m > 12) {
-                m = 1;
-                y++;
-            }
-            if (m < 10) {
-                m = '0' + m;
-            }
-            category.push([m, y].join('-'));
-            listMonth.push([y, m].join(','));
-            m++;
-        }
-
-        if (listAssets) {
-            for (let i = 0; i < listMonth.length - 1; i++) {
-                let cnt = 0, val = 0;
-                let minDate = new Date(listMonth[i]).getTime();
-                let maxDate = new Date(listMonth[i + 1]).getTime();
-
-                for (let j in listAssets) {
-                    let incidentLogs = listAssets[j].incidentLogs;
-
-                    if (incidentLogs.length) {
-                        for (let k in incidentLogs) {
-                            let incidentDate = new Date(incidentLogs[k].dateOfIncident).getTime();
-                            if (incidentDate < maxDate && incidentDate >= minDate) {
-                                cnt++;
-                            }
-                        }
-                    }
                 }
-                countAsset.push(cnt);
-            }
+            })
         }
-        let maxCnt = Math.max.apply(Math, countAsset);
+        let maxCout = count1.slice(1)
 
-        for (let i = 0; i <= maxCnt; i++) {
-            arr.push(i)
+        let yMaxValue = count1.slice(1).reduce(maxVa, 0)
+
+        for (let i = 0; i <= yMaxValue; i++) {
+            yValue1.push(i)
         }
-        category.pop();
-        countAsset.unshift(translate('asset.dashboard.time'));
 
         let dataColumnChart = {
-            category: category,
-            count: countAsset,
-            yValues: arr
+            category: category1,
+            count: count1,
+            yValues: yValue1
         };
 
-        if (listAssets && dataColumnChart) {
+        if (incidentAsset && dataColumnChart) {
             getIncidentData(dataColumnChart, type);
         }
 
         return dataColumnChart;
     }
 
-    setDataColumnChartForYear = (listAssets) => {
-        const { translate, getIncidentData } = this.props;
-        let { incidentDateAfter, incidentDateBefore, type } = this.state;
-
-        let startDate = incidentDateAfter.slice(0, 4);
-        let endDate = incidentDateBefore.slice(0, 4);
-        let period = endDate - startDate + 1;
-        let countAsset = [], category = [], arr = [];
-
-        for (let i = 0; i < period; i++) {
-            category.push(parseInt(startDate) + i);
-        }
-        if (listAssets) {
-            for (let i = 0; i < category.length; i++) {
-                let cnt = 0;
-                for (let j in listAssets) {
-                    let incidentLogs = listAssets[j].incidentLogs;
-                    if (incidentLogs.length) {
-                        for (let k in incidentLogs) {
-                            let incidentDate = new Date(incidentLogs[k].dateOfIncident).getFullYear();
-
-                            if (incidentDate == category[i]) {
-                                cnt++;
-                            }
-                        }
-                    }
+    setDataColumnChartForYear = (type) => {
+        const { translate, getIncidentData,incidentAsset } = this.props;
+        let category1=[],count1=['Số lần'], yValue1=[] , max = []
+        const maxVa = (a,b) =>  Math.max(a,b)
+        if (incidentAsset.incidentChartYear){
+            incidentAsset.incidentChartYear.forEach(element => {
+                if (type.length !==0){
+                    let sumCate = 0
+                    type.forEach(value=>{
+                        let index = element.idAssetTypeIncidentYear.indexOf(value)
+                        sumCate += element.countAssetcountYear[index]
+                        
+                    })
+                    category1.push(element.xType)
+                    count1.push(sumCate)
+                    
+                }else{
+                    const reducer = (a,b) => a+b
+                    category1.push(element.xType)
+                    count1.push(element.countAssetcountYear.reduce(reducer))
+                   
                 }
-                countAsset.push(cnt);
-            }
+            })
         }
-
-        let maxCnt = Math.max.apply(Math, countAsset);
-
-        for (let i = 0; i <= maxCnt; i++) {
-            arr.push(i)
-        }
-        countAsset.unshift(translate('asset.dashboard.time'));
+        let maxCout = count1.slice(1)
+        
+        let yMaxValue = count1.slice(1).reduce(maxVa,0)
+       
+       
+       for (let i = 0; i <= yMaxValue; i++) {
+           yValue1.push(i)
+       }
 
         let dataColumnChart = {
-            category: category,
-            count: countAsset,
-            yValues: arr
+            category: category1,
+            count: count1,
+            yValues: yValue1
         };
 
-        if (dataColumnChart && listAssets) {
+        if (dataColumnChart && incidentAsset) {
             getIncidentData(dataColumnChart, type);
         }
         return dataColumnChart;
@@ -183,7 +155,7 @@ class AssetIncidentChart extends Component {
             filterAsset = listAssets;
         }
 
-        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(filterAsset) : this.setDataColumnChartForMonth(filterAsset);
+        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(type) : this.setDataColumnChartForMonth(type);
 
         let chart = c3.generate({
             bindto: this.refs.assetIncidentChart,
@@ -257,14 +229,7 @@ class AssetIncidentChart extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    incidentDateAfter: this.INFO_SEARCH.incidentDateAfter,
-                    incidentDateBefore: this.INFO_SEARCH.incidentDateBefore,
-                    // type: this.INFO_SEARCH.type
-                }
-            })
+            this.props.getAllAssetIncident({ name: "incident-date-data", endTimeIncident: incidentDateBefore, startTimeIncident: incidentDateAfter })
         }
     }
 
@@ -371,5 +336,14 @@ class AssetIncidentChart extends Component {
         )
     }
 }
+function mapState(state) {
+    const { incidentAsset } = state.assetsManager;
+    return { incidentAsset };
+}
 
-export default withTranslate(AssetIncidentChart);
+const mapDispatchToProps = {
+    getAllAssetIncident: AssetManagerActions.getAllAssetIncident
+}
+
+const AssetIncidentChartConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetIncidentChart));
+export { AssetIncidentChartConnect as AssetIncidentChart };

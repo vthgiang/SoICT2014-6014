@@ -86,14 +86,15 @@ function GoodManagement(props) {
         });
     };
 
-    const handleEdit = async (goods) => {
-        await setState({
-            ...state,
-            currentRow: goods,
-        });
+    // const handleEdit = async (goods) => {
+    //     console.log("asdas", goods);
+    //     await setState({
+    //         ...state,
+    //         currentRow: goods,
+    //     });
 
-        window.$("#modal-edit-goods").modal("show");
-    };
+    //     window.$("#modal-edit-goods").modal("show");
+    // };
 
     const handleProduct = () => {
         let type = "product";
@@ -178,13 +179,13 @@ function GoodManagement(props) {
         await props.getGoodsByType(data);
     };
 
-    // const handleEdit = async (goods) => {
-    //     await setState({
-    //         ...state,
-    //         currentRow: goods,
-    //     });
-    //     window.$("#modal-edit-good").modal("show");
-    // };
+    const handleEdit = async (goods) => {
+        await setState({
+            ...state,
+            currentRow: goods,
+        });
+        window.$("#modal-edit-good").modal("show");
+    };
 
     const handleShowDetailInfo = async (good) => {
         let id = good._id;
