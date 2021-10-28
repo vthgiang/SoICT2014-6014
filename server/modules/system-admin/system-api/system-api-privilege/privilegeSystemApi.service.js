@@ -21,7 +21,7 @@ const getPrivilegeApis = async (portal, data) => {
         keySearch = {
             ...keySearch,
             email: {
-                $regex: path,
+                $regex: email,
                 $options: "i"
             }
         }
