@@ -87,14 +87,14 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
         nameOfUnit: [],
         salaryOfMonth: [],
     }
-    if (salaryChartData.length!=0) {
+    if (salaryChartData?.length!=0) {
         if (organizationalUnits?.length) {
             organizationalUnits.map((i) => {
                 
-                let index = salaryChartData.idSalaryTypePurchase?.indexOf(i);
+                let index = salaryChartData?.idSalaryTypePurchase?.indexOf(i);
                 
-                filterSalary.nameOfUnit.push(salaryChartData.nameOfUnit[index])
-                filterSalary.salaryOfMonth.push(salaryChartData.salaryOfMonth[index])
+                filterSalary.nameOfUnit.push(salaryChartData?.nameOfUnit[index])
+                filterSalary.salaryOfMonth.push(salaryChartData?.salaryOfMonth[index])
 
             })
         }
