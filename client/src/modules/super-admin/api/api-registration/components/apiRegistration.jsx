@@ -105,9 +105,18 @@ function ApiRegistration (props) {
     }
 
     const formatStatus = (status) => {
-        return status
-    }
+        if (status === 0) {
+            return <span style={{ color: '#858585' }}>Vô hiệu hóa</span>
+        } else if (status === 1) {
+            return <span style={{ color: '#F57F0C' }}>Yêu cầu sử dụng</span>
+        } else if (status === 2) {
+            return <span style={{ color: '#E34724' }}>Từ chối</span>
+        } else if (status === 3) {
+            return <span style={{ color: '#28A745' }}>Đang sử dụng</span>
 
+        }
+    }
+    
     const handleAddPrivilegeApi = () => {
         window.$("#create-api-registration-modal").modal("show");
     }
