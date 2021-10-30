@@ -12,6 +12,7 @@ const initState = {
     importSalary: [],
     importStatus: false,
     error: "",
+    salaryChart:[]
 }
 
 export function salary(state = initState, action) {
@@ -20,6 +21,7 @@ export function salary(state = initState, action) {
         case SalaryConstants.CREATE_SALARY_REQUEST:
         case SalaryConstants.UPDATE_SALARY_REQUEST:
         case SalaryConstants.DELETE_SALARY_REQUEST:
+        case SalaryConstants.GET_ALL_SALARY_CHART_REQUEST:
         case SalaryConstants.IMPORT_SALARY_REQUEST:
             return {
                 ...state,
@@ -50,6 +52,8 @@ export function salary(state = initState, action) {
                     totalList: action.payload.totalList,
                 };
             };
+            
+                
         case SalaryConstants.CREATE_SALARY_SUCCESS:
             return {
                 ...state,
@@ -59,6 +63,7 @@ export function salary(state = initState, action) {
                         action.payload
                     ],
             };
+            
         case SalaryConstants.UPDATE_SALARY_SUCCESS:
             return {
                 ...state,
@@ -79,17 +84,26 @@ export function salary(state = initState, action) {
                     importSalary: action.payload.content,
                     error: ""
             };
+            case SalaryConstants.GET_ALL_SALARY_CHART_SUCCESS:
+                console.log(action.payload)
+                return {
+                    ...state,
+                    salaryChart: action.payload.countType.salaryType,
+                    
+                    isLoading: false
+                }
         case SalaryConstants.GET_SALARY_FAILURE:
         case SalaryConstants.CREATE_SALARY_FAILURE:
         case SalaryConstants.UPDATE_SALARY_FAILURE:
         case SalaryConstants.DELETE_SALARY_FAILURE:
+        case SalaryConstants.GET_ALL_SALARY_CHART_FAILURE:
         case SalaryConstants.IMPORT_SALARY_FAILURE:
             return {
                 ...state,
                 isLoading: false,
                     error: action.error
             };
-
+            
         default:
             return state
     }

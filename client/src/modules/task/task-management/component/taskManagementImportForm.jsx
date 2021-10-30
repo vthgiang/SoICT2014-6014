@@ -840,8 +840,26 @@ function TaskManagementImportForm(props) {
         props.importTasks({ importType: 'import_tasks', importData: { valueImport, valueImportTaskActions, valueImportTaskTimesheetLog } });
     }
 
+    let rowErrorGeneralInfo = state?.rowError;
+    let showValueImportGeneralInfo = state.showValueImport;
 
-    console.log(JSON.parse(JSON.stringify(state)))
+    if (tasks?.error?.generalInfo?.rowError?.length) {
+        rowErrorGeneralInfo = tasks.error.generalInfo.rowError;
+        let data = [], dataLength = showValueImportGeneralInfo?.length;
+        for (let i = 0; i < dataLength; i++){
+            data = [
+                ...data,
+                {
+                    ...showValueImportGeneralInfo[i],
+                    errorAlert: tasks?.error?.generalInfo?.data ? tasks.error.generalInfo.data[i].errorAlert : showValueImportGeneralInfo[i].errorAlert,
+                    error: tasks?.error?.generalInfo?.data ? tasks.error.generalInfo.data[i].error : showValueImportGeneralInfo[i].error,
+                }
+            ]
+        }
+        showValueImportGeneralInfo = data;
+
+    }
+
 
     return <DialogModal modalID={`modal_import_tasks`} isLoading={false}
         formID={`form_import_tasks`}
@@ -882,8 +900,8 @@ function TaskManagementImportForm(props) {
                         <ShowImportData
                             id={`import_list_task`}
                             configData={config}
-                            importData={state.showValueImport}
-                            rowError={state.rowError}
+                            importData={showValueImportGeneralInfo}
+                            rowError={rowErrorGeneralInfo}
                             scrollTable={true}
                             checkFileImport={true}
                             limit={limit}

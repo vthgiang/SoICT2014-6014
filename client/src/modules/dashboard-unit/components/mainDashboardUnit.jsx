@@ -8,6 +8,7 @@ import { TabHumanResource, TabSalary, TabAnualLeave } from '../../human-resource
 import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible, CustomLegendC3js } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
 
+import { getEmployeeDashboardActions } from '../../human-resource/employee-dashboard/redux/actions';
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
 import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
@@ -20,13 +21,17 @@ import "./dashboardUnit.css";
 class MainDashboardUnit extends Component {
     constructor(props) {
         super(props);
-
+        this.INFO_SEARCH = {};
         this.state = {
             month: this.formatDate(Date.now(), true),
             monthSearch: this.formatDate(Date.now(), false, true),
             monthShow: this.formatDate(Date.now(), true),
             organizationalUnits: [this.props.childOrganizationalUnit[0].id],
             arrayUnitShow: [this.props.childOrganizationalUnit[0].id],
+
+            startDate: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+            startDateIncreaseAndDecreaseChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 3), true),
+            endDate: this.formatDate(Date.now(), true),
 
             // Biểu đồ khẩn cấp / cần làm
             currentDate: this.formatDate(Date.now(), false),
@@ -69,6 +74,10 @@ class MainDashboardUnit extends Component {
             arrayUnitShow: value,
         });
 
+        this.INFO_SEARCH = {
+            organizationalUnits: value
+        }
+
     }
 
     /**
@@ -83,50 +92,74 @@ class MainDashboardUnit extends Component {
 
     /** Bắt sự kiện phân tích dữ liệu */
     handleUpdateData = () => {
-        const { department, childOrganizationalUnit } = this.props;
-        let { month, arrayUnitShow } = this.state;
+
+        let { monthShow, month, arrayUnitShow, startDate, endDate, startDateIncreaseAndDecreaseChart } = this.state;
+        let { childOrganizationalUnit, getEmployeeDashboardData, salaryChart } = this.props;
+        const { department } = this.props;
+        const { organizationalUnits } = this.INFO_SEARCH;
+
+
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        this.setState({
-            organizationalUnits: arrayUnitShow,
-            monthShow: month,
-            monthSearch: newMonth
-        });
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
 
-        let arrayUnit = arrayUnitShow;
-        if (arrayUnitShow.length === department.list.length) {
-            arrayUnitShow = department.list.map(x => x._id);
-            arrayUnit = undefined;
-        } else if (arrayUnitShow.length === 0) {
-            arrayUnitShow = childOrganizationalUnit.map(x => x.id);
-            arrayUnit = childOrganizationalUnit.map(x => x.id);
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+
+        let arrIncreaseAndDecreaseChart = startDateIncreaseAndDecreaseChart.split('-');
+        let startDateIncreaseAndDecreaseChartNew = [arrIncreaseAndDecreaseChart[1], arrIncreaseAndDecreaseChart[0]].join('-');
+
+        if (organizationalUnits.length > 0) {
+            this.setState({
+
+                organizationalUnits: organizationalUnits,
+                monthShow: month,
+                arrayUnitShow: organizationalUnits
+
+            });
+
+            let arrayUnit = arrayUnitShow;
+            if (arrayUnitShow.length === department.list.length) {
+                // arrayUnitShow = department.list.map(x => x._id);
+                arrayUnit = undefined;
+            } else if (arrayUnitShow.length === 0) {
+                // arrayUnitShow = childOrganizationalUnit.map(x => x.id);
+                arrayUnit = childOrganizationalUnit.map(x => x.id);
+            }
+
+
+            /* Lấy danh sách nhân viên  */
+            this.props.getAllEmployee({ organizationalUnits: arrayUnit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
+
+            /* Lấy danh sách nhân viên theo tháng sinh*/
+            this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
+            /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
+            this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: arrayUnitShow });
+
+            /* Lấy dánh sách khen thưởng, kỷ luật */
+            this.props.getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
+            this.props.getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
+
+
+            /* Lấy dữ liệu lương nhân viên*/
+            this.props.searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
+            this.props.searchSalary({ callApiDashboard: true, month: newMonth });
+            this.props.getAllSalaryChart({ name: "salary-date-data", monthTime: month })
+
+            /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
+            this.props.getTimesheets({
+                organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
+                limit: 100000,
+            });
+
+            this.props.getEmployeeDashboardData({
+                searchChart: {
+                    employeeDashboardChart: { month: newMonth, organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew }
+                }
+            });
         }
-
-
-
-        /* Lấy danh sách nhân viên  */
-        this.props.getAllEmployee({ organizationalUnits: arrayUnit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-        /* Lấy danh sách nhân viên theo tháng sinh*/
-        this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
-
-        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: arrayUnitShow });
-
-        /* Lấy dánh sách khen thưởng, kỷ luật */
-        this.props.getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
-        this.props.getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
-
-        /* Lấy dữ liệu lương nhân viên*/
-        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
-        this.props.searchSalary({ callApiDashboard: true, month: newMonth });
-
-        /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({
-            organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
-            limit: 100000,
-        });
 
     }
 
@@ -151,16 +184,28 @@ class MainDashboardUnit extends Component {
     }
 
     componentDidMount() {
-        const { organizationalUnits, month, currentDate } = this.state;
+        const { month, organizationalUnits, arrayUnitShow, startDate, endDate, startDateIncreaseAndDecreaseChart } = this.state;
+
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
+        let arrStart = startDate.split('-');
+        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+
+        let arrEnd = endDate.split('-');
+        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+
+        let arrIncreaseAndDecreaseChart = startDateIncreaseAndDecreaseChart.split('-');
+        let startDateIncreaseAndDecreaseChartNew = [arrIncreaseAndDecreaseChart[1], arrIncreaseAndDecreaseChart[0]].join('-');
+
+        this.INFO_SEARCH = {
+            organizationalUnits
+        }
         /* Lấy danh sách nhân viên  */
         this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
         /* Lấy danh sách nhân viên theo tháng sinh*/
         this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
-
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: organizationalUnits });
 
@@ -168,14 +213,28 @@ class MainDashboardUnit extends Component {
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
         this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
 
+
         /* Lấy dữ liệu lương nhân viên*/
         this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
+        this.props.getAllSalaryChart()
 
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
         this.props.getTimesheets({
             organizationalUnits: organizationalUnits, month: newMonth, page: 0,
+
             limit: 100000,
+        });
+
+        this.props.getEmployeeDashboardData({
+
+            defaultParams: {
+                organizationalUnits: organizationalUnits,
+                month: newMonth,
+                startDate: startDateNew,
+                endDate: endDateNew,
+                startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew
+            }
         });
     }
 
@@ -199,14 +258,15 @@ class MainDashboardUnit extends Component {
     }
 
     render() {
-        const { translate, department, employeesManager, user, tasks, discipline } = this.props;
+        const { translate, department, employeesManager, user, tasks, discipline, employeeDashboardData, salaryChart } = this.props;
 
         const { childOrganizationalUnit } = this.props;
 
-        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, monthSearch } = this.state;
+        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, monthSearch, startDate, endDate, startDateIncreaseAndDecreaseChart } = this.state;
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+        console.log(listAllEmployees);    
         let listEmployee = user.employees;
 
         return (
@@ -323,7 +383,13 @@ class MainDashboardUnit extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <TabHumanResource childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                    <TabHumanResource
+                                        childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                        defaultUnit={true}
+                                        organizationalUnits={organizationalUnits}
+                                        monthShow={monthShow}
+                                        date={{ startDate, endDate, startDateIncreaseAndDecreaseChart, month }}
+                                    />
                                 </LazyLoadComponent>
                             </div>
 
@@ -331,16 +397,24 @@ class MainDashboardUnit extends Component {
                             <div className="tab-pane" id="annualLeave">
                                 <LazyLoadComponent>
                                     <TabAnualLeave
-                                        idUnits={childOrganizationalUnit?.length ? childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id)) : []}
+                                        idUnits={childOrganizationalUnit.length ? childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id)) : []}
                                         defaultUnit={true}
-                                        childOrganizationalUnit={childOrganizationalUnit} />
+                                        monthShow={monthShow}
+                                        childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                        date={{ startDate, endDate, startDateIncreaseAndDecreaseChart, month }}
+                                    />
                                 </LazyLoadComponent>
                             </div>
 
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
                                 <LazyLoadComponent>
-                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                        organizationalUnits={organizationalUnits}
+                                        monthShow={monthShow}
+                                        salaryChart={salaryChart}
+
+                                    />
                                 </LazyLoadComponent>
                             </div>
 
@@ -359,8 +433,9 @@ class MainDashboardUnit extends Component {
 }
 
 function mapState(state) {
-    const { department, employeesManager, tasks, user, discipline } = state;
-    return { department, employeesManager, tasks, user, discipline };
+    const { department, employeesManager, tasks, user, discipline, employeeDashboardData } = state;
+    const { salaryChart } = state.salary
+    return { department, employeesManager, tasks, user, discipline, salaryChart, employeeDashboardData };
 }
 
 const actionCreators = {
@@ -369,8 +444,9 @@ const actionCreators = {
     getListDiscipline: DisciplineActions.getListDiscipline,
     searchSalary: SalaryActions.searchSalary,
     getTimesheets: TimesheetsActions.searchTimesheets,
-
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+    getAllSalaryChart: SalaryActions.getAllSalaryChart,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 
 const mainDashboardUnit = connect(mapState, actionCreators)(withTranslate(MainDashboardUnit));

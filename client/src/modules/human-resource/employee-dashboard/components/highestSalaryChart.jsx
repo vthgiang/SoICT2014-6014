@@ -1,5 +1,5 @@
 /* Biểu đồ top 20 nhân sự có lương thưởng cao nhất */
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -16,9 +16,11 @@ const HighestSalaryChart = (props) => {
         window.$(`#modal-view-all-salary`).modal('show');
     }
 
-    const { translate, salary, department } = props;
+    const [dataSalary, setDataSalary] = useState([])
 
-    const { monthShow, organizationalUnits, childOrganizationalUnit } = props;
+    const { translate, department, employeeDashboardData } = props;
+
+    const { monthShow, organizationalUnits } = props;
 
     let organizationalUnitsName;
 
@@ -27,30 +29,9 @@ const HighestSalaryChart = (props) => {
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     };
 
-    let data = salary.listSalaryByMonthAndOrganizationalUnits;
-    if (data.length !== 0) {
-        data = data.map(x => {
-            let total = x?.mainSalary ? parseInt(x.mainSalary) : 0;
-            if (x.bonus.length !== 0) {
-                for (let count in x.bonus) {
-                    total = total + parseInt(x.bonus[count].number)
-                }
-            };
-            return { ...x, total: total }
-        })
-    };
-
-    let dataSalary = []
-    data.forEach(x => {
-        const index = dataSalary.findIndex(y => y.employee._id === x.employee._id)
-        if (index >= 0) {
-            dataSalary[index].total = dataSalary[index].total + x.total
-        } else {
-            dataSalary = [...dataSalary, x]
-        }
-    });
-
-    dataSalary = dataSalary.sort((a, b) => b.total - a.total);
+    useEffect(() => {
+        setDataSalary(employeeDashboardData.highestSalaryChartData)
+    }, [employeeDashboardData.highestSalaryChartData])
 
 
 
@@ -76,10 +57,10 @@ const HighestSalaryChart = (props) => {
                 </div>
                 <div className="box-body no-parding">
                     <ul className="users-list clearfix">
-                        {salary.isLoading
+                        {employeeDashboardData.isLoading
                             ? <li>{translate('general.loading')}</li>
-                            : (dataSalary && dataSalary.length !== 0) ?
-                                dataSalary.map((x, index) => (
+                            : (dataSalary && dataSalary?.length !== 0) ?
+                                dataSalary?.map((x, index) => (
                                     index < 5 &&
                                     <li key={index} style={{ maxWidth: 200 }}>
                                         <ApiImage src={`.${x.employee.avatar}`} />
@@ -101,8 +82,8 @@ const HighestSalaryChart = (props) => {
 }
 
 function mapState(state) {
-    const { salary, department } = state;
-    return { salary, department };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 };
 
 const highestSalaryChart = connect(mapState, null)(withTranslate(HighestSalaryChart));

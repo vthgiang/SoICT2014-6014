@@ -91,28 +91,28 @@ const CourseRegister = (props) => {
             case 0: {
                 return (
                     <div>
-                        {translate('training.course.status.register')}: <span>{translate('training.course.status.is_not_registered')}</span>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}}>{translate('training.course.status.is_not_registered')}</span>
                     </div>
                 )
             }
             case 1: {
                 return (
                     <div>
-                        {translate('training.course.status.register')}: <span class="text-yellow">{translate('training.course.status.waiting_for_approval')}</span>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}} className="text-yellow">{translate('training.course.status.waiting_for_approval')}</span>
                     </div>
                 )
             }
             case 2: {
                 return (
                     <div>
-                        {translate('training.course.status.register')}: <span class="text-green">{translate('training.course.status.success')}</span>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}} className="text-green">{translate('training.course.status.success')}</span>
                     </div>
                 )
             }
             case 3: {
                 return (
                     <div>
-                        {translate('training.course.status.register')}: <span class="text-green">{translate('training.course.status.reject')}</span>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}} className="text-green">{translate('training.course.status.reject')}</span>
                     </div>
                 )
             }
@@ -128,22 +128,22 @@ const CourseRegister = (props) => {
                 formID={`form-edit-course${_id}`}
                 title={translate('training.course.register')} 
                 func={save}
-                size={75}
+                size={25}
                 maxWidth={850}
-                saveText={translate('training.course.register')}
+                saveText={isRegistered == 1 ? translate('training.course.cancel_register') : translate('training.course.register')}
                 disableSubmit={isRegistered === 2 || isRegistered === 3}
             >
-                <div>{translate('training.course.table.course_code')}: {courseId}</div>
-                <div>{translate('training.course.table.course_name')}: {name}</div>
-                <div>{translate('training.course.start_date')}: {startDate}</div>
-                <div>{translate('training.course.end_date')}: {endDate}</div>
-                <div>{translate('training.course.table.course_place')}: {coursePlace}</div>
-                <div>{translate('training.course.table.offered_by')}: {offeredBy}</div>
-                <div>{translate('training.course.table.lecturer')}: {lecturer}</div>
-                <div>{translate('training.course.table.course_type')}: {type}</div>
-                <div>{translate('training.course.table.education_program')}: {educationProgram.name}</div>
-                <div>{translate('training.course.table.cost')}: {cost}</div>
-                <div>{translate('training.course.table.employee_commitment_time')}: {employeeCommitmentTime}</div>
+                <div>{translate('training.course.table.course_code')}: <span style={{fontWeight: "bold"}} className="text-success">{courseId}</span></div>
+                <div>{translate('training.course.table.course_name')}: <span style={{fontWeight: "bold"}} className="text-success">{name}</span></div>
+                <div>{translate('training.course.start_date')}: <span style={{fontWeight: "bold"}} className="text-success">{startDate}</span></div>
+                <div>{translate('training.course.end_date')}: <span style={{fontWeight: "bold"}} className="text-success">{endDate}</span></div>
+                <div>{translate('training.course.table.course_place')}: <span style={{fontWeight: "bold"}} className="text-success">{coursePlace}</span></div>
+                <div>{translate('training.course.table.offered_by')}: <span style={{fontWeight: "bold"}} className="text-success">{offeredBy}</span></div>
+                <div>{translate('training.course.table.lecturer')}: <span style={{fontWeight: "bold"}} className="text-success">{lecturer}</span></div>
+                <div>{translate('training.course.table.course_type')}: <span style={{fontWeight: "bold"}} className="text-success">{type}</span></div>
+                <div>{translate('training.course.table.education_program')}: <span style={{fontWeight: "bold"}} className="text-success">{educationProgram.name}</span></div>
+                <div>{translate('training.course.table.cost')}: <span style={{fontWeight: "bold"}} className="text-success">{cost}</span></div>
+                <div>{translate('training.course.table.employee_commitment_time')}: <span style={{fontWeight: "bold"}} className="text-success">{employeeCommitmentTime}</span></div>
                 <DisplayStatus />
             </DialogModal>
         </React.Fragment >

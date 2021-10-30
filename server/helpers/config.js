@@ -249,6 +249,13 @@ const COMPONENTS = [{
     links: [
         '/manage-transport-plan'
     ]
+}, {
+    name: 'button-import-task',
+    description: 'Button import công việc',
+    roles: [ROOT_ROLES.ADMIN.name],
+    links: [
+        '/task-management'
+    ]
 }];
 
 const getComponentsInLink = (link) => {
@@ -364,6 +371,19 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ],
     components: getComponentsInLink('/apis-registration')
+},
+{
+    url: '/apis-registration-employee',
+    description: 'Quản lý đăng ký sử dụng API của nhân viên',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink('/apis-registration-employee')
 },
 {
     url: '/components-management',
@@ -613,7 +633,9 @@ const LINKS = [{
     description: 'Kế hoạch đào tạo',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
-        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name
     ],
     components: getComponentsInLink('/hr-training-plan-employee')
 },
@@ -626,7 +648,15 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/hr-list-education')
 },
-
+{
+    url: '/get-employee-dashboard-data',
+    description: 'Lấy thông tin bảng tin nhân sự',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name
+    ],
+    component: getComponentsInLink('/hr-list-education')
+},
 
 // KPI
 {
@@ -1243,7 +1273,7 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/loyal-customer')
-},{
+}, {
     url: '/crm/evaluation',
     description: `Đánh giá hoạt động CSKH`,
     category: LINK_CATEGORY.CRM.name,
@@ -1252,7 +1282,7 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name,
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
-        
+
     ],
     components: getComponentsInLink('/crm/evaluation')
 },
@@ -1291,7 +1321,7 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name,
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
-    
+
     ],
     components: getComponentsInLink('/crm/generalConfiguration')
 },
@@ -1302,7 +1332,7 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-    
+
     ],
     components: getComponentsInLink('/crm/crmUnitConfiguration')
 },

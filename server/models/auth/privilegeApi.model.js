@@ -35,6 +35,11 @@ const PrivilegeApiSchema = new Schema({
     },
     endDate: {
         type: Date
+    },
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 

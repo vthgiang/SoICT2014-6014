@@ -287,8 +287,8 @@ exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
     let queryData = {
         userId: query.userId,
         name: query.name,
-        // pageNumber : query.pageNumber,
-        pageNumber: 1,
+        pageNumber : query.pageNumber,
+        // pageNumber: 1,
         noResultsPerPage: query.noResultsPerPage,
     }
 
@@ -648,7 +648,7 @@ exports.editProcessInfo = async (portal, params, body) => {
                 consultedEmployees:data.consultedEmployees,
                 // parent:data.parent,
                 // taskProject:data.taskProject,
-                codeInProcess:data.code,
+                codeInProcess:data.codeInProcess,
                 organizationalUnit:data.organizationalUnit,
                 collaboratedWithOrganizationalUnits:data.collaboratedWithOrganizationalUnits,
                 quillDescriptionDefault:data.quillDescriptionDefault,

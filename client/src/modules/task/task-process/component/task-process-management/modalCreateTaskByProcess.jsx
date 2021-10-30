@@ -261,7 +261,6 @@ function ModalCreateTaskByProcess(props) {
             });
         })
     }
-
     // Các hàm sự kiện của BPMN element
     const interactPopup = async (event) => {
         let element = event.element;
@@ -291,8 +290,8 @@ function ModalCreateTaskByProcess(props) {
     }
     const deleteElements = (event) => {
         var element = event.element;
+        delete state.info[`${state.id}`];
         setState(state => {
-            delete state.info[`${state.id}`];
             return {
                 ...state,
                 showInfo: false,
@@ -647,16 +646,29 @@ function ModalCreateTaskByProcess(props) {
             template: false
         }
         props.createTaskByProcess(data, state.idProcess);
-    }
 
+        setState({
+            userId: getStorage("userId"),
+            currentRole: getStorage('currentRole'),
+            showInfo: false,
+            selectedCreate: 'info',
+            info: {},
+            save: true,
+            manager: [],
+            viewer: [],
+            processName: '',
+            processDescription: '',
+            indexRenderer: 0,
+        })
+    }
     let idProcess = ""
     const { translate, department, role, user } = props;
     const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
         selected, errorOnProcessName, errorOnProcessDescription, startDate, endDate } = state;
     const { listOrganizationalUnit } = props;
-    if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
-        window.$(`.task-process-gate-way-title`).css("background-color", "white")
-    }
+    // if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
+    //     window.$(`.task-process-gate-way-title`).css("background-color", "white")
+    // }
     let listRole = [];
     if (role && role.list.length !== 0) listRole = role.list;
     let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)

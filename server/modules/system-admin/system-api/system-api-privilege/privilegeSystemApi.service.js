@@ -5,16 +5,23 @@ const { PrivilegeApi, Company, SystemApi } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 
 const getPrivilegeApis = async (portal, data) => {
-    const { email, companyIds, role, page = 1, perPage = 30 } = data
+    const { email, companyIds, role, page = 1, perPage = 30, creator } = data
 
     let privilegeApis, totalPrivilegeApis, totalPages
     let keySearch = {}
+
+    if (creator) {
+        keySearch = {
+            ...keySearch,
+            creator: mongoose.Types.ObjectId(creator)
+        }
+    }
 
     if (email) {
         keySearch = {
             ...keySearch,
             email: {
-                $regex: path,
+                $regex: email,
                 $options: "i"
             }
         }
@@ -62,7 +69,7 @@ const getPrivilegeApis = async (portal, data) => {
  * @company công ty được lấy dữ liệu
  */
 const createPrivilegeApi = async (data) => {
-    const { email, name, apis, companyId, role, description, startDate, endDate } = data
+    const { email, name, apis, companyId, role, description, startDate, endDate, userId } = data
 
     // Check sự tồn tại của phân quyền
     let privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -131,7 +138,8 @@ const createPrivilegeApi = async (data) => {
                     status: 3,
                     token: token,
                     startDate: startDate && new Date(startDate),
-                    endDate: endDate && new Date(endDate)
+                    endDate: endDate && new Date(endDate),
+                    creator: userId
                 })
             await Company(connect(DB_CONNECTION, process.env.DB_NAME))
                 .populate(privilege, { path: "company" })
@@ -145,7 +153,8 @@ const createPrivilegeApi = async (data) => {
                     status: 3,
                     token: token,
                     startDate: startDate && new Date(startDate),
-                    endDate: endDate && new Date(endDate)
+                    endDate: endDate && new Date(endDate),
+                    creator: userId
                 })
         } else if (role === 'admin') {
             privilege = await PrivilegeApi(connect(DB_CONNECTION, company.shortName))
@@ -156,7 +165,8 @@ const createPrivilegeApi = async (data) => {
                     status: 3,
                     token: token,
                     startDate: startDate && new Date(startDate),
-                    endDate: endDate && new Date(endDate)
+                    endDate: endDate && new Date(endDate),
+                    creator: userId
                 })
                 
             await Company(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -172,7 +182,8 @@ const createPrivilegeApi = async (data) => {
                 company: companyId,
                 status: 1,
                 startDate: startDate && new Date(startDate),
-                endDate: endDate && new Date(endDate)
+                endDate: endDate && new Date(endDate),
+                creator: userId
             })     
     }
      

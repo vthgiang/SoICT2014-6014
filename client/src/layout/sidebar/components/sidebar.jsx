@@ -192,6 +192,11 @@ class SideBar extends Component {
                                             path: "/apis-registration",
                                         },
                                         {
+                                            name: "menu.registration_api_employee",
+                                            icon: "fa fa-link",
+                                            path: "/apis-registration-employee",
+                                        },
+                                        {
                                             name: "menu.manage_component",
                                             icon: "fa fa-object-group",
                                             path: "/components-management",

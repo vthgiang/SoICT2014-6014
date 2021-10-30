@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import { AssetService } from '../../../asset-information/redux/services';
 
-import AssetIncidentChart from './assetIncidentChart';
-import AssetMaintenanceChart from './assetMaintenanceChart';
-
+import {AssetIncidentChart} from './assetIncidentChart';
+import {AssetMaintenanceChart} from './assetMaintenanceChart';
+import { AssetManagerActions } from '../../../asset-information/redux/actions';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { AssetTypeService } from '../../../asset-type/redux/services';
 
@@ -39,7 +39,8 @@ class IncidentAndMaintenance extends Component {
         }).catch(err => {
             console.log(err);
         });
-
+        this.props.getAllAssetIncident()
+        this.props.getAllAssetMaintenance()
         AssetTypeService.getAssetTypes().then(res => {
             if (res.data.success) {
                 this.setState({ assetType: res.data.content.list })
@@ -113,7 +114,7 @@ class IncidentAndMaintenance extends Component {
                                     <div className="box-title">{translate('asset.dashboard.incident_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    < AssetIncidentChart
+                                    <AssetIncidentChart
                                         listAssets={listAssets}
                                         assetType={assetType}
                                         getIncidentData={this.getIncidentData}
@@ -145,10 +146,14 @@ class IncidentAndMaintenance extends Component {
     }
 }
 function mapState(state) {
-    const { listAssets } = state.assetsManager;
+    const { listAssets,incidentAsset,maintenanceAsset } = state.assetsManager;
     const { assetType } = state;
-    return { listAssets, assetType };
+    return { listAssets, assetType ,incidentAsset,maintenanceAsset};
 }
-
-const IncidentAndMaintenanceConnect = connect(mapState)(withTranslate(IncidentAndMaintenance));
+const mapDispatchToProps = {
+    getAllAssetIncident : AssetManagerActions.getAllAssetIncident,
+    getAllAssetMaintenance : AssetManagerActions.getAllAssetMaintenance
+    
+}
+const IncidentAndMaintenanceConnect = connect(mapState,mapDispatchToProps)(withTranslate(IncidentAndMaintenance));
 export { IncidentAndMaintenanceConnect as IncidentAndMaintenance };

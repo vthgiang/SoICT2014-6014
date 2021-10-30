@@ -194,13 +194,13 @@ function InfoMillCreateForm(props) {
         props.onDataChange(state.listManufacturingMills)
     }
 
-    useEffect(() => {
-        setState({
+    if (props.id !== state.id) {
+        setState ({
             ...state,
             id: props.id,
             listManufacturingMills: props.initialData
         })
-    }, [props.id])
+    }
 
     const { translate, id } = props;
     const { errorOnProductivity, errorOnPersonNumber, errorOnManufacturingMill, manufacturingMill, listManufacturingMills } = state;

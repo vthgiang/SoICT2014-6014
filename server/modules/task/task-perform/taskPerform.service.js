@@ -6166,7 +6166,7 @@ exports.editArchivedOfTask = async (portal, taskId) => {
         }
     }
 
-    if (task._id.length === 0) throw ['Trạng thái của công việc không cho phép lưu kho']
+    if (task._id.length === 0) throw ['task_status_error']
     return task;
 };
 

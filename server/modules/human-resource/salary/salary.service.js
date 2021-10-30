@@ -361,3 +361,16 @@ exports.importSalaries = async (portal, data, company) => {
         return await Salary(connect(DB_CONNECTION, portal)).insertMany(result);
     }
 }
+
+exports.salaryChartData = async (portal, company,time) => {
+    
+    let result
+    
+
+    let chartSalary = await Salary(connect(DB_CONNECTION, portal)).find({}).select("employee organizationalUnit month mainSalary unit bonus")
+    let listType = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({}).sort({ 'createDate': 'desc' }).populate({ path: 'parent' });
+
+    result = { chartSalary: chartSalary ,listType:listType}
+
+    return { result }
+}

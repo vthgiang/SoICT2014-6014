@@ -100,6 +100,7 @@ export default {
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
             registration_api: "Quản lý đăng ký API",
+            registration_api_employee: "Đăng ký sử dụng API",
             privilege_api: "Quản lý phân quyền API",
 
             manage_department: "Quản lý cơ cấu tổ chức",
@@ -1538,6 +1539,11 @@ export default {
             end_date_after_start_date: "Ngày kết thúc phải sau ngày bắt đầu",
             cannot_be_empty: "không được để trống",
             value_duplicate: "bị trùng lặp",
+            //Lấy dữ liệu bảng tin quản lý nhân sự
+            get_human_resources_dashboard_data: {
+                get_human_resources_dashboard_success: "Lấy thông tin bảng tin quản lý nhân sự thành công",
+                get_human_resources_dashboard_failed: "Lấy thông tin bảng tin quản lý nhân sự thất bại"
+            },
 
             // Quản lý lương nhân viên
             salary: {
@@ -1592,6 +1598,8 @@ export default {
                 delete_salary_faile: "Xoá bảng lương thất bại",
                 edit_salary_success: "Chỉnh sửa bảng lương thành công",
                 edit_salary_faile: "Chỉnh sửa bảng lương thất bại",
+                get_chart_salary_success: "Lấy dữ liệu biểu đồ bảng lương thành công",
+                get_chart_salary_faile: "Lấy dữ liệu biểu đồ bảng lương thất bại",
                 import_salary_success: "Import bảng lương thành công",
                 import_salary_faile: "Import bảng lương thất bại",
             },
@@ -2468,6 +2476,7 @@ export default {
                 delete_course: "Xoá khoá đào tạo",
                 view_course: "Thông tin khoá đào tạo",
                 register: "Đăng ký",
+                cancel_register: "Hủy đăng ký",
 
                 // Thông điệp trả về từ server
                 name_required: "Tên khoá đào tạo không được để trống",
@@ -2777,6 +2786,15 @@ export default {
                 get_asset_group_fail: "Lấy thông tin nhóm tài sản thất bại",
                 get_asset_statistic_success: "Lấy thông tin trạng thái và giá trị tài sản thành công",
                 get_asset_statistic_fail: "Lấy thông tin trạng thái và giá trị tài sản thất bại",
+                get_asset_purchase_success:"Lấy thông tin mua tài sản thành công",
+                get_asset_purchase_fail:"Lấy thông tin mua tài sản thất bại",
+                get_asset_disposal_success:"Lấy thông tin thanh lý tài sản thành công",
+                get_asset_disposal_fail:"Lấy thông tin thanh lý tài sản thất bại",
+                get_asset_incident_success:"Lấy thông tin sự cố tài sản thành công",
+                get_asset_incident_fail:"Lấy thông tin sự cố tài sản thất bại",
+                get_asset_maintenance_success:"Lấy thông tin sự cố tài sản thành công",
+                get_asset_maintenance_fail:"Lấy thông tin bảo trì tài sản thất bại",
+                get_list_asset_success: "Lấy thông tin bảo trì tài sản thành công",
                 get_list_asset_success: "Lấy thông tin tài sản thành công",
                 get_list_asset_faile: "Lấy thông tin tài sản thất bại",
                 create_asset_success: "Thêm tài sản thành công",

@@ -675,11 +675,11 @@ exports.createProjectTasksFromCPM = async (req, res) => {
 }
 
 /**
- *  Xóa một công việc đã thiết lập
+ *  Xóa một hoặc nhiều công việc đã thiết lập
  */
 exports.deleteTask = async (req, res) => {
     try {
-        TaskManagementService.deleteTask(req.portal, req.params.taskId);
+        TaskManagementService.deleteTask(req.portal, req.params.taskId, req.query.userId);
 
         await Logger.info(req.user.email, 'delete_task', req.portal)
         res.status(200).json({
@@ -1103,7 +1103,7 @@ exports.importTasks = async (req, res) => {
 
             } else {
                 // return lỗi về client
-                data = { ...checkImport }
+                data = { generalInfo: { ...checkImport } }
 
                 await Logger.error(req.user.email, 'import_task_faile', req.portal);
                 res.status(400).json({
@@ -1126,7 +1126,7 @@ exports.importTasks = async (req, res) => {
                 })
             } else {
                 // return lỗi về client
-                dataUpdate = { ...checkImportUpdate }
+                dataUpdate = { generalInfo: { ...checkImportUpdate } }
 
                 await Logger.error(req.user.email, 'import_update_task_faile', req.portal);
                 res.status(400).json({

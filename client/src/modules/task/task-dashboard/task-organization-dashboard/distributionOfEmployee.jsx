@@ -210,7 +210,7 @@ function DistributionOfEmployee(props) {
                             ]}
                             value={infoSearch.status}
                             onChange={handleSelectStatus}
-                            options={{ nonSelectedText: translate('task.task_management.select_all_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
+                            options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}>
                         </SelectMulti>
                     </div>
                     <div className="form-group">

@@ -20,7 +20,6 @@ import dayjs from "dayjs";
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
     const [state, setState] = useState(() => initState())
-
     function initState() {
         return {
             newTask: {
@@ -73,7 +72,7 @@ function AddTaskForm(props) {
                 ...state,
                 id: props.id,
                 newTask: {
-                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : "",//props.department?.tree[0]?.id
+                    organizationalUnit: (info && info.organizationalUnit) ? typeof(info.organizationalUnit)==='object' ? info.organizationalUnit._id : info.organizationalUnit : "",//props.department?.tree[0]?.id
                     collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
                     name: (info && info.name) ? info.name : '',
                     responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
@@ -136,13 +135,15 @@ function AddTaskForm(props) {
 
     // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
     useEffect(() => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                parent: props.parentTask,
-            }
-        });
+        if (props.parentTask){
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    parent: props.parentTask,
+                }
+            });
+        }
     }, [props.parentTask])
 
     useEffect(() => {
@@ -150,31 +151,33 @@ function AddTaskForm(props) {
     }, [JSON.stringify(newTask)])
 
     useEffect(() => {
+        if (props.isProcess !== true){
         // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
-        if (newTask.organizationalUnit === "" && department.list.length !== 0 && department.isLoading === false) {
-            // Tìm unit mà currentRole của user đang thuộc về
-            let defaultUnit = department.list?.find(item =>
-                item.managers.find(x => x.id === state.currentRole)
-                || item.deputyManagers.find(x => x.id === state.currentRole)
-                || item.employees.find(x => x.id === state.currentRole));
-            if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = department.list[0]
-            }
-
-            if (defaultUnit) {
-                props.getChildrenOfOrganizationalUnits(defaultUnit._id);
-                props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
-            }
-            setState({
-                ...state,
-                newTask: {
-                    ...state.newTask,
-                    organizationalUnit: defaultUnit && defaultUnit._id,
+            if (newTask.organizationalUnit === "" && department.list.length !== 0 && department.isLoading === false) {
+                // Tìm unit mà currentRole của user đang thuộc về
+                let defaultUnit = department.list?.find(item =>
+                    item.managers.find(x => x.id === state.currentRole)
+                    || item.deputyManagers.find(x => x.id === state.currentRole)
+                    || item.employees.find(x => x.id === state.currentRole));
+                if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                    defaultUnit = department.list[0]
                 }
-            });
-        }
-    }, [JSON.stringify(department?.list)])
 
+                if (defaultUnit) {
+                    props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+                    props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
+                }
+                setState({
+                    ...state,
+                    newTask: {
+                        ...state.newTask,
+                        organizationalUnit: defaultUnit && defaultUnit._id,
+                    }
+                });
+            }
+        }
+
+    }, [JSON.stringify(department?.list)])
     // convert ISODate to String dd-mm-yyyy
     const formatDate = (date) => {
         var d = new Date(date),
@@ -490,7 +493,6 @@ function AddTaskForm(props) {
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-
         if (willUpdateState) {
             setState({
                 ...state,
@@ -500,7 +502,7 @@ function AddTaskForm(props) {
                     errorOnResponsibleEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeResponsible(state.newTask.responsibleEmployees)
+            props.isProcess && props.handleChangeResponsible(value)
         }
         return message === undefined;
     }
@@ -522,7 +524,7 @@ function AddTaskForm(props) {
                     errorOnAccountableEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeAccountable(state.newTask.accountableEmployees)
+            props.isProcess && props.handleChangeAccountable(value)
         }
         return message === undefined;
     }

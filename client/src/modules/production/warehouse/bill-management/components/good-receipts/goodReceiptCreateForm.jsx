@@ -61,14 +61,6 @@ function GoodReceiptCreateForm(props) {
         purchaseOrderId,
     } = state;
 
-    // shouldComponentUpdate(props, state) {
-    //     if(state.type !== state.type) {
-    //         state.type = state.type;
-    //         return true;
-    //     }
-    //     return true;
-    // }
-
     const getAllGoods = () => {
         let { translate } = props;
         let goodArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_good") }];
@@ -133,7 +125,7 @@ function GoodReceiptCreateForm(props) {
                 text: item.name,
             });
         });
-
+        console.log("props", props);
         return supplierArr;
     };
 
@@ -384,7 +376,7 @@ function GoodReceiptCreateForm(props) {
             validateType(state.type, false) &&
             validateStock(state.fromStock, false) &&
             validateApprover(state.approver, false) &&
-            validateSupplier(state.supplier, false) &&
+            // validateSupplier(state.supplier, false) &&
             validateAccountables(state.accountables, false) &&
             validateQualityControlStaffs(state.qualityControlStaffs, false) &&
             validateResponsibles(state.responsibles, false);
@@ -487,42 +479,43 @@ function GoodReceiptCreateForm(props) {
         return false;
     };
 
-    useEffect(() => {
-        //---Lập phiếu từ đơn mua nguyên vật liệu---
-        let { purchaseOrderAddBill = { code: "" } } = props;
+    // useEffect(() => {
+    // }, [props.purchaseOrderAddBill])
 
-        if (
-            props.createdSource === "purchaseOrder" &&
-            purchaseOrderAddBill.code !== "" &&
-            purchaseOrderAddBill.code !== state.purchaseOrderCode
-        ) {
-            return {
-                ...state,
-                group: props.group,
-                code: props.billCode,
-                purchaseOrderId: purchaseOrderAddBill._id,
-                purchaseOrderCode: purchaseOrderAddBill.code,
-                type: "1",
-                supplier: purchaseOrderAddBill.supplier ? purchaseOrderAddBill.supplier._id : "",
-                fromStock: purchaseOrderAddBill.stock ? purchaseOrderAddBill.stock._id : "",
-                listGood: purchaseOrderAddBill.materials
-                    ? purchaseOrderAddBill.materials.map((material) => {
-                        return {
-                            good: {
-                                _id: material.material._id,
-                                code: material.material.code,
-                                name: material.material.name,
-                                baseUnit: material.material.baseUnit,
-                            },
-                            quantity: material.quantity,
-                        };
-                    })
-                    : "",
-            };
-        }
-    }, [props.purchaseOrderAddBill])
+    //---Lập phiếu từ đơn mua nguyên vật liệu---
+    let { purchaseOrderAddBill = { code: "" } } = props;
 
-    useEffect(() => {
+    if (
+        props.createdSource === "purchaseOrder" &&
+        purchaseOrderAddBill.code !== "" &&
+        purchaseOrderAddBill.code !== state.purchaseOrderCode
+    ) {
+        setState ({
+            ...state,
+            group: props.group,
+            code: props.billCode,
+            purchaseOrderId: purchaseOrderAddBill._id,
+            purchaseOrderCode: purchaseOrderAddBill.code,
+            type: "1",
+            supplier: purchaseOrderAddBill.supplier ? purchaseOrderAddBill.supplier._id : "",
+            fromStock: purchaseOrderAddBill.stock ? purchaseOrderAddBill.stock._id : "",
+            listGood: purchaseOrderAddBill.materials
+                ? purchaseOrderAddBill.materials.map((material) => {
+                    return {
+                        good: {
+                            _id: material.material._id,
+                            code: material.material.code,
+                            name: material.material.name,
+                            baseUnit: material.material.baseUnit,
+                        },
+                        quantity: material.quantity,
+                    };
+                })
+                : "",
+        });
+    }
+
+    if (props.group !== state.group) {
         setState({
             ...state,
             group: props.group,
@@ -537,7 +530,7 @@ function GoodReceiptCreateForm(props) {
             errorAccountables: undefined,
             errorResponsibles: undefined,
         });
-    }, [props.group])
+    }
 
     const save = async () => {
         const {

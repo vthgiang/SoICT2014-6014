@@ -1,62 +1,64 @@
-import React, { Component } from 'react';
+import React, { useState,useRef } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import './treeTable.css';
 import _isEqual from 'lodash/isEqual';
 import { DataTableSetting } from '../data-table-setting/dataTableSetting';
 
-class TreeTable extends Component {
-    constructor(props) {
-        super(props);
-        this.lastChecked = React.createRef();
-        this.state = {
-            checkAll: false,
-            selectedRows: []
-        }
-    }
+function TreeTable(props) {
+    const { translate, column, data, actions = true, tableId = 'tree-table', tableSetting = false, rowPerPage = true, allowSelectAll = false,viewWhenClickName = false, funcEdit, funcView,titleAction, performtasks } = props;
+    const lastChecked = useRef();
+    const [state,setState] = useState({
+        checkAll: false,
+        selectedRows: []
+    })
+    const {checkAll,selectedRows} = state;
 
-    componentDidUpdate() {
-        const { tableId } = this.props;
-        // Cho phép sử dụng shift chọn nhiều check box
-        window.$(`#${tableId}`).checkboxes('range', true);
+    let columnArr = column?.map(col => col.name);
+    if (allowSelectAll) columnArr.unshift('selectAll');
 
-        const checkBoxes = document.querySelectorAll('.task-table input[type="checkbox"]');
-
-        let results = []
-
-        checkBoxes.forEach(checkbox => {
-            // Bắt sự kiện click checkbox
-            checkbox.addEventListener('click', this.onChangeCheckBox)
-            if (checkbox.checked && checkbox.getAttribute("value")) {
-                results.push(checkbox.getAttribute("value"))
-            }
-        });
-
-        if (!_isEqual(this.state.selectedRows, results)) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    selectedRows: results
+    useDeepCompareEffect(() => {
+        if (allowSelectAll) {
+            // Cho phép sử dụng shift chọn nhiều check box
+            window.$(`#${tableId}`).checkboxes('range', true);
+            const checkBoxes = document.querySelectorAll('.tree-table-body input[type="checkbox"]');    
+            let results = []
+    
+            checkBoxes.forEach(checkbox => {
+                // Bắt sự kiện click checkbox
+                checkbox.addEventListener('click', onChangeCheckBox)
+                if (checkbox.checked && checkbox.getAttribute("value")) {
+                    results.push(checkbox.getAttribute("value"))
                 }
-            })
-            this.props.onSelectedRowsChange(results)
+            });
+    
+            if (!_isEqual(selectedRows, results)) {
+                setState(state => {
+                    return {
+                        ...state,
+                        selectedRows: results
+                    }
+                })
+                props.onSelectedRowsChange(results)
+            }
+        }
+    
+        if (props.data !== null && props.behaviour === "show-children") {
+            addScriptTreeTable(true);
         }
 
-        if (this.props.data !== null && this.props.behaviour === "show-children") {
-            this.addScriptTreeTable(true);
+        if (props.data !== null && props.behaviour === "hide-children") {
+            addScriptTreeTable(false);
         }
-        if (this.props.data !== null && this.props.behaviour === "hide-children") {
-            this.addScriptTreeTable(false);
-        }
-    }
+    }, [data.map(o => o.rawData)]);
 
     /**
      * Function thêm script cho tree table
      * @showChildren = true : hiện thị nút con
      * @showChildren = false : Ẩn nút con
      */
-    addScriptTreeTable = (showChildren = true) => {
-        const { tableId = 'tree-table', openOnClickName = false, funcEdit, funcView } = this.props;
+    const addScriptTreeTable = (showChildren = true) => {
         window.$(function () {
             let
                 $table = window.$(`#${tableId}`),
@@ -65,18 +67,19 @@ class TreeTable extends Component {
             rows.each(function (index, row) {
                 let
                     $row = window.$(row),
-                    level = $row.data('level'),
+                    level = parseInt($row.data('level')),
                     id = $row.data('id'),
                     $columnName = $row.find('td[data-column="name"]'),
                     children = $table.find('tr[data-parent="' + id + '"]')
-                //  var tagSpan = $columnName.find("span").length;
 
-                let div = window.$("<div/>").attr({
+                //  var tagSpan = $columnName.find("span").length;
+                let div = window.$("<div/>").removeAttr("style").attr({
                     "style": "display: inline-block; margin-left: " + (15 + 30 * (level - 1)) + "px"
                 })
-                // Chức năng mở form edit khi bấm vào tên
-                // Tắt chức năng này nếu openOnClickName khác true
-                if (openOnClickName) {
+
+                // Chức năng mở form view/edit khi bấm vào tên
+                // Tắt chức năng này nếu viewWhenClickName khác true
+                if (viewWhenClickName) {
                     if (funcEdit || funcView) {
                         let a = window.$("<a/>").html($columnName.text()).click(() => {
                             funcEdit ? funcEdit(id) : funcView(id);
@@ -162,9 +165,21 @@ class TreeTable extends Component {
      * @param {*} column : Dữ liệu cột của bảng
      * @param {*} data : Dữ liệu hiện thị trong bảng
      */
-    dataTreetable = (column, data) => {
+    const dataTreeTable = (column, data) => {
         let keyColumn = column.map(col => col.key);
         let newarr = [];
+
+        let map = {};
+
+        for (let i = 0; i < data.length; i++) {
+            map[data[i]._id] = i + 1; // khởi tạo map
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].parent) {
+                if (!map[data[i].parent]) data[i].parent = null; // nếu không tìm được cha trong danh sách thì coi như là null
+            }
+        }
 
         // Function chuyển đổi list thành tree 
         let listToTree = (items, parent_id = null, link = 'parent') =>
@@ -249,37 +264,36 @@ class TreeTable extends Component {
      * @param {*} data : Array tên các action của từng dòng
      * @param {*} id : Id dữ liệu tương ứng từng dòng, dùng để gọi server lấy dữ liệu
      */
-    showActionColumn = (data, id) => {
-        let { titleAction, performtasks } = this.props;
+    const showActionColumn = (data, id) => {
         switch (data) {
             case "edit":
-                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
                     <i className="material-icons"></i>
                 </a>
             case "view":
-                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcView(id)} data-toggle="modal" title={titleAction.view}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => props.funcView(id)} data-toggle="modal" title={titleAction.view}>
                     <i className="material-icons">view_list</i>
                 </a>
             case "delete":
-                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcDelete(id)} className="delete" title={titleAction.delete}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => props.funcDelete(id)} className="delete" title={titleAction.delete}>
                     <i className="material-icons"></i>
                 </a>
             case "add":
-                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcAdd(id)} className="add_circle" data-toggle="modal" title={titleAction.add}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => props.funcAdd(id)} className="add_circle" data-toggle="modal" title={titleAction.add}>
                     <i className="material-icons">add_circle</i>
                 </a>
             case "store":
-                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.store}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => props.funcStore(id)} className="all_inbox" title={titleAction.store}>
                     <i className="material-icons">all_inbox</i>
                 </a>
             case "restore":
-                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.restore}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => props.funcStore(id)} className="all_inbox" title={titleAction.restore}>
                     <i className="material-icons">restore_page</i>
                 </a>
             case "startTimer":
                 return <a
                     style={{ cursor: 'pointer' }}
-                    onClick={() => !performtasks.currentTimer && this.props.funcStartTimer(id)}
+                    onClick={() => !performtasks.currentTimer && props.funcStartTimer(id)}
                     className={`timer ${performtasks.currentTimer ? performtasks.currentTimer._id === id ? 'text-orange' : 'text-gray' : 'text-black'}`}
                     title={titleAction.startTimer}
                 >
@@ -290,9 +304,8 @@ class TreeTable extends Component {
         }
     }
 
-    handleCheckAll = () => {
-        let { checkAll } = this.state;
-        const checkBoxes = document.querySelectorAll('.task-table input[type="checkbox"]');
+    const handleCheckAll = () => {
+        const checkBoxes = document.querySelectorAll('.tree-table-body input[type="checkbox"]');
         let results = []
 
         checkBoxes.forEach(checkbox => {
@@ -306,25 +319,24 @@ class TreeTable extends Component {
             }
         })
 
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 checkAll: !checkAll,
                 selectedRows: results
             }
         })
-
-        this.props.onSelectedRowsChange(results)
+        props.onSelectedRowsChange(results)
     }
 
-    onChangeCheckBox = (e) => {
-        const checkBoxes = document.querySelectorAll('.task-table input[type="checkbox"]');
+    const onChangeCheckBox = (e) => {
+        const checkBoxes = document.querySelectorAll('.tree-table-body input[type="checkbox"]');
         let userChecksFlag = false;
         let userUnchecksFlag = false;
 
         if (e.shiftKey && e.target.checked) {   // Dùng shift chọn nhiều check box
             checkBoxes.forEach(checkbox => {
-                if (checkbox === e.target || checkbox === this.lastChecked.current) {
+                if (checkbox === e.target || checkbox === lastChecked.current) {
                     userChecksFlag = !userChecksFlag;
                 }
                 if (userChecksFlag) {
@@ -333,16 +345,16 @@ class TreeTable extends Component {
             })
         } else if (e.shiftKey && !e.target.checked) {   // Dùng shift bỏ nhiều check box
             checkBoxes.forEach(checkbox => {
-                if (checkbox === e.target || checkbox === this.lastChecked.current) {
+                if (checkbox === e.target || checkbox === lastChecked.current) {
                     userUnchecksFlag = !userUnchecksFlag;
                 }
                 if (userUnchecksFlag) {
                     checkbox.checked = false;
                 }
             })
-            this.lastChecked.current.checked = false;
+            lastChecked.current.checked = false;
         }
-        this.lastChecked.current = e.target;
+        lastChecked.current = e.target;
 
         let results = []
 
@@ -356,8 +368,8 @@ class TreeTable extends Component {
 
         }
 
-        if (results?.length === this.props.data?.length) {
-            this.setState(state => {
+        if (results?.length === props.data?.length && results?.length > 0 ) {
+            setState(state => {
                 return {
                     ...state,
                     checkAll: true,
@@ -365,7 +377,7 @@ class TreeTable extends Component {
                 }
             })
         } else {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     checkAll: false,
@@ -374,50 +386,44 @@ class TreeTable extends Component {
             })
         }
 
-        this.props.onSelectedRowsChange(results)
+        props.onSelectedRowsChange(results)
     }
 
-    render() {
-        const { translate, column, data, actions = true, tableId = 'tree-table', tableSetting = false, rowPerPage = true, allowSelectAll = false } = this.props;
-        const { checkAll, selectedRows } = this.state;
-        let columnArr = column?.map(col => col.name)
-        if (allowSelectAll) columnArr.unshift('selectAll')
-        return (
-
-            <React.Fragment>
-                {tableSetting ?
-                    rowPerPage ?
-                        <DataTableSetting
-                            tableId={tableId}
-                            tableContainerId="tree-table-container"
-                            tableWidth="1300px"
-                            columnArr={columnArr}
-                            setLimit={this.props.onSetNumberOfRowsPerPage}
-                        /> :
-                        <DataTableSetting
-                            className="pull-right"
-                            tableId={tableId}
-                            tableContainerId="tree-table-container"
-                            tableWidth="1300px"
-                            columnArr={columnArr}
-                            linePerPageOption={false}
-                        /> : <div />
-                }
-                <table id={tableId} className="table table-striped table-hover table-bordered" style={{ marginBottom: 0 }}>
-                    <thead>
-                        <tr id="task" key={`tree-table-head-${tableId}`}>
-                            {allowSelectAll &&
-                                <th className="col-fixed not-sort" style={{ width: 45 }}>
-                                    <input type='checkbox' checked={checkAll} onChange={() => this.handleCheckAll()}></input>
-                                </th>
-                            }
-                            {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
-                            {actions && <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>}
-                        </tr>
-                    </thead>
-                    <tbody id="taskTable" className="task-table">
-                        {this.dataTreetable(column, data).length > 0 ?
-                            this.dataTreetable(column, data).map((rows, index) => (
+    return (
+        <React.Fragment>
+            {tableSetting ?
+                rowPerPage ?
+                    <DataTableSetting
+                        tableId={tableId}
+                        tableContainerId="tree-table-container"
+                        tableWidth="1300px"
+                        columnArr={columnArr}
+                        setLimit={props.onSetNumberOfRowsPerPage}
+                    /> :
+                    <DataTableSetting
+                        className="pull-right"
+                        tableId={tableId}
+                        tableContainerId="tree-table-container"
+                        tableWidth="1300px"
+                        columnArr={columnArr}
+                        linePerPageOption={false}
+                    /> : <div />
+            }
+            <table id={tableId} className="table table-striped table-hover table-bordered" style={{ marginBottom: 0 }}>
+                <thead>
+                    <tr id="tree" key={`tree-table-head-${tableId}`}>
+                        {allowSelectAll &&
+                            <th className="col-fixed not-sort" style={{ width: 45 }}>
+                                <input type='checkbox' checked={checkAll && data.length > 0} onChange={() => handleCheckAll()}></input>
+                            </th>
+                        }
+                        {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
+                        {actions && <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>}
+                    </tr>
+                </thead>
+                    <tbody id="treeTable" className="tree-table-body">
+                        {dataTreeTable(column, data).length > 0 ?
+                            dataTreeTable(column, data).map((rows, index) => (
                                 <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
                                     {allowSelectAll &&
                                         <td >
@@ -439,13 +445,13 @@ class TreeTable extends Component {
                                                         <div id={`actionTask${rows._id}`} className="collapse">
                                                             {x.map((y, index) => (
                                                                 <React.Fragment key={index}>
-                                                                    {this.showActionColumn(y, rows._id)}
+                                                                    {showActionColumn(y, rows._id)}
                                                                 </React.Fragment>
                                                             ))}
                                                         </div>
                                                     </React.Fragment> :
                                                     <React.Fragment key={index}>
-                                                        {this.showActionColumn(x, rows._id)}
+                                                        {showActionColumn(x, rows._id)}
                                                     </React.Fragment>
                                                 )
                                             }
@@ -457,18 +463,23 @@ class TreeTable extends Component {
                     </tbody>
                 </table >
                 {
-                    this.dataTreetable(column, data).length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    dataTreeTable(column, data).length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
             </React.Fragment>
         );
     }
-}
 
 function mapState(state) {
     const { performtasks } = state;
     return { performtasks };
 }
 
-const treeTable = connect(mapState, null)(withTranslate(TreeTable));
+function areEqual(prevProps, nextProps) {
+    let prevData = prevProps.data.map(o => o.rawData);
+    let nextData = nextProps.data.map(o => o.rawData);
+    return _isEqual(prevData,nextData);
+}
+
+const treeTable = React.memo(connect(mapState, null)(withTranslate(TreeTable)),areEqual);
 
 export { treeTable as TreeTable }

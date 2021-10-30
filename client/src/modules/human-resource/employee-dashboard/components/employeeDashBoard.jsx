@@ -6,12 +6,7 @@ import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible } from 
 
 import { TabHumanResource, TabSalary, TabAnualLeave, TabIntegratedStatistics } from './combinedContent';
 
-import { TimesheetsActions } from '../../timesheets/redux/actions';
-import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
-import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
-import { DisciplineActions } from '../../commendation-discipline/redux/actions';
-import { SalaryActions } from '../../salary/redux/actions';
-import { UserActions } from '../../../super-admin/user/redux/actions';
+import { getEmployeeDashboardActions } from "../redux/actions"
 import './employeeDashBoard.css';
 import Swal from 'sweetalert2';
 
@@ -46,43 +41,51 @@ let INFO_SEARCH = {
 
 const DashBoardEmployees = (props) => {
     const {
-        translate, employeesManager, annualLeave, discipline, timesheets,
-        childOrganizationalUnit,
-        getAllEmployee,
-        getListPraise, getListDiscipline,
-        searchSalary,
-    } = props;
+        translate, employeeDashboardData,
+        childOrganizationalUnit, 
+        getEmployeeDashboardData
+    } = props; 
 
     const [state, setState] = useState({
         month: formatDate(Date.now(), true),
         monthShow: formatDate(Date.now(), true),
         organizationalUnits: childOrganizationalUnit.map(x => x.id),
         arrayUnitShow: childOrganizationalUnit.map(x => x.id),
+        startDate: formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+        startDateIncreaseAndDecreaseChart: formatDate((new Date()).setMonth(new Date().getMonth() - 3), true),
+        startDateTrendOfOvertimeChart: formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+        startDateAnnualLeaveTrendsChart: formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+        endDateIncreaseAndDecreaseChart: formatDate(Date.now(), true),
+        endDateTrendOfOvertimeChart: formatDate(Date.now(), true),
+        endDateAnnualLeaveTrendsChart: formatDate(Date.now(), true),
+        endDate: formatDate(Date.now(), true)
     });
-    const { monthShow, month, organizationalUnits, arrayUnitShow } = state;
+    const { monthShow, month, organizationalUnits, arrayUnitShow, startDateIncreaseAndDecreaseChart, startDateAnnualLeaveTrendsChart, startDateTrendOfOvertimeChart, endDateIncreaseAndDecreaseChart,endDateTrendOfOvertimeChart, endDateAnnualLeaveTrendsChart } = state;
+
+    const formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1],partDate[0]].join('-');
+    }
 
     useEffect(() => {
-        let partMonth = month.split('-');
-        let newMonth = [partMonth[1], partMonth[0]].join('-');
-
         INFO_SEARCH = {
             organizationalUnits,
         }
-        /* Lấy danh sách nhân viên  */
-        getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
-        /* Lấy dánh sách khen thưởng, kỷ luật */
-        getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
-        getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
-
-        /* Lấy dữ liệu lương nhân viên*/
-        searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
-        searchSalary({ callApiDashboard: true, month: newMonth });
+        getEmployeeDashboardData({
+            defaultParams: {
+                organizationalUnits: organizationalUnits,
+                month: formatNewDate(month), 
+                startDateIncreaseAndDecreaseChart: formatNewDate(startDateIncreaseAndDecreaseChart),
+                endDateIncreaseAndDecreaseChart: formatNewDate(state.endDateIncreaseAndDecreaseChart),
+                startDateAnnualLeaveTrendsChart: formatNewDate(state.startDateAnnualLeaveTrendsChart),
+                endDateAnnualLeaveTrendsChart: formatNewDate(state.endDateAnnualLeaveTrendsChart),
+                startDateTrendOfOvertimeChart: formatNewDate(state.startDateTrendOfOvertimeChart),
+                endDateTrendOfOvertimeChart: formatNewDate(state.endDateTrendOfOvertimeChart)
+            }
+        });
     }, []);
-
-
-
-
+    
     /**
      * Function bắt sự kiện thay đổi đơn vị
      * @param {*} value : Array id đơn vị
@@ -91,10 +94,6 @@ const DashBoardEmployees = (props) => {
         INFO_SEARCH = {
             organizationalUnits: value
         }
-        // setState(state => ({
-        //     ...state,
-        //     arrayUnitShow: value
-        // }));
     }
 
     /**
@@ -110,8 +109,6 @@ const DashBoardEmployees = (props) => {
         const { organizationalUnits } = INFO_SEARCH;
 
         let { month } = state;
-        let partMonth = month.split('-');
-        let newMonth = [partMonth[1], partMonth[0]].join('-');
 
         if (organizationalUnits?.length > 0) {
             setState(state => ({
@@ -121,18 +118,20 @@ const DashBoardEmployees = (props) => {
                 arrayUnitShow: organizationalUnits
             }));
 
-            const { getAllEmployee, getListPraise, getListDiscipline, searchSalary } = props;
-
-            /* Lấy danh sách nhân viên  */
-            getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-            /* Lấy dánh sách khen thưởng, kỷ luật */
-            getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
-            getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
-
-            /* Lấy dữ liệu lương nhân viên*/
-            searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
-            searchSalary({ callApiDashboard: true, month: newMonth });
+            getEmployeeDashboardData({
+                searchChart: {
+                    employeeDashboardChart: { 
+                        month: formatNewDate(month),
+                        organizationalUnits: organizationalUnits, 
+                        startDateIncreaseAndDecreaseChart: formatNewDate(startDateIncreaseAndDecreaseChart),
+                        endDateIncreaseAndDecreaseChart: formatNewDate(state.endDateIncreaseAndDecreaseChart),
+                        startDateAnnualLeaveTrendsChart: formatNewDate(state.startDateAnnualLeaveTrendsChart),
+                        endDateAnnualLeaveTrendsChart: formatNewDate(state.endDateAnnualLeaveTrendsChart),
+                        startDateTrendOfOvertimeChart: formatNewDate(state.startDateTrendOfOvertimeChart),
+                        endDateTrendOfOvertimeChart: formatNewDate(state.endDateTrendOfOvertimeChart)
+                    }
+                } 
+            });
         }
     }
 
@@ -152,21 +151,43 @@ const DashBoardEmployees = (props) => {
         }
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
+    const handleChangeIncreaseAndDecreaseChartTime = (startDateIncreaseAndDecreaseChart, endDateIncreaseAndDecreaseChart) => {
+        setState({
+            ...state,
+            startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChart,
+            endDateIncreaseAndDecreaseChart: endDateIncreaseAndDecreaseChart
+        })
+    }
 
+    const handleChangeAnnualLeaveTrendsChartTime = ( startDateAnnualLeaveTrendsChart, endDateAnnualLeaveTrendsChart) => {
+        setState({
+            ...state,
+            startDateAnnualLeaveTrendsChart: startDateAnnualLeaveTrendsChart,
+            endDateAnnualLeaveTrendsChart: endDateAnnualLeaveTrendsChart
+        })
+    }
 
-    let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
+    const handleChangeTrendOfOvertimeChartTime = (startDateTrendOfOvertimeChart, endDateTrendOfOvertimeChart) => {
+        setState({
+            ...state,
+            startDateTrendOfOvertimeChart: startDateTrendOfOvertimeChart,
+            endDateTrendOfOvertimeChart: endDateTrendOfOvertimeChart
+        })
+    }
+
+    let listAllEmployees = employeeDashboardData.listEmployeesOfOrganizationalUnits;
 
     let totalHourAnnualLeave = 0;
-    let listTimesheets = timesheets.listTimesheets;
+    let listTimesheets = employeeDashboardData.dataOvertimeUnits?.listOvertimeOfUnitsByStartDateAndEndDate ? employeeDashboardData.dataOvertimeUnits.listOvertimeOfUnitsByStartDateAndEndDate : [];
     listTimesheets.forEach(x => {
         if (x.totalHoursOff && x.totalHoursOff !== 0) {
             totalHourAnnualLeave = totalHourAnnualLeave + x.totalHoursOff;
         }
     });
-
     // Tab lương thưởng
     const tabSalary = useMemo(() => <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />, [organizationalUnits, monthShow]);
 
+    const dateProps = {startDateIncreaseAndDecreaseChart, startDateAnnualLeaveTrendsChart, startDateTrendOfOvertimeChart, endDateIncreaseAndDecreaseChart, endDateTrendOfOvertimeChart, endDateAnnualLeaveTrendsChart, month, handleChangeIncreaseAndDecreaseChartTime, handleChangeAnnualLeaveTrendsChartTime, handleChangeTrendOfOvertimeChartTime}
     return (
         <React.Fragment>
             <div className="qlcv">
@@ -227,7 +248,7 @@ const DashBoardEmployees = (props) => {
                             <div className="info-box-content">
                                 <span className="info-box-text">Số khen thưởng</span>
                                 <span className="info-box-number" style={{ fontSize: '20px' }}>
-                                    {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
+                                    {employeeDashboardData.commendation?.totalList ? employeeDashboardData.commendation.totalList?.length : 0}
                                 </span>
                             </div>
                         </div>
@@ -238,7 +259,7 @@ const DashBoardEmployees = (props) => {
                             <div className="info-box-content">
                                 <span className="info-box-text">Số kỷ luật</span>
                                 <span className="info-box-number" style={{ fontSize: '20px' }}>
-                                    {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
+                                    {employeeDashboardData.discipline?.listDisciplines ? employeeDashboardData.discipline.listDisciplines?.length : 0}
                                 </span>
                             </div>
                         </div>
@@ -254,16 +275,25 @@ const DashBoardEmployees = (props) => {
                     <div className="tab-content ">
                         {/* Tab tổng quan nhân sự*/}
                         <div className="tab-pane active" id="human-resourse">
-                            <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                            <LazyLoadComponent>
+                                <TabHumanResource 
+                                    childOrganizationalUnit={childOrganizationalUnit} 
+                                    defaultUnit={true} 
+                                    organizationalUnits={organizationalUnits} 
+                                    monthShow={monthShow} 
+                                    date={dateProps}/>
+                            </LazyLoadComponent>
                         </div>
 
                         {/* Tab nghỉ phép tăng ca*/}
                         <div className="tab-pane" id="annualLeave">
                             <LazyLoadComponent>
                                 <TabAnualLeave
+                                    organizationalUnits={organizationalUnits}
                                     childOrganizationalUnit={childOrganizationalUnit}
                                     idUnits={props?.childOrganizationalUnit?.length && props.childOrganizationalUnit.filter(item => arrayUnitShow.includes(item?.id))}
-                                    defaultUnit={true} />
+                                    defaultUnit={true}
+                                    date={dateProps}/>
                             </LazyLoadComponent>
                         </div>
 
@@ -284,15 +314,12 @@ const DashBoardEmployees = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, annualLeave, discipline, timesheets } = state;
-    return { employeesManager, annualLeave, discipline, timesheets };
+    const {  employeeDashboardData } = state;
+    return { employeeDashboardData };
 }
 
 const actionCreators = {
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
-    getListPraise: DisciplineActions.getListPraise,
-    getListDiscipline: DisciplineActions.getListDiscipline,
-    searchSalary: SalaryActions.searchSalary,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 const DashBoard = connect(mapState, actionCreators)(withTranslate(DashBoardEmployees));
 export { DashBoard as DashBoardEmployees };

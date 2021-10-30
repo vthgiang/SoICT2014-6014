@@ -8,7 +8,11 @@ export const AssetManagerActions = {
     deleteAsset,
     getListBuildingAsTree,
     getAllAssetGroup,
-    getAllAssetStatistic
+    getAllAssetStatistic,
+    getAllAssetPurchase,
+    getAllAssetDisposal,
+    getAllAssetIncident,
+    getAllAssetMaintenance
 };
 
 /**
@@ -177,12 +181,102 @@ function getAllAssetStatistic(data) {
                 dispatch({
                     type: AssetConstants.GET_ASSET_STATISTIC_SUCCESS,
                     payload: res.data.content,
+                    
                 });
-                console.log("res",res.data)
+                console.log("res.res.data.content",res.data.content)
             })
             .catch((err) => {
                 dispatch({
                     type: AssetConstants.GET_ASSET_STATISTIC_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetPurchase(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_PURCHASE_REQUEST,
+        });
+        AssetService.getAllAssetPurchase(data)
+            .then((res) => {
+                console.log(res.data.content)
+                dispatch({
+                    type: AssetConstants.GET_ASSET_PURCHASE_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_PURCHASE_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetDisposal(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_DISPOSAL_REQUEST,
+        });
+        AssetService.getAllAssetDisposal(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_DISPOSAL_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_DISPOSAL_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetIncident(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_INCIDENT_REQUEST,
+        });
+        AssetService.getAllAssetIncident(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_INCIDENT_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_INCIDENT_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetMaintenance(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_MAINTENANCE_REQUEST,
+        });
+        AssetService.getAllAssetMaintenance(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_MAINTENANCE_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_MAINTENANCE_FAILURE,
                     error: err,
                 });
             });

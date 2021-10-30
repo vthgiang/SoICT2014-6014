@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DatePicker, SelectBox, TreeSelect } from '../../../../../../common-components';
 import Swal from 'sweetalert2';
-
+import { AssetManagerActions } from '../../../asset-information/redux/actions';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -47,128 +47,94 @@ class AssetMaintenanceChart extends Component {
         }
     }
 
-    setDataColumnChartForMonth = (listAssets) => {
-        const { translate, getMaintenanceData } = this.props;
-        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.state;
+    setDataColumnChartForMonth = (type) => {
+        const { translate, getMaintenanceData,maintenanceAsset } = this.props;
+        let category1 = ['x'], count1 = ['Số lần'], value1 = ['Giá trị'], yValue1 = [], max = []
+        const maxVa = (a, b) => Math.max(a, b)
+        console.log("123")
+        if (maintenanceAsset.maintenanceChart) {
+            maintenanceAsset.maintenanceChart.forEach(element => {
+                if (type.length !== 0) {
+                    let sumCate = 0, sumValue = 0
+                    type.forEach(value => {
+                        let index = element.idAssetTypeMaintenance.indexOf(value)
+                        sumCate += element.countAssetcount[index]
+                        sumValue += element.valueAsset[index]
+                    })
+                    category1.push(element.xType)
+                    count1.push(sumCate)
+                    value1.push(sumValue)
+                } else {
+                    const reducer = (a, b) => a + b
+                    category1.push(element.xType)
+                    count1.push(element.countAssetcount.reduce(reducer))
+                    value1.push(element.valueAsset.reduce(reducer))
 
-        let startDate = new Date(maintenanceDateAfter);
-        let endDate = new Date(maintenanceDateBefore);
-        let period = Math.round((endDate - startDate) / 2592000000) + 1;
-        let listMonth = [], value = [], countAsset = [], category = [], arr = [];
-        let m = maintenanceDateAfter.slice(5, 7);
-        let y = maintenanceDateAfter.slice(0, 4);
-
-        for (let i = 0; i <= period; i++) {
-            if (m > 12) {
-                m = 1;
-                y++;
-            }
-            if (m < 10) {
-                m = '0' + m;
-            }
-            category.push([m, y].join('-'));
-            listMonth.push([y, m].join(','));
-            m++;
-        }
-
-        if (listAssets) {
-            for (let i = 0; i < listMonth.length - 1; i++) {
-                let cnt = 0, val = 0;
-                let minDate = new Date(listMonth[i]).getTime();
-                let maxDate = new Date(listMonth[i + 1]).getTime();
-
-                for (let j in listAssets) {
-                    let maintenanceLogs = listAssets[j].maintainanceLogs;
-                    if (maintenanceLogs.length) {
-                        for (let k in maintenanceLogs) {
-                            let maintenanceDate = new Date(maintenanceLogs[k].createDate).getTime();
-
-                            if (maintenanceDate < maxDate && maintenanceDate >= minDate) {
-                                cnt++;
-                                val += maintenanceLogs[k].expense / 1000000;
-                            }
-                        }
-                    }
                 }
-                countAsset.push(cnt);
-                value.push(val);
-            }
+            })
         }
-        let maxCnt = Math.max.apply(Math, countAsset);
+        let maxCout = count1.slice(1)
 
-        for (let i = 0; i <= maxCnt; i++) {
-            arr.push(i)
+        let yMaxValue = count1.slice(1).reduce(maxVa, 0)
+
+        for (let i = 0; i <= yMaxValue; i++) {
+            yValue1.push(i)
         }
-
-        category.pop();
-        category.unshift('x');
-        countAsset.unshift(translate('asset.dashboard.time'));
-        value.unshift(translate('asset.dashboard.maintainance_cost'));
-
         let dataColumnChart = {
-            category: category,
-            count: countAsset,
-            value: value,
-            yValues: arr
+            category: category1,
+            count: count1,
+            value: value1,
+            yValues: yValue1
         };
 
-        if (dataColumnChart && listAssets) {
+        if (dataColumnChart && maintenanceAsset) {
             getMaintenanceData(dataColumnChart, type);
         }
         return dataColumnChart;
     }
 
-    setDataColumnChartForYear = (listAssets) => {
-        const { translate, getMaintenanceData } = this.props;
-        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.state;
-
-        let startDate = maintenanceDateAfter.slice(0, 4);
-        let endDate = maintenanceDateBefore.slice(0, 4);
-        let period = endDate - startDate + 1;
-        let value = [], countAsset = [], category = [], arr = [];
-
-        for (let i = 0; i < period; i++) {
-            category.push(parseInt(startDate) + i);
-        }
-        if (listAssets) {
-            for (let i = 0; i < category.length; i++) {
-                let cnt = 0, val = 0;
-                for (let j in listAssets) {
-                    let maintenanceLogs = listAssets[j].maintainanceLogs;
-                    if (maintenanceLogs.length) {
-                        for (let k in maintenanceLogs) {
-                            let maintenanceDate = new Date(maintenanceLogs[k].createDate).getFullYear();
-
-                            if (maintenanceDate == category[i]) {
-                                cnt++;
-                                val += maintenanceLogs[k].expense / 1000000;
-                            }
-                        }
-                    }
+    setDataColumnChartForYear = (type) => {
+        const { translate, getMaintenanceData,maintenanceAsset } = this.props;
+        let category1 = ['x'], count1 = ['Số lần'], value1 = ['Giá trị'], yValue1 = [], max = []
+        const maxVa = (a, b) => Math.max(a, b)
+        console.log("123")
+        if (maintenanceAsset.maintenanceYearChart) {
+            maintenanceAsset.maintenanceYearChart.forEach(element => {
+                if (type.length !== 0) {
+                    let sumCate = 0, sumValue = 0
+                    type.forEach(value => {
+                        let index = element.idAssetTypeMaintenanceYear.indexOf(value)
+                        sumCate += element.countAssetcountYear[index]
+                        sumValue += element.valueAssetYear[index]
+                    })
+                    category1.push(element.xType)
+                    count1.push(sumCate)
+                    value1.push(sumValue)
+                } else {
+                    const reducer = (a, b) => a + b
+                    category1.push(element.xType)
+                    count1.push(element.countAssetcountYear.reduce(reducer))
+                    value1.push(element.valueAssetYear.reduce(reducer))
 
                 }
-                countAsset.push(cnt);
-                value.push(val);
-            }
+            })
         }
-        let maxCnt = Math.max.apply(Math, countAsset);
+        let maxCout = count1.slice(1)
 
-        for (let i = 0; i <= maxCnt; i++) {
-            arr.push(i)
+        let yMaxValue = count1.slice(1).reduce(maxVa, 0)
+
+        for (let i = 0; i <= yMaxValue; i++) {
+            yValue1.push(i)
         }
-
-        category.unshift('x');
-        countAsset.unshift(translate('asset.dashboard.time'));
-        value.unshift(translate('asset.dashboard.maintainance_cost'));
 
         let dataColumnChart = {
-            category: category,
-            count: countAsset,
-            value: value,
-            yValues: arr
+            category: category1,
+            count: count1,
+            value: value1,
+            yValues: yValue1
         };
 
-        if (dataColumnChart && listAssets) {
+        if (dataColumnChart && maintenanceAsset) {
             getMaintenanceData(dataColumnChart, type);
         }
         return dataColumnChart;
@@ -195,7 +161,7 @@ class AssetMaintenanceChart extends Component {
             filterAsset = listAssets;
         }
 
-        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(filterAsset) : this.setDataColumnChartForMonth(filterAsset);
+        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(type) : this.setDataColumnChartForMonth(type);
 
         if (translate('asset.dashboard.amount') === 'Số lượng') {
             let chart = c3.generate({
@@ -330,14 +296,7 @@ class AssetMaintenanceChart extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    maintenanceDateAfter: this.INFO_SEARCH.maintenanceDateAfter,
-                    maintenanceDateBefore: this.INFO_SEARCH.maintenanceDateBefore,
-                    // type: this.INFO_SEARCH.type,
-                }
-            })
+            this.props.getAllAssetMaintenance({ name: "maintenance-date-data", endTimeMaintenance: maintenanceDateBefore, startTimeMaintenance: maintenanceDateAfter })
         }
     }
 
@@ -446,5 +405,13 @@ class AssetMaintenanceChart extends Component {
         )
     }
 }
+function mapState(state) {
+    const { maintenanceAsset } = state.assetsManager;
+    return { maintenanceAsset };
+}
 
-export default withTranslate(AssetMaintenanceChart);
+const mapDispatchToProps = {
+    getAllAssetMaintenance: AssetManagerActions.getAllAssetMaintenance
+}
+const AssetMaintenanceChartConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetMaintenanceChart));
+export { AssetMaintenanceChartConnect as AssetMaintenanceChart };

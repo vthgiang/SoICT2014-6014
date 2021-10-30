@@ -13,7 +13,7 @@ function GoodEditForm(props) {
 
     })
 
-    useEffect(() => {
+    if (props.goodId !== state.goodId) {
         setState({
             ...state,
             goodId: props.goodId,
@@ -38,7 +38,7 @@ function GoodEditForm(props) {
             salesPriceVarianceError: undefined,
             errorOnNumberExpirationDate: undefined
         });
-    }, [props.goodId])
+    }
 
     const validatePrice = (value) => {
         let msg = undefined;

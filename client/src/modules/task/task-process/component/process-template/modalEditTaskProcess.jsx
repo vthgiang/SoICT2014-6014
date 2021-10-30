@@ -62,8 +62,8 @@ function ModalEditTaskProcess(props) {
         userId: getStorage("userId"),
         currentRole: getStorage('currentRole'),
         showInfo: false,
-        info: data.tasks,
-        xmlDiagram: data.xmlDiagram,
+        info: "",
+        xmlDiagram: "",
         selectedEdit: 'info',
         zlevel: 1,
     })
@@ -530,7 +530,7 @@ function ModalEditTaskProcess(props) {
         const infos = state.info
         infos[`${state.id}`] = info ;
         
-        state.info[`${state.id}`] = info
+        // state.info[`${state.id}`] = info
         setState({
                 ...state,
                 info: infos
