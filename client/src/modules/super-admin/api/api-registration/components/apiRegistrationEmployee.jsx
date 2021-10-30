@@ -57,6 +57,11 @@ function ApiRegistrationEmployee (props) {
         })
     }
 
+    const handleCopyToken = (apiRegistration) => {
+        let copyText = apiRegistration?.token?.slice();
+        navigator.clipboard.writeText(copyText);
+    }
+
     const handleAcceptApiRegistration = (api) => {
         props.updateStatusPrivilegeApi({
             privilegeApiIds: [api?._id],
@@ -174,7 +179,7 @@ function ApiRegistrationEmployee (props) {
                                         <td>{apiRegistration.email}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }}>Copy</button>
+                                            <button className="pull-right" style={{ position: "absolute", right: 0 }} onClick={() => handleCopyToken(apiRegistration)}>Copy</button>
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
