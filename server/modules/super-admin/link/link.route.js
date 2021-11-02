@@ -10,7 +10,7 @@ router.post("/links", auth, LinkController.createLink);
 router.get("/links/:id", auth, LinkController.getLink);
 router.patch("/links/:id", auth, LinkController.editLink);
 router.delete("/links/:id", auth, LinkController.deleteLink);
-
+// router.post('/links/import', auth, LinkController.importLinks);
 router.patch("/links/company/update", auth, LinkController.updateCompanyLinks);
 
 module.exports = router;

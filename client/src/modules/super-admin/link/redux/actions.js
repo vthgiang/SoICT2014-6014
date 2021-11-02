@@ -10,6 +10,7 @@ export const LinkActions = {
     show,
     edit,
     destroy,
+    importLinkPrivilege
 };
 
 /**
@@ -120,6 +121,27 @@ function destroy(id, link) {
                 dispatch({
                     type: LinkConstants.DELETE_LINK_FAILE
                 })
+            })
+    }
+}
+
+function importLinkPrivilege(id, link) {
+    return dispatch => {
+        dispatch({
+            type: LinkConstants.IMPORT_LINK_PRIVILEGE_REQUEST
+        });
+        LinkServices.importLinkPrivilege(id, link)
+            .then(res => {
+                dispatch({
+                    type: LinkConstants.IMPORT_LINK_PRIVILEGE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: LinkConstants.IMPORT_LINK_PRIVILEGE_FAILE,
+                    error: err?.response?.data?.content
+                });
             })
     }
 }
