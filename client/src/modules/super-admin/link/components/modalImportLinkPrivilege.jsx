@@ -128,21 +128,16 @@ function ModalImportLinkPrivilege(props) {
         if (value?.length) {
             value.forEach((x, index) => {
                 let errorAlert = [];
-                // let linkUrl = x?.linkUrl ? getLinkId(x.linkUrl) : [];
-                let linkImport = link.list.filter(link => link.url === x.linkUrl);
 
+                let linkImport = link.list.filter(link => link.url === x.linkUrl);
                 let linkDescription = x.linkDescription;
                 let linkRoles = x?.linkRoles ? getLinkRoleId(x.linkRoles) : [];
-                let roleParentFormat = x?.roleParents ? getRoleParentId(x.roleParents) : [];
-                let roleUsers = x?.roleUsers ? getRoleUserId(x?.roleUsers) : [];
-                // let roleUsers = x?.roleUsers ? getRoleUserId(x?.roleUsers) : [];
 
-                // const { length } = arr;
-                // const id = length + 1;
-                // const found = arr.some(el => el.username === name);
-                // if (!found) arr.push({ id, username: name });
+                let validLink = link.list.some(link => link.url === x.linkUrl);
+                let validRole = linkRoles.every(linkRoleId => role.list.map(role => role._id).includes(linkRoleId));
 
-                if (x.linkUrl === null || !link.list.some(link => link.url === x.linkUrl) || (linkRoles.length > 0 && !linkRoles.every(linkRoleId => role.list.map(role => role._id).includes(linkRoleId)))) {
+
+                if (x.linkUrl === null || !validLink || (linkRoles.length > 0 && !validRole)) {
                     rowError = [...rowError, index + 1];
                     x = { ...x, error: true };
                 }
@@ -150,14 +145,14 @@ function ModalImportLinkPrivilege(props) {
                 if (x.linkUrl === null) {
                     errorAlert = [...errorAlert, 'Tên đường link của trang không được để trống'];
                 }
-                if (!link.list.some(link => link.url === x.linkUrl)) {
+                if (!validLink) {
                     errorAlert = [...errorAlert, 'Tên đường link của trang không hợp lệ'];
                 }
-                if (linkRoles.length > 0 && !linkRoles.every(linkRoleId => role.list.map(role => role._id).includes(linkRoleId))) {
+                if (linkRoles.length > 0 && !validRole) {
                     errorAlert = [...errorAlert, 'Tên role được truy cập trang không hợp lệ'];
                 }
 
-                // dữ liệu nguyên thuwry như trong file import để show ra
+                // dữ liệu nguyên thủy như trong file import để show ra
                 valueShow = [
                     ...valueShow,
                     {
