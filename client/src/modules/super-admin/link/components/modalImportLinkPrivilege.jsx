@@ -57,6 +57,7 @@ function ModalImportLinkPrivilege(props) {
     const getLinkRoleId = (linkRole) => {
         const { list } = role;
         let result = [];
+        let validRole = true;
         if (linkRole && typeof linkRole === 'string' && list?.length) {
             let linkRoleArray = linkRole.split(",");
 
@@ -65,8 +66,15 @@ function ModalImportLinkPrivilege(props) {
                     for (let k = 0; k < list.length; k++) {
                         if (list[k].name.trim() === x?.trim()) {
                             result = [...result, list[k]._id];
+                            validRole = true;
                             break;
                         }
+                        else {
+                            validRole = false;
+                        }
+                    }
+                    if (!validRole) {
+                        result = [...result, null];
                     }
                 })
             }
@@ -134,7 +142,7 @@ function ModalImportLinkPrivilege(props) {
                 // const found = arr.some(el => el.username === name);
                 // if (!found) arr.push({ id, username: name });
 
-                if (x.linkUrl === null || !link.list.some(link => link.url === x.linkUrl)) {
+                if (x.linkUrl === null || !link.list.some(link => link.url === x.linkUrl) || (linkRoles.length > 0 && !linkRoles.every(linkRoleId => role.list.map(role => role._id).includes(linkRoleId)))) {
                     rowError = [...rowError, index + 1];
                     x = { ...x, error: true };
                 }
@@ -144,6 +152,9 @@ function ModalImportLinkPrivilege(props) {
                 }
                 if (!link.list.some(link => link.url === x.linkUrl)) {
                     errorAlert = [...errorAlert, 'Tên đường link của trang không hợp lệ'];
+                }
+                if (linkRoles.length > 0 && !linkRoles.every(linkRoleId => role.list.map(role => role._id).includes(linkRoleId))) {
+                    errorAlert = [...errorAlert, 'Tên role được truy cập trang không hợp lệ'];
                 }
 
                 // dữ liệu nguyên thuwry như trong file import để show ra
@@ -172,12 +183,11 @@ function ModalImportLinkPrivilege(props) {
                         url: x.linkUrl,
                         description: linkDescription,
                         roles: linkRoles,
+                        valid: x.error ? !x.error : true
                     }
                 ]
             })
         }
-        // console.log(valueImport);
-        console.log(valueImport)
 
         setState({
             ...state,
@@ -207,7 +217,7 @@ function ModalImportLinkPrivilege(props) {
         if (valueImport) {
             for (let k = 0; k < valueImport.length; k++) {
                 // chỉ update những link có thay đổi so với các link hiện tại. Kiểm tra thỏa mãn cả 3 điều kiện id, mô tả, roles thì không update
-                if (!link.list.some(link => link._id === valueImport[k].linkId && link.description === valueImport[k].description && isEqualArray(link.roles.map(role => role && role.roleId ? role.roleId._id : ""), valueImport[k].roles))) {
+                if (valueImport[k].valid && !link.list.some(link => link._id === valueImport[k].linkId && link.description === valueImport[k].description && isEqualArray(link.roles.map(role => role && role.roleId ? role.roleId._id : ""), valueImport[k].roles))) {
                     props.editLink(valueImport[k].linkId, {
                         url: valueImport[k].url,
                         description: valueImport[k].description,
@@ -259,7 +269,7 @@ function ModalImportLinkPrivilege(props) {
                 linkDescription: x.description,
                 linkRoles: x.roles.map(role => role && role.roleId ? role.roleId.name : "").join(", "),
             }];
-            console.log(x.roles.map(role => role && role.roleId ? role.roleId._id : ""))
+            // console.log(x.roles.map(role => role && role.roleId ? role.roleId._id : ""))
         })
 
         let templateImport = {
