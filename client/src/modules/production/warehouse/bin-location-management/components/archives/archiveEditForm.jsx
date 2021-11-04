@@ -20,7 +20,7 @@ function ArchiveEditForm(props) {
         editInfo: false,
     })
 
-    useEffect(() => {
+    if (props.binId !== state.binId) {
         setState({
             ...state,
             binId: props.binId,
@@ -35,7 +35,7 @@ function ArchiveEditForm(props) {
             errorGood: undefined,
             errorCapacity: undefined
         })
-    }, [props.binId])
+    }
 
     const getAllDepartment = () => {
         let { translate, department } = props;
