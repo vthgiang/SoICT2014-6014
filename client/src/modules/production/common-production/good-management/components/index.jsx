@@ -33,15 +33,13 @@ function GoodManagement(props) {
         props.getAllStocks({ managementLocation: currentRole })
     }, [])
 
-    useEffect(() => {
-        if (state.oldType !== state.type) {
-            props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-            setState ({
-                ...state,
-                oldType: state.type,
-            });
-        }
-    }, [state.type])
+    if (state.oldType !== state.type) {
+        props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
+        setState ({
+            ...state,
+            oldType: state.type,
+        });
+    }
 
     useEffect(() => {
         if(!state.type) {

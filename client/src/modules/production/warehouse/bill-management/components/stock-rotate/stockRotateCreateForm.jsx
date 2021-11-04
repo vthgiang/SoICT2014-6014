@@ -465,7 +465,7 @@ function StockRotateCreateForm(props) {
         return false;
     }
 
-    useEffect(() => {
+    if (props.group !== state.group) {
         setState({
             ...state,
             group: props.group,
@@ -481,7 +481,7 @@ function StockRotateCreateForm(props) {
             errorResponsibles: undefined
 
         })
-    }, [props.group])
+    }
 
     const save = async () => {
         const { fromStock, code, type, status, users, approvers, toStock,

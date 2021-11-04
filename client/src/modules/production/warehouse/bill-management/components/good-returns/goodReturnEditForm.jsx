@@ -548,7 +548,7 @@ function GoodReturnEditForm(props) {
         return false;
     }
 
-    useEffect(() => {
+    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
         let approver = [];
         let qualityControlStaffs = [];
         let responsibles = [];
@@ -580,7 +580,7 @@ function GoodReturnEditForm(props) {
             }
 
         }
-        return {
+        setState ({
             ...state,
             editInfo: false,
             billId: props.billId,
@@ -616,8 +616,8 @@ function GoodReturnEditForm(props) {
             errorAccountables: undefined,
             errorResponsibles: undefined
 
-        }
-    }, [props.billId, props.oldStatus])
+        })
+    }
 
     const save = async () => {
         const { billId, fromStock, code, bill, type, status, oldStatus, users, approvers, customer,
