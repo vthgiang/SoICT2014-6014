@@ -62,6 +62,11 @@ function PrivilegeApiManagement (props) {
         })
     }
 
+    const handleCopyToken = (privilege) => {
+        let copyText = privilege?.token?.slice();
+        navigator.clipboard.writeText(copyText);
+    }
+
     const handleAcceptPrivilegeApi = (privilegeApi) => {
         props.updateStatusPrivilegeApi({
             role: 'system_admin',
@@ -224,7 +229,7 @@ function PrivilegeApiManagement (props) {
                                         <td>{privilege.company?.name}</td>
                                         <td>{formatStatus(privilege.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }}>Copy</button>
+                                            <button className="pull-right" style={{ position: "absolute", right: 0 }} onClick={() => handleCopyToken(privilege)}>Copy</button>
                                             {privilege?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>

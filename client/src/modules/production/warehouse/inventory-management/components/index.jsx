@@ -42,45 +42,43 @@ function InventoryManagement(props) {
         props.getAllGoodsByType({ type });
     }, [])
 
-    useEffect(() => {
-        if (state.oldType !== state.type) {
-            props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-            props.getAllLots({ type: state.type, managementLocation: state.currentRole });
-            props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
-            props.getAllGoodsByType({ type: state.type });
-            setState ({
-                ...state,
-                oldType: state.type,
-            })
-        }
-    }, [state.type])
-   
+    if (state.oldType !== state.type) {
+        props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
+        props.getAllLots({ type: state.type, managementLocation: state.currentRole });
+        props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
+        props.getAllGoodsByType({ type: state.type });
+        setState({
+            ...state,
+            oldType: state.type,
+        })
+    }
+
 
     useEffect(() => {
-        if(!state.type){
+        if (!state.type) {
             if (checkManagementGood('product')) {
-                setState({ 
+                setState({
                     ...state,
-                    type: 'product', 
-                    activeP: true 
+                    type: 'product',
+                    activeP: true
                 });
             } else if (checkManagementGood('material')) {
-                setState({ 
-                    ...state, 
-                    type: 'material', 
-                    activeM: true 
+                setState({
+                    ...state,
+                    type: 'material',
+                    activeM: true
                 });
             } else if (checkManagementGood('equipment')) {
-                setState({ 
-                    ...state, 
-                    type: 'equipment', 
-                    activeE: true 
+                setState({
+                    ...state,
+                    type: 'equipment',
+                    activeE: true
                 });
             } else if (checkManagementGood('waste')) {
-                setState({ 
-                    ...state, 
-                    type: 'waste', 
-                    activeW: true 
+                setState({
+                    ...state,
+                    type: 'waste',
+                    activeW: true
                 });
             }
         }
@@ -564,7 +562,7 @@ function InventoryManagement(props) {
                                         <td>{index + 1}</td>
                                         <td>{x.good.name}</td>
                                         <td>{x.good.baseUnit}</td>
-                                        { checkQuantity(x.stocks) ?
+                                        {checkQuantity(x.stocks) ?
                                             <td className="tooltip-inventory">
                                                 <span style={{ color: "red" }}>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? totaQuantity(x.stocks) : x.quantity}</span>
                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.inventory_management.text')}</p></span>

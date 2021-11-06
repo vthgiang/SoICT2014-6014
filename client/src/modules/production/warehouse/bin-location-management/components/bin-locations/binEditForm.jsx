@@ -19,7 +19,7 @@ function BinEditForm(props) {
         editInfo: false,
     })
 
-    useEffect(() => {
+    if (props.binId !== state.binId) {
         setState({
             ...state,
             binId: props.binId,
@@ -39,7 +39,7 @@ function BinEditForm(props) {
             errorName: undefined,
             errorCode: undefined
         })
-    }, [props.binId])
+    }
 
     const getAllDepartment = () => {
         let { translate, department } = props;

@@ -2609,6 +2609,8 @@ export default {
                 asset_type: "Loại tài sản",
                 asset_group: "Nhóm tài sản",
                 purchase_date: "Ngày nhập",
+                purchase_date_start:"Ngày nhập từ ngày",
+                purchase_date_end: "Ngày nhập đến ngày",
                 manager: "Người quản lý",
                 user: "Người sử dụng",
                 organization_unit: "Đơn vị sử dụng",

@@ -27,7 +27,7 @@ function LotEditForm(props) {
         props.getDetailLot(id);
     }, [])
 
-    useEffect(() => {
+    if(props.id !== state.id) {
         state.binLocation.binLocation = '';
         state.binLocation.quantity = '';
         setState({
@@ -41,7 +41,7 @@ function LotEditForm(props) {
             errorQuantity: undefined,
             errorBin: undefined
         })
-    }, [props.id])
+    }
 
     const handleBinLocationChange = (value) => {
         let binLocation = value[0];

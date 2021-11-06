@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -7,13 +7,13 @@ import _isEqual from 'lodash/isEqual';
 import { DataTableSetting } from '../data-table-setting/dataTableSetting';
 
 function TreeTable(props) {
-    const { translate, column, data, actions = true, tableId = 'tree-table', tableSetting = false, rowPerPage = true, allowSelectAll = false,viewWhenClickName = false, funcEdit, funcView,titleAction, performtasks } = props;
+    const { translate, column, data, actions = true, tableId = 'tree-table', tableSetting = false, rowPerPage = true, allowSelectAll = false, viewWhenClickName = false, funcEdit, funcView, titleAction, performtasks } = props;
     const lastChecked = useRef();
-    const [state,setState] = useState({
+    const [state, setState] = useState({
         checkAll: false,
         selectedRows: []
     })
-    const {checkAll,selectedRows} = state;
+    const { checkAll, selectedRows } = state;
 
     let columnArr = column?.map(col => col.name);
     if (allowSelectAll) columnArr.unshift('selectAll');
@@ -22,9 +22,9 @@ function TreeTable(props) {
         if (allowSelectAll) {
             // Cho phép sử dụng shift chọn nhiều check box
             window.$(`#${tableId}`).checkboxes('range', true);
-            const checkBoxes = document.querySelectorAll('.tree-table-body input[type="checkbox"]');    
+            const checkBoxes = document.querySelectorAll('.tree-table-body input[type="checkbox"]');
             let results = []
-    
+
             checkBoxes.forEach(checkbox => {
                 // Bắt sự kiện click checkbox
                 checkbox.addEventListener('click', onChangeCheckBox)
@@ -32,7 +32,7 @@ function TreeTable(props) {
                     results.push(checkbox.getAttribute("value"))
                 }
             });
-    
+
             if (!_isEqual(selectedRows, results)) {
                 setState(state => {
                     return {
@@ -43,7 +43,7 @@ function TreeTable(props) {
                 props.onSelectedRowsChange(results)
             }
         }
-    
+
         if (props.data !== null && props.behaviour === "show-children") {
             addScriptTreeTable(true);
         }
@@ -67,8 +67,8 @@ function TreeTable(props) {
             rows.each(function (index, row) {
                 let
                     $row = window.$(row),
-                    level = parseInt($row.data('level')),
-                    id = $row.data('id'),
+                    level = parseInt($row[0].getAttribute('data-level')),
+                    id = $row[0].getAttribute('data-id'),
                     $columnName = $row.find('td[data-column="name"]'),
                     children = $table.find('tr[data-parent="' + id + '"]')
 
@@ -368,7 +368,7 @@ function TreeTable(props) {
 
         }
 
-        if (results?.length === props.data?.length && results?.length > 0 ) {
+        if (results?.length === props.data?.length && results?.length > 0) {
             setState(state => {
                 return {
                     ...state,
@@ -421,53 +421,53 @@ function TreeTable(props) {
                         {actions && <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>}
                     </tr>
                 </thead>
-                    <tbody id="treeTable" className="tree-table-body">
-                        {dataTreeTable(column, data).length > 0 ?
-                            dataTreeTable(column, data).map((rows, index) => (
-                                <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
-                                    {allowSelectAll &&
-                                        <td >
-                                            <input type='checkbox' defaultChecked={false} value={rows._id}></input>
-                                        </td>
-                                    }
-                                    {
-                                        rows.row.map((x, index) => index === 0 ?
-                                            <td key={index} data-column="name">{x}</td> :
-                                            <td key={index}>{x}</td>
-                                        )
-                                    }
-                                    {actions &&
-                                        <td>
-                                            {
-                                                rows.action && rows.action.map((x, index) => Array.isArray(x) ?
-                                                    <React.Fragment key={index}>
-                                                        <button type="button" data-toggle="collapse" data-target={`#actionTask${rows._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
-                                                        <div id={`actionTask${rows._id}`} className="collapse">
-                                                            {x.map((y, index) => (
-                                                                <React.Fragment key={index}>
-                                                                    {showActionColumn(y, rows._id)}
-                                                                </React.Fragment>
-                                                            ))}
-                                                        </div>
-                                                    </React.Fragment> :
-                                                    <React.Fragment key={index}>
-                                                        {showActionColumn(x, rows._id)}
-                                                    </React.Fragment>
-                                                )
-                                            }
-                                        </td>
-                                    }
-                                </tr>
-                            )) : null
-                        }
-                    </tbody>
-                </table >
-                {
-                    dataTreeTable(column, data).length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                }
-            </React.Fragment>
-        );
-    }
+                <tbody id="treeTable" className="tree-table-body">
+                    {dataTreeTable(column, data).length > 0 ?
+                        dataTreeTable(column, data).map((rows, index) => (
+                            <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
+                                {allowSelectAll &&
+                                    <td >
+                                        <input type='checkbox' defaultChecked={false} value={rows._id}></input>
+                                    </td>
+                                }
+                                {
+                                    rows.row.map((x, index) => index === 0 ?
+                                        <td key={index} data-column="name">{x}</td> :
+                                        <td key={index}>{x}</td>
+                                    )
+                                }
+                                {actions &&
+                                    <td>
+                                        {
+                                            rows.action && rows.action.map((x, index) => Array.isArray(x) ?
+                                                <React.Fragment key={index}>
+                                                    <button type="button" data-toggle="collapse" data-target={`#actionTask${rows._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
+                                                    <div id={`actionTask${rows._id}`} className="collapse">
+                                                        {x.map((y, index) => (
+                                                            <React.Fragment key={index}>
+                                                                {showActionColumn(y, rows._id)}
+                                                            </React.Fragment>
+                                                        ))}
+                                                    </div>
+                                                </React.Fragment> :
+                                                <React.Fragment key={index}>
+                                                    {showActionColumn(x, rows._id)}
+                                                </React.Fragment>
+                                            )
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        )) : null
+                    }
+                </tbody>
+            </table >
+            {
+                dataTreeTable(column, data).length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+            }
+        </React.Fragment>
+    );
+}
 
 function mapState(state) {
     const { performtasks } = state;
@@ -477,9 +477,9 @@ function mapState(state) {
 function areEqual(prevProps, nextProps) {
     let prevData = prevProps.data.map(o => o.rawData);
     let nextData = nextProps.data.map(o => o.rawData);
-    return _isEqual(prevData,nextData);
+    return _isEqual(prevData, nextData);
 }
 
-const treeTable = React.memo(connect(mapState, null)(withTranslate(TreeTable)),areEqual);
+const treeTable = React.memo(connect(mapState, null)(withTranslate(TreeTable)), areEqual);
 
 export { treeTable as TreeTable }

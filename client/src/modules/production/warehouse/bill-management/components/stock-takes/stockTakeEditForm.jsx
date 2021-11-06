@@ -449,7 +449,7 @@ function StockTakeEditForm(props) {
         return false;
     }
 
-    useEffect(() => {
+    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
         let approver = [];
         let qualityControlStaffs = [];
         let responsibles = [];
@@ -486,7 +486,7 @@ function StockTakeEditForm(props) {
         state.good.description = '';
         state.good.realQuantity = 0;
         state.good.lots = [];
-        return {
+        setState ({
             ...state,
             billId: props.billId,
             code: props.code,
@@ -513,8 +513,8 @@ function StockTakeEditForm(props) {
             errorCustomer: undefined,
             errorUsers: undefined
 
-        }
-    }, [props.billId, props.oldStatus])
+        })
+    }
 
     const save = async () => {
         const { billId, fromStock, code, type, status, oldStatus, approvers,

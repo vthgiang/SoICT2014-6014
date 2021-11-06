@@ -10,10 +10,9 @@ function StockDetailForm(props) {
 
     })
 
-    useEffect(() => {
-        // if (props.stockId !== state.stockId || props.code !== state.code || props.name !== state.name ||
-        //     props.status !== state.status || props.address !== state.address || props.goods !== state.goods ||
-        //     props.managementLocation !== state.managementLocation || props.manageDepartment !== state.manageDepartment || props.description !== state.description) {
+    if (props.stockId !== state.stockId || props.code !== state.code || props.name !== state.name ||
+        props.status !== state.status || props.address !== state.address || props.goods !== state.goods ||
+        props.managementLocation !== state.managementLocation || props.manageDepartment !== state.manageDepartment || props.description !== state.description) {
         setState({
             ...state,
             stockId: props.stockId,
@@ -26,8 +25,7 @@ function StockDetailForm(props) {
             manageDepartment: props.manageDepartment,
             description: props.description,
         })
-        // }
-    }, [props.stockId, props.code, props.name, props.status, props.address, props.goodsManagement, props.managementLocation, props.manageDepartment, props.description])
+    }
 
     const { translate, stocks, department, role } = props;
     const { code, name, managementLocation, status, address, description, manageDepartment, goods, good } = state;
