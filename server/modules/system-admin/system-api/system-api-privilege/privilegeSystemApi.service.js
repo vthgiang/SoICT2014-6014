@@ -133,6 +133,7 @@ const createPrivilegeApi = async (data) => {
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({
                     email: email,
+                    description,
                     apis: systemApis,
                     company: companyId,
                     status: 3,
