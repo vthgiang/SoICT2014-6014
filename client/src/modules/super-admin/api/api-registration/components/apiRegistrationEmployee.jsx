@@ -154,7 +154,7 @@ function ApiRegistrationEmployee(props) {
                         <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
-                    <table id={tableId} className={`table table-hover table-striped table-bordered ${cx('api-registration-table')}`}>
+                    <table id={tableId} className={`table table-hover table-striped table-bordered ${cx('api-registration-employee-table')}`}>
                         <thead>
                             <tr>
                                 <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
