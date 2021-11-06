@@ -53,11 +53,6 @@ function ApiRegistration(props) {
         })
     }
 
-    const handleCopyToken = (apiRegistration) => {
-        let copyText = apiRegistration?.token?.slice();
-        navigator.clipboard.writeText(copyText);
-    }
-
     const handleAcceptApiRegistration = (api) => {
         props.updateStatusPrivilegeApi({
             privilegeApiIds: [api?._id],
@@ -152,6 +147,7 @@ function ApiRegistration(props) {
                                 <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
                                 <th>{translate('task.task_management.col_status')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.endDate')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
                                     {translate('table.action')}
@@ -170,20 +166,32 @@ function ApiRegistration(props) {
                                         <td>{index + 1}</td>
                                         <td>{apiRegistration.email}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
+                                        <td>{apiRegistration.endDate ? apiRegistration.endDate : 'NaN'}</td>
                                         <td style={{ position: "relative" }}>
                                             <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745" }}>
-                                                <i className="material-icons">check_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
-                                                <i className="material-icons">remove_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
-                                                <i className="material-icons">highlight_off</i>
-                                            </a>
+                                            {
+                                                ![2, 3].includes(apiRegistration.status) &&
+                                                <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745" }}>
+                                                    <i className="material-icons">check_circle_outline</i>
+                                                </a>
+                                            }
+
+                                            {
+                                                ![2, 3].includes(apiRegistration.status) &&
+                                                <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                    <i className="material-icons">remove_circle_outline</i>
+                                                </a>
+                                            }
+
+                                            {
+                                                [2, 3].includes(apiRegistration.status) &&
+                                                <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
+                                                    <i className="material-icons">highlight_off</i>
+                                                </a>
+                                            }
                                         </td>
                                     </tr>
                                 )

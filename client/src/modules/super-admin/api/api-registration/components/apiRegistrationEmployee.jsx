@@ -58,11 +58,6 @@ function ApiRegistrationEmployee(props) {
         })
     }
 
-    const handleCopyToken = (apiRegistration) => {
-        let copyText = apiRegistration?.token?.slice();
-        navigator.clipboard.writeText(copyText);
-    }
-
     const handleAcceptApiRegistration = (api) => {
         props.updateStatusPrivilegeApi({
             privilegeApiIds: [api?._id],

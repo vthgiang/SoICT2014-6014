@@ -681,7 +681,8 @@ export default {
 
             privilege_system_api: {
                 table: {
-                    email: "Email"
+                    email: "Email",
+                    endDate: "Expiry date"
                 },
                 placeholder: {
                     input_email: "Type email"

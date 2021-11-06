@@ -12,12 +12,12 @@ class Home extends Component {
 
     render() {
         const { auth } = this.props;
-        if(Object.entries(auth.user).length > 0){
+        if (Object.entries(auth.user).length > 0) {
             if (!auth.user.company)
                 return <SystemHome />
             else
                 return <SuperHome />
-        } else return <Introduction/>
+        } else return <Introduction />
     }
 }
 

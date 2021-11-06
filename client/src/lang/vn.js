@@ -737,7 +737,8 @@ export default {
 
             privilege_system_api: {
                 table: {
-                    email: "Email"
+                    email: "Email",
+                    endDate: "Ngày hết hạn"
                 },
                 placeholder: {
                     input_email: "Nhập email"
