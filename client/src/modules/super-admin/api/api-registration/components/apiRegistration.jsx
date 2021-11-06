@@ -9,8 +9,9 @@ import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 
 import { ApiRegistrationActions } from '../redux/actions'
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
+import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
 
-function ApiRegistration (props) {
+function ApiRegistration(props) {
     const { translate, privilegeApis, company } = props
 
     const tableId = "table-api-registration";
@@ -116,7 +117,7 @@ function ApiRegistration (props) {
 
         }
     }
-    
+
     const handleAddPrivilegeApi = () => {
         window.$("#create-api-registration-modal").modal("show");
     }
@@ -125,10 +126,8 @@ function ApiRegistration (props) {
 
     return (
         <React.Fragment>
-            <CreateApiRegistrationModal
-                role="admin"
-            />
-            
+            <CreateApiRegistrationModal role="admin" />
+
             <div className="box" >
                 <div className="box-body qlcv">
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -160,28 +159,28 @@ function ApiRegistration (props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { listPaginateApiRegistration?.length > 0
-                                && listPaginateApiRegistration.map((apiRegistration, index) => 
+                            {listPaginateApiRegistration?.length > 0
+                                && listPaginateApiRegistration.map((apiRegistration, index) =>
                                     <tr key={apiRegistration._id}>
                                         <td>{index + 1}</td>
                                         <td>{apiRegistration.email}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }}>Copy</button>
+                                            <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745"}}>
+                                            <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745" }}>
                                                 <i className="material-icons">check_circle_outline</i>
                                             </a>
-                                            <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
+                                            <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
                                                 <i className="material-icons">remove_circle_outline</i>
                                             </a>
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585"}}>
+                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
                                                 <i className="material-icons">highlight_off</i>
                                             </a>
                                         </td>
-                                    </tr>    
+                                    </tr>
                                 )
                             }
                         </tbody>
