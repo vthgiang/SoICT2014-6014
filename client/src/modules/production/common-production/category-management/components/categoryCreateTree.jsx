@@ -94,12 +94,12 @@ function CategoryCreateTree(props) {
         });
     }
 
-    useEffect(() => {
+    if (props.categoryParent !== state.categoryParent && props.categoryParent && props.categoryParent.length) {
         setState({
             ...state,
             categoryParent: props.categoryParent,
         })
-    }, [props.categoryParent])
+    }
 
     const { translate, categories } = props;
     const { list } = categories.categoryToTree;

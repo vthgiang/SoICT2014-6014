@@ -4,7 +4,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 /** Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
 export const convertDataToExportData = (translate, currentTasks, fileName) => {
     let data = _cloneDeep(currentTasks);
-    console.log('data', data)
+    //console.log('data', data)
     if (data?.length > 0) {
         data = data.map((item, index) => {
             let responsibleEmployees = "", accountableEmployees = "", responsibleEmployeesaEmail = "", accountableEmployeesEmail = "", consultedEmployees = "", consultedEmployeesEmail = "", informedEmployees = "", informedEmployeesEmail = "";
@@ -74,7 +74,7 @@ export const convertDataToExportData = (translate, currentTasks, fileName) => {
         })
     }
 
-    console.log("VVVdata", data)
+    //console.log("VVVdata", data)
     let exportData = {
         fileName: fileName,
         dataSheets: [

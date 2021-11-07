@@ -20,6 +20,8 @@ exports.searchAssetProfiles = async (req, res) => {
                 typeRegisterForUse: req.query.typeRegisterForUse,
                 assetType: req.query.assetType,
                 purchaseDate: req.query.purchaseDate,
+                purchaseDateStart: req.query.purchaseDateStart,
+                purchaseDateEnd: req.query.purchaseDateEnd,
                 disposalDate: req.query.disposalDate,
                 handoverUnit: req.query.handoverUnit,
                 handoverUser: req.query.handoverUser,

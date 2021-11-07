@@ -197,6 +197,50 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         };
     }
 
+    //Trường hợp chỉ có ngày bắt đầu
+    if(params.purchaseDateStart && !params.purchaseDateEnd){
+        let date = params.purchaseDateStart.split("-");
+        let start = new Date(date[2], date[1] - 1, date[0]);
+        
+        keySearch = {
+            ...keySearch,
+            purchaseDate: {
+                $gt: start,
+            },
+        };
+    }
+
+    //Trường hợp chỉ có ngày kết thúc
+    if(!params.purchaseDateStart && params.purchaseDateEnd){
+        let date = params.purchaseDateEnd.split("-");
+        let end = new Date(date[2], date[1] - 1, date[0]);
+        
+        keySearch = {
+            ...keySearch,
+            purchaseDate: {
+                $lte: end,
+            },
+        };
+    } 
+
+    //
+    if(params.purchaseDateStart && params.purchaseDateEnd){
+        let dateStart = params.purchaseDateStart.split("-");
+        let dateEnd = params.purchaseDateEnd.split("-");
+
+        let start = new Date(dateStart[2], dateStart[1] - 1, dateStart[0]);
+        let end = new Date(dateEnd[2], dateEnd[1] - 1, dateEnd[0]);
+
+        keySearch = {
+            ...keySearch,
+            purchaseDate: {
+                $gt: start,
+                $lte: end,
+            },
+        };
+    } 
+
+
     // Thêm key tìm kiếm tài sản theo ngày thanh lý tài sản
     if (params.disposalDate) {
         let date = params.disposalDate.split("-");
