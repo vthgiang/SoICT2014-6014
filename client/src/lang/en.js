@@ -2440,6 +2440,8 @@ export default {
                 asset_type: "Asset type",
                 asset_group: "Asset group",
                 purchase_date: "Date of purchase",
+                purchase_date_start: "Date of purchase from",
+                purchase_date_end: "Date of purchare to",
                 manager: "Manager",
                 user: "User",
                 organization_unit: "Organizaitonal Unit",
