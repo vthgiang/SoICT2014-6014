@@ -57,6 +57,11 @@ function ApiRegistrationEmployee (props) {
         })
     }
 
+    const handleCopyToken = (apiRegistration) => {
+        let copyText = apiRegistration?.token?.slice();
+        navigator.clipboard.writeText(copyText);
+    }
+
     const handleAcceptApiRegistration = (api) => {
         props.updateStatusPrivilegeApi({
             privilegeApiIds: [api?._id],
@@ -112,9 +117,18 @@ function ApiRegistrationEmployee (props) {
     }
 
     const formatStatus = (status) => {
-        return status
-    }
+        if (status === 0) {
+            return <span style={{ color: '#858585' }}>Vô hiệu hóa</span>
+        } else if (status === 1) {
+            return <span style={{ color: '#F57F0C' }}>Yêu cầu sử dụng</span>
+        } else if (status === 2) {
+            return <span style={{ color: '#E34724' }}>Từ chối</span>
+        } else if (status === 3) {
+            return <span style={{ color: '#28A745' }}>Đang sử dụng</span>
 
+        }
+    }
+    
     const handleAddPrivilegeApi = () => {
         window.$("#create-api-registration-modal").modal("show");
     }
@@ -165,7 +179,7 @@ function ApiRegistrationEmployee (props) {
                                         <td>{apiRegistration.email}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }}>Copy</button>
+                                            <button className="pull-right" style={{ position: "absolute", right: 0 }} onClick={() => handleCopyToken(apiRegistration)}>Copy</button>
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>

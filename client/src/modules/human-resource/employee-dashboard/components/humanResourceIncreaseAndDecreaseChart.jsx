@@ -19,8 +19,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         lineChart: false,
         startDate: date.startDateIncreaseAndDecreaseChart,
         startDateShow: date.startDateIncreaseAndDecreaseChart,
-        endDate: date.endDate,
-        endDateShow: date.endDate,
+        endDate: date.endDateIncreaseAndDecreaseChart,
+        endDateShow: date.endDateIncreaseAndDecreaseChart,
         organizationalUnits: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsSearch: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsName: []
@@ -36,6 +36,11 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             renderChart({ nameData1, nameData2, nameData3, lineChart, data1: data1, data2: data2, data3: data3, ratioX: ratioX });
         }
     }, [employeeDashboardData.humanResourceIncreaseAndDecreaseChartData, lineChart, employeeDashboardData.isLoading]);
+
+    const formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1],partDate[0]].join('-');
+    }
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -59,6 +64,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             ...state,
             startDate: value
         });
+        props.date.handleChangeIncreaseAndDecreaseChartTime(value, state.endDate)
     }
 
     /**
@@ -70,6 +76,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             ...state,
             endDate: value,
         });
+        props.date.handleChangeIncreaseAndDecreaseChartTime(state.startDate, value);
     }
 
     /**
@@ -182,8 +189,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
 
     /** Bắt sự kiện tìm kiếm */
     const handleSunmitSearch = async () => {
-        const { organizationalUnits, startDate, endDate } = state;
-        if (organizationalUnits?.length > 0) {
+        const { startDate, endDate } = state;
+        if (props?.organizationalUnits?.length > 0) {
             await setState({
                 ...state,
                 startDateShow: startDate,
@@ -191,15 +198,9 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                 organizationalUnitsSearch: organizationalUnits,
             });
 
-            let arrStart = startDate.split('-');
-            let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-            let arrEnd = endDate.split('-');
-            let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
             props.getEmployeeDashboardData({
                 searchChart: {
-                    increaseAndDecreaseChart: { organizationalUnits: organizationalUnits, startDate: startDateNew,endDate: endDateNew }
+                    increaseAndDecreaseChart: { organizationalUnits: organizationalUnits, startDate: formatNewDate(startDate),endDate: formatNewDate(endDate) }
                 }
             })
         }
@@ -216,8 +217,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             ...state,
             startDate: date.startDateIncreaseAndDecreaseChart,
             startDateShow: date.startDateIncreaseAndDecreaseChart,
-            endDate: date.endDate,
-            endDateShow: date.endDate,
+            endDate: date.endDateIncreaseAndDecreaseChart,
+            endDateShow: date.endDateIncreaseAndDecreaseChart,
         })
     }, [JSON.stringify(date.month)]);
 

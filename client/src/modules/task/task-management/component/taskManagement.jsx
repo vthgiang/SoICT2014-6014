@@ -74,7 +74,7 @@ function TaskManagement(props) {
     const { tasks, user, translate, project } = props;
     const { currentTaskId, currentPage, currentTab,
         parentTask, status, tableId, selectedData, creatorTime,
-        projectSearch, tags
+        projectSearch, tags, data
     } = state;
 
     function initState() {
@@ -379,7 +379,7 @@ function TaskManagement(props) {
             currentTaskId: id,
             taskName
         })
-        window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+        window.$(`#modelPerformTask${id}`).modal('show')
     }
 
     /**
@@ -503,8 +503,8 @@ function TaskManagement(props) {
 
         if (id && idValid) {
             setState({
-                    ...state,
-                    currentTaskId: id
+                ...state,
+                currentTaskId: id
             })
             window.$(`#modelPerformTask${id}`).modal('show')
         }
@@ -668,7 +668,7 @@ function TaskManagement(props) {
                 for (let n in currentTasks) {
                     data[n] = {
                         ...currentTasks[n],
-                        rawData : currentTasks[n],
+                        rawData: currentTasks[n],
                         name: currentTasks[n].name,
                         description: currentTasks[n].description ? parse(currentTasks[n].description) : null,
                         organization: currentTasks[n].organizationalUnit ? currentTasks[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
@@ -686,13 +686,13 @@ function TaskManagement(props) {
                     }
                     let archived = null;
 
-                    if (currentTasks[n].status ==="finished"||currentTasks[n].status==="delayed"||currentTasks[n].status==="canceled"){
+                    if (currentTasks[n].status === "finished" || currentTasks[n].status === "delayed" || currentTasks[n].status === "canceled") {
                         if (currentTasks[n].isArchived === true) {
                             archived = "restore";
                         }
                         else archived = "store";
                     }
-                    
+
                     if (currentTasks[n].creator && currentTasks[n].creator._id === userId || currentTasks[n].informedEmployees.indexOf(userId) !== -1) {
                         let del = null;
                         if (currentTasks[n].creator._id === userId) {
@@ -839,7 +839,6 @@ function TaskManagement(props) {
     let exportData;
     if (state.currentTasks)
         exportData = convertDataToExportData(translate, state.currentTasks, translate("menu.task_management"));
-
     return (
         <React.Fragment>
             <div className="box">
@@ -853,21 +852,21 @@ function TaskManagement(props) {
                         <div style={{ display: 'flex', marginBottom: 6 }}>
                             {
                                 currentTab !== "informed" &&
-                                    <React.Fragment>
+                                <React.Fragment>
                                     {
                                         checkHasComponent("button-import-task") ?
-                                        <div className="dropdown">
-                                            <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
-                                            <ul className="dropdown-menu pull-right">
-                                                <li><a href="#" title="ImportForm" onClick={() => { handleAddTask("") }}>{translate('task_template.add')}</a></li>
-                                                <li><a href="#" title="Import file excell" onClick={handleOpenModalImport}>{translate('task_template.import')}</a></li>
-                                            </ul>
-                                        </div>
+                                            <div className="dropdown">
+                                                <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                                <ul className="dropdown-menu pull-right">
+                                                    <li><a href="#" title="ImportForm" onClick={() => { handleAddTask("") }}>{translate('task_template.add')}</a></li>
+                                                    <li><a href="#" title="Import file excell" onClick={handleOpenModalImport}>{translate('task_template.import')}</a></li>
+                                                </ul>
+                                            </div>
                                             : <button type="button" onClick={() => { handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                                     }
-                                    </React.Fragment>  
+                                </React.Fragment>
                             }
-                            
+
 
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
 
@@ -1078,7 +1077,7 @@ function TaskManagement(props) {
                                     allowSelectAll={true}
                                     behaviour="show-children"
                                     column={column}
-                                    data={state?.data ? state.data : []}
+                                    data={data ? data : []}
                                     onSetNumberOfRowsPerPage={setLimit}
                                     onSelectedRowsChange={onSelectedRowsChange}
                                     viewWhenClickName={true}

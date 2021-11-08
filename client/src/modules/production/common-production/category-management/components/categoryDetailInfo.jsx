@@ -11,7 +11,7 @@ function CategoryDetailForm(props) {
 
     })
 
-    useEffect(() => {
+    if(props.categoryId !== state.categoryId){
         setState({
             ...state,
             categoryId: props.categoryId,
@@ -23,7 +23,7 @@ function CategoryDetailForm(props) {
             errorOnCode: undefined,
             errorOnName: undefined
         })
-    }, [props.categoryId])
+    }
 
     const { translate, categories, goods } = this.props;
     const { code, name, type, description } = this.state;

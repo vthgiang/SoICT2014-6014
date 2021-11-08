@@ -26,13 +26,13 @@ function QuantityLotGoodReceipt(props) {
         oldQuantity: 0,
     })
 
-    useEffect(() => {
+    if (props.good !== state.good) {
         setState({
             ...state,
             good: props.good,
             lots: props.initialData,
         })
-    }, [props.good])
+    }
 
     const handleAddLotInfo = async () => {
         setState({

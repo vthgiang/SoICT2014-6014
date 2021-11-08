@@ -18,10 +18,10 @@ const AnnualLeaveTrendsChart = (props) => {
 
     const [state, setState] = useState({
         countAnnuaLeave: true,
-        startDate: date.startDate,
-        startDateShow: date.startDate,
-        endDate: date.endDate,
-        endDateShow: date.endDate,
+        startDate: date.startDateAnnualLeaveTrendsChart,
+        startDateShow: date.startDateAnnualLeaveTrendsChart,
+        endDate: date.endDateAnnualLeaveTrendsChart,
+        endDateShow: date.endDateAnnualLeaveTrendsChart,
         organizationalUnits: idUnits ? idUnits : [],
         data1: employeeDashboardData.annualLeaveTrendChartData.data1 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1.data } : {ratioX: [], data: []},
         data2: employeeDashboardData.annualLeaveTrendChartData.data2 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2.data } : {ratioX: [], data: []},
@@ -29,6 +29,11 @@ const AnnualLeaveTrendsChart = (props) => {
     const { countAnnuaLeave, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow } = state;
 
     const barChart = useRef(null);
+
+    const formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1],partDate[0]].join('-');
+    }
 
     if ( props.nameChart !== state.nameChart
         || props.nameData1 !== state.nameData1
@@ -87,6 +92,7 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             startDate: value
         })
+        props.date.handleChangeAnnualLeaveTrendsChartTime(value, endDate)
     }
 
     /**
@@ -98,6 +104,7 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             endDate: value,
         })
+        props.date.handleChangeAnnualLeaveTrendsChartTime(startDate, value)
     }
 
     /**
@@ -157,16 +164,11 @@ const AnnualLeaveTrendsChart = (props) => {
             startDateShow: startDate,
             endDateShow: endDate,
         })
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
+       
         if (organizationalUnits?.length > 0) {
             props.getEmployeeDashboardData({
                 searchChart: {
-                    annualLeaveTrendChart: { organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew }
+                    annualLeaveTrendChart: { organizationalUnits: props.organizationalUnits, startDate: formatNewDate(startDate), endDate: formatNewDate(endDate) }
                 }
             })
         }
@@ -190,10 +192,10 @@ const AnnualLeaveTrendsChart = (props) => {
     useEffect(() => {
         setState({
             ...state,
-            startDate: date.startDate,
-            startDateShow: date.startDate,
-            endDate: date.endDate,
-            endDateShow: date.endDate,
+            startDate: date.startDateAnnualLeaveTrendsChart,
+            startDateShow: date.startDateAnnualLeaveTrendsChart,
+            endDate: date.endDateAnnualLeaveTrendsChart,
+            endDateShow: date.endDateAnnualLeaveTrendsChart,
         })
     }, [date.month]);
     return (

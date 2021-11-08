@@ -8,12 +8,13 @@ import { TrendOfOvertime, AnnualLeaveTrendsChart, AnnualLeaveChartAndTable } fro
 
 const TabAnualLeave = (props) => {
 
-    const { childOrganizationalUnit, defaultUnit, organizationalUnits, idUnits, date } = props
+    const { childOrganizationalUnit, defaultUnit, organizationalUnits, idUnits, date} = props
 
     return (
         <React.Fragment>
             <LazyLoadComponent>
                 <AnnualLeaveTrendsChart
+                    organizationalUnits={organizationalUnits}
                     defaultUnit={defaultUnit}
                     childOrganizationalUnit={childOrganizationalUnit}
                     idUnits={idUnits.map(x => x.id)}
@@ -33,10 +34,10 @@ const TabAnualLeave = (props) => {
             <LazyLoadComponent>
                 <TrendOfOvertime
                     defaultUnit={defaultUnit}
-                    childOrganizationalUnit={childOrganizationalUnit}
+                    childOrganizationalUnit={childOrganizationalUnit?.filter(item => organizationalUnits?.includes(item?.id))}
                     idUnits={idUnits.map(x => x.id)}
                     unitName={idUnits.map(x => x.name)}
-                    organizationalUnits={[childOrganizationalUnit[0].id]}
+                    organizationalUnits={organizationalUnits}
                     nameData1='Số giờ tăng ca'
                     nameChart={'Xu hướng tăng ca'}
                     date={date} />

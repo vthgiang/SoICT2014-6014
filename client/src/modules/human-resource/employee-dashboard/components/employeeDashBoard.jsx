@@ -41,7 +41,7 @@ let INFO_SEARCH = {
 
 const DashBoardEmployees = (props) => {
     const {
-        translate,timesheets, employeeDashboardData,
+        translate, employeeDashboardData,
         childOrganizationalUnit, 
         getEmployeeDashboardData
     } = props; 
@@ -53,23 +53,21 @@ const DashBoardEmployees = (props) => {
         arrayUnitShow: childOrganizationalUnit.map(x => x.id),
         startDate: formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
         startDateIncreaseAndDecreaseChart: formatDate((new Date()).setMonth(new Date().getMonth() - 3), true),
+        startDateTrendOfOvertimeChart: formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+        startDateAnnualLeaveTrendsChart: formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+        endDateIncreaseAndDecreaseChart: formatDate(Date.now(), true),
+        endDateTrendOfOvertimeChart: formatDate(Date.now(), true),
+        endDateAnnualLeaveTrendsChart: formatDate(Date.now(), true),
         endDate: formatDate(Date.now(), true)
     });
-    const { monthShow, month, organizationalUnits, arrayUnitShow, startDate, endDate, startDateIncreaseAndDecreaseChart } = state;
+    const { monthShow, month, organizationalUnits, arrayUnitShow, startDateIncreaseAndDecreaseChart, startDateAnnualLeaveTrendsChart, startDateTrendOfOvertimeChart, endDateIncreaseAndDecreaseChart,endDateTrendOfOvertimeChart, endDateAnnualLeaveTrendsChart } = state;
+
+    const formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1],partDate[0]].join('-');
+    }
 
     useEffect(() => {
-        let partMonth = month.split('-');
-        let newMonth = [partMonth[1], partMonth[0]].join('-');
-
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        let arrIncreaseAndDecreaseChart = startDateIncreaseAndDecreaseChart.split('-');
-        let startDateIncreaseAndDecreaseChartNew = [arrIncreaseAndDecreaseChart[1], arrIncreaseAndDecreaseChart[0]].join('-');
-
         INFO_SEARCH = {
             organizationalUnits,
         }
@@ -77,10 +75,13 @@ const DashBoardEmployees = (props) => {
         getEmployeeDashboardData({
             defaultParams: {
                 organizationalUnits: organizationalUnits,
-                month: newMonth, 
-                startDate: startDateNew,
-                endDate: endDateNew,
-                startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew
+                month: formatNewDate(month), 
+                startDateIncreaseAndDecreaseChart: formatNewDate(startDateIncreaseAndDecreaseChart),
+                endDateIncreaseAndDecreaseChart: formatNewDate(state.endDateIncreaseAndDecreaseChart),
+                startDateAnnualLeaveTrendsChart: formatNewDate(state.startDateAnnualLeaveTrendsChart),
+                endDateAnnualLeaveTrendsChart: formatNewDate(state.endDateAnnualLeaveTrendsChart),
+                startDateTrendOfOvertimeChart: formatNewDate(state.startDateTrendOfOvertimeChart),
+                endDateTrendOfOvertimeChart: formatNewDate(state.endDateTrendOfOvertimeChart)
             }
         });
     }, []);
@@ -108,19 +109,8 @@ const DashBoardEmployees = (props) => {
         const { organizationalUnits } = INFO_SEARCH;
 
         let { month } = state;
-        let partMonth = month.split('-');
-        let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        let arrIncreaseAndDecreaseChart = startDateIncreaseAndDecreaseChart.split('-');
-        let startDateIncreaseAndDecreaseChartNew = [arrIncreaseAndDecreaseChart[1], arrIncreaseAndDecreaseChart[0]].join('-');
-
-        if (organizationalUnits?.length > 0 && (month !== formatDate(Date.now(), true))) {
+        if (organizationalUnits?.length > 0) {
             setState(state => ({
                 ...state,
                 organizationalUnits: organizationalUnits,
@@ -130,7 +120,16 @@ const DashBoardEmployees = (props) => {
 
             getEmployeeDashboardData({
                 searchChart: {
-                    employeeDashboardChart: { month: newMonth, organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew }
+                    employeeDashboardChart: { 
+                        month: formatNewDate(month),
+                        organizationalUnits: organizationalUnits, 
+                        startDateIncreaseAndDecreaseChart: formatNewDate(startDateIncreaseAndDecreaseChart),
+                        endDateIncreaseAndDecreaseChart: formatNewDate(state.endDateIncreaseAndDecreaseChart),
+                        startDateAnnualLeaveTrendsChart: formatNewDate(state.startDateAnnualLeaveTrendsChart),
+                        endDateAnnualLeaveTrendsChart: formatNewDate(state.endDateAnnualLeaveTrendsChart),
+                        startDateTrendOfOvertimeChart: formatNewDate(state.startDateTrendOfOvertimeChart),
+                        endDateTrendOfOvertimeChart: formatNewDate(state.endDateTrendOfOvertimeChart)
+                    }
                 } 
             });
         }
@@ -152,6 +151,29 @@ const DashBoardEmployees = (props) => {
         }
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
+    const handleChangeIncreaseAndDecreaseChartTime = (startDateIncreaseAndDecreaseChart, endDateIncreaseAndDecreaseChart) => {
+        setState({
+            ...state,
+            startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChart,
+            endDateIncreaseAndDecreaseChart: endDateIncreaseAndDecreaseChart
+        })
+    }
+
+    const handleChangeAnnualLeaveTrendsChartTime = ( startDateAnnualLeaveTrendsChart, endDateAnnualLeaveTrendsChart) => {
+        setState({
+            ...state,
+            startDateAnnualLeaveTrendsChart: startDateAnnualLeaveTrendsChart,
+            endDateAnnualLeaveTrendsChart: endDateAnnualLeaveTrendsChart
+        })
+    }
+
+    const handleChangeTrendOfOvertimeChartTime = (startDateTrendOfOvertimeChart, endDateTrendOfOvertimeChart) => {
+        setState({
+            ...state,
+            startDateTrendOfOvertimeChart: startDateTrendOfOvertimeChart,
+            endDateTrendOfOvertimeChart: endDateTrendOfOvertimeChart
+        })
+    }
 
     let listAllEmployees = employeeDashboardData.listEmployeesOfOrganizationalUnits;
 
@@ -164,6 +186,8 @@ const DashBoardEmployees = (props) => {
     });
     // Tab lương thưởng
     const tabSalary = useMemo(() => <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />, [organizationalUnits, monthShow]);
+
+    const dateProps = {startDateIncreaseAndDecreaseChart, startDateAnnualLeaveTrendsChart, startDateTrendOfOvertimeChart, endDateIncreaseAndDecreaseChart, endDateTrendOfOvertimeChart, endDateAnnualLeaveTrendsChart, month, handleChangeIncreaseAndDecreaseChartTime, handleChangeAnnualLeaveTrendsChartTime, handleChangeTrendOfOvertimeChartTime}
     return (
         <React.Fragment>
             <div className="qlcv">
@@ -257,7 +281,7 @@ const DashBoardEmployees = (props) => {
                                     defaultUnit={true} 
                                     organizationalUnits={organizationalUnits} 
                                     monthShow={monthShow} 
-                                    date={{startDate, endDate, startDateIncreaseAndDecreaseChart, month}}/>
+                                    date={dateProps}/>
                             </LazyLoadComponent>
                         </div>
 
@@ -265,10 +289,11 @@ const DashBoardEmployees = (props) => {
                         <div className="tab-pane" id="annualLeave">
                             <LazyLoadComponent>
                                 <TabAnualLeave
+                                    organizationalUnits={organizationalUnits}
                                     childOrganizationalUnit={childOrganizationalUnit}
                                     idUnits={props?.childOrganizationalUnit?.length && props.childOrganizationalUnit.filter(item => arrayUnitShow.includes(item?.id))}
                                     defaultUnit={true}
-                                    date={{startDate, endDate, startDateIncreaseAndDecreaseChart, month}}/>
+                                    date={dateProps}/>
                             </LazyLoadComponent>
                         </div>
 
