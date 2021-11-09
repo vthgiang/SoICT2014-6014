@@ -10,10 +10,6 @@ import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 import { ApiRegistrationActions } from '../redux/actions'
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
 import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
-import classNames from 'classnames/bind';
-import stylesSCSS from '../styles/apiRegistration.module.scss';
-
-const cx = classNames.bind(stylesSCSS);
 
 function ApiRegistration(props) {
     const { translate, privilegeApis, company } = props
@@ -145,10 +141,16 @@ function ApiRegistration(props) {
                         <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
-                    <table id={tableId} className={`table table-hover table-striped table-bordered ${cx('api-registration-table')}`}>
-                        <thead>
+                    <table id={tableId} className='table table-hover table-striped table-bordered'>
+                        <thead style={{
+                            tableLayout: 'fixed'
+                        }}>
                             <tr>
-                                <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                                <th style={{
+                                    textAlign: 'center',
+                                }}>
+                                    {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}
+                                </th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.description')}</th>
                                 <th>{translate('task.task_management.col_status')}</th>
@@ -170,7 +172,13 @@ function ApiRegistration(props) {
                                     <tr key={apiRegistration._id}>
                                         <td>{index + 1}</td>
                                         <td>{apiRegistration.email}</td>
-                                        <td>
+                                        <td style={{
+                                            textAlign: 'justify',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            maxWidth: '20vw'
+                                        }}>
                                             {apiRegistration.description ? apiRegistration.description : 'NaN'}
                                         </td>
                                         <td>{formatStatus(apiRegistration.status)}</td>

@@ -12,10 +12,7 @@ import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-
 
 import { getStorage } from '../../../../../config';
 import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
-import classNames from 'classnames/bind';
-import stylesSCSS from '../styles/apiRegistration.module.scss';
 
-const cx = classNames.bind(stylesSCSS);
 
 function ApiRegistrationEmployee(props) {
     const { translate, privilegeApis, company } = props
@@ -154,7 +151,7 @@ function ApiRegistrationEmployee(props) {
                         <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
-                    <table id={tableId} className={`table table-hover table-striped table-bordered ${cx('api-registration-employee-table')}`}>
+                    <table id={tableId} className='table table-hover table-striped table-bordered'>
                         <thead>
                             <tr>
                                 <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
