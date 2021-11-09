@@ -156,7 +156,16 @@ class MainDashboardUnit extends Component {
 
             this.props.getEmployeeDashboardData({
                 searchChart: {
-                    employeeDashboardChart: { month: newMonth, organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew }
+                    employeeDashboardChart: {
+                        month: newMonth,
+                        organizationalUnits: organizationalUnits,
+                        startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew,
+                        endDateIncreaseAndDecreaseChart: endDateNew,
+                        startDateAnnualLeaveTrendsChart: startDateNew,
+                        endDateAnnualLeaveTrendsChart: endDateNew,
+                        startDateTrendOfOvertimeChart: startDateNew,
+                        endDateTrendOfOvertimeChart: endDateNew
+                    }
                 }
             });
         }
@@ -229,11 +238,14 @@ class MainDashboardUnit extends Component {
         this.props.getEmployeeDashboardData({
 
             defaultParams: {
-                organizationalUnits: organizationalUnits,
                 month: newMonth,
-                startDate: startDateNew,
-                endDate: endDateNew,
-                startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew
+                organizationalUnits: organizationalUnits,
+                startDateIncreaseAndDecreaseChart: startDateIncreaseAndDecreaseChartNew,
+                endDateIncreaseAndDecreaseChart: endDateNew,
+                startDateAnnualLeaveTrendsChart: startDateNew,
+                endDateAnnualLeaveTrendsChart: endDateNew,
+                startDateTrendOfOvertimeChart: startDateNew,
+                endDateTrendOfOvertimeChart: endDateNew
             }
         });
     }
@@ -266,7 +278,7 @@ class MainDashboardUnit extends Component {
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-        console.log(listAllEmployees);    
+        console.log(listAllEmployees);
         let listEmployee = user.employees;
 
         return (
