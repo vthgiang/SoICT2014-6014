@@ -144,7 +144,7 @@ function ModalImportLinkPrivilege(props) {
 
                 role.list?.length && role.list.forEach((y, index) => {
                     // Kiểm tra nếu cột của role đánh x thì concat linkRole
-                    if (x[y.name] === "x") {
+                    if (x[y.name] != null && (x[y.name].trim().toLowerCase() === "x" || x[y.name].trim().length > 0)) {
                         xLinkRolesConcatenate[index] = y.name
                     }
                 });

@@ -76,7 +76,7 @@ class ShowImportData extends Component {
                             {rowChange.length !== 0 && (
                                 <React.Fragment>
                                     <br />
-                                    <span style={{ fontWeight: "bold", color: "green" }}>Các dòng có chỉnh sửa hợp lệ: {rowChange.join(', ')}</span>
+                                    <span style={{ fontWeight: "bold", color: "green" }}>Các dòng có chỉnh sửa: {rowChange.join(', ')}</span>
                                 </React.Fragment>
                             )}
                             <div id={`croll-table-import-${id}`}>
