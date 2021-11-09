@@ -14,9 +14,9 @@ function ModalImportLinkPrivilege(props) {
     })
 
 
-    const { translate, role, link, user } = props;
+    const { translate, role, link } = props;
     const { limit, page, valueImport, } = state;
-    let { valueShow, rowError } = state;
+    let { valueShow, rowError, rowChange } = state;
 
 
 
@@ -129,6 +129,7 @@ function ModalImportLinkPrivilege(props) {
 
     const handleImportExcel = (value) => {
         let rowError = [];
+        let rowChange = [];
         let valueShow = [], valueImport = [];
 
         if (value?.length) {
@@ -168,7 +169,9 @@ function ModalImportLinkPrivilege(props) {
                     rowError = [...rowError, index + 1];
                     x = { ...x, error: true };
                 }
-
+                // else {
+                //     x = { ...x, error: false };
+                // }
                 if (x.linkUrl === null) {
                     errorAlert = [...errorAlert, 'Tên đường link của trang không được để trống'];
                 }
@@ -184,6 +187,12 @@ function ModalImportLinkPrivilege(props) {
                 if (linkRoles.length > 0 && !validRole) {
                     errorAlert = [...errorAlert, 'Tên role được truy cập trang không hợp lệ'];
                 }
+                if (!x.error && !link.list.some(link => link._id === (linkImport.length > 0 ? linkImport[0]._id : "") &&
+                    link.description === linkDescription &&
+                    isEqualArray(link.roles.map(role => role && role.roleId ? role.roleId._id : ""), linkRoles))) {
+                    rowChange = [...rowChange, index + 1];
+                    x = { ...x, change: true };
+                }
 
                 // dữ liệu nguyên thủy như trong file import để show ra
                 valueShow = [
@@ -194,7 +203,8 @@ function ModalImportLinkPrivilege(props) {
                         linkRoles: x.linkRoles,
                         linkUrl: x.linkUrl,
                         error: x.error,
-                        errorAlert: errorAlert
+                        errorAlert: errorAlert,
+                        change: x.change
                     }
                 ]
 
@@ -225,7 +235,8 @@ function ModalImportLinkPrivilege(props) {
             ...state,
             valueImport,
             valueShow,
-            rowError
+            rowError,
+            rowChange
         })
     }
 
@@ -411,8 +422,13 @@ function ModalImportLinkPrivilege(props) {
                     tables: [
                         {
                             rowHeader: 1,
+                            note: "Lưu ý: Không sửa tên các cột",
                             columns: allRoleColumn,
-                            data: listLinkConvert
+                            data: listLinkConvert,
+                            moreInform: [{
+                                title: "Hướng dẫn:",
+                                value: ["Điền x vào ô tại cột Tên phân quyền được phép truy cập đến đường link ở hàng tương ứng"],
+                            }],
                         }
                     ],
                 },
@@ -474,6 +490,7 @@ function ModalImportLinkPrivilege(props) {
                     configData={configShow}
                     importData={valueShow}
                     rowError={rowError}
+                    rowChange={rowChange}
                     scrollTable={true}
                     checkFileImport={true}
                     limit={limit}
@@ -485,8 +502,8 @@ function ModalImportLinkPrivilege(props) {
     )
 }
 const mapStateToProps = (state) => {
-    const { role, link, user } = state;
-    return { role, link, user };
+    const { role, link } = state;
+    return { role, link };
 };
 
 const mapDispatchToProps = {
