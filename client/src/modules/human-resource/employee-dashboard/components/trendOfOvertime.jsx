@@ -15,14 +15,14 @@ import Swal from 'sweetalert2';
 
 const TrendOfOvertime = (props) => {
     
-    const { translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData, date } = props;
+    const { translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData, search_data_props } = props;
 
     const [state, setState] = useState({
         lineChart: false,
-        startDate: date.startDateTrendOfOvertimeChart,
-        startDateShow: date.startDateTrendOfOvertimeChart,
-        endDate: date.endDateTrendOfOvertimeChart,
-        endDateShow: date.endDateTrendOfOvertimeChart,
+        startDate: search_data_props.searchData.current.startDateTrendOfOvertimeChart,
+        startDateShow: search_data_props.searchData.current.startDateTrendOfOvertimeChart,
+        endDate: search_data_props.searchData.current.endDateTrendOfOvertimeChart,
+        endDateShow: search_data_props.searchData.current.endDateTrendOfOvertimeChart,
         organizationalUnitsSearch: props.defaultUnit ? props.organizationalUnits : [],
         organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
         trendOfOvertimeChartData: employeeDashboardData.trendOfOvertimeChartData?.data1 ? {ratioX: employeeDashboardData.trendOfOvertimeChartData.ratioX, data1: employeeDashboardData.trendOfOvertimeChartData.data1} : {ratioX: [], data1: []},
@@ -89,7 +89,7 @@ const TrendOfOvertime = (props) => {
             ...state,
             startDate: value
         })
-        props.date.handleChangeTrendOfOvertimeChartTime(value, endDate)
+        search_data_props.handleChangeSearchData('startDateTrendOfOvertimeChart', value)
     }
 
     /**
@@ -101,7 +101,7 @@ const TrendOfOvertime = (props) => {
             ...state,
             endDate: value,
         })
-        props.date.handleChangeTrendOfOvertimeChartTime(startDate, endDate)
+        search_data_props.handleChangeSearchData('endDateTrendOfOvertimeChart', value)
     }
 
     /**
@@ -189,15 +189,6 @@ const TrendOfOvertime = (props) => {
         })
     }
 
-    useEffect(() => {
-        setState({
-            ...state,
-            startDate: date.startDateTrendOfOvertimeChart,
-            startDateShow: date.startDateTrendOfOvertimeChart,
-            endDate: date.endDateTrendOfOvertimeChart,
-            endDateShow: date.endDateTrendOfOvertimeChart,
-        })
-    }, [JSON.stringify(date.month)]);
     return (
         <React.Fragment>
             <div className="box box-solid">

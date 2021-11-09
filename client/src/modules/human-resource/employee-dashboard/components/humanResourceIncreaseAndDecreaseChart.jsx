@@ -12,15 +12,15 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
-    const { employeesManager, translate, employeeDashboardData, date, organizationalUnits } = props;
+    const { employeesManager, translate, employeeDashboardData, organizationalUnits, search_data_props } = props;
     const { childOrganizationalUnit } = props;
-
+    console.log(search_data_props)
     const [state, setState] = useState({
         lineChart: false,
-        startDate: date.startDateIncreaseAndDecreaseChart,
-        startDateShow: date.startDateIncreaseAndDecreaseChart,
-        endDate: date.endDateIncreaseAndDecreaseChart,
-        endDateShow: date.endDateIncreaseAndDecreaseChart,
+        startDate: search_data_props.searchData.current.startDateIncreaseAndDecreaseChart,
+        startDateShow: search_data_props.searchData.current.startDateIncreaseAndDecreaseChart,
+        endDate: search_data_props.searchData.current.endDateIncreaseAndDecreaseChart,
+        endDateShow: search_data_props.searchData.current.endDateIncreaseAndDecreaseChart,
         organizationalUnits: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsSearch: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsName: []
@@ -64,7 +64,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             ...state,
             startDate: value
         });
-        props.date.handleChangeIncreaseAndDecreaseChartTime(value, state.endDate)
+        search_data_props.handleChangeSearchData('startDateIncreaseAndDecreaseChart', value)
     }
 
     /**
@@ -76,7 +76,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             ...state,
             endDate: value,
         });
-        props.date.handleChangeIncreaseAndDecreaseChartTime(state.startDate, value);
+        search_data_props.handleChangeSearchData('endDateIncreaseAndDecreaseChart', value)
     }
 
     /**
@@ -212,15 +212,6 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
-    useEffect(() => {
-        setState({
-            ...state,
-            startDate: date.startDateIncreaseAndDecreaseChart,
-            startDateShow: date.startDateIncreaseAndDecreaseChart,
-            endDate: date.endDateIncreaseAndDecreaseChart,
-            endDateShow: date.endDateIncreaseAndDecreaseChart,
-        })
-    }, [JSON.stringify(date.month)]);
 
     return (
         <div className="box box-solid" >
