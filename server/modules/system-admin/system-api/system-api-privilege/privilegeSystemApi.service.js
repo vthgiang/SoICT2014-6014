@@ -133,6 +133,7 @@ const createPrivilegeApi = async (data) => {
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({
                     email: email,
+                    description,
                     apis: systemApis,
                     company: companyId,
                     status: 3,
@@ -197,7 +198,7 @@ const updateStatusPrivilegeApi = async (portal, data) => {
 
     if (Number(status) === 0 || Number(status) === 2) {
         await PrivilegeApi(connect(DB_CONNECTION, portal))
-            .update(
+            .updateOne(
                 { _id: { $in: privilegeApiIds.map(item => mongoose.Types.ObjectId(item)) } },
                 {
                     status: status
@@ -233,10 +234,8 @@ const updateStatusPrivilegeApi = async (portal, data) => {
                 }
             );
 
-            console.log(888)
-
             await PrivilegeApi(connect(DB_CONNECTION, portal))
-                .update(
+                .updateOne(
                     { _id: mongoose.Types.ObjectId(privilegeApiIds[i]) },
                     {
                         status: status,

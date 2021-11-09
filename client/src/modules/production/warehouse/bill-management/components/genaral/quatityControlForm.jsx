@@ -25,7 +25,7 @@ function QualityControlForm(props) {
         });
     }
 
-    useEffect(() => {
+    if (props.billId !== state.billId) {
         setState({
             ...state,
             billId: props.billId,
@@ -33,7 +33,7 @@ function QualityControlForm(props) {
             status: props.status,
             content: props.content
         })
-    }, [props.billId])
+    }
 
     const save = () => {
         const userId = localStorage.getItem("userId");

@@ -81,7 +81,7 @@ function CategoryEditForm(props) {
         }
     }
 
-    useEffect(() => {
+    if(props.categoryId !== state.categoryId){
         setState({
             ...state,
             categoryId: props.categoryId,
@@ -93,7 +93,7 @@ function CategoryEditForm(props) {
             errorOnCode: undefined,
             errorOnName: undefined
         })
-    }, [props.categoryId])
+    }
 
     const { translate, categories } = props;
     const { errorOnName, errorOnCode, id, code, name, type, description } = state;

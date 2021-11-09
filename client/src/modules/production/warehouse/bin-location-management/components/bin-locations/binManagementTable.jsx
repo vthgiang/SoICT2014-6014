@@ -173,7 +173,7 @@ function BinManagementTable(props) {
                         disabled={binParent.length > 1 ? true : false}>{translate('manage_warehouse.bin_location_management.add')}</button>
                     <ul className="dropdown-menu pull-right">
                         <li><a href="#modal-create-bin-location" title="Add BinLocation" onClick={(event) => { handleAddBinLocation(event) }}>{translate('manage_warehouse.bin_location_management.add')}</a></li>
-                        <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { handImportFile(event) }}>ImportFile</a></li>
+                        {/* <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { handImportFile(event) }}>ImportFile</a></li> */}
                     </ul>
                 </div>
             </div>
