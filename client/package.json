@@ -80,7 +80,7 @@
     "sortablejs": "^1.10.2",
     "sweetalert2": "^9.15.2",
     "use-deep-compare-effect": "^1.6.1",
-    "xlsx": "^0.16.3"
+    "xlsx": "^0.17.3"
   },
   "scripts": {
     "start": "env-cmd react-scripts start",
@@ -106,5 +106,6 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {}
 }
