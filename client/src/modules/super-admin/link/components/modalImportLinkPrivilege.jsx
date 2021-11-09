@@ -280,75 +280,78 @@ function ModalImportLinkPrivilege(props) {
         })
 
     }
-    const templateImport = (translate, listRole, listLink) => {
-        const copyListRole = cloneDeep(listRole);
-        const copyListLink = cloneDeep(listLink);
 
-        let listRolesConvert = [], listLinkConvert = [];
+    // Template file import theo dạng liệt kê role
+    // const templateImport = (translate, listRole, listLink) => {
+    //     const copyListRole = cloneDeep(listRole);
+    //     const copyListLink = cloneDeep(listLink);
 
-        copyListRole?.length && copyListRole.forEach((x, index) => {
-            listRolesConvert = [...listRolesConvert, {
-                STT: index + 1,
-                roleName: x.name,
-            }];
-            // console.log(x)
-        });
+    //     let listRolesConvert = [], listLinkConvert = [];
 
-        copyListLink?.length && copyListLink.forEach((x, index) => {
-            listLinkConvert = [...listLinkConvert, {
-                STT: index + 1,
-                linkUrl: x.url,
-                linkCategory: x.category,
-                linkDescription: x.description,
-                linkRoles: x.roles.map(role => role && role.roleId ? role.roleId.name : "").join(", "),
-            }];
-            // console.log(x.roles.map(role => role && role.roleId ? role.roleId._id : ""))
-        })
+    //     copyListRole?.length && copyListRole.forEach((x, index) => {
+    //         listRolesConvert = [...listRolesConvert, {
+    //             STT: index + 1,
+    //             roleName: x.name,
+    //         }];
+    //         // console.log(x)
+    //     });
 
-        let templateImport = {
-            fileName: "Mẫu import phân quyền trang",
-            dataSheets: [
-                {
-                    sheetName: "Thông tin phân quyền trang",
-                    sheetTitle: "Mẫu import thông tin phân quyền trang",
-                    tables: [
-                        {
-                            rowHeader: 1,
-                            columns: [
-                                { key: "STT", value: translate('human_resource.stt'), width: 7 },
-                                { key: "linkUrl", value: translate('manage_link.url'), width: 30 },
-                                { key: "linkCategory", value: translate('manage_link.category'), width: 25 },
-                                { key: "linkDescription", value: translate('manage_link.description'), width: 45 },
-                                { key: "linkRoles", value: translate('manage_link.roles'), width: 70 },
-                            ],
-                            data: listLinkConvert
-                        }
-                    ],
-                },
-                {
-                    sheetName: "Danh sách phân quyền",
-                    sheetTitle: "Danh sách phân quyền hợp lệ được sử dụng trong import phân quyền trang",
-                    tables: [
-                        {
-                            columns: [{
-                                key: "STT",
-                                value: translate('human_resource.stt'),
-                                width: 7
-                            }, {
-                                key: "roleName",
-                                value: translate('manage_role.name'),
-                                width: 40
-                            }],
-                            data: listRolesConvert
-                        }
-                    ],
-                }
-            ]
-        }
+    //     copyListLink?.length && copyListLink.forEach((x, index) => {
+    //         listLinkConvert = [...listLinkConvert, {
+    //             STT: index + 1,
+    //             linkUrl: x.url,
+    //             linkCategory: x.category,
+    //             linkDescription: x.description,
+    //             linkRoles: x.roles.map(role => role && role.roleId ? role.roleId.name : "").join(", "),
+    //         }];
+    //         // console.log(x.roles.map(role => role && role.roleId ? role.roleId._id : ""))
+    //     })
 
-        return templateImport;
-    }
+    //     let templateImport = {
+    //         fileName: "Mẫu import phân quyền trang",
+    //         dataSheets: [
+    //             {
+    //                 sheetName: "Thông tin phân quyền trang",
+    //                 sheetTitle: "Mẫu import thông tin phân quyền trang",
+    //                 tables: [
+    //                     {
+    //                         rowHeader: 1,
+    //                         columns: [
+    //                             { key: "STT", value: translate('human_resource.stt'), width: 7 },
+    //                             { key: "linkUrl", value: translate('manage_link.url'), width: 30 },
+    //                             { key: "linkCategory", value: translate('manage_link.category'), width: 25 },
+    //                             { key: "linkDescription", value: translate('manage_link.description'), width: 45 },
+    //                             { key: "linkRoles", value: translate('manage_link.roles'), width: 70 },
+    //                         ],
+    //                         data: listLinkConvert
+    //                     }
+    //                 ],
+    //             },
+    //             {
+    //                 sheetName: "Danh sách phân quyền",
+    //                 sheetTitle: "Danh sách phân quyền hợp lệ được sử dụng trong import phân quyền trang",
+    //                 tables: [
+    //                     {
+    //                         columns: [{
+    //                             key: "STT",
+    //                             value: translate('human_resource.stt'),
+    //                             width: 7
+    //                         }, {
+    //                             key: "roleName",
+    //                             value: translate('manage_role.name'),
+    //                             width: 40
+    //                         }],
+    //                         data: listRolesConvert
+    //                     }
+    //                 ],
+    //             }
+    //         ]
+    //     }
 
+    //     return templateImport;
+    // }
+
+    // // Template file import theo dạng tích x vào cột tên role tương ứng
     const templateImportCheckBox = (translate, listRole, listLink) => {
         const copyListRole = cloneDeep(listRole);
         const copyListLink = cloneDeep(listLink);
@@ -359,8 +362,7 @@ function ModalImportLinkPrivilege(props) {
             { key: "STT", value: translate('human_resource.stt'), width: 7 },
             { key: "linkUrl", value: translate('manage_link.url'), width: 30 },
             { key: "linkCategory", value: translate('manage_link.category'), width: 25 },
-            { key: "linkDescription", value: translate('manage_link.description'), width: 45 },
-            // { key: "linkRoles", value: translate('manage_link.roles'), width: 70 }
+            { key: "linkDescription", value: translate('manage_link.description'), width: 45 }
         ];
 
         copyListRole?.length && copyListRole.forEach((x, index) => {
@@ -383,8 +385,7 @@ function ModalImportLinkPrivilege(props) {
                 STT: indexLink + 1,
                 linkUrl: x.url,
                 linkCategory: x.category,
-                linkDescription: x.description,
-                linkRoles: '',
+                linkDescription: x.description
             }];
 
             // Thêm cặp key là canRoleAccess và value là x nếu role dc phép truy cập link
@@ -410,15 +411,7 @@ function ModalImportLinkPrivilege(props) {
                     tables: [
                         {
                             rowHeader: 1,
-                            columns: allRoleColumn
-                            //  [
-                            //     { key: "STT", value: translate('human_resource.stt'), width: 7 },
-                            //     { key: "linkUrl", value: translate('manage_link.url'), width: 30 },
-                            //     { key: "linkCategory", value: translate('manage_link.category'), width: 25 },
-                            //     { key: "linkDescription", value: translate('manage_link.description'), width: 45 },
-                            //     { key: "linkRoles", value: translate('manage_link.roles'), width: 70 },
-                            // ]
-                            ,
+                            columns: allRoleColumn,
                             data: listLinkConvert
                         }
                     ],
@@ -497,9 +490,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-    // getLinks: LinkActions.get,
-    importRoles: RoleActions.importRoles,
-    importLinkPrivilege: LinkActions.importLinkPrivilege,
+    // importLinkPrivilege: LinkActions.importLinkPrivilege,
     editLink: LinkActions.edit,
 };
 

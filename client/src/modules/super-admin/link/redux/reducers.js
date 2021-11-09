@@ -38,7 +38,7 @@ export function link(state = initState, action) {
         case LinkConstants.CREATE_LINK_REQUEST:
         case LinkConstants.EDIT_LINK_REQUEST:
         case LinkConstants.DELETE_LINK_REQUEST:
-        case LinkConstants.IMPORT_LINK_PRIVILEGE_REQUEST:
+            // case LinkConstants.IMPORT_LINK_PRIVILEGE_REQUEST:
 
             return {
                 ...state,
@@ -124,30 +124,30 @@ export function link(state = initState, action) {
                 isLoading: false
             };
 
-        case LinkConstants.IMPORT_LINK_PRIVILEGE_SUCCESS:
-            console.log("Linkmoi: ", action.payload)
-            index = findIndex(state.list, action.payload._id);
-            indexPaginate = findIndex(state.listPaginate, action.payload._id);
+        // case LinkConstants.IMPORT_LINK_PRIVILEGE_SUCCESS:
+        //     console.log("Linkmoi: ", action.payload)
+        //     index = findIndex(state.list, action.payload._id);
+        //     indexPaginate = findIndex(state.listPaginate, action.payload._id);
 
-            if (index !== -1) {
-                state.list[index] = action.payload;
-            }
+        //     if (index !== -1) {
+        //         state.list[index] = action.payload;
+        //     }
 
-            if (indexPaginate !== -1) {
-                state.listPaginate[indexPaginate] = action.payload;
-            }
+        //     if (indexPaginate !== -1) {
+        //         state.listPaginate[indexPaginate] = action.payload;
+        //     }
 
-            return {
-                ...state,
-                isLoading: false
-            };
+        //     return {
+        //         ...state,
+        //         isLoading: false
+        //     };
 
-        case LinkConstants.IMPORT_LINK_PRIVILEGE_FAILE:
-            return {
-                ...state,
-                error: action.error,
-                isLoading: false,
-            }
+        // case LinkConstants.IMPORT_LINK_PRIVILEGE_FAILE:
+        //     return {
+        //         ...state,
+        //         error: action.error,
+        //         isLoading: false,
+        //     }
 
         case 'LOGOUT':
             return initState;

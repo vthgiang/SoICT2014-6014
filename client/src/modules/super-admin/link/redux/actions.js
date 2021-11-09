@@ -9,8 +9,8 @@ export const LinkActions = {
     get,
     show,
     edit,
-    destroy,
-    importLinkPrivilege
+    destroy
+    // importLinkPrivilege
 };
 
 /**
@@ -125,23 +125,23 @@ function destroy(id, link) {
     }
 }
 
-function importLinkPrivilege(id, link) {
-    return dispatch => {
-        dispatch({
-            type: LinkConstants.IMPORT_LINK_PRIVILEGE_REQUEST
-        });
-        LinkServices.importLinkPrivilege(id, link)
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.IMPORT_LINK_PRIVILEGE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: LinkConstants.IMPORT_LINK_PRIVILEGE_FAILE,
-                    error: err?.response?.data?.content
-                });
-            })
-    }
-}
+// function importLinkPrivilege(id, link) {
+//     return dispatch => {
+//         dispatch({
+//             type: LinkConstants.IMPORT_LINK_PRIVILEGE_REQUEST
+//         });
+//         LinkServices.importLinkPrivilege(id, link)
+//             .then(res => {
+//                 dispatch({
+//                     type: LinkConstants.IMPORT_LINK_PRIVILEGE_SUCCESS,
+//                     payload: res.data.content
+//                 })
+//             })
+//             .catch(err => {
+//                 dispatch({
+//                     type: LinkConstants.IMPORT_LINK_PRIVILEGE_FAILE,
+//                     error: err?.response?.data?.content
+//                 });
+//             })
+//     }
+// }

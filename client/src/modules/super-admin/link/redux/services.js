@@ -7,8 +7,8 @@ export const LinkServices = {
     show,
     create,
     edit,
-    destroy,
-    importLinkPrivilege
+    destroy
+    // importLinkPrivilege
 };
 
 function get(params) {
@@ -50,10 +50,10 @@ function destroy(id) {
     }, true, true, 'super_admin.link');
 }
 
-function importLinkPrivilege(id, data) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/link/links/${id}`,
-        method: 'PATCH',
-        data,
-    }, true, true, 'super_admin.link');
-}
+// function importLinkPrivilege(id, data) {
+//     return sendRequest({
+//         url: `${process.env.REACT_APP_SERVER}/link/links/${id}`,
+//         method: 'PATCH',
+//         data,
+//     }, true, true, 'super_admin.link');
+// }
