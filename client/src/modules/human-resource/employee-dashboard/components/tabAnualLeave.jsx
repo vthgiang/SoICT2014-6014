@@ -8,8 +8,8 @@ import { TrendOfOvertime, AnnualLeaveTrendsChart, AnnualLeaveChartAndTable } fro
 
 const TabAnualLeave = (props) => {
 
-    const { childOrganizationalUnit, defaultUnit, organizationalUnits, idUnits, date} = props
-
+    const { childOrganizationalUnit, defaultUnit, organizationalUnits, idUnits, search_data_props} = props
+    
     return (
         <React.Fragment>
             <LazyLoadComponent>
@@ -22,12 +22,14 @@ const TabAnualLeave = (props) => {
                     nameData1='Số lượt nghỉ'
                     nameData2='Số giờ nghỉ phép'
                     nameChart={'Thống kê nghỉ phép'}
-                    date={date} />
+                    search_data_props={search_data_props}
+                    />
             </LazyLoadComponent>
             <LazyLoadComponent>
                 <AnnualLeaveChartAndTable
                     childOrganizationalUnit={childOrganizationalUnit}
                     defaultUnit={defaultUnit}
+                    search_data_props={search_data_props}
                     organizationalUnits={organizationalUnits}>
                 </AnnualLeaveChartAndTable>
             </LazyLoadComponent>
@@ -40,7 +42,8 @@ const TabAnualLeave = (props) => {
                     organizationalUnits={organizationalUnits}
                     nameData1='Số giờ tăng ca'
                     nameChart={'Xu hướng tăng ca'}
-                    date={date} />
+                    search_data_props={search_data_props}
+                    />
             </LazyLoadComponent>
         </React.Fragment>
     );
