@@ -6,7 +6,7 @@ import { DialogModal } from '../../../common-components';
 
 const ViewAllTaskNeedToDo = (props) => {
 
-    let taskNeedTodo = props.data;
+    let taskNeedTodo = props.chartData;
 
     taskNeedTodo = taskNeedTodo?.length > 0 && taskNeedTodo.reduce((groups, item) => {
         if (item?.organizationalUnit?.name) {

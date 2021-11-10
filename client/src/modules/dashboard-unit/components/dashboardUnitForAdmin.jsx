@@ -10,6 +10,7 @@ import { customAxisC3js } from '../../../helpers/customAxisC3js';
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
+import { DashboardUnitActions } from '../redux/actions';
 
 import { AnnualLeaveChartAndTable } from '../../human-resource/employee-dashboard/components/combinedContent';
 import { LoadTaskOrganizationChart } from '../../task/task-dashboard/task-organization-dashboard/loadTaskOrganizationChart'
@@ -21,13 +22,55 @@ import { StatisticsTaskUnits } from './statisticsTaskUnits'
 import c3 from 'c3';
 import "./dashboardUnit.css";
 
-let INFO_SEARCH = {
+/**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
+
+function formatDate(date, monthYear = false, yearMonth = false) {
+    if (date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (yearMonth) {
+            return [year, month].join('-');
+        } else if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+    return date;
+};
+
+let INFO_SEARCH = { // Bộ lọc tìm kiếm
     organizationalUnits: null,
 }
 
-function DashboardUnitForAdmin(props) {
-    const { translate, department, user, tasks } = props;
+// giá trị tìm kiếm mặc định mỗi khi search
+const DEFAULT_SEARCH = {
+    'common-params': {
+        organizationalUnits: 'allUnit',
+        currentDate: formatDate(Date.now(), false),
+        month: formatDate(Date.now(), true, true),
+    },
+    'urgent-task': {},
+    'need-to-do-task': {},
+    'annual-leave-chart-and-table': {},
+    'load-task-organization-chart': {},
+    'statistics-task-units': {},
+    'statistics-kpi-units': {},
+}
 
+function DashboardUnitForAdmin(props) {
+    const { translate, department, dashboardUnit } = props;
+    const {allUnitDashboard} = dashboardUnit
     const [state, setState] = useState({
         monthTitle: formatDate(Date.now(), true),
         month: formatDate(Date.now(), true, true),
@@ -47,13 +90,13 @@ function DashboardUnitForAdmin(props) {
     } = state;
 
     useEffect(() => {
-        if (props.tasks?.organizationUnitTasksChart?.urgent || props.tasks?.organizationUnitTasksChart?.taskNeedToDo)
+        if (allUnitDashboard?.['urgent-task']?.tasks || allUnitDashboard?.['need-to-do-task']?.tasks)
             setState({
                 ...state,
-                urgent: props.tasks?.organizationUnitTasksChart?.urgent,
-                taskNeedToDo: props.tasks?.organizationUnitTasksChart?.taskNeedToDo,
+                urgent: allUnitDashboard?.['urgent-task']?.tasks,
+                taskNeedToDo: allUnitDashboard?.['need-to-do-task']?.tasks,
             })
-    }, [JSON.stringify(props.tasks?.organizationUnitTasksChart?.urgent, props.tasks?.organizationUnitTasksChart?.taskNeedToDo)])
+    }, [JSON.stringify(allUnitDashboard?.['urgent-task']?.isLoading, allUnitDashboard?.['need-to-do-task']?.isLoading)])
 
 
     useEffect(() => {
@@ -62,19 +105,17 @@ function DashboardUnitForAdmin(props) {
 
 
     useEffect(() => {
-        if (props?.department?.list?.length && !organizationalUnits) {
+        if (department?.list?.length && !department?.isLoading) {
             let unit = department.list.map(item => item?._id)
-
             if (unit) {
-                /* Lấy danh sách nhân viên  */
-                props.getAllEmployee({ organizationalUnits: unit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-                /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-                props.getTaskInOrganizationUnitByMonth(unit, month, month, "in_month");
-
-                let partDate = currentDate.split('-');
-                let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-                props.getTaskInOrganizationUnitByDateNow(unit, newDate)
+                props.getAllUnitDashboardData({
+                    ...DEFAULT_SEARCH,
+                    'common-params': {
+                        organizationalUnits: unit,
+                        currentDate: formatDate(Date.now(), false),
+                        month: formatDate(Date.now(), true, true),
+                    }
+                });
             }
 
             setState({
@@ -84,40 +125,15 @@ function DashboardUnitForAdmin(props) {
                     return { text: item?.name, value: item?._id }
                 })
             })
+
+            handleSelectOrganizationalUnitUrgent(unit);            
         }
-    }, [JSON.stringify(props?.department?.list)])
+    }, [JSON.stringify(department?.list),department?.isLoading])
 
     useEffect(() => {
         pieChartNeedTodo();
         pieChartUrgent();
     })
-
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    function formatDate(date, monthYear = false, yearMonth = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (yearMonth) {
-                return [year, month].join('-');
-            } else if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    };
 
     const removePreviousUrgentPieChart = () => {
         const chart = document.getElementById('pieChartUrgent');
@@ -127,6 +143,7 @@ function DashboardUnitForAdmin(props) {
             }
         }
     }
+
     const removePreviousNeedToDoPieChart = () => {
         const chart = document.getElementById('pieChartTaskNeedToDo')
         if (chart) {
@@ -138,7 +155,7 @@ function DashboardUnitForAdmin(props) {
 
     const pieChartUrgent = () => {
         removePreviousUrgentPieChart();
-        let chartUrgentDataTmp = convertDataUrgentPieChart(tasks?.organizationUnitTasksChart?.urgent);
+        let chartUrgentDataTmp = convertDataUrgentPieChart(allUnitDashboard?.['urgent-task']);
 
         const chartUrgent = c3.generate({
             bindto: document.getElementById('pieChartUrgent'),
@@ -210,7 +227,7 @@ function DashboardUnitForAdmin(props) {
 
     const pieChartNeedTodo = () => {
         removePreviousNeedToDoPieChart();
-        let chartTaskNeedToDoDataTmp = convertDataTaskNeedToDoPieChart(tasks?.organizationUnitTasksChart?.taskNeedToDo);
+        let chartTaskNeedToDoDataTmp = convertDataTaskNeedToDoPieChart(allUnitDashboard?.['need-to-do-task']);
 
         const chartTaskNeedToDo = c3.generate({
             bindto: document.getElementById('pieChartTaskNeedToDo'),
@@ -291,18 +308,9 @@ function DashboardUnitForAdmin(props) {
         let urgentPieChartDataAxis = ['x'], urgentPieChartDataData = [translate('dashboard_unit.urgent_task_amount')];
 
         // convert công việc khẩn cấp qua dạng c3js
-        if (data && data.length > 0) {
-            const result = data.reduce((total, value) => {
-                if (value?.organizationalUnit?.name) {
-                    total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
-                }
-                return total;
-            }, [])
-
-            for (let key in result) {
-                urgentPieChartDataAxis.push(key)
-                urgentPieChartDataData.push(result[key])
-            }
+        if (data?.urgentPieChartDataAxis && data?.urgentPieChartDataAxis?.length > 0) {
+            urgentPieChartDataAxis = urgentPieChartDataAxis.concat(data.urgentPieChartDataAxis);
+            urgentPieChartDataData = urgentPieChartDataData.concat(data.urgentPieChartDataData)
         }
 
         return [
@@ -313,20 +321,11 @@ function DashboardUnitForAdmin(props) {
 
     const convertDataTaskNeedToDoPieChart = (data) => {
         let taskNeedToDoPieChartAxis = ['x'], taskNeedToDoPieChartData = [translate('dashboard_unit.need_to_do_task_amount')];
+
         // convert công việc cần làm qua dạng c3js
-        if (data && data.length > 0) {
-            const result2 = data.reduce((total, value) => {
-                if (value?.organizationalUnit?.name) {
-                    total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
-                }
-
-                return total;
-            }, [])
-
-            for (let key in result2) {
-                taskNeedToDoPieChartAxis.push(key)
-                taskNeedToDoPieChartData.push(result2[key])
-            }
+        if (data?.taskNeedToDoPieChartAxis && data?.taskNeedToDoPieChartAxis?.length > 0) {
+            taskNeedToDoPieChartAxis = taskNeedToDoPieChartAxis.concat(data.taskNeedToDoPieChartAxis);
+            taskNeedToDoPieChartData = taskNeedToDoPieChartData.concat(data.taskNeedToDoPieChartData)
         }
 
         return [
@@ -336,14 +335,19 @@ function DashboardUnitForAdmin(props) {
     }
 
     const handleUpdateDataUrgent = () => {
-        let partDate = currentDate.split('-');
-        let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-
         setState({
             ...state,
             organizationalUnits: INFO_SEARCH.organizationalUnits,
         })
-        props.getTaskInOrganizationUnitByDateNow(INFO_SEARCH.organizationalUnits, newDate);
+        props.getAllUnitDashboardData({
+            ...DEFAULT_SEARCH,
+            'common-params': {
+                organizationalUnits: INFO_SEARCH.organizationalUnits,
+                currentDate: formatDate(Date.now(), false),
+                month: formatDate(Date.now(), true, true),
+            }
+        }
+        );
     }
 
     const handleClickshowTaskUrgent = () => {
@@ -488,10 +492,10 @@ function DashboardUnitForAdmin(props) {
             </div>
 
             <div className="qlcv">
-                <ViewAllTaskUrgent data={tasks?.organizationUnitTasksChart?.urgent} clickUrgentChart={clickUrgentChart} />
-                <ViewAllTaskNeedToDo data={tasks?.organizationUnitTasksChart?.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
+                <ViewAllTaskUrgent chartData={allUnitDashboard?.['urgent-task']?.tasks} clickUrgentChart={clickUrgentChart} />
+                <ViewAllTaskNeedToDo chartData={allUnitDashboard?.['need-to-do-task']?.tasks} clickNeedTodoChart={clickNeedTodoChart} />
 
-                {/* Biểu đồ só công việc khẩn cấp /  cần làm */}
+                {/* Biểu đồ số công việc khẩn cấp /  cần làm */}
                 <div className="row">
                     <div className="col-md-12">
                         <div className="box box-solid">
@@ -523,8 +527,8 @@ function DashboardUnitForAdmin(props) {
                                         <div className="col-md-12">
                                             <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                                 {
-                                                    tasks.isLoading ? <p>{translate('general.loading')}</p>
-                                                        : tasks?.organizationUnitTasksChart?.urgent?.length > 0
+                                                    allUnitDashboard.isLoading ? <p>{translate('general.loading')}</p>
+                                                        : allUnitDashboard?.['urgent-task']?.tasks?.length > 0
                                                             ? <div id="pieChartUrgent"></div>
                                                             : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                 }
@@ -567,10 +571,10 @@ function DashboardUnitForAdmin(props) {
                                     <div className="col-md-12">
                                         <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                             {
-                                                tasks.isLoading ?
+                                                allUnitDashboard.isLoading ?
                                                     <p>{translate('general.loading')}</p>
                                                     :
-                                                    tasks?.organizationUnitTasksChart?.taskNeedToDo?.length > 0
+                                                    allUnitDashboard?.['need-to-do-task']?.tasks?.length > 0
                                                         ? <div id="pieChartTaskNeedToDo"></div>
                                                         : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                             }
@@ -592,6 +596,7 @@ function DashboardUnitForAdmin(props) {
                                 name: item?.text
                             }
                         })}
+                        chartData={allUnitDashboard?.['annual-leave-chart-and-table']}
                     />
                 </LazyLoadComponent>
 
@@ -603,12 +608,10 @@ function DashboardUnitForAdmin(props) {
                                 getUnitName={getUnitName}
                                 showUnitTask={showUnitTask}
                                 units={listUnitSelect}
-                                startMonth={month}
-                                endMonth={month}
                                 startMonthTitle={monthTitle}
                                 idsUnit={organizationalUnits}
-                                employeeLoading={user?.employeeLoading}
                                 typeChart={"followUnit"}
+                                chartData={allUnitDashboard}
                             />
                         </LazyLoadComponent>
                     </div>
@@ -646,6 +649,7 @@ function DashboardUnitForAdmin(props) {
                                         <StatisticsTaskUnits
                                             organizationalUnits={department?.list?.filter(item => organizationalUnits.includes(item?._id))}
                                             monthStatistics={month}
+                                            chartData={allUnitDashboard?.['statistics-task-units']}
                                         />
                                     }
                                 </div>
@@ -665,7 +669,11 @@ function DashboardUnitForAdmin(props) {
                                 <div className="box-body">
                                     {
                                         organizationalUnits &&
-                                        <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} month={month} type="for-admin" />
+                                        <StatisticsKpiUnits 
+                                            organizationalUnitIds={organizationalUnits} 
+                                            month={month} 
+                                            type="for-admin" 
+                                        />
                                     }
                                 </div>
                             </div>
@@ -678,17 +686,13 @@ function DashboardUnitForAdmin(props) {
 }
 
 function mapState(state) {
-    const { department, tasks, user } = state;
-    return { department, tasks, user };
+    const { department, dashboardUnit } = state;
+    return { department, dashboardUnit };
 }
 
 const actionCreators = {
     getAllUnit: DepartmentActions.get,
-
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
-
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
+    getAllUnitDashboardData: DashboardUnitActions.getAllUnitDashboardData,
 };
 
 export default connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));

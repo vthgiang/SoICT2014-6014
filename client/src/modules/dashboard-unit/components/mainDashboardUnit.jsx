@@ -31,11 +31,6 @@ class MainDashboardUnit extends Component {
 
             startDate: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
             startDateIncreaseAndDecreaseChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 3), true),
-            startDateTrendOfOvertimeChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
-            startDateAnnualLeaveTrendsChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
-            endDateIncreaseAndDecreaseChart: this.formatDate(Date.now(), true),
-            endDateTrendOfOvertimeChart: this.formatDate(Date.now(), true),
-            endDateAnnualLeaveTrendsChart: this.formatDate(Date.now(), true),
             endDate: this.formatDate(Date.now(), true),
 
             // Biểu đồ khẩn cấp / cần làm
@@ -86,15 +81,6 @@ class MainDashboardUnit extends Component {
     formatNewDate = (date) => {
         let partDate = date.split('-');
         return [partDate[1], partDate[0]].join('-')
-    }
-
-    /**
-     * Function format dữ liệu Date từ dạng tháng-năm thành năm - tháng
-     * @param {*} date : Ngày muốn format
-     */
-    formatNewDate = (date) => {
-        let partDate = date.split('-');
-        return [partDate[1],partDate[0]].join('-');
     }
 
     /**
@@ -154,7 +140,7 @@ class MainDashboardUnit extends Component {
                 // arrayUnitShow = childOrganizationalUnit.map(x => x.id);
                 arrayUnit = childOrganizationalUnit.map(x => x.id);
             }
-
+            this.props.getAllSalaryChart({name: "salary-date-data",monthTime: month})
             this.props.getEmployeeDashboardData({
                 searchChart: {
                     employeeDashboardChart: { 
@@ -202,8 +188,9 @@ class MainDashboardUnit extends Component {
         this.INFO_SEARCH = {
             organizationalUnits
         }
-
+        this.props.getAllSalaryChart()
         this.props.getEmployeeDashboardData({
+
             defaultParams: {
                 organizationalUnits: this.searchData.current.organizationalUnits,
                 month: this.formatNewDate(this.searchData.current.month), 
@@ -254,12 +241,6 @@ class MainDashboardUnit extends Component {
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
         
         let listEmployee = user.employees;
-        const dateProps = {startDateIncreaseAndDecreaseChart, startDateAnnualLeaveTrendsChart, startDateTrendOfOvertimeChart, 
-            endDateIncreaseAndDecreaseChart, endDateTrendOfOvertimeChart, endDateAnnualLeaveTrendsChart, month,
-            handleChangeIncreaseAndDecreaseChartTime:this.handleChangeAnnualLeaveTrendsChartTime, 
-            handleChangeAnnualLeaveTrendsChartTime:this.handleChangeAnnualLeaveTrendsChartTime, 
-            handleChangeTrendOfOvertimeChartTime:this.handleChangeTrendOfOvertimeChartTime
-        }
 
         let searchData = this.searchData;
 
@@ -394,9 +375,9 @@ class MainDashboardUnit extends Component {
                             <div className="tab-pane" id="annualLeave">
                                 <LazyLoadComponent>
                                     <TabAnualLeave
-                                        organizationalUnits={organizationalUnits}
                                         idUnits={childOrganizationalUnit.length ? childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id)) : []}
                                         defaultUnit={true}
+                                        monthShow={monthShow}
                                         childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
                                         search_data_props={search_data_props}
                                     />
@@ -406,8 +387,7 @@ class MainDashboardUnit extends Component {
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
                                 <LazyLoadComponent>
-                                    <TabSalary 
-                                        childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
                                         organizationalUnits={organizationalUnits}
                                         monthShow={monthShow}
                                         salaryChart={salaryChart}
@@ -419,12 +399,7 @@ class MainDashboardUnit extends Component {
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
                                 <LazyLoadComponent>
-                                    <TabIntegratedStatistics 
-                                        listAllEmployees={listAllEmployees} 
-                                        month={monthShow} 
-                                        listEmployee={listEmployee} 
-                                        organizationalUnits={organizationalUnits} 
-                                    />
+                                    <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} listEmployee={listEmployee} organizationalUnits={organizationalUnits} />
                                 </LazyLoadComponent>
                             </div>
                         </div>
