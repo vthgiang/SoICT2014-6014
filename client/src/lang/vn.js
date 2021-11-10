@@ -86,7 +86,9 @@ export default {
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
             list_employe_timing: "Danh sách nhân viên đang bấm giờ",
-            statistics_task_unit: "Biểu đồ thống kê điểm công việc"
+            statistics_task_unit: "Biểu đồ thống kê điểm công việc",
+            get_all_unit_dashboard_data_success: "Lấy dữ liệu bảng tin doanh nghiệp thành công",
+            get_all_unit_dashboard_data_fail: "Lấy dữ liệu bảng tin doanh nghiệp thất bại",
         },
 
         menu: {

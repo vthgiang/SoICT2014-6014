@@ -13,7 +13,7 @@ import './employeeDashBoard.css';
 import Swal from 'sweetalert2';
 
 const AnnualLeaveChartAndTable = (props) => {
-    const { defaultUnit, employeeDashboardData } = props
+    const { defaultUnit, chartData } = props
     const [state, setState] = useState({
         organizationalUnitsSearch: null,
         organizationalUnits: null,
@@ -30,10 +30,10 @@ const AnnualLeaveChartAndTable = (props) => {
     }, [JSON.stringify(props.organizationalUnits)])
 
     useEffect(() => {
-        if(employeeDashboardData.annualLeaveChartAndTableData?.data1) {
-            renderChart(employeeDashboardData.annualLeaveChartAndTableData);
+        if(chartData?.annualLeaveChartAndTableData?.data1) {
+            renderChart(chartData.annualLeaveChartAndTableData);
         }
-    }, [employeeDashboardData.annualLeaveChartAndTableData,employeeDashboardData.beforeAndAfterOneWeeks , state.beforeAndAfterOneWeeks, JSON.stringify(props.organizationalUnits)])
+    }, [chartData?.annualLeaveChartAndTableData,chartData?.beforeAndAfterOneWeeks , state.beforeAndAfterOneWeeks, JSON.stringify(props.organizationalUnits)])
 
 
     /**
@@ -172,9 +172,9 @@ const AnnualLeaveChartAndTable = (props) => {
                         </div>
                     }
                     <div className="dashboard_box_body">
-                        {employeeDashboardData.isLoading
+                        {chartData?.isLoading
                             ? <div>{translate('general.loading')}</div>
-                            : employeeDashboardData.beforeAndAfterOneWeeks?.length
+                            : chartData?.beforeAndAfterOneWeeks?.length
                                 ? <div ref={barChartAndTable}></div>
                                 : <div>{translate('kpi.organizational_unit.dashboard.no_data')}</div>
                         }
@@ -187,8 +187,8 @@ const AnnualLeaveChartAndTable = (props) => {
 }
 
 function mapState(state) {
-    const { department, employeeDashboardData } = state;
-    return { department, employeeDashboardData };
+    const { department } = state;
+    return { department };
 }
 
 const actionCreators = {};

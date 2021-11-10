@@ -84,7 +84,9 @@ export default {
             urgent_task_amount: "The number of urgent tasks",
             need_to_do_task_amount: "The number of tasks to do",
             list_employe_timing: "List of employees who are timing",
-            statistics_task_unit: "Statistics Of Task In Units Chart"
+            statistics_task_unit: "Statistics Of Task In Units Chart",
+            get_all_unit_dashboard_data_success: "Get business dashboard data success",
+            get_all_unit_dashboard_data_fail: "Get business dashboard data fail",
         },
 
         menu: {
