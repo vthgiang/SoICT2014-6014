@@ -14,7 +14,6 @@ import 'c3/c3.css';
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
     const { employeesManager, translate, employeeDashboardData, organizationalUnits, search_data_props } = props;
     const { childOrganizationalUnit } = props;
-    console.log(search_data_props)
     const [state, setState] = useState({
         lineChart: false,
         startDate: search_data_props.searchData.current.startDateIncreaseAndDecreaseChart,
