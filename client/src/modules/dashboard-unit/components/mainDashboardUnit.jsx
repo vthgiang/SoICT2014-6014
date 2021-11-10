@@ -140,7 +140,7 @@ class MainDashboardUnit extends Component {
                 // arrayUnitShow = childOrganizationalUnit.map(x => x.id);
                 arrayUnit = childOrganizationalUnit.map(x => x.id);
             }
-
+            this.props.getAllSalaryChart({name: "salary-date-data",monthTime: month})
             this.props.getEmployeeDashboardData({
                 searchChart: {
                     employeeDashboardChart: { 
@@ -188,7 +188,7 @@ class MainDashboardUnit extends Component {
         this.INFO_SEARCH = {
             organizationalUnits
         }
-
+        this.props.getAllSalaryChart()
         this.props.getEmployeeDashboardData({
 
             defaultParams: {
