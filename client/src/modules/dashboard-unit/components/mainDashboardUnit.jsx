@@ -231,14 +231,13 @@ class MainDashboardUnit extends Component {
     }
 
     render() {
-        const { translate, department, employeesManager, user, discipline, salaryChart } = this.props;
+        const { translate, department, employeesManager, user, discipline, salaryChart, employeeDashboardData } = this.props;
 
         const { childOrganizationalUnit } = this.props;
 
         const { monthShow, month, organizationalUnits, arrayUnitShow, monthSearch } = this.state;
 
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
-            employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+        let listAllEmployees = employeeDashboardData.listEmployeesOfOrganizationalUnits;
         
         let listEmployee = user.employees;
 
@@ -399,7 +398,12 @@ class MainDashboardUnit extends Component {
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
                                 <LazyLoadComponent>
-                                    <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} listEmployee={listEmployee} organizationalUnits={organizationalUnits} />
+                                    <TabIntegratedStatistics 
+                                        listAllEmployees={listAllEmployees} 
+                                        month={monthShow} 
+                                        listEmployee={listEmployee} 
+                                        organizationalUnits={organizationalUnits} 
+                                    />
                                 </LazyLoadComponent>
                             </div>
                         </div>
