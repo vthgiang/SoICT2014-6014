@@ -1,9 +1,9 @@
-const DashboardUnitService = require('./DashboardUnit.service');
+const DashboardUnitService = require('./dashboardUnit.service');
 const Logger = require(`../../logs`);
 
 exports.getAllUnitDashboardData = async (req, res) => {
     try {
-        let data = await DashboardUnitService.getAllUnitDashboardData(req.portal, req.query,req.user.company._id);
+        let data = await DashboardUnitService.getAllUnitDashboardData(req.portal, req.query, req.user.company._id);
         await Logger.info(req.user.email, 'get_all_unit_dashboard_data_success', req.portal);
         res.status(200).json({
             success: true,
