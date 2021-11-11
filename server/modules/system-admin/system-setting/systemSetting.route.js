@@ -4,7 +4,6 @@ const SystemSettingController = require('./systemSetting.controller');
 const {auth} = require(`../../../middleware`);
 
 router.get("/backup", auth, SystemSettingController.getBackups);
-
 router.get("/backup/config", auth, SystemSettingController.getConfigBackup);
 
 router.post("/backup", auth, SystemSettingController.createBackup);

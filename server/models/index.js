@@ -49,15 +49,15 @@ module.exports = {
     Course: require('./training/course.model'),
     EducationProgram: require('./training/educationProgram.model'),
 
-    //asset
-    Asset: require('./asset/asset.model'), //tài sản
-    AssetType: require('./asset/assetType.model'), //loại tài sản
-    RecommendProcure: require('./asset/assetPurchaseRequest.model'), //đề nghị mua sắm thiết bị
-    RecommendDistribute: require('./asset/assetUseRequest.model'), //đề nghị cấp phát thiết bị
-    //report
+    // Asset
+    Asset: require('./asset/asset.model'), // Tài sản
+    AssetType: require('./asset/assetType.model'), // Loại tài sản
+    RecommendProcure: require('./asset/assetPurchaseRequest.model'), // Đề nghị mua sắm thiết bị
+    RecommendDistribute: require('./asset/assetUseRequest.model'), // Đề nghị cấp phát thiết bị
+    // Report
     TaskReport: require('./report/taskReport.model'),
 
-    //warehouse
+    // Warehouse
     Stock: require('./production/warehouse/stock.model'),
     BinLocation: require('./production/warehouse/binLocation.model'),
     Proposal: require('./production/warehouse/proposal.model'),

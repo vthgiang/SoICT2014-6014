@@ -15,6 +15,7 @@ exports.getBackups = async () => {
 
     const backupedList = [];
     list.forEach(dir => {
+        
         // Nếu là thư mục có file README.txt -> là thư mục backup
         if (fs.existsSync(`${SERVER_BACKUP_DIR}/all/${dir}/README.txt`)) {
             const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/all/${dir}`);

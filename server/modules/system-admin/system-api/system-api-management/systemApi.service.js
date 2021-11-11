@@ -76,9 +76,13 @@ const createSystemApi = async (data) => {
     }
 };
 
+
+
 /** Cập nhật tự động những API mới tạo
  * @app value được khởi tạo bởi express
  */
+
+
 const updateSystemApiAutomatic = async (app) => {
     let routes = []
 
