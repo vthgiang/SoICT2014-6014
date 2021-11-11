@@ -23,7 +23,7 @@ const LoadTaskOrganizationChart = (props) => {
 
     useEffect(() => {
         let data = getData("load-task-organization-chart")
-        if (data?.legend && data?.legend?.length > 0)
+        if (data?.legend && !data.isLoading)
             setState({
                 ...state,
                 dataChart: data.dataChart,
@@ -222,19 +222,20 @@ const LoadTaskOrganizationChart = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    {state?.dataChart?.length > 0 ?
-                        <section id={"weightTaskOrganizationChart"} className="c3-chart-container">
-                            <div ref={refMultiLineChart}></div>
-                            {typeChart === "followTime"
-                                && <CustomLegendC3js
-                                    chart={chart.current}
-                                    chartId={"weightTaskOrganizationChart"}
-                                    legendId={"weightTaskOrganizationChartLegend"}
-                                    title={`${translate('general.list_unit')} (${legend?.length > 0 ? legend?.length : 0})`}
-                                    dataChartLegend={legend && legend}
-                                />
-                            }
-                        </section>
+                    {chartData?.isLoading? <div>{translate('general.loading')}</div> :
+                        state?.dataChart?.length > 0 ?
+                            <section id={"weightTaskOrganizationChart"} className="c3-chart-container">
+                                <div ref={refMultiLineChart}></div>
+                                {typeChart === "followTime"
+                                    && <CustomLegendC3js
+                                        chart={chart.current}
+                                        chartId={"weightTaskOrganizationChart"}
+                                        legendId={"weightTaskOrganizationChartLegend"}
+                                        title={`${translate('general.list_unit')} (${legend?.length > 0 ? legend?.length : 0})`}
+                                        dataChartLegend={legend && legend}
+                                    />
+                                }
+                            </section>
                         : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                     }
                 </div>
