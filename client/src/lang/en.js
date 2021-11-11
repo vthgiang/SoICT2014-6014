@@ -84,7 +84,9 @@ export default {
             urgent_task_amount: "The number of urgent tasks",
             need_to_do_task_amount: "The number of tasks to do",
             list_employe_timing: "List of employees who are timing",
-            statistics_task_unit: "Statistics Of Task In Units Chart"
+            statistics_task_unit: "Statistics Of Task In Units Chart",
+            get_all_unit_dashboard_data_success: "Get business dashboard data success",
+            get_all_unit_dashboard_data_fail: "Get business dashboard data fail",
         },
 
         menu: {
@@ -681,7 +683,9 @@ export default {
 
             privilege_system_api: {
                 table: {
-                    email: "Email"
+                    email: "Email",
+                    description: "Description",
+                    endDate: "Expiry date"
                 },
                 placeholder: {
                     input_email: "Type email"
@@ -1499,7 +1503,7 @@ export default {
                 delete_salary_faile: "Delete salary faile",
                 edit_salary_success: "Edit salary success",
                 edit_salary_faile: "Edit salary faile",
-                
+
                 import_salary_success: "Import salary success",
                 import_salary_faile: "Import salary faile",
                 get_chart_salary_success: "Get chart salary success",
@@ -2617,14 +2621,14 @@ export default {
                 get_asset_statistic_success: "Get asset statistic successfully",
                 get_asset_statistic_fail: "Get asset statistic fail",
                 get_list_asset_success: "Get list asset successfully",
-                get_asset_purchase_success:"Get asset purchase successfully",
-                get_asset_purchase_fail:"Get asset purchase fail",
-                get_asset_disposal_success:"Get asset disposal successfully",
-                get_asset_disposal_fail:"Get asset disposal fail",
-                get_asset_incident_success:"Get asset incident successfully",
-                get_asset_incident_fail:"Get asset incident fail",
-                get_asset_maintenance_success:"Get asset maintenance successfully",
-                get_asset_maintenance_fail:"Get asset maintenance fail",
+                get_asset_purchase_success: "Get asset purchase successfully",
+                get_asset_purchase_fail: "Get asset purchase fail",
+                get_asset_disposal_success: "Get asset disposal successfully",
+                get_asset_disposal_fail: "Get asset disposal fail",
+                get_asset_incident_success: "Get asset incident successfully",
+                get_asset_incident_fail: "Get asset incident fail",
+                get_asset_maintenance_success: "Get asset maintenance successfully",
+                get_asset_maintenance_fail: "Get asset maintenance fail",
                 get_list_asset_faile: "Get list asset faile",
                 create_asset_success: "Create asset successfully",
                 create_asset_faile: "Create asset faile",

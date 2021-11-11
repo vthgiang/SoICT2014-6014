@@ -86,7 +86,9 @@ export default {
             urgent_task_amount: "Số công việc khẩn cấp",
             need_to_do_task_amount: "Số công việc cần làm",
             list_employe_timing: "Danh sách nhân viên đang bấm giờ",
-            statistics_task_unit: "Biểu đồ thống kê điểm công việc"
+            statistics_task_unit: "Biểu đồ thống kê điểm công việc",
+            get_all_unit_dashboard_data_success: "Lấy dữ liệu bảng tin doanh nghiệp thành công",
+            get_all_unit_dashboard_data_fail: "Lấy dữ liệu bảng tin doanh nghiệp thất bại",
         },
 
         menu: {
@@ -737,7 +739,9 @@ export default {
 
             privilege_system_api: {
                 table: {
-                    email: "Email"
+                    email: "Email",
+                    description: "Mô tả",
+                    endDate: "Ngày hết hạn"
                 },
                 placeholder: {
                     input_email: "Nhập email"
@@ -2609,7 +2613,7 @@ export default {
                 asset_type: "Loại tài sản",
                 asset_group: "Nhóm tài sản",
                 purchase_date: "Ngày nhập",
-                purchase_date_start:"Ngày nhập từ ngày",
+                purchase_date_start: "Ngày nhập từ ngày",
                 purchase_date_end: "Ngày nhập đến ngày",
                 manager: "Người quản lý",
                 user: "Người sử dụng",
@@ -2788,14 +2792,14 @@ export default {
                 get_asset_group_fail: "Lấy thông tin nhóm tài sản thất bại",
                 get_asset_statistic_success: "Lấy thông tin trạng thái và giá trị tài sản thành công",
                 get_asset_statistic_fail: "Lấy thông tin trạng thái và giá trị tài sản thất bại",
-                get_asset_purchase_success:"Lấy thông tin mua tài sản thành công",
-                get_asset_purchase_fail:"Lấy thông tin mua tài sản thất bại",
-                get_asset_disposal_success:"Lấy thông tin thanh lý tài sản thành công",
-                get_asset_disposal_fail:"Lấy thông tin thanh lý tài sản thất bại",
-                get_asset_incident_success:"Lấy thông tin sự cố tài sản thành công",
-                get_asset_incident_fail:"Lấy thông tin sự cố tài sản thất bại",
-                get_asset_maintenance_success:"Lấy thông tin sự cố tài sản thành công",
-                get_asset_maintenance_fail:"Lấy thông tin bảo trì tài sản thất bại",
+                get_asset_purchase_success: "Lấy thông tin mua tài sản thành công",
+                get_asset_purchase_fail: "Lấy thông tin mua tài sản thất bại",
+                get_asset_disposal_success: "Lấy thông tin thanh lý tài sản thành công",
+                get_asset_disposal_fail: "Lấy thông tin thanh lý tài sản thất bại",
+                get_asset_incident_success: "Lấy thông tin sự cố tài sản thành công",
+                get_asset_incident_fail: "Lấy thông tin sự cố tài sản thất bại",
+                get_asset_maintenance_success: "Lấy thông tin sự cố tài sản thành công",
+                get_asset_maintenance_fail: "Lấy thông tin bảo trì tài sản thất bại",
                 get_list_asset_success: "Lấy thông tin bảo trì tài sản thành công",
                 get_list_asset_success: "Lấy thông tin tài sản thành công",
                 get_list_asset_faile: "Lấy thông tin tài sản thất bại",
