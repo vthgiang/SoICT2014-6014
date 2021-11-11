@@ -460,7 +460,8 @@ function StockCreateForm(props) {
 
     return (
         <React.Fragment>
-            {checkHasComponent('create-stock-button') &&
+            {
+            // checkHasComponent('create-stock-button') &&
                 <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-stock`} button_name={translate('manage_warehouse.stock_management.add')} title={translate('manage_warehouse.stock_management.add_title')} />
             }
             <DialogModal
