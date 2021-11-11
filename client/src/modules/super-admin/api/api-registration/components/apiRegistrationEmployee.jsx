@@ -11,8 +11,10 @@ import { ApiRegistrationActions } from '../redux/actions'
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
 
 import { getStorage } from '../../../../../config';
+import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
 
-function ApiRegistrationEmployee (props) {
+
+function ApiRegistrationEmployee(props) {
     const { translate, privilegeApis, company } = props
 
     const tableId = "table-api-registration";
@@ -55,11 +57,6 @@ function ApiRegistrationEmployee (props) {
             page: page,
             perPage: perPage
         })
-    }
-
-    const handleCopyToken = (apiRegistration) => {
-        let copyText = apiRegistration?.token?.slice();
-        navigator.clipboard.writeText(copyText);
     }
 
     const handleAcceptApiRegistration = (api) => {
@@ -128,7 +125,7 @@ function ApiRegistrationEmployee (props) {
 
         }
     }
-    
+
     const handleAddPrivilegeApi = () => {
         window.$("#create-api-registration-modal").modal("show");
     }
@@ -140,7 +137,7 @@ function ApiRegistrationEmployee (props) {
             <CreateApiRegistrationModal
                 role="employee"
             />
-            
+
             <div className="box" >
                 <div className="box-body qlcv">
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -154,11 +151,12 @@ function ApiRegistrationEmployee (props) {
                         <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
-                    <table id={tableId} className="table table-hover table-striped table-bordered">
+                    <table id={tableId} className='table table-hover table-striped table-bordered'>
                         <thead>
                             <tr>
                                 <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.description')}</th>
                                 <th>{translate('task.task_management.col_status')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
@@ -172,14 +170,17 @@ function ApiRegistrationEmployee (props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { listPaginateApiRegistration?.length > 0
-                                && listPaginateApiRegistration.map((apiRegistration, index) => 
+                            {listPaginateApiRegistration?.length > 0
+                                && listPaginateApiRegistration.map((apiRegistration, index) =>
                                     <tr key={apiRegistration._id}>
                                         <td>{index + 1}</td>
                                         <td>{apiRegistration.email}</td>
+                                        <td>
+                                            {apiRegistration.description ? apiRegistration.description : 'NaN'}
+                                        </td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }} onClick={() => handleCopyToken(apiRegistration)}>Copy</button>
+                                            <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
@@ -189,11 +190,11 @@ function ApiRegistrationEmployee (props) {
                                             <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
                                                 <i className="material-icons">remove_circle_outline</i>
                                             </a> */}
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585"}}>
+                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
                                                 <i className="material-icons">highlight_off</i>
                                             </a>
                                         </td>
-                                    </tr>    
+                                    </tr>
                                 )
                             }
                         </tbody>

@@ -8,8 +8,8 @@ import { TrendOfOvertime, AnnualLeaveTrendsChart, AnnualLeaveChartAndTable } fro
 
 const TabAnualLeave = (props) => {
 
-    const { childOrganizationalUnit, defaultUnit, organizationalUnits, idUnits, date} = props
-
+    const { childOrganizationalUnit, defaultUnit, organizationalUnits, idUnits, search_data_props,employeeDashboardData} = props
+    
     return (
         <React.Fragment>
             <LazyLoadComponent>
@@ -22,14 +22,23 @@ const TabAnualLeave = (props) => {
                     nameData1='Số lượt nghỉ'
                     nameData2='Số giờ nghỉ phép'
                     nameChart={'Thống kê nghỉ phép'}
-                    date={date} />
+                    search_data_props={search_data_props}
+                    />
             </LazyLoadComponent>
             <LazyLoadComponent>
                 <AnnualLeaveChartAndTable
                     childOrganizationalUnit={childOrganizationalUnit}
                     defaultUnit={defaultUnit}
-                    organizationalUnits={organizationalUnits}>
-                </AnnualLeaveChartAndTable>
+                    search_data_props={search_data_props}
+                    organizationalUnits={organizationalUnits}
+                    chartData={
+                        {
+                            annualLeaveChartAndTableData:employeeDashboardData.annualLeaveChartAndTableData,
+                            beforeAndAfterOneWeeks:employeeDashboardData.beforeAndAfterOneWeeks,
+                            isLoading:employeeDashboardData.isLoading
+                        }
+                    }
+                />
             </LazyLoadComponent>
             <LazyLoadComponent>
                 <TrendOfOvertime
@@ -40,11 +49,17 @@ const TabAnualLeave = (props) => {
                     organizationalUnits={organizationalUnits}
                     nameData1='Số giờ tăng ca'
                     nameChart={'Xu hướng tăng ca'}
-                    date={date} />
+                    search_data_props={search_data_props}
+                />
             </LazyLoadComponent>
         </React.Fragment>
     );
 };
 
-const tabAnualLeave = connect(null, null)(withTranslate(TabAnualLeave));
+function mapState(state) {
+    const { employeeDashboardData } = state;
+    return { employeeDashboardData };
+}
+
+const tabAnualLeave = connect(mapState, null)(withTranslate(TabAnualLeave));
 export { tabAnualLeave as TabAnualLeave };

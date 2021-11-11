@@ -39,6 +39,8 @@ function AssetManagement(props) {
         tableId: tableId_constructor,
         code: "",
         assetName: "",
+        purchaseDateStart: null,
+        purchaseDateEnd: null,
         purchaseDate: null,
         disposalDate: null,
         status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : ["ready_to_use", "in_use", "broken", "lost", "disposed"],
@@ -50,6 +52,8 @@ function AssetManagement(props) {
         limit: limit_constructor,
         managedBy: props.managedBy ? props.managedBy : ''
     })
+
+    const [advancedSearch, setAdvancedSearch] = useState(false)
 
     const [selectedData, setSelectedData] = useState();
 
@@ -87,7 +91,7 @@ function AssetManagement(props) {
     }
 
     const { assetsManager, assetType, translate, user, isActive, department } = props;
-    const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
+    const { page, limit, currentRowView, status, currentRow, purchaseDateStart, purchaseDateEnd, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
 
     useEffect(() => {
         props.getAllAsset(state);
@@ -174,6 +178,30 @@ function AssetManagement(props) {
         setState({
             ...state,
             [name]: value
+        });
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    const handlePurchaseMonthStartChange = async (value) => {
+        if (!value) {
+            value = null
+        }
+
+        await setState({
+            ...state,
+            purchaseDateStart: value
+        });
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    const handlePurchaseMonthEndChange = async (value) => {
+        if (!value) {
+            value = null
+        }
+
+        await setState({
+            ...state,
+            purchaseDateEnd: value
         });
     }
 
@@ -287,6 +315,10 @@ function AssetManagement(props) {
             page: 0,
         });
         props.getAllAsset({ page: 0, ...state });
+    }
+
+    const handleAdvancedSearch = () => {
+        setAdvancedSearch(!advancedSearch);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -845,6 +877,8 @@ function AssetManagement(props) {
                         <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
                         <input type="text" className="form-control" name="assetName" onChange={handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                     </div>
+
+                    <a style={{ cursor: "pointer" }} title = "Tìm kiếm nâng cao"><i className="fa fa-filter fa-2x" style={{ marginLeft: 20 }}onClick={handleAdvancedSearch} /></a>
                 </div>
 
                 <div className="form-inline">
@@ -928,9 +962,35 @@ function AssetManagement(props) {
                         <input type="text" className="form-control" name="handoverUser" onChange={handleHandoverUserChange} placeholder={translate('asset.general_information.user')} autoComplete="off" />
                     </div>
                 </div>
+                 { advancedSearch &&
+                <div className="form-inline">
+                    {/* Ngày nhập từ*/}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('asset.general_information.purchase_date_start')}</label>
+                        <DatePicker
+                            id="purchase-month-start"
+                            dateFormat="day-month-year"
+                            value={purchaseDateStart}
+                            onChange={handlePurchaseMonthStartChange}
+                        />
+                    </div>
+
+                    {/* Ngày nhập đến*/}
+                    <div className="form-group">
+                        <label className="form-control-static" style={{ padding: 0 }}>{translate('asset.general_information.purchase_date_end')}</label>
+                        <DatePicker
+                            id="disposal-month-end"
+                            dateFormat="day-month-year"
+                            value={purchaseDateEnd}
+                            onChange={handlePurchaseMonthEndChange}
+                        />
+                    </div>
+                </div>
+                }
 
                 <div className="form-inline">
                     {/* Ngày nhập */}
+                    { !advancedSearch &&
                     <div className="form-group">
                         <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
                         <DatePicker
@@ -940,6 +1000,7 @@ function AssetManagement(props) {
                             onChange={handlePurchaseMonthChange}
                         />
                     </div>
+                    }
 
                     {/* Ngày Thanh lý */}
                     <div className="form-group">

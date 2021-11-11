@@ -127,6 +127,9 @@ exports.links = [
             { path: '/educationProgram/educationPrograms/:id', method: 'DELETE' },
             { path: '/educationProgram/educationPrograms/:id', method: 'PATCH' },
 
+            // Dashboard unit
+            { path: '/dashboard-unit/all-unit-dashboard-data',method: 'GET' },
+            
             { path: '/course/courses', method: 'GET' },
             { path: '/course/courses', method: 'POST' },
             { path: '/course/courses/:id', method: 'DELETE' },

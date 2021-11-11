@@ -34,6 +34,9 @@ import { employeeDashboardData } from '../modules/human-resource/employee-dashbo
 import { notifications } from '../modules/notification/redux/reducers';
 import { documents } from '../modules/document/redux/reducers';
 
+// dashboard-unit
+import { dashboardUnit } from '../modules/dashboard-unit/redux/reducers';
+
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
 import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
@@ -155,6 +158,9 @@ const appReducer = combineReducers({
     documents,
     notifications,
     auth,
+
+    // dashboard-unit
+    dashboardUnit,
 
     // hr-employee
     employeesInfo,

@@ -9,6 +9,10 @@ const PrivilegeApiSchema = new Schema({
     name: {
         type: String
     },
+    description: {
+        required: false,
+        type: String
+    },
     apis: [{
         path: {
             type: String,

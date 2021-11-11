@@ -227,22 +227,13 @@ function GoodCreateForm(props) {
     const isFormValidated = () => {
         let { name, code, baseUnit, category, materials, numberExpirationDate, type } = state;
         let result;
-        if (!type || type === "material") {
-            result = validateName(name, false) &&
-                validateCode(code, false) &&
-                validateBaseUnit(baseUnit, false) &&
-                validateCategory(category, false) &&
-                validateNumberExpirationDate(numberExpirationDate, false)
-        } else {
-            result = validateName(name, false) &&
-                validateCode(code, false) &&
-                validateBaseUnit(baseUnit, false) &&
-                validateCategory(category, false) &&
-                materials.length > 0 &&
-                validateNumberExpirationDate(numberExpirationDate, false)
-        }
+        result = validateName(name, false) &&
+            validateCode(code, false) &&
+            validateBaseUnit(baseUnit, false) &&
+            validateCategory(category, false) &&
+            (type && type === "product") ? materials.length > 0 : true &&
+            validateNumberExpirationDate(numberExpirationDate, false)
         return result;
-        // return true;
 
     };
 

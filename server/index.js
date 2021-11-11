@@ -123,6 +123,8 @@ router.use("/bills", require("./modules/production/warehouse/bill/bill.route"));
 router.use("/examples", require("./modules/example/example.route"));
 router.use("/documents", require("./modules/document/document.route"));
 
+router.use("/dashboard-unit", require("./modules/dashboard-unit/dashboardUnit.route"));
+
 // CRM
 app.use("/crm/customers", require("./modules/crm/customer/customer.route"));
 app.use("/crm/cares", require("./modules/crm/care/care.route"));

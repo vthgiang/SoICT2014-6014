@@ -1,57 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux"
 import { withTranslate } from "react-redux-multilingual"
 import arrayToTree from 'array-to-tree';
 
-import { taskManagementActions } from '../../task/task-management/redux/actions';
 
 import { DetailOfTaskDialogModal } from '../../kpi/statistic/component/detailOfTaskDialogModal'
 
 function StatisticsTaskUnits (props) {
     const { organizationalUnits, monthStatistics } = props
-    const { translate, tasks } = props
+    const { translate, tasks, chartData } = props
 
     const [ currentListTask, setCurrentListTask ] = useState([])
-    useEffect(() => {
-        let organizationalUnitIds = organizationalUnits?.map(item => item?._id)
-        props.getTaskInOrganizationUnitByMonth(organizationalUnitIds, monthStatistics, monthStatistics)
-    }, [JSON.stringify(props.organizationalUnits)])
 
     const handleShowTask = (tasks) => {
         setCurrentListTask(tasks)
     }
 
     const showNodeContent = (translate, data) => {
-        let totalPoint = 0, totalDays = 0;
-
-        // Loc CV theo don vi
         let currentMonth = new Date(monthStatistics)
         let nextMonth = new Date(monthStatistics)
         nextMonth.setMonth(nextMonth.getMonth() + 1)
-
-        if (data?.tasks?.length > 0) {
-            data.tasks.map(task => {
-                //  Loc danh gia theo thang
-                if (task?.evaluations?.length > 0) {
-                    task.evaluations.filter(evaluation => {
-                        if (new Date(evaluation.evaluatingMonth) < nextMonth && new Date(evaluation.evaluatingMonth) >= currentMonth) {
-                            return 1;
-                        }
-            
-                        return 0;
-                    }).map(eva => {
-                        let startDate = new Date(eva?.startDate)
-                        let endDate = new Date(eva?.endDate)
-
-                        let days = (endDate?.getTime() - startDate.getTime())/(24*3600*1000) 
-                        totalPoint = totalPoint + (eva?.results?.[0]?.automaticPoint ?? 0) * (days && !isNaN(days) ? days : 0)
-                        totalDays = totalDays + (days && !isNaN(days) ? days : 0)
-                    })
-                }
-            })
-        }
         
-        let pointShow = totalDays ? Math.round(totalPoint/totalDays) : null
+        let pointShow = data?.pointShow;
         let titleShow = translate('kpi.evaluation.dashboard.auto_point')
 
         return (
@@ -102,30 +72,9 @@ function StatisticsTaskUnits (props) {
         }
     }
 
-    let statisticsTaskUnits = []
-    let listTask = tasks?.organizationUnitTasks?.tasks
-
-    if (props.organizationalUnits?.length > 0) {
-        statisticsTaskUnits = props.organizationalUnits.map(unit => {
-            let tasks = listTask?.filter(task => unit?._id === task?.organizationalUnit?._id).map(item => {
-                return {
-                    ...item,
-                    detailOrganizationalUnit: [{
-                        name: item?.organizationalUnit?.name   // dùng cho modal hiển thị danh sách CV
-                    }]
-                }
-            })
-
-            return {
-                parent_id: unit?.parent,
-                id: unit?._id,
-                organizationalUnitName: unit?.name,
-                tasks: tasks
-            }
-        })
-    }
-
-    let treeTaskUnits = arrayToTree(statisticsTaskUnits);
+    let treeTaskUnits = [];
+    let statisticsTaskUnits = chartData?.statisticsTaskUnits;
+    if (statisticsTaskUnits && statisticsTaskUnits.length > 0 ) treeTaskUnits = arrayToTree(statisticsTaskUnits);
 
     return (
         <React.Fragment>
@@ -149,13 +98,5 @@ function StatisticsTaskUnits (props) {
     )
 }
 
-function mapState(state) {
-    const { tasks } = state
-    return { tasks }
-}
-const actions = {
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-}
-
-const connectedStatisticsTaskUnits = connect(mapState, actions)(withTranslate(StatisticsTaskUnits))
+const connectedStatisticsTaskUnits = connect(null, null)(withTranslate(StatisticsTaskUnits))
 export { connectedStatisticsTaskUnits as StatisticsTaskUnits }

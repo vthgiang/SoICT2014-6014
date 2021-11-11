@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../common-components';
 
 const ViewAllTaskUrgent = (props) => {
-    let taskUrgent = props.data;
+    let taskUrgent = props.chartData;
 
     taskUrgent = taskUrgent?.length > 0 && taskUrgent.reduce((groups, item) => {
         if (item?.organizationalUnit?.name) {

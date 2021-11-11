@@ -14,14 +14,14 @@ import 'c3/c3.css'
 import Swal from 'sweetalert2';
 
 const AnnualLeaveTrendsChart = (props) => {
-    const { translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData, date } = props;
+    const { translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData, search_data_props } = props;
 
     const [state, setState] = useState({
         countAnnuaLeave: true,
-        startDate: date.startDateAnnualLeaveTrendsChart,
-        startDateShow: date.startDateAnnualLeaveTrendsChart,
-        endDate: date.endDateAnnualLeaveTrendsChart,
-        endDateShow: date.endDateAnnualLeaveTrendsChart,
+        startDate: search_data_props.searchData.current.startDateAnnualLeaveTrendsChart,
+        startDateShow: search_data_props.searchData.current.startDateAnnualLeaveTrendsChart,
+        endDate: search_data_props.searchData.current.endDateAnnualLeaveTrendsChart,
+        endDateShow: search_data_props.searchData.current.endDateAnnualLeaveTrendsChart,
         organizationalUnits: idUnits ? idUnits : [],
         data1: employeeDashboardData.annualLeaveTrendChartData.data1 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1.data } : {ratioX: [], data: []},
         data2: employeeDashboardData.annualLeaveTrendChartData.data2 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2.data } : {ratioX: [], data: []},
@@ -92,7 +92,7 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             startDate: value
         })
-        props.date.handleChangeAnnualLeaveTrendsChartTime(value, endDate)
+        search_data_props.handleChangeSearchData('startDateAnnualLeaveTrendsChart', value)
     }
 
     /**
@@ -104,7 +104,7 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             endDate: value,
         })
-        props.date.handleChangeAnnualLeaveTrendsChartTime(startDate, value)
+        search_data_props.handleChangeSearchData('endDateAnnualLeaveTrendsChart', value)
     }
 
     /**
@@ -188,16 +188,7 @@ const AnnualLeaveTrendsChart = (props) => {
             width: "50%",
         })
     }
-    
-    useEffect(() => {
-        setState({
-            ...state,
-            startDate: date.startDateAnnualLeaveTrendsChart,
-            startDateShow: date.startDateAnnualLeaveTrendsChart,
-            endDate: date.endDateAnnualLeaveTrendsChart,
-            endDateShow: date.endDateAnnualLeaveTrendsChart,
-        })
-    }, [date.month]);
+
     return (
         <React.Fragment>
             <div className="box box-solid">
