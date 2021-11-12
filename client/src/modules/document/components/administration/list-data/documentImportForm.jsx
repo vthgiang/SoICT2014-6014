@@ -85,7 +85,6 @@ function DocumentImportForm(props) {
                     "effectiveDate": effectiveDate,
                     "expiredDate": expiredDate,
                     "category": x.category,
-                    "category": x.category,
                     "relationshipDescription": x.relationshipDescription,
                     "documentRelationshipList": [x.documentRelationshipList],
                     "roles": [x.roles],
@@ -137,13 +136,6 @@ function DocumentImportForm(props) {
             for (let i in value) {
                 let x = value[i];
                 let errorAlert = [];
-                // if (x.name === null) {
-                //     rowError = [...rowError, i + 1];
-                //     x = { ...x, error: true };
-                // }
-                // if (x.name === null) {
-                //     errorAlert = [errorAlert, "Tên danh mục không được để trống"];
-                // }
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
             }
