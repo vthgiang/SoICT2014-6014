@@ -186,6 +186,10 @@ const COMPONENTS = [{
     name: 'create-manufacturing-plan',
     description: 'Button tạo kế hoạch sản xuất',
     roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
     ],
     links: [
         '/manage-manufacturing-plan',
@@ -1419,7 +1423,9 @@ const LINKS = [{
     category: LINK_CATEGORY.MANUFACTURING.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
     ],
     components: getComponentsInLink('/manage-manufacturing-command'),
 },
