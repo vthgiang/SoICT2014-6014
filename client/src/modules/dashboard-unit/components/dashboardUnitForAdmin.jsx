@@ -103,7 +103,6 @@ function DashboardUnitForAdmin(props) {
         props.getAllUnit();
     }, [])
 
-
     useEffect(() => {
         if (department?.list?.length && !department?.isLoading) {
             let unit = department.list.map(item => item?._id)
@@ -470,6 +469,10 @@ function DashboardUnitForAdmin(props) {
         }
     }
 
+    const isLoading = (chartName) => {
+        return allUnitDashboard?.[chartName]?.isLoading
+    }
+
     return (
         <React.Fragment>
             <div className="qlcv" style={{ marginBottom: "10px" }}>
@@ -527,7 +530,7 @@ function DashboardUnitForAdmin(props) {
                                         <div className="col-md-12">
                                             <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                                 {
-                                                    allUnitDashboard.isLoading ? <p>{translate('general.loading')}</p>
+                                                    isLoading('urgent-task') ? <p>{translate('general.loading')}</p>
                                                         : allUnitDashboard?.['urgent-task']?.tasks?.length > 0
                                                             ? <div id="pieChartUrgent"></div>
                                                             : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
@@ -571,7 +574,7 @@ function DashboardUnitForAdmin(props) {
                                     <div className="col-md-12">
                                         <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                             {
-                                                allUnitDashboard.isLoading ?
+                                                isLoading('need-to-do-task') ?
                                                     <p>{translate('general.loading')}</p>
                                                     :
                                                     allUnitDashboard?.['need-to-do-task']?.tasks?.length > 0
@@ -585,7 +588,6 @@ function DashboardUnitForAdmin(props) {
                         </div>
                     </div>
                 </div>
-
                 <LazyLoadComponent>
                     <AnnualLeaveChartAndTable
                         defaultUnit={true}

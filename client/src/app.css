@@ -163,14 +163,20 @@ CSS cho bảng dữ liệu
 	/* Hight light dòng con trỏ đang trỏ tới */
 	background-color: #d7d6ee;
 }
-table thead tr th.resizing {
-	/* Màu header cột đang được Resize */
-	background-color: #d7d6ee;
-}
-table thead tr th:not(:last-child) {
-	/* Hiện con trỏ khi trỏ vào header bảng */
+
+table>thead>tr>th>div.resizeDiv{
+	/* Hiện con trỏ khi trỏ vào vào viền cột */
 	cursor: ew-resize;
+	width: 7px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
 }
+table>thead>tr>th>div.resizeDiv:hover{
+	/* Hiện viền cột cho người dùng nhận biết có thể resize cột đó */
+	border-right: 1px solid #303030;
+}
+
 td {
 	/* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
 	word-break: break-word;
@@ -183,7 +189,8 @@ table {
 .table > thead > tr > th {
 	/* Hiện thông báo không có dữ liệu */
 	vertical-align: top;
-	/* position: sticky;
+	position: sticky;
+	/*
     top: 0;
     background-color: #ffffff; */
 }

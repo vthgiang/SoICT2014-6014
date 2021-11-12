@@ -3542,7 +3542,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         };
     });
 
-
+    console.log("chartArr", chartArr)
     //data cho tổng quan công việc
     if (chartArr.includes('general-task-chart')) {
         userArray = await UserService._getAllUsersInOrganizationalUnits(portal, newDataUnit);
@@ -3641,7 +3641,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                 const totalTask = unit.totalTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
                 const taskFinished = unit.taskFinished?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
                 const taskInprocess = unit.taskInprocess?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
-                console.log("unit", confirmedTask)
                 // Thêm số công việc của cả phòng vào mảng dataTable
                 dataTable.push({
                     parent: true,
