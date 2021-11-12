@@ -16,9 +16,6 @@ function AdministrationDocumentDomains(props) {
         domainParent: [],
         deleteNode: [],
     })
-    // useEffect(() => {
-    //     props.getDepartment();
-    // }, [])
 
     const onChanged = (e, data) => {
         setState({

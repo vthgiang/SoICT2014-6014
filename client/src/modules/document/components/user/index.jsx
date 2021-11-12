@@ -2,13 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import UserDocumentsData from './documents';
-// import DocumentUserHistoryStatistics from './history-statistics';
-// import DocumentDownloaded from '../../components/user/history-statistics/documentDownloaded';
-// import DocumentCommon from '../../components/user/history-statistics/documentCommon';
-// import DocumentNew from '../../components/user/history-statistics/documentNew';
 import DocumentShow from './history-statistics/documentShow';
-
-import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components';
 
 function Document(props) {
     const { translate } = props;
@@ -25,7 +19,7 @@ function Document(props) {
                     <UserDocumentsData />
                 </div>
                 <div className="tab-pane" id="user-document-history-document-downloaded">
-                    <DocumentShow type="downloaded" type="downloaded" />
+                    <DocumentShow type="downloaded" />
                 </div>
                 <div className="tab-pane" id="user-document-history-document-common">
                     <DocumentShow type="common" typeId="common" />

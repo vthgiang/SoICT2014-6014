@@ -68,53 +68,6 @@ function DocumentInformation(props) {
             documentArchivedRecordPlaceManager: props.documentArchivedRecordPlaceManager
         })
     }, [props.documentId])
-    // useEffect(() => {
-
-    //     if (props.documentVersions.length > state.documentVersions.length) {
-    //         setState({
-    //             ...state,
-    //             documentId: props.documentId,
-    //             documentVersions: props.documentVersions,
-    //         })
-    //     }
-    // }, [props.documentVersions.length])
-
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (nextProps.documentId !== prevState.documentId) {
-    //         return {
-    //             ...prevState,
-    //             documentId: nextProps.documentId,
-    //             documentName: nextProps.documentName,
-    //             documentDescription: nextProps.documentDescription,
-    //             documentCategory: nextProps.documentCategory,
-    //             documentDomains: nextProps.documentDomains,
-    //             documentArchives: nextProps.documentArchives,
-    //             documentIssuingBody: nextProps.documentIssuingBody,
-    //             documentOfficialNumber: nextProps.documentOfficialNumber,
-    //             documentSigner: nextProps.documentSigner,
-
-    //             documentVersions: nextProps.documentVersions,
-
-    //             documentRelationshipDescription: nextProps.documentRelationshipDescription,
-    //             documentRelationshipDocuments: nextProps.documentRelationshipDocuments,
-
-    //             documentRoles: nextProps.documentRoles,
-    //             documentUserCanView: nextProps.documentUserCanView,
-
-    //             documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
-    //             documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
-    //             documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
-    //         }
-    //     } else if (nextProps.documentVersions.length > prevState.documentVersions.length) {
-    //         return {
-    //             ...prevState,
-    //             documentId: nextProps.documentId,
-    //             documentVersions: nextProps.documentVersions,
-    //         }
-    //     } else {
-    //         return null;
-    //     }
-    // }
 
     function requestDownloadDocumentFile(id, fileName, numberVersion) {
         props.downloadDocumentFile(id, fileName, numberVersion);
@@ -159,8 +112,7 @@ function DocumentInformation(props) {
     const userList = user.list.map(role => { return { value: role._id, text: role.name } });
     const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
     let roles = findDocumentRole(roleList, documentRoles);
-    // let users = findUser(userList, documentUserCanView);
-    // let users = findUser()
+
     let logs = documentLogs.reverse();
     return (
         <React.Fragment>
