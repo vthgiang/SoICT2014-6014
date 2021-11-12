@@ -10,8 +10,7 @@ import { CustomLegendC3js } from '../../../../common-components';
 import { customAxisC3js } from '../../../../helpers/customAxisC3js';
 
 const LoadTaskOrganizationChart = (props) => {
-    const { translate, tasks } = props
-    const { taskDashboardCharts } = tasks
+    const { translate,chartData } = props
     const { startMonthTitle, endMonthTitle, units, idsUnit, typeChart } = props;
 
     const [state, setState] = useState({
@@ -24,13 +23,13 @@ const LoadTaskOrganizationChart = (props) => {
 
     useEffect(() => {
         let data = getData("load-task-organization-chart")
-        if (data)
+        if (data?.legend && !data.isLoading)
             setState({
                 ...state,
                 dataChart: data.dataChart,
                 legend: data.legend
             })
-    }, [JSON.stringify(taskDashboardCharts?.["load-task-organization-chart"])])
+    }, [JSON.stringify(chartData?.["load-task-organization-chart"])])
 
     useEffect(() => {
         if (typeChart === "followTime") {
@@ -42,7 +41,7 @@ const LoadTaskOrganizationChart = (props) => {
 
     function getData(chartName) {
         let dataChart;
-        let data = taskDashboardCharts?.[chartName]
+        let data = chartData?.[chartName]
         if (data) {
             dataChart = data
         }
@@ -114,7 +113,7 @@ const LoadTaskOrganizationChart = (props) => {
     const barChartFollowUnit = () => {
         let dataChart = [translate('task.task_management.load_task')]
         let titleX = ["x"]
-        let { data } = state
+        let data  = state.dataChart;
         if (data?.length > 0) {
             data.map(item => {
                 titleX.push(item?.[0])
@@ -223,19 +222,20 @@ const LoadTaskOrganizationChart = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    {state?.dataChart?.length > 0 ?
-                        <section id={"weightTaskOrganizationChart"} className="c3-chart-container">
-                            <div ref={refMultiLineChart}></div>
-                            {typeChart === "followTime"
-                                && <CustomLegendC3js
-                                    chart={chart.current}
-                                    chartId={"weightTaskOrganizationChart"}
-                                    legendId={"weightTaskOrganizationChartLegend"}
-                                    title={`${translate('general.list_unit')} (${legend?.length > 0 ? legend?.length : 0})`}
-                                    dataChartLegend={legend && legend}
-                                />
-                            }
-                        </section>
+                    {chartData?.isLoading? <div>{translate('general.loading')}</div> :
+                        state?.dataChart?.length > 0 ?
+                            <section id={"weightTaskOrganizationChart"} className="c3-chart-container">
+                                <div ref={refMultiLineChart}></div>
+                                {typeChart === "followTime"
+                                    && <CustomLegendC3js
+                                        chart={chart.current}
+                                        chartId={"weightTaskOrganizationChart"}
+                                        legendId={"weightTaskOrganizationChartLegend"}
+                                        title={`${translate('general.list_unit')} (${legend?.length > 0 ? legend?.length : 0})`}
+                                        dataChartLegend={legend && legend}
+                                    />
+                                }
+                            </section>
                         : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                     }
                 </div>

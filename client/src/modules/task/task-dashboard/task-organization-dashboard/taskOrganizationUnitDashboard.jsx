@@ -588,6 +588,7 @@ function TaskOrganizationUnitDashboard(props) {
                                                     getUnitName={getUnitName}
                                                     showUnitTask={showUnitGeneraTask}
                                                     typeChart={"followTime"}
+                                                    chartData={taskDashboardCharts}
                                                 />
 
                                                 :
