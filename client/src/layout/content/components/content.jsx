@@ -41,87 +41,100 @@ class Content extends Component {
         return result;
     }
 
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
 
-            var tableHeadings = [];
-            var originalHeadingWidths = [];
-            var resizingIndex = -1;
-            var startX = undefined;
+    createResizableColumn = (currentCol, nextCol, resizer) => {
+        let x = 0;
+        let currentColWidth = 0;
+        let nextColWidth = 0;
+        const MINIMUM_WIDTH = 60;
 
-            window.$("table thead tr th:not(:last-child)").on("touchstart mousedown", function (e) {
-                pressed = true;
+        // Không cho select text khi đang resize column
+        const disableSelect = (event) => {
+            event.preventDefault();
+        }
+    
+        const mouseDownHandler = function (e) {
+            x = e.clientX;
+    
+            const styles = window.getComputedStyle(currentCol);
+            currentColWidth = parseInt(window.getComputedStyle(currentCol).width, 10);
+            nextColWidth = parseInt(window.getComputedStyle(nextCol).width, 10);
+            
+            document.addEventListener('mousemove', disableSelect);
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+    
+            resizer.classList.add('resizing');
+        };
+    
+        const mouseMoveHandler = function (e) {
+            const dx = e.clientX - x;
+            if ( nextColWidth - dx > MINIMUM_WIDTH && currentColWidth + dx > MINIMUM_WIDTH) { // Độ rộng mỗi cột tối thiểu 60px
+                currentCol.style.width = `${currentColWidth + dx}px`;
+                nextCol.style.width = `${nextColWidth - dx}px`;
+            }
+        };
+    
+        const mouseUpHandler = function () {
+            resizer.classList.remove('resizing');
+            document.removeEventListener('mousemove', disableSelect);
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        };
+    
+        resizer.addEventListener('mousedown', mouseDownHandler);
+    };
 
-                // Touch or mouse
-                startX = (e.changedTouches === undefined) ? e.pageX : e.changedTouches[0].pageX;
+    // Thêm resizer vào mỗi cột
+    createResizer = (table) => {
+        const cols = table.querySelectorAll("thead>tr>th");
+        const tableHeight = `${table.offsetHeight}px`;
+        for (let i = 0; i < cols.length - 1; ++i) {
+            let currentCol = cols[i];
+            let nextCol = cols[i+1];
 
-                let currentTH = window.$(this);
-                window.$(currentTH).addClass("resizing");
-                tableHeadings = window.$(currentTH)[0].parentNode.childNodes;
+            const resizer = document.createElement("div");
+            resizer.classList.add("resizeDiv");
+            resizer.style.height = tableHeight;
+    
+            currentCol.appendChild(resizer);
+            
+            this.createResizableColumn(currentCol, nextCol, resizer);
+        };
+        console.log("resizer created");
+    }
 
-                // Find the index of resizing column
-                for (let i = 0; i < tableHeadings.length; ++i) {
-                    if (tableHeadings[i] === window.$(currentTH)[0]) {
-                        resizingIndex = i;
-                        break;
-                    }
-                }
+    removeAllResizer = () => {
+        const resizers = window.$("table>thead>tr>th>div.resizeDiv");
+        [].forEach.call(resizers, (resizer) => {
+            resizer.remove();
+            console.log("resizer removed");
+        })
+    }
 
-                // Save the current widths of all columns
-                for (let i = 0; i < tableHeadings.length; ++i) {
-                    originalHeadingWidths[i] = window.$(tableHeadings[i]).width()
-                }
-            });
-
-            window.$("table thead tr th:not(:last-child)").on("touchmove mousemove", function (e) {
-                if (pressed) {
-                    let MINIMUM_WIDTH = 40;
-
-                    /* Kích thước cột hiện tại được mượn/cho từ kích thước cột kế tiếp
-                     * Điều kiện là cột hiện tại và cột kế tiếp luôn có kích thước tối thiểu nào đó
-                     */
-                    let additionalWidth = ((e.changedTouches === undefined) ? e.pageX : e.changedTouches[0].pageX) - startX;
-
-                    if (additionalWidth > originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH) {
-                        additionalWidth = originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH;
-                    }
-                    if (originalHeadingWidths[resizingIndex] + additionalWidth < MINIMUM_WIDTH) {
-                        additionalWidth = MINIMUM_WIDTH - originalHeadingWidths[resizingIndex];
-                    }
-
-                    // Cập nhật kích thước cột hiện tại và cột kế tiếp
-                    window.$(tableHeadings[resizingIndex]).width(originalHeadingWidths[resizingIndex] + additionalWidth);
-                    window.$(tableHeadings[resizingIndex + 1]).width(originalHeadingWidths[resizingIndex + 1] - additionalWidth);
-
-                    // Giữ nguyên kích thước các cột còn lại (Khi bảng có nhiều cột, resize 1 cột sẽ làm kích thước các cột khác sẽ bị ảnh hưởng)
-                    for (let i = 0; i < tableHeadings.length; ++i) {
-                        if (i !== resizingIndex && i !== resizingIndex + 1)
-                            window.$(tableHeadings[i]).width(originalHeadingWidths[i]);
-                    }
-                }
-            });
-
-            window.$("table thead tr th:not(:last-child)").on("mouseup touchend", function () {
-                if (pressed) {
-                    window.$(tableHeadings[resizingIndex]).removeClass("resizing");
-                    pressed = false;
-                }
-            });
+    // Duyệt từng bảng, thêm resizer vào các cột của bảng đó
+    createResizableTable = () => {
+        const tables = window.$("table");
+        [].forEach.call(tables, (table) => {
+            this.createResizer(table)
         });
     }
 
     adjustSize = () => {
         let headings = window.$("table thead tr th");
         for (let i = 0; i < headings.length; ++i) {
-            if (!window.$(headings[i]).hasClass("col-fixed")) { // RIêng cột có class col-fixed sẽ không xóa thuộc tính width
+            if (!window.$(headings[i]).hasClass("col-fixed")) { // Riêng cột có class col-fixed sẽ không xóa thuộc tính width
                 window.$(headings[i]).width("");
             }
         }
     }
 
+    componentWillUpdate() {
+        this.removeAllResizer(); // Xoá resizer mỗi khi update lại để không tạo nhiều resizer
+    }
+
     componentDidUpdate() {
-        this.handleResizeColumn();
+        this.createResizableTable();
         this.handleDataTable();
     }
 
