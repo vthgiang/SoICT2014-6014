@@ -300,7 +300,6 @@ exports.downloadDocumentFileScan = async (req, res) => {
     }
 };
 
-
 exports.downloadAllFileOfDocument = async (req, res) => {
     try {
         const rootPath = await DocumentServices.downloadAllFileOfDocument(
@@ -692,6 +691,7 @@ exports.importDocumentDomain = async (req, res) => {
         });
     }
 };
+
 exports.getDocumentsThatRoleCanView = async (req, res) => {
     try {
         const docs = await DocumentServices.getDocumentsThatRoleCanView(
@@ -760,10 +760,10 @@ exports.getDocumentsUserStatistical = async (req, res) => {
     //     });
     // }
 };
+
 /**
  * Kho lưu trữ vật lí
  */
-
 exports.getDocumentArchives = async (req, res) => {
     try {
         const archive = await DocumentServices.getDocumentArchives(
@@ -950,7 +950,6 @@ exports.importDocumentArchive = async (req, res) => {
         });
     }
 };
-
 
 exports.chartDataDocument = async (req, res) => {
 
