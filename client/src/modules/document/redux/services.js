@@ -237,6 +237,7 @@ function createDocumentDomain(data) {
         "document"
     );
 }
+
 function importDocumentCategory(data) {
     return sendRequest(
         {
