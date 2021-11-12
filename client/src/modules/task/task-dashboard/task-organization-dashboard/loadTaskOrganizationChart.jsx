@@ -222,7 +222,7 @@ const LoadTaskOrganizationChart = (props) => {
                     </div>
                 </div>
                 <div className="box-body">
-                    {chartData?.isLoading? <div>{translate('general.loading')}</div> :
+                    {chartData?.['load-task-organization-chart']?.isLoading? <div>{translate('general.loading')}</div> :
                         state?.dataChart?.length > 0 ?
                             <section id={"weightTaskOrganizationChart"} className="c3-chart-container">
                                 <div ref={refMultiLineChart}></div>
