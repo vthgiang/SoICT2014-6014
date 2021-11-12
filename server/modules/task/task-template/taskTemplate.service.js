@@ -544,7 +544,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
             data[i].collaboratedWithOrganizationalUnits = undefined;
         }
 
-        let result = await this.createTaskTemplate(portal, data[i]);
+        let result = await this.createTaskTemplate(portal, data[i], id);
         results = [...results, result];
     };
     return results;
