@@ -49,7 +49,7 @@ class TabIntegratedStatistics extends Component {
     }
 
     render() {
-        const { translate, timesheets, discipline, department } = this.props;
+        const { translate, timesheets, discipline, department, employeeDashboardData } = this.props;
         const { month, listEmployee, listAllEmployees, organizationalUnits } = this.props;
         const { viewOverTime, viewHoursOff } = this.state;
 
@@ -296,8 +296,8 @@ class TabIntegratedStatistics extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {discipline.totalListCommendation.length !== 0 &&
-                                                discipline.totalListCommendation.map((x, index) => index < 5 ? (
+                                            {employeeDashboardData.commendation?.totalList?.length !== 0 &&
+                                                employeeDashboardData.commendation?.totalList?.map((x, index) => index < 5 ? (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.employee.fullName}</td>
@@ -308,7 +308,7 @@ class TabIntegratedStatistics extends Component {
                                         </tbody>
                                     </table>
                                     {
-                                        (!discipline.totalListCommendation || discipline.totalListCommendation.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        (!employeeDashboardData.commendation?.totalList || employeeDashboardData.commendation?.totalList?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                     }
                                 </div>
                                 <div className="box-footer text-center">
@@ -346,8 +346,8 @@ class TabIntegratedStatistics extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {discipline.totalListDiscipline.length !== 0 &&
-                                                discipline.totalListDiscipline.map((x, index) => index < 5 ? (
+                                            {employeeDashboardData.discipline?.listDiscipline?.length !== 0 &&
+                                                employeeDashboardData.discipline?.listDiscipline?.map((x, index) => index < 5 ? (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.employee.fullName}</td>
@@ -358,7 +358,7 @@ class TabIntegratedStatistics extends Component {
                                         </tbody>
                                     </table>
                                     {
-                                        (!discipline.totalListDiscipline || discipline.totalListDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        (!employeeDashboardData.discipline?.listDiscipline || employeeDashboardData.discipline?.listDiscipline?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                     }
                                 </div>
                                 <div className="box-footer text-center">
@@ -474,8 +474,8 @@ class TabIntegratedStatistics extends Component {
                 </div>
                 <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} />
                 <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên`} />
-                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng${month}`} />
-                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật ${month}`} />
+                <ViewAllCommendation dataCommendation={employeeDashboardData.commendation?.totalList?.length > 0 ? employeeDashboardData.commendation?.totalList : []} title={`Tổng hợp khen thưởng${month}`} />
+                <ViewAllDiscipline dataDiscipline={employeeDashboardData.discipline?.listDisciplines?.length > 0 ? employeeDashboardData.discipline.listDisciplines : []} title={`Tổng hợp kỷ luật ${month}`} />
                 {
                     viewOverTime &&
                     <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} />
@@ -490,8 +490,8 @@ class TabIntegratedStatistics extends Component {
 }
 
 function mapState(state) {
-    const { timesheets, discipline, department, tasks } = state;
-    return { timesheets, discipline, department, tasks };
+    const { timesheets, discipline, department, tasks, employeeDashboardData } = state;
+    return { timesheets, discipline, department, tasks, employeeDashboardData };
 }
 
 const tabIntegratedStatistics = connect(mapState, null)(withTranslate(TabIntegratedStatistics));

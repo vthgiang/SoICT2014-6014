@@ -8,7 +8,7 @@ import { DetailOfTaskDialogModal } from '../../kpi/statistic/component/detailOfT
 
 function StatisticsTaskUnits (props) {
     const { organizationalUnits, monthStatistics } = props
-    const { translate, tasks, chartData } = props
+    const { translate, chartData } = props
 
     const [ currentListTask, setCurrentListTask ] = useState([])
 
@@ -79,7 +79,7 @@ function StatisticsTaskUnits (props) {
     return (
         <React.Fragment>
             {
-                tasks?.isLoading
+                chartData?.isLoading
                 ? <div>{translate('general.loading')}</div>
                 : treeTaskUnits 
                     ? treeTaskUnits.map((tree, index) =>

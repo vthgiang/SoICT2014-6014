@@ -4,6 +4,7 @@ import './selectBox.css';
 class SelectBox extends Component {
     constructor(props) {
         super(props);
+        this.select = React.createRef([])
         this.state = {
             searchText: "",
             searching: false,
@@ -34,7 +35,7 @@ class SelectBox extends Component {
                     return;
 
                 let searchBox = window.$("#" + id).parent().find('input.select2-search__field');
-                let previouslySelectedOptions = [].filter.call(this.refs.select.options, o => o.selected).map(o => {
+                let previouslySelectedOptions = [].filter.call(this.select.current.options, o => o.selected).map(o => {
                     return { text: o.text, value: o.value };
                 });
 
@@ -94,7 +95,7 @@ class SelectBox extends Component {
 
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
-        let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
+        let value = [].filter.call(this.select.current.options, o => o.selected).map(o => o.value);
         return value;
     }
 
@@ -143,7 +144,13 @@ class SelectBox extends Component {
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
-            let value = [].filter.call(this.refs.select.options, o => o.selected).map(o => o.value);
+            let optionsCollection = this.select?.current?.options
+            let value;
+            if (optionsCollection) {
+                value = [].filter.call(optionsCollection, o => o.selected).map(o => o.value);
+            } else {
+                value = []
+            }
             this.setState(state => {
                 return {
                     ...state,
@@ -248,7 +255,7 @@ class SelectBox extends Component {
         return (
             <React.Fragment>
                 <div className="select2">
-                    <select className={className} style={style} ref="select" value={this.formatValue(value, multiple)} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
+                    <select className={className} style={style} ref={this.select} value={this.formatValue(value, multiple)} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
                         {!searching &&
                             <React.Fragment>
                                 {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
