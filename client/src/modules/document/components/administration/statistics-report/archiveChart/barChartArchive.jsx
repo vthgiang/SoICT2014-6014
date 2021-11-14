@@ -84,7 +84,6 @@ function BarChartArchive(props){
             }
         });
     }
-        // barChartDocumentInArchive();
         return (
             <React.Fragment>
                 <div ref={refArchives}></div>

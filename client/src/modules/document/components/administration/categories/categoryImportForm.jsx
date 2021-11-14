@@ -1,7 +1,6 @@
 import React, { Component, useState } from 'react';
 import { configCategory, exportCategory } from './fileConfigDocumentCategory'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
-//import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';

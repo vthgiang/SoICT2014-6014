@@ -1,10 +1,5 @@
-
 import React, { Component, useState } from 'react';
-import { connect } from 'react-redux';
-
 import * as d3 from 'd3-format';
-
-import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { Tree } from '../../../../../../common-components';
 import BarChartDomain from './barChartDomain';
 

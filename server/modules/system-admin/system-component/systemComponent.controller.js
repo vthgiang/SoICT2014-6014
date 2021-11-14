@@ -13,10 +13,10 @@ exports.getAllSystemComponents = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'get_components_default_faile');
+        Logger.error(req.user.email, 'get_components_default_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_components_default_faile'],
+            messages: Array.isArray(error) ? error : ['get_components_default_failure'],
             content: error
         });
     }
@@ -37,10 +37,10 @@ exports.createSystemComponent = async (req, res) => {
         });
     } catch (error) {
         console.log(error)
-        Logger.error(req.user.email, 'create_system_component_faile');
+        Logger.error(req.user.email, 'create_system_component_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_system_component_faile'],
+            messages: Array.isArray(error) ? error : ['create_system_component_failure'],
             content: error
         });
     }
@@ -58,10 +58,10 @@ exports.getSystemComponent = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'get_system_component_faile');
+        Logger.error(req.user.email, 'get_system_component_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_system_component_faile'],
+            messages: Array.isArray(error) ? error : ['get_system_component_failure'],
             content: error
         });
     }
@@ -81,10 +81,10 @@ exports.editSystemComponent = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'edit_system_component_faile');
+        Logger.error(req.user.email, 'edit_system_component_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['edit_system_component_faile'],
+            messages: Array.isArray(error) ? error : ['edit_system_component_failure'],
             content: error
         });
     }
@@ -102,10 +102,10 @@ exports.deleteSystemComponent = async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.user.email, 'delete_system_component_faile');
+        Logger.error(req.user.email, 'delete_system_component_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_system_component_faile'],
+            messages: Array.isArray(error) ? error : ['delete_system_component_failure'],
             content: error
         });
     }

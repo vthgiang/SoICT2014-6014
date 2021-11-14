@@ -23,7 +23,7 @@ function getBackups() {
         })
         .catch(error => {
             dispatch({
-                type: SystemSettingConstants.GET_BACKUPS_FAILE,
+                type: SystemSettingConstants.GET_BACKUPS_FAILURE,
                 payload: error
             }) 
         })
@@ -44,7 +44,7 @@ function getConfigBackup() {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.GET_CONFIG_BACKUP_FAILE,
+                    type: SystemSettingConstants.GET_CONFIG_BACKUP_FAILURE,
                     payload: error
                 }) 
             })
@@ -64,7 +64,7 @@ function deleteBackup(version) {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.DELETE_BACKUP_FAILE,
+                    type: SystemSettingConstants.DELETE_BACKUP_FAILURE,
                     payload: error
                 })
                 
@@ -85,7 +85,7 @@ function createBackup() {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.CREATE_BACKUP_FAILE,
+                    type: SystemSettingConstants.CREATE_BACKUP_FAILURE,
                     payload: error
                 })
                 
@@ -106,7 +106,7 @@ function configBackup(params, data=undefined) {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.CONFIG_BACKUP_FAILE,
+                    type: SystemSettingConstants.CONFIG_BACKUP_FAILURE,
                     payload: error
                 })
                 
@@ -127,7 +127,7 @@ function restore(version) {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.RESTORE_FAILE,
+                    type: SystemSettingConstants.RESTORE_FAILURE,
                     payload: error
                 })
                 

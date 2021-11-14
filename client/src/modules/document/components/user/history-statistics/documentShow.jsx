@@ -24,8 +24,6 @@ function DocumentShow(props) {
     useEffect(() => {
         props.getAllRoles();
         props.getAllDepartments();
-        // props.getAllDocuments(getStorage('currentRole'));
-        // props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
         props.getUserDocumentStatistics(getStorage('currentRole'), type, { page: state.page, limit: state.limit });
     }, [])
 

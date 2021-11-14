@@ -45,13 +45,13 @@ export function systemLinks (state = initState, action) {
                 isLoading: true
             };
 
-        case SystemLinkConstants.GET_LINKS_DEFAULT_FAILE:
-            case SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE:
-            case SystemLinkConstants.SHOW_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.CREATE_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.EDIT_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.DELETE_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_FAILURE:
+            case SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILURE:
+            case SystemLinkConstants.SHOW_LINK_DEFAULT_FAILURE:
+            case SystemLinkConstants.CREATE_LINK_DEFAULT_FAILURE:
+            case SystemLinkConstants.EDIT_LINK_DEFAULT_FAILURE:
+            case SystemLinkConstants.DELETE_LINK_DEFAULT_FAILURE:
+            case SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILURE:
                 return {
                     ...state,
                     isLoading: false

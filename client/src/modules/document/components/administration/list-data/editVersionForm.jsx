@@ -16,13 +16,7 @@ function EditVersionForm(props) {
             effectiveDate: props.effectiveDate,
             expiredDate: props.expiredDate,
             documentFile: props.documentFile,
-            // file: props.documentFile[0].file,
-            // urlFile: props.documentFile[0].urlFile,
-            // fileUpload: props.documentFile[0].fileUpload,
             documentFileScan:props.documentFileScan,
-            // fileScan: props.documentFileScan[0].file,
-            // urlFileScan: props.documentFileScan[0].urlFile,
-            // fileScanUpload: props.documentFileScan[0].fileUpload,
         })
     }, [props.index])
     const handleChangeVersionName = (e) => {

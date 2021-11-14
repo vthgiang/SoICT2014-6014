@@ -193,25 +193,7 @@ function EditVersion(props) {
 
         })
     }, [props.versionId || props.documentId])
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (nextProps.versionId !== prevState.versionId
-    //     ) {
-    //         return {
-    //             ...prevState,
-    //             documentId: nextProps.documentId,
-    //             versionId: nextProps.versionId,
-    //             versionName: nextProps.versionName,
-    //             issuingDate: nextProps.issuingDate,
-    //             effectiveDate: nextProps.effectiveDate,
-    //             expiredDate: nextProps.expiredDate,
-    //             documentFile: nextProps.documentFile,
-    //             documentFileScan: nextProps.documentFileScan,
-    //         }
-    //     }
-    //     else {
-    //         return null;
-    //     }
-    // }
+
     const { translate } = props;
     const { versionId, versionName, issuingDate, effectiveDate, expiredDate,documentFile,documentFileScan } = state;
     return (

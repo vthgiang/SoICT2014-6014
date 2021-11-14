@@ -97,7 +97,7 @@ exports.editXmlDiagram = async (req, res) => {
 		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
 		res.status(400).json({
 			success: false,
-			messages: ['edit_fail'],
+			messages: ['edit_failure'],
 			content: error
 		});
 	}
@@ -120,7 +120,7 @@ exports.deleteXmlDiagram = async (req, res) => {
 		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
 		res.status(400).json({
 			success: false,
-			messages: ['delete_fail'],
+			messages: ['delete_failure'],
 			content: error
 		});
 	}
@@ -139,7 +139,7 @@ exports.deleteTaskProcess = async (req, res) => {
 		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
 		res.status(400).json({
 			success: false,
-			messages: ['delete_fail'],
+			messages: ['delete_failure'],
 			content: error
 		});
 	}
@@ -206,7 +206,7 @@ exports.createTaskByProcess = async (req, res) => {
 		await Logger.error(req.user.email, `create_task_by_process`, req.portal);
 		res.status(400).json({
 			success: false,
-			messages: ['create_task_by_process_fail'],
+			messages: ['create_task_by_process_failure'],
 			content: error,
 		});
 	}
@@ -227,10 +227,10 @@ exports.getAllTaskProcess = async (req, res) => {
 			content: data,
 		});
 	// } catch (error) {
-	// 	await Logger.error(req.user.email, `get_all_task_process_fail`, req.portal);
+	// 	await Logger.error(req.user.email, `get_all_task_process_failure`, req.portal);
 	// 	res.status(400).json({
 	// 		success: false,
-	// 		messages: ['get_all_task_process_fail'],
+	// 		messages: ['get_all_task_process_failure'],
 	// 		content: error,
 	// 	});
 	// }
@@ -242,6 +242,8 @@ exports.getAllTaskProcess = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
+
+
 exports.updateDiagram = async (req, res) => {
 	try {
 		var data = await TaskProcessService.updateDiagram(req.portal, req.params, req.body);
@@ -255,7 +257,7 @@ exports.updateDiagram = async (req, res) => {
 		await Logger.error(req.user.email, `update diagram`, req.portal);
 		res.status(400).json({
 			success: false,
-			messages: ['update_task_process_fail'],
+			messages: ['update_task_process_failure'],
 			content: error,
 		});
 	}
@@ -280,17 +282,21 @@ exports.editProcessInfo = async (req, res) => {
 	// 	await Logger.error(req.user.email, `update info process`, req.portal);
 	// 	res.status(400).json({
 	// 		success: false,
-	// 		messages: ['edit_info_process_fail'],
+	// 		messages: ['edit_info_process_failure'],
 	// 		content: error,
 	// 	});
 	// }
 }
+
+
 
 /**
  * impoort file excel mẫu quy trình
  * @param {*} req 
  * @param {*} res 
  */
+
+
 exports.importProcessTemplate = async (req, res) => {
 	// try {
 		let result = await TaskProcessService.importProcessTemplate(req.portal, req.body.data, req.body.idUser);
@@ -304,7 +310,7 @@ exports.importProcessTemplate = async (req, res) => {
 	// 	await Logger.error(req.user.email, `import process`, req.portal);
 	// 	res.status(400).json({
 	// 		success: false,
-	// 		messages: ['import_process_fail'],
+	// 		messages: ['import_process_failure'],
 	// 		content: error,
 	// 	});
 	// }

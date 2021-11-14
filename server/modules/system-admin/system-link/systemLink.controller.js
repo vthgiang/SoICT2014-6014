@@ -13,10 +13,10 @@ exports.getAllSystemLinks = async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.user.email, 'get_links_default_faile');
+        Logger.error(req.user.email, 'get_links_default_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_links_default_faile'],
+            messages: Array.isArray(error) ? error : ['get_links_default_failure'],
             content: error
         });
     }
@@ -34,10 +34,10 @@ exports.getAllSystemLinkCategories = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'get_links_default_categories_faile');
+        Logger.error(req.user.email, 'get_links_default_categories_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_links_default_categories_faile'],
+            messages: Array.isArray(error) ? error : ['get_links_default_categories_failure'],
             content: error
         });
     }
@@ -56,10 +56,10 @@ exports.createSystemLink = async (req, res) => {
             content: data
         });
     } catch (error) {
-        Logger.error(req.user.email, 'create_system_link_faile');
+        Logger.error(req.user.email, 'create_system_link_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_system_link_faile'],
+            messages: Array.isArray(error) ? error : ['create_system_link_failure'],
             content: error
         });
     }
@@ -77,10 +77,10 @@ exports.getSystemLink = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'show_link_default_faile');
+        Logger.error(req.user.email, 'show_link_default_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['show_link_default_faile'],
+            messages: Array.isArray(error) ? error : ['show_link_default_failure'],
             content: error
         });
     }
@@ -101,10 +101,10 @@ exports.editSystemLink = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'edit_system_link_faile');
+        Logger.error(req.user.email, 'edit_system_link_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['edit_system_link_faile'],
+            messages: Array.isArray(error) ? error : ['edit_system_link_failure'],
             content: error
         });
     }
@@ -121,10 +121,10 @@ exports.deleteSystemLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        Logger.error(req.user.email, 'delete_system_link_faile');
+        Logger.error(req.user.email, 'delete_system_link_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_system_link_faile'],
+            messages: Array.isArray(error) ? error : ['delete_system_link_failure'],
             content: error
         });
     }

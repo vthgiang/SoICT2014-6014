@@ -106,11 +106,11 @@ export function company(state = initState, action) {
                 }
             }
 
-        // component, link faile company (4)
-        case CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILE:
-        case CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILE:
-        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE:
-        case CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE:
+        // component, link FAILURE company (4)
+        case CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILURE:
+        case CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILURE:
+        case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILURE:
+        case CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILURE:
             return {
                 ...state,
                 item: {
@@ -122,10 +122,10 @@ export function company(state = initState, action) {
                 }
             }
 
-        case CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILE:
-        case CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE:
-        case CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILE:
-        case CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILE:
+        case CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILURE:
+        case CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILURE:
+        case CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILURE:
+        case CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILURE:
             return {
                 ...state,
                 item: {
@@ -321,10 +321,10 @@ export function company(state = initState, action) {
             state.item.components.isLoading = false;
             return {...state};
 
-        case CompanyConstants.GET_COMPANIES_FAILE:
-        case CompanyConstants.GET_COMPANIES_PAGINATE_FAILE:
-        case CompanyConstants.EDIT_COMPANY_FAILE:
-        case CompanyConstants.CREATE_COMPANY_FAILE:
+        case CompanyConstants.GET_COMPANIES_FAILURE:
+        case CompanyConstants.GET_COMPANIES_PAGINATE_FAILURE:
+        case CompanyConstants.EDIT_COMPANY_FAILURE:
+        case CompanyConstants.CREATE_COMPANY_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -356,9 +356,9 @@ export function company(state = initState, action) {
                 importConfiguration:action.payload,
                 isLoading: false
             };
-        case CompanyConstants.GET_IMPORT_CONFIGURATION_FAILE:
-        case CompanyConstants.ADD_IMPORT_CONFIGURATION_FAILE:
-        case CompanyConstants.EDIT_IMPORT_CONFIGURATION_FAILE:
+        case CompanyConstants.GET_IMPORT_CONFIGURATION_FAILURE:
+        case CompanyConstants.ADD_IMPORT_CONFIGURATION_FAILURE:
+        case CompanyConstants.EDIT_IMPORT_CONFIGURATION_FAILURE:
             return {
                 ...state,
                 isLoading: false,

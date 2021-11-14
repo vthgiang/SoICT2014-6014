@@ -13,6 +13,7 @@ const data = [
         path: '/files'
     }
 ];
+// Tài liệu văn vản (Phần cho nhân viên)
 router.get("/documents/:id/download-file", auth, DocumentController.downloadDocumentFile);
 router.get("/documents/:id/download-file-scan", auth, DocumentController.downloadDocumentFileScan);
 router.get("/documents/downloadFile", auth, DocumentController.downloadAllFileOfDocument);

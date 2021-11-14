@@ -121,7 +121,6 @@ function BarChartDomain(props) {
     useMemo(() => {
         barChartDocumentInDomain();
     }, [props.domains, props.documents])
-    // barChartDocumentInDomain();
     return (
         <React.Fragment>
             <div ref={refDomain}></div>

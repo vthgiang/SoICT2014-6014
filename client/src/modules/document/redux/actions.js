@@ -192,6 +192,7 @@ function importDocument(data) {
             });
     };
 }
+
 function downloadDocumentFile(id, fileName, numberVersion) {
     return (dispatch) => {
         dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST });
@@ -231,7 +232,6 @@ function downloadDocumentFileScan(id, fileName, numberVersion) {
             });
     };
 }
-
 
 function downloadAllFileOfDocument(data) {
     console.log('data',data)
@@ -347,6 +347,7 @@ function deleteDocumentCategory(id) {
             });
     };
 }
+
 function importDocumentCategory(data) {
     return (dispatch) => {
         dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_REQUEST });

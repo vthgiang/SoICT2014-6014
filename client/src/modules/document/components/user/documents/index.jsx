@@ -44,7 +44,6 @@ function UserDocumentsData(props) {
     useEffect(() => {
         props.getAllRoles();
         props.getAllDepartments();
-        // props.getAllDocuments(getStorage('currentRole'));
         props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
         props.getDocumentDomains();
         props.getDocumentArchive();
@@ -66,37 +65,6 @@ function UserDocumentsData(props) {
     function requestDownloadDocumentFileScan(id, fileName, numberVersion) {
         props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-
-    // useEffect(() => {
-    //     const { data } = props.documents.user;
-    //     if (currentRow) {
-    //         const index = getIndex(data.paginate, currentRow._id);
-    //         if (data.paginate[index].versions.length !== currentRow.versions.length) {
-    //             return {
-    //                 ...state,
-    //                 currentRow: data.paginate[index]
-    //             }
-    //         }
-    //         else return null;
-    //     } else {
-    //         return null;
-    //     }
-    // }, [props.documents.user])
-    //     static getDerivedStateFromProps(nextProps, prevState) {
-    //     const { data } = nextProps.documents.user;
-    //     if (prevState.currentRow) {
-    //         const index = getIndex(data.paginate, prevState.currentRow._id);
-    //         if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
-    //             return {
-    //                 ...prevState,
-    //                 currentRow: data.paginate[index]
-    //             }
-    //         }
-    //         else return null;
-    //     } else {
-    //         return null;
-    //     }
-    // }
 
     const formatDate = (date, monthYear = false) => {
         if (date) {

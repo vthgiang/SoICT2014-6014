@@ -13,10 +13,10 @@ exports.getAllRootRoles = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'get_root_roles_faile');
-        res.status(200).json({
+        Logger.error(req.user.email, 'get_root_roles_failure');
+        res.status(400).json({
             success: true,
-            messages: Array.isArray(error) ? error : ['get_root_roles_faile'],
+            messages: Array.isArray(error) ? error : ['get_root_roles_failure'],
             content: error
         });
     }

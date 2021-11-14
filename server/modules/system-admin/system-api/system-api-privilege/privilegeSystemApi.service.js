@@ -63,11 +63,15 @@ const getPrivilegeApis = async (portal, data) => {
     };
 }
 
+
+
 /** Thêm phân quyền API
  * @email email người được sử dụng
  * @apis mảng gồm các link api
  * @company công ty được lấy dữ liệu
  */
+
+
 const createPrivilegeApi = async (data) => {
     const { email, name, apis, companyId, role, description, startDate, endDate, userId } = data
 
@@ -105,7 +109,8 @@ const createPrivilegeApi = async (data) => {
     })
 
     if (role === 'system_admin' || role === 'admin') {
-        // set time token
+
+        // Set time token
         let expiresIn = 0;
         if (startDate && endDate) {
             let startDateUtc = new Date(startDate)
@@ -129,6 +134,7 @@ const createPrivilegeApi = async (data) => {
         console.log("role", role)
     
         if (role === 'system_admin') {
+
             // Them vao csdl system admin
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({

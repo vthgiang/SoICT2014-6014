@@ -23,7 +23,7 @@ function getAllSystemLinks(data) {
                     })
                 })
                 .catch(error => {
-                    dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_FAILE });
+                    dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_FAILURE });
                 })
         }
     } else {
@@ -38,7 +38,7 @@ function getAllSystemLinks(data) {
                     })
                 })
                 .catch(error => {
-                    dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE });
+                    dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILURE });
                 })
         }
     }
@@ -56,7 +56,7 @@ function getAllSystemLinkCategories() {
                 })
             })
             .catch(error => {
-                dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE });
+                dispatch({ type: SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILURE });
             })
     }
 }
@@ -73,7 +73,7 @@ function getSystemLink(id) {
                 })
             })
             .catch(error => {
-                dispatch({ type: SystemLinkConstants.SHOW_LINK_DEFAULT_FAILE });
+                dispatch({ type: SystemLinkConstants.SHOW_LINK_DEFAULT_FAILURE });
             })
     }
 }
@@ -90,7 +90,7 @@ function createSystemLink(link) {
                 });
             })
             .catch(error => {
-                dispatch({ type: SystemLinkConstants.CREATE_LINK_DEFAULT_FAILE });
+                dispatch({ type: SystemLinkConstants.CREATE_LINK_DEFAULT_FAILURE });
             })
     }
 }
@@ -107,7 +107,7 @@ function editSystemLink(id, data) {
                 })
             })
             .catch(error => {
-                dispatch({ type: SystemLinkConstants.EDIT_LINK_DEFAULT_FAILE });
+                dispatch({ type: SystemLinkConstants.EDIT_LINK_DEFAULT_FAILURE });
             })
     }
 }
@@ -124,7 +124,7 @@ function deleteSystemLink(id, link) {
                 })
             })
             .catch(error => {
-                dispatch({ type: SystemLinkConstants.DELETE_LINK_DEFAULT_FAILE });
+                dispatch({ type: SystemLinkConstants.DELETE_LINK_DEFAULT_FAILURE });
             })
     }
 }
