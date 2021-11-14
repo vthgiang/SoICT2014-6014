@@ -197,7 +197,7 @@ function CreateApiRegistrationModal(props) {
     const handleChangeDescription = (value, imgs) => {
         setState({
             ...state,
-            description: value,
+            description: value.replace(/<[^>]*>/g, ''),
         });
     }
 
