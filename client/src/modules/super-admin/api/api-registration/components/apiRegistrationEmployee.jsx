@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import { formatDate } from '../../../../../helpers/formatDate';
 
 import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 
@@ -157,6 +158,8 @@ function ApiRegistrationEmployee(props) {
                                 <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.description')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.startDate')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.endDate')}</th>
                                 <th>{translate('task.task_management.col_status')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
@@ -175,9 +178,17 @@ function ApiRegistrationEmployee(props) {
                                     <tr key={apiRegistration._id}>
                                         <td>{index + 1}</td>
                                         <td>{apiRegistration.email}</td>
-                                        <td>
+                                        <td style={{
+                                            textAlign: 'justify',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            maxWidth: '20vw'
+                                        }}>
                                             {apiRegistration.description ? apiRegistration.description : 'NaN'}
                                         </td>
+                                        <td>{apiRegistration.startDate ? formatDate(apiRegistration.startDate) : 'Unlimited'}</td>
+                                        <td>{apiRegistration.endDate ? formatDate(apiRegistration.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
                                             <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />

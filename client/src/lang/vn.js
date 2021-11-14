@@ -741,6 +741,7 @@ export default {
                 table: {
                     email: "Email",
                     description: "Mô tả",
+                    startDate: "Ngày bắt đầu",
                     endDate: "Ngày hết hạn"
                 },
                 placeholder: {

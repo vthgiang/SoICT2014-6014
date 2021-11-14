@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const { PrivilegeApi, Company, SystemApi } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
+const { parseDate } = require(`../../../../helpers/parseDate`);
 
 const getPrivilegeApis = async (portal, data) => {
     const { email, companyIds, role, page = 1, perPage = 30, creator } = data
@@ -73,7 +74,14 @@ const getPrivilegeApis = async (portal, data) => {
 
 
 const createPrivilegeApi = async (data) => {
-    const { email, name, apis, companyId, role, description, startDate, endDate, userId } = data
+    const { email, name, apis, companyId, role, description, unlimitedExpirationTime, userId } = data
+
+    let startDate = "";
+    let endDate = "";
+    if (!unlimitedExpirationTime) {
+        startDate = parseDate('dd-mm-yy', data.startDate);
+        endDate = parseDate('dd-mm-yy', data.endDate);
+    }
 
     // Check sự tồn tại của phân quyền
     let privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -95,7 +103,7 @@ const createPrivilegeApi = async (data) => {
         throw {
             messages: "company_not_exist",
         };
-    } 
+    }
 
     let systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({
@@ -109,7 +117,6 @@ const createPrivilegeApi = async (data) => {
     })
 
     if (role === 'system_admin' || role === 'admin') {
-
         // Set time token
         let expiresIn = 0;
         if (startDate && endDate) {
@@ -128,13 +135,11 @@ const createPrivilegeApi = async (data) => {
             },
             process.env.TOKEN_SECRET,
             {
-                expiresIn: expiresIn 
+                expiresIn: expiresIn
             }
         );
-        console.log("role", role)
-    
-        if (role === 'system_admin') {
 
+        if (role === 'system_admin') {
             // Them vao csdl system admin
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({
@@ -175,7 +180,7 @@ const createPrivilegeApi = async (data) => {
                     endDate: endDate && new Date(endDate),
                     creator: userId
                 })
-                
+
             await Company(connect(DB_CONNECTION, process.env.DB_NAME))
                 .populate(privilege, { path: "company" })
         }
@@ -191,9 +196,9 @@ const createPrivilegeApi = async (data) => {
                 startDate: startDate && new Date(startDate),
                 endDate: endDate && new Date(endDate),
                 creator: userId
-            })     
+            })
     }
-     
+
     return privilege
 }
 
@@ -236,7 +241,7 @@ const updateStatusPrivilegeApi = async (portal, data) => {
                 },
                 process.env.TOKEN_SECRET,
                 {
-                    expiresIn: expiresIn 
+                    expiresIn: expiresIn
                 }
             );
 
