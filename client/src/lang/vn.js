@@ -232,8 +232,8 @@ export default {
             view_building_list: "Xem danh sách mặt bằng",
 
             // NHÂN VIÊN
-            recommend_equipment_procurement: "Đăng ký mua sắm thiết bị",
-            recommend_distribute_asset: "Đăng ký sử dụng thiết bị",
+            recommend_equipment_procurement: "Đăng ký mua sắm tài sản",
+            recommend_distribute_asset: "Đăng ký sử dụng tài sản",
             manage_assigned_asset: "Tài sản sử dụng",
             //******END */
 
@@ -2913,10 +2913,10 @@ export default {
                     "Chỉnh sửa thông tin sự cố tài sản thất bại",
             },
 
-            // Quản lý đề nghị mua sắm thiết bị
+            // Quản lý đề nghị mua sắm tài sản
             manage_recommend_procure: {
-                asset_recommend: "Thiết bị đề nghị mua sắm",
-                equipment_description: "Mô tả thiết bị",
+                asset_recommend: "Tài sản đề nghị mua sắm",
+                equipment_description: "Mô tả tài sản",
                 add_recommend_card: "Thêm mới phiếu đề nghị mua sắm tài sản",
                 view_recommend_card:
                     "Xem thông tin phiếu đề nghị mua sắm tài sản",
@@ -2947,7 +2947,7 @@ export default {
                 edit_use_request_failure: "Chỉnh sửa thông tin phiếu thất bại",
             },
 
-            // Đăng ký mua sắm thiết bị
+            // Đăng ký mua sắm tài sản
             purchase_request: {
                 //Thông điệp trả về từ server
                 get_purchase_request_success:

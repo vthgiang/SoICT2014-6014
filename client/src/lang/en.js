@@ -2715,7 +2715,7 @@ export default {
                 edit_incident_faile: "Edit incident faile",
             },
 
-            // Quản lý đề nghị mua sắm thiết bị
+            // Quản lý đề nghị mua sắm tài sản
             manage_recommend_procure: {
                 asset_recommend: "Asset recommend procure",
                 equipment_description: "Equipment description",
@@ -2759,7 +2759,7 @@ export default {
                 recommend_number_exist: "Recommend number already exists",
             },
 
-            // Đăng ký sử dụng thiết bị
+            // Đăng ký sử dụng tài sản
             use_request: {
                 //Thông điệp trả về từ server
                 get_use_request_success: "Get use request successfully",
