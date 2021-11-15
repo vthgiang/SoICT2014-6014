@@ -21,7 +21,7 @@ exports.getAllTaskTemplates = async (req, res) => {
         Logger.error(req.user.email, 'get_all_task_templates', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['get_all_task_templates_faile'],
+            messages: ['get_all_task_templates_failure'],
             content: error
         });
     }
@@ -45,9 +45,9 @@ exports.getTaskTemplate = async (req, res) => {
     } catch (error) {
 
         await Logger.error(req.user.email, 'get_task_template', req.portal);
-        res.status(200).json({
+        res.status(400).json({
             success: false,
-            messages: ['get_task_template_faile'],
+            messages: ['get_task_template_failure'],
             content: error
         });
     }
@@ -73,7 +73,7 @@ exports.createTaskTemplate = async (req, res) => {
         await Logger.error(req.user.email, 'create_task_template', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_task_template_faile'],
+            messages: Array.isArray(error) ? error : ['create_task_template_failure'],
             content: error
         });
     }
@@ -99,7 +99,7 @@ exports.deleteTaskTemplate = async (req, res) => {
         await Logger.error(req.user.email, 'delete_task_template', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_task_template_faile'],
+            messages: ['delete_task_template_failure'],
             content: error
         });
     }
@@ -125,7 +125,7 @@ exports.editTaskTemplate = async (req, res) => {
         await Logger.error(req.user.email, 'edit_task_template', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_task_template_faile'],
+            messages: ['edit_task_template_failure'],
             content: error
         });
     }

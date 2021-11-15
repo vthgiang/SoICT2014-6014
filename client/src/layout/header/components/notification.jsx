@@ -58,7 +58,10 @@ function Notification(props) {
             if (sound) {
                 const audio = new Audio(audioFile);
                 audio.volume = 0.7;
-                audio.play();
+                //nếu trình duyệt khác safari thì có tiếng
+                if (!/apple/i.test(navigator.vendor)) {
+                    audio.play();
+                }
             }
             props.receiveNotification(data);
         });

@@ -137,7 +137,9 @@ function ActionTab(props) {
     useEffect(() => {
         if (performtasks?.task && notifications?.associatedData?.value) {
             if (notifications.associatedData.dataType === "realtime_tasks") {
-                props.refreshData(notifications.associatedData.value);
+                if (performtasks?.task._id === notifications.associatedData.value._id) {
+                    props.refreshData(notifications.associatedData.value, performtasks?.task);
+                }
             }
             notifications.associatedData = {}; // reset lại ... 
         }

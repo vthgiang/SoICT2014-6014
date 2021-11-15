@@ -33,21 +33,21 @@ function ScheduleWeeklyForm(props) {
         })
     }
 
-    const hanldeHour = (value) => {
+    const handleHour = (value) => {
         setState({
             ...state,
             hour: value[0]
         })
     }
 
-    const hanldeMinute = (value) => {
+    const handleMinute = (value) => {
         setState({
             ...state,
             minute: value[0]
         })
     }
 
-    const hanldeSecond = (value) => {
+    const handleSecond = (value) => {
         setState({
             ...state,
             second: value[0]
@@ -123,7 +123,7 @@ function ScheduleWeeklyForm(props) {
                             { value: '22', text: '22' },
                             { value: '23', text: '23' },
                         ]}
-                        onChange={hanldeHour}
+                        onChange={handleHour}
                         value={hour}
                         multiple={false}
                     />
@@ -151,7 +151,7 @@ function ScheduleWeeklyForm(props) {
                             { value: '55', text: '55' },
                         ]}
                         value={minute}
-                        onChange={hanldeMinute}
+                        onChange={handleMinute}
                         multiple={false}
                     />
                 </div>
@@ -168,7 +168,7 @@ function ScheduleWeeklyForm(props) {
                             { value: '30', text: '30' },
                         ]}
                         value={second}
-                        onChange={hanldeSecond}
+                        onChange={handleSecond}
                         multiple={false}
                     />
                 </div>

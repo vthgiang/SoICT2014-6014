@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import FilePreviewer from 'react-file-previewer';
-
 import { DialogModal } from '../../../../../common-components';
 import { AuthActions } from '../../../../auth/redux/actions';
-import FileViewer from 'react-file-viewer';
-//import docx2html from 'docx2html';
+
 function FilePreview(props) {
 
     useEffect(() => {

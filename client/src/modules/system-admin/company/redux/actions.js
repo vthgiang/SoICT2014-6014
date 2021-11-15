@@ -40,7 +40,7 @@ function getAllCompanies(data) {
                 })
                 .catch(error => {
                     dispatch({ 
-                        type: CompanyConstants.GET_COMPANIES_FAILE,
+                        type: CompanyConstants.GET_COMPANIES_FAILURE,
                         payload: error
                     });
                 })
@@ -58,7 +58,7 @@ function getAllCompanies(data) {
                 })
                 .catch(error => {
                     dispatch({ 
-                        type: CompanyConstants.GET_COMPANIES_PAGINATE_FAILE,
+                        type: CompanyConstants.GET_COMPANIES_PAGINATE_FAILURE,
                         payload: error
                     });
                     
@@ -84,7 +84,7 @@ function createCompany(company) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.CREATE_COMPANY_FAILE,
+                    type: CompanyConstants.CREATE_COMPANY_FAILURE,
                     payload: error
                 });
             })
@@ -110,7 +110,7 @@ function editCompany(id, data) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.EDIT_COMPANY_FAILE,
+                    type: CompanyConstants.EDIT_COMPANY_FAILURE,
                     payload: error
                 });
             })
@@ -138,7 +138,7 @@ function addCompanyLink(id, data) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILE,
+                    type: CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_FAILURE,
                     payload: error
                 });
             })
@@ -164,7 +164,7 @@ function deleteCompanyLink(companyId, linkId) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILE,
+                    type: CompanyConstants.DELETE_LINK_FOR_COMPANY_FAILURE,
                     payload: error
                 });
             })
@@ -193,7 +193,7 @@ function addCompanyComponent(id, data) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILE,
+                    type: CompanyConstants.ADD_NEW_COMPONENT_FOR_COMPANY_FAILURE,
                     payload: error
                 });
             })
@@ -218,7 +218,7 @@ function deleteCompanyComponent(companyId, componentId) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILE,
+                    type: CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_FAILURE,
                     payload: error
                 });;
             })
@@ -244,7 +244,7 @@ function getCompanyLinks(params) {
                 })
                 .catch(error => {
                     dispatch({ 
-                        type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILE,
+                        type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_FAILURE,
                         payload: error
                     });
                 })
@@ -262,7 +262,7 @@ function getCompanyLinks(params) {
                 })
                 .catch(error => {
                     dispatch({ 
-                        type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILE,
+                        type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_FAILURE,
                         payload: error
                     });
                 })
@@ -288,7 +288,7 @@ function getCompanyComponents(params) {
                 })
                 .catch(error => {
                     dispatch({ 
-                        type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILE,
+                        type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_FAILURE,
                         payload: error
                     });
                 })
@@ -306,7 +306,7 @@ function getCompanyComponents(params) {
                 })
                 .catch(error => {
                     dispatch({ 
-                        type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILE,
+                        type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_FAILURE,
                         payload: error
                     });
                 })
@@ -332,7 +332,7 @@ function getImportConfiguration(data) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.GET_IMPORT_CONFIGURATION_FAILE,
+                    type: CompanyConstants.GET_IMPORT_CONFIGURATION_FAILURE,
                     payload: error
                 });
             })
@@ -356,7 +356,7 @@ function createImportConfiguration(data) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.ADD_IMPORT_CONFIGURATION_FAILE,
+                    type: CompanyConstants.ADD_IMPORT_CONFIGURATION_FAILURE,
                     payload: error
                 });
             })
@@ -380,7 +380,7 @@ function editImportConfiguration(data) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.EDIT_IMPORT_CONFIGURATION_FAILE,
+                    type: CompanyConstants.EDIT_IMPORT_CONFIGURATION_FAILURE,
                     payload: error
                 });
             })
@@ -400,7 +400,7 @@ function updateCompanyLinks(data, params) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.UPDATE_COMPANY_LINKS_FAILE,
+                    type: CompanyConstants.UPDATE_COMPANY_LINKS_FAILURE,
                     payload: error
                 });
             })
@@ -421,7 +421,7 @@ function updateCompanyComponents(data, params) {
             })
             .catch(error => {
                 dispatch({ 
-                    type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_FAILE,
+                    type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_FAILURE,
                     payload: error
                 });
             })

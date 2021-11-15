@@ -32,12 +32,12 @@ export function systemSetting(state = initState, action) {
                 isLoading: true
             }
         
-        case SystemSettingConstants.GET_BACKUPS_FAILE:        
-        case SystemSettingConstants.GET_CONFIG_BACKUP_FAILE:
-        case SystemSettingConstants.CONFIG_BACKUP_FAILE:
-        case SystemSettingConstants.CREATE_BACKUP_FAILE:
-        case SystemSettingConstants.DELETE_BACKUP_FAILE:
-        case SystemSettingConstants.RESTORE_FAILE:
+        case SystemSettingConstants.GET_BACKUPS_FAILURE:        
+        case SystemSettingConstants.GET_CONFIG_BACKUP_FAILURE:
+        case SystemSettingConstants.CONFIG_BACKUP_FAILURE:
+        case SystemSettingConstants.CREATE_BACKUP_FAILURE:
+        case SystemSettingConstants.DELETE_BACKUP_FAILURE:
+        case SystemSettingConstants.RESTORE_FAILURE:
             return {
                 ...state,
                 isLoading: false

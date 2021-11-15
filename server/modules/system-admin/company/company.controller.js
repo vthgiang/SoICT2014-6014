@@ -17,10 +17,10 @@ exports.getAllCompanies = async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.user.email, 'get_companies_faile');
+        Logger.error(req.user.email, 'get_companies_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_companies_faile'],
+            messages: Array.isArray(error) ? error : ['get_companies_failure'],
             content: error
         });
     }
@@ -42,10 +42,10 @@ exports.getCompany = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'show_company_faile');
+        Logger.error(req.user.email, 'show_company_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['show_company_faile'],
+            messages: Array.isArray(error) ? error : ['show_company_failure'],
             content: error
         });
     }
@@ -76,10 +76,10 @@ exports.createCompany = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'create_company_faile');
+        Logger.error(req.user.email, 'create_company_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_company_faile'],
+            messages: Array.isArray(error) ? error : ['create_company_failure'],
             content: error
         });
     }
@@ -104,10 +104,10 @@ exports.editCompany = async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.user.email, 'edit_company_faile');
+        Logger.error(req.user.email, 'edit_company_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['edit_company_faile'],
+            messages: Array.isArray(error) ? error : ['edit_company_failure'],
             content: error
         });
     }
@@ -118,9 +118,9 @@ exports.editCompany = async (req, res) => {
  * @type Thể loại file cấu hình(salary, taskTemplate);
  * @company id công ty
  */
-exports.getImportConfiguraion =  async (req, res) => {
+exports.getImportConfiguration =  async (req, res) => {
     try {
-        const data = await CompanyServices.getImportConfiguraion(req.query.type, req.user.company._id);
+        const data = await CompanyServices.getImportConfiguration(req.query.type, req.user.company._id);
 
         Logger.info(req.user.email, 'get_import_configuration_success', req.user.company);
         res.status(200).json({ 
@@ -130,10 +130,10 @@ exports.getImportConfiguraion =  async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'get_import_configuration_faile', req.user.company);
+        Logger.error(req.user.email, 'get_import_configuration_failure', req.user.company);
         res.status(400).json({
             success: false, 
-            messages: ['get_import_configuration_faile'], 
+            messages: ['get_import_configuration_failure'], 
             content: error
         });
     }
@@ -144,9 +144,9 @@ exports.getImportConfiguraion =  async (req, res) => {
  * @body Thông tin cấu hình file import
  * @company id công ty
  */
-exports.createImportConfiguraion = async (req, res) => {
+exports.createImportConfiguration = async (req, res) => {
     try {
-        const data = await CompanyServices.createImportConfiguraion(req.body, req.user.company._id);
+        const data = await CompanyServices.createImportConfiguration(req.body, req.user.company._id);
 
         Logger.info(req.user.email, 'create_import_configuration_success', req.user.company);
         res.status(200).json({ 
@@ -156,10 +156,10 @@ exports.createImportConfiguraion = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'create_import_configuration_faile', req.user.company);
+        Logger.error(req.user.email, 'create_import_configuration_failure', req.user.company);
         res.status(400).json({
             success: false, 
-            messages: ['create_import_configuration_faile'], 
+            messages: ['create_import_configuration_failure'], 
             content: error
         });
     }
@@ -170,9 +170,9 @@ exports.createImportConfiguraion = async (req, res) => {
  * @id id thông tin cấu hình file import cần sửa
  * @body Dữ liệu chinhe sửa file cấu hình
  */
-exports.editImportConfiguraion =  async (req, res) => {
+exports.editImportConfiguration =  async (req, res) => {
     try {
-        const data = await CompanyServices.editImportConfiguraion(req.params.id, req.body);
+        const data = await CompanyServices.editImportConfiguration(req.params.id, req.body);
 
         Logger.info(req.user.email, 'edit_import_configuration_success', req.user.company);
         res.status(200).json({ 
@@ -182,10 +182,10 @@ exports.editImportConfiguraion =  async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.user.email, 'edit_import_configuration_faile', req.user.company);
+        Logger.error(req.user.email, 'edit_import_configuration_failure', req.user.company);
         res.status(400).json({
             success: false, 
-            messages: ['edit_import_configuration_faile'], 
+            messages: ['edit_import_configuration_failure'], 
             content: error
         });
     }
@@ -209,10 +209,10 @@ exports.editCompanyOrgInformation =  async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.user.email, 'edit_organizationalUnitImage_faile', req.user.company);
+        Logger.error(req.user.email, 'edit_organizationalUnitImage_failure', req.user.company);
         res.status(400).json({
             success: false, 
-            messages: ['edit_organizationalUnitImage_faile'], 
+            messages: ['edit_organizationalUnitImage_failure'], 
             content: error
         });
     }
@@ -230,10 +230,10 @@ exports.getCompanyInformation = async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.user.email, 'get_organizationalUnitImage_faile', req.user.company);
+        Logger.error(req.user.email, 'get_organizationalUnitImage_failure', req.user.company);
         res.status(400).json({
             success: false, 
-            messages: ['get_organizationalUnitImage_faile'], 
+            messages: ['get_organizationalUnitImage_failure'], 
             content: error
         });
     }
@@ -251,10 +251,10 @@ exports.requestService = async (req, res) => {
         });
     } catch (error) {
         
-        Logger.error(req.body.email, 'request_service_faile');
+        Logger.error(req.body.email, 'request_service_failure');
         res.status(400).json({
             success: false, 
-            messages: ['request_service_faile'], 
+            messages: ['request_service_failure'], 
             content: error
         });
     }

@@ -13,10 +13,10 @@ exports.getBackups = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'get_backups_faile');
+        Logger.error(req.user.email, 'get_backups_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_backups_faile'],
+            messages: Array.isArray(error) ? error : ['get_backups_failure'],
             content: error
         });
     }
@@ -35,10 +35,10 @@ exports.getConfigBackup = async (req, res) => {
     } catch (error) {
         console.log(error)
 
-        Logger.error(req.user.email, 'get_config_backup_faile');
+        Logger.error(req.user.email, 'get_config_backup_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_config_backup_faile'],
+            messages: Array.isArray(error) ? error : ['get_config_backup_failure'],
             content: error
         });
     }
@@ -55,10 +55,10 @@ exports.configBackup = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.eror(req.user.email, 'config_backup_faile');
+        Logger.error(req.user.email, 'config_backup_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['config_backup_faile'],
+            messages: Array.isArray(error) ? error : ['config_backup_failure'],
             content: error
         });
     }
@@ -77,10 +77,10 @@ exports.createBackup = async (req, res) => {
     } catch (error) {
         console.log("Co", error)
 
-        Logger.error(req.user.email, 'backup_faile');
+        Logger.error(req.user.email, 'backup_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['backup_faile'],
+            messages: Array.isArray(error) ? error : ['backup_failure'],
             content: error
         });
     }
@@ -98,10 +98,10 @@ exports.deleteBackup = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'delete_backup_faile');
+        Logger.error(req.user.email, 'delete_backup_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_backup_faile'],
+            messages: Array.isArray(error) ? error : ['delete_backup_failure'],
             content: error
         });
     }
@@ -118,10 +118,10 @@ exports.restore = async (req, res) => {
         });
     } catch (error) {
 
-        Logger.error(req.user.email, 'restore_faile');
+        Logger.error(req.user.email, 'restore_failure');
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['restore_faile'],
+            messages: Array.isArray(error) ? error : ['restore_failure'],
             content: error
         });
     }

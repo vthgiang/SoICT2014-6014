@@ -12,10 +12,14 @@ const isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
 
+
+
 /**
  * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
  * @param {*} data 
  */
+
+
 exports.getTaskEvaluations = async (portal, data) => {
     // Lấy data tu client gui trong body
     let {
@@ -176,7 +180,7 @@ exports.getTaskEvaluations = async (portal, data) => {
 
 
     let result = await Task(connect(DB_CONNECTION, portal)).aggregate(condition); // kết quả sau khi truy vấn mongodb
-    // lấy danh sachs điều kiện lọc của trường thông tin của công việc, vì dữ liệu gửi trong query là dạng string nên phải parse sang đối tượng
+    // Lấy danh sachs điều kiện lọc của trường thông tin của công việc, vì dữ liệu gửi trong query là dạng string nên phải parse sang đối tượng
     if (data.taskInformations) { // Bắt lỗi trường hợp chọn mẫu công việc, nhưng mãu đấy không có các trường thông tin và ấn nút xem biểu đồ
         let taskInformations = data.taskInformations, listDataChart = [], configurations = [];
         if (data.itemListBoxRight) {
@@ -3538,7 +3542,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         };
     });
 
-
+    console.log("chartArr", chartArr)
     //data cho tổng quan công việc
     if (chartArr.includes('general-task-chart')) {
         userArray = await UserService._getAllUsersInOrganizationalUnits(portal, newDataUnit);
@@ -3637,7 +3641,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                 const totalTask = unit.totalTask?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
                 const taskFinished = unit.taskFinished?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
                 const taskInprocess = unit.taskInprocess?.map(a => ({ _id: a._id, name: a.name, startDate: a.startDate, endDate: a.endDate, status: a.status, progress: a.progress }))
-                console.log("unit", confirmedTask)
                 // Thêm số công việc của cả phòng vào mảng dataTable
                 dataTable.push({
                     parent: true,

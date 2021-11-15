@@ -4,13 +4,15 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import { formatDate } from '../../../../../helpers/formatDate';
 
 import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 
 import { ApiRegistrationActions } from '../redux/actions'
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
+import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
 
-function ApiRegistration (props) {
+function ApiRegistration(props) {
     const { translate, privilegeApis, company } = props
 
     const tableId = "table-api-registration";
@@ -50,11 +52,6 @@ function ApiRegistration (props) {
             page: page,
             perPage: perPage
         })
-    }
-
-    const handleCopyToken = (apiRegistration) => {
-        let copyText = apiRegistration?.token?.slice();
-        navigator.clipboard.writeText(copyText);
     }
 
     const handleAcceptApiRegistration = (api) => {
@@ -121,7 +118,7 @@ function ApiRegistration (props) {
 
         }
     }
-    
+
     const handleAddPrivilegeApi = () => {
         window.$("#create-api-registration-modal").modal("show");
     }
@@ -130,10 +127,8 @@ function ApiRegistration (props) {
 
     return (
         <React.Fragment>
-            <CreateApiRegistrationModal
-                role="admin"
-            />
-            
+            <CreateApiRegistrationModal role="admin" />
+
             <div className="box" >
                 <div className="box-body qlcv">
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -147,11 +142,20 @@ function ApiRegistration (props) {
                         <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
-                    <table id={tableId} className="table table-hover table-striped table-bordered">
-                        <thead>
+                    <table id={tableId} className='table table-hover table-striped table-bordered'>
+                        <thead style={{
+                            tableLayout: 'fixed'
+                        }}>
                             <tr>
-                                <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                                <th style={{
+                                    textAlign: 'center',
+                                }}>
+                                    {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}
+                                </th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.description')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.startDate')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.endDate')}</th>
                                 <th>{translate('task.task_management.col_status')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
@@ -165,28 +169,50 @@ function ApiRegistration (props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { listPaginateApiRegistration?.length > 0
-                                && listPaginateApiRegistration.map((apiRegistration, index) => 
+                            {listPaginateApiRegistration?.length > 0
+                                && listPaginateApiRegistration.map((apiRegistration, index) =>
                                     <tr key={apiRegistration._id}>
                                         <td>{index + 1}</td>
                                         <td>{apiRegistration.email}</td>
+                                        <td style={{
+                                            textAlign: 'justify',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            maxWidth: '20vw'
+                                        }}>
+                                            {apiRegistration.description ? apiRegistration.description : 'NaN'}
+                                        </td>
+                                        <td>{apiRegistration.startDate ? formatDate(apiRegistration.startDate) : 'Unlimited'}</td>
+                                        <td>{apiRegistration.endDate ? formatDate(apiRegistration.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }} onClick={() => handleCopyToken(apiRegistration)}>Copy</button>
+                                            <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
                                             {apiRegistration?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745"}}>
-                                                <i className="material-icons">check_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
-                                                <i className="material-icons">remove_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585"}}>
-                                                <i className="material-icons">highlight_off</i>
-                                            </a>
+                                            {
+                                                ![2, 3].includes(apiRegistration.status) &&
+                                                <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745" }}>
+                                                    <i className="material-icons">check_circle_outline</i>
+                                                </a>
+                                            }
+
+                                            {
+                                                ![2, 3].includes(apiRegistration.status) &&
+                                                <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                    <i className="material-icons">remove_circle_outline</i>
+                                                </a>
+                                            }
+
+                                            {
+                                                [2, 3].includes(apiRegistration.status) &&
+                                                <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
+                                                    <i className="material-icons">highlight_off</i>
+                                                </a>
+                                            }
                                         </td>
-                                    </tr>    
+                                    </tr>
                                 )
                             }
                         </tbody>

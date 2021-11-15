@@ -163,7 +163,7 @@ export function documents(state = initState, action) {
             }
 
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
-        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_SUCCESS:
             return {
                 ...state,
                 isLoading: false
@@ -573,15 +573,6 @@ export function documents(state = initState, action) {
                 }
             };
 
-
-        // index = findIndex(state.administration.archives.list, action.payload._id);
-        // if (index !== -1) state.administration.archives.list[index] = action.payload;
-        // indexPaginate = findIndex(state.administration.archives.paginate, action.payload._id);
-        // if (indexPaginate !== -1) state.administration.archives.paginate[indexPaginate] = action.payload;
-        // return {
-        //     ...state,
-        //     isLoading: false
-        // };
         case DocumentConstants.DELETE_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,

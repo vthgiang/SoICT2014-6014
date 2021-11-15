@@ -42,15 +42,21 @@ exports.getAllSystemLinkCategories = async () => {
     return Object.keys(LINK_CATEGORY).map(key => LINK_CATEGORY[key]);
 }
 
+
+
 /**
  * Lấy 1 system link
  * @id id của system link
  */
+
+
 exports.getSystemLink = async (systemLinkId) => {
     return await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME))
         .findById(systemLinkId)
         .populate({path: 'roles'});
 }
+
+
 
 /**
  * Tạo 1 system link mới
@@ -59,6 +65,8 @@ exports.getSystemLink = async (systemLinkId) => {
  * @roles mảng các role có quyền vào trang với link này
  * @category danh mục của system link
  */
+
+
 exports.createSystemLink =  async (url, description, roles, category) => {
     const link = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({ url });
     if (link) throw ['system_link_url_exist'];
@@ -87,6 +95,8 @@ exports.createSystemLink =  async (url, description, roles, category) => {
     return systemLink;
 }
 
+
+
 /**
  * Chỉnh sửa 1 system link
  * @id id của system link
@@ -95,6 +105,8 @@ exports.createSystemLink =  async (url, description, roles, category) => {
  * @roles mảng các role được truy cập
  * @category danh mục
  */
+
+
 exports.editSystemLink = async (systemLinkId, url, description, roles, category) => {
 
     let link = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME)).findById(systemLinkId)
@@ -109,22 +121,29 @@ exports.editSystemLink = async (systemLinkId, url, description, roles, category)
     return link;
 }
 
+
+
 /**
  * Xóa 1 system link
  * @id id của system link
  */
+
+
 exports.deleteSystemLink = async (systemLinkId) => {
     let systemLink = await SystemLink(connect(DB_CONNECTION, process.env.DB_NAME)).findById(systemLinkId);
     let companies = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).find();
+
     // 1. Xóa tất các link tương ứng của các công ty
     for (let index = 0; index < companies.length; index++) {
         let links = await Link(connect(DB_CONNECTION, companies[index].shortName)).find({url: systemLink.url});
-        //xóa phân quyền
+
+        // Xóa phân quyền
         await Privilege(connect(DB_CONNECTION, companies[index].shortName)).deleteMany({ 
             resourceType: 'Link',
             resourceId: { $in: links.map(link=>link._id) }
         });
-        //links trong component tương ứng
+        
+        // Links trong component tương ứng
         for (let i = 0; i < links.length; i++) {
             let components = await Link(connect(DB_CONNECTION, companies[i].shortName)).find({links: links[i]._id});
             for (let j = 0; j < components.length; j++) {
