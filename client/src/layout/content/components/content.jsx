@@ -52,36 +52,36 @@ class Content extends Component {
         const disableSelect = (event) => {
             event.preventDefault();
         }
-    
+
         const mouseDownHandler = function (e) {
             x = e.clientX;
-    
+
             const styles = window.getComputedStyle(currentCol);
             currentColWidth = parseInt(window.getComputedStyle(currentCol).width, 10);
             nextColWidth = parseInt(window.getComputedStyle(nextCol).width, 10);
-            
+
             document.addEventListener('mousemove', disableSelect);
             document.addEventListener('mousemove', mouseMoveHandler);
             document.addEventListener('mouseup', mouseUpHandler);
-    
+
             resizer.classList.add('resizing');
         };
-    
+
         const mouseMoveHandler = function (e) {
             const dx = e.clientX - x;
-            if ( nextColWidth - dx > MINIMUM_WIDTH && currentColWidth + dx > MINIMUM_WIDTH) { // Độ rộng mỗi cột tối thiểu 60px
+            if (nextColWidth - dx > MINIMUM_WIDTH && currentColWidth + dx > MINIMUM_WIDTH) { // Độ rộng mỗi cột tối thiểu 60px
                 currentCol.style.width = `${currentColWidth + dx}px`;
                 nextCol.style.width = `${nextColWidth - dx}px`;
             }
         };
-    
+
         const mouseUpHandler = function () {
             resizer.classList.remove('resizing');
             document.removeEventListener('mousemove', disableSelect);
             document.removeEventListener('mousemove', mouseMoveHandler);
             document.removeEventListener('mouseup', mouseUpHandler);
         };
-    
+
         resizer.addEventListener('mousedown', mouseDownHandler);
     };
 
@@ -91,14 +91,14 @@ class Content extends Component {
         const tableHeight = `${table.offsetHeight}px`;
         for (let i = 0; i < cols.length - 1; ++i) {
             let currentCol = cols[i];
-            let nextCol = cols[i+1];
+            let nextCol = cols[i + 1];
 
             const resizer = document.createElement("div");
             resizer.classList.add("resizeDiv");
             resizer.style.height = tableHeight;
-    
+
             currentCol.appendChild(resizer);
-            
+
             this.createResizableColumn(currentCol, nextCol, resizer);
         };
         console.log("resizer created");
@@ -308,18 +308,22 @@ class Content extends Component {
                         // tất cả input trong heading của table
                         let inputs = table.find("th:not(:last-child) input");
                         let rows = table.find('tbody tr');
-                        window.$(rows).show();
+                        window.$(rows).show(); // ban đầu tất cả rows đều show ra
                         window.$.each(inputs, function (index, input) {
                             let value = input.value.toLowerCase();
                             let iconFilter = window.$(input).parent().parent().children()[0]
                             if (value.replace(/\s/g, "") !== "") { // value khác rỗng
-                                iconFilter.style.color = "black"
+                                iconFilter.style.color = "black" // chuyển màu icon 
                                 rows.filter((a) => {
-                                    let keyData = window.$(window.$(rows[a]).find("td:eq(" + index + ")")).text();
-                                    let re = new RegExp(nonAccentVietnamese(value), "gi");
-                                    if (nonAccentVietnamese(keyData).search(re) == -1) {
-                                        window.$(rows[a]).hide();
+                                    let keyData = window.$(window.$(rows[a]).find("td:eq(" + index + ")")).text(); //value trong cột mình muốn filter
+                                    let re = new RegExp(nonAccentVietnamese(value), "gi"); // bỏ dấu giá trị mình tìm kiếm
+                                    if (keyData) {
+                                        // check xem 2 giá trị khác nhau hay không
+                                        if (nonAccentVietnamese(keyData).search(re) == -1) {
+                                            window.$(rows[a]).hide();
+                                        }
                                     }
+
                                 });
                             } else {
                                 iconFilter.style.color = "rgb(226 222 222)"
@@ -327,6 +331,7 @@ class Content extends Component {
 
                         });
                     }
+                    // bắt sự kiện user nhập thông tin từ bàn phím
                     let filterOnKeyUp = () => {
                         table.find('.filter input').keyup(function (e) {
                             filterFunc()
@@ -350,7 +355,7 @@ class Content extends Component {
                             }
                         }
                         filterOnKeyUp()
-                        // bắt sự kiện user nhập thông tin từ bàn phím
+
                     })
 
                     closeButton.click(() => {
