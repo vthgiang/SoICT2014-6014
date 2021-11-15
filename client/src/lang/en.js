@@ -685,6 +685,7 @@ export default {
                 table: {
                     email: "Email",
                     description: "Description",
+                    startDate: "Start date",
                     endDate: "Expiry date"
                 },
                 placeholder: {

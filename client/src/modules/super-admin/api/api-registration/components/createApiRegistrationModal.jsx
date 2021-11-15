@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, QuillEditor } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, QuillEditor, DatePicker } from '../../../../../common-components';
 
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions';
 import { ApiActions } from '../../api-management/redux/actions'
@@ -15,11 +15,24 @@ function CreateApiRegistrationModal(props) {
         email: null,
         name: null,
         description: null,
+        unlimitedExpirationTime: true,
+        startDate: '',
+        startDate: '',
         registrationApis: [],
         registrationApisCategory: [],
     });
 
-    const { email, name, companyId, description, registrationApis, registrationApisCategory } = state;
+    const {
+        email,
+        name,
+        companyId,
+        description,
+        unlimitedExpirationTime,
+        startDate,
+        endDate,
+        registrationApis,
+        registrationApisCategory
+    } = state;
 
     useEffect(() => {
         props.getApis({
@@ -40,6 +53,27 @@ function CreateApiRegistrationModal(props) {
         setState({
             ...state,
             name: e.target.value
+        })
+    }
+
+    const handleOnChangeUnlimitedExpirationTimeCheckbox = (e) => {
+        setState({
+            ...state,
+            unlimitedExpirationTime: !state.unlimitedExpirationTime,
+        })
+    }
+
+    const handleEnterStartDate = (value) => {
+        setState({
+            ...state,
+            startDate: value
+        })
+    }
+
+    const handleEnterEndDate = (value) => {
+        setState({
+            ...state,
+            endDate: value
         })
     }
 
@@ -163,19 +197,30 @@ function CreateApiRegistrationModal(props) {
     const handleChangeDescription = (value, imgs) => {
         setState({
             ...state,
-            description: value,
+            description: value.replace(/<[^>]*>/g, ''),
         });
     }
 
     const handleSubmit = () => {
-        props.createPrivilegeApi({
+        let requestBody = {
             email: email,
             name: name,
             description: description,
+            unlimitedExpirationTime: state.unlimitedExpirationTime,
             companyId: companyId,
             apis: registrationApis,
             role: role
-        })
+        }
+
+        if (!state.unlimitedExpirationTime) {
+            requestBody = {
+                ...requestBody,
+                startDate: state.startDate,
+                endDate: state.endDate,
+            }
+        }
+
+        props.createPrivilegeApi(requestBody);
         window.$("#create-api-registration-modal").modal("hide");
     }
 
@@ -220,6 +265,42 @@ function CreateApiRegistrationModal(props) {
                         />
                     </div>
 
+                    <td>
+                        <input
+                            style={{ marginBottom: 10 }}
+                            type="checkbox"
+                            checked={state.unlimitedExpirationTime}
+                            onChange={handleOnChangeUnlimitedExpirationTimeCheckbox}
+                        />
+                        Unlimited expiration time
+                    </td>
+
+                    {!state.unlimitedExpirationTime &&
+                        (<div className="row">
+                            {/* Start date */}
+                            <div className="form-group col-xs-12 col-sm-6">
+                                <label>{translate('system_admin.privilege_system_api.table.startDate')}</label>
+                                <DatePicker
+                                    id={`datepicker-startDate`}
+                                    dateFormat="day-month-year"
+                                    value={state.startDate}
+                                    onChange={handleEnterStartDate}
+                                />
+                            </div>
+
+                            {/* End date */}
+                            <div className="form-group col-xs-12 col-sm-6">
+                                <label>{translate('system_admin.privilege_system_api.table.endDate')}</label>
+                                <DatePicker
+                                    id={`datepicker-endDate`}
+                                    value={state.endDate}
+                                    onChange={handleEnterEndDate}
+                                />
+                            </div>
+
+                        </div>)
+                    }
+
                     <fieldset className="scheduler-border" style={{ minHeight: '300px' }}>
                         <legend className="scheduler-border">{translate('system_admin.company.service')}</legend>
 
@@ -240,7 +321,7 @@ function CreateApiRegistrationModal(props) {
 
                             <tbody>
                                 {
-                                    listApi?.length > 0 
+                                    listApi?.length > 0
                                         ? listApi.map(category => {
                                             return <>
                                                 <tr key={category?._id}>
@@ -254,7 +335,7 @@ function CreateApiRegistrationModal(props) {
                                                     </td>
                                                     <td style={{ textAlign: "left" }}><strong>{category?._id}</strong></td>
                                                 </tr>
-                                                {category?.apis?.length > 0 && category.apis.map(api => 
+                                                {category?.apis?.length > 0 && category.apis.map(api =>
                                                     <tr key={api._id}>
                                                         <td>
                                                             <input
@@ -270,9 +351,9 @@ function CreateApiRegistrationModal(props) {
                                                     </tr>
                                                 )}
                                             </>
-                                        }) 
-                                        : apis.isLoading 
-                                            ? <tr><td colSpan={4}>{translate('general.loading')}</td></tr> 
+                                        })
+                                        : apis.isLoading
+                                            ? <tr><td colSpan={4}>{translate('general.loading')}</td></tr>
                                             : <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
                                 }
                             </tbody>

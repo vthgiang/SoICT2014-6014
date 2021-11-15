@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import { formatDate } from '../../../../../helpers/formatDate';
 
 import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 
@@ -153,8 +154,9 @@ function ApiRegistration(props) {
                                 </th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.description')}</th>
-                                <th>{translate('task.task_management.col_status')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.startDate')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.endDate')}</th>
+                                <th>{translate('task.task_management.col_status')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
                                     {translate('table.action')}
@@ -181,8 +183,9 @@ function ApiRegistration(props) {
                                         }}>
                                             {apiRegistration.description ? apiRegistration.description : 'NaN'}
                                         </td>
+                                        <td>{apiRegistration.startDate ? formatDate(apiRegistration.startDate) : 'Unlimited'}</td>
+                                        <td>{apiRegistration.endDate ? formatDate(apiRegistration.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
-                                        <td>{apiRegistration.endDate ? apiRegistration.endDate : 'NaN'}</td>
                                         <td style={{ position: "relative" }}>
                                             <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
                                             {apiRegistration?.token?.slice(0, 60)}...
