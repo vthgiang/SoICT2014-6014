@@ -481,7 +481,7 @@ function DocumentShow(props) {
                     <div className="form-group">
                         <label>{translate('document.store.organizational_unit_manage')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id="select-documents-organizational-unit-manage-table"
+                            id={`select-documents-organizational-unit-manage-table-${typeId}`} // tại sao thêm dấu cách || trùng id thì lỗi
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
