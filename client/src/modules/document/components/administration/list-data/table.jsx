@@ -675,7 +675,6 @@ function Table(props) {
                         style={{ width: "100%" }}
                         items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                         onChange={handleArchivedRecordPlaceOrganizationalUnit}
-                        options={{ placeholder: translate('document.store.select_organizational') }}
                         multiple={false}
                     />
                 </div>
