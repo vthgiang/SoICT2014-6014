@@ -900,6 +900,7 @@ export default {
                 information: "Archive Place",
                 organizational_unit_manage: "Organizational Unit Management",
                 select_organizational: "Select organizational unit",
+                all: "Select all organizational units",
                 user_manage: "User management",
                 select_user: "Select user",
             },

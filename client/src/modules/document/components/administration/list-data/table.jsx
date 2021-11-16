@@ -448,7 +448,7 @@ function Table(props) {
             domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
             issuingBody: state.issuingBody ? state.issuingBody : "",
-            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
+            organizationUnit: (state.organizationUnit && state.organizationUnit[0] !== '') ? state.organizationUnit : "",
             calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined
         };
         await props.getAllDocuments(data);
@@ -534,7 +534,6 @@ function Table(props) {
                     ...state,
                     results
                 })
-            console.log('results', results);
         }
     }
 
@@ -542,6 +541,10 @@ function Table(props) {
         props.downloadAllFileOfDocument(state.results);
     }
 
+    const convertDataOrgan = (data) => {
+      data.unshift({value: "", text: translate("document.store.all")});
+      return data;
+    }
     return (
         <div className="qlcv">
             <CreateForm />
@@ -670,7 +673,7 @@ function Table(props) {
                         id="select-documents-organizational-unit-manage-table"
                         className="form-control select2"
                         style={{ width: "100%" }}
-                        items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                        items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                         onChange={handleArchivedRecordPlaceOrganizationalUnit}
                         options={{ placeholder: translate('document.store.select_organizational') }}
                         multiple={false}
