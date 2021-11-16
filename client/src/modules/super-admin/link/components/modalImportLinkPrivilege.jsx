@@ -45,12 +45,7 @@ function ModalImportLinkPrivilege(props) {
                 columnName: translate('manage_link.description'),
                 description: translate('manage_link.description'),
                 value: translate('manage_link.description'),
-            },
-            // linkRoles: {
-            //     columnName: translate('manage_link.roles'),
-            //     description: translate('manage_link.roles'),
-            //     value: translate('manage_link.roles'),
-            // }
+            }
         }
         role.list?.length && role.list.forEach(x => {
             // Thêm các column là tên các role trong hệ thống
@@ -89,10 +84,15 @@ function ModalImportLinkPrivilege(props) {
                 description: translate('manage_link.description'),
                 value: translate('manage_link.description'),
             },
+            linkRolesCurrent: {
+                columnName: translate('manage_link.roles') + " hiện tại",
+                description: translate('manage_link.roles') + " hiện tại",
+                value: translate('manage_link.roles') + " hiện tại",
+            },
             linkRoles: {
-                columnName: translate('manage_link.roles'),
-                description: translate('manage_link.roles'),
-                value: translate('manage_link.roles'),
+                columnName: translate('manage_link.roles') + " trong file",
+                description: translate('manage_link.roles') + " trong file",
+                value: translate('manage_link.roles') + " trong file",
             }
         }
         return config;
@@ -140,6 +140,7 @@ function ModalImportLinkPrivilege(props) {
                 let linkImport = link.list.filter(link => link.url === x.linkUrl);
                 let linkDescription = x.linkDescription;
                 let linkCategory = x.linkCategory;
+                let linkRolesCurrent = linkImport.length > 0 ? linkImport[0].roles.map(role => role && role.roleId ? role.roleId.name : "").join(", ") : "";
                 let xLinkRolesConcatenate = [];
 
                 role.list?.length && role.list.forEach((y, index) => {
@@ -201,6 +202,7 @@ function ModalImportLinkPrivilege(props) {
                         linkCategory: x.linkCategory,
                         linkDescription: x.linkDescription,
                         linkRoles: x.linkRoles,
+                        linkRolesCurrent: linkRolesCurrent,
                         linkUrl: x.linkUrl,
                         error: x.error,
                         errorAlert: errorAlert,
@@ -362,7 +364,7 @@ function ModalImportLinkPrivilege(props) {
     //     return templateImport;
     // }
 
-    // // Template file import theo dạng tích x vào cột tên role tương ứng
+    //Template file import theo dạng tích x vào cột tên role tương ứng
     const templateImportCheckBox = (translate, listRole, listLink) => {
         const copyListRole = cloneDeep(listRole);
         const copyListLink = cloneDeep(listLink);
@@ -406,12 +408,6 @@ function ModalImportLinkPrivilege(props) {
             });
 
         })
-
-
-
-        // console.log(allRoleColumn);
-
-        // console.log(listLinkConvert);
 
         let templateImport = {
             fileName: "Mẫu import phân quyền trang",
