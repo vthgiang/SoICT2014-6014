@@ -121,7 +121,6 @@ function DocumentShow(props) {
         })
     }
     function handleArchivedRecordPlaceOrganizationalUnit(value) {
-        console.log('value unit in others: ', value);
         setState(state => {
             return {
                 ...state,
@@ -480,8 +479,8 @@ function DocumentShow(props) {
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.store.organizational_unit_manage')}</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`select-documents-organizational-unit-manage-table-${typeId}`} // tại sao thêm dấu cách || trùng id thì lỗi
+                        <SelectBox
+                            id={`select-documents-organizational-unit-manage-table-${typeId}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
