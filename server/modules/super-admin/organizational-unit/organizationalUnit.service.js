@@ -353,6 +353,103 @@ exports.editOrganizationalUnit = async (portal, id, data) => {
  * @id id của đơn vị
  * @data dữ liệu về thông tin các chức danh muốn cập nhật
  */
+// exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
+//     const roleChucDanh = await RoleType(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROLE_TYPES.POSITION });
+//     const managerAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.MANAGER.name });
+//     const deputyManagerAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.DEPUTY_MANAGER.name });
+//     const employeeAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.name });
+//     const department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+//         .findById(id)
+//         .populate([
+//             { path: 'managers' },
+//             { path: 'deputyManagers' },
+//             { path: 'employees' }
+//         ]);
+
+//     //1.Chỉnh sửa nhân viên đơn vị
+//     const employees = await this.getDiffRolesInOrganizationalUnit(department.employees, data.employees);
+
+//     for (let i = 0; i < employees.editRoles.length; i++) {
+//         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(employees.editRoles[i]._id);
+//         updateRole.name = employees.editRoles[i].name;
+//         await updateRole.save();
+//     }
+
+//     for (let j = 0; j < employees.deleteRoles.length; j++) {
+//         await RoleService.deleteRole(portal, employees.deleteRoles[j]._id);
+//         await department.employees.splice(this.getIndex(employees.deleteRoles[j], department.employees), 1);
+//     }
+
+//     const newDataEmployees = employees.createRoles.map(role => {
+//         return {
+//             name: role.name,
+//             type: roleChucDanh._id,
+//             parents: [employeeAb._id]
+//         }
+//     });
+
+//     const newEmployees = await Role(connect(DB_CONNECTION, portal)).insertMany(newDataEmployees);
+//     const employeeIdArr = [...newEmployees.map(em => em._id), ...department.employees.map(em => em._id)]; //id của tất cả các employee trong đơn vị dùng để kế thừa cho vicemanager
+
+//     //2.Chỉnh sửa phó đơn vị
+//     const deputyManagers = await this.getDiffRolesInOrganizationalUnit(department.deputyManagers, data.deputyManagers);
+
+//     for (let i = 0; i < deputyManagers.editRoles.length; i++) {
+//         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: deputyManagers.editRoles[i]._id }, {
+//             name: deputyManagers.editRoles[i].name,
+//             parents: [deputyManagerAb._id, ...employeeIdArr]
+//         });
+//     }
+
+//     for (let j = 0; j < deputyManagers.deleteRoles.length; j++) {
+//         await RoleService.deleteRole(portal, deputyManagers.deleteRoles[j]._id);
+//         await department.deputyManagers.splice(this.getIndex(deputyManagers.deleteRoles[j], department.deputyManagers), 1);
+//     }
+
+//     const newDataDeputyManagers = deputyManagers.createRoles.map(role => {
+//         return {
+//             name: role.name,
+//             type: roleChucDanh._id,
+//             parents: [deputyManagerAb._id, ...employeeIdArr]
+//         }
+//     });
+
+//     const newDeputyManagers = await Role(connect(DB_CONNECTION, portal)).insertMany(newDataDeputyManagers);
+//     const deputyManagerIdArr = [...newDeputyManagers.map(vice => vice._id), ...department.deputyManagers.map(vice => vice._id)]; //id của tất cả các deputyManager trong đơn vị dùng để kế thừa cho manager
+
+//     //3.Chỉnh sửa trưởng đơn vị
+//     const managers = await this.getDiffRolesInOrganizationalUnit(department.managers, data.managers);
+
+//     for (let i = 0; i < managers.editRoles.length; i++) {
+//         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: managers.editRoles[i]._id }, {
+//             name: managers.editRoles[i].name,
+//             parents: [managerAb._id, ...employeeIdArr, ...deputyManagerIdArr]
+//         });
+//     }
+
+//     for (let j = 0; j < managers.deleteRoles.length; j++) {
+//         await RoleService.deleteRole(portal, managers.deleteRoles[j]._id);
+//     }
+
+//     const newDataManagers = managers.createRoles.map(role => {
+//         return {
+//             name: role.name,
+//             type: roleChucDanh._id,
+//             parents: [managerAb._id, ...employeeIdArr, ...deputyManagerIdArr]
+//         }
+//     });
+
+//     const newManagers = await Role(connect(DB_CONNECTION, portal)).insertMany(newDataManagers);
+//     const managerIdArr = [...newManagers.map(manager => manager._id), ...department.managers.map(manager => manager._id)]; //id của tất cả các manager
+
+//     const departmentSave = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(id);
+//     departmentSave.managers = managerIdArr;
+//     departmentSave.deputyManagers = deputyManagerIdArr;
+//     departmentSave.employees = employeeIdArr;
+//     await departmentSave.save();
+
+//     return departmentSave;
+// }
 exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     const roleChucDanh = await RoleType(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROLE_TYPES.POSITION });
     const managerAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.MANAGER.name });
@@ -366,11 +463,89 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
             { path: 'employees' }
         ]);
 
-    //1.Chỉnh sửa nhân viên đơn vị
+    // Kiểm tra role trùng tên
+    const validRole = async (inputRole) => {
+        let checkRole = await Role(connect(DB_CONNECTION, portal))
+            .aggregate([
+                {
+                    $project:
+                    {
+                        name: { $toLower: "$name" }
+                    }
+                },
+                {
+                    $project: {
+                        name: { $trim: { input: "$name" } }
+                    }
+                },
+                {
+                    $project: {
+                        name: { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                    }
+                },
+                { $match: { "name": inputRole.name.trim().toLowerCase().replaceAll(" ", "") } },
+                { $limit: 1 }
+            ])
+        console.log(inputRole._id)
+        console.log(inputRole.name)
+        console.log("validRole", checkRole)
+        return !(checkRole.length == 1)
+    }
+
+    const filterValidRoleArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+            let checkRoleValid = await Role(connect(DB_CONNECTION, portal))
+                .aggregate([
+                    {
+                        $project:
+                        {
+                            name: { $toLower: "$name" }
+                        }
+                    },
+                    {
+                        $project: {
+                            name: { $trim: { input: "$name" } }
+                        }
+                    },
+                    {
+                        $project: {
+                            name: { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                        }
+                    },
+                    { $match: { "name": { $in: array.map(role => role.name.trim().toLowerCase().replaceAll(" ", "")) } } },
+                    { $limit: 1 }
+                ])
+            console.log("filterValidRoleArray", checkRoleValid)
+
+            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase().replaceAll(" ", "")) } });
+            if (checkRoleValid.length == 1) throw ['role_name_exist'];
+            for (let i = 0; i < array.length; i++) {
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
     const employees = await this.getDiffRolesInOrganizationalUnit(department.employees, data.employees);
+    const deputyManagers = await this.getDiffRolesInOrganizationalUnit(department.deputyManagers, data.deputyManagers);
+    const managers = await this.getDiffRolesInOrganizationalUnit(department.managers, data.managers);
+
+    const managerArr = await filterValidRoleArray(managers.createRoles);
+    const deputyManagerArr = await filterValidRoleArray(deputyManagers.createRoles);
+    const employeeArr = await filterValidRoleArray(employees.createRoles);
+
+    //1.Chỉnh sửa nhân viên đơn vị
 
     for (let i = 0; i < employees.editRoles.length; i++) {
         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(employees.editRoles[i]._id);
+        const valid = await validRole(employees.editRoles[i])
+        if (updateRole.name.trim().toLowerCase().replaceAll(" ", "") !== employees.editRoles[i].name.trim().toLowerCase().replaceAll(" ", "")) {
+            if (!valid) { throw ['role_employee_exist']; }
+        }
         updateRole.name = employees.editRoles[i].name;
         await updateRole.save();
     }
@@ -380,7 +555,8 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
         await department.employees.splice(this.getIndex(employees.deleteRoles[j], department.employees), 1);
     }
 
-    const newDataEmployees = employees.createRoles.map(role => {
+
+    const newDataEmployees = employeeArr.map(role => {
         return {
             name: role.name,
             type: roleChucDanh._id,
@@ -388,13 +564,17 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
         }
     });
 
-    const newEmployees = await Role(connect(DB_CONNECTION, portal)).insertMany(newDataEmployees);
+    const newEmployees = newDataEmployees.length > 0 ? await Role(connect(DB_CONNECTION, portal)).insertMany(newDataEmployees) : [];
     const employeeIdArr = [...newEmployees.map(em => em._id), ...department.employees.map(em => em._id)]; //id của tất cả các employee trong đơn vị dùng để kế thừa cho vicemanager
 
     //2.Chỉnh sửa phó đơn vị
-    const deputyManagers = await this.getDiffRolesInOrganizationalUnit(department.deputyManagers, data.deputyManagers);
 
     for (let i = 0; i < deputyManagers.editRoles.length; i++) {
+        const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(deputyManagers.editRoles[i]._id);
+        const valid = await validRole(deputyManagers.editRoles[i])
+        if (updateRole.name.trim().toLowerCase().replaceAll(" ", "") !== deputyManagers.editRoles[i].name.trim().toLowerCase().replaceAll(" ", "")) {
+            if (!valid) { throw ['role_deputy_manager_exist']; }
+        }
         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: deputyManagers.editRoles[i]._id }, {
             name: deputyManagers.editRoles[i].name,
             parents: [deputyManagerAb._id, ...employeeIdArr]
@@ -406,7 +586,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
         await department.deputyManagers.splice(this.getIndex(deputyManagers.deleteRoles[j], department.deputyManagers), 1);
     }
 
-    const newDataDeputyManagers = deputyManagers.createRoles.map(role => {
+    const newDataDeputyManagers = deputyManagerArr.map(role => {
         return {
             name: role.name,
             type: roleChucDanh._id,
@@ -414,13 +594,17 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
         }
     });
 
-    const newDeputyManagers = await Role(connect(DB_CONNECTION, portal)).insertMany(newDataDeputyManagers);
+    const newDeputyManagers = newDataDeputyManagers.length > 0 ? await Role(connect(DB_CONNECTION, portal)).insertMany(newDataDeputyManagers) : [];
     const deputyManagerIdArr = [...newDeputyManagers.map(vice => vice._id), ...department.deputyManagers.map(vice => vice._id)]; //id của tất cả các deputyManager trong đơn vị dùng để kế thừa cho manager
 
     //3.Chỉnh sửa trưởng đơn vị
-    const managers = await this.getDiffRolesInOrganizationalUnit(department.managers, data.managers);
 
     for (let i = 0; i < managers.editRoles.length; i++) {
+        const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(managers.editRoles[i]._id);
+        const valid = await validRole(managers.editRoles[i])
+        if (updateRole.name.trim().toLowerCase().replaceAll(" ", "") !== managers.editRoles[i].name.trim().toLowerCase().replaceAll(" ", "")) {
+            if (!valid) { throw ['role_manager_exist']; }
+        }
         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: managers.editRoles[i]._id }, {
             name: managers.editRoles[i].name,
             parents: [managerAb._id, ...employeeIdArr, ...deputyManagerIdArr]
@@ -431,7 +615,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
         await RoleService.deleteRole(portal, managers.deleteRoles[j]._id);
     }
 
-    const newDataManagers = managers.createRoles.map(role => {
+    const newDataManagers = managerArr.map(role => {
         return {
             name: role.name,
             type: roleChucDanh._id,
@@ -439,7 +623,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
         }
     });
 
-    const newManagers = await Role(connect(DB_CONNECTION, portal)).insertMany(newDataManagers);
+    const newManagers = newDataManagers.length > 0 ? await Role(connect(DB_CONNECTION, portal)).insertMany(newDataManagers) : [];
     const managerIdArr = [...newManagers.map(manager => manager._id), ...department.managers.map(manager => manager._id)]; //id của tất cả các manager
 
     const departmentSave = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(id);
@@ -450,7 +634,6 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
 
     return departmentSave;
 }
-
 
 /**
  * Xóa đơn vị

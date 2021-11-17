@@ -26,6 +26,7 @@ function RoleTable(props) {
         value: ''
     })
 
+    let { roleDuplicate, roleDuplicateName } = state;
     // Cac ham xu ly du lieu voi modal
     const handleEdit = async (role) => {
         await setState({
@@ -33,6 +34,34 @@ function RoleTable(props) {
             currentRow: role
         });
         window.$('#modal-edit-role').modal('show')
+    }
+
+    // const handleCheck
+    const handleCheck = () => {
+        let roleDuplicateName = [];
+        let roleDuplicate = [];
+
+        // lấy ds tất cả các role name
+        let allRoleNames = role.list.map(role => role && role._id ? role.name.trim().toLowerCase().replaceAll(" ", "") : "");
+
+        // lấy ds các name bị trùng
+        roleDuplicateName = [...new Set(
+            allRoleNames.filter((value, index, self) => self.indexOf(value) !== index))]
+        // console.log(allRoleNames);
+
+        // lấy danh sách các role có name bị trùng
+        roleDuplicate = role.list.filter(role => roleDuplicateName.includes(role.name.trim().toLowerCase().replaceAll(" ", "")))
+        console.log(roleDuplicate);
+
+        roleDuplicate = roleDuplicate.map(role => role.name.trim()).sort(Intl.Collator().compare); // sort theo alphabet ignorecase
+
+
+        setState({
+            ...state,
+            roleDuplicate,
+            roleDuplicateName
+        });
+
     }
 
     // Cac ham thiet lap va tim kiem gia tri
@@ -103,6 +132,12 @@ function RoleTable(props) {
             {/* Button thêm phân quyền mới */}
             <RoleCreateForm />
 
+
+            {/* Button kiểm tra tất cả phân quyền hợp lệ không*/}
+            <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
+                <button style={{ marginRight: 10 }} type="button" className="pull-right btn btn-info" onClick={handleCheck}>Kiểm tra</button>
+            </div>
+
             {/* Form chỉnh sửa thông tin phân quyền */}
             {
                 currentRow &&
@@ -124,6 +159,23 @@ function RoleTable(props) {
                 setOption={setOption}
                 search={searchWithOption}
             />
+
+            {/* Kết quả kiểm tra trùng lặp */}
+            {roleDuplicate && roleDuplicate.length !== 0 && (
+                <React.Fragment>
+                    <br />
+                    <p style={{ fontWeight: "bold", color: "orangered" }}>Các phân quyền sau bị trùng: {roleDuplicate.join(', ')}</p>
+
+                </React.Fragment>
+            )}
+            {roleDuplicate && roleDuplicate.length == 0 && (
+                <React.Fragment>
+                    <br />
+                    <p style={{ fontWeight: "bold", color: "green" }}>Tất cả phân quyền đều hợp lệ</p>
+
+                </React.Fragment>
+            )}
+
 
             {/* Bảng dữ liệu phân quyền */}
             <table className="table table-hover table-striped table-bordered" id={tableId}>
@@ -151,7 +203,7 @@ function RoleTable(props) {
                     {
                         role.listPaginate && role.listPaginate.length > 0 &&
                         role.listPaginate.map(role =>
-                            <tr key={`roleList${role._id}`}>
+                            <tr key={`roleList${role._id}`} style={roleDuplicateName && roleDuplicateName.includes(role.name.trim().toLowerCase().replaceAll(" ", "")) ? { color: "orangered", fontWeight: "bold" } : { color: "" }}>
                                 <td> {role.name} </td>
                                 <td><ToolTip dataTooltip={role?.parents?.length ? role.parents.map(parent => parent ? parent.name : "") : []} /></td>
                                 <td><ToolTip dataTooltip={role?.users?.length ? role.users.map(user => user && user.userId ? user.userId.name : "") : []} /></td>
