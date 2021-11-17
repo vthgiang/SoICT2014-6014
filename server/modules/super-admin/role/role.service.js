@@ -100,17 +100,17 @@ exports.createRole = async (portal, data) => {
             {
                 $project:
                 {
-                    name: { $toLower: "$name" }
+                    'name': { $toLower: "$name" }
                 }
             },
             {
                 $project: {
-                    name: { $trim: { input: "$name" } }
+                    'name': { $trim: { input: "$name" } }
                 }
             },
             {
                 $project: {
-                    name: { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                    'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
                 }
             },
             { $match: { "name": data.name.trim().toLowerCase().replaceAll(" ", "") } },
@@ -170,17 +170,17 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
                     {
                         $project:
                         {
-                            name: { $toLower: "$name" }
+                            'name': { $toLower: "$name" }
                         }
                     },
                     {
                         $project: {
-                            name: { $trim: { input: "$name" } }
+                            'name': { $trim: { input: "$name" } }
                         }
                     },
                     {
                         $project: {
-                            name: { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                            'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
                         }
                     },
                     { $match: { "name": { $in: array.map(role => role.trim().toLowerCase().replaceAll(" ", "")) } } },
@@ -272,17 +272,17 @@ exports.editRole = async (portal, id, data = {}) => {
             {
                 $project:
                 {
-                    name: { $toLower: "$name" }
+                    'name': { $toLower: "$name" }
                 }
             },
             {
                 $project: {
-                    name: { $trim: { input: "$name" } }
+                    'name': { $trim: { input: "$name" } }
                 }
             },
             {
                 $project: {
-                    name: { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                    'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
                 }
             },
             { $match: { "name": data.name.trim().toLowerCase().replaceAll(" ", "") } },

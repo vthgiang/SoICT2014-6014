@@ -470,17 +470,17 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
                 {
                     $project:
                     {
-                        name: { $toLower: "$name" }
+                        'name': { $toLower: "$name" }
                     }
                 },
                 {
                     $project: {
-                        name: { $trim: { input: "$name" } }
+                        'name': { $trim: { input: "$name" } }
                     }
                 },
                 {
                     $project: {
-                        name: { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                        'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
                     }
                 },
                 { $match: { "name": inputRole.name.trim().toLowerCase().replaceAll(" ", "") } },
@@ -500,17 +500,17 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
                     {
                         $project:
                         {
-                            name: { $toLower: "$name" }
+                            'name': { $toLower: "$name" }
                         }
                     },
                     {
                         $project: {
-                            name: { $trim: { input: "$name" } }
+                            'name': { $trim: { input: "$name" } }
                         }
                     },
                     {
                         $project: {
-                            name: { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                            'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
                         }
                     },
                     { $match: { "name": { $in: array.map(role => role.name.trim().toLowerCase().replaceAll(" ", "")) } } },
