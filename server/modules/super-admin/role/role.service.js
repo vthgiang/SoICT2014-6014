@@ -98,19 +98,8 @@ exports.createRole = async (portal, data) => {
     const checkRoleCreated = await Role(connect(DB_CONNECTION, portal))
         .aggregate([
             {
-                $project:
-                {
-                    'name': { $toLower: "$name" }
-                }
-            },
-            {
                 $project: {
-                    'name': { $trim: { input: "$name" } }
-                }
-            },
-            {
-                $project: {
-                    'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                    'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                 }
             },
             { $match: { "name": data.name.trim().toLowerCase().replaceAll(" ", "") } },
@@ -168,19 +157,8 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
             let checkRoleValid = await Role(connect(DB_CONNECTION, portal))
                 .aggregate([
                     {
-                        $project:
-                        {
-                            'name': { $toLower: "$name" }
-                        }
-                    },
-                    {
                         $project: {
-                            'name': { $trim: { input: "$name" } }
-                        }
-                    },
-                    {
-                        $project: {
-                            'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                            'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                         }
                     },
                     { $match: { "name": { $in: array.map(role => role.trim().toLowerCase().replaceAll(" ", "")) } } },
@@ -270,27 +248,19 @@ exports.editRole = async (portal, id, data = {}) => {
     const check = await Role(connect(DB_CONNECTION, portal))
         .aggregate([
             {
-                $project:
-                {
-                    'name': { $toLower: "$name" }
-                }
-            },
-            {
                 $project: {
-                    'name': { $trim: { input: "$name" } }
-                }
-            },
-            {
-                $project: {
-                    'name': { $replaceAll: { input: "$name", find: " ", replacement: "" } }
+                    'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                 }
             },
             { $match: { "name": data.name.trim().toLowerCase().replaceAll(" ", "") } },
             { $limit: 1 }
         ])
     // .findOne({ name: data.name });
-    if (check.length == 1) throw ['role_name_exist'];
+    if (role.name.trim().toLowerCase().replaceAll(" ", "") !== data.name.trim().toLowerCase().replaceAll(" ", "")) {
+        if (check.length == 1) throw ['role_name_exist'];
+    }
     if (data.name) {
+
         role.name = data.name.trim();
     }
 
