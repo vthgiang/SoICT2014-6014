@@ -472,7 +472,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
                         'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                     }
                 },
-                { $match: { "name": inputRole.name.trim().toLowerCase().replaceAll(" ", "") } },
+                { $match: { "name": inputRole.name.trim().toLowerCase().replace(/ /g, "") } },
                 { $limit: 1 }
             ])
         console.log(inputRole._id)
@@ -491,12 +491,12 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
                             'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                         }
                     },
-                    { $match: { "name": { $in: array.map(role => role.name.trim().toLowerCase().replaceAll(" ", "")) } } },
+                    { $match: { "name": { $in: array.map(role => role.name.trim().toLowerCase().replace(/ /g, "")) } } },
                     { $limit: 1 }
                 ])
             console.log("filterValidRoleArray", checkRoleValid)
 
-            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase().replaceAll(" ", "")) } });
+            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase().replace(/ /g, "")) } });
             if (checkRoleValid.length == 1) throw ['role_name_exist'];
             for (let i = 0; i < array.length; i++) {
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -521,7 +521,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     for (let i = 0; i < employees.editRoles.length; i++) {
         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(employees.editRoles[i]._id);
         const valid = await validRole(employees.editRoles[i])
-        if (updateRole.name.trim().toLowerCase().replaceAll(" ", "") !== employees.editRoles[i].name.trim().toLowerCase().replaceAll(" ", "")) {
+        if (updateRole.name.trim().toLowerCase().replace(/ /g, "") !== employees.editRoles[i].name.trim().toLowerCase().replace(/ /g, "")) {
             if (!valid) { throw ['role_employee_exist']; }
         }
         updateRole.name = employees.editRoles[i].name;
@@ -550,7 +550,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     for (let i = 0; i < deputyManagers.editRoles.length; i++) {
         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(deputyManagers.editRoles[i]._id);
         const valid = await validRole(deputyManagers.editRoles[i])
-        if (updateRole.name.trim().toLowerCase().replaceAll(" ", "") !== deputyManagers.editRoles[i].name.trim().toLowerCase().replaceAll(" ", "")) {
+        if (updateRole.name.trim().toLowerCase().replace(/ /g, "") !== deputyManagers.editRoles[i].name.trim().toLowerCase().replace(/ /g, "")) {
             if (!valid) { throw ['role_deputy_manager_exist']; }
         }
         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: deputyManagers.editRoles[i]._id }, {
@@ -580,7 +580,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     for (let i = 0; i < managers.editRoles.length; i++) {
         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(managers.editRoles[i]._id);
         const valid = await validRole(managers.editRoles[i])
-        if (updateRole.name.trim().toLowerCase().replaceAll(" ", "") !== managers.editRoles[i].name.trim().toLowerCase().replaceAll(" ", "")) {
+        if (updateRole.name.trim().toLowerCase().replace(/ /g, "") !== managers.editRoles[i].name.trim().toLowerCase().replace(/ /g, "")) {
             if (!valid) { throw ['role_manager_exist']; }
         }
         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: managers.editRoles[i]._id }, {

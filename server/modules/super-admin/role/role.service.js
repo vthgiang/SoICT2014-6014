@@ -102,7 +102,7 @@ exports.createRole = async (portal, data) => {
                     'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                 }
             },
-            { $match: { "name": data.name.trim().toLowerCase().replaceAll(" ", "") } },
+            { $match: { "name": data.name.trim().toLowerCase().replace(/ /g, "") } },
             { $limit: 1 }
         ])
     // .findOne({ name: data.name });
@@ -161,10 +161,10 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
                             'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                         }
                     },
-                    { $match: { "name": { $in: array.map(role => role.trim().toLowerCase().replaceAll(" ", "")) } } },
+                    { $match: { "name": { $in: array.map(role => role.trim().toLowerCase().replace(/ /g, "")) } } },
                     { $limit: 1 }
                 ])
-            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase().replaceAll(" ", "")) } });
+            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase().replace(/ /g, "")) } });
             if (checkRoleValid.length == 1) throw ['role_name_exist'];
 
             for (let i = 0; i < array.length; i++) {
@@ -252,11 +252,11 @@ exports.editRole = async (portal, id, data = {}) => {
                     'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
                 }
             },
-            { $match: { "name": data.name.trim().toLowerCase().replaceAll(" ", "") } },
+            { $match: { "name": data.name.trim().toLowerCase().replace(/ /g, "") } },
             { $limit: 1 }
         ])
     // .findOne({ name: data.name });
-    if (role.name.trim().toLowerCase().replaceAll(" ", "") !== data.name.trim().toLowerCase().replaceAll(" ", "")) {
+    if (role.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
         if (check.length == 1) throw ['role_name_exist'];
     }
     if (data.name) {
@@ -355,7 +355,7 @@ exports.importRoles = async (portal, data) => {
             let item = x;
             if (roles?.length) {
                 for (let i = 0; i < roles.length; i++) {
-                    if (roles[i].name.trim().toLowerCase().replaceAll(" ", "") === x.name.trim().toLowerCase().replaceAll(" ", "")) {
+                    if (roles[i].name.trim().toLowerCase().replace(/ /g, "") === x.name.trim().toLowerCase().replace(/ /g, "")) {
                         item = {
                             ...item,
                             errorAlert: ["role_name_exist"],
