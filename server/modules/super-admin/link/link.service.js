@@ -8,39 +8,43 @@ const { connect } = require(`../../../helpers/dbHelper`);
  * @company id của công ty
  */
 exports.getLinks = async (portal, query) => {
-    let {type, page, limit} = query;
-    
-    let options = (type === 'active') ? {deleteSoft: false} : {};
+    let { type, page, limit } = query;
+
+    let options = (type === 'active') ? { deleteSoft: false } : {};
 
     if (!page && !limit) {
         let links = await Link(connect(DB_CONNECTION, portal))
             .find(options)
-            .populate({ 
-                path: 'roles', 
-                model: Privilege(connect(DB_CONNECTION, portal)) 
+            .populate({
+                path: 'roles',
+                model: Privilege(connect(DB_CONNECTION, portal)),
+                populate: {
+                    path: 'roleId',
+                    model: Role(connect(DB_CONNECTION, portal))
+                }
             });
 
         return links;
     } else {
         let option = (query.key && query.value)
-            ? Object.assign(options, {[`${query.key}`]: new RegExp(query.value, "i")})
+            ? Object.assign(options, { [`${query.key}`]: new RegExp(query.value, "i") })
             : options;
 
         return await Link(connect(DB_CONNECTION, portal))
-        .paginate( option , { 
-            page, 
-            limit,
-            populate: [
-                { 
-                    path: 'roles', 
-                    model: Privilege(connect(DB_CONNECTION, portal)), 
-                    populate: { 
-                        path: 'roleId', 
-                        model: Role(connect(DB_CONNECTION, portal)) 
+            .paginate(option, {
+                page,
+                limit,
+                populate: [
+                    {
+                        path: 'roles',
+                        model: Privilege(connect(DB_CONNECTION, portal)),
+                        populate: {
+                            path: 'roleId',
+                            model: Role(connect(DB_CONNECTION, portal))
+                        }
                     }
-                }
-            ]
-        });
+                ]
+            });
     }
 }
 
@@ -51,7 +55,7 @@ exports.getLinks = async (portal, query) => {
 exports.getLink = async (portal, id) => {
     return await Link(connect(DB_CONNECTION, portal))
         .findById(id)
-        .populate({ path: 'roles', populate: {path: 'roleId'}});
+        .populate({ path: 'roles', populate: { path: 'roleId' } });
 }
 
 /**
@@ -59,15 +63,15 @@ exports.getLink = async (portal, id) => {
  * @data dữ liệu về link
  * @portal portal tương ứng với database cần sửa
  */
-exports.createLink = async(portal, data) => {
+exports.createLink = async (portal, data) => {
     if (data.url === '/system') {
         throw ['cannot_create_this_url', 'this_url_cannot_be_use'];
     }
 
     let check = await Link(connect(DB_CONNECTION, portal))
-        .findOne({url: data.url});
+        .findOne({ url: data.url });
 
-    if(check !== null) {
+    if (check !== null) {
         throw ['url_exist'];
     }
 
@@ -85,7 +89,7 @@ exports.createLink = async(portal, data) => {
  * @id id link
  * @data dữ liệu về link
  */
-exports.editLink = async(portal, id, data) => {
+exports.editLink = async (portal, id, data) => {
     console.log("EDIT link")
     let link = await Link(connect(DB_CONNECTION, portal))
         .findById(id);
@@ -101,8 +105,8 @@ exports.editLink = async(portal, id, data) => {
  * Xóa link (chỉ xóa tạm thời - không xóa hẳn)
  * @id id link
  */
-exports.deleteLink = async(portal, id, type) => {
-    if(type === 'soft') {
+exports.deleteLink = async (portal, id, type) => {
+    if (type === 'soft') {
         let link = await Link(connect(DB_CONNECTION, portal))
             .findById(id);
         link.deleteSoft = true;
@@ -114,7 +118,7 @@ exports.deleteLink = async(portal, id, type) => {
                 resourceType: 'Link'
             });
         await Link(connect(DB_CONNECTION, portal))
-            .deleteOne({ _id: id});
+            .deleteOne({ _id: id });
     }
 
     return id;
@@ -127,13 +131,13 @@ exports.deleteLink = async(portal, id, type) => {
  * @linkId id của link
  * @roleArr mảng id các role
  */
-exports.relationshipLinkRole = async(portal, linkId, roleArr) => {
+exports.relationshipLinkRole = async (portal, linkId, roleArr) => {
     await Privilege(connect(DB_CONNECTION, portal))
         .deleteMany({
             resourceId: linkId,
             resourceType: 'Link'
         });
-    let data = roleArr.map( role => {
+    let data = roleArr.map(role => {
         return {
             resourceId: linkId,
             resourceType: 'Link',
@@ -151,7 +155,7 @@ exports.relationshipLinkRole = async(portal, linkId, roleArr) => {
  * @id id link
  * @componentId id component
  */
-exports.addComponentOfLink = async(portal, id, componentId) => {
+exports.addComponentOfLink = async (portal, id, componentId) => {
     let link = await Link(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate({ path: 'roles' });
@@ -172,7 +176,7 @@ exports.addComponentOfLink = async(portal, id, componentId) => {
 exports.updateCompanyLinks = async (portal, data) => {
     for (let i = 0; i < data.length; i++) {
         await Link(connect(DB_CONNECTION, portal))
-            .updateOne({_id: data[i]._id}, {deleteSoft: data[i].deleteSoft});
+            .updateOne({ _id: data[i]._id }, { deleteSoft: data[i].deleteSoft });
     }
 
     return true;
