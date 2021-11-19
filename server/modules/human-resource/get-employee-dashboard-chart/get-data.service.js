@@ -98,7 +98,7 @@ const getEmployeeDashboardData = async (portal, company, params, list) => {
     const dataOvertimeUnits = await TimesheetsService.getOvertimeOfUnitsByStartDateAndEndDate(portal, organizationalUnits, startDateTrendOfOvertimeChart, endDateTrendOfOvertimeChart, company);
     const listField = await FieldService.getAllFields(portal, {}, company);
     const commendation = await CommendationService.getTotalCommendation(portal, company, organizationalUnits, month);
-    const discipline = await DisciplineService.searchDisciplines(portal, company, organizationalUnits, month);
+    const discipline = await DisciplineService.getTotalDiscipline(portal, company, organizationalUnits, month);
     //get age pyramid chart data
     let agePyramidChartData = getAgePyramidChartData(listEmployeesOfOrganizationalUnits);
     let humanResourceChartBySalaryData = getHumanResourcesChartBySalary(salaris);
