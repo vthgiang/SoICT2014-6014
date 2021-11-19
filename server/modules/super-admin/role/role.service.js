@@ -99,10 +99,10 @@ exports.createRole = async (portal, data) => {
         .aggregate([
             {
                 $project: {
-                    'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
+                    'name': { $toLower: "$name" }
                 }
             },
-            { $match: { "name": data.name.trim().toLowerCase().replace(/ /g, "") } },
+            { $match: { "name": data.name.trim().toLowerCase() } },
             { $limit: 1 }
         ])
     // .findOne({ name: data.name });
@@ -158,13 +158,13 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
                 .aggregate([
                     {
                         $project: {
-                            'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
+                            'name': { $toLower: "$name" }
                         }
                     },
-                    { $match: { "name": { $in: array.map(role => role.trim().toLowerCase().replace(/ /g, "")) } } },
+                    { $match: { "name": { $in: array.map(role => role.trim().toLowerCase()) } } },
                     { $limit: 1 }
                 ])
-            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase().replace(/ /g, "")) } });
+            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase()) } });
             if (checkRoleValid.length == 1) throw ['role_name_exist'];
 
             for (let i = 0; i < array.length; i++) {
@@ -188,7 +188,7 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
 
     const dataEmployee = employeeArr.map(em => {
         return {
-            name: em,
+            name: em.trim(),
             type: roleChucDanh._id,
             parents: [employeeAb._id]
         }
@@ -199,7 +199,7 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
 
     const dataDeputyManager = deputyManagerArr.map(vice => {
         return {
-            name: vice,
+            name: vice.trim(),
             type: roleChucDanh._id,
             parents: [...employees.map(em => em._id), deputyManagerAb._id]
         }
@@ -210,7 +210,7 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
 
     const dataManager = managerArr.map(manager => {
         return {
-            name: manager,
+            name: manager.trim(),
             type: roleChucDanh._id,
             parents: [...employees.map(em => em._id), ...deputyManagers.map(vice => vice._id), managerAb._id]
         }
@@ -249,14 +249,14 @@ exports.editRole = async (portal, id, data = {}) => {
         .aggregate([
             {
                 $project: {
-                    'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
+                    'name': { $toLower: "$name" }
                 }
             },
-            { $match: { "name": data.name.trim().toLowerCase().replace(/ /g, "") } },
+            { $match: { "name": data.name.trim().toLowerCase() } },
             { $limit: 1 }
         ])
     // .findOne({ name: data.name });
-    if (role.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
+    if (role.name.trim().toLowerCase() !== data.name.trim().toLowerCase()) {
         if (check.length == 1) throw ['role_name_exist'];
     }
     if (data.name) {
@@ -355,7 +355,7 @@ exports.importRoles = async (portal, data) => {
             let item = x;
             if (roles?.length) {
                 for (let i = 0; i < roles.length; i++) {
-                    if (roles[i].name.trim().toLowerCase().replace(/ /g, "") === x.name.trim().toLowerCase().replace(/ /g, "")) {
+                    if (roles[i].name.trim().toLowerCase() === x.name.trim().toLowerCase()) {
                         item = {
                             ...item,
                             errorAlert: ["role_name_exist"],

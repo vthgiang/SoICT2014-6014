@@ -290,15 +290,24 @@ exports.getIndex = async (node, array) => {
  * @companyID id công ty
  */
 exports.createOrganizationalUnit = async (portal, data, managerArr = [], deputyManagerArr = [], employeeArr = []) => {
-    const check = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data.name });
+    const checkDepartment = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .aggregate([
+            {
+                $project: {
+                    'name': { $toLower: "$name" }
+                }
+            },
+            { $match: { "name": data.name.trim().toLowerCase() } },
+            { $limit: 1 }
+        ])
 
-    if (check) {
+    if (checkDepartment.length == 1) {
         throw ['department_name_exist'];
     }
 
     const department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .create({
-            name: data.name,
+            name: data.name.trim(),
             description: data.description,
             managers: managerArr,
             deputyManagers: deputyManagerArr,
@@ -327,8 +336,23 @@ exports.editOrganizationalUnit = async (portal, id, data) => {
         throw ['department_not_found'];
     }
 
+    const checkDepartment = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .aggregate([
+            {
+                $project: {
+                    'name': { $toLower: "$name" }
+                }
+            },
+            { $match: { "name": data.name.trim().toLowerCase() } },
+            { $limit: 1 }
+        ])
     //Chỉnh sửa thông tin phòng ban
-    department.name = data.name;
+    if (department.name.trim().toLowerCase() !== data.name.trim().toLowerCase()) {
+        if (checkDepartment.length == 1) {
+            throw ['department_name_exist'];
+        }
+    }
+    department.name = data.name.trim();
     department.description = data.description;
 
     // Kiểm tra phòng ban cha muốn sửa đổi
@@ -469,10 +493,10 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
             .aggregate([
                 {
                     $project: {
-                        'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
+                        'name': { $toLower: "$name" }
                     }
                 },
-                { $match: { "name": inputRole.name.trim().toLowerCase().replace(/ /g, "") } },
+                { $match: { "name": inputRole.name.trim().toLowerCase() } },
                 { $limit: 1 }
             ])
         console.log(inputRole._id)
@@ -488,15 +512,15 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
                 .aggregate([
                     {
                         $project: {
-                            'name': { $replaceAll: { input: { $trim: { input: { $toLower: "$name" } } }, find: " ", replacement: "" } }
+                            'name': { $toLower: "$name" }
                         }
                     },
-                    { $match: { "name": { $in: array.map(role => role.name.trim().toLowerCase().replace(/ /g, "")) } } },
+                    { $match: { "name": { $in: array.map(role => role.name.trim().toLowerCase()) } } },
                     { $limit: 1 }
                 ])
             console.log("filterValidRoleArray", checkRoleValid)
 
-            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase().replace(/ /g, "")) } });
+            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase()) } });
             if (checkRoleValid.length == 1) throw ['role_name_exist'];
             for (let i = 0; i < array.length; i++) {
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -521,10 +545,10 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     for (let i = 0; i < employees.editRoles.length; i++) {
         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(employees.editRoles[i]._id);
         const valid = await validRole(employees.editRoles[i])
-        if (updateRole.name.trim().toLowerCase().replace(/ /g, "") !== employees.editRoles[i].name.trim().toLowerCase().replace(/ /g, "")) {
+        if (updateRole.name.trim().toLowerCase() !== employees.editRoles[i].name.trim().toLowerCase()) {
             if (!valid) { throw ['role_employee_exist']; }
         }
-        updateRole.name = employees.editRoles[i].name;
+        updateRole.name = employees.editRoles[i].name.trim();
         await updateRole.save();
     }
 
@@ -536,7 +560,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
 
     const newDataEmployees = employeeArr.map(role => {
         return {
-            name: role.name,
+            name: role.name.trim(),
             type: roleChucDanh._id,
             parents: [employeeAb._id]
         }
@@ -550,11 +574,11 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     for (let i = 0; i < deputyManagers.editRoles.length; i++) {
         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(deputyManagers.editRoles[i]._id);
         const valid = await validRole(deputyManagers.editRoles[i])
-        if (updateRole.name.trim().toLowerCase().replace(/ /g, "") !== deputyManagers.editRoles[i].name.trim().toLowerCase().replace(/ /g, "")) {
+        if (updateRole.name.trim().toLowerCase() !== deputyManagers.editRoles[i].name.trim().toLowerCase()) {
             if (!valid) { throw ['role_deputy_manager_exist']; }
         }
         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: deputyManagers.editRoles[i]._id }, {
-            name: deputyManagers.editRoles[i].name,
+            name: deputyManagers.editRoles[i].name.trim(),
             parents: [deputyManagerAb._id, ...employeeIdArr]
         });
     }
@@ -566,7 +590,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
 
     const newDataDeputyManagers = deputyManagerArr.map(role => {
         return {
-            name: role.name,
+            name: role.name.trim(),
             type: roleChucDanh._id,
             parents: [deputyManagerAb._id, ...employeeIdArr]
         }
@@ -580,11 +604,11 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     for (let i = 0; i < managers.editRoles.length; i++) {
         const updateRole = await Role(connect(DB_CONNECTION, portal)).findById(managers.editRoles[i]._id);
         const valid = await validRole(managers.editRoles[i])
-        if (updateRole.name.trim().toLowerCase().replace(/ /g, "") !== managers.editRoles[i].name.trim().toLowerCase().replace(/ /g, "")) {
+        if (updateRole.name.trim().toLowerCase() !== managers.editRoles[i].name.trim().toLowerCase()) {
             if (!valid) { throw ['role_manager_exist']; }
         }
         await Role(connect(DB_CONNECTION, portal)).updateOne({ _id: managers.editRoles[i]._id }, {
-            name: managers.editRoles[i].name,
+            name: managers.editRoles[i].name.trim(),
             parents: [managerAb._id, ...employeeIdArr, ...deputyManagerIdArr]
         });
     }
@@ -595,7 +619,7 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
 
     const newDataManagers = managerArr.map(role => {
         return {
-            name: role.name,
+            name: role.name.trim(),
             type: roleChucDanh._id,
             parents: [managerAb._id, ...employeeIdArr, ...deputyManagerIdArr]
         }
