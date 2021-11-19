@@ -101,14 +101,14 @@ class Content extends Component {
 
             this.createResizableColumn(currentCol, nextCol, resizer);
         };
-        console.log("resizer created");
+        // console.log("resizer created");
     }
 
     removeAllResizer = () => {
         const resizers = window.$("table>thead>tr>th>div.resizeDiv");
         [].forEach.call(resizers, (resizer) => {
             resizer.remove();
-            console.log("resizer removed");
+            // console.log("resizer removed");
         })
     }
 

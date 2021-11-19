@@ -708,6 +708,8 @@ export default {
             },
 
             system_api: {
+                update: "Cập nhật",
+
                 table: {
                     path: "Đường dẫn",
                     method: "Phương thức",
