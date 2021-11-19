@@ -965,6 +965,7 @@ export default {
                 information: "Vị trí lưu trữ",
                 organizational_unit_manage: "Đơn vị quản lý",
                 select_organizational: "Chọn đơn vị quản lý",
+                all: "Chọn tất cả",
                 user_manage: "Người quản lý",
                 select_user: "Chọn người quản lý",
             },

@@ -121,9 +121,11 @@ function DocumentShow(props) {
         })
     }
     function handleArchivedRecordPlaceOrganizationalUnit(value) {
-        setState({
-            ...state,
-            organizationUnit: value,
+        setState(state => {
+            return {
+                ...state,
+                organizationUnit: value,
+            }
         })
     }
     const searchWithOption = async () => {
@@ -136,9 +138,9 @@ function DocumentShow(props) {
             domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
             issuingBody: state.issuingBody ? state.issuingBody : "",
-            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
+            organizationUnit: (state.organizationUnit && state.organizationUnit[0] !== '')? state.organizationUnit : "",
         };
-        await props.getUserDocumentStatistics(type, data);
+        await props.getUserDocumentStatistics(getStorage('currentRole'), type, data);
     }
     const convertDataToExportData = (data) => {
 
@@ -348,14 +350,14 @@ function DocumentShow(props) {
             domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
         };
-        await props.getUserDocumentStatistics(type, data);
+        await props.getUserDocumentStatistics(getStorage('currentRole'), type, data);
     }
 
     function setLimit(number) {
         if (state.limit !== number) {
             setState({ limit: number });
             const data = { limit: number, page: state.page };
-            props.getUserDocumentStatistics(type, data);
+            props.getUserDocumentStatistics(getStorage('currentRole'), type, data);
         }
     }
     const { translate, department } = props;
@@ -395,6 +397,11 @@ function DocumentShow(props) {
         dataExport = dataShow.list;
     }
     let exportData = dataExport ? convertDataToExportData(dataExport) : "";
+
+    const convertDataOrgan = (data) => {
+        data.unshift({value: "", text: translate("document.store.all")});
+        return data;
+    }
     return (
         <div className="qlcv">
             <React.Fragment>
@@ -472,13 +479,12 @@ function DocumentShow(props) {
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.store.organizational_unit_manage')}</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id="select-documents-organizational-unit-manage-table"
+                        <SelectBox
+                            id={`select-documents-organizational-unit-manage-table-${typeId}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
-                            items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                            items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                             onChange={handleArchivedRecordPlaceOrganizationalUnit}
-                            options={{ placeholder: translate('document.store.select_organizational') }}
                             multiple={false}
                         />
                     </div>
