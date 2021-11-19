@@ -95,19 +95,10 @@ exports.getRole = async (portal, roleId) => {
  */
 exports.createRole = async (portal, data) => {
     console.log("create-role")
-    const checkRoleCreated = await Role(connect(DB_CONNECTION, portal))
-        .aggregate([
-            {
-                $project: {
-                    'name': { $toLower: "$name" }
-                }
-            },
-            { $match: { "name": data.name.trim().toLowerCase() } },
-            { $limit: 1 }
-        ])
-    // .findOne({ name: data.name });
+    const checkRoleCreated = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data.name }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+
     console.log("create-role", checkRoleCreated)
-    if (checkRoleCreated.length == 1) {
+    if (checkRoleCreated) {
         throw ['role_name_exist'];
     }
 
@@ -154,18 +145,9 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
     const filterValidRoleArray = async (array) => {
         let resArray = [];
         if (array.length > 0) {
-            let checkRoleValid = await Role(connect(DB_CONNECTION, portal))
-                .aggregate([
-                    {
-                        $project: {
-                            'name': { $toLower: "$name" }
-                        }
-                    },
-                    { $match: { "name": { $in: array.map(role => role.trim().toLowerCase()) } } },
-                    { $limit: 1 }
-                ])
-            // .findOne({ name: { $in: array.map(role => role.trim().toLowerCase()) } });
-            if (checkRoleValid.length == 1) throw ['role_name_exist'];
+            const checkRoleValid = await Role(connect(DB_CONNECTION, portal)).findOne({ name: { $in: array.map(role => role.name) } }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" });
+
+            if (checkRoleValid) throw ['role_name_exist'];
 
             for (let i = 0; i < array.length; i++) {
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -245,22 +227,12 @@ exports.createRelationshipUserRole = async (portal, userId, roleId) => {
  */
 exports.editRole = async (portal, id, data = {}) => {
     const role = await Role(connect(DB_CONNECTION, portal)).findById(id);
-    const check = await Role(connect(DB_CONNECTION, portal))
-        .aggregate([
-            {
-                $project: {
-                    'name': { $toLower: "$name" }
-                }
-            },
-            { $match: { "name": data.name.trim().toLowerCase() } },
-            { $limit: 1 }
-        ])
-    // .findOne({ name: data.name });
-    if (role.name.trim().toLowerCase() !== data.name.trim().toLowerCase()) {
-        if (check.length == 1) throw ['role_name_exist'];
+    const check = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data.name }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+
+    if (role.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
+        if (check) throw ['role_name_exist'];
     }
     if (data.name) {
-
         role.name = data.name.trim();
     }
 
@@ -355,7 +327,7 @@ exports.importRoles = async (portal, data) => {
             let item = x;
             if (roles?.length) {
                 for (let i = 0; i < roles.length; i++) {
-                    if (roles[i].name.trim().toLowerCase() === x.name.trim().toLowerCase()) {
+                    if (roles[i].name.trim().toLowerCase().replace(/ /g, "") === x.name.trim().toLowerCase().replace(/ /g, "")) {
                         item = {
                             ...item,
                             errorAlert: ["role_name_exist"],
