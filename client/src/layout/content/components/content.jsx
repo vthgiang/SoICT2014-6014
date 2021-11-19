@@ -42,19 +42,29 @@ class Content extends Component {
     }
 
 
-    createResizableColumn = (currentCol, nextCol, resizer) => {
+    createResizableColumn = (currentCol, nextCol, resizer, table) => {
         let x = 0;
         let currentColWidth = 0;
         let nextColWidth = 0;
         const MINIMUM_WIDTH = 60;
+
+        const updateResizerHeight = () => {
+            const resizers = table.querySelectorAll("thead>tr>th>div.resizeDiv");
+            const tableHeight = `${table.offsetHeight}px`;
+            if (resizers[0].offsetHeight != table.offsetHeight) {
+                for (let i = 0; i < resizers.length; ++i) {
+                    resizers[i].style.height = tableHeight;
+                }
+            }
+        }
 
         // Không cho select text khi đang resize column
         const disableSelect = (event) => {
             event.preventDefault();
         }
 
-        const mouseDownHandler = function (e) {
-            x = e.clientX;
+        const mouseDownHandler = (e) => {
+            x = e.pageX;
 
             const styles = window.getComputedStyle(currentCol);
             currentColWidth = parseInt(window.getComputedStyle(currentCol).width, 10);
@@ -62,27 +72,35 @@ class Content extends Component {
 
             document.addEventListener('mousemove', disableSelect);
             document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('touchmove', mouseMoveHandler);
+
             document.addEventListener('mouseup', mouseUpHandler);
+            document.addEventListener('touchend', mouseUpHandler);
 
             resizer.classList.add('resizing');
         };
 
-        const mouseMoveHandler = function (e) {
-            const dx = e.clientX - x;
+        const mouseMoveHandler = (e) => {
+            const dx = e.pageX - x;
             if (nextColWidth - dx > MINIMUM_WIDTH && currentColWidth + dx > MINIMUM_WIDTH) { // Độ rộng mỗi cột tối thiểu 60px
+                updateResizerHeight();
                 currentCol.style.width = `${currentColWidth + dx}px`;
                 nextCol.style.width = `${nextColWidth - dx}px`;
             }
         };
 
-        const mouseUpHandler = function () {
+        const mouseUpHandler = () => {
             resizer.classList.remove('resizing');
             document.removeEventListener('mousemove', disableSelect);
             document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('touchmove', mouseMoveHandler);
+
             document.removeEventListener('mouseup', mouseUpHandler);
+            document.removeEventListener('touchend', mouseUpHandler);
         };
 
         resizer.addEventListener('mousedown', mouseDownHandler);
+        resizer.addEventListener('touchstart', mouseDownHandler);
     };
 
     // Thêm resizer vào mỗi cột
@@ -99,7 +117,7 @@ class Content extends Component {
 
             currentCol.appendChild(resizer);
 
-            this.createResizableColumn(currentCol, nextCol, resizer);
+            this.createResizableColumn(currentCol, nextCol, resizer, table);
         };
         console.log("resizer created");
     }
@@ -143,6 +161,16 @@ class Content extends Component {
     handleDataTable = async (index) => {
         let tables = window.$("table:not(.not-sort)");
 
+        let updateResizerHeight = (table) => {
+            const resizers = table.querySelectorAll("thead>tr>th>div.resizeDiv");
+            const tableHeight = `${table.offsetHeight}px`;
+            if (resizers[0].offsetHeight != table.offsetHeight) {
+                for (let i = 0; i < resizers.length; ++i) {
+                    resizers[i].style.height = tableHeight;
+                }
+            }
+        }
+
         let nonAccentVietnamese = (str) => {
             if (str === null || str === undefined) return str;
             str = str.toLowerCase();
@@ -158,7 +186,7 @@ class Content extends Component {
             str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
             return str;
         }
-
+        
         let convertDate = (str) => {
             if (moment(str, 'DD-MM-YYYY', true).isValid()) {
                 str = str.split("-")
@@ -334,7 +362,8 @@ class Content extends Component {
                     // bắt sự kiện user nhập thông tin từ bàn phím
                     let filterOnKeyUp = () => {
                         table.find('.filter input').keyup(function (e) {
-                            filterFunc()
+                            filterFunc();
+                            updateResizerHeight(table[0]);
                         });
                     }
                     filterIcon.click(() => {
