@@ -10,8 +10,8 @@ import { PrivilegeApiActions } from '../redux/actions'
 import { CompanyActions } from '../../../company/redux/actions';
 
 import { PrivilegeApiCreateModal } from './privilegeApiCreateModal'
- 
-function PrivilegeApiManagement (props) {
+
+function PrivilegeApiManagement(props) {
     const { translate, privilegeApis, company } = props
 
     const tableId = "table-privilege-system-api";
@@ -163,7 +163,7 @@ function PrivilegeApiManagement (props) {
 
     return (
         <React.Fragment>
-            <PrivilegeApiCreateModal/>
+            <PrivilegeApiCreateModal />
 
             <div className="box" >
                 <div className="box-body qlcv">
@@ -174,7 +174,14 @@ function PrivilegeApiManagement (props) {
                             <input className="form-control" type="text" placeholder={translate('system_admin.privilege_system_api.placeholder.input_email')} name="name" onChange={(e) => handleChangeEmail(e)} />
                         </div>
 
-                        <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
+                        <button
+                            type="button"
+                            onClick={() => handleAddPrivilegeApi()}
+                            className="btn btn-success pull-right"
+                            title={translate('task.task_management.add_title')}
+                        >
+                            {translate('task.task_management.add_task')}
+                        </button>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -221,8 +228,8 @@ function PrivilegeApiManagement (props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { listPaginatePrivilegeApi?.length > 0
-                                && listPaginatePrivilegeApi.map((privilege, index) => 
+                            {listPaginatePrivilegeApi?.length > 0
+                                && listPaginatePrivilegeApi.map((privilege, index) =>
                                     <tr key={privilege._id}>
                                         <td>{index + 1}</td>
                                         <td>{privilege.email}</td>
@@ -233,23 +240,23 @@ function PrivilegeApiManagement (props) {
                                             {privilege?.token?.slice(0, 60)}...
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745"}}>
+                                            <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745" }}>
                                                 <i className="material-icons">check_circle_outline</i>
                                             </a>
-                                            <a onClick={() => handleDeclinePrivilegeApi(privilege)} style={{ color: "#E34724"}}>
+                                            <a onClick={() => handleDeclinePrivilegeApi(privilege)} style={{ color: "#E34724" }}>
                                                 <i className="material-icons">remove_circle_outline</i>
                                             </a>
                                             <div>
-                                                <a onClick={() => handleCancelPrivilegeApi(privilege)} style={{ color: "#858585"}}>
+                                                <a onClick={() => handleCancelPrivilegeApi(privilege)} style={{ color: "#858585" }}>
                                                     <i className="material-icons">highlight_off</i>
                                                 </a>
                                                 <a className="delete text-red" onClick={() => handleDeletePrivilegeApi(privilege)}>
                                                     <i className="material-icons">delete</i>
                                                 </a>
                                             </div>
-                                            
+
                                         </td>
-                                    </tr>    
+                                    </tr>
                                 )
                             }
                         </tbody>

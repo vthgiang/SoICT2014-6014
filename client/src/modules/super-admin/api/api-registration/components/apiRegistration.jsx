@@ -188,7 +188,11 @@ function ApiRegistration(props) {
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
                                             <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
-                                            {apiRegistration?.token?.slice(0, 60)}...
+                                            <div style={{
+                                                marginRight: 40,
+                                            }}>
+                                                {apiRegistration?.token?.slice(0, 60)}...
+                                            </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
                                             {
