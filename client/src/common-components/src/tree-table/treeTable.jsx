@@ -81,7 +81,7 @@ function TreeTable(props) {
                 // Tắt chức năng này nếu viewWhenClickName khác true
                 if (viewWhenClickName) {
                     if (funcEdit || funcView) {
-                        let a = window.$("<a/>").html($columnName.text()).click(() => {
+                        let a = window.$("<a/>").text(`${$columnName.text()}`).click(() => {
                             funcEdit ? funcEdit(id) : funcView(id);
                         })
                         div.append(a);

@@ -22,12 +22,20 @@ const TooltipCopy = ({ copyText, copySuccessNoti, className }) => {
             <button
                 onClick={() => handleCopyApi(copyText)}
                 className={className}
-                style={{ position: "absolute", right: 10 }}
+                style={{
+                    position: "absolute",
+                    right: 10,
+                    border: '1px solid gray',
+                    borderRadius: 3,
+                    width: 25,
+                    height: 25,
+                }}
                 onBlur={() => setShow(false)}
             >
-                Copy
+                <i className="material-icons" style={{
+                }}>content_copy</i>
             </button>
-        </Tooltip>
+        </Tooltip >
     )
 }
 

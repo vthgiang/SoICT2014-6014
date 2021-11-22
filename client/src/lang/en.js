@@ -655,6 +655,8 @@ export default {
             },
 
             system_api: {
+                update: "Update",
+
                 table: {
                     path: "Path",
                     method: "Method",
@@ -900,6 +902,7 @@ export default {
                 information: "Archive Place",
                 organizational_unit_manage: "Organizational Unit Management",
                 select_organizational: "Select organizational unit",
+                all: "Select all organizational units",
                 user_manage: "User management",
                 select_user: "Select user",
             },
@@ -5023,7 +5026,7 @@ export default {
                 search: "Search",
                 select_status: "Select status",
                 add_purchasing_request_button: "Add purchase requestion",
-                add_purchasing_request:"Add purchase requestion",
+                add_purchasing_request: "Add purchase requestion",
                 create_successfully: "Add purchase requestion successfully",
                 create_failed: "Add purchase requestion failed",
                 description: "Description",
@@ -5051,7 +5054,7 @@ export default {
                 cancel_purchasing_request: "Cancel purchase requestion",
                 number_purchasing_status: "Number of purchasing requestion by status"
             },
-            
+
         },
 
         manage_transport: {

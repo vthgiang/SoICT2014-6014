@@ -19,7 +19,7 @@ function Document(props) {
                     <UserDocumentsData />
                 </div>
                 <div className="tab-pane" id="user-document-history-document-downloaded">
-                    <DocumentShow type="downloaded" />
+                    <DocumentShow type="downloaded" typeId="downloaded"/>
                 </div>
                 <div className="tab-pane" id="user-document-history-document-common">
                     <DocumentShow type="common" typeId="common" />

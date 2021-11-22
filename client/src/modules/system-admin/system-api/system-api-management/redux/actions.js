@@ -95,9 +95,7 @@ function deleteSystemApi (systemApiId) {
 
 function updateSystemApiAutomatic() {
     return dispatch => {
-        dispatch({
-            type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_REQUEST,
-        })
+        dispatch({ type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_REQUEST, })
 
         SystemApiServices.updateSystemApiAutomatic()
             .then(res => {
