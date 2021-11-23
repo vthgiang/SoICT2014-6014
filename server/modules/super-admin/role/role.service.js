@@ -145,9 +145,14 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
     const filterValidRoleArray = async (array) => {
         let resArray = [];
         if (array.length > 0) {
-            const checkRoleValid = await Role(connect(DB_CONNECTION, portal)).findOne({ name: { $in: array.map(role => role.name) } }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" });
+            const checkRoleValid = await Role(connect(DB_CONNECTION, portal)).findOne({ name: { $in: array } }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" });
 
             if (checkRoleValid) throw ['role_name_exist'];
+
+            console.log(checkRoleValid)
+            if ((new Set(array.map(role => role.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['role_name_duplicate'];
+            }
 
             for (let i = 0; i < array.length; i++) {
                 if (array[i]) resArray = [...resArray, array[i]];
