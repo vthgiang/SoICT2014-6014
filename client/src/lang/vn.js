@@ -787,7 +787,9 @@ export default {
                 role_deputy_manager_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
                 role_employee_exist:
                     "Tên chức danh cho nhân viên đơn vị đã tồn tại",
-                role_name_exist: "Tên chức danh này đã được sử dụng cho một phân quyền khác"
+                role_name_exist: "Tên chức danh này đã được sử dụng cho một phân quyền khác",
+                role_name_exist: "Tên chức danh này đã được sử dụng cho một phân quyền khác",
+                role_name_duplicate: "Tên các chức danh đã nhập bị trùng với nhau"
             },
             user: {
                 // Thông điệp trả về từ server

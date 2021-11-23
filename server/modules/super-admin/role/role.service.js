@@ -174,6 +174,11 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
     const deputyManagerArr = await filterValidRoleArray(data.deputyManagers);
     const employeeArr = await filterValidRoleArray(data.employees);
 
+    const allInputRole = managerArr.concat(deputyManagerArr, employeeArr)
+    if ((new Set(allInputRole.map(role => role.toLowerCase().replace(/ /g, "")))).size !== allInputRole.length) {
+        throw ['role_name_duplicate'];
+    }
+
     const dataEmployee = employeeArr.map(em => {
         return {
             name: em.trim(),

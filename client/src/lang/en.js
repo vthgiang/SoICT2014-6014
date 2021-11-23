@@ -730,6 +730,8 @@ export default {
                 role_manager_exist: "Manager role name already exists",
                 role_deputy_manager_exist: "Deputy manager role name already exists",
                 role_employee_exist: "Employee role name already exists",
+                role_name_exist: "This role name already exists",
+                role_name_duplicate: "Input role names are duplicated"
             },
             user: {
                 // Thông điệp trả về từ server
