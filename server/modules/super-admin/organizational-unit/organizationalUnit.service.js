@@ -507,6 +507,10 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     const deputyManagerArr = await filterValidRoleArray(deputyManagers.createRoles);
     const employeeArr = await filterValidRoleArray(employees.createRoles);
 
+    const allInputRole = managerArr.concat(deputyManagerArr, employeeArr)
+    if ((new Set(allInputRole.map(role => role.name.toLowerCase().replace(/ /g, "")))).size !== allInputRole.length) {
+        throw ['role_name_duplicate'];
+    }
     //1.Chỉnh sửa nhân viên đơn vị
 
     for (let i = 0; i < employees.editRoles.length; i++) {
