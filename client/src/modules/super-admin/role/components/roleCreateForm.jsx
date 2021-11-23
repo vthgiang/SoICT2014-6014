@@ -162,11 +162,27 @@ function RoleCreateForm(props) {
         }
     };
 
+    const validateAttributes = () => {
+        var roleAttributes = state.roleAttributes;
+        let result = true;
+
+        if (roleAttributes.length !== 0) {
+
+            for (let n in roleAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, roleAttributes[n].name).status || !ValidationHelper.validateEmpty(props.translate, roleAttributes[n].value).status) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        console.log(result);
+        return result;
+    }
 
     const isFormValidated = () => {
         let { roleName } = state;
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, roleName).status) return false;
+        if (!ValidationHelper.validateName(translate, roleName).status || !validateAttributes()) return false;
         return true;
     }
 
