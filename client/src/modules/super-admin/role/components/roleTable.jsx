@@ -122,6 +122,26 @@ function RoleTable(props) {
         props.get(data);
     }
 
+    // Function lưu các trường thông tin vào state
+    const handleChange = (name, value) => {
+        // if (name === 'roleAttributes') { //
+        //     if (value) {
+        //         var partValue = value.split('-');
+        //         value = [partValue[2], partValue[1], partValue[0]].join('-');
+        //     } else {
+        //         value = null
+        //     }
+        // }
+        // if (name === "assetType") {
+        //     value = JSON.stringify(value);
+        // }
+
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
     useEffect(() => {
         props.get();
         props.get({ page: state.page, limit: state.limit });
@@ -139,7 +159,7 @@ function RoleTable(props) {
         <React.Fragment>
 
             {/* Button thêm phân quyền mới */}
-            <RoleCreateForm />
+            <RoleCreateForm handleChange={handleChange} />
 
 
             {/* Button kiểm tra tất cả phân quyền hợp lệ không*/}
@@ -156,6 +176,8 @@ function RoleTable(props) {
                     roleType={currentRow.type ? currentRow.type.name : null}
                     roleParents={currentRow.parents.map(parent => parent ? parent._id : null)}
                     roleUsers={currentRow.users.map(user => user && user.userId ? user.userId._id : null)}
+                    handleChange={handleChange}
+                    roleAttributes={currentRow.attributes}
                 />
             }
 

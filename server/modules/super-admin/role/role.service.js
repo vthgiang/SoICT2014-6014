@@ -107,6 +107,7 @@ exports.createRole = async (portal, data) => {
     const role = await Role(connect(DB_CONNECTION, portal)).create({
         name: data.name.trim(),
         parents: data.parents,
+        attributes: data.attributes,
         type: roleTuTao._id
     });
 
@@ -238,6 +239,10 @@ exports.editRole = async (portal, id, data = {}) => {
 
     if (data.parents) {
         role.parents = data.parents;
+    }
+
+    if (data.attributes) {
+        role.attributes = data.attributes;
     }
 
     await role.save();

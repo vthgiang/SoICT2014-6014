@@ -1331,6 +1331,11 @@ export default {
             add_faile: "Add new role failed",
             edit_success: "Edit role successfully",
             edit_faile: "Edit role failed",
+            attributes: "Role attributes",
+            attribute_name: "Attribute name",
+            attribute_value: "Attribute value",
+            attribute_name_example: "VD: Department",
+            attribute_value_example: "VD: Directorate"
         },
 
         manage_user: {

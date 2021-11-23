@@ -25,6 +25,13 @@ const RoleSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "Company",
         },
+        attributes: [
+            {
+                // thuộc tính của role
+                name: String, // tên thuộc tính
+                value: String, //giá trị
+            },
+        ],
     },
     {
         timestamps: true,

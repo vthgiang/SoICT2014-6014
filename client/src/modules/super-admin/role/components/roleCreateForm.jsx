@@ -10,6 +10,7 @@ function RoleCreateForm(props) {
     const [state, setState] = useState({
         roleUsers: [],
         roleParents: [],
+        roleAttributes: []
     })
 
     useEffect(() => {
@@ -49,6 +50,119 @@ function RoleCreateForm(props) {
         });
     }
 
+    /**
+     * Bắt sự kiện chỉnh sửa tên thuộc tính
+     */
+    const handleChangeAttributeName = (e, index) => {
+        var { value } = e.target;
+        validateNameField(value, index);
+    }
+    const validateNameField = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+
+        if (willUpdateState) {
+            var { roleAttributes } = state;
+            roleAttributes[className] = { ...roleAttributes[className], name: value }
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnNameField: message,
+                    errorOnNameFieldPosition: message ? className : null,
+                    roleAttributes: roleAttributes
+                }
+            });
+            props.handleChange("roleAttributes", roleAttributes);
+        }
+        return message === undefined;
+    }
+
+    /**
+     * Bắt sự kiện chỉnh sửa giá trị thuộc tính
+     */
+    const handleChangeAttributeValue = (e, index) => {
+        var { value } = e.target;
+        validateValue(value, index);
+    }
+    const validateValue = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+
+        if (willUpdateState) {
+            var { roleAttributes } = state;
+            roleAttributes[className] = { ...roleAttributes[className], value: value }
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnValue: message,
+                    errorOnValuePosition: message ? className : null,
+                    roleAttributes: roleAttributes
+                }
+            });
+            props.handleChange("roleAttributes", roleAttributes);
+        }
+        return message === undefined;
+    }
+
+    /**
+     * Bắt sự kiện click thêm Thông tin chi tiết
+     */
+    const handleAddAttributes = () => {
+        var roleAttributes = state.roleAttributes;
+
+        if (roleAttributes.length !== 0) {
+            let result;
+
+            for (let n in roleAttributes) {
+                result = validateNameField(roleAttributes[n].name, n) && validateValue(roleAttributes[n].value, n);
+                if (!result) {
+                    validateNameField(roleAttributes[n].name, n);
+                    validateValue(roleAttributes[n].value, n)
+                    break;
+                }
+            }
+
+            if (result) {
+                setState(state => {
+                    return {
+                        ...state,
+                        roleAttributes: [...roleAttributes, { name: "", value: "" }]
+                    }
+                })
+            }
+        } else {
+            setState(state => {
+                return {
+                    ...state,
+                    roleAttributes: [...roleAttributes, { name: "", value: "" }]
+                }
+            })
+        }
+
+    }
+
+    /**
+         * Bắt sự kiện xóa thông tin chi tiết
+         */
+    const handleRemoveAttribute = (index) => {
+        var { roleAttributes } = state;
+        roleAttributes.splice(index, 1);
+        if (roleAttributes.length !== 0) {
+            for (let n in roleAttributes) {
+                validateNameField(roleAttributes[n].name, n);
+                validateValue(roleAttributes[n].value, n)
+            }
+        } else {
+            setState(state => {
+                return {
+                    ...state,
+                    roleAttributes: roleAttributes,
+                    errorOnValue: undefined,
+                    errorOnNameField: undefined
+                }
+            })
+        }
+    };
+
+
     const isFormValidated = () => {
         let { roleName } = state;
         let { translate } = props;
@@ -60,7 +174,8 @@ function RoleCreateForm(props) {
         const data = {
             name: state.roleName,
             parents: state.roleParents,
-            users: state.roleUsers
+            users: state.roleUsers,
+            attributes: state.roleAttributes
         }
 
         if (isFormValidated()) {
@@ -78,7 +193,7 @@ function RoleCreateForm(props) {
     }
 
     const { translate, role, user } = props;
-    const { roleNameError } = state;
+    const { roleNameError, roleAttributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue } = state;
 
     return (
         <React.Fragment>
@@ -144,6 +259,67 @@ function RoleCreateForm(props) {
                             multiple={true}
                         />
                     </div>
+
+                    {/* Các thuộc tính của phân quyền */}
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border"><span>{translate('manage_role.attributes')}</span></legend>
+
+                        <div className="form-group">
+                            <table className="table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th><label>{translate('manage_role.attribute_name')}</label></th>
+                                        <th><label>{translate('manage_role.attribute_value')}</label></th>
+                                        <th style={{ width: '40px' }} className="text-center"><a href="#add-attributes" className="text-green" onClick={handleAddAttributes}><i className="material-icons">add_box</i></a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        (!roleAttributes || roleAttributes.length == 0) ?
+                                            <tr>
+                                                <td colSpan={3}>
+                                                    <center> {translate('table.no_data')}</center>
+                                                </td>
+                                            </tr> :
+                                            roleAttributes.map((attribute, index) => {
+                                                return <tr key={index}>
+                                                    <td>
+                                                        <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
+                                                            <input type="text"
+                                                                className="form-control"
+                                                                placeholder={translate('manage_role.attribute_name_example')}
+                                                                value={attribute.name}
+                                                                onChange={(e) => handleChangeAttributeName(e, index)}
+                                                            />
+                                                            {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
+                                                            <input type="text"
+                                                                className="form-control"
+                                                                placeholder={translate('manage_role.attribute_value_example')}
+                                                                value={attribute.value}
+                                                                onChange={(e) => handleChangeAttributeValue(e, index)}
+                                                            />
+                                                            {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="#delete-manager"
+                                                            className="text-red"
+                                                            style={{ border: 'none' }}
+                                                            onClick={() => handleRemoveAttribute(index)}><i className="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </fieldset>
                 </form>
             </DialogModal>
         </React.Fragment>

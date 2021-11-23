@@ -1432,6 +1432,11 @@ export default {
             add_faile: "Tạo phân quyền mới thất bại",
             edit_success: "Đã chỉnh sửa lại thông tin phân quyền",
             edit_faile: "Chỉnh sửa thất bại",
+            attributes: "Các thuộc tính của phân quyền",
+            attribute_name: "Tên thuộc tính",
+            attribute_value: "Giá trị",
+            attribute_name_example: "VD: Phòng ban",
+            attribute_value_example: "VD: Ban giám đốc"
         },
 
         manage_user: {
