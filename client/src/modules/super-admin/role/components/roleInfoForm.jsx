@@ -11,7 +11,7 @@ function RoleInfoForm(props) {
 
     // Thiet lap cac gia tri tu props vao state
     useEffect(() => {
-        if (props.roleId !== state.roleId) {
+        if (props.roleId !== state.roleId || props.roleAttributes !== state.roleAttributes) {
             setState({
                 ...state,
                 roleId: props.roleId,
@@ -23,7 +23,11 @@ function RoleInfoForm(props) {
                 roleAttributes: props.roleAttributes
             })
         }
-    }, [props.roleId])
+    }, [props.roleId, props.roleAttributes]);
+    // lan1 - role 1 
+    // an lai - role 1 -> ko chay vao useeffect
+    // an dong 2 - role 2 -. useeffect load lai thuoc tinh dong 2
+    // 
 
     console.log(state)
 
