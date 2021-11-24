@@ -4,9 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { taskTemplateActions } from '../redux/actions';
 import parse from 'html-react-parser';
 
-const ViewTaskTemplate = (props) =>  {
-    
-    const [state,setState] = useState({showMore: false})
+const ViewTaskTemplate = (props) => {
+
+    const [state, setState] = useState({ showMore: false })
 
     const clickShowMore = () => {
         setState(state => {
@@ -39,18 +39,18 @@ const ViewTaskTemplate = (props) =>  {
     if (isProcess) {
         if (listUser) {
             listUser.forEach(x => {
-                    if (taskTemplate?.accountableEmployees.some(y => y === x._id)) {
-                        listUserAccountable.push({ value: x._id, name: x.name })
-                    }
-                })
-                listUser.forEach(x => {
-                    if (taskTemplate?.responsibleEmployees.some(y => y === x._id)) {
-                        listUserResponsible.push({ value: x._id, name: x.name })
-                    }
-                })
+                if (taskTemplate?.accountableEmployees.some(y => y === x._id)) {
+                    listUserAccountable.push({ value: x._id, name: x.name })
+                }
+            })
+            listUser.forEach(x => {
+                if (taskTemplate?.responsibleEmployees.some(y => y === x._id)) {
+                    listUserResponsible.push({ value: x._id, name: x.name })
+                }
+            })
         }
     }
-    
+
     let organizationalUnit = taskTemplate?.organizationalUnit?.name
     let collaboratedWithOrganizationalUnits = taskTemplate?.collaboratedWithOrganizationalUnits
     let accountableEmployees = isProcess ? listUserAccountable : taskTemplate?.accountableEmployees
