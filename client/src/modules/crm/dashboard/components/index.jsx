@@ -11,7 +11,9 @@ import { CrmStatusActions } from '../../status/redux/actions';
 import { CrmGroupActions } from '../../group/redux/actions';
 import { CrmUnitActions } from '../../crmUnitConfiguration/redux/actions';
 
-
+/**
+ * Dashboard phần bảng tin quản lý khách hàng 
+ */
 function CrmDashBoard(props) {
     const { user, crm, auth } = props;
     const { evaluations, status, groups } = crm;
@@ -109,20 +111,38 @@ function CrmDashBoard(props) {
             </div>
             <div className="row" style={{ marginTop: '60px', textAlign: 'center' }}>
                 <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <C3Chart data={customerByGroupGraph} />
-                    <label > <span>Biểu đồ khách hàng theo nhóm </span></label>
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title"><label > <span>Biểu đồ khách hàng theo nhóm </span></label></div>
+                        </div>
+                        <div className="box-body qlcv">
+                            <C3Chart data={customerByGroupGraph} />
+                        </div>
+                    </div>
                 </div>
                 <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <C3Chart data={customerByStatusGraph} />
-                    <label > <span>Biểu đồ khách hàng theo trạng thái</span></label>
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title"><label > <span>Biểu đồ khách hàng theo trạng thái</span></label></div>
+                        </div>
+                        <div className="box-body qlcv">
+                            <C3Chart data={customerByStatusGraph} />
+                        </div>
+                    </div>
                 </div>
 
             </div>
             <div className="row" style={{ marginTop: '10px', textAlign: 'center' }}>
 
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <C3Chart data={data} axis={axis} />
-                    <label > <span>Biểu đồ đánh giá hoạt động CSKH</span></label>
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title"><label > <span>Biểu đồ đánh giá hoạt động CSKH</span></label></div>
+                        </div>
+                        <div className="box-body qlcv">
+                            <C3Chart data={data} axis={axis} />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

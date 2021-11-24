@@ -4,6 +4,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ButtonModal, DialogModal, SelectBox } from '../../../../common-components';
 import { CrmUnitActions } from '../redux/actions';
 
+/**
+ * Giao diện thêm đơn vị chăm sóc khách hàng 
+ * trong chức năng Quản lý khách hàng/ Cấu hình đơn vị chăm sóc khách hàng
+ */
 function CrmUnitAddForm(props) {
     const { department, translate, crm } = props;
     const [newCrmUnit, setNewCrmUnit] = useState()
