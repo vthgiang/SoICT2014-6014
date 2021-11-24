@@ -9,11 +9,12 @@ export const RoleServices = {
     edit,
     destroy,
     importRoles,
+    createRoleAttribute
 };
 
 function get(params) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER }/role/roles`,
+        url: `${process.env.REACT_APP_SERVER}/role/roles`,
         method: 'GET',
         params
     }, false, true, 'super_admin.role');
@@ -21,14 +22,14 @@ function get(params) {
 
 function show(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/role/roles/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/role/roles/${id}`,
         method: 'GET',
     }, false, true, 'super_admin.role');
 }
 
 function create(role) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/role/roles`,
+        url: `${process.env.REACT_APP_SERVER}/role/roles`,
         method: 'POST',
         data: role,
     }, true, true, 'super_admin.role');
@@ -36,14 +37,14 @@ function create(role) {
 
 function edit(role) {
     let showAlert = true;
-    if(role.showAlert!==undefined){
+    if (role.showAlert !== undefined) {
         showAlert = role.showAlert
     };
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/role/roles/${role.id}`,
+        url: `${process.env.REACT_APP_SERVER}/role/roles/${role.id}`,
         method: 'PATCH',
         data: role,
-        params:{
+        params: {
             notEditRoleInfo: role.notEditRoleInfo
         }
     }, showAlert, true, 'super_admin.role');
@@ -51,7 +52,7 @@ function edit(role) {
 
 function destroy(roleId) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/role/roles/${roleId}`,
+        url: `${process.env.REACT_APP_SERVER}/role/roles/${roleId}`,
         method: 'DELETE',
     }, true, true, 'super_admin.role');
 }
@@ -59,8 +60,16 @@ function destroy(roleId) {
 
 function importRoles(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/role/roles/imports`,
+        url: `${process.env.REACT_APP_SERVER}/role/roles/imports`,
         method: 'POST',
         data: data
+    }, true, true, 'super_admin.role');
+}
+
+function createRoleAttribute(role) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/role/roles/attributes`,
+        method: 'POST',
+        data: role,
     }, true, true, 'super_admin.role');
 }

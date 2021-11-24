@@ -9,6 +9,7 @@ import { UserActions } from '../../user/redux/actions';
 
 import RoleCreateForm from './roleCreateForm';
 import RoleInfoForm from './roleInfoForm';
+import RoleAttributeCreateForm from './roleAttributeCreateForm'
 
 import { ROLE_TYPE } from '../../../../helpers/constants';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
@@ -35,6 +36,7 @@ function RoleTable(props) {
         });
         window.$('#modal-edit-role').modal('show')
     }
+    console.log(state.currentRow)
 
     // const handleCheck
     const handleCheck = () => {
@@ -161,6 +163,7 @@ function RoleTable(props) {
             {/* Button thêm phân quyền mới */}
             <RoleCreateForm handleChange={handleChange} />
 
+            <RoleAttributeCreateForm handleChange={handleChange} />
 
             {/* Button kiểm tra tất cả phân quyền hợp lệ không*/}
             <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
@@ -176,8 +179,8 @@ function RoleTable(props) {
                     roleType={currentRow.type ? currentRow.type.name : null}
                     roleParents={currentRow.parents.map(parent => parent ? parent._id : null)}
                     roleUsers={currentRow.users.map(user => user && user.userId ? user.userId._id : null)}
-                    handleChange={handleChange}
                     roleAttributes={currentRow.attributes}
+                    handleChange={handleChange}
                 />
             }
 

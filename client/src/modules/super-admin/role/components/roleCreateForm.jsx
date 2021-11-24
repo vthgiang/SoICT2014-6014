@@ -277,65 +277,62 @@ function RoleCreateForm(props) {
                     </div>
 
                     {/* Các thuộc tính của phân quyền */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><span>{translate('manage_role.attributes')}</span></legend>
-
-                        <div className="form-group">
-                            <table className="table table-hover table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th><label>{translate('manage_role.attribute_name')}</label></th>
-                                        <th><label>{translate('manage_role.attribute_value')}</label></th>
-                                        <th style={{ width: '40px' }} className="text-center"><a href="#add-attributes" className="text-green" onClick={handleAddAttributes}><i className="material-icons">add_box</i></a></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        (!roleAttributes || roleAttributes.length == 0) ?
-                                            <tr>
-                                                <td colSpan={3}>
-                                                    <center> {translate('table.no_data')}</center>
+                    <div className="form-group">
+                        <label>{translate('manage_role.attributes')}</label>
+                        <table className="table table-hover table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><label>{translate('manage_role.attribute_name')}</label></th>
+                                    <th><label>{translate('manage_role.attribute_value')}</label></th>
+                                    <th style={{ width: '40px' }} className="text-center"><a href="#add-attributes" className="text-green" onClick={handleAddAttributes}><i className="material-icons">add_box</i></a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    (!roleAttributes || roleAttributes.length == 0) ?
+                                        <tr>
+                                            <td colSpan={3}>
+                                                <center> {translate('table.no_data')}</center>
+                                            </td>
+                                        </tr> :
+                                        roleAttributes.map((attribute, index) => {
+                                            return <tr key={index}>
+                                                <td>
+                                                    <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
+                                                        <input type="text"
+                                                            className="form-control"
+                                                            placeholder={translate('manage_role.attribute_name_example')}
+                                                            value={attribute.name}
+                                                            onChange={(e) => handleChangeAttributeName(e, index)}
+                                                        />
+                                                        {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
+                                                    </div>
                                                 </td>
-                                            </tr> :
-                                            roleAttributes.map((attribute, index) => {
-                                                return <tr key={index}>
-                                                    <td>
-                                                        <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
-                                                            <input type="text"
-                                                                className="form-control"
-                                                                placeholder={translate('manage_role.attribute_name_example')}
-                                                                value={attribute.name}
-                                                                onChange={(e) => handleChangeAttributeName(e, index)}
-                                                            />
-                                                            {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
-                                                            <input type="text"
-                                                                className="form-control"
-                                                                placeholder={translate('manage_role.attribute_value_example')}
-                                                                value={attribute.value}
-                                                                onChange={(e) => handleChangeAttributeValue(e, index)}
-                                                            />
-                                                            {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <a href="#delete-manager"
-                                                            className="text-red"
-                                                            style={{ border: 'none' }}
-                                                            onClick={() => handleRemoveAttribute(index)}><i className="fa fa-trash"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            })
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                                <td>
+                                                    <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
+                                                        <input type="text"
+                                                            className="form-control"
+                                                            placeholder={translate('manage_role.attribute_value_example')}
+                                                            value={attribute.value}
+                                                            onChange={(e) => handleChangeAttributeValue(e, index)}
+                                                        />
+                                                        {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="#delete-manager"
+                                                        className="text-red"
+                                                        style={{ border: 'none' }}
+                                                        onClick={() => handleRemoveAttribute(index)}><i className="fa fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        })
+                                }
+                            </tbody>
+                        </table>
+                    </div>
 
-                    </fieldset>
                 </form>
             </DialogModal>
         </React.Fragment>

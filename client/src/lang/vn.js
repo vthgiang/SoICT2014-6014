@@ -808,7 +808,7 @@ export default {
                 create_role_success: "Tạo role mới thành công",
                 edit_role_success: "Chỉnh sửa role thành công",
                 delete_role_success: "Xóa role thành công",
-
+                create_role_attribute_success: "Thêm thuộc tính thành công",
                 role_name_exist:
                     "Tên cho phân quyền đã được sử dụng cho một phân quyền khác",
                 role_manager_exist:
@@ -817,6 +817,7 @@ export default {
                     "Tên cho phân quyền của phó đơn vị này đã được sử dụng",
                 role_employee_exist:
                     "Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng",
+                attribute_name_duplicate: "Tên các thuộc tính đã nhập bị trùng với nhau"
             },
             link: {
                 // Thông điệp trả về từ server
@@ -1438,7 +1439,9 @@ export default {
             attribute_name: "Tên thuộc tính",
             attribute_value: "Giá trị",
             attribute_name_example: "VD: Phòng ban",
-            attribute_value_example: "VD: Ban giám đốc"
+            attribute_value_example: "VD: Ban giám đốc",
+            add_attribute_title: "Thêm thuộc tính cho phân quyền",
+            roles_add_attribute: "Các phân quyền thêm thuộc tính",
         },
 
         manage_user: {

@@ -748,11 +748,14 @@ export default {
                 create_role_success: "Create role successfully",
                 edit_role_success: "Edit role successfully",
                 delete_role_success: "Delete role successfully",
+                create_role_attribute_success: "Add role attributes successfully",
 
                 role_name_exist: "Role name already exists",
                 role_manager_exist: "Manager role name already exists",
                 role_deputy_manager_exist: "Deputy manager role name already exists",
                 role_employee_exist: "Employee role name already exists",
+                attribute_name_duplicate: "Input attribute names are duplicated"
+
             },
             link: {
                 // Thông điệp trả về từ server
@@ -1337,7 +1340,9 @@ export default {
             attribute_name: "Attribute name",
             attribute_value: "Attribute value",
             attribute_name_example: "VD: Department",
-            attribute_value_example: "VD: Directorate"
+            attribute_value_example: "VD: Directorate",
+            add_attribute_title: "Add role attribute",
+            roles_add_attribute: "Attributes of roles"
         },
 
         manage_user: {

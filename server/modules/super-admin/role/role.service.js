@@ -2,7 +2,7 @@ const Terms = require('../../../helpers/config');
 const { OrganizationalUnit, Role, RoleType, UserRole, Privilege } = require('../../../models');
 const { connect } = require('../../../helpers/dbHelper');
 const RoleService = require('./role.service');
-
+const mongoose = require('mongoose');
 /**
  * Lấy danh sách tất cả các role của 1 công ty
  * @portal portal của db
@@ -102,16 +102,112 @@ exports.createRole = async (portal, data) => {
         throw ['role_name_exist'];
     }
 
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_name_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const attrArray = await filterValidAttributeArray(data.attributes);
+    const dataAttr = attrArray.map(attr => {
+        return {
+            name: attr.name.trim(),
+            value: attr.value.trim()
+        }
+    });
+
     const roleTuTao = await RoleType(connect(DB_CONNECTION, portal))
         .findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
     const role = await Role(connect(DB_CONNECTION, portal)).create({
         name: data.name.trim(),
         parents: data.parents,
-        attributes: data.attributes,
+        attributes: dataAttr,
         type: roleTuTao._id
     });
 
     return role;
+}
+
+exports.createRoleAttribute = async (portal, data) => {
+    console.log("create-role-attribute")
+
+    // Lấy danh sách các attribute valid
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_name_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const attrArray = await filterValidAttributeArray(data.attributes);
+    const dataAttr = attrArray.map(attr => {
+        return {
+            name: attr.name.trim(),
+            value: attr.value.trim(),
+
+        }
+    });
+
+    // lấy ds các role cập nhật thuộc tính
+    const roleAddAttribute = await Role(connect(DB_CONNECTION, portal)).find({
+        _id: {
+            $in: data.roleList.map(id => mongoose.Types.ObjectId(id))
+        }
+    }).populate([
+        { path: 'users', populate: { path: 'userId' } },
+        { path: 'parents' },
+        { path: 'type' }
+    ]);
+
+    // Thêm - cập nhật thuộc tính
+    roleAddAttribute.forEach(async (role) => {
+        role.attributes.forEach((attr) => {
+            dataAttr.forEach((inputAttr) => {
+                if (attr.name.toLowerCase().replace(/ /g, "") === inputAttr.name.toLowerCase().replace(/ /g, "")) {
+                    attr.value = inputAttr.value
+                }
+            })
+        })
+        // Thêm các thuộc tính chưa có
+        if (role.attributes.length > 0) {
+            const roleAttrName = role.attributes.map(attr => attr.name.toLowerCase().replace(/ /g, ""));
+            role.attributes = role.attributes.concat(dataAttr.filter(a => !roleAttrName.includes(a.name.toLowerCase().replace(/ /g, ""))))
+        }
+        // Thêm mới nếu chưa có thuộc tính nào
+        else {
+            role.attributes = dataAttr
+
+        }
+        await role.save()
+
+    })
+
+    console.log("roleAddAttribute", roleAddAttribute)
+    return roleAddAttribute;
+
 }
 
 /**
@@ -151,9 +247,6 @@ exports.createRolesForOrganizationalUnit = async (portal, data) => {
             if (checkRoleValid) throw ['role_name_exist'];
 
             console.log(checkRoleValid)
-            if ((new Set(array.map(role => role.toLowerCase().replace(/ /g, "")))).size !== array.length) {
-                throw ['role_name_duplicate'];
-            }
 
             for (let i = 0; i < array.length; i++) {
                 if (array[i]) resArray = [...resArray, array[i]];

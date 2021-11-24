@@ -485,10 +485,6 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
             console.log("filterValidRoleArray", checkRoleValid)
             if (checkRoleValid) throw ['role_name_exist'];
 
-            if ((new Set(array.map(role => role.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
-                throw ['role_name_duplicate'];
-            }
-
             for (let i = 0; i < array.length; i++) {
                 if (array[i]) resArray = [...resArray, array[i]];
             }
