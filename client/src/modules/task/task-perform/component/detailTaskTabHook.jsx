@@ -1170,7 +1170,7 @@ function DetailTaskTab(props) {
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <span style={{ fontSize: '17px', marginRight: '5px' }} className="material-icons">
                                         people_alt
-                                </span>
+                                    </span>
                                     <h4>
                                         {translate('task.task_management.role')}
                                     </h4>
@@ -1301,7 +1301,7 @@ function DetailTaskTab(props) {
                                                 {translate('task.task_management.detail_eval')}&nbsp;{formatDate(eva.startDate)} <i className="fa fa-fw fa-caret-right"></i> {formatDate(eva.endDate)}
                                             </h4>
                                             <a style={{ cursor: "pointer" }} onClick={() => handleChangeShowMoreEvalItem(eva._id)}>{showMore[eva._id] ? <p>Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-up"></i></p> : <p>Nhấn chuột để xem chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-down"></i></p>}</a>
-                                            { showMore[eva._id] &&
+                                            {showMore[eva._id] &&
                                                 <div>
                                                     {
                                                         eva.results.length !== 0 &&

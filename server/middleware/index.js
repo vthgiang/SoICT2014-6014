@@ -61,7 +61,13 @@ exports.authFunc = (checkPage = true) => {
             }
 
 
-            // Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
+            /*
+             * Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
+             */
+
+            /*
+             * 1. Trường hợp service được gọi từ ứng dụng dxclan
+             */
             if (!req.thirdParty) {
                 let crtp, crtr, fgp;
 
@@ -91,6 +97,7 @@ exports.authFunc = (checkPage = true) => {
                     const role = await Role(connect(DB_CONNECTION, req.portal))
                         .findById(currentRole); //current role của người dùng
                     if (role === null) throw ["role_invalid"];
+
                     /**
                      * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
                      * Nếu hai fingerprint này giống nhau -> token được tạo ra và gửi đi từ cùng một trình duyệt trên cùng 1 thiết bị
@@ -105,13 +112,14 @@ exports.authFunc = (checkPage = true) => {
                     const userId = req.user._id;
                     const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({ userId, roleId: role._id });
                     if (userrole === null) throw ["user_role_invalid"];
+
+                    /**
+                     * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
+                     */
                     /**
                      * Riêng đối với system admin của hệ thống thì bỏ qua bước này
                      */
                     if (role.name !== "System Admin") {
-                        /**
-                         * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
-                         */
                         const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(req.user.company._id);
                         if (!company.active) {
                             //dịch vụ của công ty người dùng đã tạm dừng
@@ -123,12 +131,20 @@ exports.authFunc = (checkPage = true) => {
                             throw ["service_off"];
                         }
                     }
+
                     /**
                      * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
-                     * Lấy đường link mà người dùng đã truy cập
-                     * Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang
-                     * Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
-                     * Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
+                     * 
+                     * Trường hợp được cấp phân quyền riêng:
+                     * 1. Trường hợp này chỉ cần xem PrivilageApi, không cần dùng đến token được cấp
+                     * 2. Nếu có sử dụng portal thì cần check xem portal có trùng không
+                     * 
+                     * Với trường hơp truy cập thông thường:
+                     * 1. Kiểm tra xem thông tin 
+                     * 2. Lấy đường link mà người dùng đã truy cập
+                     * 3. Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang
+                     * 4. Nếu tìm thấy dữ liệu -> Cho phép truy cập tiếp
+                     * 5. Ngược lại thì trả về thông báo lỗi không có quyền truy cập vào trang này
                      */
 
                     //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
@@ -140,6 +156,7 @@ exports.authFunc = (checkPage = true) => {
                             const link = role.name !== "System Admin" ?
                                 await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }) :
                                 await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
+
                             if (link === null) throw ["url_invalid"];
                             const roleArr = [role._id].concat(role.parents);
                             const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
@@ -151,8 +168,9 @@ exports.authFunc = (checkPage = true) => {
                             });
                             if (privilege === null) throw ["page_access_denied"];
                         }
+
                         /**
-                        * Kiểm tra xem user này có được gọi tới service này hay không?
+                        * Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không
                         */
                         const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
                         const perLink = links.find(l => l.url === url);
@@ -164,6 +182,10 @@ exports.authFunc = (checkPage = true) => {
                     }
                 }
             } else {
+                /**
+                 * 1. Trường hợp service được gọi từ bên thứ 3 ?????
+                 * Quest: Token dược cấp sẽ được khai báo ở đâu?
+                 */
                 const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
 
                 let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -186,6 +208,7 @@ exports.authFunc = (checkPage = true) => {
                         company: verified.company,
                         status: 3
                     })
+
                 if (!privilegeApi) {
                     throw ['api_permission_invalid']
                 }

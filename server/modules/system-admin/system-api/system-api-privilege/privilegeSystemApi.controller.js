@@ -1,5 +1,7 @@
 const { SystemApiPrivilegeServices } = require('./privilegeSystemApi.service');
 const Logger = require(`../../../../logs`);
+const { Role, User } = require('../../../../models');
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 const getPrivilegeApis = async (req, res) => {
     try {
@@ -24,12 +26,38 @@ const getPrivilegeApis = async (req, res) => {
 
 
 const createPrivilegeApi = async (req, res) => {
+    /**
+     * Nếu request là ủy quyền API cho cá nhân (status = 3) && người ủy quyền là Admin
+     * thì phải kiểm tra xem cá nhân đó có nằm trong thẩm quyền được phân quyền hay không
+     * cụ thể là người đó có cùng công ty với Admin hay không
+     * 
+     * System admin thì có thể ủy quyền tùy ý, không cần phải kiểm soát
+     */
+    if (req.body.status === 3) {
+        // lấy ra role của người phân quyền
+        const role = await Role(connect(DB_CONNECTION, req.portal))
+            .findById(req.currentRole); //current role của người dùng
+
+        if (role.name !== "System Admin") {
+            const user = await User(
+                connect(DB_CONNECTION, req.portal)
+            ).findOne({ email: req.body.email })
+
+            if (!user) {
+                throw {
+                    messages: "Bad request: no user are found in your organization",
+                };
+            }
+        }
+    }
+
     try {
         let data = {
             ...req.body,
-            userId: req.user._id
+            userId: req.user._id,
         }
-        const privilegeApi = await SystemApiPrivilegeServices.createPrivilegeApi(data);
+
+        const privilegeApi = await SystemApiPrivilegeServices.createPrivilegeApi(data, req.user);
 
         Logger.info(req.user.email, 'create privilege api');
         res.status(200).json({
@@ -39,7 +67,8 @@ const createPrivilegeApi = async (req, res) => {
         });
     } catch (error) {
         console.log(error)
-        let messages = error?.messages === 'company_not_exist' || error?.messages === 'privilege_api_exist' ? [error?.messages] : ['create_privilege_api_failure']
+        let messages = error?.messages === 'company_not_exist' || error?.messages === 'privilege_api_exist' ?
+            [error?.messages] : ['create_privilege_api_failure']
 
         Logger.error(req.user.email, 'create privilege api');
         res.status(400).json({

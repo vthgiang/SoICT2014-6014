@@ -8,7 +8,7 @@ import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-
 import { ApiActions } from '../../api-management/redux/actions'
 
 function CreateApiRegistrationModal(props) {
-    const { translate, apis, role } = props;
+    const { translate, apis, role, privilegeApisStatus } = props;
 
     const [state, setState] = useState({
         companyId: localStorage.getItem("companyId"),
@@ -209,7 +209,8 @@ function CreateApiRegistrationModal(props) {
             unlimitedExpirationTime: state.unlimitedExpirationTime,
             companyId: companyId,
             apis: registrationApis,
-            role: role
+            role: role,
+            status: privilegeApisStatus,
         }
 
         if (!state.unlimitedExpirationTime) {

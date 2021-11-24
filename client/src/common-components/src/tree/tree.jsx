@@ -50,9 +50,11 @@ class Tree extends Component {
         });
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         const { id, data } = this.state;
-        window.$(`#${id}`).jstree(true).settings.core.data = data;
+        if (prevState.data.length !== 0 && JSON.stringify(prevState.data) !== JSON.stringify(data)) {
+            window.$(`#${id}`).jstree(true).settings.core.data = data;
+        }
         window.$(`#${id}`).jstree(true).refresh();
 
     }

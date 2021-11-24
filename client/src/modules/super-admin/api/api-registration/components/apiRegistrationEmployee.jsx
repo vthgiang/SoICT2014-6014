@@ -135,9 +135,7 @@ function ApiRegistrationEmployee(props) {
 
     return (
         <React.Fragment>
-            <CreateApiRegistrationModal
-                role="employee"
-            />
+            <CreateApiRegistrationModal role="employee" privilegeApisStatus={1} />
 
             <div className="box" >
                 <div className="box-body qlcv">
