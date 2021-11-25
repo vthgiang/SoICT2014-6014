@@ -9,7 +9,7 @@ const { getGroups } = require("../group/group.service");
 const { getStatus } = require("../status/status.service");
 const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 const { updateSearchingCustomerTaskInfo, updateCrmActionsTaskInfo } = require("../crmTask/crmTask.service");
-
+const { getUser } = require("../../super-admin/user/user.service");
 
 
 
@@ -32,7 +32,7 @@ const STATUS_VALUE = {
  * @param {*} currentRole 
  * @returns 
  */
-exports.getEvaluations = async (portal, companyId, query, currentRole) => {
+ exports.getEvaluations = async (portal, companyId, query, userId, currentRole) => {
     let { month, year } = query;
     // neu ko co querry thi lay theo thang hien tai
     if (!month || !year) {
@@ -42,6 +42,27 @@ exports.getEvaluations = async (portal, companyId, query, currentRole) => {
     }
     //lấy đơn vị CSKH
     const crmUnit = await getCrmUnitByRole(portal, companyId, currentRole);
+    if (!crmUnit){
+        const user = await getUser(portal, userId);
+        let evaluations = [];
+        // tính tỉ lệ giải quyết vấn đề
+        const { numberOfCompletionActions, solutionRate } = await this.getSolutionRate(portal, companyId, { month, year }, userId, currentRole);
+        // tính tỉ lệ hoàn thành hoạt động
+        const { totalCareActions, completionRate, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, userId, currentRole);
+        // tính tỉ lệ khách hàng mua hàng
+        const { numberOfOldCustomers, customerRetentionRate } = await this.getCustomerRetentionRate(portal, companyId, { month, year }, userId, currentRole);
+        // tính tir lệ khách hàng mới mua hàng
+        const { numberOfNewCustomers, newCustomerBuyingRate } = await this.getNewCustomerBuyingRate(portal, companyId, { month, year }, userId, currentRole);
+        
+        evaluations = [...evaluations, {
+            employeeEmail: user.email,
+            employeeName: user.name,
+            totalCareActions, numberOfOverdueCareAction, completionRate, solutionRate,
+            customerRetentionRate, newCustomerBuyingRate, numberOfNewCustomers, totalCustomer: (numberOfOldCustomers + numberOfNewCustomers)
+        }]
+
+        return evaluations
+    } 
     //lấy danh sách nhân viên
     const listCrmDepartment = await getAllUserInUnitAndItsSubUnits(portal, crmUnit.organizationalUnit._id);
     let listEmployee = [];
@@ -85,10 +106,10 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId,
     // tính tỉ lệ hoàn thành hoạt động
     const { totalCareActions, numberOfCompletionCareAction, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, userId, currentRole);
     // lấy danh sách khách hàng quản lý
-    const getAllCustomers = await getCustomers(portal, companyId, { customerOwner: [userId] }, currentRole);
+    const getAllCustomers = await getCustomers(portal, companyId, { customerOwner: [userId] },  userId, currentRole);
     const listManagedCustomer = getAllCustomers.customers;
     //lấy danh sách nhóm khách hàng - tạo dữ liệu khách hàng theo nhóm
-    const getCustomnerGroups = await getGroups(portal, companyId, {}, currentRole)
+    const getCustomnerGroups = await getGroups(portal, companyId, {}, userId, currentRole);
     const listGroup = getCustomnerGroups.groups;
     let customerDataByGroup = [];
     listGroup.forEach(group => {
@@ -99,7 +120,7 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId,
         customerDataByGroup = [...customerDataByGroup, [group.name, numberOfCustomer]];
     });
     //lấy danh sách trạng thái khách hàng - tạo dữ liệu khách hàng theo trạng thái
-    const getCustomnerStatus = await getStatus(portal, companyId, {}, currentRole)
+    const getCustomnerStatus = await getStatus(portal, companyId, userId, {}, currentRole);
     const listStatus = getCustomnerStatus.listStatus;
     let customerDataByStatus = [];
     listStatus.forEach(status => {
@@ -132,7 +153,7 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId,
     return customerCareInfoByEmployee
 }
 
-exports.getCustomerCareInfoByUnit = async (portal, companyId, query, currentRole) => {
+exports.getCustomerCareInfoByUnit = async (portal, companyId, query,  userId, currentRole) => {
     let { month, year } = query;
     // neu ko co querry thi lay theo thang hien tai
     if (!month || !year) {
@@ -141,12 +162,12 @@ exports.getCustomerCareInfoByUnit = async (portal, companyId, query, currentRole
         year = date.getFullYear();
     }
     // tính tỉ lệ hoàn thành hoạt động
-    const { totalCareActions, numberOfCompletionCareAction, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, 0, currentRole);
+    const { totalCareActions, numberOfCompletionCareAction, numberOfOverdueCareAction } = await this.getCompletionRate(portal, companyId, { month, year }, userId, currentRole);
     // lấy danh sách khách hàng quản lý
-    const getAllCustomers = await getCustomers(portal, companyId, {}, currentRole);
+    const getAllCustomers = await getCustomers(portal, companyId, {}, userId, currentRole);
     const listManagedCustomer = getAllCustomers.customers;
     //lấy danh sách nhóm khách hàng - tạo dữ liệu khách hàng theo nhóm
-    const getCustomnerGroups = await getGroups(portal, companyId, {}, currentRole)
+    const getCustomnerGroups = await getGroups(portal, companyId, {}, userId, currentRole);
     const listGroup = getCustomnerGroups.groups;
     let customerDataByGroup = [];
     listGroup.forEach(group => {
@@ -157,7 +178,7 @@ exports.getCustomerCareInfoByUnit = async (portal, companyId, query, currentRole
         customerDataByGroup = [...customerDataByGroup, [group.name, numberOfCustomer]];
     });
     //lấy danh sách trạng thái khách hàng - tạo dữ liệu khách hàng theo trạng thái
-    const getCustomnerStatus = await getStatus(portal, companyId, {}, currentRole)
+    const getCustomnerStatus = await getStatus(portal, companyId, userId, {}, currentRole);
     const listStatus = getCustomnerStatus.listStatus;
     let customerDataByStatus = [];
     listStatus.forEach(status => {
@@ -173,10 +194,10 @@ exports.getCustomerCareInfoByUnit = async (portal, companyId, query, currentRole
     let numberOfNewCustomersData = [];
     for (let i = 0; i < 12; i++) {
         x = [...x, `${month}/${year}`];
-        let { customerRetentionRate } = await this.getCustomerRetentionRate(portal, companyId, { month, year }, 0, currentRole);
+        let { customerRetentionRate } = await this.getCustomerRetentionRate(portal, companyId, { month, year }, userId, currentRole);
 
         customerRetentionRateData = [...customerRetentionRateData, customerRetentionRate * 100];
-        let { numberOfNewCustomers } = await this.getNewCustomerBuyingRate(portal, companyId, { month, year }, 0, currentRole);
+        let { numberOfNewCustomers } = await this.getNewCustomerBuyingRate(portal, companyId, { month, year }, userId, currentRole);
 
         numberOfNewCustomersData = [...numberOfNewCustomersData, numberOfNewCustomers];
         if (month <= 1) { month = month + 12 - 1; year--; }
@@ -206,7 +227,7 @@ exports.getSolutionRate = async (portal, companyId, query, userId, currentRole) 
     let option = { month, year };
     if (userId) option = { ...option, customerCareStaffs: [userId] };
 
-    const getAllActions = await getCares(portal, companyId, option, currentRole);
+    const getAllActions = await getCares(portal, companyId, option, userId, currentRole);
     const listCare = getAllActions.cares.filter((care) => { return (care.status == 3 || care.status == 5) });
     // lấy ra danh sách hoạt động thành công
     const listSolutionCare = listCare.filter((care) => { return (care.evaluation && care.evaluation.result && care.evaluation.result == 1) });
@@ -226,7 +247,7 @@ exports.getCompletionRate = async (portal, companyId, query, userId, currentRole
     let option = { month, year };
     if (userId) option = { ...option, customerCareStaffs: [userId] };
 
-    const getAllActions = await getCares(portal, companyId, option, currentRole);
+    const getAllActions = await getCares(portal, companyId, option, userId, currentRole);
     //lấy ra danh sách hoạt động đã hoàn thành
     const listCareAction = getAllActions.cares;
     const listCompletionCare = listCareAction.filter((care) => { return (care.status == 3 || care.status == 5) });
@@ -248,7 +269,7 @@ exports.getCustomerRetentionRate = async (portal, companyId, query, userId, curr
     let option = { month, year, isNewCustomer: false };
     if (userId) option = { ...option, customerOwner: [userId], };
 
-    const getAllCustomers = await getCustomers(portal, companyId, option, currentRole);
+    const getAllCustomers = await getCustomers(portal, companyId, option, userId, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
     const getSalesOrders = await getAllSalesOrders([userId], { getAll: true, month, year }, portal);
@@ -282,7 +303,7 @@ exports.getNewCustomerBuyingRate = async (portal, companyId, query, userId, curr
     let option = { month, year, isNewCustomer: true };
     if (userId) option = { ...option, customerOwner: [userId] };
 
-    const getAllCustomers = await getCustomers(portal, companyId, option, currentRole);
+    const getAllCustomers = await getCustomers(portal, companyId, option, userId, currentRole);
     const listCustomer = getAllCustomers.customers;
     //lấy ra danh sách đơn hàng trong tháng
     const getSalesOrders = await getAllSalesOrders([userId], { getAll: true, month, year }, portal);

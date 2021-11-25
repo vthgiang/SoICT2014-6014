@@ -3,16 +3,17 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
 
 
-exports.getCareTypes = async (portal, companyId, query, role) => {
+exports.getCareTypes = async (portal, companyId, query, userId, role) => {
     const { page, limit, getAll } = query;
     let keySearch = {};
     if (!getAll) {
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        console.log(crmUnit);
-        if (!crmUnit) return { listDocsTotal: 0, careTypes: [] }
-        keySearch = { ...keySearch, crmUnit: crmUnit._id }
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, crmUnit: crmUnit._id };
     }
-    console.log('keySearch', keySearch)
+    //console.log('keySearch', keySearch)
     const listDocsTotal = await CareType(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     const careTypes = await CareType(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })

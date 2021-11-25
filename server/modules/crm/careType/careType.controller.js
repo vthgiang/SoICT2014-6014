@@ -1,9 +1,11 @@
 const CareTypeService = require('./careType.service');
 const Logger = require(`../../../logs`);
-
+/**
+ * Các controller cho phần Quản lý khách hàng/ Cấu hình hoạt động chăm sóc khách hàng/Loại hình chăm sóc
+ */
 exports.getCareTypes = async (req, res) => {
     try {
-        const careTypes = await CareTypeService.getCareTypes(req.portal, req.user.company._id, req.query,req.currentRole);
+        const careTypes = await CareTypeService.getCareTypes(req.portal, req.user.company._id, req.query, req.user._id, req.currentRole);
         await Logger.info(req.user.email, ' get_careTypes_success ', req.portal);
         res.status(200).json({
             success: true,
