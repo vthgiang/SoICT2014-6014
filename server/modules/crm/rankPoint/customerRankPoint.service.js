@@ -3,14 +3,17 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
 
 
-exports.getCustomerRankPoints = async (portal, companyId, query, role) => {
+exports.getCustomerRankPoints = async (portal, companyId, userId, query, role) => {
 
     const { page, limit,getAll } = query;
     let keySearch = {};
     if (!getAll) {
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listDocsTotal: 0, customerRankPoints: [] }
-        keySearch = { ...keySearch, crmUnit: crmUnit._id }
+        //if (!crmUnit) return { listDocsTotal: 0, customerRankPoints: [] }
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, crmUnit: crmUnit._id };
     }
     const listDocsTotal = await CustomerRankPoint(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
@@ -24,7 +27,7 @@ exports.getCustomerRankPoints = async (portal, companyId, query, role) => {
 //.sort((a, b) => (a.point > b.point) ? 1 : -1)
 exports.createCustomerRankPoint = async (portal, companyId, data, userId,role) => {
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    if (!crmUnit) return {}
+    //if (!crmUnit) return {}
     data = { ...data, crmUnit: crmUnit._id };
     if (userId) {
         data = { ...data, creator: userId, updatedBy: userId };

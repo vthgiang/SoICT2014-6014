@@ -3,13 +3,16 @@ const { Status } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 
-exports.getStatus = async (portal, companyId, query,role) => {
+exports.getStatus = async (portal, companyId, userId, query,role) => {
     const { limit, page,getAll } = query;
     let keySearch = {};
     if (!getAll) {
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listStatusTotal: 0, listStatus: [] }
-        keySearch = { ...keySearch, crmUnit: crmUnit._id }
+        //if (!crmUnit) return { listStatusTotal: 0, listStatus: [] }
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, crmUnit: crmUnit._id };
     }
     const listStatusTotal = await Status(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 

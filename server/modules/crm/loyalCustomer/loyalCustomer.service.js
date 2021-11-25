@@ -21,7 +21,7 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
     console.log(query);
     let { customerCode, page, limit } = query;
     // lay danh sach khach hang
-    const listAllCustomer = await getCustomers(portal, companyId, { customerCode }, currentRole);
+    const listAllCustomer = await getCustomers(portal, companyId, { customerCode }, userId, currentRole);
     let customers;
     if (listAllCustomer) customers = listAllCustomer.customers;
     let loyalCustomers = [];

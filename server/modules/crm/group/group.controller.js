@@ -1,6 +1,8 @@
 const GroupService = require('./group.service');
 const Logger = require(`../../../logs`);
-
+/**
+ * Các controller cho phần Nhóm khách hàng
+ */
 /**
  * Lấy thông tin của tất cả nhóm khách hàng
  * @param {*} req 
@@ -8,7 +10,7 @@ const Logger = require(`../../../logs`);
  */
 exports.getGroups = async (req, res) => {
     try {
-        const groups = await GroupService.getGroups(req.portal, req.user.company._id, req.query, req.currentRole);
+        const groups = await GroupService.getGroups(req.portal, req.user.company._id, req.query, req.user._id, req.currentRole);
         await Logger.info(req.user.email, ' get_groups_success ', req.portal);
         res.status(200).json({
             success: true,

@@ -7,7 +7,7 @@ exports.createGroup = async (portal, companyId, userId, data, role) => {
     const { code, name, description, promotion } = data;
     //tạo trường đơn vị CSKH'
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    if (!crmUnit) return {};
+    //if (!crmUnit) return {};
     const newGroup = await Group(connect(DB_CONNECTION, portal)).create({
         creator: userId,
         code: code,
@@ -21,15 +21,17 @@ exports.createGroup = async (portal, companyId, userId, data, role) => {
     return getNewGroup;
 }
 
-exports.getGroups = async (portal, companyId, query, role) => {
+exports.getGroups = async (portal, companyId, query, userId, role) => {
     const { limit, page, code, getAll } = query;
     let keySearch = {};
     if (!getAll) {
         // kta đơn vị CSKH
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listGroupTotal: 0, groups: [] }
-        keySearch = { ...keySearch, crmUnit: crmUnit._id }
-
+        //if (!crmUnit) return { listGroupTotal: 0, groups: [] }
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, crmUnit: crmUnit._id };
     }
     if (code) {
         keySearch = { ...keySearch, code: { $regex: code, $options: "i" } }
