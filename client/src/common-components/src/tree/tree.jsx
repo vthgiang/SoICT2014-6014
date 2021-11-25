@@ -52,9 +52,7 @@ class Tree extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         const { id, data } = this.state;
-        if (prevState.data.length !== 0 && JSON.stringify(prevState.data) !== JSON.stringify(data)) {
-            window.$(`#${id}`).jstree(true).settings.core.data = data;
-        }
+        window.$(`#${id}`).jstree(true).settings.core.data = data;
         window.$(`#${id}`).jstree(true).refresh();
 
     }
