@@ -85,7 +85,10 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
 
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
 
-    if (!crmUnit) return {};
+    //if (!crmUnit) return {};
+    if (!crmUnit){
+        data = { ...data, creator: userId };
+    }
     data = { ...data, crmUnit: crmUnit._id };
     const newCus = await Customer(connect(DB_CONNECTION, portal)).create(data)
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCus._id)
@@ -198,15 +201,18 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
  * @param {*} companyId 
  * @param {*} query 
  */
-exports.getCustomers = async (portal, companyId, query, role) => {
+ exports.getCustomers = async (portal, companyId, query, userId, role) => {
     const { page, limit, customerCode, customerStatus, customerGroup, customerOwner, isNewCustomer, month, year, getAll } = query;
 
     let keySearch = {}
     if (!getAll) {
         // lấy đơn vị CSKH từ role
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listDocsTotal: 0, customers: [] };
-        keySearch = { crmUnit: crmUnit._id }
+        //if (!crmUnit) return { listDocsTotal: 0, customers: [] };
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, crmUnit: crmUnit._id };
     }
     if (customerCode) {
         keySearch = {

@@ -6,8 +6,11 @@ const { getCrmUnitByRole, createCrmUnit } = require('../crmUnit/crmUnit.service'
 exports.getCrmUnitKPI = async (portal, companyId, userId, role) => {
     let keySearch = {};
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    if (!crmUnit) return { listDocsTotal: 0, CrmUnitKPI: {} }
-    keySearch = { ...keySearch, crmUnit: crmUnit._id }
+    //if (!crmUnit) return { listDocsTotal: 0, CrmUnitKPI: {} }
+    if (!crmUnit){
+        keySearch = { ...keySearch, creator: userId };
+    } 
+    keySearch = { ...keySearch, crmUnit: crmUnit._id };
     const listDocsTotal = await CrmUnitKPI(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     const getCrmUnitKPI = await CrmUnitKPI(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
@@ -32,7 +35,10 @@ const createCrmUnitKPI = async (portal, companyId, data, userId, role) => {
         data = { ...data, creator: userId, updatedBy: userId, updatedAt: new Date(), createdAt: new Date() };
     }
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    if (!crmUnit) return {};
+    //if (!crmUnit) return {};
+    if (!crmUnit){
+        data = { ...data, creator: userId };
+    }
     data = { ...data, crmUnit: crmUnit._id };
     const newCrmUnitKPI = await CrmUnitKPI(connect(DB_CONNECTION, portal)).create(data);
     const getNewCrmUnitKPI = await CrmUnitKPI(connect(DB_CONNECTION, portal)).findById(newCrmUnitKPI._id)

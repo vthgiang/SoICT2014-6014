@@ -1,6 +1,8 @@
 const CustomerService = require('./customer.service');
 const Logger = require(`../../../logs`);
-
+/**
+ * Các controller cho phần Quản lý thông tin khách hàng
+ */
 /**
  * Lấy thông tin của tất cả khách hàng
  * @param {*} req 
@@ -8,7 +10,7 @@ const Logger = require(`../../../logs`);
  */
 exports.getCustomers = async (req, res) => {
     try {
-        const customers = await CustomerService.getCustomers(req.portal, req.user.company._id, req.query, req.currentRole);
+        const customers = await CustomerService.getCustomers(req.portal, req.user.company._id, req.query, req.user._id, req.currentRole);
         await Logger.info(req.user.email, ' get_customers_success ', req.portal);
         res.status(200).json({
             success: true,
