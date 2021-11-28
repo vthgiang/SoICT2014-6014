@@ -18,12 +18,12 @@ const SuppliesSchema = new Schema({
     },
 
     total: {
-        type: String,
+        type: Number,
         require: true
     },
 
     price: {
-        type: String,
+        type: Number,
         require: true
     },
     /*

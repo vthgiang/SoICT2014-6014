@@ -61,6 +61,8 @@ import { assetType } from "../modules/asset/admin/asset-type/redux/reducers";
 import { assetsManager } from "../modules/asset/admin/asset-information/redux/reducers";
 import { incidentManager } from "../modules/asset/admin/incident/redux/reducers";
 import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/reducers";
+//asset lot
+import { assetLotManager } from "../modules/asset/admin/asset-lot/redux/reducers";
 
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
@@ -203,6 +205,8 @@ const appReducer = combineReducers({
     assetsManager,
     incidentManager,
     mintainanceManager,
+    //asset lot
+    assetLotManager,
 
     dashboardEvaluationEmployeeKpiSet,
 

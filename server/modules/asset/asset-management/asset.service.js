@@ -129,6 +129,11 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         keySearch = { ...keySearch, location: params.location };
     }
 
+    // Thêm key tìm kiếm tài sản theo mã lô tài sản
+    if (params.assetLot) {
+        keySearch = { ...keySearch, assetLot: { $in: JSON.parse(params.assetLot) } };
+    }
+
     // Thêm key tìm kiếm tài sản theo người sử dụng (email hoặc name) -> handoverUser ?? không thấy thuộc tính này trong model Asset - thuộc tính cũ nhưng chưa sửa tên lại cho khớp (assignedToUser) với model?
     if (params.handoverUser) {
         let user = await User(connect(DB_CONNECTION, portal))
@@ -364,8 +369,9 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                { path: "assetType assignedToOrganizationalUnit" },
-                { path: "managedBy", select: "_id name email avatar" }
+                { path: "assetType assignedToOrganizationalUnit assetLot"},
+                { path: "managedBy", select: "_id name email avatar" },
+                
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)
@@ -377,8 +383,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                { path: "assetType assignedToOrganizationalUnit" },
-                { path: "managedBy", select: "_id name email avatar" }
+                { path: "assetType assignedToOrganizationalUnit assetLot" },
+                { path: "managedBy", select: "_id name email avatar" },
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)

@@ -30,6 +30,7 @@ function getAll(data) {
                 status: data ? data.status : data,
                 group: data ? data.group : data,
                 assetType: data ? data.assetType : data,
+                assetLot: data ? data.assetType : data,
                 purchaseDate: data ? data.purchaseDate : data,
                 disposalDate: data ? data.disposalDate : data,
                 purchaseDateStart: data ? data.purchaseDateStart : data,

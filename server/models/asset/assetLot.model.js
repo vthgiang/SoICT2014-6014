@@ -2,12 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const AssetLotSchema = new Schema({
-    company: {
-        //thuộc công ty nào
-        type: Schema.Types.ObjectId,
-        ref: "Company",
-    },
-
+    
     code: { //1. Mã lô tài sản
         type: String,
         require: true
@@ -18,13 +13,26 @@ const AssetLotSchema = new Schema({
         require: true
     },
 
-    total: { //3. số lượng tài sản
+    assetType: [
+        {
+            //5.loại tài sản
+            type: Schema.Types.ObjectId,
+            ref: "AssetType",
+        },
+    ],
+
+    group: {
         type: String,
+        enum: ["building", "vehicle", "machine", "other"],
+    },
+
+    total: { //3. số lượng tài sản ban đầu
+        type: Number,
         require: true
     },
 
     price:{//4. giá trị 1 tài sản
-        type: String
+        type: Number
     },
 
     supplier: {
@@ -59,6 +67,7 @@ const AssetLotSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if (!db.models.AssetLot) return db.model("AssetLot", AssetLotSchema);
+    if (!db.models.AssetLot)
+        return db.model('AssetLot', AssetLotSchema);
     return db.models.AssetLot;
-};
+} 

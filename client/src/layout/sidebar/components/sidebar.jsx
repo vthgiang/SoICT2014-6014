@@ -413,6 +413,11 @@ class SideBar extends Component {
                                             path: "/manage-info-asset",
                                         },
                                         {
+                                            name: "menu.manage_info_asset_lot",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-info-asset-lot",
+                                        },
+                                        {
                                             name: "menu.manage_depreciation_asset",
                                             icon: "fa fa-balance-scale",
                                             path: "/manage-depreciation-asset",

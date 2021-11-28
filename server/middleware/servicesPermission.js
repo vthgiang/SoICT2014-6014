@@ -429,6 +429,9 @@ exports.links = [
             { path: '/assettype/asset-types', method: 'DELETE' },
 
 
+            //Asset-lot
+            {path: '/assetlot/asset-lots', method:'GET'},
+            {path: '/assetlot/asset-lots', method:'POST'},
 
 
             // Asset
@@ -804,6 +807,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/manage-info-asset',
+        apis: ['@all']
+    }, {
+        url: '/manage-info-asset-lot',
         apis: ['@all']
     }, {
         url: '/manage-maintainance-asset',

@@ -1,15 +1,14 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { AssetManagement } from './combinedContent';
 
-function AssetManager(props) {
+function AssetLotManager(props) {
     const [state, setState] = useState({})
     return (
         <React.Fragment>
-            <AssetManagement />
+
         </React.Fragment>
     );
 }
 
-export default connect(null, null)(withTranslate(AssetManager));
+export default connect(null, null)(withTranslate(AssetLotManager));

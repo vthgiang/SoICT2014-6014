@@ -205,6 +205,7 @@ export default {
             dashboard_asset: "DashBoard manage assets",
             manage_type_asset: "Manage type assets",
             manage_info_asset: "Manage infomation assets",
+            manage_info_asset_lot: "Manage infomation asset lots",
             manage_maintainance_asset: "Manage maintainance assets",
             manage_depreciation_asset: "Manage depreciation assets",
             manage_incident_asset: "Manage incident assets",
@@ -1501,7 +1502,7 @@ export default {
                 delete_salary_faile: "Delete salary faile",
                 edit_salary_success: "Edit salary success",
                 edit_salary_faile: "Edit salary faile",
-                
+
                 import_salary_success: "Import salary success",
                 import_salary_faile: "Import salary faile",
                 get_chart_salary_success: "Get chart salary success",
@@ -2619,22 +2620,34 @@ export default {
                 get_asset_statistic_success: "Get asset statistic successfully",
                 get_asset_statistic_fail: "Get asset statistic fail",
                 get_list_asset_success: "Get list asset successfully",
-                get_asset_purchase_success:"Get asset purchase successfully",
-                get_asset_purchase_fail:"Get asset purchase fail",
-                get_asset_disposal_success:"Get asset disposal successfully",
-                get_asset_disposal_fail:"Get asset disposal fail",
-                get_asset_incident_success:"Get asset incident successfully",
-                get_asset_incident_fail:"Get asset incident fail",
-                get_asset_maintenance_success:"Get asset maintenance successfully",
-                get_asset_maintenance_fail:"Get asset maintenance fail",
+                get_asset_purchase_success: "Get asset purchase successfully",
+                get_asset_purchase_fail: "Get asset purchase fail",
+                get_asset_disposal_success: "Get asset disposal successfully",
+                get_asset_disposal_fail: "Get asset disposal fail",
+                get_asset_incident_success: "Get asset incident successfully",
+                get_asset_incident_fail: "Get asset incident fail",
+                get_asset_maintenance_success: "Get asset maintenance successfully",
+                get_asset_maintenance_fail: "Get asset maintenance fail",
                 get_list_asset_faile: "Get list asset faile",
                 create_asset_success: "Create asset successfully",
                 create_asset_faile: "Create asset faile",
+                create_asset_lot_success: "Create asset lot successfully",
+                create_asset_lot_failed: "Create asset lot failed",
                 delete_asset_success: "Delete asset successfully",
                 delete_asset_faile: "Delete asset faile",
                 edit_asset_success: "Edit asset successfully",
                 edit_asset_faile: "Edit asset faile",
                 asset_code_exist: "Asset code already exists",
+            },
+
+            //Quản lý lô tài sản
+            asset_lot: {
+                get_list_asset_lot_success: "Get list asset lot successfully",
+                get_list_asset_lot_false: "Get list asset lot failse",
+
+                asset_lot_code: "Asset lot code",
+                asset_lot_name: "Asset lot name",
+                supplier: "Supplier"
             },
 
             // Quản lý bảo trì

@@ -52,6 +52,7 @@ module.exports = {
     //asset
     Asset: require('./asset/asset.model'), //tài sản
     AssetType: require('./asset/assetType.model'), //loại tài sản
+    AssetLot: require('./asset/assetLot.model'),
     RecommendProcure: require('./asset/assetPurchaseRequest.model'), //đề nghị mua sắm thiết bị
     RecommendDistribute: require('./asset/assetUseRequest.model'), //đề nghị cấp phát thiết bị
     //report

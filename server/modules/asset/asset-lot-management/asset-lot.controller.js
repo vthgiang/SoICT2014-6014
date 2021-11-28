@@ -1,0 +1,64 @@
+const AssetLotService = require('./asset-lot.service');
+const Logger = require(`../../../logs`);
+const NotificationServices = require(`../../notification/notification.service`);
+
+/**
+ * Lấy danh sách lô tài sản */
+exports.searchAssetLots = async (req, res) => {
+    try {
+        let data;
+        let params = {
+            code: req.query.code,
+            assetLotName: req.query.assetLotName,
+            assetType: req.query.assetType,
+            supplier: req.query.supplier,
+            page: Number(req.query.page),
+            limit: Number(req.query.limit),
+        }
+
+        data = await AssetLotService.searchAssetLots(req.portal, req.user.company._id, params);
+        await Logger.info(req.user.email, 'GET_ASSET_LOTS', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_list_asset_lot_success"],
+            content: data
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_ASSET_LOTS', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_list_asset_lot_false"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
+
+/**
+ * Thêm mới thông tin tài sản
+ */
+exports.createAssetLot = async (req, res) => {
+    try {
+        let file = req.files && req.files.file;
+        let fileInfo = { file };
+
+        let data = await AssetLotService.createAssetLot(req.portal, req.user.company._id, req.body, fileInfo);
+        await Logger.info(req.user.email, 'CREATE_ASSET_LOT', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["create_asset_lot_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log('error', error);
+        let messages = error && error.messages === 'asset_code_lot_exist' ? ['asset_code_lot_exist'] : ['create_asset_lot_failed'];
+
+        await Logger.error(req.user.email, 'CREATE_ASSET', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: messages,
+            content: error && error.assetCodeError
+        });
+    }
+}

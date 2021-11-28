@@ -182,6 +182,9 @@ router.use(
     require("./modules/asset/asset-type/asset-type.route")
 );
 router.use("/asset", require("./modules/asset/asset-management/asset.route"));
+//asset lot
+router.use("/assetlot",require("./modules/asset/asset-lot-management/asset-lot.route"));
+
 router.use(
     "/purchase-request",
     require("./modules/asset/purchase-request/purchase-request.route")

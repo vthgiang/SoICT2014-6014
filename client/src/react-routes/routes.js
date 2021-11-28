@@ -81,6 +81,9 @@ const ManagerRecommendDistribute = lazy(() => import("../modules/asset/admin/use
 const ManagerAssetType = lazy(() => import("../modules/asset/admin/asset-type/components"))
 const MaintainanceManager = lazy(() => import("../modules/asset/admin/maintainance/components"))
 
+//asset lot
+const AssetLotManager = lazy(() => import("../modules/asset/admin/asset-lot/components"))
+
 // import UsageManager from "../modules/asset/admin/usage/components";
 const IncidentManager = lazy(() => import("../modules/asset/admin/incident/components"))
 const ManagerDepreciation = lazy(() => import("../modules/asset/admin/depreciation/components"))
@@ -1635,6 +1638,26 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
+                        isLoading={this.props.assetLotManager.isLoading}
+                        key={"manage-info-asset-lot"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-info-asset-lot",
+                                name: "manage_info_asset_lot",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-info-asset-lot"}
+                        path={"/manage-info-asset-lot"}
+                        pageName={"manage_info_asset_lot"}
+                        layout={Layout}
+                        component={AssetLotManager}
+                    />
+
+                    <PrivateRoute
                         isLoading={false}
                         key={"manage-maintainance-asset"}
                         arrPage={[
@@ -2378,7 +2401,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={ExampleManagement2}
                     />
-                    
+
                     {/* Example Management Hooks*/}
                     <PrivateRoute
                         isLoading={this.props.example1.isLoading}

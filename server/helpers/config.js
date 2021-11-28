@@ -877,6 +877,15 @@ const LINKS = [{
     components: getComponentsInLink('/manage-info-asset')
 },
 {
+    url: '/manage-info-asset-lot',
+    description: 'Quản lý thông tin lô tài sản',
+    category: LINK_CATEGORY.ASSET.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/manage-info-asset-lot')
+},
+{
     url: '/manage-maintainance-asset',
     description: 'Quản lý bảo trì tài sản',
     category: LINK_CATEGORY.ASSET.name,
