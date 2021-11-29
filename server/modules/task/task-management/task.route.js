@@ -15,7 +15,7 @@ router.post('/tasks/project-tasks', auth, TaskManagementController.createProject
 
 router.delete('/tasks/:taskId', auth, TaskManagementController.deleteTask);
 
-router.get('/analys/user/:userId', auth, TaskManagementController.getTaskAnalysOfUser);
+router.get('/analyse/user/:userId', auth, TaskManagementController.getTaskAnalysOfUser);
 
 router.get('/time-sheet', auth, TaskManagementController.getUserTimeSheet);
 
