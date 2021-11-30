@@ -73,13 +73,13 @@ const CustomerSchema = new Schema({
     linkedIn: { // Địa chỉ linkedIn
         type: String,
     },
-    group: {
+    customerGroup: {
         type: Schema.Types.ObjectId,
-        ref: 'Group',
+        ref: 'CustomerGroup',
     },
-    status: [{
+    customerStatus: [{
         type: Schema.Types.ObjectId,
-        ref: 'Status'
+        ref: 'CustomerStatus'
     }],
     point: {
         type: Number,
@@ -126,11 +126,11 @@ const CustomerSchema = new Schema({
     statusHistories: [{// lịch sử thay đổi trạng thái
         oldValue: {
             type: Schema.Types.ObjectId,
-            ref: 'Status'
+            ref: 'CustomerStatus'
         },
         newValue: {
             type: Schema.Types.ObjectId,
-            ref: 'Status'
+            ref: 'CustomerStatus'
         },
         createdAt: { // ngày cập nhật
             type: Date,
@@ -166,9 +166,9 @@ const CustomerSchema = new Schema({
         expirationDate:{type:Date},
         status:{type:Number}
     }],
-    crmUnit: {// đơn vị CSKH
+    customerCareUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,
-        ref: "CrmUnit",
+        ref: "CustomerCareUnit",
     },
 
 }

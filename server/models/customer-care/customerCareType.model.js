@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CareTypeSchema = new Schema({
+const CustomerCareTypeSchema = new Schema({
     name: { //tên loại hình chăm sóc khách hàng
         type: String,
         required: true
@@ -24,18 +24,18 @@ const CareTypeSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    crmUnit: {// đơn vị CSKH
+    customerCareUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,
-        ref: "CrmUnit",
+        ref: "CustomerCareUnit",
     },
 }, {
     timestamps: true,
 });
 
-CareTypeSchema.plugin(mongoosePaginate);
+CustomerCareTypeSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.CareType)
-        return db.model('CareType', CareTypeSchema);
-    return db.models.CareType;
+    if (!db.models.CustomerCareType)
+        return db.model('CustomerCareType', CustomerCareTypeSchema);
+    return db.models.CustomerCareType;
 }

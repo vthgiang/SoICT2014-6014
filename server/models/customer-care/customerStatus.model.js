@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const StatusSchema = new Schema({
+const CustomerStatusSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -29,18 +29,18 @@ const StatusSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    crmUnit: {// đơn vị CSKH
+    customerCareUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,
-        ref: "CrmUnit",
+        ref: "CustomerCareUnit",
     },
 }, {
     timestamps: true,
 });
 
-StatusSchema.plugin(mongoosePaginate);
+CustomerStatusSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Status)
-        return db.model('Status', StatusSchema);
-    return db.models.Status;
+    if (!db.models.CustomerStatus)
+        return db.model('CustomerStatus', CustomerStatusSchema);
+    return db.models.CustomerStatus;
 }
