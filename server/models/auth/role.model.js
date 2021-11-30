@@ -30,6 +30,7 @@ const RoleSchema = new Schema(
                 // thuộc tính của role
                 name: String, // tên thuộc tính
                 value: String, //giá trị
+                description: String // mô tả
             },
         ],
     },

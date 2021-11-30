@@ -1339,8 +1339,10 @@ export default {
             attributes: "Role attributes",
             attribute_name: "Attribute name",
             attribute_value: "Attribute value",
-            attribute_name_example: "VD: Department",
-            attribute_value_example: "VD: Directorate",
+            attribute_description: "Attribute description",
+            attribute_name_example: "VD: Group",
+            attribute_value_example: "VD: Leader",
+            attribute_description_example: "VD: Role position in group",
             add_attribute_title: "Add role attribute",
             roles_add_attribute: "Attributes of roles"
         },

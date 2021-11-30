@@ -101,7 +101,7 @@ exports.editRole = async (req, res) => {
             content: data
         });
     } catch (error) {
-
+        console.log(error)
         Logger.error(req.user.email, 'edit_role_faile', req.portal);
         res.status(400).json({
             success: false,

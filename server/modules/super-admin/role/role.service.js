@@ -124,7 +124,8 @@ exports.createRole = async (portal, data) => {
     const dataAttr = attrArray.map(attr => {
         return {
             name: attr.name.trim(),
-            value: attr.value.trim()
+            value: attr.value.trim(),
+            description: attr.description.trim()
         }
     });
 
@@ -167,7 +168,7 @@ exports.createRoleAttribute = async (portal, data) => {
         return {
             name: attr.name.trim(),
             value: attr.value.trim(),
-
+            description: attr.description.trim()
         }
     });
 
@@ -184,10 +185,12 @@ exports.createRoleAttribute = async (portal, data) => {
 
     // Thêm - cập nhật thuộc tính
     roleAddAttribute.forEach(async (role) => {
+        // Kiểm tra trùng tên thuộc tính thì không têm mới mà chỉ cập nhật value và description
         role.attributes.forEach((attr) => {
             dataAttr.forEach((inputAttr) => {
                 if (attr.name.toLowerCase().replace(/ /g, "") === inputAttr.name.toLowerCase().replace(/ /g, "")) {
-                    attr.value = inputAttr.value
+                    attr.value = inputAttr.value;
+                    attr.description = inputAttr.description
                 }
             })
         })
@@ -333,6 +336,24 @@ exports.editRole = async (portal, id, data = {}) => {
     const role = await Role(connect(DB_CONNECTION, portal)).findById(id);
     const check = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data.name }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
 
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_name_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
     if (role.name.trim().toLowerCase().replace(/ /g, "") !== data.name.trim().toLowerCase().replace(/ /g, "")) {
         if (check) throw ['role_name_exist'];
     }
@@ -344,8 +365,17 @@ exports.editRole = async (portal, id, data = {}) => {
         role.parents = data.parents;
     }
 
+
+    const attrArray = await filterValidAttributeArray(data.attributes);
+    const dataAttr = attrArray.map(attr => {
+        return {
+            name: attr.name.trim(),
+            value: attr.value.trim(),
+            description: attr.description?.trim(),
+        }
+    });
     if (data.attributes) {
-        role.attributes = data.attributes;
+        role.attributes = dataAttr;
     }
 
     await role.save();

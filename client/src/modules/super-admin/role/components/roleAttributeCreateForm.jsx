@@ -63,6 +63,25 @@ function RoleAttributeCreateForm(props) {
     }
 
     /**
+     * Bắt sự kiện chỉnh sửa mô tả thuộc tính
+     */
+    const handleChangeAttributeDescription = (e, index, willUpdateState = true) => {
+        var { value } = e.target;
+
+        if (willUpdateState) {
+            var { roleAttributes } = state;
+            roleAttributes[index] = { ...roleAttributes[index], description: value }
+            setState(state => {
+                return {
+                    ...state,
+                    roleAttributes: roleAttributes
+                }
+            });
+            props.handleChange("roleAttributes", roleAttributes);
+        }
+    }
+
+    /**
      * Bắt sự kiện chỉnh sửa giá trị thuộc tính
      */
     const handleChangeAttributeValue = (e, index) => {
@@ -110,7 +129,7 @@ function RoleAttributeCreateForm(props) {
                 setState(state => {
                     return {
                         ...state,
-                        roleAttributes: [...roleAttributes, { name: "", value: "" }]
+                        roleAttributes: [...roleAttributes, { name: "", description: "", value: "" }]
                     }
                 })
             }
@@ -118,7 +137,7 @@ function RoleAttributeCreateForm(props) {
             setState(state => {
                 return {
                     ...state,
-                    roleAttributes: [...roleAttributes, { name: "", value: "" }]
+                    roleAttributes: [...roleAttributes, { name: "", description: "", value: "" }]
                 }
             })
         }
@@ -217,6 +236,7 @@ function RoleAttributeCreateForm(props) {
                 modalID="modal-create-role-attribute" isLoading={role.isLoading}
                 formID="form-create-role-attribute"
                 title={translate('manage_role.add_attribute_title')}
+                size={50}
                 func={save} disableSubmit={!isFormValidated()}
             >
                 {/* Form thêm phân quyền mới */}
@@ -254,6 +274,8 @@ function RoleAttributeCreateForm(props) {
                                 <tr>
                                     <th><label>{translate('manage_role.attribute_name')}</label></th>
                                     <th><label>{translate('manage_role.attribute_value')}</label></th>
+                                    <th><label>{translate('manage_role.attribute_description')}</label></th>
+
                                     <th style={{ width: '40px' }} className="text-center"><a href="#add-attributes" className="text-green" onClick={handleAddAttributes}><i className="material-icons">add_box</i></a></th>
                                 </tr>
                             </thead>
@@ -261,7 +283,7 @@ function RoleAttributeCreateForm(props) {
                                 {
                                     (!roleAttributes || roleAttributes.length == 0) ?
                                         <tr>
-                                            <td colSpan={3}>
+                                            <td colSpan={4}>
                                                 <center> {translate('table.no_data')}</center>
                                             </td>
                                         </tr> :
@@ -278,6 +300,7 @@ function RoleAttributeCreateForm(props) {
                                                         {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
                                                     </div>
                                                 </td>
+
                                                 <td>
                                                     <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
                                                         <input type="text"
@@ -289,6 +312,19 @@ function RoleAttributeCreateForm(props) {
                                                         {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
                                                     </div>
                                                 </td>
+
+                                                <td>
+                                                    <div className="form-group">
+                                                        <input type="text"
+                                                            className="form-control"
+                                                            placeholder={translate('manage_role.attribute_description_example')}
+                                                            value={attribute.description}
+                                                            onChange={(e) => handleChangeAttributeDescription(e, index)}
+                                                        />
+
+                                                    </div>
+                                                </td>
+
                                                 <td>
                                                     <a href="#delete-manager"
                                                         className="text-red"
