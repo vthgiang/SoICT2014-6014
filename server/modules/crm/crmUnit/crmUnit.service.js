@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const { CrmUnit } = require('../../../models');
+const { CustomerCareUnit } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getOrganizationalUnitByUserRole } = require("../../super-admin/organizational-unit/organizationalUnit.service");
 
 exports.getCrmUnits = async (portal, companyId, query) => {
     let keySearch = {};
-    return await CrmUnit(connect(DB_CONNECTION, portal)).find(keySearch)
+    return await CustomerCareUnit(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'organizationalUnit', select: '_id name description' })
 }
@@ -27,13 +27,13 @@ exports.getCrmUnitByRole = async (portal, companyId, role) => {
 
 exports.createCrmUnit = async (portal, companyId, userId, data) => {
     const { organizationalUnit } = data;
-    const newCrmUnit = await CrmUnit(connect(DB_CONNECTION, portal)).create({
+    const newCrmUnit = await CustomerCareUnit(connect(DB_CONNECTION, portal)).create({
         creator: userId,
         organizationalUnit: organizationalUnit,
         createdAt: new Date(),
     })
 
-    const getNewCrmUnit = await CrmUnit(connect(DB_CONNECTION, portal)).findById(newCrmUnit._id)
+    const getNewCrmUnit = await CustomerCareUnit(connect(DB_CONNECTION, portal)).findById(newCrmUnit._id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'organizationalUnit', select: '_id name description' })
         ;
@@ -41,7 +41,7 @@ exports.createCrmUnit = async (portal, companyId, userId, data) => {
 }
 
 exports.deleteCrmUnit = async (portal, companyId, id) => {
-    let deleteCrmUnit = await CrmUnit(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
+    let deleteCrmUnit = await CustomerCareUnit(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return deleteCrmUnit;
 }
 

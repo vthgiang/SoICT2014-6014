@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CrmUnitSchema = new Schema({
+const CustomerCareUnitSchema = new Schema({
     organizationalUnit: {
         type: Schema.Types.ObjectId,
         ref: "OrganizationalUnit",
@@ -18,9 +18,9 @@ const CrmUnitSchema = new Schema({
     timestamps: true,
 });
 
-CrmUnitSchema.plugin(mongoosePaginate);
+CustomerCareUnitSchema.plugin(mongoosePaginate);
 module.exports = (db) => {
-    if (!db.models.CrmUnit)
-        return db.model('CrmUnit', CrmUnitSchema);
-    return db.models.CrmUnit;
+    if (!db.models.CustomerCareUnit)
+        return db.model('CustomerCareUnit', CustomerCareUnitSchema);
+    return db.models.CustomerCareUnit;
 }
