@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const CrmUnitKPISchema = new Schema({
+const CustomerCareUnitKPISchema = new Schema({
     completionRate: { //tên loại hình chăm sóc khách hàng
         weight: {
             type: String
@@ -68,18 +68,18 @@ const CrmUnitKPISchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    crmUnit: {// đơn vị CSKH
+    customerCareUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,
-        ref: "CrmUnit",
+        ref: "CustomerCareUnit",
     },
 }, {
     timestamps: true,
 });
 
-CrmUnitKPISchema.plugin(mongoosePaginate);
+CustomerCareUnitKPISchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.CrmUnitKPI)
-        return db.model('CrmUnitKPI', CrmUnitKPISchema);
-    return db.models.CrmUnitKPI;
+    if (!db.models.CustomerCareUnitKPI)
+        return db.model('CustomerCareUnitKPI', CustomerCareUnitKPISchema);
+    return db.models.CustomerCareUnitKPI;
 }

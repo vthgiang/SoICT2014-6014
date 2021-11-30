@@ -1,4 +1,4 @@
-const { CrmTask } = require('../../../models');
+const { CustomerCareTask } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { createTask } = require("../../task/task-management/task.service");
 const { getCrmTaskTemplate } = require('../crmTaskTemplate/crmTaskTemplate.service');
@@ -51,8 +51,8 @@ async function createCrmTask(portal, companyId, userId, role, type) {
         user: userId,
         type: type,
     }
-    const newCrmTask = await CrmTask(connect(DB_CONNECTION, portal)).create(crmTask);
-    const getCrmTask = await CrmTask(connect(DB_CONNECTION, portal)).findById(newCrmTask._id);
+    const newCrmTask = await CustomerCareTask(connect(DB_CONNECTION, portal)).create(crmTask);
+    const getCrmTask = await CustomerCareTask(connect(DB_CONNECTION, portal)).findById(newCrmTask._id);
     return getCrmTask;
 
 }
@@ -69,7 +69,7 @@ exports.getCrmTask = async (portal, companyId, userId, role, type) => {
         user: userId,
         type
     }
-    const crmTasks = await CrmTask(connect(DB_CONNECTION, portal)).find(keySearch);
+    const crmTasks = await CustomerCareTask(connect(DB_CONNECTION, portal)).find(keySearch);
     if (crmTasks && crmTasks.length) {
         return crmTasks[0];
     }

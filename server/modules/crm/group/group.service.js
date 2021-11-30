@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Group, Customer } = require('../../../models');
+const { CustomerGroup, Customer } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 
@@ -15,9 +15,9 @@ exports.createGroup = async (portal, companyId, userId, data, role) => {
         description: description ? description : '',
         updatedBy: userId,
         updatedAt: new Date(),
-        crmUnit: crmUnit._id
+        customerCareUnit: crmUnit._id
     })
-    const getNewGroup = await Group(connect(DB_CONNECTION, portal)).findById(newGroup._id);
+    const getNewGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(newGroup._id);
     return getNewGroup;
 }
 
@@ -31,25 +31,25 @@ exports.getGroups = async (portal, companyId, query, userId, role) => {
         if (!crmUnit){
             keySearch = { ...keySearch, creator: userId };
         } 
-        keySearch = { ...keySearch, crmUnit: crmUnit._id };
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
     }
     if (code) {
         keySearch = { ...keySearch, code: { $regex: code, $options: "i" } }
     }
 
-    const listGroupTotal = await Group(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    const listGroupTotal = await CustomerGroup(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let groups;
     if (page && limit)
-        groups = await Group(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        groups = await CustomerGroup(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
             .skip(parseInt(page)).limit(parseInt(limit));
     else
-        groups = await Group(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        groups = await CustomerGroup(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
     return { listGroupTotal, groups };
 }
 
 exports.getGroupById = async (portal, companyId, id) => {
 
-    let groupById = await Group(connect(DB_CONNECTION, portal)).findById(id)
+    let groupById = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'updatedBy', select: '_id name' });
     const numberOfUsers = await Customer(connect(DB_CONNECTION, portal)).countDocuments({ group: id });
@@ -61,7 +61,7 @@ exports.getGroupById = async (portal, companyId, id) => {
 exports.editGroup = async (portal, companyId, id, data, userId) => {
     const { code, name, description, promotion } = data;
 
-    await Group(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    await CustomerGroup(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             updatedBy: userId,
             updatedAt: new Date(),
@@ -72,10 +72,10 @@ exports.editGroup = async (portal, companyId, id, data, userId) => {
         }
     }, { new: true });
 
-    return await Group(connect(DB_CONNECTION, portal)).findOne({ _id: id });
+    return await CustomerGroup(connect(DB_CONNECTION, portal)).findOne({ _id: id });
 }
 
 exports.deleteGroup = async (portal, companyId, id) => {
-    let delGroup = await Group(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
+    let delGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return delGroup;
 }

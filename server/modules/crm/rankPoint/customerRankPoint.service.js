@@ -13,7 +13,7 @@ exports.getCustomerRankPoints = async (portal, companyId, userId, query, role) =
         if (!crmUnit){
             keySearch = { ...keySearch, creator: userId };
         } 
-        keySearch = { ...keySearch, crmUnit: crmUnit._id };
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
     }
     const listDocsTotal = await CustomerRankPoint(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
@@ -28,7 +28,7 @@ exports.getCustomerRankPoints = async (portal, companyId, userId, query, role) =
 exports.createCustomerRankPoint = async (portal, companyId, data, userId,role) => {
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
     //if (!crmUnit) return {}
-    data = { ...data, crmUnit: crmUnit._id };
+    data = { ...data, customerCareUnit: crmUnit._id };
     if (userId) {
         data = { ...data, creator: userId, updatedBy: userId };
     }

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Care, User, Status } = require('../../../models');
+const { CustomerCare, User, CustomerStatus } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getAllUserInUnitAndItsSubUnits, getAllEmployeeOfUnitByIds } = require("../../super-admin/user/user.service");
 const { getCares } = require("../care/care.service");
@@ -115,7 +115,7 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId,
     listGroup.forEach(group => {
         let numberOfCustomer = 0;
         listManagedCustomer.forEach(customer => {
-            if (customer.group && customer.group._id.toString() == group._id.toString()) numberOfCustomer++;
+            if (customer.customerGroup && customer.customerGroup._id.toString() == group._id.toString()) numberOfCustomer++;
         });
         customerDataByGroup = [...customerDataByGroup, [group.name, numberOfCustomer]];
     });
@@ -126,7 +126,7 @@ exports.getCustomerCareInfoByEmployee = async (portal, companyId, query, userId,
     listStatus.forEach(status => {
         let numberOfCustomer = 0;
         listManagedCustomer.forEach(customer => {
-            if (customer.status[0]._id.toString() == status._id.toString()) numberOfCustomer++;
+            if (customer.customerStatus[0]._id.toString() == status._id.toString()) numberOfCustomer++;
         });
         customerDataByStatus = [...customerDataByStatus, [status.name, numberOfCustomer]];
     });
@@ -173,7 +173,7 @@ exports.getCustomerCareInfoByUnit = async (portal, companyId, query,  userId, cu
     listGroup.forEach(group => {
         let numberOfCustomer = 0;
         listManagedCustomer.forEach(customer => {
-            if (customer.group && customer.group._id.toString() == group._id.toString()) numberOfCustomer++;
+            if (customer.customerGroup && customer.customerGroup._id.toString() == group._id.toString()) numberOfCustomer++;
         });
         customerDataByGroup = [...customerDataByGroup, [group.name, numberOfCustomer]];
     });
@@ -184,7 +184,7 @@ exports.getCustomerCareInfoByUnit = async (portal, companyId, query,  userId, cu
     listStatus.forEach(status => {
         let numberOfCustomer = 0;
         listManagedCustomer.forEach(customer => {
-            if (customer.status[0]._id.toString() == status._id.toString()) numberOfCustomer++;
+            if (customer.customerStatus[0]._id.toString() == status._id.toString()) numberOfCustomer++;
         });
         customerDataByStatus = [...customerDataByStatus, [status.name, numberOfCustomer]];
     });
