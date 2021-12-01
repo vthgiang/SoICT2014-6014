@@ -6,6 +6,7 @@ import ScheduleMonthlyForm from './scheduleMonthlyForm';
 import ScheduleWeeklyForm from './scheduleWeeklyForm';
 import ScheduleYearlyForm from './scheduleYearlyForm';
 import { SystemSettingActions } from '../redux/actions';
+import BackupInfo from './backupInfo';
 
 function SystemSetting(props) {
 
@@ -70,6 +71,18 @@ function SystemSetting(props) {
         })
     }
 
+    const editBackupInfo = async (value) => {
+        await setState({
+            ...state,
+            backupInfo: value
+        });
+        window.$('#modal-edit-backup-info').modal('show');
+    }
+
+    const downloadBackupVersion = (path) => {
+        props.downloadBackupVersion(path);
+    }
+
     const handleSchedule = (value) => {
         setState({
             ...state,
@@ -132,6 +145,8 @@ function SystemSetting(props) {
                                                         className="text-green"
                                                         func={() => props.restore(data.version)}
                                                     />
+                                                    <a className="text-orange" title={translate('super_admin.system.edit_backup_info')} style={{ cursor: 'pointer' }} onClick={() => editBackupInfo(data)}><i className="material-icons">edit</i></a>
+                                                    <a className="text-blue" title={translate('super_admin.system.download_backup_version')} style={{ cursor: 'pointer' }} onClick={() => downloadBackupVersion(data.path)}><i className="material-icons">save_alt</i></a>
                                                     <ConfirmNotification
                                                         icon="warning"
                                                         title={translate('super_admin.system.delete_backup')}
@@ -149,6 +164,7 @@ function SystemSetting(props) {
                         </div>
                     </div>
                 </div>
+                <BackupInfo backupInfo={state.backupInfo} />
                 <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                     <div className="box box-default">
                         <div className="box-header with-border text-center">
@@ -233,7 +249,8 @@ const actions = {
     createBackup: SystemSettingActions.createBackup,
     configBackup: SystemSettingActions.configBackup,
     deleteBackup: SystemSettingActions.deleteBackup,
-    restore: SystemSettingActions.restore
+    restore: SystemSettingActions.restore,
+    downloadBackupVersion: SystemSettingActions.downloadBackupVersion
 }
 
 export default connect(mapState, actions)(withTranslate(SystemSetting));

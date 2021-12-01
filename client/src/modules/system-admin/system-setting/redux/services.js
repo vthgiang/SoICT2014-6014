@@ -6,7 +6,9 @@ export const SystemSettingServices = {
     createBackup,
     configBackup,
     deleteBackup,
-    restore
+    restore,
+    editBackupInfo,
+    downloadBackupVersion
 };
 
 function getBackups() {
@@ -53,3 +55,20 @@ function restore(version) {
         method: 'PATCH'
     }, true, true, 'super_admin.system');
 }    
+
+function downloadBackupVersion(path) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup/download`,
+        method: 'GET',
+        responseType: "blob",
+        params: {path}
+    }, true, true, 'super_admin.system');
+}
+
+function editBackupInfo(version, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup/${version}/edit`,
+        method: 'PATCH',
+        data
+    }, true, true, 'super_admin.system');
+}
