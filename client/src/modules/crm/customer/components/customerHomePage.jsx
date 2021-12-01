@@ -432,7 +432,7 @@ function CustomerHomePage(props) {
                                     <tr key={cus._id}>
                                         <td>{cus.code}</td>
                                         <td>{cus.name}</td>
-                                        <td>{cus.status && cus.status.length > 0 ? cus.status[cus.status.length - 1].name : null}</td>
+                                        <td>{cus.customerStatus && cus.customerStatus.length > 0 ? cus.customerStatus[cus.customerStatus.length - 1].name : null}</td>
                                         <td>{cus.customerType === 1 ? 'Cá nhân ' : 'Công ty'}</td>
                                         <td>{cus.email}</td>
                                         <td>{cus.mobilephoneNumber}</td>

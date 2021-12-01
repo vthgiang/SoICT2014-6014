@@ -108,8 +108,8 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
         <p>Thêm mới khách hàng : <strong> ${newCustomer.name}</strong></p>
         <p>Mã khách hàng : <strong> ${newCustomer.code}</strong></p>
         <p>email khách hàng : <strong> ${newCustomer.email}</strong></p>
-        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.status[0].name}</strong></p>
-        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.group.name}</strong></p>
+        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.customerStatus[0].name}</strong></p>
+        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.customerGroup.name}</strong></p>
         `,
         index: '1'
     }
