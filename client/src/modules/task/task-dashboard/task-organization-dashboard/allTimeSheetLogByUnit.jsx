@@ -118,12 +118,12 @@ function AllTimeSheetLogsByUnit(props) {
                 <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
                     <thead>
                         <tr>
-                            <th style={{ width: '60px' }}>STT</th>
-                            <th>Họ và tên</th>
-                            <th>Tổng thời gian bấm giờ</th>
-                            <th>Bấm giờ</th>
-                            <th>Bấm hẹn giờ</th>
-                            <th>Bấm bù giờ</th>
+                            <th style={{ width: '60px' }}>{translate('general.index')}</th>
+                            <th>{translate('human_resource.profile.full_name')}</th>
+                            <th>{translate('task.task_perform.total_time')}</th>
+                            <th>{translate('task.task_management.timer')}</th>
+                            <th>{translate('task.task_management.interval_timer')}</th>
+                            <th>{translate('task.task_management.additional_timer')}</th>
                         </tr>
                     </thead>
                     <tbody>

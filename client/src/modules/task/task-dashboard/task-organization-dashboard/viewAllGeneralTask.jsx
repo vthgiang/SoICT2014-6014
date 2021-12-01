@@ -73,7 +73,6 @@ const ViewAllGeneralTask = (props) => {
             display: tasksPaginated.length
         })
     }
-    console.log("state", state)
     return (
         <React.Fragment>
             <DialogModal
@@ -87,11 +86,11 @@ const ViewAllGeneralTask = (props) => {
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
-                                <th>Tên công việc</th>
-                                <th>Thời gian thực hiện công việc</th>
-                                <th>Trạng thái</th>
-                                <th>Tiến độ thực hiện</th>
+                                <th className="col-fixed" style={{ width: 80 }}>{translate('general.index')}</th>
+                                <th>{translate('task.task_management.name')}</th>
+                                <th>{translate('task.task_management.col_logged_time')}</th>
+                                <th>{translate('task.task_management.status')}</th>
+                                <th>{translate('task.task_management.col_progress')}</th>
                             </tr>
                         </thead>
                         <tbody>

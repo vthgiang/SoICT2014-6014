@@ -34,7 +34,7 @@ export default {
             no_data: "Không có dữ liệu",
             success: "Thành công",
             error: "Lỗi",
-            stt: 'STT',
+            index: 'STT',
             new_notification: "Bạn có thông báo mới!",
             month: "tháng",
             value: "Giá trị",
@@ -3498,10 +3498,15 @@ export default {
                 time: "Thời gian",
                 load_task_chart: "Tải công việc cá nhân",
                 load_task_chart_unit: "Tải công việc đơn vị",
+                timesheet_statistics: "Thống kê bấm giờ",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
-
-
+                timer: "Bấm giờ",
+                additional_timer: "Bấm bù giờ",
+                interval_timer: "Bấm hẹn giờ",
+                start_time: "Thời gian bắt đầu",
+                end_time: "Thời gian kết thúc",
+                timer_type: "Loại bấm giờ",
             },
             task_perform: {
                 actions: "Hoạt động",
