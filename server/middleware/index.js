@@ -23,10 +23,15 @@ const rateLimit = require("express-rate-limit");
 exports.authFunc = (checkPage = true) => {
     return async (req, res, next) => {
         try {
+            /**
+             * 2 types of utk:
+             * - token được tạo cho phiên đăng nhập của người dùng
+             * - token cho phép người dùng dùng previlegeAPI
+             */
             const token = req.header("utk"); //JWT nhận từ người dùng
 
             /**
-             * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
+             * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập/không có token để sử dụng previlegeAPI
              */
             if (!token) throw ["access_denied"];
 
@@ -61,14 +66,15 @@ exports.authFunc = (checkPage = true) => {
             }
 
 
-            /*
+            /**
              * Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
+             * Nếu được gọi từ bên thứ 3: thirdParty = true
              */
 
-            /*
-             * 1. Trường hợp service được gọi từ ứng dụng dxclan
-             */
             if (!req.thirdParty) {
+                /**
+                 * 1. Trường hợp service được gọi từ ứng dụng dxclan
+                 */
                 let crtp, crtr, fgp;
 
                 if (process.env.DEVELOPMENT === "true") {
@@ -134,12 +140,6 @@ exports.authFunc = (checkPage = true) => {
 
                     /**
                      * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
-                     * 
-                     * Trường hợp được cấp phân quyền riêng:
-                     * 1. Trường hợp này chỉ cần xem PrivilageApi, không cần dùng đến token được cấp
-                     * 2. Nếu có sử dụng portal thì cần check xem portal có trùng không
-                     * 
-                     * Với trường hơp truy cập thông thường:
                      * 1. Kiểm tra xem thông tin 
                      * 2. Lấy đường link mà người dùng đã truy cập
                      * 3. Sau đó check trong bảng privilege xem có tồn tại cặp value tương ứng giữa current-role của user với đường link của trang
@@ -179,12 +179,16 @@ exports.authFunc = (checkPage = true) => {
                             const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
                             if (!perAPI) throw ['api_permission_invalid'];
                         }
+
+                        /**
+                         * Ques: Truy cập với API được phân quyền thì nên được xử lý như thế nào?
+                         * Ques: Sử dụng API riêng rẽ như thế nào khi các API được gắn với trang chưa API và ko có trang riêng cho việc sử dụng API được đặc cấp
+                         */
                     }
                 }
             } else {
                 /**
-                 * 1. Trường hợp service được gọi từ bên thứ 3 ?????
-                 * Quest: Token dược cấp sẽ được khai báo ở đâu?
+                 * 2. Trường hợp service được gọi từ bên thứ 3
                  */
                 const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
 

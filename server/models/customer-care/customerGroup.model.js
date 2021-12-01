@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const GroupSchema = new Schema({
+const CustomerGroupSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -44,19 +44,19 @@ const GroupSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    crmUnit: {// đơn vị CSKH
+    customerCareUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,
-        ref: "CrmUnit",
+        ref: "CustomerCareUnit",
     },
 
 }, {
     timestamps: true,
 });
 
-GroupSchema.plugin(mongoosePaginate);
+CustomerGroupSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Group)
-        return db.model('Group', GroupSchema);
-    return db.models.Group;
+    if (!db.models.CustomerGroup)
+        return db.model('CustomerGroup', CustomerGroupSchema);
+    return db.models.CustomerGroup;
 }
