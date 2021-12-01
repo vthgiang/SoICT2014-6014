@@ -484,6 +484,11 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
             const checkRoleValid = await Role(connect(DB_CONNECTION, portal)).findOne({ name: { $in: array.map(role => role.name) } }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" });
             console.log("filterValidRoleArray", checkRoleValid)
             if (checkRoleValid) throw ['role_name_exist'];
+
+            if ((new Set(array.map(role => role.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['role_name_duplicate'];
+            }
+
             for (let i = 0; i < array.length; i++) {
                 if (array[i]) resArray = [...resArray, array[i]];
             }
@@ -502,6 +507,10 @@ exports.editRolesInOrganizationalUnit = async (portal, id, data) => {
     const deputyManagerArr = await filterValidRoleArray(deputyManagers.createRoles);
     const employeeArr = await filterValidRoleArray(employees.createRoles);
 
+    const allInputRole = managerArr.concat(deputyManagerArr, employeeArr)
+    if ((new Set(allInputRole.map(role => role.name.toLowerCase().replace(/ /g, "")))).size !== allInputRole.length) {
+        throw ['role_name_duplicate'];
+    }
     //1.Chỉnh sửa nhân viên đơn vị
 
     for (let i = 0; i < employees.editRoles.length; i++) {

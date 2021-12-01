@@ -185,8 +185,7 @@ class QuillEditor extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         const { auth } = this.props
         const { enableEdit, quillValueDefault } = this.props;
-        const { quill } = this.state
-
+        const { quill } = nextState
         // render lại khi download ảnh
         if (JSON.stringify(nextProps.auth) !== JSON.stringify(auth)) {
             return true

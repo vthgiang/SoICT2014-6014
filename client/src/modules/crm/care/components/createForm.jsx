@@ -34,7 +34,8 @@ function CreateCareForm(props) {
     const handleChangeCustomer = async (value) => {
         const newCareInput = {
             ...newCare,
-            customer: value[0],
+            //customer: value[0],
+            customer: value,
         }
         await setNewCare(newCareInput)
         console.log(newCare)
@@ -60,13 +61,13 @@ function CreateCareForm(props) {
      * Hàm xử lý khi mô tả công việc chăm sóc khách  hàng thay đổi
      * @param {*} data
      */
-    const handleChangeDescription = useCallback((data, imgs) => {
+     const handleChangeDescription = async (data) => {
         const newCareInput = {
             ...newCare,
             description: data,
         }
      setNewCare(newCareInput)
-    }, []);
+    };
 
     /**
      * Hàm xử lý khi hình thức chăm sóc thay đổi

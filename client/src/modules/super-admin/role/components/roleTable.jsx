@@ -62,6 +62,15 @@ function RoleTable(props) {
             roleDuplicateName
         });
 
+        let { option, limit, value, page } = state;
+        const data = {
+            limit,
+            page,
+            key: option,
+            value
+        };
+        props.get(data);
+
     }
 
     // Cac ham thiet lap va tim kiem gia tri

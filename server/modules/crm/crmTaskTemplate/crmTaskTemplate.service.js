@@ -1,4 +1,4 @@
-const { CrmTaskTemplate } = require('../../../models');
+const { CustomerCareTaskTemplate } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { createTask } = require("../../task/task-management/task.service");
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
@@ -124,8 +124,8 @@ const createCrmTaskTemplate = async (portal, companyId, role, type ) => {
         manager
     }
 
-    const newcrmTaskTemplate = await CrmTaskTemplate(connect(DB_CONNECTION, portal)).create(crmTaskTemplate);
-    const getcrmTaskTemplate = await CrmTaskTemplate(connect(DB_CONNECTION, portal)).findById(newcrmTaskTemplate._id);
+    const newcrmTaskTemplate = await CustomerCareTaskTemplate(connect(DB_CONNECTION, portal)).create(crmTaskTemplate);
+    const getcrmTaskTemplate = await CustomerCareTaskTemplate(connect(DB_CONNECTION, portal)).findById(newcrmTaskTemplate._id);
     return getcrmTaskTemplate;
 }
 
@@ -134,7 +134,7 @@ exports.getCrmTaskTemplate = async (portal, companyId, role, type) => {
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
     if (!crmUnit) return {}
     keySearch = { ...keySearch, crmUnit: crmUnit._id ,type }
-    const listCrmTaskTemplate = await CrmTaskTemplate(connect(DB_CONNECTION, portal)).find(keySearch);
+    const listCrmTaskTemplate = await CustomerCareTaskTemplate(connect(DB_CONNECTION, portal)).find(keySearch);
     if (listCrmTaskTemplate && listCrmTaskTemplate.length > 0) return listCrmTaskTemplate[0];
     return createCrmTaskTemplate(portal, companyId, role, type);
 }

@@ -127,7 +127,7 @@ function ApiRegistration(props) {
 
     return (
         <React.Fragment>
-            <CreateApiRegistrationModal role="admin" />
+            <CreateApiRegistrationModal role="admin" privilegeApisStatus={3} />
 
             <div className="box" >
                 <div className="box-body qlcv">

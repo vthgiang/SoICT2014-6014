@@ -1,4 +1,4 @@
-const { Care } = require('../../../models');
+const { CustomerCare } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmTask, updateCrmActionsTaskInfo } = require('../crmTask/crmTask.service');
 const { createTaskAction, evaluationAction } = require('../../task/task-perform/taskPerform.service');
@@ -36,12 +36,15 @@ exports.createCare = async (portal, companyId, data, userId, role) => {
     // tạo trường đơn vị CSKH
 
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    data = { ...data, crmUnit: crmUnit._id };
+    if (!crmUnit){
+        data = { ...data, creator: userId };
+    }
+    data = { ...data, customerCareUnit: crmUnit._id };
 
-    const newCare = await Care(connect(DB_CONNECTION, portal)).create(data);
+    const newCare = await CustomerCare(connect(DB_CONNECTION, portal)).create(data);
     // cập nhật công việc
     await updateCrmActionsTaskInfo(portal, companyId, userId, role);
-    const getNewCare = await Care(connect(DB_CONNECTION, portal)).findById(newCare._id)
+    const getNewCare = await CustomerCare(connect(DB_CONNECTION, portal)).findById(newCare._id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name ' })
         .populate({ path: 'customerCareStaffs', select: '_id name' })
@@ -50,18 +53,21 @@ exports.createCare = async (portal, companyId, data, userId, role) => {
 }
 
 const updateCareStatus = async (id, status, portal) => {
-    await Care(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    await CustomerCare(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: { status: status }
     }, { new: true });
 }
 
-exports.getCares = async (portal, companyId, query, role) => {
+exports.getCares = async (portal, companyId, query, userId, role) => {
     const { page, limit, customerId, status, customerCareTypes, customerCareStaffs, month, year, getAll } = query;
     let keySearch = {};
     if (!getAll) {
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listDocsTotal: 0, cares: [] };
-        keySearch = { ...keySearch, crmUnit: crmUnit._id }
+        //if (!crmUnit) return { listDocsTotal: 0, cares: [] };
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
     }
     if (customerId) {
         keySearch =
@@ -111,8 +117,8 @@ exports.getCares = async (portal, companyId, query, role) => {
 
         }
     }
-    const listDocsTotal = await Care(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    const listCare = await Care(connect(DB_CONNECTION, portal)).find({});
+    const listDocsTotal = await CustomerCare(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    const listCare = await CustomerCare(connect(DB_CONNECTION, portal)).find({});
     listCare.forEach(care => {
         if (care.status == 3 || care.status == 5) return;
         let now = new Date();
@@ -123,7 +129,7 @@ exports.getCares = async (portal, companyId, query, role) => {
 
     let cares;
     if (page && limit) {
-        cares = await Care(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        cares = await CustomerCare(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
             .skip(parseInt(page)).limit(parseInt(limit))
             .populate({ path: 'creator', select: '_id name' })
             .populate({ path: 'customer', select: '_id name' })
@@ -131,7 +137,7 @@ exports.getCares = async (portal, companyId, query, role) => {
             .populate({ path: 'customerCareTypes', select: '_id name' });
     }
     else {
-        cares = await Care(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        cares = await CustomerCare(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
             .populate({ path: 'creator', select: '_id name' })
             .populate({ path: 'customer', select: '_id name' })
             .populate({ path: 'customerCareStaffs', select: '_id name' })
@@ -142,7 +148,7 @@ exports.getCares = async (portal, companyId, query, role) => {
 
 
 exports.getCareById = async (portal, companyId, id) => {
-    return await Care(connect(DB_CONNECTION, portal)).findById(id)
+    return await CustomerCare(connect(DB_CONNECTION, portal)).findById(id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name' })
         .populate({ path: 'customerCareStaffs', select: '_id name' })
@@ -169,13 +175,13 @@ exports.editCare = async (portal, companyId, id, data, userId, role) => {
         endDate = [date[2], date[1], date[0]].join("-");
         data = { ...data, endDate };
     }
-    const oldCare = await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id });
-    await Care(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    const oldCare = await CustomerCare(connect(DB_CONNECTION, portal)).findOne({ _id: id });
+    await CustomerCare(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
-    await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id });
+    await CustomerCare(connect(DB_CONNECTION, portal)).findOne({ _id: id });
 
-    const newCare = await Care(connect(DB_CONNECTION, portal)).findOne({ _id: id })
+    const newCare = await CustomerCare(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name' })
         .populate({ path: 'customerCareStaffs', select: '_id name' })
@@ -213,7 +219,7 @@ exports.editCare = async (portal, companyId, id, data, userId, role) => {
 }
 
 exports.deleteCare = async (portal, companyId, id) => {
-    let delCare = await Care(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
+    let delCare = await CustomerCare(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return delCare;
 }
 

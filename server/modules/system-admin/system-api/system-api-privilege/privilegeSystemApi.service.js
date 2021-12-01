@@ -1,9 +1,15 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 
-const { PrivilegeApi, Company, SystemApi } = require(`../../../../models`);
+const { PrivilegeApi, Company, SystemApi, User } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const { parseDate } = require(`../../../../helpers/parseDate`);
+const { links } = require("../../../../middleware/servicesPermission");
+
+const ROLE = {
+    SUPER_ADMIN: 'system_admin',
+    ADMIN: 'admin',
+}
 
 const getPrivilegeApis = async (portal, data) => {
     const { email, companyIds, role, page = 1, perPage = 30, creator } = data
@@ -64,24 +70,18 @@ const getPrivilegeApis = async (portal, data) => {
     };
 }
 
-
-
 /** Thêm phân quyền API
  * @email email người được sử dụng
  * @apis mảng gồm các link api
  * @company công ty được lấy dữ liệu
  */
+const createPrivilegeApi = async (data, requestUser) => {
+    const { email, name, apis, companyId, role, description, unlimitedExpirationTime, userId, status } = data
 
-
-const createPrivilegeApi = async (data) => {
-    const { email, name, apis, companyId, role, description, unlimitedExpirationTime, userId } = data
-
-    let startDate = "";
-    let endDate = "";
-    if (!unlimitedExpirationTime) {
-        startDate = parseDate('dd-mm-yy', data.startDate);
-        endDate = parseDate('dd-mm-yy', data.endDate);
-    }
+    /**
+     * status === 1 => đăng ký sử dụng API
+     * status === 3 => ủy quyền sử dụng API
+     */
 
     // Check sự tồn tại của phân quyền
     let privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -89,6 +89,7 @@ const createPrivilegeApi = async (data) => {
             email: email,
             company: mongoose.Types.ObjectId(companyId),
         })
+
     if (privilege) {
         throw {
             messages: "privilege_api_exist",
@@ -105,10 +106,26 @@ const createPrivilegeApi = async (data) => {
         };
     }
 
+    /**
+     * Kiểm tra xem có API nào đã được chọn hay không. Nếu không => Báo lỗi
+     * status === 1 => xin được phân quyền => Không cần kiểm tra gì thêm
+     * status === 3 => thực hiện phân quyền => cần kiểm tra xem những API đó có nằm trong quyền hạn được phân hay không
+     */
     let systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({
             _id: { $in: apis }
         })
+
+    if (systemApis.length <= 0) throw { messages: "ERROR: No api are chosen or no api found!", };
+
+    if (status === 3) {
+        // let requestUserPrivilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
+        //     .findOne({
+        //         email: requestUser.email,
+        //         company: mongoose.Types.ObjectId(requestUser.company._id),
+        //     })
+    }
+
     systemApis = systemApis.map(item => {
         return {
             path: item.path,
@@ -116,16 +133,23 @@ const createPrivilegeApi = async (data) => {
         }
     })
 
-    if (role === 'system_admin' || role === 'admin') {
-        // Set time token
-        let expiresIn = 0;
-        if (startDate && endDate) {
-            let startDateUtc = new Date(startDate)
-            let endDateUtc = new Date(endDate)
+    // Set time token
+    let startDate = "";
+    let endDate = "";
+    if (!unlimitedExpirationTime) {
+        startDate = parseDate('dd-mm-yy', data.startDate);
+        endDate = parseDate('dd-mm-yy', data.endDate);
+    }
 
-            expiresIn = endDateUtc?.getTime() - startDateUtc?.getTime()
-        }
+    let expiresIn = 0;
+    if (startDate && endDate) {
+        let startDateUtc = new Date(startDate)
+        let endDateUtc = new Date(endDate)
 
+        expiresIn = endDateUtc?.getTime() - startDateUtc?.getTime()
+    }
+
+    if (role === ROLE.SUPER_ADMIN || role === ROLE.ADMIN) {
         const token = await jwt.sign(
             {
                 email: email,
@@ -139,7 +163,7 @@ const createPrivilegeApi = async (data) => {
             }
         );
 
-        if (role === 'system_admin') {
+        if (role === ROLE.SUPER_ADMIN) {
             // Them vao csdl system admin
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({
@@ -168,7 +192,7 @@ const createPrivilegeApi = async (data) => {
                     endDate: endDate && new Date(endDate),
                     creator: userId
                 })
-        } else if (role === 'admin') {
+        } else if (role === ROLE.ADMIN) {
             privilege = await PrivilegeApi(connect(DB_CONNECTION, company.shortName))
                 .create({
                     email: email,
@@ -205,7 +229,27 @@ const createPrivilegeApi = async (data) => {
 const updateStatusPrivilegeApi = async (portal, data) => {
     const { privilegeApiIds, status = 0, role } = data
 
+    let privilege = await PrivilegeApi(connect(DB_CONNECTION, portal))
+        .findOne(
+            { _id: { $in: privilegeApiIds.map(item => mongoose.Types.ObjectId(item)) } }
+        )
+
     portal = role === 'system_admin' ? process.env.DB_NAME : portal
+
+    /**
+     * Nếu không phài là system_admin => là admin => kiểm tra xem đối tượng có thuộc công ty của admin không
+     */
+    if (role !== 'system_admin') {
+        const user = await User(
+            connect(DB_CONNECTION, portal)
+        ).findOne({ email: privilege.email })
+
+        if (!user) {
+            throw {
+                messages: "Bad request: no user are found in your organization",
+            };
+        }
+    }
 
     if (Number(status) === 0 || Number(status) === 2) {
         await PrivilegeApi(connect(DB_CONNECTION, portal))
