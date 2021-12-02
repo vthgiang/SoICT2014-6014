@@ -8,7 +8,7 @@ exports.createGroup = async (portal, companyId, userId, data, role) => {
     //tạo trường đơn vị CSKH'
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
     //if (!crmUnit) return {};
-    const newGroup = await Group(connect(DB_CONNECTION, portal)).create({
+    const newGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).create({
         creator: userId,
         code: code,
         name: name,
@@ -18,6 +18,7 @@ exports.createGroup = async (portal, companyId, userId, data, role) => {
         customerCareUnit: crmUnit._id
     })
     const getNewGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(newGroup._id);
+    console.log(getNewGroup);
     return getNewGroup;
 }
 
@@ -44,6 +45,24 @@ exports.getGroups = async (portal, companyId, query, userId, role) => {
             .skip(parseInt(page)).limit(parseInt(limit));
     else
         groups = await CustomerGroup(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+    //  Tạo dữ liệu mẫu cho người lần đầu được phân quyền vào trang nhưng dữ liệu trống
+    if (!groups || !groups.length) {
+        await CustomerGroup(connect(DB_CONNECTION, portal)).create({
+            creator: userId,
+            code: "KHVIP1",
+            name: "Khách VIP",
+            description: "Khách VIP",
+        },{
+            creator: userId,
+            code: "NKHKV",
+            name: "Nhóm khách theo khu vực",
+            description: "Nhóm khách theo khu vực",
+        })
+        const listGroupTotal = await CustomerGroup(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        groups = await CustomerGroup(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+            .skip(parseInt(page)).limit(parseInt(limit));
+        return { listGroupTotal, groups };
+    }
     return { listGroupTotal, groups };
 }
 

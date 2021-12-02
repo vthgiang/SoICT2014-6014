@@ -54,6 +54,7 @@ function CustomerHomePage(props) {
                 if (user && user.organizationalUnitsOfUser) {
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                         item.managers[0] === currentRole
+                        || item.managers[1] === currentRole
                         || item.deputyManagers[0] === currentRole
                         || item.employees[0] === currentRole);
                     if (getCurrentUnit) {
@@ -265,13 +266,18 @@ function CustomerHomePage(props) {
     let unitMembers;
     if (user.usersOfChildrenOrganizationalUnit) {
 
+        console.log("bat dau tim unit members ");
         unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
+        console.log("unit members la");
+        console.log(unitMembers);
     }
 
     // Lấy danh sách đơn vị
     let units;
     if (user.organizationalUnitsOfUser) {
         units = user.organizationalUnitsOfUser;
+        console.log("units la");
+        console.log(units);
     }
 
     // Lấy danh sách nhóm khách hàng

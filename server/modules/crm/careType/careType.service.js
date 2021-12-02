@@ -17,6 +17,22 @@ exports.getCareTypes = async (portal, companyId, query, userId, role) => {
     const listDocsTotal = await CustomerCareType(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     const careTypes = await CustomerCareType(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
+    // Tạo dữ liệu mẫu cho người lần đầu được phân quyền vào trang nhưng dữ liệu trống
+    if (!careTypes || !careTypes.length) {
+        await CustomerCareType(connect(DB_CONNECTION, portal)).create({
+            creator: userId,
+            name: "Gọi điện tư vấn",
+            description: "Gọi điện tư vấn",
+        },{
+            creator: userId,
+            name: "Gửi Email",
+            description: "Gửi Email giới thiệu ...",
+        })
+        const listDocsTotal = await CustomerCareType(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        const careTypes = await CustomerCareType(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({ path: 'creator', select: '_id name' })
+        return { listDocsTotal, careTypes };
+    }
     return { listDocsTotal, careTypes };
 }
 
