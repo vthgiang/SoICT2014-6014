@@ -34,7 +34,7 @@ export default {
             no_data: "Không có dữ liệu",
             success: "Thành công",
             error: "Lỗi",
-            index: 'STT',
+            stt: 'STT',
             new_notification: "Bạn có thông báo mới!",
             month: "tháng",
             value: "Giá trị",
@@ -3498,15 +3498,10 @@ export default {
                 time: "Thời gian",
                 load_task_chart: "Tải công việc cá nhân",
                 load_task_chart_unit: "Tải công việc đơn vị",
-                timesheet_statistics: "Thống kê bấm giờ",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
-                timer: "Bấm giờ",
-                additional_timer: "Bấm bù giờ",
-                interval_timer: "Bấm hẹn giờ",
-                start_time: "Thời gian bắt đầu",
-                end_time: "Thời gian kết thúc",
-                timer_type: "Loại bấm giờ",
+
+
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -5503,11 +5498,11 @@ export default {
                 sales_order_code: "Mã đơn kinh doanh",
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày dự kiến hoàn thành",
-                approvers: "Người phê duyệt",
+                approvers: "Người phụ trách nguyên vật liệu",
                 description: "Mô tả",
                 list_commands: "Danh sách lệnh sản xuất",
                 approve_plan: "Phê duyệt kế hoạch",
-                approver: "Người phê duyệt",
+                approver: "Người phê duyệtNgười phụ trách nguyên vật liệu",
                 created_at: "Ngày tạo",
                 manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
@@ -5655,16 +5650,10 @@ export default {
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
                 cancel_plan: "Hủy kế hoạch",
                 quantity_by_status: "Số lượng kế hoạch theo trạng thái"
-
-
-
-
-
-
             },
             command: {
                 code: "Mã lệnh sản xuất",
-                accountables: "Người giám sát",
+                accountables: "Người  điều hành",
                 plan_code: "Mã kế hoạch",
                 start_date: "Ngày bắt đầu",
                 from_date: "Từ ngày",
