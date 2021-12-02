@@ -19,6 +19,22 @@ exports.getStatus = async (portal, companyId, userId, query,role) => {
     const listStatus = await CustomerStatus(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
     // .skip(parseInt(page)).limit(parseInt(limit));
+    // Tạo dữ liệu mẫu cho người lần đầu được phân quyền vào trang nhưng dữ liệu trống
+    if (!listStatus || !listStatus.length) {
+        await CustomerStatus(connect(DB_CONNECTION, portal)).create({
+            creator: userId,
+            name: "Tiềm năng",
+            description: "Khách hàng mới toanh"
+        },{
+            creator: userId,
+            name: "Đã kí hợp đồng",
+            description: "Khách hàng đã kỹ hợp đồng với công ty"
+        })
+        const listStatusTotal = await CustomerStatus(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        const listStatus = await CustomerStatus(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({ path: 'creator', select: '_id name' })
+        return { listStatusTotal, listStatus };
+    }
     return { listStatusTotal, listStatus };
 }
 

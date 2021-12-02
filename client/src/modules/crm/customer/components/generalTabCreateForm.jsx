@@ -309,10 +309,10 @@ function GeneralTabCreateForm(props) {
 
         const newCustomerInfo = {
             ...customerInfo,
-            group: value[0],
+            customerGroup: value[0],
         }
         setCustomerInfo(newCustomerInfo);
-        callBackFromParentCreateForm('group', value[0])
+        callBackFromParentCreateForm('customerGroup', value[0])
     }
 
 
@@ -344,7 +344,7 @@ function GeneralTabCreateForm(props) {
         }
         setCustomerInfo(newCustomerInfo);
         console.log('listStatus', listStatus)
-        callBackFromParentCreateForm('status', getStatusActive)
+        callBackFromParentCreateForm('customerStatus', getStatusActive)
     }
 
 

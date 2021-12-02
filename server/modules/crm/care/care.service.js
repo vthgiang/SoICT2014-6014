@@ -11,7 +11,7 @@ const STATUS_VALUE = {
     completedOverdue: 5
 };
 exports.createCare = async (portal, companyId, data, userId, role) => {
-    let { startDate, endDate } = data;
+    let { startDate, endDate, customerCareStaffs} = data;
     if (startDate) {
         const date = startDate.split('-');
 
@@ -28,6 +28,9 @@ exports.createCare = async (portal, companyId, data, userId, role) => {
     if (userId) {
         data = { ...data, creator: userId, updatedBy: userId };
     }
+    if(!customerCareStaffs) {
+        data = { ...data, customerCareStaffs: userId};
+    }
     // tạo trạng thái cho hoạt động
     let now = new Date();
     if (startDate.getTime() > now.getTime()) data = { ...data, status: STATUS_VALUE.unfulfilled }
@@ -42,6 +45,17 @@ exports.createCare = async (portal, companyId, data, userId, role) => {
     data = { ...data, customerCareUnit: crmUnit._id };
 
     const newCare = await CustomerCare(connect(DB_CONNECTION, portal)).create(data);
+    // Phần dưới đây thêm vào vì chưa xử lí được lỗi props ở phía client
+    const getNewCare1 = await CustomerCare(connect(DB_CONNECTION, portal)).findById(newCare._id)
+        .populate({ path: 'creator', select: '_id name' })
+        .populate({ path: 'customer', select: '_id name ' })
+        .populate({ path: 'customerCareStaffs', select: '_id name' })
+        .populate({ path: 'customerCareTypes', select: '_id name' })
+    if (!crmUnit){
+        return getNewCare1;
+    }
+    // Phần trên thêm vào vì chưa xử lí được lỗi props ở phía client
+
     // cập nhật công việc
     await updateCrmActionsTaskInfo(portal, companyId, userId, role);
     const getNewCare = await CustomerCare(connect(DB_CONNECTION, portal)).findById(newCare._id)
@@ -143,6 +157,7 @@ exports.getCares = async (portal, companyId, query, userId, role) => {
             .populate({ path: 'customerCareStaffs', select: '_id name' })
             .populate({ path: 'customerCareTypes', select: '_id name' });
     }
+    console.log(cares);
     return { listDocsTotal, cares };
 }
 

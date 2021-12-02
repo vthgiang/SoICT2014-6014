@@ -91,11 +91,17 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
     }
     data = { ...data, customerCareUnit: crmUnit._id };
     const newCus = await Customer(connect(DB_CONNECTION, portal)).create(data)
+    // Phần dưới đây thêm vào vì chưa xử lí được lỗi props ở phía client
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCus._id)
         .populate({ path: 'customerGroup', select: '_id name' })
         .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
+    if (!crmUnit){
+        return newCustomer;
+    }
+    // Phần trên thêm vào vì chưa xử lí được lỗi props ở phía client
+
     // them vao hoạt động tìm kiếm khách hàng
     //lấy công việc thêm khách hàng của nhân viên
     const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
@@ -108,8 +114,8 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
         <p>Thêm mới khách hàng : <strong> ${newCustomer.name}</strong></p>
         <p>Mã khách hàng : <strong> ${newCustomer.code}</strong></p>
         <p>email khách hàng : <strong> ${newCustomer.email}</strong></p>
-        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.status[0].name}</strong></p>
-        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.group.name}</strong></p>
+        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.customerStatus[0].name}</strong></p>
+        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.customerGroup.name}</strong></p>
         `,
         index: '1'
     }

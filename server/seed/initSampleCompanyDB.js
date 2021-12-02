@@ -795,7 +795,7 @@ const initSampleCompanyDB = async () => {
         name: "Ban giám đốc",
         description:
             "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        managers: [giamDoc._id],
+        managers: [giamDoc._id, roleAdmin._id],
         deputyManagers: [phoGiamDoc._id],
         employees: [thanhVienBGĐ._id],
         parent: null,
