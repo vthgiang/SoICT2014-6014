@@ -53,8 +53,8 @@ function CustomerHomePage(props) {
 
                 if (user && user.organizationalUnitsOfUser) {
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
-                        item.managers[0] === currentRole
-                        || item.managers[1] === currentRole
+                        //item.managers[0] === currentRole
+                         item.managers.find(manager => manager === currentRole) === currentRole
                         || item.deputyManagers[0] === currentRole
                         || item.employees[0] === currentRole);
                     if (getCurrentUnit) {
