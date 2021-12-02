@@ -54,11 +54,59 @@ exports.createAssetLot = async (req, res) => {
         console.log('error', error);
         let messages = error && error.messages === 'asset_code_lot_exist' ? ['asset_code_lot_exist'] : ['create_asset_lot_failed'];
 
-        await Logger.error(req.user.email, 'CREATE_ASSET', req.portal);
+        await Logger.error(req.user.email, 'CREATE_ASSET_LOT', req.portal);
         res.status(400).json({
             success: false,
             messages: messages,
             content: error && error.assetCodeError
+        });
+    }
+}
+
+/**
+ * Cập nhật thông tin lô tài sản
+ */
+exports.updateAssetLot = async (req,res)=>{
+    try {
+        let file = req.files && req.files.file;
+        let fileInfo = { file };
+
+        let data = await AssetLotService.updateAssetLot(req.portal, req.user.company._id, req.params.id, req.body, fileInfo);
+        await Logger.info(req.user.email, 'UPDATE_ASSET_LOT', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["update_asset_lot_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log('error', error);
+        let messages = error && error.messages === 'asset_code_lot_exist' ? ['asset_code_lot_exist'] : ['update_asset_lot_failed'];
+
+        await Logger.error(req.user.email, 'UPDATE_ASSET_LOT', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: messages,
+            content: error && error.assetCodeError
+        });
+    }
+}
+
+/**
+ * Xóa lô tài sản
+ */
+exports.deleteAssetLots = async (req, res) => {
+    try {
+        let data = await AssetLotService.deleteAssetLots(req.portal, req.body.assetLotIds);
+        res.status(200).json({
+            success: true,
+            messages: ["delete_asset_lot_success"],
+            content: data
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: ["delete_asset_lot_false"],
+            content: { error: error }
         });
     }
 }

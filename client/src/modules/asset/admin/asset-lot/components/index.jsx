@@ -6,7 +6,7 @@ function AssetLotManager(props) {
     const [state, setState] = useState({})
     return (
         <React.Fragment>
-
+            <h2>Quản lý thông tin lô tài sản</h2>
         </React.Fragment>
     );
 }

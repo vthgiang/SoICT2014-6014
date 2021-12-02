@@ -31,6 +31,16 @@ const AssetLotSchema = new Schema({
         require: true
     },
 
+    // startNumberCode: {
+    //     type: Number,
+    //     require: true
+    // },
+
+    // stepNumberCode: {
+    //     type: Number,
+    //     require: true
+    // },
+
     price:{//4. giá trị 1 tài sản
         type: Number
     },
