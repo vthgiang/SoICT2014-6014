@@ -629,7 +629,7 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        Thống kê bấm giờ
+                                                        {translate('task.task_dashboard.statistical_timesheet_logs')}
                                                         {
                                                             unitsSelected && unitsSelected.length < 2 ?
                                                                 <>
@@ -643,11 +643,11 @@ function TaskOrganizationUnitDashboard(props) {
                                                         }
                                                         {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                                     </div>
-                                                    {<ExportExcel id="export-timesheets-log" style={{right: 0}} exportData={dataTimeSheetsExport}/>}
+                                                    {<ExportExcel id="export-timesheets-logs" style={{right: 0}} exportData={dataTimeSheetsExport}/>}
                                                 </div>
                                                 <div className="box-body qlcv">
 
-                                                    {!isLoading("all-time-sheet-log-by-unit") ?
+                                                    {!isLoading("all-time-sheet-logs-by-unit") ?
                                                         // <LazyLoadComponent once={true}>
                                                         <AllTimeSheetLogsByUnit
                                                             startMonthTitle={startMonthTitle}

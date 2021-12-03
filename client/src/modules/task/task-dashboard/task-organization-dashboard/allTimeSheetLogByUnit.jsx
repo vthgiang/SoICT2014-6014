@@ -80,20 +80,20 @@ function AllTimeSheetLogsByUnit(props) {
         }))
 
         let exportData = {
-            fileName: `Thống kê bấm giờ đơn vị ${props.unitsSelected}`,
+            fileName: `${translate('task.task_dashboard.statistical_timesheet_logs_unit')} ${props.unitsSelected}`,
             dataSheets: [
                 {
-                    sheetTitle: `Thống kê bấm giờ đơn vị ${props.unitsSelected} từ ${props.startMonthTitle} đến ${props.endMonthTitle}`,
-                    sheetName: `Thống kê bấm giờ`,
+                    sheetTitle: `${translate('task.task_dashboard.statistical_timesheet_logs')} ${props.unitsSelected} ${translate('task.task_dashboard.from')} ${props.startMonthTitle} ${translate('task.task_dashboard.to')} ${props.endMonthTitle}`,
+                    sheetName: `${translate('task.task_dashboard.statistical_timesheet_logs')}`,
                     tables: [
                         {
                             columns: [
-                                {key: 'STT', value: 'STT', width: 7},
-                                {key: 'name', value: 'Họ và tên', width: 20},
-                                {key: 'totalhours', value: 'Tổng thời gian bấm giờ', width: 10},
-                                {key: 'autotimer', value: 'Bấm hẹn giờ', width: 10},
-                                {key: 'logtimer', value: 'Bấm bù giờ', width: 10},
-                                {key: 'manualtimer', value: 'Bấm giờ', width: 10},
+                                {key: 'STT', value: `${translate('task.task_dashboard.statistical_timesheet_logs')}`, width: 7},
+                                {key: 'name', value: `${translate('task.task_dashboard.name')}`, width: 20},
+                                {key: 'totalhours', value: `${translate('task.task_dashboard.totalhours')}`, width: 10},
+                                {key: 'autotimer', value: `${translate('task.task_dashboard.autotimer')}`, width: 10},
+                                {key: 'logtimer', value: `${translate('task.task_dashboard.logtimer')}`, width: 10},
+                                {key: 'manualtimer', value: `${translate('task.task_dashboard.manualtimer')}`, width: 10},
                             ],
                             data: newData
                         }

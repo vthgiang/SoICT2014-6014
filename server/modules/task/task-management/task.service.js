@@ -2764,7 +2764,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
  * @param {*} userId 
  * @param {*} roleId 
  */
-exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
+exports.getTaskAnalyseOfUser = async (portal, userId, type, date) => {
     date = JSON.parse(date);
     let { firstDay, lastDay } = date;
     let keySeachDateTime = {}, keySearch = {};

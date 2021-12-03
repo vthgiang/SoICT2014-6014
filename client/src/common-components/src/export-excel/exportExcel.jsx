@@ -11,7 +11,6 @@ class ExportExcel extends Component {
     }
 
     static export(exportData) {
-        console.log('exportData', exportData);
         let workbook = new Excel.Workbook();
 
         exportData.dataSheets.forEach(x => {
