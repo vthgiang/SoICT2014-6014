@@ -619,7 +619,7 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        Thống kê bấm giờ
+                                                        {`${translate('task.task_management.timesheet_statistics')}`}
                                                         {
                                                             unitsSelected && unitsSelected.length < 2 ?
                                                                 <>

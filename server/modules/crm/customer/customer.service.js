@@ -89,13 +89,19 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
     if (!crmUnit){
         data = { ...data, creator: userId };
     }
-    data = { ...data, crmUnit: crmUnit._id };
+    data = { ...data, customerCareUnit: crmUnit._id };
     const newCus = await Customer(connect(DB_CONNECTION, portal)).create(data)
+    // Phần dưới đây thêm vào vì chưa xử lí được lỗi props ở phía client
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCus._id)
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
+    if (!crmUnit){
+        return newCustomer;
+    }
+    // Phần trên thêm vào vì chưa xử lí được lỗi props ở phía client
+
     // them vao hoạt động tìm kiếm khách hàng
     //lấy công việc thêm khách hàng của nhân viên
     const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
@@ -108,8 +114,8 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
         <p>Thêm mới khách hàng : <strong> ${newCustomer.name}</strong></p>
         <p>Mã khách hàng : <strong> ${newCustomer.code}</strong></p>
         <p>email khách hàng : <strong> ${newCustomer.email}</strong></p>
-        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.status[0].name}</strong></p>
-        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.group.name}</strong></p>
+        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.customerStatus[0].name}</strong></p>
+        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.customerGroup.name}</strong></p>
         `,
         index: '1'
     }
@@ -117,8 +123,8 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
     await updateSearchingCustomerTaskInfo(portal, companyId, userId, role);
 
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
     return getNewCustomer;
@@ -180,8 +186,8 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
 
 
         const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: newCustomer._id })
-            .populate({ path: 'group', select: '_id name' })
-            .populate({ path: 'status', select: '_id name' })
+            .populate({ path: 'customerGroup', select: '_id name' })
+            .populate({ path: 'customerStatus', select: '_id name' })
             .populate({ path: 'owner', select: '_id name email' });
         if (getCustomer) {
             getResult.push(getCustomer);
@@ -212,7 +218,7 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
         if (!crmUnit){
             keySearch = { ...keySearch, creator: userId };
         } 
-        keySearch = { ...keySearch, crmUnit: crmUnit._id };
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
     }
     if (customerCode) {
         keySearch = {
@@ -223,12 +229,12 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
     if (customerStatus)
         keySearch = {
             ...keySearch,
-            status: { $in: customerStatus }
+            customerStatus: { $in: customerStatus }
         };
     if (customerGroup)
         keySearch = {
             ...keySearch,
-            group: { $in: customerGroup }
+            customerGroup: { $in: customerGroup }
         }
     if (customerOwner && customerOwner != 0) {
         keySearch = {
@@ -258,12 +264,12 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
     let customers;
     if (page && limit) customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
         .skip(parseInt(page)).limit(parseInt(limit))
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
     else customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
     return { listDocsTotal, customers };
 }
@@ -276,8 +282,8 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
  */
 exports.getCustomerById = async (portal, companyId, id) => {
     const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id)
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({ path: 'files.creator', select: '_id name ' })
@@ -332,7 +338,7 @@ exports.editCustomer = async (portal, companyId, id, data, userId, fileInfo) => 
 
     // check nếu ko có group (group ='') thì gán group = null. vì group ref tới schema group
     if (!group) {
-        data = { ...data, group: null };
+        data = { ...data, customerGroup: null };
     }
 
     // Cập nhật avatar cho khách hàng
@@ -364,8 +370,8 @@ exports.editCustomer = async (portal, companyId, id, data, userId, fileInfo) => 
     }, { new: true });
 
     return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
@@ -390,8 +396,8 @@ exports.addPromotion = async (portal, companyId, id, data, userId) => {
         $set: getCustomer
     }, { new: true });
     return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })

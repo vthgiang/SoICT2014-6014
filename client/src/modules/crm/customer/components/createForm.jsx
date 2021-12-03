@@ -16,7 +16,7 @@ function CrmCustomerCreate(props) {
     //lấy danh sách trạng thái
     const listStatus = crm.status.list.map(o => ({ _id: o._id, name: o.name, active: o.active }))
 
-    const [newCustomer, setNewCustomer] = useState({ status: [listStatus[0]._id] });
+    const [newCustomer, setNewCustomer] = useState({ customerStatus: [listStatus[0]._id] });
     useEffect(() => {
         if (!newCustomer.owner && auth.user && user.organizationalUnitsOfUser) {
             let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
@@ -71,7 +71,7 @@ function CrmCustomerCreate(props) {
     const save = () => {
         const { auth } = props;
         let formData;
-        const getStatus = newCustomer.status;
+        const getStatus = newCustomer.customerStatus;
         const statusHistories = [];
         const getDateTime = new Date();
 

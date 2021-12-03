@@ -293,8 +293,6 @@ function ManufacturingCommandDetailInfo(props) {
                                                 <th>{translate('manufacturing.command.quantity')}</th>
                                                 <th>{translate('manufacturing.command.inventory')}</th>
                                                 <th>{translate('manufacturing.command.status')}</th>
-                                                {checkApprovers(currentCommand) && (currentCommand.status === 1) &&
-                                                    <th style={{ textAlign: "left" }}>{translate('general.action')}</th>}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -312,12 +310,6 @@ function ManufacturingCommandDetailInfo(props) {
                                                         <td style={{ color: translate(`manufacturing.command.materials_info.${checkInventoryMaterials(x, currentCommand)}.color`) }}>
                                                             {translate(`manufacturing.command.materials_info.${checkInventoryMaterials(x, currentCommand)}.content`)}
                                                         </td>
-                                                        {
-                                                            checkApprovers(currentCommand) && (currentCommand.status === 1) &&
-                                                            <td>
-                                                                <a className={currentCommand.purchasingRequest ? 'disabled' : ""} style={{ width: '5px' }} title={translate('manufacturing.command.create_purchasing_request')} onClick={() => { handleAddPurchasingRequest(currentCommand) }}><i className="material-icons">add_shopping_cart</i></a>
-                                                            </td>
-                                                        }
                                                     </tr>
                                                 ))
                                             }
@@ -328,6 +320,7 @@ function ManufacturingCommandDetailInfo(props) {
                                     currentCommand &&
                                     checkApprovers(currentCommand) && currentCommand.status === 1 &&
                                     <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                         <a className={currentCommand.purchasingRequest ? 'disabled' : ""} style={{ width: '5px' }} title={translate('manufacturing.command.create_purchasing_request')} onClick={() => { handleAddPurchasingRequest(currentCommand) }}><i className="material-icons">add_shopping_cart</i></a>
                                         <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={(e) => handleApproverCommand(e, currentCommand)}>{translate('manufacturing.command.approver_command')}</button>
                                     </div>
                                 }

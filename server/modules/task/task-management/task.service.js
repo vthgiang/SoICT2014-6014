@@ -3688,7 +3688,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 
     //data cho gantt chart
     if (chartArr.includes('gantt-chart')) {
-        let listTask = organizationUnitTasks
+        let listTask = cloneDeep(organizationUnitTasks)
         const tasksOfSelectedUnit = listTask?.filter(x =>
             organizationalUnitId?.includes(x?.organizationalUnit?._id.toString()))
 
@@ -3840,7 +3840,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 
     //data cho tiến độ công việc
     if (chartArr.includes('in-process-unit-chart')) {
-        let taskList = organizationUnitTasks;
+        let taskList = cloneDeep(organizationUnitTasks);
         let delayed = ['Trễ tiến độ'];
         let intime = ['Đúng tiến độ'];
         let notAchived = ['Quá hạn'];
@@ -3901,7 +3901,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                 ...month,
                 dayjs(startMonth).add(i, 'month').format("MM-YYYY"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
             ];
-            filteredTask = _filterTasksByMonthDomainChart(organizationalUnitId, dataSearch, userId, organizationUnitTasks, currentMonth)
+            filteredTask = _filterTasksByMonthDomainChart(organizationalUnitId, dataSearch, userId, cloneDeep(organizationUnitTasks), currentMonth)
             if (filteredTask) {
                 maxResults.push(filteredTask.max);
                 minResults.push(filteredTask.min)
@@ -3924,7 +3924,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
     //data cho status chart
     if (chartArr.includes('task-status-chart')) {
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
-        let taskList = organizationUnitTasks
+        let taskList = cloneDeep(organizationUnitTasks)
         taskList.map(task => {
             switch (task.status) {
                 case "inprocess":
@@ -3980,7 +3980,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                 ...month,
                 dayjs(startMonth).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
             ];
-            filteredData = _filterTasksByMonthAverageChart(organizationalUnitId, dataSearch, organizationUnitTasks, currentMonth);
+            filteredData = _filterTasksByMonthAverageChart(organizationalUnitId, dataSearch, cloneDeep(organizationUnitTasks), currentMonth);
             if (organizationalUnitId && organizationalUnitId.length !== 0) {
                 organizationalUnitId.map(item => {
                     dataChart[item] && dataChart[item].push(filteredData[item] || 0)
@@ -4001,7 +4001,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
     if (chartArr.includes('load-task-organization-chart')) {
         let dataLoadTask = [], month = [], monthArr = []
         let newData = [];
-        let taskList = organizationUnitTasks
+        let taskList = cloneDeep(organizationUnitTasks)
         if (taskList?.length > 0) {
 
             let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
@@ -4073,6 +4073,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         result["load-task-organization-chart"] = resultLoad
     }
 
+    //data cho thống kê bấm giờ
     if (chartArr.includes('all-time-sheet-log-by-unit')) {
         let dataSearchForAllTimeSheetLogs = {
             ids: organizationalUnitId,
@@ -4080,7 +4081,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         const employeeListDistribution = await UserService.getAllEmployeeOfUnitByIds(portal, dataSearchForAllTimeSheetLogs)
         let listEmployee = employeeListDistribution?.employees;
         let allTimeSheet = []
-        let taskList = organizationUnitTasks
+        let taskList = cloneDeep(organizationUnitTasks)
         if (listEmployee) {
             for (let i in listEmployee) {
                 if (listEmployee[i] && listEmployee[i].userId && listEmployee[i].userId._id)
@@ -4096,16 +4097,13 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         }
 
         let filterTimeSheetLogs = [];
-        taskList && taskList.forEach((o, index) => {
-            let timeSheetLog = o.timesheetLogs
-            if (timeSheetLog?.length > 0) {
-                for (let i in timeSheetLog) {
-                    filterTimeSheetLogs.push(timeSheetLog[i])
-                }
-            }
-        });
 
-        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog && dayjs(o.startedAt).isSameOrAfter(startMonth, 'month') && dayjs(o.stoppedAt).isSameOrBefore(endMonth, 'month'));
+        taskList?.forEach((task) => {
+            if (task?.timesheetLogs.length) {
+                const x = JSON.parse(JSON.stringify(task.timesheetLogs))
+                filterTimeSheetLogs = x.map((tsl) => ({ ...tsl, taskName: task.name, taskId: task._id.toString() }))
+            }
+        })
 
         for (let i in filterTimeSheetLogs) {
             let autoStopped = filterTimeSheetLogs[i].autoStopped;

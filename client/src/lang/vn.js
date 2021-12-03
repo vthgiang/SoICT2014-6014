@@ -5349,7 +5349,8 @@ export default {
                 choose_organizational_unit: "---Chọn đơn vị---",
                 error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
                 list_roles: "Chức vụ trưởng đơn vị",
-                manage_roles: "Thêm quyền quản lý",
+                manage_roles: "Các role có quyền quản lý",
+                manage_roles_description:"Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
                 role_manages_another: "Các quyền quản lý khác",
                 no_roles: "Không có",
             },
@@ -5497,11 +5498,11 @@ export default {
                 sales_order_code: "Mã đơn kinh doanh",
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày dự kiến hoàn thành",
-                approvers: "Người phê duyệt",
+                approvers: "Người phụ trách nguyên vật liệu",
                 description: "Mô tả",
                 list_commands: "Danh sách lệnh sản xuất",
                 approve_plan: "Phê duyệt kế hoạch",
-                approver: "Người phê duyệt",
+                approver: "Người phê duyệtNgười phụ trách nguyên vật liệu",
                 created_at: "Ngày tạo",
                 manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
@@ -5649,16 +5650,10 @@ export default {
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
                 cancel_plan: "Hủy kế hoạch",
                 quantity_by_status: "Số lượng kế hoạch theo trạng thái"
-
-
-
-
-
-
             },
             command: {
                 code: "Mã lệnh sản xuất",
-                accountables: "Người giám sát",
+                accountables: "Người  điều hành",
                 plan_code: "Mã kế hoạch",
                 start_date: "Ngày bắt đầu",
                 from_date: "Từ ngày",

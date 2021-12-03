@@ -265,12 +265,16 @@ function ModalCreateTaskByProcess(props) {
     const interactPopup = async (event) => {
         let element = event.element;
         let nameStr = element.type.split(':');
+        let organizationalUnit
+        if (props.department && props.department?.tree && props.department?.tree.length !==0){
+            organizationalUnit = props.department?.tree[0]?.id
+        }
         setState(state => {
             if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
                 if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
                         ...state.info[`${element.businessObject.id}`],
-                        organizationalUnit: props.department?.tree[0]?.id,
+                        organizationalUnit: organizationalUnit,
                     }
                 }
                 return {

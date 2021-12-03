@@ -13,14 +13,37 @@ exports.getCustomerRankPoints = async (portal, companyId, userId, query, role) =
         if (!crmUnit){
             keySearch = { ...keySearch, creator: userId };
         } 
-        keySearch = { ...keySearch, crmUnit: crmUnit._id };
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
     }
     const listDocsTotal = await CustomerRankPoint(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     const customerRankPoints = await CustomerRankPoint(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'updatedBy', select: '_id name' })
-
+    //  Tạo dữ liệu mẫu cho người lần đầu được phân quyền vào trang nhưng dữ liệu trống
+    if (!customerRankPoints || !customerRankPoints.length) {
+        await CustomerRankPoint(connect(DB_CONNECTION, portal)).create({
+            creator: userId,
+            name: "Vàng",
+            point: 1000,
+            description: "Xếp hạng vàng",
+        },{
+            creator: userId,
+            name: "Bạc",
+            point: 500,
+            description: "Xếp hạng bạc",
+        },{
+            creator: userId,
+            name: "Đồng",
+            point: 0,
+            description: "Xếp hạng đồng",
+        })
+        const listDocsTotal = await CustomerRankPoint(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        const customerRankPoints = await CustomerRankPoint(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({ path: 'creator', select: '_id name' })
+            .populate({ path: 'updatedBy', select: '_id name' })
+        return { listDocsTotal, customerRankPoints: customerRankPoints.sort((a, b) => (a.point < b.point) ? 1 : -1) };
+    }
 
     return { listDocsTotal, customerRankPoints: customerRankPoints.sort((a, b) => (a.point < b.point) ? 1 : -1) };
 }
@@ -28,7 +51,7 @@ exports.getCustomerRankPoints = async (portal, companyId, userId, query, role) =
 exports.createCustomerRankPoint = async (portal, companyId, data, userId,role) => {
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
     //if (!crmUnit) return {}
-    data = { ...data, crmUnit: crmUnit._id };
+    data = { ...data, customerCareUnit: crmUnit._id };
     if (userId) {
         data = { ...data, creator: userId, updatedBy: userId };
     }
