@@ -77,7 +77,7 @@ function TaskOrganizationUnitDashboard(props) {
     })
 
     const { unitsSelected, startMonthTitle, endMonthTitle,
-        selectBoxUnit, dataExport } = state;
+        selectBoxUnit, dataExport, dataTimeSheetsExport } = state;
 
     // tham số các chart để search khi params ở component con thay đổi
     const dataSearch = useRef(DEFAULT_SEARCH);
@@ -237,6 +237,16 @@ function TaskOrganizationUnitDashboard(props) {
             setState({
                 ...state,
                 dataExport: data,
+            })
+        }
+    }
+
+    const handleDataTimeSheetsExport = (data) => {
+        let { dataTimeSheetsExport } = state;
+        if (!isEqual(dataTimeSheetsExport, data)) {
+            setState({
+                ...state,
+                dataTimeSheetsExport: data,
             })
         }
     }
@@ -619,7 +629,7 @@ function TaskOrganizationUnitDashboard(props) {
                                             <div className="box box-primary">
                                                 <div className="box-header with-border">
                                                     <div className="box-title">
-                                                        {`${translate('task.task_management.timesheet_statistics')}`}
+                                                        {translate('task.task_dashboard.statistical_timesheet_logs')}
                                                         {
                                                             unitsSelected && unitsSelected.length < 2 ?
                                                                 <>
@@ -633,13 +643,18 @@ function TaskOrganizationUnitDashboard(props) {
                                                         }
                                                         {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                                     </div>
-
+                                                    {<ExportExcel id="export-timesheets-logs" style={{right: 0}} exportData={dataTimeSheetsExport}/>}
                                                 </div>
                                                 <div className="box-body qlcv">
 
-                                                    {!isLoading("all-time-sheet-log-by-unit") ?
+                                                    {!isLoading("all-time-sheet-logs-by-unit") ?
                                                         // <LazyLoadComponent once={true}>
-                                                        <AllTimeSheetLogsByUnit />
+                                                        <AllTimeSheetLogsByUnit
+                                                            startMonthTitle={startMonthTitle}
+                                                            endMonthTitle={endMonthTitle}
+                                                            unitsSelected={unitsSelected ? getUnitName(selectBoxUnit, unitsSelected).map(o => o).join(", ") : []}
+                                                            handleDataTimeSheetsExport={handleDataTimeSheetsExport}
+                                                        />
                                                         // </LazyLoadComponent>
                                                         :
                                                         <div>{translate('general.loading')}</div>

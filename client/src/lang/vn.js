@@ -3857,7 +3857,17 @@ export default {
                 overdue: "Quá hạn",
                 task_name: "Công việc",
                 start_date: "Ngày bắt đầu",
-                end_date: "Ngày kết thúc"
+                end_date: "Ngày kết thúc",
+                statistical_timesheet_logs: "Thống kê bấm giờ",
+                statistical_timesheet_logs_unit: "Thống kê bấm giờ đơn vi",
+                from: "từ",
+                to: "đến",
+                index: "STT",
+                name: "Họ và tên",
+                totalhours: "Tổng thời gian bấm giờ",
+                autotimer: "Bấm hẹn giờ",
+                logtimer: "Bấm bù giờ",
+                manualtimer: "Bấm giờ"
             }
         },
 
