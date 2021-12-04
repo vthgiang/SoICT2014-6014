@@ -24,7 +24,7 @@ function GeneralTabEditForm(props) {
         })
     }
 
-    const status = editingCustomer.status;
+    const status = editingCustomer.customerStatus;
     const [edittingCustomerStatus, setEdittingCustomerStatus] = useState({
         description: ''
     });
@@ -254,7 +254,7 @@ function GeneralTabEditForm(props) {
         const newCustomerEditState = { ...customerEditState, group: value[0], }
         console.log('value', value);
         await setCustomerEditState(newCustomerEditState);
-        callBackFromParentEditForm('group', value[0]);
+        callBackFromParentEditForm('customerGroup', value[0]);
     }
 
 

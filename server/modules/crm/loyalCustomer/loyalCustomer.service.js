@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Care, User, Status } = require('../../../models');
+const { CustomerCare, User, CustomerStatus } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getAllEmployeeOfUnitByRole } = require("../../super-admin/user/user.service");
 const { getCares } = require("../care/care.service");

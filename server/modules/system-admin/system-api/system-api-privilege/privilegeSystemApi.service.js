@@ -106,25 +106,12 @@ const createPrivilegeApi = async (data, requestUser) => {
         };
     }
 
-    /**
-     * Kiểm tra xem có API nào đã được chọn hay không. Nếu không => Báo lỗi
-     * status === 1 => xin được phân quyền => Không cần kiểm tra gì thêm
-     * status === 3 => thực hiện phân quyền => cần kiểm tra xem những API đó có nằm trong quyền hạn được phân hay không
-     */
     let systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
         .find({
             _id: { $in: apis }
         })
 
     if (systemApis.length <= 0) throw { messages: "ERROR: No api are chosen or no api found!", };
-
-    if (status === 3) {
-        // let requestUserPrivilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
-        //     .findOne({
-        //         email: requestUser.email,
-        //         company: mongoose.Types.ObjectId(requestUser.company._id),
-        //     })
-    }
 
     systemApis = systemApis.map(item => {
         return {

@@ -1055,10 +1055,16 @@ function ActionTab(props) {
         taskComments = task.taskComments;
         documents = task.documents
     }
+
     if (performtasks?.task) {
         logTimer = performtasks.task.timesheetLogs;
-        logs = performtasks.task.logs;
         subtasks = performtasks.task.subTasks;
+        if (performtasks?.logs) {
+            logs = performtasks?.logs;
+        } else {
+            logs = performtasks?.task.logs
+        }
+
     }
 
     switch (state.filterLogAutoStopped) {

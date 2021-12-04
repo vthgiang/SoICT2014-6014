@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Status } = require('../../../models');
+const { CustomerStatus } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 
@@ -12,18 +12,34 @@ exports.getStatus = async (portal, companyId, userId, query,role) => {
         if (!crmUnit){
             keySearch = { ...keySearch, creator: userId };
         } 
-        keySearch = { ...keySearch, crmUnit: crmUnit._id };
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
     }
-    const listStatusTotal = await Status(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    const listStatusTotal = await CustomerStatus(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    const listStatus = await Status(connect(DB_CONNECTION, portal)).find(keySearch)
+    const listStatus = await CustomerStatus(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
     // .skip(parseInt(page)).limit(parseInt(limit));
+    // Tạo dữ liệu mẫu cho người lần đầu được phân quyền vào trang nhưng dữ liệu trống
+    if (!listStatus || !listStatus.length) {
+        await CustomerStatus(connect(DB_CONNECTION, portal)).create({
+            creator: userId,
+            name: "Tiềm năng",
+            description: "Khách hàng mới toanh"
+        },{
+            creator: userId,
+            name: "Đã kí hợp đồng",
+            description: "Khách hàng đã kỹ hợp đồng với công ty"
+        })
+        const listStatusTotal = await CustomerStatus(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        const listStatus = await CustomerStatus(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({ path: 'creator', select: '_id name' })
+        return { listStatusTotal, listStatus };
+    }
     return { listStatusTotal, listStatus };
 }
 
 exports.getStatusById = async (portal, companyId, id) => {
-    const statusById = await Status(connect(DB_CONNECTION, portal)).findById(id);
+    const statusById = await CustomerStatus(connect(DB_CONNECTION, portal)).findById(id);
     return statusById;
 }
 
@@ -31,14 +47,14 @@ exports.createStatus = async (portal, companyId, userId, data,role) => {
     const { name, description } = data;
     // tao du lieu truong don vi CSKH
       const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    const newStatus = await Status(connect(DB_CONNECTION, portal)).create({
+    const newStatus = await CustomerStatus(connect(DB_CONNECTION, portal)).create({
         creator: userId,
         name: name,
         description: description ? description : '',
-        crmUnit: crmUnit._id
+        customerCareUnit: crmUnit._id
     })
 
-    const getNewStatus = await Status(connect(DB_CONNECTION, portal)).findById(newStatus._id)
+    const getNewStatus = await CustomerStatus(connect(DB_CONNECTION, portal)).findById(newStatus._id)
         .populate({ path: 'creator', select: '_id name' })
         ;
     return getNewStatus;
@@ -47,7 +63,7 @@ exports.createStatus = async (portal, companyId, userId, data,role) => {
 exports.editStatus = async (portal, companyId, id, data, userId) => {
     const { name, description } = data;
 
-    await Status(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    await CustomerStatus(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             creator: userId,
             name: name,
@@ -55,11 +71,11 @@ exports.editStatus = async (portal, companyId, id, data, userId) => {
         }
     }, { new: true });
 
-    return await Status(connect(DB_CONNECTION, portal)).findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
+    return await CustomerStatus(connect(DB_CONNECTION, portal)).findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
 }
 
 exports.deleteStatus = async (portal, companyId, id) => {
-    let deleteStatus = await Status(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
+    let deleteStatus = await CustomerStatus(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return deleteStatus;
 }
 
