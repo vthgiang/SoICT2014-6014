@@ -212,6 +212,8 @@ export default {
             manage_recommend_procure: "Manage purchase request",
             manage_recommend_distribute_asset: "Manage use request",
             employee_manage_asset_info: "Manage managed assets",
+            //loo tai san
+            add_asset_lot: "Add new asset lot",
 
             view_building_list: "View building list",
             // NHÂN VIÊN
@@ -2647,7 +2649,13 @@ export default {
 
                 asset_lot_code: "Asset lot code",
                 asset_lot_name: "Asset lot name",
-                supplier: "Supplier"
+                supplier: "Supplier",
+                asset_lot_price: "Price",
+                asset_lot_total: "Initial total",
+
+                view: "View asset lot information",
+                edit_info: "Edit asset lot information",
+                delete_info: "Delete asset lot information",
             },
 
             // Quản lý bảo trì

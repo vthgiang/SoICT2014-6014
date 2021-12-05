@@ -19,7 +19,7 @@ export const AssetService = {
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAll(data) {
-    console.log("res",data)
+    //console.log("res",data)
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/asset/assets`,

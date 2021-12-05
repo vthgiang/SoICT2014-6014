@@ -49,7 +49,6 @@ exports.searchAssetLots = async (portal, params) => {
         .sort({ createdAt: "desc" })
         .skip(params.page)
         .limit(params.limit);
-
     return { data: listAssetLots, totalList };
 }
 
@@ -94,8 +93,6 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
             supplier: data.supplier,
             group: data.group ? data.group : undefined,
             total: data.total,
-            // startNumberCode: data.startNumberCode,
-            // stepNumberCode: data.stepNumberCode,
             price: data.price,
             document: files
         })
@@ -124,7 +121,6 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
                 depreciationType: data.depreciationType
                     ? data.depreciationType
                     : "none",
-
             };
         });
         //console.log("hangbui listAssets: ", listAssets);
@@ -148,13 +144,7 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
     return { assetLot };
 }
 
-exports.updateAssetLot = async (
-    portal,
-    company,
-    id,
-    data,
-    fileInfo) => {
-
+exports.updateAssetLot = async (portal, company, id, data, fileInfo) => {
     data = freshObject(data);
     let file = fileInfo && fileInfo.file;
     let {
@@ -214,6 +204,8 @@ exports.updateAssetLot = async (
     oldAsset.price = data.price;
     oldAsset.assetType = typeof (data.assetType) === "string" ? JSON.parse(data.assetType) : data.assetType;
     await oldLot.save();
+    let assetLot = await AssetLot(connect(DB_CONNECTION, portal)).findById(id);
+    return assetLot;
 }
 
 exports.deleteAssetLots = async (portal, assetLotIds) => {

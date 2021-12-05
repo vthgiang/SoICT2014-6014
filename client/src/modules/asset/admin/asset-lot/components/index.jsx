@@ -1,12 +1,15 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { AssetLotManagement } from './combinedContent';
 
 function AssetLotManager(props) {
     const [state, setState] = useState({})
     return (
         <React.Fragment>
-            <h2>Quản lý thông tin lô tài sản</h2>
+            <AssetLotManagement>
+
+            </AssetLotManagement>
         </React.Fragment>
     );
 }

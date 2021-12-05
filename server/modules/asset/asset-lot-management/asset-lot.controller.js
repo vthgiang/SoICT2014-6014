@@ -11,12 +11,13 @@ exports.searchAssetLots = async (req, res) => {
             code: req.query.code,
             assetLotName: req.query.assetLotName,
             assetType: req.query.assetType,
+            group: req.query.group,
             supplier: req.query.supplier,
             page: Number(req.query.page),
             limit: Number(req.query.limit),
         }
 
-        data = await AssetLotService.searchAssetLots(req.portal, req.user.company._id, params);
+        data = await AssetLotService.searchAssetLots(req.portal, params);
         await Logger.info(req.user.email, 'GET_ASSET_LOTS', req.portal);
         res.status(200).json({
             success: true,
@@ -58,7 +59,7 @@ exports.createAssetLot = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: messages,
-            content: error && error.assetCodeError
+            content: error && error.assetLotCodeError
         });
     }
 }
