@@ -346,8 +346,8 @@ class TabIntegratedStatistics extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {employeeDashboardData.discipline?.listDiscipline?.length !== 0 &&
-                                                employeeDashboardData.discipline?.listDiscipline?.map((x, index) => index < 5 ? (
+                                            {employeeDashboardData.discipline?.totalList?.length !== 0 &&
+                                                employeeDashboardData.discipline?.totalList?.map((x, index) => index < 5 ? (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.employee.fullName}</td>
@@ -358,7 +358,7 @@ class TabIntegratedStatistics extends Component {
                                         </tbody>
                                     </table>
                                     {
-                                        (!employeeDashboardData.discipline?.listDiscipline || employeeDashboardData.discipline?.listDiscipline?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        (!employeeDashboardData.discipline?.totalList || employeeDashboardData.discipline?.totalList?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                     }
                                 </div>
                                 <div className="box-footer text-center">
@@ -475,7 +475,7 @@ class TabIntegratedStatistics extends Component {
                 <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} />
                 <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên`} />
                 <ViewAllCommendation dataCommendation={employeeDashboardData.commendation?.totalList?.length > 0 ? employeeDashboardData.commendation?.totalList : []} title={`Tổng hợp khen thưởng${month}`} />
-                <ViewAllDiscipline dataDiscipline={employeeDashboardData.discipline?.listDisciplines?.length > 0 ? employeeDashboardData.discipline.listDisciplines : []} title={`Tổng hợp kỷ luật ${month}`} />
+                <ViewAllDiscipline dataDiscipline={employeeDashboardData.discipline?.totalLists?.length > 0 ? employeeDashboardData.discipline.totalLists : []} title={`Tổng hợp kỷ luật ${month}`} />
                 {
                     viewOverTime &&
                     <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} />

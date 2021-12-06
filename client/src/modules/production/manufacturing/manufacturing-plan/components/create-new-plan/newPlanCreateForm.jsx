@@ -211,7 +211,6 @@ class NewPlanCreateForm extends Component {
             // Thay đổi số lượng sản phẩm thì lệnh phải về rỗng
             manufacturingCommands: []
         });
-        console.log(this.state.goods);
     };
 
     // getListApproverIds = () => {
@@ -397,7 +396,6 @@ class NewPlanCreateForm extends Component {
     }
 
     handleArryWorkerSchedulesChange = (data) => {
-        console.log(data);
         this.setState((state) => ({
             ...state,
             arrayWorkerSchedules: [...data]

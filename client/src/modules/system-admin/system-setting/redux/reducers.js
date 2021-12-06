@@ -26,6 +26,8 @@ export function systemSetting(state = initState, action) {
         case SystemSettingConstants.CREATE_BACKUP_REQUEST:
         case SystemSettingConstants.CONFIG_BACKUP_REQUEST:
         case SystemSettingConstants.DELETE_BACKUP_REQUEST:
+        case SystemSettingConstants.EDIT_BACKUP_INFO_REQUEST:
+        case SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_REQUEST:
         case SystemSettingConstants.RESTORE_REQUEST:
             return {
                 ...state,
@@ -37,6 +39,9 @@ export function systemSetting(state = initState, action) {
         case SystemSettingConstants.CONFIG_BACKUP_FAILURE:
         case SystemSettingConstants.CREATE_BACKUP_FAILURE:
         case SystemSettingConstants.DELETE_BACKUP_FAILURE:
+        case SystemSettingConstants.EDIT_BACKUP_INFO_FAILURE:
+        case SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_FAILURE:
+        case SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_SUCCESS: 
         case SystemSettingConstants.RESTORE_FAILURE:
             return {
                 ...state,
@@ -89,6 +94,24 @@ export function systemSetting(state = initState, action) {
                 ...state,
                 backup: {
                     ...state.backup
+                },
+                isLoading: false
+            }
+
+        case SystemSettingConstants.EDIT_BACKUP_INFO_SUCCESS: 
+            let list = state.backup.list.map(node => {
+                if(node.version === action.payload.version){
+                    node.description = action.payload.data ? action.payload.data.description : node.description
+                }
+
+                return node;
+            });
+
+            return {
+                ...state,
+                backup: {
+                    ...state.backup,
+                    list
                 },
                 isLoading: false
             }

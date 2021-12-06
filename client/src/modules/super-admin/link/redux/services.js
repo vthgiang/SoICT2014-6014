@@ -7,13 +7,14 @@ export const LinkServices = {
     show,
     create,
     edit,
-    destroy,
+    destroy
+    // importLinkPrivilege
 };
 
 function get(params) {
     console.log("getlinks")
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links`,
+        url: `${process.env.REACT_APP_SERVER}/link/links`,
         method: 'GET',
         params
     }, false, true, 'super_admin.link');
@@ -21,14 +22,14 @@ function get(params) {
 
 function show(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/link/links/${id}`,
         method: 'GET',
     }, false, true, 'super_admin.link');
 }
 
 function create(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links`,
+        url: `${process.env.REACT_APP_SERVER}/link/links`,
         method: 'POST',
         data,
     }, true, true, 'super_admin.link');
@@ -36,7 +37,7 @@ function create(data) {
 
 function edit(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/link/links/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'super_admin.link');
@@ -44,7 +45,15 @@ function edit(id, data) {
 
 function destroy(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/link/links/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/link/links/${id}`,
         method: 'DELETE',
     }, true, true, 'super_admin.link');
 }
+
+// function importLinkPrivilege(id, data) {
+//     return sendRequest({
+//         url: `${process.env.REACT_APP_SERVER}/link/links/${id}`,
+//         method: 'PATCH',
+//         data,
+//     }, true, true, 'super_admin.link');
+// }

@@ -599,6 +599,11 @@ function CreateForm(props) {
         })
     }
 
+    const convertDataOrgan = (data) => {
+        data.unshift({value: "", text: translate("document.store.select_organizational")});
+        return data;
+    }
+
     const { translate, role, documents, department, user } = props;
     const { list } = documents.administration.domains;
 
@@ -775,9 +780,8 @@ function CreateForm(props) {
                                                 id="select-documents-organizational-unit-manage"
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                                                items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                                                 onChange={handleArchivedRecordPlaceOrganizationalUnit}
-                                                options={{ placeholder: translate('document.store.select_organizational') }}
                                                 multiple={false}
                                             />
                                         </div>

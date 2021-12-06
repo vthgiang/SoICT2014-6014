@@ -708,6 +708,8 @@ export default {
             },
 
             system_api: {
+                update: "Cập nhật",
+
                 table: {
                     path: "Đường dẫn",
                     method: "Phương thức",
@@ -785,6 +787,9 @@ export default {
                 role_deputy_manager_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
                 role_employee_exist:
                     "Tên chức danh cho nhân viên đơn vị đã tồn tại",
+                role_name_exist: "Tên chức danh này đã được sử dụng cho một phân quyền khác",
+                role_name_exist: "Tên chức danh này đã được sử dụng cho một phân quyền khác",
+                role_name_duplicate: "Tên các chức danh đã nhập bị trùng với nhau"
             },
             user: {
                 // Thông điệp trả về từ server
@@ -964,6 +969,7 @@ export default {
                 information: "Vị trí lưu trữ",
                 organizational_unit_manage: "Đơn vị quản lý",
                 select_organizational: "Chọn đơn vị quản lý",
+                all: "Chọn tất cả",
                 user_manage: "Người quản lý",
                 select_user: "Chọn người quản lý",
             },
@@ -3851,7 +3857,17 @@ export default {
                 overdue: "Quá hạn",
                 task_name: "Công việc",
                 start_date: "Ngày bắt đầu",
-                end_date: "Ngày kết thúc"
+                end_date: "Ngày kết thúc",
+                statistical_timesheet_logs: "Thống kê bấm giờ",
+                statistical_timesheet_logs_unit: "Thống kê bấm giờ đơn vi",
+                from: "từ",
+                to: "đến",
+                index: "STT",
+                name: "Họ và tên",
+                totalhours: "Tổng thời gian bấm giờ",
+                autotimer: "Bấm hẹn giờ",
+                logtimer: "Bấm bù giờ",
+                manualtimer: "Bấm giờ"
             }
         },
 
@@ -5343,7 +5359,8 @@ export default {
                 choose_organizational_unit: "---Chọn đơn vị---",
                 error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
                 list_roles: "Chức vụ trưởng đơn vị",
-                manage_roles: "Thêm quyền quản lý",
+                manage_roles: "Các role có quyền quản lý",
+                manage_roles_description:"Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
                 role_manages_another: "Các quyền quản lý khác",
                 no_roles: "Không có",
             },
@@ -5491,11 +5508,11 @@ export default {
                 sales_order_code: "Mã đơn kinh doanh",
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày dự kiến hoàn thành",
-                approvers: "Người phê duyệt",
+                approvers: "Người phụ trách nguyên vật liệu",
                 description: "Mô tả",
                 list_commands: "Danh sách lệnh sản xuất",
                 approve_plan: "Phê duyệt kế hoạch",
-                approver: "Người phê duyệt",
+                approver: "Người phê duyệtNgười phụ trách nguyên vật liệu",
                 created_at: "Ngày tạo",
                 manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
@@ -5643,16 +5660,10 @@ export default {
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
                 cancel_plan: "Hủy kế hoạch",
                 quantity_by_status: "Số lượng kế hoạch theo trạng thái"
-
-
-
-
-
-
             },
             command: {
                 code: "Mã lệnh sản xuất",
-                accountables: "Người giám sát",
+                accountables: "Người  điều hành",
                 plan_code: "Mã kế hoạch",
                 start_date: "Ngày bắt đầu",
                 from_date: "Từ ngày",

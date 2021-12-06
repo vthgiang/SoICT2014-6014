@@ -1,4 +1,4 @@
-const { CrmUnitKPI } = require('../../../models');
+const { CustomerCareUnitKPI } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole, createCrmUnit } = require('../crmUnit/crmUnit.service');
 
@@ -6,10 +6,13 @@ const { getCrmUnitByRole, createCrmUnit } = require('../crmUnit/crmUnit.service'
 exports.getCrmUnitKPI = async (portal, companyId, userId, role) => {
     let keySearch = {};
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    if (!crmUnit) return { listDocsTotal: 0, CrmUnitKPI: {} }
-    keySearch = { ...keySearch, crmUnit: crmUnit._id }
-    const listDocsTotal = await CrmUnitKPI(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    const getCrmUnitKPI = await CrmUnitKPI(connect(DB_CONNECTION, portal)).find(keySearch)
+    //if (!crmUnit) return { listDocsTotal: 0, CrmUnitKPI: {} }
+    if (!crmUnit){
+        keySearch = { ...keySearch, creator: userId };
+    } 
+    keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
+    const listDocsTotal = await CustomerCareUnitKPI(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    const getCrmUnitKPI = await CustomerCareUnitKPI(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: 'creator', select: '_id name' })
     if (!getCrmUnitKPI || !getCrmUnitKPI.length) {
         //
@@ -32,10 +35,13 @@ const createCrmUnitKPI = async (portal, companyId, data, userId, role) => {
         data = { ...data, creator: userId, updatedBy: userId, updatedAt: new Date(), createdAt: new Date() };
     }
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-    if (!crmUnit) return {};
-    data = { ...data, crmUnit: crmUnit._id };
-    const newCrmUnitKPI = await CrmUnitKPI(connect(DB_CONNECTION, portal)).create(data);
-    const getNewCrmUnitKPI = await CrmUnitKPI(connect(DB_CONNECTION, portal)).findById(newCrmUnitKPI._id)
+    //if (!crmUnit) return {};
+    if (!crmUnit){
+        data = { ...data, creator: userId };
+    }
+    data = { ...data, customerCareUnit: crmUnit._id };
+    const newCrmUnitKPI = await CustomerCareUnitKPI(connect(DB_CONNECTION, portal)).create(data);
+    const getNewCrmUnitKPI = await CustomerCareUnitKPI(connect(DB_CONNECTION, portal)).findById(newCrmUnitKPI._id)
         .populate({ path: 'creator', select: '_id name' })
     return getNewCrmUnitKPI;
 }
@@ -44,11 +50,11 @@ exports.editCrmUnitKPI = async (portal, companyId, id, data, userId) => {
     if (userId) {
         data = { ...data, updatedBy: userId, updatedAt: new Date() };
     }
-    await CrmUnitKPI(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    await CustomerCareUnitKPI(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
 
-    return await CrmUnitKPI(connect(DB_CONNECTION, portal)).findOne({ _id: id })
+    return await CustomerCareUnitKPI(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'updatedBy', select: '_id name' })
 }

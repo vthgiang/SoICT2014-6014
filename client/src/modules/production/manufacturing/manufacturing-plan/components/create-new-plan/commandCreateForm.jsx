@@ -521,7 +521,7 @@ class CommandCreateForm extends Component {
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorApprovers ? "" : "has-error"}`}>
-                                        <label>{translate('manufacturing.plan.approvers')}<span className="attention"> * </span></label>
+                                        <label>{translate('manufacturing.command.approvers')}<span className="attention"> * </span></label>
                                         <SelectBox
                                             id={`select-approvers-command-create`}
                                             className="form-control select2"

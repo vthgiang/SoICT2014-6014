@@ -2,6 +2,9 @@ const CrmUnitService = require('./crmUnit.service');
 const Logger = require(`../../../logs`);
 
 /**
+ * Các controller cho phần Quản lý khách hàng/ Cấu hình đơn vị chăm sóc khách hàng
+ */
+/**
  * Lấy thông tin tất cả 
  * @param {*} req 
  * @param {*} res 
@@ -59,7 +62,7 @@ exports.createCrmUnit = async (req, res) => {
  */
 exports.deleteCrmUnit = async (req, res) => {
     try {
-        const deleteCrmUnit = await StatusService.deleteStatus(req.portal, req.user.company._id, req.params.id);
+        const deleteCrmUnit = await CrmUnitService.deleteCrmUnit(req.portal, req.user.company._id, req.params.id);
         await Logger.info(req.user.email, ' delete_CrmUnit_success ', req.portal);
         res.status(200).json({
             success: true,

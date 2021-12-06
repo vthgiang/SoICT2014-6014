@@ -28,7 +28,7 @@ class ShowImportData extends Component {
     }
 
     render() {
-        const { id, importData = [], rowError = [], configData, scrollTableWidth = 1000, scrollTable = true, checkFileImport = true } = this.props;
+        const { id, importData = [], rowError = [], rowChange = [], configData, scrollTableWidth = 1000, scrollTable = true, checkFileImport = true } = this.props;
         const { limit, page } = this.state;
         let config = { ...configData }, headerTable = [];
         delete config.sheets;
@@ -73,6 +73,12 @@ class ShowImportData extends Component {
                                     <span style={{ fontWeight: "bold", color: "red" }}>Có lỗi xảy ra ở các dòng: {rowError.join(', ')}</span>
                                 </React.Fragment>
                             )}
+                            {rowChange.length !== 0 && (
+                                <React.Fragment>
+                                    <br />
+                                    <span style={{ fontWeight: "bold", color: "green" }}>Các dòng có chỉnh sửa: {rowChange.join(', ')}</span>
+                                </React.Fragment>
+                            )}
                             <div id={`croll-table-import-${id}`}>
                                 <table id={`importData-${id}`} className="table table-striped table-bordered table-hover">
                                     <thead>
@@ -94,7 +100,7 @@ class ShowImportData extends Component {
                                         {
                                             importDataCurrentPage.map((row, index) => {
                                                 return (
-                                                    <tr key={index} style={row.error ? { color: "#dd4b39" } : { color: '' }} title={row?.errorAlert?.join(', ')}>
+                                                    <tr key={index} style={row.error ? { color: "#dd4b39" } : row.change ? { color: "#28A745" } : { color: "" }} title={row?.errorAlert?.join(', ')}>
                                                         <td>{row.STT !== undefined ? row.STT : page + index + 1}</td>
                                                         {headerTable.map((x, indexs) => {
                                                             if (Array.isArray(x.value)) {

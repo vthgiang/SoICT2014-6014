@@ -383,6 +383,7 @@ function UserDocumentsData(props) {
         })
     }
     function handleArchivedRecordPlaceOrganizationalUnit(value) {
+        console.log('value unit in 1: ', value);
         setState(state => {
             return {
                 ...state,
@@ -401,7 +402,7 @@ function UserDocumentsData(props) {
             domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
             issuingBody: state.issuingBody ? state.issuingBody : "",
-            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
+            organizationUnit: (state.organizationUnit && state.organizationUnit[0] !== '') ? state.organizationUnit : "",
         };
         props.getAllDocuments(getStorage('currentRole'), data);
     }
@@ -421,6 +422,10 @@ function UserDocumentsData(props) {
     }
 
     let exportData = convertDataToExportData(list);
+    const convertDataOrgan = (data) => {
+        data.unshift({value: "", text: translate("document.store.all")});
+        return data;
+    }
     return (
         <div className="qlcv">
             <React.Fragment>
@@ -514,9 +519,8 @@ function UserDocumentsData(props) {
                             id="select-documents-organizational-unit-manage-table"
                             className="form-control select2"
                             style={{ width: "100%" }}
-                            items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                            items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                             onChange={handleArchivedRecordPlaceOrganizationalUnit}
-                            options={{ placeholder: translate('document.store.select_organizational') }}
                             multiple={false}
                         />
                     </div>

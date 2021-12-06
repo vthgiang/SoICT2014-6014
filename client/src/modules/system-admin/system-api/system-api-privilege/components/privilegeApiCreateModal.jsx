@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, SelectBox } from '../../../../../common-components';
+import { DatePicker, DialogModal, QuillEditor, SelectBox } from '../../../../../common-components';
 
 import { SystemApiActions } from '../../system-api-management/redux/actions'
 import { PrivilegeApiActions } from '../redux/actions'
@@ -12,6 +12,11 @@ function PrivilegeApiCreateModal(props) {
 
     const [state, setState] = useState({
         email: null,
+        description: '',
+        description: null,
+        unlimitedExpirationTime: true,
+        startDate: '',
+        startDate: '',
         apis: [],
         companyId: null
     });
@@ -56,13 +61,53 @@ function PrivilegeApiCreateModal(props) {
         })
     }
 
+    const handleChangeDescription = (value, imgs) => {
+        setState({
+            ...state,
+            description: value.replace(/<[^>]*>/g, ''),
+        });
+    }
+
+    const handleOnChangeUnlimitedExpirationTimeCheckbox = (e) => {
+        setState({
+            ...state,
+            unlimitedExpirationTime: !state.unlimitedExpirationTime,
+        })
+    }
+
+    const handleEnterStartDate = (value) => {
+        setState({
+            ...state,
+            startDate: value
+        })
+    }
+
+    const handleEnterEndDate = (value) => {
+        setState({
+            ...state,
+            endDate: value
+        })
+    }
+
     const handleSubmit = () => {
-        props.createPrivilegeApi({
+        let requestBody = {
             email: email,
             apis: apis,
             companyId: companyId,
-            role: 'system_admin'
-        })
+            role: 'system_admin',
+            description: state.description,
+            unlimitedExpirationTime: state.unlimitedExpirationTime,
+        }
+
+        if (!state.unlimitedExpirationTime) {
+            requestBody = {
+                ...requestBody,
+                startDate: state.startDate,
+                endDate: state.endDate,
+            }
+        }
+
+        props.createPrivilegeApi(requestBody);
         window.$("#privilege-system-api-modal").modal("hide");
     }
 
@@ -91,6 +136,54 @@ function PrivilegeApiCreateModal(props) {
                         <label className="form-control-static">{translate('system_admin.privilege_system_api.table.email')}</label>
                         <input className="form-control" type="text" placeholder={translate('system_admin.privilege_system_api.placeholder.input_email')} value={email} onChange={(e) => handleChangeEmail(e)} />
                     </div>
+
+                    {/* Mô tả */}
+                    <div className="form-group">
+                        <label>{translate('general.description')}</label>
+                        <QuillEditor
+                            id={`create-registration-api-description-quill`}
+                            toolbar={false}
+                            getTextData={handleChangeDescription}
+                            maxHeight={180}
+                            placeholder={translate('system_admin.system_api.placeholder.input_description')}
+                        />
+                    </div>
+
+                    <td>
+                        <input
+                            style={{ marginBottom: 10 }}
+                            type="checkbox"
+                            checked={state.unlimitedExpirationTime}
+                            onChange={handleOnChangeUnlimitedExpirationTimeCheckbox}
+                        />
+                        Unlimited expiration time
+                    </td>
+
+                    {!state.unlimitedExpirationTime &&
+                        (<div className="row">
+                            {/* Start date */}
+                            <div className="form-group col-xs-12 col-sm-6">
+                                <label>{translate('system_admin.privilege_system_api.table.startDate')}</label>
+                                <DatePicker
+                                    id={`datepicker-startDate`}
+                                    dateFormat="day-month-year"
+                                    value={state.startDate}
+                                    onChange={handleEnterStartDate}
+                                />
+                            </div>
+
+                            {/* End date */}
+                            <div className="form-group col-xs-12 col-sm-6">
+                                <label>{translate('system_admin.privilege_system_api.table.endDate')}</label>
+                                <DatePicker
+                                    id={`datepicker-endDate`}
+                                    value={state.endDate}
+                                    onChange={handleEnterEndDate}
+                                />
+                            </div>
+
+                        </div>)
+                    }
 
                     {/* API */}
                     <div className="form-group">

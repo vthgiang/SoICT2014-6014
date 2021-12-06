@@ -58,15 +58,15 @@ const {
     PurchaseOrder,
 
     Customer,
-    Care,
-    CareType,
-    Group,
+    CustomerCare,
+    CustomerCareType,
+    CustomerGroup,
     Product,
     ProductCategory,
     ProductDiscount,
-    Status,
+    CustomerStatus,
     CustomerRankPoint,
-    CrmUnit,
+    CustomerCareUnit,
 
     ManufacturingWorks,
     ManufacturingMill,
@@ -202,10 +202,10 @@ const initSampleCompanyDB = async () => {
         if (!db.models.PurchaseOrder) Quote(db);
 
         if (!db.models.Customer) Customer(db);
-        if (!db.models.Care) Care(db);
-        if (!db.models.CareType) CareType(db);
-        if (!db.models.Group) Group(db);
-        if (!db.models.Status) Status(db);
+        if (!db.models.CustomerCare) CustomerCare(db);
+        if (!db.models.CustomerCareType) CustomerCareType(db);
+        if (!db.models.CustomerGroup) CustomerGroup(db);
+        if (!db.models.CustomerStatus) CustomerStatus(db);
 
         if (!db.models.ManufacturingWorks) ManufacturingWorks(db);
         if (!db.models.ManufacturingMill) ManufacturingMill(db);
@@ -795,7 +795,7 @@ const initSampleCompanyDB = async () => {
         name: "Ban giám đốc",
         description:
             "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        managers: [giamDoc._id],
+        managers: [giamDoc._id, roleAdmin._id],
         deputyManagers: [phoGiamDoc._id],
         employees: [thanhVienBGĐ._id],
         parent: null,
@@ -5600,14 +5600,14 @@ const initSampleCompanyDB = async () => {
         ],
     });
     //**********************************Tạo dữ liệu đơn vị chăm sóc khách hàng */
-    const CrmUnitData = [
+    const CustomerUnitData = [
         {
             "organizationalUnit": boPhanCSKH[0]._id,
             "creator": users[5]._id,
             "createdAt": new Date(),
         }
     ];
-    const crmUnits = await CrmUnit(vnistDB).insertMany(CrmUnitData);
+    const customerCareUnits = await CustomerCareUnit(vnistDB).insertMany(CustomerUnitData);
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************
     console.log("Tạo mẫu dữ liệu nhóm khách hàng");
@@ -5621,7 +5621,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
             name: "Sỉ lẻ",
@@ -5631,7 +5631,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
             name: "Nhóm khách theo khu vực",
@@ -5641,7 +5641,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
             name: "Khách VIP",
@@ -5651,10 +5651,10 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
     ];
-    const groups = await Group(vnistDB).insertMany(customerGroupData);
+    const customerGroups = await CustomerGroup(vnistDB).insertMany(customerGroupData);
     console.log("Xong! Đã tạo mẫu dữ liệu nhóm khách hàng");
 
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
@@ -5670,7 +5670,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
 
@@ -5682,7 +5682,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
 
@@ -5694,7 +5694,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
 
@@ -5706,7 +5706,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
 
@@ -5718,10 +5718,10 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
     ];
-    const status = await Status(vnistDB).insertMany(customerStatusData);
+    const customerStatuss = await CustomerStatus(vnistDB).insertMany(customerStatusData);
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng");
 
     // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
@@ -5734,7 +5734,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
             name: "Gửi Email",
@@ -5743,7 +5743,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
         {
             name: "Gặp mặt trực tiếp",
@@ -5752,10 +5752,10 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
         },
     ];
-    const careTypes = await CareType(vnistDB).insertMany(customerCareType);
+    const customerCareTypes = await CustomerCareType(vnistDB).insertMany(customerCareType);
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
     // ****************** Tạo mẫu dữ liệu xếp hạng khách hàng********************
 
@@ -5769,7 +5769,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
 
         }
         ,
@@ -5783,7 +5783,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
 
         }
         ,
@@ -5796,7 +5796,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
 
         },
         {
@@ -5807,7 +5807,7 @@ const initSampleCompanyDB = async () => {
             "updatedBy": users[5]._id,
             "createdAt": new Date(),
             "updatedAt": new Date(),
-            crmUnit: crmUnits[0]._id
+            customerCareUnit: customerCareUnits[0]._id
 
         }
     ];
@@ -5837,15 +5837,15 @@ const initSampleCompanyDB = async () => {
                 "owner": [
                     users[(j % 3 + 5)]._id
                 ],
-                "status": [
-                    status[j % 5]._id
+                "customerStatus": [
+                    customerStatuss[j % 5]._id
                 ],
                 "point": 0,
                 "isDeleted": false,
                 "code": `KH${i * 50 + j + 1}`,
                 "name": name,
                 "customerType": 1,
-                "group": groups[j % 4]._id,
+                "customerGroup": customerGroups[j % 4]._id,
                 "gender": 2,
                 "birthDate": new Date("1998-09-03"),
                 "mobilephoneNumber": 123456789,
@@ -5859,15 +5859,15 @@ const initSampleCompanyDB = async () => {
                     {
 
                         "createdAt": new Date(),
-                        "oldValue": status[1]._id,
-                        "newValue": status[1]._id,
+                        "oldValue": customerStatuss[1]._id,
+                        "newValue": customerStatuss[1]._id,
                         "createdBy": users[(j % 3 + 5)]._id,
                         "description": "Khách hàng được khởi tạo"
                     },
                     {
 
-                        "oldValue": status[1]._id,
-                        "newValue": status[(j % 5)]._id,
+                        "oldValue": customerStatuss[1]._id,
+                        "newValue": customerStatuss[(j % 5)]._id,
                         "createdAt": new Date(),
                         "createdBy": users[(j % 3) + 5]._id,
                         "description": "Khách hàng đã được chuyển trạng thái"
@@ -5899,7 +5899,7 @@ const initSampleCompanyDB = async () => {
                 "note": "",
                 "represent": "",
                 "website": "",
-                crmUnit: crmUnits[0]._id
+                customerCareUnit: customerCareUnits[0]._id
             }
             listCustomerData = [...listCustomerData, customer];
         }
@@ -5933,7 +5933,7 @@ const initSampleCompanyDB = async () => {
                     users[(j % 3 + 5)]._id
                 ],
                 "customerCareTypes": [
-                    careTypes[(j % 3)]._id
+                    customerCareTypes[(j % 3)]._id
                 ],
                 "status": (j % 5 + 1),
                 "name": careName,
@@ -5945,7 +5945,7 @@ const initSampleCompanyDB = async () => {
                 "creator": users[(j % 3 + 5)]._id,
                 "createdAt": new Date(),
                 "updatedAt": new Date(),
-                crmUnit: crmUnits[0]._id,
+                customerCareUnit: customerCareUnits[0]._id,
                 "__v": 0
             }
             if ((j % 5 + 1) == 3 || (j % 5 + 1) == 5)
@@ -5961,7 +5961,7 @@ const initSampleCompanyDB = async () => {
     }
 
 
-    await Care(vnistDB).insertMany(customerCareData);
+    await CustomerCare(vnistDB).insertMany(customerCareData);
     console.log("Xong! Đã tạo mẫu dữ liệu  chăm sóc khách hàng");
 
     /*---------------------------------------------------------------------------------------------

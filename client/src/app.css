@@ -167,15 +167,20 @@ CSS cho bảng dữ liệu
 table>thead>tr>th>div.resizeDiv{
 	/* Hiện con trỏ khi trỏ vào vào viền cột */
 	cursor: ew-resize;
-	width: 7px;
 	position: absolute;
-	right: 0px;
 	top: 0px;
+	right: -5px;
+	width: 2px;
+	background-clip: padding-box;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+
 }
 table>thead>tr>th>div.resizeDiv:hover{
 	/* Hiện viền cột cho người dùng nhận biết có thể resize cột đó */
-	border-right: 1px solid #303030;
+	background-color: #d2d2d2;
 }
+
 
 td {
 	/* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
@@ -189,7 +194,7 @@ table {
 .table > thead > tr > th {
 	/* Hiện thông báo không có dữ liệu */
 	vertical-align: top;
-	position: sticky;
+	position: relative;
 	/*
     top: 0;
     background-color: #ffffff; */

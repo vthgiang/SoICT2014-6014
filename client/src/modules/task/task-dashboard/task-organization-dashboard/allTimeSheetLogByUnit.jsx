@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { convertTime } from '../../../../helpers/stringMethod';
@@ -11,12 +11,15 @@ import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import _cloneDeep from "lodash/cloneDeep";
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
+
 function AllTimeSheetLogsByUnit(props) {
     const { translate, tasks } = props;
     const { taskDashboardCharts } = tasks
     const [state, setState] = useState(() => initState())
+    const checkExport = useRef(false);
 
     function initState() {
         const defaultConfig = { limit: 10 }
@@ -30,10 +33,17 @@ function AllTimeSheetLogsByUnit(props) {
     }
     const { perPage, allTimeSheet, filterTimeSheetLogs, page, pageTotal, total, display, currentRowTimeSheetLog } = state;
 
+    useLayoutEffect(() => {
+        if (checkExport) {
+            allTimeSheet && allTimeSheet.length > 0 && convertDataExport(allTimeSheet);
+        }
+    }, [JSON.stringify(allTimeSheet)])
+
     useEffect(() => {
         let data = getData("all-time-sheet-log-by-unit")
         let dataTable = data
         if (dataTable) {
+            checkExport.current = true;
             let dataAllTimeSheet = dataTable.allTimeSheet.slice(0, perPage)
             let dataFilterTimeSheetLogs = dataTable.filterTimeSheetLogs.slice(0, perPage)
             setState({
@@ -58,6 +68,42 @@ function AllTimeSheetLogsByUnit(props) {
         return dataChart;
     }
 
+    const convertDataExport = (data) => {
+        let newData = _cloneDeep(data);
+        newData = newData.map((o, index) => ({
+            STT: index + 1,
+            name: o.name ? o.name: "",
+            totalhours: o.totalhours ? convertTime(o.totalhours) : 0,
+            autotimer: o.autotimer ?convertTime(o.autotimer) : 0,
+            logtimer: o.logtimer ? convertTime(o.logtimer) : 0,
+            manualtimer: o.manualtimer ? convertTime(o.manualtimer) : 0,
+        }))
+
+        let exportData = {
+            fileName: `${translate('task.task_dashboard.statistical_timesheet_logs_unit')} ${props.unitsSelected}`,
+            dataSheets: [
+                {
+                    sheetTitle: `${translate('task.task_dashboard.statistical_timesheet_logs')} ${props.unitsSelected} ${translate('task.task_dashboard.from')} ${props.startMonthTitle} ${translate('task.task_dashboard.to')} ${props.endMonthTitle}`,
+                    sheetName: `${translate('task.task_dashboard.statistical_timesheet_logs')}`,
+                    tables: [
+                        {
+                            columns: [
+                                {key: 'STT', value: `${translate('task.task_dashboard.statistical_timesheet_logs')}`, width: 7},
+                                {key: 'name', value: `${translate('task.task_dashboard.name')}`, width: 20},
+                                {key: 'totalhours', value: `${translate('task.task_dashboard.totalhours')}`, width: 10},
+                                {key: 'autotimer', value: `${translate('task.task_dashboard.autotimer')}`, width: 10},
+                                {key: 'logtimer', value: `${translate('task.task_dashboard.logtimer')}`, width: 10},
+                                {key: 'manualtimer', value: `${translate('task.task_dashboard.manualtimer')}`, width: 10},
+                            ],
+                            data: newData
+                        }
+                    ]
+                },
+            ]
+        }
+        if (exportData)
+            props.handleDataTimeSheetsExport(exportData);
+    }
     const handleInforTimeSheet = (value, filterTimeSheetLogs) => {
         filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator === value?.userId)
         setState({
@@ -118,12 +164,12 @@ function AllTimeSheetLogsByUnit(props) {
                 <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
                     <thead>
                         <tr>
-                            <th style={{ width: '60px' }}>STT</th>
-                            <th>Họ và tên</th>
-                            <th>Tổng thời gian bấm giờ</th>
-                            <th>Bấm giờ</th>
-                            <th>Bấm hẹn giờ</th>
-                            <th>Bấm bù giờ</th>
+                            <th style={{ width: '60px' }}>{translate('general.index')}</th>
+                            <th>{translate('human_resource.profile.full_name')}</th>
+                            <th>{translate('task.task_perform.total_time')}</th>
+                            <th>{translate('task.task_management.timer')}</th>
+                            <th>{translate('task.task_management.interval_timer')}</th>
+                            <th>{translate('task.task_management.additional_timer')}</th>
                         </tr>
                     </thead>
                     <tbody>

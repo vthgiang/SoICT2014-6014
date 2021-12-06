@@ -30,7 +30,7 @@ const CustomerCareSchema = new Schema({
     }],
     customerCareTypes: [{
         type: Schema.Types.ObjectId,//loại hình cskh
-        ref: 'CareType',
+        ref: 'CustomerCareType',
         required: true,
     }],
     status: { //trạng thái công việc 1: chưa thực hiện, 2: đang thực hiện, 3: Hoàn thành, 4: quá hạn, 5: hoàn thành quá hạn
@@ -63,9 +63,9 @@ const CustomerCareSchema = new Schema({
         
 
     },
-    crmUnit: {// đơn vị CSKH
+    customerCareUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,
-        ref: "CrmUnit",
+        ref: "CustomerCareUnit",
     },
     
     notes: { // Ghi chu
@@ -79,7 +79,7 @@ const CustomerCareSchema = new Schema({
 CustomerCareSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Care)
+    if (!db.models.CustomerCare)
         return db.model('CustomerCare', CustomerCareSchema);
-    return db.models.Care;
+    return db.models.CustomerCare;
 }

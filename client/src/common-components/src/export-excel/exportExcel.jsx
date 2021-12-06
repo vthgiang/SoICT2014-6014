@@ -56,7 +56,7 @@ class ExportExcel extends Component {
                                     currentRow = currentRow + 1;
                                 })
                             }
-                            currentRow = currentRow + 2;
+                            currentRow = currentRow + 1;
                         })
                     }
 
@@ -74,15 +74,15 @@ class ExportExcel extends Component {
 
                     // Thêm chú ý cho bảng
                     if (y.note) {
-                        worksheet.getCell(`A${currentRow}`).value = y.note;
-                        worksheet.getCell(`A${currentRow}`).font = { name: 'Arial', size: 10, color: { argb: "FFFF0000" } };
-                        worksheet.getCell(`A${currentRow}`).alignment = { vertical: 'middle', wrapText: true };
+                        worksheet.getCell(`B${currentRow}`).value = y.note;
+                        worksheet.getCell(`B${currentRow}`).font = { name: 'Arial', size: 11, color: { argb: "FFFF0000" } };
+                        worksheet.getCell(`B${currentRow}`).alignment = { vertical: 'middle', wrapText: true };
                         if (y.noteHeight) {
                             worksheet.getRow(currentRow).height = y.noteHeight;
                         }
                         let endMergeTablename = worksheet.getRow(currentRow).getCell(columns.length).address;
-                        worksheet.mergeCells(`A${currentRow}:${endMergeTablename}`);
-                        currentRow = currentRow + 1;
+                        worksheet.mergeCells(`B${currentRow}:${endMergeTablename}`);
+                        currentRow = currentRow + 2;
                     }
 
 

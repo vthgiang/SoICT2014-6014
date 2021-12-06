@@ -10,7 +10,7 @@ import { SystemApiActions } from '../redux/actions'
 import { SystemApiCreateModal } from './systemApiCreateModal'
 import { SystemApiEditModal } from './systemApiEditModal'
 
-function SystemApiManagement (props) {
+function SystemApiManagement(props) {
     const { translate, systemApis } = props
 
     const tableId = "table-management-system-api";
@@ -25,7 +25,7 @@ function SystemApiManagement (props) {
         perPage: limit
     })
     const [systemApiEdit, setSystemApiEdit] = useState({})
-    
+
     const { path, method, description, page, perPage } = state;
 
     useEffect(() => {
@@ -113,10 +113,10 @@ function SystemApiManagement (props) {
     }
 
     let listPaginateApi = systemApis?.listPaginateApi
-    console.log("listPaginateApi", listPaginateApi)
+
     return (
         <React.Fragment>
-            <SystemApiCreateModal/>
+            <SystemApiCreateModal />
             <SystemApiEditModal
                 _id={systemApiEdit?._id}
                 systemApi={systemApiEdit}
@@ -136,8 +136,23 @@ function SystemApiManagement (props) {
                             <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_description')} name="name" onChange={(e) => handleChangeDescription(e)} />
                         </div>
 
-                        <button type="button" onClick={() => updateSystemApiAuto()} className="btn btn-success pull-right" title={translate('system_admin.system_api.modal.create_title')}>Update</button>
-                        <button type="button" onClick={() => handleAddApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
+                        <button
+                            type="button"
+                            onClick={() => updateSystemApiAuto()}
+                            className="btn btn-success pull-right"
+                            title={translate('system_admin.system_api.modal.create_title')}
+                        >
+                            {translate('system_admin.system_api.update')}
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => handleAddApi()}
+                            className="btn btn-success pull-right"
+                            title={translate('task.task_management.add_title')}
+                        >
+                            {translate('task.task_management.add_task')}
+                        </button>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -201,8 +216,8 @@ function SystemApiManagement (props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { listPaginateApi?.length > 0
-                                && listPaginateApi.map((api, index) => 
+                            {listPaginateApi?.length > 0
+                                && listPaginateApi.map((api, index) =>
                                     <tr key={api?._id}>
                                         <td>{index + 1}</td>
                                         <td>{api?.path}</td>
@@ -219,7 +234,7 @@ function SystemApiManagement (props) {
                                                 func={props.deleteSystemApi}
                                             />
                                         </td>
-                                    </tr>    
+                                    </tr>
                                 )
                             }
                         </tbody>

@@ -34,6 +34,7 @@ export default {
             no_data: "No data",
             success: "Successfully",
             error: "Error",
+            index: "No.",
             new_notification: "You have a new notification!",
             month: "in",
             value: "Value",
@@ -655,6 +656,8 @@ export default {
             },
 
             system_api: {
+                update: "Update",
+
                 table: {
                     path: "Path",
                     method: "Method",
@@ -728,6 +731,8 @@ export default {
                 role_manager_exist: "Manager role name already exists",
                 role_deputy_manager_exist: "Deputy manager role name already exists",
                 role_employee_exist: "Employee role name already exists",
+                role_name_exist: "This role name already exists",
+                role_name_duplicate: "Input role names are duplicated"
             },
             user: {
                 // Thông điệp trả về từ server
@@ -900,6 +905,7 @@ export default {
                 information: "Archive Place",
                 organizational_unit_manage: "Organizational Unit Management",
                 select_organizational: "Select organizational unit",
+                all: "Select all organizational units",
                 user_manage: "User management",
                 select_user: "Select user",
             },
@@ -3257,8 +3263,15 @@ export default {
                 time: "Time",
                 load_task_chart: "Dashboard load task",
                 load_task_chart_unit: "Dashboard load task of unit",
+                timesheet_statistics: "Timesheets Statistics of",
                 explain: "Explain",
-                select_responsible: "Select responsible"
+                select_responsible: "Select responsible",
+                timer: "Timer",
+                additional_timer: "Additional Timer",
+                interval_timer: "Interval Timer",
+                start_time: "Start Time",
+                end_time: "End Time",
+                timer_type: "Type of Timer",
             },
             task_perform: {
                 actions: "Actions",
@@ -3584,7 +3597,17 @@ export default {
                 overdue: "Over",
                 task_name: "Task",
                 start_date: "Start date",
-                end_date: "End date"
+                end_date: "End date",
+                statistical_timesheet_logs: "Statistical timesheet logs",
+                statistical_timesheet_logs_unit: "Statistical timesheet logs of unit",
+                from: "from",
+                to: "to",
+                index: "Serial",
+                name: "Full name",
+                totalhours: "Total hours",
+                autotimer: "Auto timer",
+                logtimer: "Log timer",
+                manualtimer: "Manual timer"
             }
         },
 
@@ -5023,7 +5046,7 @@ export default {
                 search: "Search",
                 select_status: "Select status",
                 add_purchasing_request_button: "Add purchase requestion",
-                add_purchasing_request:"Add purchase requestion",
+                add_purchasing_request: "Add purchase requestion",
                 create_successfully: "Add purchase requestion successfully",
                 create_failed: "Add purchase requestion failed",
                 description: "Description",
@@ -5051,7 +5074,7 @@ export default {
                 cancel_purchasing_request: "Cancel purchase requestion",
                 number_purchasing_status: "Number of purchasing requestion by status"
             },
-            
+
         },
 
         manage_transport: {
