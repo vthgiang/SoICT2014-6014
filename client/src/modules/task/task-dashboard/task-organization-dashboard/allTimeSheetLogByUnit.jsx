@@ -78,6 +78,9 @@ function AllTimeSheetLogsByUnit(props) {
             logtimer: o.logtimer ? convertTime(o.logtimer) : 0,
             manualtimer: o.manualtimer ? convertTime(o.manualtimer) : 0,
         }))
+        const listUnitSelect = props.unitsSelected.map((o, index) => (
+                { STT: index + 1, name: o }
+            ));
 
         let exportData = {
             fileName: `${translate('task.task_dashboard.statistical_timesheet_logs_unit')} ${props.unitsSelected}`,
@@ -99,6 +102,19 @@ function AllTimeSheetLogsByUnit(props) {
                         }
                     ]
                 },
+                {
+                    sheetName: 'Danh sách đơn vị',
+                    sheetTitle: `Danh sách đơn vị của các nhân viên ở sheet1`,
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "Số thứ tự" },
+                                { key: "name", value: "Tên đơn vị" },
+                            ],
+                            data: listUnitSelect
+                        }
+                    ]
+                }
             ]
         }
         if (exportData)

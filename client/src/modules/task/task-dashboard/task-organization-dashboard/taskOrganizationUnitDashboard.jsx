@@ -652,7 +652,7 @@ function TaskOrganizationUnitDashboard(props) {
                                                         <AllTimeSheetLogsByUnit
                                                             startMonthTitle={startMonthTitle}
                                                             endMonthTitle={endMonthTitle}
-                                                            unitsSelected={unitsSelected ? getUnitName(selectBoxUnit, unitsSelected).map(o => o).join(", ") : []}
+                                                            unitsSelected={unitsSelected ? getUnitName(selectBoxUnit, unitsSelected) : []}
                                                             handleDataTimeSheetsExport={handleDataTimeSheetsExport}
                                                         />
                                                         // </LazyLoadComponent>
