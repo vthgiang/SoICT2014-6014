@@ -214,6 +214,8 @@ export default {
             employee_manage_asset_info: "Manage managed assets",
             //loo tai san
             add_asset_lot: "Add new asset lot",
+            add_asset_lot_title: "Add new asset lot - Update asset lot",
+            add_update_asset_lot: "Add - Update asset lot",
 
             view_building_list: "View building list",
             // NHÂN VIÊN
@@ -2652,6 +2654,10 @@ export default {
                 supplier: "Supplier",
                 asset_lot_price: "Price",
                 asset_lot_total: "Initial total",
+                rule_generate_code: "Rules for asset code in lots",
+                start_number: "Start number",
+                step_number:"self-incrementing number",
+                generate_code: "Generate",
 
                 view: "View asset lot information",
                 edit_info: "Edit asset lot information",

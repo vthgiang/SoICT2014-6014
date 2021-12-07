@@ -6,6 +6,7 @@ import { DeleteNotification, PaginateBar, SelectMulti, SmartTable, TreeSelect } 
 import { getTableConfiguration } from "../../../../../helpers/tableConfiguration";
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetLotManagerActions } from "../redux/actions";
+import { AssetLotCreateForm } from "./assetLotCreateForm";
 
 const getAssetLotName = (listAssetLot, idAssetLot) => {
     let assetLotName;
@@ -236,6 +237,17 @@ function AssetLotManagement(props) {
     return (
         <div className={isActive ? isActive : "box"}>
             <div className="box-body qlcv">
+                {/* Form thêm tài sản mới */}
+                <div className="dropdown pull-right">
+                    <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_lot_title')} >{translate('menu.add_update_asset_lot')}</button>
+                    <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset-lot').modal('show')}>{translate('menu.add_asset_lot')}</a></li>
+                        {/* <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-add').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-update').modal('show')}>{translate('human_resource.profile.employee_management.update_import')}</a></li> */}
+                    </ul>
+                </div>
+                <AssetLotCreateForm/>
+
                 {/* Thanh tìm kiếm */}
                 <div className="form-inline">
                     {/* Mã lô tài sản */}

@@ -231,6 +231,8 @@ export default {
             employee_manage_asset_info: "Tài sản quản lý",
             //loo tai san
             add_asset_lot: "Thêm mới lô tài sản",
+            add_asset_lot_title: "Thêm mới lô tài sản - Cập nhật lô tài sản",
+            add_update_asset_lot: "Thêm - Cập nhật lô tài sản",
 
             view_building_list: "Xem danh sách mặt bằng",
 
@@ -2825,10 +2827,15 @@ export default {
                 supplier: "Nhà cung cấp",
                 asset_lot_price: "Giá tiền",
                 asset_lot_total: "Số lượng ban đầu",
+                rule_generate_code: "Quy tắc đánh mã tài sản trong lô",
+                start_number: "Ký tự bắt đầu",
+                step_number: "Số tự tăng",
+                generate_code: "Sinh mã",
 
                 view: "Xem thông tin lô tài sản",
                 edit_info: "Chỉnh sửa thông tin lô tài sản",
                 delete_info: "Xóa thông tin lô tài sản",
+
             },
 
             // Quản lý bảo trì

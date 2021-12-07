@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { DialogModal } from "../../../../../common-components";
@@ -8,6 +8,7 @@ import { AssetLotManagerActions } from "../redux/actions";
 import {
     GeneralTab, UsageLogTab, MaintainanceLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
 } from '../../../base/create-tab/components/combinedContent';
+import { GeneralLotTab } from "../../../base/create-tab/components/generalLotTab";
 
 function AssetLotCreateForm(props) {
     const [state, setState] = useState({
@@ -21,6 +22,8 @@ function AssetLotCreateForm(props) {
             supplier: "",
             purchaseDate: null,
             warrantyExpirationDate: null,
+            status: "",
+            typeRegisterForUse: "",
             //khấu hao của các tài sản trong lô là giống nhau
             cost: null,
             usefulLife: null,
@@ -32,6 +35,9 @@ function AssetLotCreateForm(props) {
         listAssets: [],
         files: [],
     });
+
+    const { translate, assetLotManager } = props;
+    const { assetLot, files, avatar, listAssets } = state;
 
     // Function format dữ liệu Date thành string
     const formatDate2 = (date, monthYear = false) => {
@@ -67,7 +73,7 @@ function AssetLotCreateForm(props) {
 
     //lưu các trường thông tin chung của lô tài sản vào state
     const handleChange = (name, value) => {
-        const { assetLot } = state;
+        const { assetLot, listAssets } = state;
         if (name === 'purchaseDate' || name === 'warrantyExpirationDate' ||
             name === 'startDepreciation' || name === 'disposalDate') {
             if (value) {
@@ -77,6 +83,24 @@ function AssetLotCreateForm(props) {
                 value = null
             }
         }
+        // if(name === 'status'){
+        //     listAssets = listAssets.map(item => {
+        //         return {
+        //             ...item,
+        //             status: value[0]
+        //         }
+        //     });
+        // } 
+        // if(name === 'typeRegisterForUse'){
+        //     listAssets = listAssets.map(item => {
+        //         return {
+        //             ...item,
+        //             typeRegisterForUse: value[0]
+        //         }
+        //     });
+        // } 
+
+        //console.log("hang listasset createform:",listAssets);
         assetLot[name] = value;
         setState({
             ...state,
@@ -84,6 +108,44 @@ function AssetLotCreateForm(props) {
         });
     }
 
+    //thêm trạng thái chung cho các tài sản
+    const handleStatusChange = (value) => {
+        const { listAssets, assetLot } = state;
+        if (listAssets && listAssets.length > 0) {
+            listAssets = listAssets.map(item => {
+                return {
+                    ...item,
+                    status: value
+                }
+            });
+        }
+
+        assetLot.status = value;
+        setState({
+            ...state,
+            assetLot: assetLot,
+            listAssets: listAssets
+        });
+    }
+
+    //thêm trạng thái chung cho các tài sản
+    const handleTypeRegisterChange = (value) => {
+        const { listAssets, assetLot } = state;
+        if (listAssets && listAssets.length > 0) {
+            listAssets = listAssets.map(item => {
+                return {
+                    ...item,
+                    typeRegisterForUse: value
+                }
+            });
+        }
+        assetLot.typeRegisterForUse = value;
+        setState({
+            ...state,
+            assetLot: assetLot,
+            listAssets: listAssets
+        });
+    }
     //Thêm, chỉnh sửa thông tin bảo trì
     const handleChangeMaintainanceLog = (assetCode, addData) => {
         const { listAssets } = state;
@@ -133,27 +195,47 @@ function AssetLotCreateForm(props) {
         }
     }
 
+    //function gen mã tài sản cho lô
+    const handleGenAssetCode = (data) => {
+        console.log("hang qlcv listasset:", data);
+        setState({
+            ...state,
+            listAssets: data
+        });
+    }
+
+    //function thêm các thông tin chung của tài sản trong lô tài sản
+    const handleChangeGeneral = (assetCode, addData) => {
+        const { listAssets } = state;
+        listAssets.find(asset => asset.code === assetCode).incidentLogs.push(addData);
+        setState({
+            ...state,
+            listAssets: listAssets
+        });
+    }
+
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     const isFormValidated = () => {
         let { assetLot } = state;
 
         let result =
             validatorInput(assetLot.code) &&
-            validatorInput(assetLot.assetLotName) &&
+            validatorInput(assetLot.assetName) &&
             validatorInput(assetLot.assetType) &&
-            validatorInput(assetLot.total) 
+            validatorInput(assetLot.total) &&
+            validatorInput(listAssets)
 
         return result;
     }
 
     //function thêm mới thông tin lô tài sản
     const save = () => {
-        let { avatar, files, assetLot, listAssets} = state;
+        let { avatar, files, assetLot, listAssets } = state;
         let assetLotCreate = {
             avatar: avatar,
             files: files,
             code: assetLot.code,
-            assetName: assetLot.assetLotName,
+            assetLotName: assetLot.assetName,
             assetType: assetLot.assetType,
             group: assetLot.group,
             total: assetLot.total,
@@ -169,7 +251,7 @@ function AssetLotCreateForm(props) {
             depreciationType: assetLot.depreciationType,
             listAssets: listAssets
         }
-        
+
         let formData = convertJsonObjectToFormData(assetLotCreate);
         files.forEach(x => {
             if (x.hasOwnProperty('fileUpload')) {
@@ -195,41 +277,47 @@ function AssetLotCreateForm(props) {
                     <ul className="nav nav-tabs">
                         <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general`}>{translate('asset.general_information.general_information')}</a></li>
                         <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                        <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#usage`}>{translate('asset.general_information.usage_information')}</a></li>
+                        {/* <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#usage`}>{translate('asset.general_information.usage_information')}</a></li>
                         <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#incident`}>{translate('asset.general_information.incident_information')}</a></li>
                         <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#maintainance`}>{translate('asset.general_information.maintainance_information')}</a></li>
                         <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#disposal`}>{translate('asset.general_information.disposal_information')}</a></li>
-                        <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li>
+                        <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li> */}
                     </ul>
 
                     <div className="tab-content">
                         {/* Thông tin chung */}
-                        <GeneralTab
+                        <GeneralLotTab
                             id={`create_general`}
-                            img={img}
                             avatar={avatar}
                             handleChange={handleChange}
                             handleUpload={handleUpload}
+                            handleGenAssetCode={handleGenAssetCode}
+                            handleStatusChange={handleStatusChange}
+                            handleTypeRegisterChange={handleTypeRegisterChange}
+                            listAssets={listAssets}
+                            assetLot={assetLot}
+                            status={assetLot.status}
+
                         />
 
                         {/* Thông tin khấu hao */}
                         <DepreciationTab
-                            id="depreciation"
-                            asset={asset}
+                            id={`depreciation`}
+                            asset={assetLot}
                             handleChange={handleChange}
                         />
 
                         {/* Thông tin bảo trì */}
-                        <MaintainanceLogTab
+                        {/* <MaintainanceLogTab
                             id="maintainance"
                             maintainanceLogs={maintainanceLogs}
                             handleAddMaintainance={handleChangeMaintainanceLog}
                             handleEditMaintainance={handleChangeMaintainanceLog}
                             handleDeleteMaintainance={handleChangeMaintainanceLog}
-                        />
+                        /> */}
 
                         {/* Thông tin sử dụng */}
-                        <UsageLogTab
+                        {/* <UsageLogTab
                             id="usage"
                             usageLogs={usageLogs}
                             typeRegisterForUse={asset.typeRegisterForUse}
@@ -238,26 +326,26 @@ function AssetLotCreateForm(props) {
                             handleEditUsage={handleChangeUsageLog}
                             handleDeleteUsage={handleChangeUsageLog}
                             handleRecallAsset={handleRecallAsset}
-                        />
+                        /> */}
 
                         {/* Thông tin sự cố */}
-                        <IncidentLogTab
+                        {/* <IncidentLogTab
                             id="incident"
                             incidentLogs={incidentLogs}
                             handleAddIncident={handleChangeIncidentLog}
                             handleEditIncident={handleChangeIncidentLog}
                             handleDeleteIncident={handleChangeIncidentLog}
-                        />
+                        /> */}
 
                         {/* Thông tin thanh lý */}
-                        <DisposalTab
+                        {/* <DisposalTab
                             id="disposal"
                             asset={asset}
                             handleChange={handleChange}
-                        />
+                        /> */}
 
                         {/* Tài liệu đính kèm */}
-                        <FileTab
+                        {/* <FileTab
                             id="attachments"
                             files={files}
                             asset={asset}
@@ -265,7 +353,7 @@ function AssetLotCreateForm(props) {
                             handleAddFile={handleChangeFile}
                             handleEditFile={handleChangeFile}
                             handleDeleteFile={handleChangeFile}
-                        />
+                        /> */}
                     </div>
                 </div>
             </DialogModal>
