@@ -1053,20 +1053,19 @@ exports.links = [
     {
         url: '/carrier-all-times-transport-mission',
         apis: ['@all']
-    },
-
-    {
+    }, {
         url: '/projects-management',
         apis: ['@all']
-    },
-    {
+    }, {
         url: '/user-guide',
         apis: ['@all']
     }, {
         url: '/time-sheet-log/all',
         apis: ['@all']
-    },
-    {
+    }, {
+        url: '/personal-time-sheet-log',
+        apis: ['@all']
+    }, {
         url: '/employees-infomation',
         apis: ['@all']
     }

@@ -2878,8 +2878,9 @@ exports.getTaskAnalyseOfUser = async (portal, userId, type, date) => {
  * @param {*} userId-(optional)
  * @param {*} month
  * @param {*} year
+ * @param {*} action-bằng true nếu cần truy vấn từng hoạt động cụ thể
  */
-exports.getUserTimeSheet = async (portal, userId, month, year) => {
+exports.getUserTimeSheet = async (portal, userId, month, year, action=false) => {
     let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 

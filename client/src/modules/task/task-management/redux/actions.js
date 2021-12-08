@@ -22,6 +22,7 @@ export const taskManagementActions = {
     getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,
+    getUserTimeSheetLog,
     getAllUserTimeSheet,
 
     addProjectTask,
@@ -521,6 +522,23 @@ function getTimeSheetOfUser(userId, month, year) {
             });
     };
 }
+
+function getUserTimeSheetLog(userId, month, year) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_USER_TIME_SHEET_LOG_REQUEST });
+        taskManagementService.getUserTimeSheetLog(userId, month, year)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_USER_TIME_SHEET_LOG_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_USER_TIME_SHEET_LOG_FAILURE });
+            });
+    };
+}
+
 
 function getAllUserTimeSheet(month, year) {
     return dispatch => {
