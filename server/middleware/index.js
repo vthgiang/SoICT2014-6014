@@ -28,6 +28,7 @@ exports.authFunc = (checkPage = true) => {
              * - token được tạo cho phiên đăng nhập của người dùng
              * - token cho phép người dùng dùng previlegeAPI
              */
+
             const token = req.header("utk"); //JWT nhận từ người dùng
 
             /**
@@ -52,20 +53,6 @@ exports.authFunc = (checkPage = true) => {
                 ? process.env.DB_NAME
                 : req.user.company.shortName);
 
-            // Kiểm tra xem token có nằm trong mảng tokens model User
-            if (req.user) {
-                const user = await User(
-                    connect(DB_CONNECTION, req.portal)
-                ).findById(req.user._id).select("tokens");
-
-                let userParse = user.toObject();
-
-                const checkToken = userParse?.tokens?.find(element => element === req.token);
-                if (!checkToken)
-                    throw ['access_denied']
-            }
-
-
             /**
              * Check service được gọi từ bên thứ 3 hay từ ứng dụng dxclan
              * Nếu được gọi từ bên thứ 3: thirdParty = true
@@ -75,6 +62,20 @@ exports.authFunc = (checkPage = true) => {
                 /**
                  * 1. Trường hợp service được gọi từ ứng dụng dxclan
                  */
+
+                // Kiểm tra xem token có nằm trong mảng tokens model User
+                if (req.user) {
+                    const user = await User(
+                        connect(DB_CONNECTION, req.portal)
+                    ).findById(req.user._id).select("tokens");
+
+                    let userParse = user.toObject();
+
+                    const checkToken = userParse?.tokens?.find(element => element === req.token);
+                    if (!checkToken)
+                        throw ['access_denied']
+                }
+
                 let crtp, crtr, fgp;
 
                 if (process.env.DEVELOPMENT === "true") {
@@ -190,6 +191,8 @@ exports.authFunc = (checkPage = true) => {
                 /**
                  * 2. Trường hợp service được gọi từ bên thứ 3
                  */
+                console.log('### API ARE CALLED FROM THIRD PARTY');
+
                 const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
 
                 let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -202,14 +205,15 @@ exports.authFunc = (checkPage = true) => {
                 // Kiểm tra quyền truy cập api của bên thứ 3
                 let privilegeApi = await PrivilegeApi(connect(DB_CONNECTION, req.portal))
                     .findOne({
-                        email: verified.email,
+                        token,
+                        // email: verified.email,
                         apis: {
                             $elemMatch: {
                                 path: apiCalled.toString(),
                                 method: req.method.toString()
                             }
                         },
-                        company: verified.company,
+                        // company: verified.company,
                         status: 3
                     })
 
@@ -228,6 +232,8 @@ exports.authFunc = (checkPage = true) => {
                 if (!apiInCompany) {
                     throw ['api_permission_to_company_invalid']
                 }
+
+                console.log('### THIRD PARTY ARE AUTHORIZED');
             }
 
             next();

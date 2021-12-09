@@ -75,6 +75,12 @@ function ApiRegistration(props) {
         })
     }
 
+    const handleDeleteApiRegistration = (api) => {
+        props.deletePrivilegeApi({
+            privilegeApiIds: [api?._id],
+        })
+    }
+
     const setLimit = (value) => {
         if (Number(value) !== perPage) {
             setState({
@@ -187,34 +193,33 @@ function ApiRegistration(props) {
                                         <td>{apiRegistration.endDate ? formatDate(apiRegistration.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
-                                            <div style={{
-                                                marginRight: 40,
-                                            }}>
-                                                {apiRegistration?.token?.slice(0, 60)}...
+                                            {apiRegistration?.token &&
+                                                <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />}
+
+                                            <div style={{ marginRight: 40 }}>
+                                                {apiRegistration?.token ? `${apiRegistration?.token?.slice(0, 60)}...` : 'Waiting for being accepted...'}
                                             </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            {
-                                                ![2, 3].includes(apiRegistration.status) &&
-                                                <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745" }}>
-                                                    <i className="material-icons">check_circle_outline</i>
-                                                </a>
-                                            }
+                                            {![2, 3].includes(apiRegistration.status) ? (
+                                                <>
+                                                    <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745" }}>
+                                                        <i className="material-icons">check_circle_outline</i>
+                                                    </a>
 
-                                            {
-                                                ![2, 3].includes(apiRegistration.status) &&
-                                                <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
-                                                    <i className="material-icons">remove_circle_outline</i>
-                                                </a>
-                                            }
+                                                    <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">remove_circle_outline</i>
+                                                    </a>
 
-                                            {
-                                                [2, 3].includes(apiRegistration.status) &&
+                                                    <a onClick={() => handleDeleteApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                </>
+                                            ) : (
                                                 <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
                                                     <i className="material-icons">highlight_off</i>
                                                 </a>
-                                            }
+                                            )}
                                         </td>
                                     </tr>
                                 )
@@ -241,7 +246,8 @@ function mapState(state) {
 }
 const actions = {
     getPrivilegeApis: PrivilegeApiActions.getPrivilegeApis,
-    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi
+    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi,
+    deletePrivilegeApi: PrivilegeApiActions.deletePrivilegeApis
 }
 
 export default connect(mapState, actions)(withTranslate(ApiRegistration))
