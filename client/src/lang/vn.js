@@ -2808,14 +2808,13 @@ export default {
                 get_list_asset_faile: "Lấy thông tin tài sản thất bại",
                 create_asset_success: "Thêm tài sản thành công",
                 create_asset_faile: "Thêm tài sản thất bại",
-                create_asset_lot_success: "Thêm lô tài sản thành công",
-                create_asset_lot_failed: "Thêm lô tài sản thất bại",
                 delete_asset_success: "Xoá tài sản thành công",
                 delete_asset_faile: "Xoá tài sản thất bại",
                 edit_asset_success: "Chỉnh sửa thông tin tài sản thành công",
                 edit_asset_faile: "Chỉnh sửa thông tin tài sản thất bại",
                 asset_code_exist: "Mã tài sản đã tồn tại",
             },
+
 
             //Quản lý lô tài sản
             asset_lot: {
@@ -2830,12 +2829,24 @@ export default {
                 rule_generate_code: "Quy tắc đánh mã tài sản trong lô",
                 start_number: "Ký tự bắt đầu",
                 step_number: "Số tự tăng",
-                generate_code: "Sinh mã",
+                generate_code: "Sinh tài sản",
 
                 view: "Xem thông tin lô tài sản",
                 edit_info: "Chỉnh sửa thông tin lô tài sản",
                 delete_info: "Xóa thông tin lô tài sản",
 
+                //thông điệp trả về từ server
+                create_asset_lot_success: "Thêm lô tài sản thành công",
+                create_asset_lot_failed: "Thêm lô tài sản thất bại",
+                asset_code_lot_exist: "Mã lô đã tồn tại",
+                get_list_asset_lot_success:"Lấy danh sách lô tài sản thành công",
+                get_list_asset_lot_false: "Lấy danh sách lô tài sản thất bại",
+                update_asset_lot_success:"Cập nhật thông tin lô tài sản thành công",
+                update_asset_lot_failed: "Cập nhật thông tin lô tài sản thất bại",
+                delete_asset_lot_success: "Xóa lô tài sản thành công",
+                delete_asset_lot_false: "Xóa lô tài sản thất bại",
+
+                assets_information: "Thông tin các tài sản trong lô"
             },
 
             // Quản lý bảo trì

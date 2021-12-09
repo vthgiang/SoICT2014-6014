@@ -44,6 +44,7 @@ function createAssetLot(data) {
         });
         AssetLotService.createAssetLot(data)
             .then((res) => {
+                console.log("hang action:",res.data);
                 dispatch({
                     type: AssetLotConstants.CREATE_ASSETLOT_SUCCESS,
                     payload: res.data.content
@@ -90,18 +91,18 @@ function createAssetLot(data) {
  function deleteAssetLots(data) {
     return (dispatch) => {
         dispatch({
-            type: AssetLotConstants.DELETE_ASSET_REQUEST,
+            type: AssetLotConstants.DELETE_ASSETLOT_REQUEST,
         });
         AssetLotService.deleteAssetLots(data)
             .then((res) => {
                 dispatch({
-                    type: AssetLotConstants.DELETE_ASSET_SUCCESS,
+                    type: AssetLotConstants.DELETE_ASSETLOT_SUCCESS,
                     payload: res.data.content,
                     assetLotIds: data.assetLotIds
                 });
             }).catch((err) => {
                 dispatch({
-                    type: AssetLotConstants.DELETE_ASSET_FAILURE,
+                    type: AssetLotConstants.DELETE_ASSETLOT_FAILURE,
                     error: err,
                 });
             });

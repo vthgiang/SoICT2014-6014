@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const AssetLotSchema = new Schema({
-    
+
     code: { //1. Mã lô tài sản
         type: String,
         require: true
@@ -31,17 +31,7 @@ const AssetLotSchema = new Schema({
         require: true
     },
 
-    // startNumberCode: {
-    //     type: Number,
-    //     require: true
-    // },
-
-    // stepNumberCode: {
-    //     type: Number,
-    //     require: true
-    // },
-
-    price:{//4. giá trị 1 tài sản
+    price: {//4. giá trị 1 tài sản
         type: Number
     },
 
@@ -71,13 +61,12 @@ const AssetLotSchema = new Schema({
             ],
         },
     ]
-},{
+}, {
     timestamps: true,
     toJSON: { virtuals: true },
 });
 
 module.exports = (db) => {
-    if (!db.models.AssetLot)
-        return db.model('AssetLot', AssetLotSchema);
+    if (!db.models.AssetLot) return db.model("AssetLot", AssetLotSchema);
     return db.models.AssetLot;
-} 
+};

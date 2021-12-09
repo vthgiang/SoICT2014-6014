@@ -29,7 +29,7 @@ function getAllAssetLots(data) {
         },
         false,
         true,
-        "manage_asset_lot"
+        "asset.asset_lot"
     );
 }
 /**
@@ -45,7 +45,7 @@ function createAssetLot(data) {
         },
         true,
         true,
-        "manage_asset_lot"
+        "asset.asset_lot"
     );
 }
 /**
@@ -62,7 +62,7 @@ function updateAssetLot(id, data){
         },
         true,
         true,
-        "manage_asset_lot"
+        "asset.asset_lot"
     );
 }
 
@@ -81,6 +81,6 @@ function deleteAssetLots(data){
         },
         true, 
         true,
-        "manage_asset_lot"
+        "asset.asset_lot"
     );
 }

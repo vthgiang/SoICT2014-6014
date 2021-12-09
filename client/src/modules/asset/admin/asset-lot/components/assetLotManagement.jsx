@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 import { DeleteNotification, PaginateBar, SelectMulti, SmartTable, TreeSelect } from "../../../../../common-components";
 import { getTableConfiguration } from "../../../../../helpers/tableConfiguration";
 import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetLotManagerActions } from "../redux/actions";
 import { AssetLotCreateForm } from "./assetLotCreateForm";
 
@@ -42,12 +45,16 @@ function AssetLotManagement(props) {
         setSelectedData(value)
     }
 
-    const { assetLotManager, assetType, translate, isActive } = props;
+    const { assetLotManager, assetType, translate, isActive, user, role, department} = props;
     const { page, limit, currentRowView, status, currentRow, tableId, group } = state;
 
     useEffect(() => {
         props.getAllAssetLots(state);
         props.getAssetTypes();
+
+        props.getUser();
+        props.getAllDepartments();
+        props.getAllRoles();
     }, []);
 
     const handleDeleteOptions = () => {
@@ -380,14 +387,18 @@ function AssetLotManagement(props) {
 };
 
 function mapState(state) {
-    const { assetLotManager, assetType, auth } = state;
-    return { assetLotManager, assetType, auth };
+    const { assetLotManager, assetType, auth, user, role, department, } = state;
+    return { assetLotManager, assetType, auth, user, role, department, };
 };
 
 const actionCreators = {
     getAssetTypes: AssetTypeActions.getAssetTypes,
     getAllAssetLots: AssetLotManagerActions.getAllAssetLots,
-    deleteAssetLot: AssetLotManagerActions.deleteAssetLots
+    deleteAssetLot: AssetLotManagerActions.deleteAssetLots,
+
+    getUser: UserActions.get,
+    getAllDepartments: DepartmentActions.get,
+    getAllRoles: RoleActions.get,
 };
 
 const assetLotManagement = connect(mapState, actionCreators)(withTranslate(AssetLotManagement));

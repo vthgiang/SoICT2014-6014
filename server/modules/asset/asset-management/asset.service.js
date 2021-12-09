@@ -451,6 +451,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  */
 exports.createAsset = async (portal, company, data, fileInfo) => {
     let checkAsset = [];
+    //console.log("hang createAsset",data);
     if (!Array.isArray(data)) {
         data = [data];
     }

@@ -2662,6 +2662,19 @@ export default {
                 view: "View asset lot information",
                 edit_info: "Edit asset lot information",
                 delete_info: "Delete asset lot information",
+
+                //thông điệp trả về từ server
+                create_asset_lot_success: "Create asset lot success",
+                create_asset_lot_failed: "Create asset lot failed",
+                asset_code_lot_exist: "Asset lot code exist",
+                get_list_asset_lot_success:"Get list asset lot success",
+                get_list_asset_lot_false: "Get list asset lot failed",
+                update_asset_lot_success:"Update asset lot success",
+                update_asset_lot_failed: "Update asset lot failed",
+                delete_asset_lot_success: "Delete asset lot success",
+                delete_asset_lot_false: "Delete asset lot failed",
+
+                assets_information: "Assets information in lot"
             },
 
             // Quản lý bảo trì

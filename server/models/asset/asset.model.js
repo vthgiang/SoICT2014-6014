@@ -403,8 +403,6 @@ const AssetSchema = new Schema({
             ],
         },
     ],
-
-    
     
 },{
     timestamps: true,

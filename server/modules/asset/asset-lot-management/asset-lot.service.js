@@ -58,12 +58,18 @@ exports.searchAssetLots = async (portal, params) => {
  */
 exports.createAssetLot = async (portal, company, data, fileInfo) => {
     let checkAssetLot = [];
+    data = freshObject(data);
+    console.log("hang data", data);
+    // const session = await mongoose.startSession();
+    // session.startTransaction();
+
     //kiểm tra trùng mã lô tài sản
     let checkCodeAssetLot = await AssetLot(
         connect(DB_CONNECTION, portal)
     ).findOne({
         code: data.code
     });
+
     if (checkCodeAssetLot) {
         checkAssetLot.push(data.code);
     }
@@ -83,19 +89,22 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
         files = files && this.mergeUrlFileToObject(file, files);
 
         //thêm lô tài sản vào db
-        var createAssetLot = await AssetLot(
-            connect(DB_CONNECTION, portal)
-        ).create({
+        //const db = await mongoose.createConnection(DB_CONNECTION);
+        // const session = await DB_CONNECTION.startSession();
+        // session.startTransaction();
+        //try {
+        //const opts = { session };
+        var createAssetLot = await AssetLot(connect(DB_CONNECTION, portal)).create([{
             company: company,
             code: data.code,
             assetLotName: data.assetLotName,
             assetType: data.assetType,
             supplier: data.supplier,
-            group: data.group ? data.group : undefined,
+            group: data.group ? data.group : "other",
             total: data.total,
             price: data.price,
             document: files
-        })
+        }]);
 
         //thêm từng tài sản vào db asset
         listAssets = listAssets.map((item) => {
@@ -106,7 +115,7 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
                 assetName: data.assetLotName,
                 assetLot: createAssetLot._id,
                 assetType: data.assetType,
-                group: data.group,
+                group: data.group ? data.group : "other",
                 purchaseDate: data.purchaseDate
                     ? data.purchaseDate
                     : undefined,
@@ -123,12 +132,29 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
                     : "none",
             };
         });
-        //console.log("hangbui listAssets: ", listAssets);
+
         for (let i = 0; i < listAssets.length; i++) {
-            await Asset(
-                connect(DB_CONNECTION, portal)
-            ).create(listAssets[i]);
+            listAssets[i] = freshObject(listAssets[i]);
+            await Asset(connect(DB_CONNECTION, portal)).create(listAssets[i]);
         }
+
+        //lấy thông tin lô tài sản vừa thêm
+        let assetLot = await AssetLot(connect(DB_CONNECTION, portal)).find({
+            _id: createAssetLot._id
+        }).populate({ path: 'assetType' });
+
+        // await session.commitTransaction();
+        // session.endSession();
+        return { assetLot };
+        //}
+        // } catch(ex) {
+        //     console.log('loi',ex.toString());
+        //     // await session.abortTransaction();
+        //     // session.endSession();
+        //     throw {
+        //         messages: "create_asset_lot_failed",
+        //     };
+        // }
 
     } else {
         throw {
@@ -136,12 +162,6 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
             assetLotCodeError: checkAssetLot,
         };
     }
-
-    //lấy thông tin lô tài sản vừa thêm
-    let assetLot = await AssetLot(connect(DB_CONNECTION, portal)).find({
-        _id: createAssetLot._id
-    }).populate({ path: 'assetType' });
-    return { assetLot };
 }
 
 exports.updateAssetLot = async (portal, company, id, data, fileInfo) => {

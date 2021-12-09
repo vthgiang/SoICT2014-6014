@@ -27,10 +27,11 @@ export function assetLotManager(state = initState, action) {
 
         case AssetLotConstants.CREATE_ASSETLOT_REQUEST:
         case AssetLotConstants.CREATE_ASSETLOT_SUCCESS:
+            //console.log("hang reducer:",action.payload);
             return {
                 ...state,
                 isLoading: false,
-                listAssetLots: [action.payload.assetLot[0], ...state.listAssetLots]
+                //listAssetLots: [action.payload.assetLot, ...state.listAssetLots]
             }
         case AssetLotConstants.CREATE_ASSETLOT_FAILURE:
             return {

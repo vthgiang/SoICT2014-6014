@@ -9,18 +9,29 @@ import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
 import { generateCode } from "../../../../../helpers/generateCode";
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function GeneralLotTab(props) {
+    const tableId_constructor = "table-asset-lot-create";
+    const defaultConfig = { limit: 5 };
+    const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
+
     const [state, setState] = useState({
-        //total: '',
-        //price: '',
+        total: props.assetLot.total,
+        price: props.assetLot.price,
         disabledGenButton: false,
         startNumber: 0,
         step: 0,
         detailInfo: [],
         isObj: true,
         defaultAvatar: "image/asset_blank.jpg",
-        assetType: []
+        assetType: [],
+        managedBy: [],
+        readByRoles: [],
+
+        listAssets: props.listAssets,
+        page: 0,
+        limit: limit_constructor
     })
 
     const [prevProps, setPrevProps] = useState({
@@ -31,56 +42,13 @@ function GeneralLotTab(props) {
 
     //function gen mã tài sản 
     const generateAssetCode = () => {
-        let listAssets = props.listAssets;
         const assetLot = props.assetLot;
         const { total, step, startNumber } = state;
-        //console.log("hang:", startNumber);
-
-        if (listAssets) {
-            //console.log(assetLot);
-            //var listAssetsGen = [];
-            var number;
-            if (total >= listAssets.length) {
-                listAssets = listAssets.map((item, index) => {
-                    number = startNumber + step * index;
-                    return {
-                        ...item,
-                        code: assetLot.code + number
-                    }
-                });
-                let add = total - listAssets.length;
-                for (let i = 0; i < add; i++) {
-                    number = startNumber + step * i;
-                    listAssets.push({
-                        code: assetLot.code + number,
-                        status: assetLot.status,
-                        typeRegisterForUse: assetLot.typeRegisterForUse,
-                    });
-                }
-                //listAssets = listAssets;
-            } else {
-                listAssets = listAssets.splice(0, total).map((item, index) => {
-                    number = startNumber + step * index;
-                    return {
-                        ...item,
-                        status: assetLot.status,
-                        typeRegisterForUse: assetLot.typeRegisterForUse,
-                        code: assetLot.code + number
-                    }
-                });
-            }
-        } else {
-            for (let i = 0; i < total; i++) {
-                var number = startNumber + step * i;
-                listAssets.push({
-                    code: assetLot.code + number,
-                    status: assetLot.status,
-                    typeRegisterForUse: assetLot.typeRegisterForUse,
-                });
-            }
-            
-        }
-        props.handleGenAssetCode(listAssets);
+        // setState({
+        //     ...state,
+        //     listAssets: listAssets
+        // });
+        props.handleGenAssetCode(startNumber,step,listAssets,true);
     }
 
     const regenerateCode = () => {
@@ -98,6 +66,7 @@ function GeneralLotTab(props) {
             window.$('#modal-add-asset').unbind('shown.bs.modal', regenerateCode)
         }
     }, [])
+
 
 
     // Function format dữ liệu Date thành string
@@ -152,6 +121,17 @@ function GeneralLotTab(props) {
             }
         })
         props.handleChange(name, value);
+    }
+
+    // Bắt sự kiện chuyển trang
+    const setPage = async (pageNumber) => {
+        let page = (pageNumber - 1) * state.limit;
+        await setState({
+            ...state,
+            page: parseInt(page),
+        });
+
+        //props.getAllAssetLots({ ...state, page: parseInt(page) });
     }
 
     /**
@@ -209,22 +189,15 @@ function GeneralLotTab(props) {
     }
     const validateTotal = (value, willUpdateState = true) => {
         const { assetLot } = props.assetLot;
-        const { startNumber, step} = state;
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+        const { startNumber, step } = state;
+        let { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 1);
 
         if (willUpdateState) {
             setState(state => {
-                var validate = false;
-                if(value){
-                    validate = true && validateInput(startNumber) && validateInput(step);
-                } else {
-                    validate = false;
-                }
                 return {
                     ...state,
                     errorOnToal: message,
                     total: value,
-                    disabledGenButton: validate,
                 }
             });
             props.handleChange("total", value);
@@ -235,34 +208,37 @@ function GeneralLotTab(props) {
     /**
      * Bắt sự kiện thay đổi giá
      */
-    const handlePriceChange = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                price: value
-            }
-        })
-        props.handleChange('price', value);
+    const handlePriceChange = (e) => {
+        const { value } = e.target;
+        validatePrice(value, true);
     }
 
+    const validatePrice = (value, willUpdateState = true) => {
+        const { assetLot } = props.assetLot;
+        const { startNumber, step } = state;
+        let { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 0);
+
+        if (willUpdateState) {
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnPrice: message,
+                    price: value,
+                }
+            });
+            props.handleChange("price", value);
+        }
+        return message === undefined;
+    };
+
     const validateInput = (value) => {
-        if (value && value.length > 0) {
+        //console.log("vts validateInput value", value, value.length);
+        if (value > 0 && value.length > 0) {
             return true;
         } else {
             return false;
         }
     }
-
-    // const isDisplayGenButton = () => {
-    //     const { disabledGenButton, total, startNumber, step} = state;
-    //     let test = validateInput(total) && validateInput(startNumber) && validateInput(step);
-    //     setState(state => {
-    //         return {
-    //             ...state,
-    //             disabledGenButton: test
-    //         }
-    //     })
-    // }
 
     /**
      * Bắt sự kiện thay đổi ký tự bắt đầu
@@ -273,22 +249,14 @@ function GeneralLotTab(props) {
     }
     const validateStartNumber = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
-        const {total, step} = state;
+        const { total, step } = state;
 
         if (willUpdateState) {
-            var validate = false;
-                if(value){
-                    validate = true && validateInput(total) && validateInput(step);
-                } else {
-                    validate = false;
-                }
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnStartNumber: message,
-                    startNumber: value,
-                    disabledGenButton: validate
-                }
+            setState({
+                ...state,
+                errorOnStartNumber: message,
+                startNumber: value,
+                // disabledGenButton: validate
             });
         }
         return message === undefined;
@@ -303,21 +271,15 @@ function GeneralLotTab(props) {
     }
     const validateStep = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
-        const {startNumber, total} = state;
+        const { startNumber, total } = state;
 
         if (willUpdateState) {
             setState(state => {
-                var validate = false;
-                if(value){
-                    validate = true && validateInput(total) && validateInput(startNumber);
-                } else {
-                    validate = false;
-                }
+
                 return {
                     ...state,
                     errorOnStep: message,
                     step: value,
-                    disabledGenButton: validate
                 }
             });
         }
@@ -379,35 +341,6 @@ function GeneralLotTab(props) {
         props.handleChange("assetType", value)
     }
 
-    const handleAddDefaultInfo = () => {
-        const { assetType } = state
-        let listAssetTypes = []
-        if (assetType) {
-            listAssetTypes = props.assetType.listAssetTypes.filter((type) => {
-                return assetType.indexOf(type.id) > -1
-            })
-        }
-        let defaultInfo = []
-        let nameFieldList = []
-
-        for (let i = 0; i < listAssetTypes.length; i++) {
-            for (let j = 0; j < listAssetTypes[i].defaultInformation.length; j++)
-                if (nameFieldList.indexOf(listAssetTypes[i].defaultInformation[j].nameField) === -1) {
-                    defaultInfo.push({ nameField: listAssetTypes[i].defaultInformation[j].nameField, value: listAssetTypes[i].defaultInformation[j].value })
-                    nameFieldList.push(listAssetTypes[i].defaultInformation[j].nameField)
-                }
-        }
-
-        setState(state => {
-            return {
-                ...state,
-                detailInfo: defaultInfo
-            }
-        })
-    }
-
-
-
     /**
      * Bắt sự kiện thay đổi ngày nhập
      */
@@ -456,83 +389,16 @@ function GeneralLotTab(props) {
      * Bắt sự kiện thay đổi người quản lý
      */
     const handleManagedByChange = (value) => {
+        //console.log("hang manage",value[0]);
         setState(state => {
             return {
                 ...state,
-                managedBy: value[0]
+                managedBy: value[0],
             }
         });
-        props.handleChange("managedBy", value[0]);
+        props.handleManageByChange(value[0]);
     }
 
-
-
-    /**
-     * Bắt sự kiện thay đổi người sử dụng
-     */
-    const handleAssignedToUserChange = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                assignedToUser: string2literal(value[0])
-            }
-        });
-        props.handleChange("assignedToUser", string2literal(value[0]));
-    }
-
-    const handleAssignedToOrganizationalUnitChange = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                assignedToOrganizationalUnit: string2literal(value[0])
-            }
-        });
-        props.handleChange("assignedToOrganizationalUnit", string2literal(value[0]));
-    }
-
-    /**
-     * Bắt sự kiện thay đổi ngày bắt đầu sử dụng
-     */
-    const handleHandoverFromDateChange = (value) => {
-        validateHandoverFromDate(value, true)
-    }
-    const validateHandoverFromDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnHandoverFromDate: message,
-                    handoverFromDate: value,
-                }
-            });
-            props.handleChange("handoverFromDate", value);
-        }
-        return message === undefined;
-    }
-
-    /**
-     * Function bắt sự kiện thay đổi ngày kết thúc sử dụng
-     */
-    const handleHandoverToDateChange = (value) => {
-        validateHandoverToDate(value, true)
-    }
-    const validateHandoverToDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnHandoverToDate: message,
-                    handoverToDate: value,
-                }
-            });
-            props.handleChange("handoverToDate", value);
-        }
-        return message === undefined;
-    }
 
     /**
      * Bắt sự kiện thay đổi vị trí tài sản
@@ -549,20 +415,6 @@ function GeneralLotTab(props) {
     }
 
     /**
-     * Bắt sự kiện thay đổi mô tả
-     */
-    const handleDescriptionChange = (e) => {
-        let value = e.target.value;
-        setState(state => {
-            return {
-                ...state,
-                description: value
-            }
-        });
-        props.handleChange("description", value);
-    }
-
-    /**
      * Bắt sự kiện thay đổi trạng thái tài sản
      */
     const handleStatusChange = (value) => {
@@ -576,13 +428,14 @@ function GeneralLotTab(props) {
     }
 
     const handleRoles = (value) => {
+        //console.log("hang role",value);
         setState(state => {
             return {
                 ...state,
                 readByRoles: value
             }
         });
-        props.handleChange("readByRoles", value);
+        props.handleReadByRolesChange(value);
     }
     /**
      * Bắt sự kiện thay đổi quyền đăng ký sử dụng
@@ -594,7 +447,8 @@ function GeneralLotTab(props) {
                 typeRegisterForUse: value[0]
             }
         })
-        props.handleStatusChange(value[0]);
+        props.handleTypeRegisterChange(value[0]);
+
     }
 
     /**
@@ -687,26 +541,39 @@ function GeneralLotTab(props) {
     }
 
     /**
+     * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin tài sản 
+     */
+    const handleChangeAssetValue = (e, index, name) => {
+        let value;
+        console.log("hang e",e);
+        if (name === 'serial') {
+            value = e.target.value;
+        } else if (name === 'readByRoles') {
+            value = e;
+        } else {
+            value = e[0];
+        }
+        listAssets[index][name] = value;
+        setState({
+            ...state,
+            listAssets: listAssets
+        });
+    }
+
+    const saveListAsset = () => {
+        console.log("hang saveListAsset", listAssets);
+        props.handleGenAssetCode(0,0,listAssets, false);
+    }
+
+    /**
      * Bắt sự kiện xóa thông tin chi tiết
      */
     const delete_function = (index) => {
-        var { detailInfo } = state;
-        detailInfo.splice(index, 1);
-        if (detailInfo.length !== 0) {
-            for (let n in detailInfo) {
-                validateNameField(detailInfo[n].nameField, n);
-                validateValue(detailInfo[n].value, n)
-            }
-        } else {
-            setState(state => {
-                return {
-                    ...state,
-                    detailInfo: detailInfo,
-                    errorOnValue: undefined,
-                    errorOnNameField: undefined
-                }
-            })
-        }
+        listAssets.splice(index, 1);
+        setState({
+            ...state,
+            listAssets: listAssets
+        })
     };
 
     if (prevProps.id !== props.id
@@ -729,7 +596,7 @@ function GeneralLotTab(props) {
                 //location: props.location,
                 purchaseDate: props.assetLot.purchaseDate,
                 warrantyExpirationDate: props.assetLot.warrantyExpirationDate,
-                //managedBy: props.managedBy,
+                managedBy: props.assetLot.managedBy,
                 // assignedToUser: props.assignedToUser,
                 //assignedToOrganizationalUnit: props.assignedToOrganizationalUnit,
                 //handoverFromDate: props.handoverFromDate,
@@ -739,7 +606,7 @@ function GeneralLotTab(props) {
                 typeRegisterForUse: props.assetLot.typeRegisterForUse,
                 // detailInfo: props.detailInfo,
                 // usageLogs: props.usageLogs,
-                // readByRoles: props.readByRoles,
+                readByRoles: props.assetLot.readByRoles,
 
                 errorOnCode: undefined,
                 errorOnAssetName: undefined,
@@ -760,13 +627,16 @@ function GeneralLotTab(props) {
         setPrevProps(props)
     }
 
-    const { id, translate, user, assetsManager, role, department, assetType } = props;
+    const { id, translate, user, assetsManager, role, department, assetType, } = props;
     const {
         img, defaultAvatar, code, assetName, total, price, step, startNumber, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
         assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo, disabledGenButton,
         errorOnCode, errorOnAssetName, errorOnTotal, errorOnPrice, errorOnStep, errorOnStartNumber, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
-        errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
+        errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition,
+
     } = state;
+
+    let listAssets = props.listAssets;
 
     var userlist = user.list, departmentlist = department.list;
     let startDate = status == "in_use" && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
@@ -790,6 +660,27 @@ function GeneralLotTab(props) {
             parent: item.parent ? item.parent._id : null
         }
     })
+
+
+    /**
+     * Validate disable button
+     * 
+     */
+    useEffect(() => {
+        //console.log("vts run effect total, startNumber, step", total, startNumber, step);
+
+        if (validateInput(total) && validateInput(startNumber) && validateInput(step)) {
+            setState({ ...state, disabledGenButton: true })
+            //console.log("vts run effect true");
+
+        } else {
+            setState({ ...state, disabledGenButton: false })
+            //console.log("vts run effect false");
+        }
+
+    }, [total, startNumber, step])
+
+
     return (
         <div id={id} className="tab-pane active">
             <div className="row">
@@ -830,14 +721,33 @@ function GeneralLotTab(props) {
                                 <ErrorLabel content={errorOnAssetName} />
                             </div>
 
+                            {/* Loại tài sản */}
+                            <div className={`form-group ${!errorOnAssetType ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
+                                <TreeSelect
+                                    data={typeArr}
+                                    value={state.assetType}
+                                    handleChange={handleAssetTypeChange}
+                                    mode="hierarchical"
+                                />
+                                <ErrorLabel content={errorOnAssetType} />
+                            </div>
+
                             {/* Số lượng tài sản */}
                             <div className={`form-group ${!errorOnTotal ? "" : "has-error"} `}>
-                                <label htmlFor="total">{translate('asset.asset_lot.asset_lot_total')}</label>
+                                <label htmlFor="total">{translate('asset.asset_lot.asset_lot_total')} <span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="total" value={total} onChange={handleTotalChange} placeholder={translate('asset.asset_lot.asset_lot_total')}
                                     autoComplete="off" />
                                 <ErrorLabel content={errorOnTotal} />
                             </div>
 
+                            {/* Giá 1 tài sản */}
+                            <div className={`form-group ${!errorOnTotal ? "" : "has-error"} `}>
+                                <label htmlFor="total">{translate('asset.asset_lot.asset_lot_price')} </label>
+                                <input type="number" className="form-control" name="price" value={price} onChange={handlePriceChange} placeholder={translate('asset.asset_lot.asset_lot_price')}
+                                    autoComplete="off" />
+                                <ErrorLabel content={errorOnPrice} />
+                            </div>
 
                             <label>{translate('asset.asset_lot.rule_generate_code')}:
                             </label>
@@ -860,78 +770,11 @@ function GeneralLotTab(props) {
 
                             <button type="button" disabled={!disabledGenButton} className="btn btn-success" onClick={generateAssetCode}>{translate('asset.asset_lot.generate_code')}</button>
 
-                            {/* Người quản lý */}
-                            {/* <div className={`form-group${!errorOnManagedBy ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.manager')}</label>
-                                <div id="managedByBox">
-                                    <SelectBox
-                                        id={`managedBy${id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
-                                        onChange={handleManagedByChange}
-                                        value={managedBy}
-                                        options={{ placeholder: "" }}
-                                        multiple={false}
-                                    />
-                                </div>
-                                <ErrorLabel content={errorOnManagedBy} />
-                            </div> */}
-                            {/* Quyền xem tài sản theo role */}
-                            {/* <div className="form-group">
-                                <label>{translate('system_admin.system_link.table.roles')}</label>
-                                <div>
-                                    <SelectBox
-                                        id={`select-link-default-roles-${id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
-                                        value={readByRoles}
-                                        onChange={handleRoles}
-                                        multiple={true}
-                                    />
-                                </div>
-                            </div> */}
+
+
                         </div>
 
                         <div className="col-md-6">
-
-                            {/* Vị trí tài sản */}
-                            {/* <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
-                                <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
-                                <TreeSelect data={buildingList} value={[location]} handleChange={handleLocationChange} mode="radioSelect" />
-                                <ErrorLabel content={errorOnLocation} />
-                            </div> */}
-
-                            {/* Loại tài sản */}
-                            <div className={`form-group ${!errorOnAssetType ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
-                                <TreeSelect
-                                    data={typeArr}
-                                    value={state.assetType}
-                                    handleChange={handleAssetTypeChange}
-                                    mode="hierarchical"
-                                />
-                                <ErrorLabel content={errorOnAssetType} />
-                            </div>
-
-                            {/* Nhóm tài sản */}
-                            <div className="form-group">
-                                <label>{translate('asset.general_information.asset_group')}</label>
-                                <SelectBox
-                                    id={`group${id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={group}
-                                    items={[
-                                        { value: '', text: `---${translate('asset.asset_info.select_group')}---` },
-                                        { value: 'vehicle', text: translate('asset.asset_info.vehicle') },
-                                        { value: 'machine', text: translate('asset.asset_info.machine') },
-                                        { value: 'other', text: translate('asset.asset_info.other') },
-                                    ]}
-                                    onChange={handleGroupChange}
-                                />
-                            </div>
 
                             {/* Trạng thái */}
                             <div className="form-group">
@@ -970,6 +813,25 @@ function GeneralLotTab(props) {
                                     onChange={handleTypeRegisterForUseChange}
                                 />
                             </div>
+
+                            {/* Nhóm tài sản */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.asset_group')}</label>
+                                <SelectBox
+                                    id={`group${id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={group}
+                                    items={[
+                                        { value: '', text: `---${translate('asset.asset_info.select_group')}---` },
+                                        { value: 'vehicle', text: translate('asset.asset_info.vehicle') },
+                                        { value: 'machine', text: translate('asset.asset_info.machine') },
+                                        { value: 'other', text: translate('asset.asset_info.other') },
+                                    ]}
+                                    onChange={handleGroupChange}
+                                />
+                            </div>
+
                             {/* Ngày nhập */}
                             <div className={`form-group ${!errorOnPurchaseDate ? "" : "has-error"}`}>
                                 <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}</label>
@@ -992,110 +854,175 @@ function GeneralLotTab(props) {
                                 <ErrorLabel content={errorOnPurchaseDate} />
                             </div>
 
-
-
-                            {/* Người sử dụng */}
-                            {/* <div className={`form-group`}>
-                                <label>{translate('asset.general_information.user')}</label>
-                                <SelectBox
-                                    id={`assignedToUserBox${id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={assignedToUser ?? -1}
-                                    items={[{ value: -1, text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
-                                    disabled
-                                />
-                            </div> */}
-
-                            {/* Đơn vị sử dụng */}
-                            {/* <div className="form-group">
-                                <label>{translate('asset.general_information.organization_unit')}</label>
-                                <div id="assignedToOrganizationalUnitBox">
+                            {/* Người quản lý */}
+                            <div className={`form-group${!errorOnManagedBy ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.manager')}</label>
+                                <div id="managedByBox">
                                     <SelectBox
-                                        id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
+                                        id={`managedBy${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[{ value: -1, text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
-                                        value={assignedToOrganizationalUnit ?? -1}
+                                        items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
+                                        onChange={handleManagedByChange}
+                                        value={managedBy}
+                                        options={{ placeholder: "" }}
                                         multiple={false}
-                                        disabled
                                     />
                                 </div>
-                            </div> */}
-
-                            {/* Thời gian bắt đầu sử dụng */}
-                            {/* <div className="form-group">
-                                <label>{translate('asset.general_information.handover_from_date')}</label>
-                                < DatePicker
-                                    id={`start-date-${id}`}
-                                    value={startDate}
-                                    disabled
-                                />
-                            </div> */}
-
-                            {/* Thời gian kết thúc sử dụng */}
-                            {/* <div className="form-group">
-                                <label>{translate('asset.general_information.handover_to_date')}</label>
-                                < DatePicker
-                                    id={`end-date-${id}`}
-                                    value={endDate}
-                                    disabled
-                                />
-                            </div> */}
-
-                            {/* Mô tả */}
-                            {/* <div className="form-group">
-                                <label htmlFor="description">{translate('asset.general_information.description')}</label>
-                                <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDescriptionChange} placeholder="Enter ..." autoComplete="off" ></textarea>
-                            </div> */}
+                                <ErrorLabel content={errorOnManagedBy} />
+                            </div>
+                            {/* Quyền xem tài sản theo role */}
+                            <div className="form-group">
+                                <label>{translate('system_admin.system_link.table.roles')}</label>
+                                <div>
+                                    <SelectBox
+                                        id={`select-link-default-roles-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
+                                        value={readByRoles}
+                                        onChange={handleRoles}
+                                        multiple={true}
+                                    />
+                                </div>
+                            </div>
 
                         </div>
                     </div>
-
-                    {/* Thông tin chi tiết */}
-                    <div className="col-md-12">
-
-
-                        {/* Bảng thông tin chi tiết */}
-                        {/* <table className="table">
-                            <thead>
-                                <tr>
-                                    <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
-                                    <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.value')}</th>
-                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(!detailInfo || detailInfo.length === 0) ? <tr>
-                                    <td colSpan={3}>
-                                        <center> {translate('table.no_data')}</center>
-                                    </td>
-                                </tr> :
-                                    detailInfo.map((x, index) => {
-                                        return <tr key={index}>
-                                            <td style={{ paddingLeft: '0px' }}>
-                                                <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
-                                                    <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} />
-                                                    {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
-                                                </div>
-                                            </td>
-
-                                            <td style={{ paddingLeft: '0px' }}>
-                                                <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
-                                                    <input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => handleChangeValue(e, index)} />
-                                                    {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
-                                                </div>
-                                            </td>
-
-                                            <td style={{ textAlign: "center" }}>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    })}
-                            </tbody>
-                        </table> */}
-                    </div>
                 </div>
+            </div>
+            <div className="row">
+                <label>{translate('asset.asset_lot.assets_information')}:
+                    <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-save" style={{ color: "#28A745", marginLeft: 5 }}
+                        onClick={saveListAsset} /><span onClick={saveListAsset}>Lưu các giá trị vừa thay đổi</span></a>
+                </label>
+                {/* Bảng thông tin tài sản */}
+                <table className="table">
+                    <thead>
+                        <tr>
+                            {/* Mã tài sản  */}
+                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.asset_code')}</th>
+                            {/* Trạng thái  */}
+                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.status')}</th>
+                            {/* Quyền đăng kí sử dụng  */}
+                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.can_register_for_use')}</th>
+                            {/* Số serial */}
+                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.serial_number')}</th>
+                            {/* Người quản lý  */}
+                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.manager')}</th>
+                            {/* role có quyền */}
+                            <th style={{ paddingLeft: '0px' }}>{translate('system_admin.system_link.table.roles')}</th>
+                            {/* vị trí
+                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.asset_location')}</th> */}
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(!listAssets || listAssets.length === 0) ? <tr>
+                            <td colSpan={8}>
+                                <center> {translate('table.no_data')}</center>
+                            </td>
+                        </tr> :
+                            listAssets.map((x, index) => {
+                                return <tr key={index}>
+                                    {/* Mã tài sản */}
+                                    <td style={{ paddingLeft: '0px' }}>
+                                        {x.code}
+                                    </td>
+                                    {/* Trạng thái tài sản  */}
+                                    <td style={{ paddingLeft: '0px' }}>
+                                        <div className="form-group">
+                                            <SelectBox
+                                                id={`status${index}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={x.status}
+                                                items={[
+                                                    { value: '', text: '---Chọn trạng thái---' },
+                                                    { value: 'ready_to_use', text: translate('asset.general_information.ready_use') },
+                                                    { value: 'in_use', text: translate('asset.general_information.using') },
+                                                    { value: 'broken', text: translate('asset.general_information.damaged') },
+                                                    { value: 'lost', text: translate('asset.general_information.lost') },
+                                                    { value: 'disposed', text: translate('asset.general_information.disposal') },
+                                                ]}
+                                                onChange={(e) =>handleChangeAssetValue(e, index, 'status')}
+                                            />
+                                        </div>
+                                    </td>
+
+                                    {/* Quyền đăng kí sử dụng  */}
+                                    <td style={{ paddingLeft: '0px' }}>
+                                        <div className="form-group">
+                                            <SelectBox
+                                                id={`typeRegisterForUse${index}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={x.typeRegisterForUse}
+                                                items={[
+                                                    { value: '', text: translate('asset.general_information.select_role_to_use') },
+                                                    { value: 1, text: translate('asset.general_information.not_for_registering') },
+                                                    { value: 2, text: translate('asset.general_information.register_by_hour') },
+                                                    { value: 3, text: translate('asset.general_information.register_for_long_term') },
+                                                ]}
+                                                onChange={(e) => handleChangeAssetValue(e, index, 'typeRegisterForUse')}
+                                            />
+                                        </div>
+                                    </td>
+
+                                    {/* Số serial */}
+                                    <td style={{ paddingLeft: '0px' }}>
+                                        <div className="form-group">
+                                        <input className="form-control" type="text" value={x.serial || ''} name="serial" style={{ width: "100%" }}
+                                         onChange={(e) => handleChangeAssetValue(e, index, 'serial')} />
+                                        </div>
+                                    </td>
+
+                                    {/* Người quản lý */}
+                                    <td style={{ paddingLeft: '0px' }}>
+                                        <div className="form-group">
+                                            <SelectBox
+                                                id={`managedBy${index}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
+                                                onChange={(e) => handleChangeAssetValue(e, index, 'managedBy')}
+                                                value={x.managedBy}
+                                                options={{ placeholder: "" }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                    </td>
+
+                                    {/* Role có quyền */}
+                                    <td style={{ paddingLeft: '0px' }}>
+                                        <div className="form-group">
+                                            <SelectBox
+                                                id={`select-link-default-roles-${index}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
+                                                value={x.readByRoles}
+                                                onChange={(e) => handleChangeAssetValue(e, index, 'readByRoles')}
+                                                multiple={true}
+                                            />
+                                        </div>
+                                    </td>
+
+                                    {/* Vị trí tài sản */}
+                                    {/* <td style={{ paddingLeft: '0px' }}>
+                                        <div className="form-group">
+                                            <TreeSelect data={buildingList} value={[x.location]}
+                                                handleChange={(e) => handleChangeAssetValue(e, index, 'location')} mode="radioSelect" />
+                                        </div>
+                                    </td> */}
+
+                                    <td style={{ textAlign: "center" }}>
+                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>
+                                    </td>
+                                </tr>
+                            })}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
