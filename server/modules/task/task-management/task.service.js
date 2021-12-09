@@ -3157,6 +3157,7 @@ exports.importTasks = async (dataConvert, portal, user) => {
     console.log('DONE_IMPORT TASK')
 }
 
+
 // kiểm tra giá trị có nằm trong mảng hay ko.
 _checkItemInArray = (arr, x, getLevel = false) => {
     let _id, level;
@@ -3475,7 +3476,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         query[key] = JSON.parse(query[key])
     });
     const data = query;
-    console.log("data", data)
     const chartArr = Object.keys(data);
     let result = {};
     const { organizationalUnitId, startMonth, endMonth } = data["common-params"]
@@ -3539,7 +3539,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         };
     });
 
-    console.log("chartArr", chartArr)
     //data cho tổng quan công việc
     if (chartArr.includes('general-task-chart')) {
         userArray = await UserService._getAllUsersInOrganizationalUnits(portal, newDataUnit);
@@ -4133,9 +4132,10 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
             dataChart: dataChart
         }
         result['all-time-sheet-log-by-unit'] = resultAllTimeSheetLog
-        //console.log("resultAllTimeSheetLog dataChart", resultAllTimeSheetLog.dataChart)
+        console.log("resultAllTimeSheetLog ", resultAllTimeSheetLog);
+        console.log("resultAllTimeSheetLog allTimeSheet: ", resultAllTimeSheetLog.dataChart.allTimeSheet);
+        console.log("resultAllTimeSheetLog filterTimeSheetLogs: ", resultAllTimeSheetLog.dataChart.filterTimeSheetLogs);
     }
-    console.log("result", result)
     return result
 
 
