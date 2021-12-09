@@ -3597,7 +3597,17 @@ export default {
                 overdue: "Over",
                 task_name: "Task",
                 start_date: "Start date",
-                end_date: "End date"
+                end_date: "End date",
+                statistical_timesheet_logs: "Statistical timesheet logs",
+                statistical_timesheet_logs_unit: "Statistical timesheet logs of unit",
+                from: "from",
+                to: "to",
+                index: "Serial",
+                name: "Full name",
+                totalhours: "Total hours",
+                autotimer: "Auto timer",
+                logtimer: "Log timer",
+                manualtimer: "Manual timer"
             }
         },
 

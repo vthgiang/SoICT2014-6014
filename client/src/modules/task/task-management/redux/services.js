@@ -444,7 +444,7 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
 
 function getTaskAnalysOfUser(userId, type) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/analys/user/${userId}`,
+        url: `${process.env.REACT_APP_SERVER}/task/analyse/user/${userId}`,
         method: 'GET',
         params: { type }
     }, false, true, 'task.task_management');

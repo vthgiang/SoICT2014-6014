@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { Loading } from '../../../common-components';
 import moment from 'moment'
-import { filter } from 'lodash';
+import { filter, forEach } from 'lodash';
 
 class Content extends Component {
     constructor(props) {
@@ -42,18 +42,16 @@ class Content extends Component {
     }
 
 
-    createResizableColumn = (currentCol, nextCol, resizer, table) => {
-        let x = 0;
-        let currentColWidth = 0;
-        let nextColWidth = 0;
-        const MINIMUM_WIDTH = 60;
+    createResizableColumn = (resizer, index, resizerList, table) => {
+        let x = 0, currentColWidth = 0, nextColWidth = 0;
+        let currentCol = {}, nextCol = {};
+        const MINIMUM_WIDTH = 40;
 
         const updateResizerHeight = () => {
-            const resizers = table.querySelectorAll("thead>tr>th>div.resizeDiv");
             const tableHeight = `${table.offsetHeight}px`;
-            if (resizers[0].offsetHeight != table.offsetHeight) {
-                for (let i = 0; i < resizers.length; ++i) {
-                    resizers[i].style.height = tableHeight;
+            if (resizer.offsetHeight != table.offsetHeight) {
+                for (let resizer of resizerList) {
+                    resizer.style.height = tableHeight;
                 }
             }
         }
@@ -63,10 +61,29 @@ class Content extends Component {
             event.preventDefault();
         }
 
+        const mouseOverHandler = () => {
+            updateResizerHeight();
+        }
+
         const mouseDownHandler = (e) => {
             x = e.pageX;
+            currentCol = resizer.parentElement;
+            nextCol = null;
+            console.log(" " + index);
+            
+            for (let i = index+1; i<resizerList.length; i++) {
+                console.log(i);
+                let col = resizerList[i].parentElement;
+                if (col.style.display !== null && col.style.display !== undefined && col.style.display !== "none") {
+                    nextCol = col; // Tìm cột chưa bị ẩn kế tiếp
+                    break;
+                }
+            }
+            if (nextCol === null || nextCol === undefined) {
+                return;
+            }
+            
 
-            const styles = window.getComputedStyle(currentCol);
             currentColWidth = parseInt(window.getComputedStyle(currentCol).width, 10);
             nextColWidth = parseInt(window.getComputedStyle(nextCol).width, 10);
 
@@ -82,8 +99,8 @@ class Content extends Component {
 
         const mouseMoveHandler = (e) => {
             const dx = e.pageX - x;
+            updateResizerHeight();
             if (nextColWidth - dx > MINIMUM_WIDTH && currentColWidth + dx > MINIMUM_WIDTH) { // Độ rộng mỗi cột tối thiểu 60px
-                updateResizerHeight();
                 currentCol.style.width = `${currentColWidth + dx}px`;
                 nextCol.style.width = `${nextColWidth - dx}px`;
             }
@@ -100,6 +117,7 @@ class Content extends Component {
         };
 
         resizer.addEventListener('mousedown', mouseDownHandler);
+        resizer.addEventListener('mouseover', mouseOverHandler);
         resizer.addEventListener('touchstart', mouseDownHandler);
     };
 
@@ -107,9 +125,9 @@ class Content extends Component {
     createResizer = (table) => {
         const cols = table.querySelectorAll("thead>tr>th");
         const tableHeight = `${table.offsetHeight}px`;
-        for (let i = 0; i < cols.length - 1; ++i) {
+        let resizerList = [];
+        for (let i = 0; i < cols.length; ++i) {
             let currentCol = cols[i];
-            let nextCol = cols[i + 1];
 
             const resizer = document.createElement("div");
             resizer.classList.add("resizeDiv");
@@ -117,16 +135,19 @@ class Content extends Component {
 
             currentCol.appendChild(resizer);
 
-            this.createResizableColumn(currentCol, nextCol, resizer, table);
+            resizerList.push(resizer);
         };
-        // console.log("resizer created");
+        
+        for (let i in resizerList) {
+            this.createResizableColumn(resizerList[i], parseInt(i, 10), resizerList, table);
+        }
+        
     }
 
     removeAllResizer = () => {
         const resizers = window.$("table>thead>tr>th>div.resizeDiv");
         [].forEach.call(resizers, (resizer) => {
             resizer.remove();
-            // console.log("resizer removed");
         })
     }
 
