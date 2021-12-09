@@ -231,7 +231,10 @@ exports.authFunc = (checkPage = true) => {
                     })
                 if (!apiInCompany) {
                     throw ['api_permission_to_company_invalid']
-                }
+                };
+
+                req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                    .findOne({company: verified.company});
 
                 console.log('### THIRD PARTY ARE AUTHORIZED');
             }
