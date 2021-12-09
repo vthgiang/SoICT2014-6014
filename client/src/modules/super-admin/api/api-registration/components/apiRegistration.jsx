@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
@@ -8,7 +9,6 @@ import { formatDate } from '../../../../../helpers/formatDate';
 
 import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 
-import { ApiRegistrationActions } from '../redux/actions'
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
 import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
 
@@ -69,15 +69,39 @@ function ApiRegistration(props) {
     }
 
     const handleCancelApiRegistration = (api) => {
-        props.updateStatusPrivilegeApi({
-            privilegeApiIds: [api?._id],
-            status: 0
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('system_admin.privilege_system_api.cancel')}</div></h4>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.updateStatusPrivilegeApi({
+                    privilegeApiIds: [api?._id],
+                    status: 0
+                })
+            }
         })
     }
 
     const handleDeleteApiRegistration = (api) => {
-        props.deletePrivilegeApi({
-            privilegeApiIds: [api?._id],
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('system_admin.privilege_system_api.delete')}</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deletePrivilegeApi({
+                    privilegeApiIds: [api?._id],
+                })
+            }
         })
     }
 
