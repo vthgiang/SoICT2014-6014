@@ -740,6 +740,8 @@ export default {
             },
 
             privilege_system_api: {
+                cancel: 'Hủy phân quyền API',
+                delete: 'Xóa phân quyền API',
                 table: {
                     email: "Email",
                     description: "Mô tả",
