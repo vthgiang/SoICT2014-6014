@@ -60,24 +60,30 @@ function ApiRegistrationEmployee(props) {
         })
     }
 
-    const handleAcceptApiRegistration = (api) => {
-        props.updateStatusPrivilegeApi({
-            privilegeApiIds: [api?._id],
-            status: 3
-        })
-    }
+    // const handleAcceptApiRegistration = (api) => {
+    //     props.updateStatusPrivilegeApi({
+    //         privilegeApiIds: [api?._id],
+    //         status: 3
+    //     })
+    // }
 
-    const handleDeclineApiRegistration = (api) => {
-        props.updateStatusPrivilegeApi({
-            privilegeApiIds: [api?._id],
-            status: 2
-        })
-    }
+    // const handleDeclineApiRegistration = (api) => {
+    //     props.updateStatusPrivilegeApi({
+    //         privilegeApiIds: [api?._id],
+    //         status: 2
+    //     })
+    // }
 
     const handleCancelApiRegistration = (api) => {
         props.updateStatusPrivilegeApi({
             privilegeApiIds: [api?._id],
             status: 0
+        })
+    }
+
+    const handleDeleteApiRegistration = (api) => {
+        props.deletePrivilegeApi({
+            privilegeApiIds: [api?._id],
         })
     }
 
@@ -189,11 +195,11 @@ function ApiRegistrationEmployee(props) {
                                         <td>{apiRegistration.endDate ? formatDate(apiRegistration.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
-                                            <div style={{
-                                                marginRight: 40,
-                                            }}>
-                                                {apiRegistration?.token?.slice(0, 60)}...
+                                            {apiRegistration?.token &&
+                                                <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />}
+
+                                            <div style={{ marginRight: 40 }}>
+                                                {apiRegistration?.token ? `${apiRegistration?.token?.slice(0, 60)}...` : 'Waiting for accepting'}
                                             </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
@@ -203,9 +209,15 @@ function ApiRegistrationEmployee(props) {
                                             <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
                                                 <i className="material-icons">remove_circle_outline</i>
                                             </a> */}
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
-                                                <i className="material-icons">highlight_off</i>
-                                            </a>
+                                            {apiRegistration.status === 3 ?
+                                                (<a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
+                                                    <i className="material-icons">highlight_off</i>
+                                                </a>)
+                                                : (
+                                                    <a onClick={() => handleDeleteApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                )}
                                         </td>
                                     </tr>
                                 )
@@ -232,7 +244,8 @@ function mapState(state) {
 }
 const actions = {
     getPrivilegeApis: PrivilegeApiActions.getPrivilegeApis,
-    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi
+    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi,
+    deletePrivilegeApi: PrivilegeApiActions.deletePrivilegeApis
 }
 
 export default connect(mapState, actions)(withTranslate(ApiRegistrationEmployee))
