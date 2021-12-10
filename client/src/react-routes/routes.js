@@ -203,7 +203,7 @@ class Routes extends Component {
                         component={Introduction}
                     />
                     <AuthRoute
-                        exact
+                        exact={false}
                         auth={auth}
                         path="/login"
                         component={Login}
