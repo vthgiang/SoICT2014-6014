@@ -260,7 +260,7 @@ function PrivilegeApiManagement(props) {
                                             </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            {privilege.status !== 3 ?
+                                            {![2, 3].includes(privilege.status) ?
                                                 (<>
                                                     <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745" }}>
                                                         <i className="material-icons">check_circle_outline</i>
