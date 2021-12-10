@@ -29,7 +29,7 @@ function PrivilegeApiCreateModal(props) {
     useEffect(() => {
         props.getSystemApis({
             page: 1,
-            perPage: 20
+            perPage: 10000
         })
     }, [])
 
@@ -169,6 +169,52 @@ function PrivilegeApiCreateModal(props) {
     //     })
     // }
 
+    const renderApiList = () => {
+        let apiCategory = 'placeholder';
+        let isNextCategory = false;
+
+        return listPaginateApi.map(api => {
+            if (!api.path.startsWith(apiCategory)) {
+                apiCategory = '/' + api.path.split('/')[1];
+                isNextCategory = true;
+            } else {
+                isNextCategory = false;
+            }
+
+            return (
+                <>
+                    {isNextCategory &&
+                        <>
+                            <tr>
+                                <td colspan="3" style={{
+                                    textAlign: 'left',
+                                }}></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style={{
+                                    textAlign: 'left',
+                                    fontWeight: 'bold',
+                                }}>Path: <span>{apiCategory}</span></td>
+                            </tr>
+                        </>}
+
+                    <tr key={api._id}>
+                        <td>
+                            <input
+                                type="checkbox"
+                                value={api._id}
+                                onChange={handleCheckbox}
+                                checked={checkedCheckbox(api._id, apis)}
+                            />
+                        </td>
+                        <td>{api.path}</td>
+                        <td>{api.method}</td>
+                    </tr>
+                </>
+            )
+        })
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -236,6 +282,24 @@ function PrivilegeApiCreateModal(props) {
                         </div>)
                     }
 
+                    {/* Company */}
+                    <div className="form-group">
+                        <label className="control-label">{translate('system_admin.company.table.name')}</label>
+                        <SelectBox
+                            id={`create-privilege-api-modal-company`}
+                            className="form-control"
+                            style={{ width: "100%" }}
+                            items={listPaginateCompany?.length > 0 ? listPaginateCompany.map(item => {
+                                return {
+                                    value: item?._id,
+                                    text: item?.name
+                                }
+                            }) : []}
+                            value={companyId}
+                            onChange={handleCompany}
+                        />
+                    </div>
+
                     {/* API */}
                     <fieldset className="scheduler-border" style={{ minHeight: '300px' }}>
                         <legend className="scheduler-border">{translate('system_admin.company.service')}</legend>
@@ -257,20 +321,7 @@ function PrivilegeApiCreateModal(props) {
                             <tbody>
                                 {
                                     listPaginateApi?.length > 0
-                                        ? listPaginateApi.map(api => (
-                                            <tr key={api._id}>
-                                                <td>
-                                                    <input
-                                                        type="checkbox"
-                                                        value={api._id}
-                                                        onChange={handleCheckbox}
-                                                        checked={checkedCheckbox(api._id, apis)}
-                                                    />
-                                                </td>
-                                                <td>{api.path}</td>
-                                                <td>{api.method}</td>
-                                            </tr>
-                                        ))
+                                        ? renderApiList()
                                         : apis.isLoading
                                             ? <tr><td colSpan={4}>{translate('general.loading')}</td></tr>
                                             : <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
@@ -278,24 +329,6 @@ function PrivilegeApiCreateModal(props) {
                             </tbody>
                         </table>
                     </fieldset>
-
-                    {/* Company */}
-                    <div className="form-group">
-                        <label className="control-label">{translate('system_admin.company.table.name')}</label>
-                        <SelectBox
-                            id={`create-privilege-api-modal-company`}
-                            className="form-control"
-                            style={{ width: "100%" }}
-                            items={listPaginateCompany?.length > 0 ? listPaginateCompany.map(item => {
-                                return {
-                                    value: item?._id,
-                                    text: item?.name
-                                }
-                            }) : []}
-                            value={companyId}
-                            onChange={handleCompany}
-                        />
-                    </div>
                 </form>
             </DialogModal>
         </React.Fragment>
