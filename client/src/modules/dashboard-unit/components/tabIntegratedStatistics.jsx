@@ -53,22 +53,19 @@ class TabIntegratedStatistics extends Component {
         const { month, listEmployee, listAllEmployees, organizationalUnits } = this.props;
         const { viewOverTime, viewHoursOff } = this.state;
 
-
-
         let employeeOvertime = [], employeeHoursOff = [];
         /* Lấy dữ liệu tăng ca và nghỉ phép của mỗi nhân viên trong đơn vị */
-        let listTimesheets = timesheets.listTimesheets;
-        for (let i in listEmployee) {
+        let listTimesheets = employeeDashboardData.dataOvertimeUnits?.listOvertimeOfUnitsByStartDateAndEndDate;
+        for (let i in listAllEmployees) {
             let totalOvertime = 0, totalHoursOff = 0;
             listTimesheets && listTimesheets.forEach(x => {
-                if (listEmployee[i].userId.email === x.employee.emailInCompany) {
+                if (listAllEmployees[i].emailInCompany === x.employee.emailInCompany) {
                     totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
                     totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;
-
                 };
             });
-            employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
-            employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
+            employeeOvertime = [...employeeOvertime, { _id: listAllEmployees[i]._id, name: listAllEmployees[i].fullName, totalHours: totalOvertime }];
+            employeeHoursOff = [...employeeHoursOff, { _id: listAllEmployees[i]._id, name: listAllEmployees[i].fullName, totalHours: totalHoursOff }];
         };
         /* Sắp xếp theo thứ tự giảm dần */
         if (employeeOvertime.length !== 0) {
