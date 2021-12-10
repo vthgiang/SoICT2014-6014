@@ -145,6 +145,7 @@ function PrivilegeApiCreateModal(props) {
             apis: apis,
             companyId: companyId,
             role: 'system_admin',
+            status: 3,
             description: state.description,
             unlimitedExpirationTime: state.unlimitedExpirationTime,
         }
