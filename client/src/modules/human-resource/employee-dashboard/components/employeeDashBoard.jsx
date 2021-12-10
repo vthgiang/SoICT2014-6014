@@ -253,7 +253,7 @@ const DashBoardEmployees = (props) => {
                             <div className="info-box-content">
                                 <span className="info-box-text">Số kỷ luật</span>
                                 <span className="info-box-number" style={{ fontSize: '20px' }}>
-                                    {employeeDashboardData.discipline?.listDisciplines ? employeeDashboardData.discipline.listDisciplines?.length : 0}
+                                    {employeeDashboardData.discipline?.totalList ? employeeDashboardData.discipline.totalList?.length : 0}
                                 </span>
                             </div>
                         </div>
