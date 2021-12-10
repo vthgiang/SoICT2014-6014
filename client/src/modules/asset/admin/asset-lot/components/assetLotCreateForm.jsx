@@ -119,7 +119,7 @@ function AssetLotCreateForm(props) {
         });
     }
 
-    //thêm trạng thái chung cho các tài sản
+    //thêm quyeenf dk su dung cho các tài sản
     const handleTypeRegisterChange = (value) => {
         //console.log("hang typeRegister",value);
         let { listAssets, assetLot } = state;
@@ -397,7 +397,7 @@ function AssetLotCreateForm(props) {
                             listAssets={listAssets}
                             assetLot={assetLot}
                             status={assetLot.status}
-
+                            typeRegisterForUse={assetLot.typeRegisterForUse}
                         />
 
                         {/* Thông tin khấu hao */}

@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, ErrorLabel, SelectBox, TreeSelect, ApiImage } from '../../../../../common-components';
@@ -10,9 +10,16 @@ import { string2literal } from '../../../../../helpers/handleResponse';
 import { generateCode } from "../../../../../helpers/generateCode";
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { testAction } from '../../../admin/asset-lot/redux/actions';
 
 function GeneralLotTab(props) {
+
+    const dispatch = useDispatch();
+    const listAssets1 = useSelector(state => state.assetLotManager.listAssets);
+
+
     const tableId_constructor = "table-asset-lot-create";
+
     const defaultConfig = { limit: 5 };
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
@@ -44,11 +51,7 @@ function GeneralLotTab(props) {
     const generateAssetCode = () => {
         const assetLot = props.assetLot;
         const { total, step, startNumber } = state;
-        // setState({
-        //     ...state,
-        //     listAssets: listAssets
-        // });
-        props.handleGenAssetCode(startNumber,step,listAssets,true);
+        props.handleGenAssetCode(startNumber, step, listAssets, true);
     }
 
     const regenerateCode = () => {
@@ -67,6 +70,12 @@ function GeneralLotTab(props) {
         }
     }, [])
 
+    // useEffect(()=>{
+
+    //     return ()=>{
+    //         dispatch(testAction("reset"))
+    //     }
+    // },[])
 
 
     // Function format dữ liệu Date thành string
@@ -441,11 +450,9 @@ function GeneralLotTab(props) {
      * Bắt sự kiện thay đổi quyền đăng ký sử dụng
      */
     const handleTypeRegisterForUseChange = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                typeRegisterForUse: value[0]
-            }
+        setState({
+            ...state,
+            typeRegisterForUse: value[0]
         })
         props.handleTypeRegisterChange(value[0]);
 
@@ -545,7 +552,7 @@ function GeneralLotTab(props) {
      */
     const handleChangeAssetValue = (e, index, name) => {
         let value;
-        console.log("hang e",e);
+        console.log("hang e", e);
         if (name === 'serial') {
             value = e.target.value;
         } else if (name === 'readByRoles') {
@@ -561,8 +568,8 @@ function GeneralLotTab(props) {
     }
 
     const saveListAsset = () => {
-        console.log("hang saveListAsset", listAssets);
-        props.handleGenAssetCode(0,0,listAssets, false);
+        //console.log("hang saveListAsset", listAssets);
+        props.handleGenAssetCode(0, 0, listAssets, false);
     }
 
     /**
@@ -603,7 +610,7 @@ function GeneralLotTab(props) {
                 // handoverToDate: props.handoverToDate,
                 //description: props.description,
                 status: props.status,
-                typeRegisterForUse: props.assetLot.typeRegisterForUse,
+                typeRegisterForUse: props.typeRegisterForUse,
                 // detailInfo: props.detailInfo,
                 // usageLogs: props.usageLogs,
                 readByRoles: props.assetLot.readByRoles,
@@ -637,6 +644,8 @@ function GeneralLotTab(props) {
     } = state;
 
     let listAssets = props.listAssets;
+    // console.log("hang listAssets ", listAssets);
+    // console.log("hang typeRegister", typeRegisterForUse);
 
     var userlist = user.list, departmentlist = department.list;
     let startDate = status == "in_use" && usageLogs && usageLogs.length ? formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
@@ -680,9 +689,14 @@ function GeneralLotTab(props) {
 
     }, [total, startNumber, step])
 
+    useEffect(() => {
+
+        console.log("vts listAssets1", listAssets1);
+    }, [listAssets1])
 
     return (
         <div id={id} className="tab-pane active">
+
             <div className="row">
                 {/* Ảnh tài sản */}
                 <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
@@ -716,7 +730,7 @@ function GeneralLotTab(props) {
                             {/* Tên lô tài sản */}
                             <div className={`form-group ${!errorOnAssetName ? "" : "has-error"} `}>
                                 <label htmlFor="assetName">{translate('asset.asset_lot.asset_lot_name')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="assetName" value={assetName} onChange={handleAssetNameChange} placeholder={translate('asset.asset_lot.asset_lot_code')}
+                                <input type="text" className="form-control" name="assetName" value={assetName} onChange={handleAssetNameChange} placeholder={translate('asset.asset_lot.asset_lot_name')}
                                     autoComplete="off" />
                                 <ErrorLabel content={errorOnAssetName} />
                             </div>
@@ -806,9 +820,9 @@ function GeneralLotTab(props) {
                                     value={typeRegisterForUse}
                                     items={[
                                         { value: '', text: translate('asset.general_information.select_role_to_use') },
-                                        { value: 1, text: translate('asset.general_information.not_for_registering') },
-                                        { value: 2, text: translate('asset.general_information.register_by_hour') },
-                                        { value: 3, text: translate('asset.general_information.register_for_long_term') },
+                                        { value: '1', text: translate('asset.general_information.not_for_registering') },
+                                        { value: '2', text: translate('asset.general_information.register_by_hour') },
+                                        { value: '3', text: translate('asset.general_information.register_for_long_term') },
                                     ]}
                                     onChange={handleTypeRegisterForUseChange}
                                 />
@@ -891,138 +905,133 @@ function GeneralLotTab(props) {
                     </div>
                 </div>
             </div>
-            <div className="row">
-                <label>{translate('asset.asset_lot.assets_information')}:
-                    <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-save" style={{ color: "#28A745", marginLeft: 5 }}
-                        onClick={saveListAsset} /><span onClick={saveListAsset}>Lưu các giá trị vừa thay đổi</span></a>
-                </label>
-                {/* Bảng thông tin tài sản */}
-                <table className="table">
-                    <thead>
-                        <tr>
-                            {/* Mã tài sản  */}
-                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.asset_code')}</th>
-                            {/* Trạng thái  */}
-                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.status')}</th>
-                            {/* Quyền đăng kí sử dụng  */}
-                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.can_register_for_use')}</th>
-                            {/* Số serial */}
-                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.serial_number')}</th>
-                            {/* Người quản lý  */}
-                            <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.manager')}</th>
-                            {/* role có quyền */}
-                            <th style={{ paddingLeft: '0px' }}>{translate('system_admin.system_link.table.roles')}</th>
-                            {/* vị trí
+            <div className="row" style={{ marginTop: '1rem' }}>
+                <div className='col-md-12'>
+                    <label>{translate('asset.asset_lot.assets_information')}:
+                        <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-save" style={{ color: "#28A745", marginLeft: 5 }}
+                            onClick={saveListAsset} /><span onClick={saveListAsset}>Lưu các giá trị vừa thay đổi</span></a>
+                    </label>
+                    {/* Bảng thông tin tài sản */}
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                {/* Mã tài sản  */}
+                                <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.asset_code')}</th>
+                                {/* Trạng thái  */}
+                                <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.status')}</th>
+                                {/* Quyền đăng kí sử dụng  */}
+                                <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.can_register_for_use')}</th>
+                                {/* Số serial */}
+                                <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.serial_number')}</th>
+                                {/* Người quản lý  */}
+                                <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.manager')}</th>
+                                {/* role có quyền */}
+                                <th style={{ paddingLeft: '0px' }}>{translate('system_admin.system_link.table.roles')}</th>
+                                {/* vị trí
                             <th style={{ paddingLeft: '0px' }}>{translate('asset.general_information.asset_location')}</th> */}
-                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(!listAssets || listAssets.length === 0) ? <tr>
-                            <td colSpan={8}>
-                                <center> {translate('table.no_data')}</center>
-                            </td>
-                        </tr> :
-                            listAssets.map((x, index) => {
-                                return <tr key={index}>
-                                    {/* Mã tài sản */}
-                                    <td style={{ paddingLeft: '0px' }}>
-                                        {x.code}
-                                    </td>
-                                    {/* Trạng thái tài sản  */}
-                                    <td style={{ paddingLeft: '0px' }}>
-                                        <div className="form-group">
-                                            <SelectBox
-                                                id={`status${index}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={x.status}
-                                                items={[
-                                                    { value: '', text: '---Chọn trạng thái---' },
-                                                    { value: 'ready_to_use', text: translate('asset.general_information.ready_use') },
-                                                    { value: 'in_use', text: translate('asset.general_information.using') },
-                                                    { value: 'broken', text: translate('asset.general_information.damaged') },
-                                                    { value: 'lost', text: translate('asset.general_information.lost') },
-                                                    { value: 'disposed', text: translate('asset.general_information.disposal') },
-                                                ]}
-                                                onChange={(e) =>handleChangeAssetValue(e, index, 'status')}
-                                            />
-                                        </div>
-                                    </td>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(!listAssets || listAssets.length === 0) ? <tr>
+                                <td colSpan={8}>
+                                    <center> {translate('table.no_data')}</center>
+                                </td>
+                            </tr> :
+                                listAssets.map((x, index) => {
+                                    // console.log("hang item",x.typeRegisterForUse);
+                                    return <tr key={index}>
+                                        {/* Mã tài sản */}
+                                        <td style={{ paddingLeft: '0px' }}>
+                                            {x.code}
+                                        </td>
+                                        {/* Trạng thái tài sản  */}
+                                        <td style={{ paddingLeft: '0px' }}>
+                                            <div className="form-group">
+                                                <SelectBox
+                                                    id={`status${index}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={x.status}
+                                                    items={[
+                                                        { value: '', text: '---Chọn trạng thái---' },
+                                                        { value: 'ready_to_use', text: translate('asset.general_information.ready_use') },
+                                                        { value: 'in_use', text: translate('asset.general_information.using') },
+                                                        { value: 'broken', text: translate('asset.general_information.damaged') },
+                                                        { value: 'lost', text: translate('asset.general_information.lost') },
+                                                        { value: 'disposed', text: translate('asset.general_information.disposal') },
+                                                    ]}
+                                                    onChange={(e) => handleChangeAssetValue(e, index, 'status')}
+                                                />
+                                            </div>
+                                        </td>
 
-                                    {/* Quyền đăng kí sử dụng  */}
-                                    <td style={{ paddingLeft: '0px' }}>
-                                        <div className="form-group">
-                                            <SelectBox
-                                                id={`typeRegisterForUse${index}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={x.typeRegisterForUse}
-                                                items={[
-                                                    { value: '', text: translate('asset.general_information.select_role_to_use') },
-                                                    { value: 1, text: translate('asset.general_information.not_for_registering') },
-                                                    { value: 2, text: translate('asset.general_information.register_by_hour') },
-                                                    { value: 3, text: translate('asset.general_information.register_for_long_term') },
-                                                ]}
-                                                onChange={(e) => handleChangeAssetValue(e, index, 'typeRegisterForUse')}
-                                            />
-                                        </div>
-                                    </td>
+                                        {/* Quyền đăng kí sử dụng  */}
+                                        <td style={{ paddingLeft: '0px' }}>
+                                            <div className="form-group">
+                                                <SelectBox
+                                                    id={`typeRegisterForUse${index}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={x.typeRegisterForUse}
+                                                    items={[
+                                                        { value: '', text: translate('asset.general_information.select_role_to_use') },
+                                                        { value: '1', text: translate('asset.general_information.not_for_registering') },
+                                                        { value: '2', text: translate('asset.general_information.register_by_hour') },
+                                                        { value: '3', text: translate('asset.general_information.register_for_long_term') },
+                                                    ]}
+                                                    onChange={(e) => handleChangeAssetValue(e, index, 'typeRegisterForUse')}
+                                                />
+                                            </div>
+                                        </td>
 
-                                    {/* Số serial */}
-                                    <td style={{ paddingLeft: '0px' }}>
-                                        <div className="form-group">
-                                        <input className="form-control" type="text" value={x.serial || ''} name="serial" style={{ width: "100%" }}
-                                         onChange={(e) => handleChangeAssetValue(e, index, 'serial')} />
-                                        </div>
-                                    </td>
+                                        {/* Số serial */}
+                                        <td style={{ paddingLeft: '0px' }}>
+                                            <div className="form-group">
+                                                <input className="form-control" type="text" value={x.serial || ''} name="serial" style={{ width: "100%" }}
+                                                    onChange={(e) => handleChangeAssetValue(e, index, 'serial')} />
+                                            </div>
+                                        </td>
 
-                                    {/* Người quản lý */}
-                                    <td style={{ paddingLeft: '0px' }}>
-                                        <div className="form-group">
-                                            <SelectBox
-                                                id={`managedBy${index}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
-                                                onChange={(e) => handleChangeAssetValue(e, index, 'managedBy')}
-                                                value={x.managedBy}
-                                                options={{ placeholder: "" }}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </td>
+                                        {/* Người quản lý */}
+                                        <td style={{ paddingLeft: '0px' }}>
+                                            <div className="form-group">
+                                                <SelectBox
+                                                    id={`managedBy${index}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
+                                                    onChange={(e) => handleChangeAssetValue(e, index, 'managedBy')}
+                                                    value={x.managedBy}
+                                                    options={{ placeholder: "" }}
+                                                    multiple={false}
+                                                />
+                                            </div>
+                                        </td>
 
-                                    {/* Role có quyền */}
-                                    <td style={{ paddingLeft: '0px' }}>
-                                        <div className="form-group">
-                                            <SelectBox
-                                                id={`select-link-default-roles-${index}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
-                                                value={x.readByRoles}
-                                                onChange={(e) => handleChangeAssetValue(e, index, 'readByRoles')}
-                                                multiple={true}
-                                            />
-                                        </div>
-                                    </td>
+                                        {/* Role có quyền */}
+                                        <td style={{ paddingLeft: '0px' }}>
+                                            <div className="form-group">
+                                                <SelectBox
+                                                    id={`select-link-default-roles-${index}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
+                                                    value={x.readByRoles}
+                                                    onChange={(e) => handleChangeAssetValue(e, index, 'readByRoles')}
+                                                    multiple={true}
+                                                />
+                                            </div>
+                                        </td>
 
-                                    {/* Vị trí tài sản */}
-                                    {/* <td style={{ paddingLeft: '0px' }}>
-                                        <div className="form-group">
-                                            <TreeSelect data={buildingList} value={[x.location]}
-                                                handleChange={(e) => handleChangeAssetValue(e, index, 'location')} mode="radioSelect" />
-                                        </div>
-                                    </td> */}
-
-                                    <td style={{ textAlign: "center" }}>
-                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>
-                                    </td>
-                                </tr>
-                            })}
-                    </tbody>
-                </table>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

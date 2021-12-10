@@ -45,8 +45,8 @@ function AssetLotManagement(props) {
         setSelectedData(value)
     }
 
-    const { assetLotManager, assetType, translate, isActive, user, role, department} = props;
-    const { page, limit, currentRowView, status, currentRow, tableId, group } = state;
+    const { assetLotManager, assetType, translate, isActive } = props;
+    const { page, limit, tableId, group } = state;
 
     useEffect(() => {
         props.getAllAssetLots(state);
@@ -58,7 +58,7 @@ function AssetLotManagement(props) {
     }, []);
 
     const handleDeleteOptions = () => {
-        console.log('selectedData', selectedData)
+        //console.log('selectedData', selectedData)
         const shortTitle = `<h4 style="color: red"><div>${translate('asset.asset_lot.delete_info')} "${selectedData?.length && selectedData.length === 1 ? getAssetLotName(props.assetLotManager?.listAssetLots, selectedData[0]) : ""}" ?</div></h4>`;
         const longTitle = `<h4 style="color: red"><div>Xóa thông tin ${selectedData?.length > 1 ? selectedData.length : ""} lô tài sản ?</div></h4>`;
 
@@ -72,7 +72,8 @@ function AssetLotManagement(props) {
             confirmButtonText: translate('general.yes'),
         }).then((result) => {
             if (result.value && selectedData.length > 0) {
-                props.deleteAssetLots({
+                //console.log("hang select delete:",selectedData);
+                props.deleteAssetLot({
                     assetLotIds: selectedData
                 });
             }
@@ -232,10 +233,10 @@ function AssetLotManagement(props) {
     let typeArr = getAssetTypes();
     let assetTypeName = state.assetType ? state.assetType : [];
 
-    if (assetLotManager.isLoading === false) {
-        lists = assetLotManager.listAssetLots;
-    }
-
+    // if (assetLotManager.isLoading === false) {
+    //     lists = assetLotManager.listAssetLots;
+    // }
+    //console.log("hang assetLotManager.listAssetLots", assetLotManager.listAssetLots);
     var pageTotal = ((assetLotManager.totalList % limit) === 0) ?
         parseInt(assetLotManager.totalList / limit) :
         parseInt((assetLotManager.totalList / limit) + 1);
@@ -253,7 +254,7 @@ function AssetLotManagement(props) {
                         <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-update').modal('show')}>{translate('human_resource.profile.employee_management.update_import')}</a></li> */}
                     </ul>
                 </div>
-                <AssetLotCreateForm/>
+                <AssetLotCreateForm />
 
                 {/* Thanh tìm kiếm */}
                 <div className="form-inline">
@@ -311,8 +312,9 @@ function AssetLotManagement(props) {
                         <label></label>
                         <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                     </div>
+                    {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
                 </div>
-                {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
+               
                 <SmartTable
                     tableId={tableId}
                     columnData={{
@@ -336,7 +338,7 @@ function AssetLotManagement(props) {
                         supplier: <th>{translate('asset.asset_lot.supplier')}</th>,
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                     }}
-                    tableBodyData={lists?.length > 0 && lists.map((x, index) => {
+                    tableBodyData={assetLotManager.listAssetLots?.length > 0 && assetLotManager.listAssetLots.map((x, index) => {
                         return {
                             id: x?._id,
                             index: <td>{index + 1}</td>,
@@ -354,21 +356,21 @@ function AssetLotManagement(props) {
                                     content={translate('asset.general_information.delete_info')}
                                     data={{
                                         id: x._id,
-                                        info: x.code + " - " + x.assetName
+                                        info: x.code + " - " + x.assetLotName
                                     }}
-                                func={handleDeleteAnAssetLot}
+                                    func={handleDeleteAnAssetLot}
                                 />
                             </td>
                         }
                     })}
-                    dataDependency={lists}
+                    dataDependency={assetLotManager.listAssetLots}
                     onSetNumberOfRowsPerpage={setLimit}
                     onSelectedRowsChange={onSelectedRowsChange}
                 />
 
                 {assetLotManager.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    (!assetLotManager.listAssetLots || assetLotManager.listAssetLots.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
 
                 {/* PaginateBar */}

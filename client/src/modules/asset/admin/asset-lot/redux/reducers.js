@@ -4,8 +4,10 @@ import { AssetLotConstants } from './constants';
 const initState = {
     isLoading: false,
     totalList: 0,
-    listAssetLots: [],
+    listAssetLots: [], // render table 
     error: '',
+    listAssets: [],
+
 }
 
 export function assetLotManager(state = initState, action) {
@@ -26,13 +28,20 @@ export function assetLotManager(state = initState, action) {
         case AssetLotConstants.GETALL_FAILURE:
 
         case AssetLotConstants.CREATE_ASSETLOT_REQUEST:
+
         case AssetLotConstants.CREATE_ASSETLOT_SUCCESS:
-            //console.log("hang reducer:",action.payload);
-            return {
-                ...state,
-                isLoading: false,
-                //listAssetLots: [action.payload.assetLot, ...state.listAssetLots]
+            
+            if (action.payload) {
+                return {
+                    ...state,
+                    isLoading: false,
+                    listAssetLots: [...action.payload.assetLot, ...state.listAssetLots]
+                }
+            } else {
+                return { ...state, isLoading: false }
             }
+        // console.log("hang reducer:",action.payload.assetLot);
+
         case AssetLotConstants.CREATE_ASSETLOT_FAILURE:
             return {
                 ...state,
@@ -41,14 +50,14 @@ export function assetLotManager(state = initState, action) {
                 assetLotCodeError: action.payload
             }
 
-        case AssetLotConstants.UPDATE_ASSETLOT_REQUEST:
+        case AssetLotConstants.UPDATE_ASSETLOT_REQUEST: break;
         case AssetLotConstants.UPDATE_ASSETLOT_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listAssetLots: [action.payload, ...state.listAssetLots]
             }
-        case AssetLotConstants.UPDATE_ASSETLOT_FAILURE:
+        case AssetLotConstants.UPDATE_ASSETLOT_FAILURE: break;
 
         case AssetLotConstants.DELETE_ASSETLOT_REQUEST:
             return {
@@ -59,11 +68,12 @@ export function assetLotManager(state = initState, action) {
         case AssetLotConstants.DELETE_ASSETLOT_SUCCESS:
             return {
                 ...state,
-                listAssetLots: state.listAssetLots.filter(assetLot => !action.assetLotIds(assetLot?._id)),
+                listAssetLots: state.listAssetLots.filter(assetLot => !action.assetLotIds.includes(assetLot?._id)),
                 isLoading: false
             }
         case AssetLotConstants.DELETE_ASSETLOT_FAILURE:
-
+        case AssetLotConstants.TEST_ACTION:
+            return { ...state, listAssets: action.data }
         default:
             return state
     }

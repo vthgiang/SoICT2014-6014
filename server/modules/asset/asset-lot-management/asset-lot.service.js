@@ -59,7 +59,7 @@ exports.searchAssetLots = async (portal, params) => {
 exports.createAssetLot = async (portal, company, data, fileInfo) => {
     let checkAssetLot = [];
     data = freshObject(data);
-    console.log("hang data", data);
+    //console.log("hang data", data);
     // const session = await mongoose.startSession();
     // session.startTransaction();
 
@@ -94,7 +94,7 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
         // session.startTransaction();
         //try {
         //const opts = { session };
-        var createAssetLot = await AssetLot(connect(DB_CONNECTION, portal)).create([{
+        var createAssetLot = await AssetLot(connect(DB_CONNECTION, portal)).create({
             company: company,
             code: data.code,
             assetLotName: data.assetLotName,
@@ -104,7 +104,7 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
             total: data.total,
             price: data.price,
             document: files
-        }]);
+        });
 
         //thêm từng tài sản vào db asset
         listAssets = listAssets.map((item) => {
@@ -142,6 +142,7 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
         let assetLot = await AssetLot(connect(DB_CONNECTION, portal)).find({
             _id: createAssetLot._id
         }).populate({ path: 'assetType' });
+        //console.log("hang service assetLot",assetLot);
 
         // await session.commitTransaction();
         // session.endSession();

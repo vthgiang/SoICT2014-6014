@@ -39,17 +39,23 @@ function getAllAssetLots(data) {
  */
 function createAssetLot(data) {
     return (dispatch) => {
-        dispatch({
-            type: AssetLotConstants.CREATE_ASSETLOT_REQUEST,
-        });
+        // tao moi
+        // dispatch({
+        //     type: AssetLotConstants.CREATE_ASSETLOT_REQUEST,
+        // });
+        // // 
         AssetLotService.createAssetLot(data)
             .then((res) => {
-                console.log("hang action:",res.data);
-                dispatch({
-                    type: AssetLotConstants.CREATE_ASSETLOT_SUCCESS,
-                    payload: res.data.content
-                });
+                // console.log("hang action:", res.data);
+                if (res.data) {
+                    dispatch({
+                        type: AssetLotConstants.CREATE_ASSETLOT_SUCCESS,
+                        payload: res.data.content
+                    });
+                }
+
             }).catch((err) => {
+                //console.log("hang action err: ", err);
                 dispatch({
                     type: AssetLotConstants.CREATE_ASSETLOT_FAILURE,
                     error: err,
@@ -64,7 +70,7 @@ function createAssetLot(data) {
  * @param {*} id
  * @param {*} data
  */
- function updateAssetLot(id, data) {
+function updateAssetLot(id, data) {
     return (dispatch) => {
         dispatch({
             type: AssetLotConstants.UPDATE_ASSETLOT_REQUEST,
@@ -88,7 +94,7 @@ function createAssetLot(data) {
  * Xóa lô tài sản
  * @param {*} data
  */
- function deleteAssetLots(data) {
+function deleteAssetLots(data) {
     return (dispatch) => {
         dispatch({
             type: AssetLotConstants.DELETE_ASSETLOT_REQUEST,
@@ -109,4 +115,12 @@ function createAssetLot(data) {
     }
 }
 
+/**
+ * 
+ * action thay doi state reducer
+ */
 
+export const testAction = (data) => ({
+    type: AssetLotConstants.TEST_ACTION, // dinh danh cho action
+    data: data
+})
