@@ -3500,7 +3500,12 @@ export default {
                 load_task_chart_unit: "Tải công việc đơn vị",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
-
+                timer: "Bấm giờ",
+                additional_timer: "Bấm bù giờ",
+                interval_timer: "Bấm hẹn giờ",
+                start_time: "Thời gian bắt đầu",
+                end_time: "Thời gian kết thúc",
+                timer_type: "Loại bấm giờ",
 
             },
             task_perform: {
