@@ -32,7 +32,6 @@ const Login = (props) => {
         props.login({ email, password, portal });
     }
 
-
     return (
         <div className="dx-login-page">
             <div className="dx-login-box">
