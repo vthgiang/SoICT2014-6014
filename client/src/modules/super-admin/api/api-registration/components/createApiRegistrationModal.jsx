@@ -27,9 +27,6 @@ function CreateApiRegistrationModal(props) {
         name,
         companyId,
         description,
-        unlimitedExpirationTime,
-        startDate,
-        endDate,
         registrationApis,
         registrationApisCategory
     } = state;

@@ -685,6 +685,8 @@ export default {
             },
 
             privilege_system_api: {
+                cancel: "Cancel privilege system apis",
+                delete: "Delete privilege system apis",
                 table: {
                     email: "Email",
                     description: "Description",
