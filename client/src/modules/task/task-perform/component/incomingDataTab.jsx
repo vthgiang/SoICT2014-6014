@@ -26,7 +26,7 @@ function IncomingDataTab(props) {
         }
     }
     const isImage = (src) => {
-        let string = src.split(".")
+        let string = src.toLowerCase().split(".");
         let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
         if (image.indexOf(string[string.length - 1]) !== -1) {
             return true;
