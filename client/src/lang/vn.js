@@ -5079,6 +5079,8 @@ export default {
                 get_lot_failed: "Lấy lô hàng thất bại",
                 push_lot: "Lô chưa được xếp vào kho",
                 text: "Hàng hóa chưa xếp hết vào kho",
+                add_lot: "Thêm mới lô hàng",
+                select_lot: "Chọn lô hàng",
             },
         },
 

@@ -870,13 +870,6 @@ function GoodIssueCreateForm(props) {
                                             disabled
                                             type="number"
                                         />
-                                        {good.good && (
-                                            <i
-                                                className="fa fa-plus-square"
-                                                style={{ color: "#28A745", marginLeft: "5px", marginTop: "9px", cursor: "pointer" }}
-                                                onClick={() => addQuantity()}
-                                            ></i>
-                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -892,6 +885,7 @@ function GoodIssueCreateForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                {good.good && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</button>)}
                                 {state.editInfo ? (
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>
