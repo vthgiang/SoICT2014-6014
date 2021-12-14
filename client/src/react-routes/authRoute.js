@@ -7,7 +7,7 @@ export const AuthRoute = ({ auth, component: Component, layout: Layout, ...rest 
     let redirectPagePath = location.pathname;
     redirectPagePath = redirectPagePath.replace('/login', '');
 
-    if(redirectPagePath === '') redirectPagePath = '/';
+    if(redirectPagePath === '') redirectPagePath = '/home';
 
     return (
         <Route {...rest} render={props => {
