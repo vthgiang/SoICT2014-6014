@@ -23,8 +23,9 @@ function PrivilegeApiCreateModal(props) {
 
     const { email, apis, companyId } = state;
 
-    let listPaginateApi = systemApis?.listPaginateApi
-    let listPaginateCompany = company?.listPaginate
+    let listPaginateApi = systemApis?.listPaginateApi;
+    let listPaginateCompany = company?.listPaginate;
+    const [arrangedApisArr, setArrangedApisArr] = useState([]);
 
     useEffect(() => {
         props.getSystemApis({
@@ -34,18 +35,42 @@ function PrivilegeApiCreateModal(props) {
     }, [])
 
     useEffect(() => {
+        if (listPaginateApi.length > 0) {
+            let apiCategoryIndex = -1;
+            let apiCategory = 'placeholder';
+
+            const arrangedApisArrTmp = [];
+
+            listPaginateApi.map(api => {
+                if (!api.path.startsWith(apiCategory)) {
+                    apiCategory = '/' + api.path.split('/')[1];
+                    apiCategoryIndex += 1;
+                    arrangedApisArrTmp.push({
+                        category: apiCategory,
+                        apis: [api]
+                    });
+                } else {
+                    arrangedApisArrTmp[apiCategoryIndex].apis.push(api);
+                }
+            });
+
+            setArrangedApisArr(arrangedApisArrTmp);
+        }
+    }, [listPaginateApi]);
+
+    useEffect(() => {
         setState({
             ...state,
             companyId: company?.listPaginate?.[0]?._id,
         })
     }, [JSON.stringify(company?.listPaginate)])
 
-    const handleSystemApi = (value) => {
-        setState({
-            ...state,
-            apis: value,
-        })
-    }
+    // const handleSystemApi = (value) => {
+    //     setState({
+    //         ...state,
+    //         apis: value,
+    //     })
+    // }
 
     const handleCompany = (value) => {
         setState({
@@ -139,6 +164,25 @@ function PrivilegeApiCreateModal(props) {
         }
     }
 
+    const handleCheckboxCategory = (e, apiCategory) => {
+        const { checked } = e.target;
+        let arr = state.apis;
+
+        if (checked) {
+            apiCategory.apis.map(api => arr.push(api._id));
+        } else {
+            const apiCategoryId = apiCategory.apis.map(api => api._id);
+            arr = arr.filter((apiId) =>
+                apiCategoryId.findIndex(delApiId => apiId === delApiId) >= 0 ? false : true
+            )
+        }
+
+        setState({
+            ...state,
+            apis: arr,
+        });
+    }
+
     const handleSubmit = () => {
         let requestBody = {
             email: email,
@@ -171,49 +215,44 @@ function PrivilegeApiCreateModal(props) {
     // }
 
     const renderApiList = () => {
-        let apiCategory = 'placeholder';
-        let isNextCategory = false;
-
-        return listPaginateApi.map(api => {
-            if (!api.path.startsWith(apiCategory)) {
-                apiCategory = '/' + api.path.split('/')[1];
-                isNextCategory = true;
-            } else {
-                isNextCategory = false;
-            }
-
-            return (
+        return (
+            arrangedApisArr.map((apisCategory) => (
                 <>
-                    {isNextCategory &&
-                        <>
-                            <tr>
-                                <td colspan="3" style={{
-                                    textAlign: 'left',
-                                }}></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" style={{
-                                    textAlign: 'left',
-                                    fontWeight: 'bold',
-                                }}>Path: <span>{apiCategory}</span></td>
-                            </tr>
-                        </>}
-
-                    <tr key={api._id}>
+                    <tr>
+                        <td colspan="3" style={{
+                            textAlign: 'left',
+                        }}></td>
+                    </tr>
+                    <tr>
                         <td>
                             <input
                                 type="checkbox"
-                                value={api._id}
-                                onChange={handleCheckbox}
-                                checked={checkedCheckbox(api._id, apis)}
+                                onChange={(e) => handleCheckboxCategory(e, apisCategory)}
                             />
                         </td>
-                        <td>{api.path}</td>
-                        <td>{api.method}</td>
+                        <td colspan="3" style={{
+                            textAlign: 'left',
+                            fontWeight: 'bold',
+                        }}>Path: <span>{apisCategory.category}</span></td>
                     </tr>
+
+                    {apisCategory.apis.map(api => (
+                        <tr key={api._id}>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    value={api._id}
+                                    onChange={handleCheckbox}
+                                    checked={checkedCheckbox(api._id, apis)}
+                                />
+                            </td>
+                            <td>{api.path}</td>
+                            <td>{api.method}</td>
+                        </tr>
+                    ))}
                 </>
-            )
-        })
+            ))
+        )
     }
 
     return (
@@ -279,7 +318,6 @@ function PrivilegeApiCreateModal(props) {
                                     onChange={handleEnterEndDate}
                                 />
                             </div>
-
                         </div>)
                     }
 
