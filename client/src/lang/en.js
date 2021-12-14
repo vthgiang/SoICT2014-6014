@@ -4828,6 +4828,8 @@ export default {
                 get_lot_failed: "Get consigment failed",
                 push_lot: "The consigment has not been placed in warehouse",
                 text: "Commodity have not been placed in warehouse",
+                add_lot: "Add consigment",
+                select_lot: "Select consigment",
             },
         },
 
