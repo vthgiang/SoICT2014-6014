@@ -939,7 +939,7 @@ export default {
                     delete: "Delete document archive",
                     name: "Archive name",
                     description: "Archive description",
-                    parent: "Archive parent",
+                    parent: "Parent directory",
                     select_parent: "Select archive parent",
                     select: "Select archive",
                     not_select: "Not select archive",
@@ -4318,7 +4318,7 @@ export default {
             dashboard_inventory: {},
             category_management: {
                 index: "STT",
-                add: "Add",
+                add: "Add a new list of goods",
                 add_title: "Add new category",
                 info: "Information about the list of commodity",
                 edit: "Edit category information",

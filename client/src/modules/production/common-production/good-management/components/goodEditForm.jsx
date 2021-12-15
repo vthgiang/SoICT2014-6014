@@ -278,7 +278,7 @@ function GoodEditForm(props) {
                 modalID={`modal-edit-good`}
                 isLoading={goods.isLoading}
                 formID={`form-edit-good`}
-                title={translate("manage_warehouse.good_management.add_title")}
+                title={translate("manage_warehouse.good_management.edit")}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
                 msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 disableSubmit={!isFormValidated()}
