@@ -4074,8 +4074,8 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         let dataSearchForAllTimeSheetLogs = {
             ids: organizationalUnitId,
         }
-        const employeeListDistribution = await UserService.getAllEmployeeOfUnitByIds(portal, dataSearchForAllTimeSheetLogs)
-        let listEmployee = employeeListDistribution?.employees;
+        const employeeListDistribution = await UserService.getAllEmployeeOfUnitByIds(portal, dataSearchForAllTimeSheetLogs);
+        let listEmployee = employeeListDistribution?.employees.filter((e) => e.userId.active === true);
         let allTimeSheet = []
         let taskList = cloneDeep(organizationUnitTasks)
         if (listEmployee) {
@@ -4132,9 +4132,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
             dataChart: dataChart
         }
         result['all-time-sheet-log-by-unit'] = resultAllTimeSheetLog
-        console.log("resultAllTimeSheetLog ", resultAllTimeSheetLog);
-        console.log("resultAllTimeSheetLog allTimeSheet: ", resultAllTimeSheetLog.dataChart.allTimeSheet);
-        console.log("resultAllTimeSheetLog filterTimeSheetLogs: ", resultAllTimeSheetLog.dataChart.filterTimeSheetLogs);
     }
     return result
 
