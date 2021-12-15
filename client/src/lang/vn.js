@@ -173,7 +173,7 @@ export default {
             partner_management: "Quản lý đối tác",
             proposal_management: "Quản lý phiếu đề nghị",
             bill_management: "Quản lý thông tin phiếu",
-            inventory_management: "Quản lý hàng tồn kho",
+            inventory_management: "Quản lý lô hàng tồn kho",
 
             manage_kpi_unit: "KPI đơn vị",
             manage_kpi_personal: "KPI cá nhân",
@@ -1003,7 +1003,7 @@ export default {
                     delete: "Xóa các vị trí lưu trữ đã chọn",
                     name: "Tên",
                     description: "Mô tả",
-                    parent: "Vị trí lưu trữ cha",
+                    parent: "Danh mục cha",
                     select_parent: "Chọn vị trí lưu trữ cha",
                     select: "Chọn ",
                     not_select: "Không thuộc về vị trí nào",
@@ -4569,7 +4569,7 @@ export default {
             dashboard_inventory: {},
             category_management: {
                 index: "STT",
-                add: "Thêm mới",
+                add: "Thêm mới danh mục hàng hóa",
                 add_title: "Thêm danh mục mới",
                 info: "Thông tin về danh mục hàng hóa",
                 edit: "Chỉnh sửa thông tin danh mục",
