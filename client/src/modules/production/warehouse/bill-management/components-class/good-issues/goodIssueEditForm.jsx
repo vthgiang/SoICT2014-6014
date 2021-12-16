@@ -367,7 +367,7 @@ class GoodIssueEditForm extends Component {
             this.validateAccountables(this.state.accountables, false) &&
             this.validateQualityControlStaffs(this.state.qualityControlStaffs, false) &&
             this.validateResponsibles(this.state.responsibles, false)
-        return result;
+        return true;
     }
 
     handleLotsChange = (data) => {

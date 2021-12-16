@@ -685,6 +685,8 @@ export default {
             },
 
             privilege_system_api: {
+                cancel: "Cancel privilege system apis",
+                delete: "Delete privilege system apis",
                 table: {
                     email: "Email",
                     description: "Description",
@@ -937,7 +939,7 @@ export default {
                     delete: "Delete document archive",
                     name: "Archive name",
                     description: "Archive description",
-                    parent: "Archive parent",
+                    parent: "Parent directory",
                     select_parent: "Select archive parent",
                     select: "Select archive",
                     not_select: "Not select archive",
@@ -4316,7 +4318,7 @@ export default {
             dashboard_inventory: {},
             category_management: {
                 index: "STT",
-                add: "Add",
+                add: "Add a new list of goods",
                 add_title: "Add new category",
                 info: "Information about the list of commodity",
                 edit: "Edit category information",
@@ -4826,6 +4828,8 @@ export default {
                 get_lot_failed: "Get consigment failed",
                 push_lot: "The consigment has not been placed in warehouse",
                 text: "Commodity have not been placed in warehouse",
+                add_lot: "Add consigment",
+                select_lot: "Select consigment",
             },
         },
 

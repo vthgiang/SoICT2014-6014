@@ -260,20 +260,24 @@ function PrivilegeApiManagement(props) {
                                             </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745" }}>
-                                                <i className="material-icons">check_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleDeclinePrivilegeApi(privilege)} style={{ color: "#E34724" }}>
-                                                <i className="material-icons">remove_circle_outline</i>
-                                            </a>
-                                            <div>
-                                                <a onClick={() => handleCancelPrivilegeApi(privilege)} style={{ color: "#858585" }}>
-                                                    <i className="material-icons">highlight_off</i>
-                                                </a>
-                                                <a className="delete text-red" onClick={() => handleDeletePrivilegeApi(privilege)}>
-                                                    <i className="material-icons">delete</i>
-                                                </a>
-                                            </div>
+                                            {![2, 3].includes(privilege.status) ?
+                                                (<>
+                                                    <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745" }}>
+                                                        <i className="material-icons">check_circle_outline</i>
+                                                    </a>
+                                                    <a onClick={() => handleDeclinePrivilegeApi(privilege)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">remove_circle_outline</i>
+                                                    </a>
+                                                    <a className="delete text-red" onClick={() => handleDeletePrivilegeApi(privilege)}>
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                </>) : (
+                                                    <a onClick={() => handleCancelPrivilegeApi(privilege)} style={{ color: "#858585" }}>
+                                                        <i className="material-icons">highlight_off</i>
+                                                    </a>
+                                                )}
+
+
 
                                         </td>
                                     </tr>
