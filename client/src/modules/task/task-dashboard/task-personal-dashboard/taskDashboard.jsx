@@ -259,6 +259,25 @@ function TaskDashboard(props) {
         })
     }
 
+    const showTimeSheetLogsDescription = () => {
+        const { translate } = props;
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Thống kê bấm giờ cá nhân</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Thống kê lịch sử bấm giờ của bạn trong tháng được chọn.</p>
+            <p>Bảng chỉ liệt kê các hoạt động được thực hiện trọn vẹn trong tháng đó. Ví dụ, bạn chọn tháng 12/2021:</p>
+            <ul>
+                <li>Bấm giờ từ 20:30:00 ngày 31/12/2021 đến 01:30:00 ngày 1/1/2022: <span style="color: red">không hiển thị</span>.</li>
+                <li>Bấm giờ từ 21:00:00 ngày 30/11/2021 đến 02:00:00 ngày 1/12/2021: <span style="color: red">không hiển thị</span>.</li>
+                <li>Bấm giờ từ 20:30:00 ngày 8/12/2021 đến 01:30:00 ngày 9/12/2021: <span style="color: green">hiển thị</span>.</li>
+            </ul>
+            </div>`,
+            width: "50%",
+
+        })
+    }
+
     const showGeneralTaskDescription = () => {
         Swal.fire({
             icon: "question",
@@ -667,6 +686,9 @@ function TaskDashboard(props) {
                             <div className="box-title">
                                 Thống kê bấm giờ theo tháng
                             </div>
+                            <a onClick={() => showTimeSheetLogsDescription()}>
+                                <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                            </a>
                         </div>
                         <div className="box-body qlcv">
                             {/* Seach theo thời gian */}

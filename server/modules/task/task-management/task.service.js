@@ -2878,12 +2878,35 @@ exports.getTaskAnalyseOfUser = async (portal, userId, type, date) => {
  * @param {*} userId-(optional)
  * @param {*} month
  * @param {*} year
- * @param {*} action-bằng true nếu cần truy vấn từng hoạt động cụ thể
+ * @param {*} requireActions
  */
-exports.getUserTimeSheet = async (portal, userId, month, year, action=false) => {
+exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) => {
     let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
+    // Nếu cần chi lấy chi tiết từng hoạt động trong công việc
+    if (requireActions == 'true') {
+        let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            {
+                $match: {
+                    "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
+                    "taskActions.timesheetLogs.startedAt": {$exists: true},
+                    "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
+                    "taskActions.timesheetLogs.stoppedAt": {$exists: true},
+                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
+                }
+            },
+            {
+                $project: {
+                    "name": 1,
+                    "taskActions.description": 1,
+                    "taskActions.timesheetLogs": 1
+                }
+            }
+        ]);
+        console.log(tsl);
+        return tsl;
+    }
     if (userId) {
         /**
          * Nếu trong query có userId thì trả về timesheetLogs của user với ID đó
@@ -2891,16 +2914,33 @@ exports.getUserTimeSheet = async (portal, userId, month, year, action=false) => 
         let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
             {
                 $match: {
-                    "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
-                    "timesheetLogs.startedAt": {$exists: true},
-                    "timesheetLogs.startedAt": {$gte: beginOfMonth},
-                    "timesheetLogs.stoppedAt": {$exists: true},
-                    "timesheetLogs.stoppedAt": {$lte: endOfMonth}
+                    "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
+                    "taskActions.timesheetLogs.startedAt": {$exists: true},
+                    "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
+                    "taskActions.timesheetLogs.stoppedAt": {$exists: true},
+                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
                 }
             },
+            {$unwind: "$taskActions"},
+            {$replaceRoot: {
+                newRoot: { 
+                    $mergeObjects: 
+                    [
+                        { _id: "$_id", name: "$name", actionDescription: "$taskActions.description", actionId: "$taskActions._id"},
+                        "$taskActions"
+                    ]
+                }
+            }},
             {$unwind: "$timesheetLogs"},
-            {$replaceRoot: {newRoot: {$mergeObjects: [{_id: "$_id", name: "$name"}, "$timesheetLogs"]}}},
-
+            {$replaceRoot: {
+                newRoot: { 
+                    $mergeObjects: 
+                    [
+                        { _id: "$_id", name: "$name", actionDescription: "$actionDescription", actionId: "$actionId"},
+                        "$timesheetLogs"
+                    ]
+                }
+            }},
             {
                 $match: {
                     "creator": mongoose.Types.ObjectId(userId),

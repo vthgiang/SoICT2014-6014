@@ -25,7 +25,6 @@ export const taskManagementService = {
     getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,
-    getUserTimeSheetLog,
     getAllUserTimeSheet,
 
     addNewProjectTask,
@@ -463,19 +462,11 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
     }, false, true, 'task.task_management');
 }
 
-function getTimeSheetOfUser(userId, month, year) {
+function getTimeSheetOfUser(userId, month, year, requireActions) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/time-sheet`,
         method: 'GET',
-        params: { userId, month, year }
-    }, false, true, 'task.task_management');
-}
-
-function getUserTimeSheetLog(userId, month, year) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/time-sheet`,
-        method: 'GET',
-        params: { userId, month, year }
+        params: { userId, month, year, requireActions }
     }, false, true, 'task.task_management');
 }
 

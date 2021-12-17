@@ -1011,8 +1011,8 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
 exports.getUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let { userId, month, year } = req.query;
-        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year);
+        let { userId, month, year, requireActions } = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
         res.status(200).json({
