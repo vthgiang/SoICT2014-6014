@@ -290,11 +290,11 @@ function GoodManagement(props) {
                         {translate("manage_warehouse.good_management.equipment")}
                     </a>
                 </li>}
-                {/* { checkManagementGood('waste') && <li className={`${state.activeW ? "active" : ''}`}>
+                { checkManagementGood('waste') && <li className={`${state.activeW ? "active" : ''}`}>
                         <a href="#good-wastes" data-toggle="tab" onClick={() => handleWaste()}>
                             {translate("manage_warehouse.good_management.waste")}
                         </a>
-                    </li>} */}
+                    </li>}
             </ul>
             <div className="box-body qlcv">
                 <GoodCreateForm type={type} />

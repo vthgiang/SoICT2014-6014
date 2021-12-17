@@ -49,6 +49,8 @@ exports.links = [
             { path: '/system-admin/system-link/system-links', method: 'GET' },
             { path: '/system-admin/system-link/system-links', method: 'POST' },
 
+            { path: '/system-admin/system-page/apis', method: 'GET' },
+
             { path: '/links-default-management/paginate', method: 'POST' },
             { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'GET' },
             { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'PATCH' },

@@ -868,7 +868,9 @@ function GoodReturnEditForm(props) {
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
                                                 <label>{translate('manage_warehouse.bill_management.quantity_return')}</label>
-                                                <div style={{ display: "flex" }}><input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => addQuantity()}></i></div>
+                                                <div style={{ display: "flex" }}>
+                                                    <input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={handleQuantityChange} type="number" />
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -878,6 +880,7 @@ function GoodReturnEditForm(props) {
                                             </div>
                                         </div>
                                         <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                        <button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</button>
                                             {state.editInfo &&
                                                 <React.Fragment>
                                                     <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>

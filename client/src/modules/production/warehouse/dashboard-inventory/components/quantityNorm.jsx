@@ -122,7 +122,7 @@ function QuantityNorm(props) {
                     <div className="form-inline" style={{ display: 'flex' }}>
                         <div className="form-group" style={{ display: 'flex', marginRight: '20px' }}>
                             <label>Kho</label>
-                            <SelectMulti id="multiSelectOrganizati"
+                            <SelectMulti id="multiSelectStock"
                                 items={[
                                     { value: '1', text: 'Tạ Quang Bửu' },
                                     { value: '2', text: 'Trần Đại Nghĩa' },
@@ -137,7 +137,7 @@ function QuantityNorm(props) {
                         <div className="form-group" style={{ display: 'flex' }}>
                             <label>Mặt hàng</label>
                             <SelectBox
-                                id="multiSelectOrgan"
+                                id="multiSelectProduct"
                                 className="form-control select2"
                                 items={inventoryDashboard.map((x, index) => { return { value: x._id, text: x.name } })}
                                 // onChange={handleSelectOrganizationalUnit}
@@ -148,7 +148,7 @@ function QuantityNorm(props) {
                         <div className="form-group" style={{ display: 'flex' }}>
                             <label>Thống kê theo</label>
                             <SelectBox
-                                id="multiSelectO"
+                                id="multiSelect"
                                 className="form-control select2"
                                 items={[
                                     { value: '1', text: 'Tháng' },
