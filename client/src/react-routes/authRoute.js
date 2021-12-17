@@ -4,7 +4,8 @@ import { getStorage } from '../config';
 
 export const AuthRoute = ({ auth, component: Component, layout: Layout, ...rest }) => {
     const location = useLocation();
-    let redirectPagePath = location.pathname;
+
+    let redirectPagePath = location.pathname + location.search;
     redirectPagePath = redirectPagePath.replace('/login', '');
 
     if(redirectPagePath === '' || redirectPagePath === '/') redirectPagePath = '/home';
