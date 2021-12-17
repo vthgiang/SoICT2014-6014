@@ -13,7 +13,7 @@ import GeneralTaskPersonalChart from './generalTaskPersonalChart';
 import { InprocessTask } from './inprocessTask';
 import { LoadTaskChart } from './loadTaskChart';
 
-import { DatePicker, LazyLoadComponent } from '../../../../common-components';
+import { DatePicker, LazyLoadComponent, ExportExcel } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 
@@ -321,6 +321,8 @@ function TaskDashboard(props) {
     let { startMonthTitle, endMonthTitle } = infoSearch;
     let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
 
+    console.log("timesheet", userTimeSheetLogs);
+
     let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0, amountInformedTasks = 0;
     let totalTasks = 0;
     let newNumTask = [], listTasksGeneral = [];
@@ -361,6 +363,37 @@ function TaskDashboard(props) {
         listTasksGeneral = filterDifference(listTasksGeneral);
 
         totalTasks = newNumTask.length;
+    }
+
+    let dataTimeSheetLogsExport = {
+        fileName: `${translate('task.task_dashboard.statistical_timesheet_logs')} ${state.monthTimeSheetLog}`,
+        dataSheets: [
+            {
+                sheetTitle: `${translate('task.task_dashboard.statistical_timesheet_logs')} ${state.monthTimeSheetLog}`,
+                sheetName: `${translate('task.task_dashboard.statistical_timesheet_logs')}`,
+                sheetTitleWidth: 6,
+                tables: [
+                    {
+                        columns: [
+                            {key: 'STT', value: 'STT', width: 7},
+                            {key: 'name', value: 'Tên công việc', width: 20},
+                            {key: 'startedAt', value: 'Thời gian bắt đầu', width: 25},
+                            {key: 'stoppedAt', value: 'Thời gian kết thúc', width: 25},
+                            {key: 'type', value: 'Loại bấm giờ', width: 15},
+                            {key: 'duration', value: 'Bấm giờ', width: 10},
+                        ],
+                        data: userTimeSheetLogs.map((tsl, index) => ({
+                            STT: index + 1,
+                            name: tsl.name ? tsl.name : '...',
+                            startedAt: tsl.startedAt ? dayjs(tsl.startedAt).format("DD-MM-YYYY h:mm:ss A") : '...',
+                            stoppedAt: tsl.stoppedAt ? dayjs(tsl.stoppedAt).format("DD-MM-YYYY h:mm:ss A") : '...',
+                            type: tsl.autoStopped ? convertType(tsl.autoStopped) : '...',
+                            duration: tsl.duration ? convertTime(tsl.duration) : '...',
+                        }))
+                    }
+                ]
+            }
+        ]
     }
 
     return (
@@ -704,8 +737,12 @@ function TaskDashboard(props) {
                                     />
                                 </div>
                                 <button className="btn btn-primary" onClick={getUserTimeSheetLogs}>Thống kê</button>
+                                <ExportExcel 
+                                    id="export-personal-timesheets-logs" 
+                                    style={{right: 0}} 
+                                    exportData={dataTimeSheetLogsExport}
+                                />
                             </div>
-
                             <div>
                                 <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
                                     <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
