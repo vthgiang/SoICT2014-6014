@@ -740,6 +740,12 @@ export default {
                 system_api_exist: 'System API đã tồn tại'
             },
 
+            system_page: {
+                //Thông điệp trả về từ server
+                get_system_page_apis_success: 'Lấy system page API thành công',
+                get_system_page_api_failure: 'Lấy system page API thất bại',
+            },
+
             privilege_system_api: {
                 cancel: 'Hủy phân quyền API',
                 delete: 'Xóa phân quyền API',
@@ -1475,6 +1481,10 @@ export default {
             edit_success: "Chỉnh sửa thành công",
             edit_faile: "Chỉnh sửa thất bại",
             category: "Danh mục",
+        },
+
+        manage_api: {
+            description: "Mô tả api",
         },
 
         manage_component: {
@@ -5370,7 +5380,7 @@ export default {
                 error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
                 list_roles: "Chức vụ trưởng đơn vị",
                 manage_roles: "Các role có quyền quản lý",
-                manage_roles_description:"Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
+                manage_roles_description: "Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
                 role_manages_another: "Các quyền quản lý khác",
                 no_roles: "Không có",
             },

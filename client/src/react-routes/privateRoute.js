@@ -31,7 +31,7 @@ const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Com
             } 
             return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{
-            return <Redirect to={{ pathname: `/login${location.pathname}`, state: { from: props.location } }} />
+            return <Redirect to={{ pathname: `/login${location.pathname}${location.search}`, state: { from: props.location } }} />
         }
     }} />
 }
