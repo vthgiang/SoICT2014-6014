@@ -7,6 +7,7 @@ export const AssetLotManagerActions = {
     createAssetLot,
     updateAssetLot,
     deleteAssetLots,
+    getAssetLotInforById,
 };
 
 /**
@@ -116,11 +117,45 @@ function deleteAssetLots(data) {
 }
 
 /**
+ * Lấy thông tin lô tài sản
+ * @param {*} id 
+ * @returns 
+ */
+function getAssetLotInforById(id) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetLotConstants.GET_ASSET_LOT_INFOR_REQUEST,
+        });
+        AssetLotService.getAssetLotInforById(id)
+            .then((res) => {
+                dispatch({
+                    type: AssetLotConstants.GET_ASSET_LOT_INFOR_SUCCESS,
+                    payload: res.data.content,
+                });
+            }).catch((err) => {
+                dispatch({
+                    type: AssetLotConstants.GET_ASSET_LOT_INFOR_FAILURE,
+                    error: err,
+                });
+            });
+    }
+}
+
+/**
  * 
  * action thay doi state reducer
  */
+export const saveListAssetsAction = (listAssets) => ({
+    type: AssetLotConstants.UPDATE_LIST_ASSETS_ACTION, // dinh danh cho action
+    listAssets: listAssets
+})
 
-export const testAction = (data) => ({
-    type: AssetLotConstants.TEST_ACTION, // dinh danh cho action
-    data: data
+export const updateAssetLotAction = (assetLot) => ({
+    type: AssetLotConstants.UPDATE_ASSET_LOT_ACTION, // dinh danh cho action
+    assetLot: assetLot,
+})
+
+export const putAssetLotCurrentAction = (currentRow)=>({
+    type: AssetLotConstants.PUT_ASSETLOT_CURRENT_ROW,
+    currentRow
 })

@@ -2646,8 +2646,6 @@ export default {
 
             //Quản lý lô tài sản
             asset_lot: {
-                get_list_asset_lot_success: "Get list asset lot successfully",
-                get_list_asset_lot_false: "Get list asset lot failse",
 
                 asset_lot_code: "Asset lot code",
                 asset_lot_name: "Asset lot name",
@@ -2658,6 +2656,7 @@ export default {
                 start_number: "Start number",
                 step_number:"self-incrementing number",
                 generate_code: "Generate",
+                generate_asset_lot_code: "Gen code",
 
                 view: "View asset lot information",
                 edit_info: "Edit asset lot information",
@@ -2673,6 +2672,8 @@ export default {
                 update_asset_lot_failed: "Update asset lot failed",
                 delete_asset_lot_success: "Delete asset lot success",
                 delete_asset_lot_false: "Delete asset lot failed",
+                get_asset_lot_by_id_success: "Get asset lot information success",
+                get_asset_lot_by_id_false: "Get asset lot information failed",
 
                 assets_information: "Assets information in lot"
             },

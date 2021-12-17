@@ -2818,9 +2818,6 @@ export default {
 
             //Quản lý lô tài sản
             asset_lot: {
-                get_list_asset_lot_success: "Lấy thông tin lô tài sản thành công",
-                get_list_asset_lot_false: "Lấy thông tin lô tài sản thất bại",
-
                 asset_lot_code: "Mã lô tài sản",
                 asset_lot_name: "Tên lô tài sản",
                 supplier: "Nhà cung cấp",
@@ -2830,6 +2827,7 @@ export default {
                 start_number: "Ký tự bắt đầu",
                 step_number: "Số tự tăng",
                 generate_code: "Sinh tài sản",
+                generate_asset_lot_code: "Sinh mã",
 
                 view: "Xem thông tin lô tài sản",
                 edit_info: "Chỉnh sửa thông tin lô tài sản",
@@ -2845,6 +2843,9 @@ export default {
                 update_asset_lot_failed: "Cập nhật thông tin lô tài sản thất bại",
                 delete_asset_lot_success: "Xóa lô tài sản thành công",
                 delete_asset_lot_false: "Xóa lô tài sản thất bại",
+                get_asset_lot_by_id_success: "Lấy thông tin lô tài sản thành công",
+                get_asset_lot_by_id_false: "Lấy thông tin lô tài sản thất bại",
+
 
                 assets_information: "Thông tin các tài sản trong lô"
             },

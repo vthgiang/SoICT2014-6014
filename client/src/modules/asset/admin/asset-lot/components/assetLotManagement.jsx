@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import Swal from "sweetalert2";
 import { DeleteNotification, PaginateBar, SelectMulti, SmartTable, TreeSelect } from "../../../../../common-components";
@@ -10,6 +10,9 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetLotManagerActions } from "../redux/actions";
 import { AssetLotCreateForm } from "./assetLotCreateForm";
+import { AssetManagerActions } from "../../asset-information/redux/actions";
+import { AssetLotDetailForm } from "./assetLotDetailForm";
+import { AssetLotEditForm } from "./assetLotEditForm";
 
 const getAssetLotName = (listAssetLot, idAssetLot) => {
     let assetLotName;
@@ -46,7 +49,7 @@ function AssetLotManagement(props) {
     }
 
     const { assetLotManager, assetType, translate, isActive } = props;
-    const { page, limit, tableId, group } = state;
+    const { page, limit, tableId, group, currentRowView, currentRow } = state;
 
     useEffect(() => {
         props.getAllAssetLots(state);
@@ -82,28 +85,16 @@ function AssetLotManagement(props) {
     }
 
     const handleDeleteAnAssetLot = (id) => {
+        //console.log("hang delete id",id);
         props.deleteAssetLot({
             assetLotIds: [id]
         });
     }
 
-    // Bắt sự kiện click xem thông tin tài sản
-    const handleView = async (value) => {
-        await setState({
-            ...state,
-            currentRowView: value
-        });
-        window.$('#modal-view-asset-lot').modal('show');
-    }
-
+    let assetLot = useSelector(state => state.assetLotManager.assetLot);
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     const handleEdit = async (value) => {
-        await setState(state => {
-            return {
-                ...state,
-                currentRow: value
-            }
-        });
+        props.getAssetLotInforById(value._id);
         window.$('#modal-edit-asset-lot').modal('show');
     }
 
@@ -228,15 +219,23 @@ function AssetLotManagement(props) {
         else return null;
     }
 
+    // Bắt sự kiện click xem thông tin tài sản
+    const handleView = async (value) => {
+        //console.log("hang view currentRowView",value);
+        await setState({
+            ...state,
+            currentRowView: value
+        });
+        props.getAssetLotInforById(value._id);
+        // console.log("hang view currentRowView",currentRowView);
+        window.$('#modal-view-asset-lot').modal('show');
+    }
+
     var lists = "";
     var assettypelist = assetType.listAssetTypes;
     let typeArr = getAssetTypes();
     let assetTypeName = state.assetType ? state.assetType : [];
 
-    // if (assetLotManager.isLoading === false) {
-    //     lists = assetLotManager.listAssetLots;
-    // }
-    //console.log("hang assetLotManager.listAssetLots", assetLotManager.listAssetLots);
     var pageTotal = ((assetLotManager.totalList % limit) === 0) ?
         parseInt(assetLotManager.totalList / limit) :
         parseInt((assetLotManager.totalList / limit) + 1);
@@ -250,8 +249,6 @@ function AssetLotManagement(props) {
                     <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_lot_title')} >{translate('menu.add_update_asset_lot')}</button>
                     <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                         <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset-lot').modal('show')}>{translate('menu.add_asset_lot')}</a></li>
-                        {/* <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-add').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
-                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-update').modal('show')}>{translate('human_resource.profile.employee_management.update_import')}</a></li> */}
                     </ul>
                 </div>
                 <AssetLotCreateForm />
@@ -314,7 +311,7 @@ function AssetLotManagement(props) {
                     </div>
                     {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
                 </div>
-               
+
                 <SmartTable
                     tableId={tableId}
                     columnData={{
@@ -339,6 +336,7 @@ function AssetLotManagement(props) {
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                     }}
                     tableBodyData={assetLotManager.listAssetLots?.length > 0 && assetLotManager.listAssetLots.map((x, index) => {
+                        //console.log("hang x data manager:",x.assetType);
                         return {
                             id: x?._id,
                             index: <td>{index + 1}</td>,
@@ -350,8 +348,8 @@ function AssetLotManagement(props) {
                             price: <td>{x.price}</td>,
                             supplier: <td>{x.supplier}</td>,
                             action: <td style={{ textAlign: "center" }}>
-                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} ><i className="material-icons">visibility</i></a>
-                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} ><i className="material-icons">edit</i></a>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleView(x)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(x)}><i className="material-icons">edit</i></a>
                                 <DeleteNotification
                                     content={translate('asset.general_information.delete_info')}
                                     data={{
@@ -383,24 +381,64 @@ function AssetLotManagement(props) {
                 />
             </div>
 
+            {/* Form xem thông tin tài sản */}
+            {
+                currentRowView &&
+                <AssetLotDetailForm
+                    _id={currentRowView._id}
+                    avatar={currentRowView.avatar}
+                    code={currentRowView.code}
+                    assetLotName={currentRowView.assetLotName}
+                    assetType={currentRowView.assetType}
+                    price={currentRowView.price}
+                    total={currentRowView.total}
+                    supplier={currentRowView.supplier}
+
+                    archivedRecordNumber={currentRowView.archivedRecordNumber}
+                    files={currentRowView.documents}
+                    linkPage={"management"}
+                />
+            }
+
+            {/* Form chinh sua thông tin tài sản */}
+            {
+                assetLot &&
+                <AssetLotEditForm
+                    _id={assetLot._id}
+                    avatar={assetLot.avatar}
+                    code={assetLot.code}
+                    assetLotName={assetLot.assetLotName}
+                    group={assetLot.group}
+                    assetType={assetLot.assetType}
+                    price={assetLot.price}
+                    total={assetLot.total}
+                    supplier={assetLot.supplier}
+
+                    archivedRecordNumber={assetLot.archivedRecordNumber}
+                    files={assetLot.documents}
+                    linkPage={"management"}
+                />
+            }
 
         </div>
     );
 };
 
 function mapState(state) {
-    const { assetLotManager, assetType, auth, user, role, department, } = state;
-    return { assetLotManager, assetType, auth, user, role, department, };
+    const { assetLotManager, assetType, auth, user, role, department, assetsManager } = state;
+    return { assetLotManager, assetType, auth, user, role, department, assetsManager };
 };
 
 const actionCreators = {
     getAssetTypes: AssetTypeActions.getAssetTypes,
     getAllAssetLots: AssetLotManagerActions.getAllAssetLots,
     deleteAssetLot: AssetLotManagerActions.deleteAssetLots,
+    getAssetLotInforById: AssetLotManagerActions.getAssetLotInforById,
 
     getUser: UserActions.get,
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
 };
 
 const assetLotManagement = connect(mapState, actionCreators)(withTranslate(AssetLotManagement));

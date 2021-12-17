@@ -59,10 +59,6 @@ exports.searchAssetLots = async (portal, params) => {
 exports.createAssetLot = async (portal, company, data, fileInfo) => {
     let checkAssetLot = [];
     data = freshObject(data);
-    //console.log("hang data", data);
-    // const session = await mongoose.startSession();
-    // session.startTransaction();
-
     //kiểm tra trùng mã lô tài sản
     let checkCodeAssetLot = await AssetLot(
         connect(DB_CONNECTION, portal)
@@ -81,20 +77,14 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
                 ? data.avatar
                 : fileInfo.avatar,
             file = fileInfo && fileInfo.file;
-
         let {
             listAssets,
             files,
         } = data;
-        files = files && this.mergeUrlFileToObject(file, files);
 
-        //thêm lô tài sản vào db
-        //const db = await mongoose.createConnection(DB_CONNECTION);
-        // const session = await DB_CONNECTION.startSession();
-        // session.startTransaction();
-        //try {
-        //const opts = { session };
+        files = files && AssetService.mergeUrlFileToObject(file, files);
         var createAssetLot = await AssetLot(connect(DB_CONNECTION, portal)).create({
+            avatar: avatar,
             company: company,
             code: data.code,
             assetLotName: data.assetLotName,
@@ -103,7 +93,7 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
             group: data.group ? data.group : "other",
             total: data.total,
             price: data.price,
-            document: files
+            documents: files
         });
 
         //thêm từng tài sản vào db asset
@@ -111,18 +101,7 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
             return {
                 ...item,
                 company: company,
-                avatar: avatar,
-                assetName: data.assetLotName,
                 assetLot: createAssetLot._id,
-                assetType: data.assetType,
-                group: data.group ? data.group : "other",
-                purchaseDate: data.purchaseDate
-                    ? data.purchaseDate
-                    : undefined,
-                warrantyExpirationDate: data.warrantyExpirationDate
-                    ? data.warrantyExpirationDate
-                    : undefined,
-                //khấu hao của các tài sản trong lô là giống nhau
                 cost: data.cost ? data.cost : 0,
                 usefulLife: data.usefulLife ? data.usefulLife : 0,
                 residualValue: data.residualValue,
@@ -135,28 +114,14 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
 
         for (let i = 0; i < listAssets.length; i++) {
             listAssets[i] = freshObject(listAssets[i]);
-            await Asset(connect(DB_CONNECTION, portal)).create(listAssets[i]);
         }
+        await AssetService.createAsset(portal, company, listAssets);
 
         //lấy thông tin lô tài sản vừa thêm
         let assetLot = await AssetLot(connect(DB_CONNECTION, portal)).find({
             _id: createAssetLot._id
         }).populate({ path: 'assetType' });
-        //console.log("hang service assetLot",assetLot);
-
-        // await session.commitTransaction();
-        // session.endSession();
         return { assetLot };
-        //}
-        // } catch(ex) {
-        //     console.log('loi',ex.toString());
-        //     // await session.abortTransaction();
-        //     // session.endSession();
-        //     throw {
-        //         messages: "create_asset_lot_failed",
-        //     };
-        // }
-
     } else {
         throw {
             messages: "asset_lot_code_exist",
@@ -165,15 +130,24 @@ exports.createAssetLot = async (portal, company, data, fileInfo) => {
     }
 }
 
-exports.updateAssetLot = async (portal, company, id, data, fileInfo) => {
+exports.updateAssetLot = async (portal, company, userId, id, data, fileInfo) => {
     data = freshObject(data);
+    let avatar =
+        fileInfo && fileInfo.avatar === ""
+            ? data.avatar
+            : fileInfo.avatar;
     let file = fileInfo && fileInfo.file;
     let {
+        deleteAssetInLot,
+        createFiles,
+        editFiles,
+        deleteFiles,
         files,
+        listAssets,
     } = data;
-    files = files && this.mergeUrlFileToObject(file, files);
+    files = files && AssetService.mergeUrlFileToObject(file, files);
     let oldLot = await AssetLot(connect(DB_CONNECTION, portal)).findById(id);
-    //console.log("hang qlcv: ", oldLot);
+
     //cho phép sửa mã lô, tên lô, nhà cung cấp, khấu hao, loại tài sản, nhóm tài sản
     if (oldLot.code !== data.code) {
         let checkCodeAsset = await AssetLot(
@@ -188,48 +162,80 @@ exports.updateAssetLot = async (portal, company, id, data, fileInfo) => {
         //console.log("hang qlcv asset: ", arrAssetEdit);
     }
 
-    /* thay đổi mã tài sản, nhóm tài sản, loại tài sản, ngày mua, ngày hết hạn bảo hành,
-    thông tin khấu hao của các tài sản trong lô */
-    let arrAssetEdit = await Asset(connect(DB_CONNECTION, portal))
-        .find({ assetLot: mongoose.Types.ObjectId(oldLot._id) });
-    let lengthOldCode = oldLot.code.length;
-    for (let i = 0; i < arrAssetEdit.length; i++) {
-        var oldAsset = await Asset(
-            connect(DB_CONNECTION, portal)
-        ).findOne({
-            _id: arrAssetEdit[i]._id,
-        });
-        if (oldAsset.code.includes(oldLot.code)) {
-            oldAsset.code = oldAsset.code.replace(oldLot.code, data.code);
+    deleteEditCreateObjectInArrayObject = (
+        arrObject,
+        arrDelete,
+        arrEdit,
+        arrCreate,
+        fileInfor = undefined
+    ) => {
+        if (arrDelete) {
+            for (let n in arrDelete) {
+                arrObject = arrObject.filter(
+                    (x) => x._id.toString() !== arrDelete[n]._id
+                );
+            }
         }
-        oldAsset.group = data.group;
-        oldAsset.assetType = typeof (data.assetType) === "string" ? JSON.parse(data.assetType) : data.assetType;
-        oldAsset.purchaseDate = data.purchaseDate;
-        oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
-        //khấu hao
-        oldAsset.cost = data.cost;
-        oldAsset.usefulLife = data.usefulLife;
-        oldAsset.residualValue = data.residualValue;
-        oldAsset.startDepreciation = data.startDepreciation;
-        oldAsset.depreciationType = data.depreciationType
-            ? data.depreciationType
-            : "none";
-        await oldAsset.save();
-    }
 
+        if (arrEdit) {
+            if (fileInfor) {
+                arrEdit = this.mergeUrlFileToObject(fileInfor, arrEdit);
+            }
+            for (let n in arrEdit) {
+                arrObject = arrObject.map((x) =>
+                    x._id.toString() !== arrEdit[n]._id ? x : arrEdit[n]
+                );
+            }
+        }
+
+        if (arrCreate) {
+            if (fileInfor) {
+                arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
+            }
+            arrCreate.forEach((x) => {
+                if (x.incidentCode && arrObject.some(curNode => curNode.incidentCode === x.incidentCode))
+                    throw ['incident_code_exist'];
+                arrObject.push(x)
+            });
+        }
+
+        return arrObject;
+    };
+
+    oldLot.documents = deleteEditCreateObjectInArrayObject(
+        oldLot.documents,
+        deleteFiles,
+        editFiles,
+        createFiles,
+        file
+    );
+
+    oldLot.avatar = avatar;
     oldLot.code = data.code;
     oldLot.assetLotName = data.assetLotName;
     oldLot.supplier = data.supplier;
-    oldAsset.group = data.group;
-    oldAsset.total = data.total;
-    oldAsset.price = data.price;
-    oldAsset.assetType = typeof (data.assetType) === "string" ? JSON.parse(data.assetType) : data.assetType;
+    oldLot.group = data.group;
+    oldLot.total = data.total;
+    oldLot.price = data.price;
+    oldLot.assetType = typeof (data.assetType) === "string" ? JSON.parse(data.assetType) : data.assetType;
     await oldLot.save();
-    let assetLot = await AssetLot(connect(DB_CONNECTION, portal)).findById(id);
+
+    if (deleteAssetInLot !== undefined && deleteAssetInLot.length > 0) {
+        await AssetService.deleteAsset(portal, deleteAssetInLot);
+    }
+    listAssets.forEach(element => {
+
+        AssetService.updateAssetInformation(portal, company, userId, element._id, element);
+    });
+
+    let assetLot = await await AssetLot(connect(DB_CONNECTION, portal)).find({
+        _id: oldLot._id
+    }).populate({ path: 'assetType' });
     return assetLot;
 }
 
 exports.deleteAssetLots = async (portal, assetLotIds) => {
+    //console.log("hang deleteID ", assetLotIds);
     let assetLots = await AssetLot(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: assetLotIds.map(item => mongoose.Types.ObjectId(item)) } });
 
@@ -239,4 +245,13 @@ exports.deleteAssetLots = async (portal, assetLotIds) => {
 
     return assetLots;
 
+}
+
+exports.getAssetLotInforById = async (portal, assetLotIds) => {
+    let assetLot = await AssetLot(connect(DB_CONNECTION, portal))
+        .findById(assetLotIds);
+    let listAssets = await Asset(connect(DB_CONNECTION, portal))
+        .find({ assetLot: mongoose.Types.ObjectId(assetLotIds) })
+        .populate({ path: 'assetType' });;
+    return { assetLot, listAssets }
 }

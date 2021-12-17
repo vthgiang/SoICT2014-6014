@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { DialogModal } from "../../../../../common-components";
 import { convertJsonObjectToFormData } from "../../../../../helpers/jsonObjectToFormDataObjectConverter";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { AssetLotManagerActions } from "../redux/actions";
+import { AssetLotManagerActions, saveListAssetsAction, updateAssetLotAction } from "../redux/actions";
 import {
     GeneralTab, UsageLogTab, MaintainanceLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
 } from '../../../base/create-tab/components/combinedContent';
@@ -12,36 +12,38 @@ import { GeneralLotTab } from "../../../base/create-tab/components/generalLotTab
 
 function AssetLotCreateForm(props) {
     const [state, setState] = useState({
-        assetLot: {
-            code: "",
-            assetName: "",
-            assetType: "",
-            //group: null,
-            total: 0,
-            price: 0,
-            supplier: "",
-            purchaseDate: null,
-            warrantyExpirationDate: null,
+        // assetLot: {
+        //     code: "",
+        //     assetName: "",
+        //     assetType: "",
+        //     total: 0,
+        //     price: 0,
+        //     supplier: "",
+        //     purchaseDate: null,
+        //     warrantyExpirationDate: null,
 
-            status: "",
-            typeRegisterForUse: "",
-            // managedBy: null,
-            // readByRoles: null,
+        //     status: "",
+        //     typeRegisterForUse: "",
 
-            //khấu hao của các tài sản trong lô là giống nhau
-            cost: null,
-            usefulLife: null,
-            residualValue: null,
-            startDepreciation: null,
-            depreciationType: null,
-        },
+        //     //khấu hao của các tài sản trong lô là giống nhau
+        //     cost: null,
+        //     usefulLife: null,
+        //     residualValue: null,
+        //     startDepreciation: null,
+        //     depreciationType: null,
+        // },
         avatar: "",
-        listAssets: [],
+        //listAssets: [],
         files: [],
     });
 
+    const dispatch = useDispatch();
+    let listAssets = useSelector(state => state.assetLotManager.listAssets);
+    let assetLot = useSelector(state => state.assetLotManager.assetLot);
+    //console.log("hang createform assetLot", assetLot);
+
     const { translate, assetLotManager } = props;
-    const { assetLot, files, avatar, listAssets } = state;
+    const { files, avatar, } = state;
 
     useEffect(() => {
         props.getAllUsers();
@@ -75,13 +77,13 @@ function AssetLotCreateForm(props) {
             ...state,
             img: img,
             avatar: avatar,
-            listAssets: listAssets,
+            //listAssets: listAssets,
         });
     }
 
     //lưu các trường thông tin chung của lô tài sản vào state
     const handleChange = (name, value) => {
-        const { assetLot } = state;
+        //const { assetLot } = state;
         if (name === 'purchaseDate' || name === 'warrantyExpirationDate' ||
             name === 'startDepreciation' || name === 'disposalDate') {
             if (value) {
@@ -92,16 +94,27 @@ function AssetLotCreateForm(props) {
             }
         }
 
+        if (listAssets && listAssets.length > 0 && name !== 'code') {
+            listAssets = listAssets.map(item => {
+                return {
+                    ...item,
+                    [name]: value
+                }
+            });
+            dispatch(saveListAssetsAction(listAssets));
+        }
+
         assetLot[name] = value;
-        setState({
-            ...state,
-            assetLot: assetLot
-        });
+        dispatch(updateAssetLotAction(assetLot));
+        // setState({
+        //     ...state,
+        //     assetLot: assetLot
+        // });
     }
 
     //thêm trạng thái chung cho các tài sản
     const handleStatusChange = (value) => {
-        let { listAssets, assetLot } = state;
+        //let { assetLot } = state;
         if (listAssets && listAssets.length > 0) {
             listAssets = listAssets.map(item => {
                 return {
@@ -109,41 +122,43 @@ function AssetLotCreateForm(props) {
                     status: value
                 }
             });
+            dispatch(saveListAssetsAction(listAssets));
         }
 
         assetLot.status = value;
-        setState({
-            ...state,
-            assetLot: assetLot,
-            listAssets: listAssets
-        });
+        dispatch(updateAssetLotAction(assetLot));
+        // setState({
+        //     ...state,
+        //     assetLot: assetLot,
+        // });
     }
 
     //thêm quyeenf dk su dung cho các tài sản
     const handleTypeRegisterChange = (value) => {
-        //console.log("hang typeRegister",value);
-        let { listAssets, assetLot } = state;
+        //let { assetLot } = state;
         if (listAssets && listAssets.length > 0) {
+            console.log("hang typeRegister", value);
             listAssets = listAssets.map(item => {
                 return {
                     ...item,
                     typeRegisterForUse: value
                 }
             });
+            dispatch(saveListAssetsAction(listAssets));
         }
         assetLot.typeRegisterForUse = value;
-
-        setState({
-            ...state,
-            assetLot: assetLot,
-            listAssets: listAssets
-        });
+        dispatch(updateAssetLotAction(assetLot));
+        // setState({
+        //     ...state,
+        //     assetLot: assetLot,
+        //     //listAssets: listAssets
+        // });
     }
 
     //thêm người quản lý cho các tài sản
     const handleManageByChange = (value) => {
         // console.log("hang manageBy",value);
-        let { listAssets, assetLot } = state;
+        //let { assetLot } = state;
         if (value === "" || value.length === 0) {
             value = null;
         }
@@ -154,14 +169,15 @@ function AssetLotCreateForm(props) {
                     managedBy: value ? value : undefined
                 }
             });
+            dispatch(saveListAssetsAction(listAssets));
         }
         assetLot.managedBy = value ? value : undefined;
-
-        setState({
-            ...state,
-            assetLot: assetLot,
-            listAssets: listAssets
-        });
+        dispatch(updateAssetLotAction(assetLot));
+        // setState({
+        //     ...state,
+        //     assetLot: assetLot,
+        //     //listAssets: listAssets
+        // });
     }
 
     //thêm quyền xem cho các tài sản
@@ -170,7 +186,7 @@ function AssetLotCreateForm(props) {
         if (value === "" || value.length === 0) {
             value = null;
         }
-        let { listAssets, assetLot } = state;
+        //let { listAssets, assetLot } = state;
         if (listAssets && listAssets.length > 0) {
             listAssets = listAssets.map(item => {
                 return {
@@ -178,50 +194,20 @@ function AssetLotCreateForm(props) {
                     readByRoles: value ? value : undefined
                 }
             });
+            dispatch(saveListAssetsAction(listAssets));
         }
         assetLot.readByRoles = value ? value : undefined;
-
-        setState({
-            ...state,
-            assetLot: assetLot,
-            listAssets: listAssets
-        });
-    }
-
-    //Thêm, chỉnh sửa thông tin bảo trì
-    const handleChangeMaintainanceLog = (assetCode, addData) => {
-        let { listAssets } = state;
-        listAssets.find(asset => asset.code === assetCode).maintainanceLogs.push(addData);
-        setState({
-            ...state,
-            listAssets: listAssets
-        })
-    }
-
-    //Thêm, chỉnh sửa thông tin cấp phát, điều chuyển, thu hồi
-    const handleChangeUsageLog = (assetCode, addData) => {
-        let { listAssets } = state;
-        listAssets.find(asset => asset.code === assetCode).usageLogs.push(addData);
-        setState({
-            ...state,
-            listAssets: listAssets
-        });
-    }
-
-    // Function thêm, chỉnh sửa thông tin sự cố thiết bị
-    const handleChangeIncidentLog = (assetCode, addData) => {
-        let { listAssets } = state;
-        listAssets.find(asset => asset.code === assetCode).incidentLogs.push(addData);
-        setState({
-            ...state,
-            listAssets: listAssets
-        });
+        dispatch(updateAssetLotAction(assetLot));
+        // setState({
+        //     ...state,
+        //     assetLot: assetLot,
+        // });
     }
 
     // Function thêm thông tin tài liệu đính kèm
     const handleChangeFile = (data, addData) => {
-        const { files } = state
-        files.push(addData)
+        let { files } = state
+        files.push(addData);
         setState({
             ...state,
             files: files
@@ -239,11 +225,10 @@ function AssetLotCreateForm(props) {
 
     //function cập nhật danh sách tài sản cho lô
     const handleGenAssetCode = (startNumber, step, data, gen) => {
-        //console.log("hang qlcv listasset:", data);
-        let {listAssets} = state;
-        const {assetLot} = state;
+        //let {listAssets} = state;
+        //const { assetLot } = state;
         let total = assetLot.total;
-        if(gen){
+        if (gen) {
             if (listAssets) {
                 var number;
                 if (total >= listAssets.length) {
@@ -262,7 +247,10 @@ function AssetLotCreateForm(props) {
                             status: assetLot.status,
                             typeRegisterForUse: assetLot.typeRegisterForUse,
                             managedBy: assetLot.managedBy,
-                            readByRoles: assetLot.readByRoles
+                            readByRoles: assetLot.readByRoles,
+                            group: assetLot.group,
+                            assetType: assetLot.assetType,
+                            assetName: assetLot.assetName
                         });
                     }
                     //listAssets = listAssets;
@@ -275,7 +263,10 @@ function AssetLotCreateForm(props) {
                             typeRegisterForUse: assetLot.typeRegisterForUse,
                             managedBy: assetLot.managedBy,
                             readByRoles: assetLot.readByRoles,
-                            code: assetLot.code + number
+                            code: assetLot.code + number,
+                            group: assetLot.group,
+                            assetType: assetLot.assetType,
+                            assetName: assetLot.assetName
                         }
                     });
                 }
@@ -288,36 +279,23 @@ function AssetLotCreateForm(props) {
                         typeRegisterForUse: assetLot.typeRegisterForUse,
                         managedBy: assetLot.managedBy,
                         readByRoles: assetLot.readByRoles,
+                        group: assetLot.group,
+                        assetType: assetLot.assetType,
+                        assetName: assetLot.assetName
                     });
                 }
-    
-            }
-            setState({
-                ...state,
-                listAssets: listAssets
-            });
-        } else {
-            setState({
-                ...state,
-                listAssets: data
-            });
-        }
-    }
 
-    //function thêm các thông tin chung của tài sản trong lô tài sản
-    const handleChangeGeneral = (assetCode, addData) => {
-        const { listAssets } = state;
-        listAssets.find(asset => asset.code === assetCode).incidentLogs.push(addData);
-        setState({
-            ...state,
-            listAssets: listAssets
-        });
+            }
+        } else {
+            listAssets = data;
+        }
+        dispatch(saveListAssetsAction(listAssets));
+        dispatch(updateAssetLotAction(assetLot));
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     const isFormValidated = () => {
-        let { assetLot } = state;
-
+        //let { assetLot } = state;
         let result =
             validatorInput(assetLot.code) &&
             validatorInput(assetLot.assetName) &&
@@ -332,7 +310,8 @@ function AssetLotCreateForm(props) {
 
     //function thêm mới thông tin lô tài sản
     const save = () => {
-        let { avatar, files, assetLot, listAssets } = state;
+        let { avatar, files } = state;
+        //console.log("hang createForm assetLot",assetLot);
         let assetLotCreate = {
             avatar: avatar,
             files: files,
@@ -353,7 +332,6 @@ function AssetLotCreateForm(props) {
             depreciationType: assetLot.depreciationType,
             listAssets: listAssets
         }
-        console.log("hang save listasset: ", listAssets);
         let formData = convertJsonObjectToFormData(assetLotCreate);
         files.forEach(x => {
             if (x.hasOwnProperty('fileUpload')) {
@@ -394,7 +372,7 @@ function AssetLotCreateForm(props) {
                             handleTypeRegisterChange={handleTypeRegisterChange}
                             handleManageByChange={handleManageByChange}
                             handleReadByRolesChange={handleReadByRolesChange}
-                            listAssets={listAssets}
+                            //listAssets={listAssets}
                             assetLot={assetLot}
                             status={assetLot.status}
                             typeRegisterForUse={assetLot.typeRegisterForUse}
@@ -406,7 +384,7 @@ function AssetLotCreateForm(props) {
                             asset={assetLot}
                             handleChange={handleChange}
                         />
-                        
+
                         {/* Tài liệu đính kèm */}
                         <FileTab
                             id="attachments"

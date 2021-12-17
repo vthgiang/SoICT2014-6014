@@ -5,6 +5,7 @@ export const AssetLotService = {
     createAssetLot,
     updateAssetLot,
     deleteAssetLots,
+    getAssetLotInforById,
 };
 
 /**
@@ -80,6 +81,18 @@ function deleteAssetLots(data){
             },
         },
         true, 
+        true,
+        "asset.asset_lot"
+    );
+}
+
+function getAssetLotInforById(id){
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/assetlot/asset-lots/${id}`,
+            method: "GET",
+        },
+        false,
         true,
         "asset.asset_lot"
     );

@@ -8,6 +8,7 @@ const data = [{
 }]
 
 router.get("/asset-lots", auth, AssetLotController.searchAssetLots);
+router.get("/asset-lots/:id", auth, AssetLotController.getAssetLotInforById);
 router.post("/asset-lots", auth, uploadFile(data, 'fields'), AssetLotController.createAssetLot);
 router.patch('/asset-lots/:id', auth, uploadFile(data, 'fields'), AssetLotController.updateAssetLot);
 router.delete('/asset-lots', auth, AssetLotController.deleteAssetLots);

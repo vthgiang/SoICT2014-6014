@@ -5,7 +5,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { IncidentLogAddModal, IncidentLogEditModal } from './combinedContent';
 
 function IncidentLogTab(props) {
-    const [state, setState] = useState({})
+    const [state, setState] = useState({
+        incidentLogs: [],
+    })
     const [prevProps, setPrevProps] = useState({
         id: null
     })
@@ -45,8 +47,10 @@ function IncidentLogTab(props) {
 
     // Function thêm thông tin phiếu
     const handleAddIncident = (data) => {
-        const { incidentLogs } = state;
-
+        let { incidentLogs } = state;
+        if (incidentLogs === undefined) {
+            incidentLogs = [];
+        }
         const values = [...incidentLogs, data]
 
         setState(state => {
@@ -60,7 +64,10 @@ function IncidentLogTab(props) {
 
     // Function chỉnh sửa thông tin phiếu
     const handleEditIncident = (data) => {
-        const { incidentLogs } = state;
+        let { incidentLogs } = state;
+        if (incidentLogs === undefined) {
+            incidentLogs = [];
+        }
         incidentLogs[data.index] = data;
         data.reportedBy = data.reportedBy ? data.reportedBy : localStorage.getItem("userId");
 
@@ -75,7 +82,10 @@ function IncidentLogTab(props) {
 
     // Function bắt sự kiện xoá thông tin phiếu
     const handleDeleteIncident = (index) => {
-        var { incidentLogs } = state;
+        let { incidentLogs } = state;
+        if (incidentLogs === undefined) {
+            incidentLogs = [];
+        }
         var data = incidentLogs[index];
         incidentLogs.splice(index, 1);
         setState({
