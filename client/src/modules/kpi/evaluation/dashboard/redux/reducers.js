@@ -1,15 +1,15 @@
 import { dashboardEmployeeKpiConstants } from "./constants";
- 
-export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
+
+export function dashboardEvaluationEmployeeKpiSet(state = { isLoading: false }, action) {
   switch (action.type) {
-    case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_REQUEST:
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_REQUEST:
       return {
         ...state,
         loading: true,
         isLoading: true
       };
 
-    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_SUCCESS:      
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -18,20 +18,20 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
       };
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_FAILURE:
-      return { 
+      return {
         ...state,
         error: action.payload,
         isLoading: false
       };
-      
-    case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST:
+
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST:
       return {
         ...state,
         loading: true,
         isLoading: true
       };
 
-    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_SUCCESS:      
+    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -40,7 +40,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
       };
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_FAILURE:
-      return { 
+      return {
         ...state,
         error: action.payload,
         isLoading: false
@@ -55,7 +55,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
         isLoading: true
       };
 
-    case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS:   
+    case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS:
       return {
         ...state,
         childrenOrganizationalUnitLoading: true,
@@ -65,7 +65,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
       };
 
     case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_FAILURE:
-      return { 
+      return {
         ...state,
         childrenOrganizationalUnitLoading: true,
         error: action.payload,
