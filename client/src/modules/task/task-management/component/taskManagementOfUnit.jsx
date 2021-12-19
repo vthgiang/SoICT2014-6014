@@ -754,25 +754,25 @@ function TaskManagementOfUnit(props) {
                             {/* Tên công việc */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.name')}</label>
-                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangeName(e)} />
+                                <input autoComplete="off" className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => handleChangeName(e)} />
                             </div>
 
                             {/* Người thực hiện */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.responsible')}</label>
-                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => handleChangeResponsibleEmployees(e)} />
+                                <input autoComplete="off" className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => handleChangeResponsibleEmployees(e)} />
                             </div>
 
                             {/* Người phê duyệt */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.accountable')}</label>
-                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => handleChangeAccountableEmployees(e)} />
+                                <input autoComplete="off" className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => handleChangeAccountableEmployees(e)} />
                             </div>
 
                             {/* Người thiết lập */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.creator')}</label>
-                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => handleChangeCreatorEmployees(e)} />
+                                <input autoComplete="off" className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => handleChangeCreatorEmployees(e)} />
                             </div>
 
                             {/* Ngày bắt đầu */}

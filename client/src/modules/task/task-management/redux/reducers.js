@@ -586,6 +586,25 @@ export function tasks(state = {
                 isLoading: false
             };
 
+        case taskManagementConstants.GET_USER_TIME_SHEET_LOG_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case taskManagementConstants.GET_USER_TIME_SHEET_LOG_FAILURE:
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case taskManagementConstants.GET_USER_TIME_SHEET_LOG__SUCCESS:
+            return {
+                ...state,
+                userTimeSheetLogs: action.payload,
+                isLoading: false
+            };
+
 
         case taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST:
             return {
