@@ -125,7 +125,6 @@ function GoodReceiptCreateForm(props) {
                 text: item.name,
             });
         });
-        console.log("props", props);
         return supplierArr;
     };
 

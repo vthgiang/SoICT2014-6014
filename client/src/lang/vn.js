@@ -204,7 +204,8 @@ export default {
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
             task_process_template: "Mẫu quy trình",
-            all_time_sheet_log: 'Thống kê bấm giờ',
+            all_time_sheet_log: '-------',
+            personal_time_sheet_log: 'Thống kê bấm giờ',
 
             //*******START */
             // Quản lý tài sản
@@ -737,6 +738,12 @@ export default {
                 create_system_api_success: 'Thêm system API thành công',
                 create_system_api_failure: 'Thêm system API thất bại',
                 system_api_exist: 'System API đã tồn tại'
+            },
+
+            system_page: {
+                //Thông điệp trả về từ server
+                get_system_page_apis_success: 'Lấy system page API thành công',
+                get_system_page_api_failure: 'Lấy system page API thất bại',
             },
 
             privilege_system_api: {
@@ -1474,6 +1481,10 @@ export default {
             edit_success: "Chỉnh sửa thành công",
             edit_faile: "Chỉnh sửa thất bại",
             category: "Danh mục",
+        },
+
+        manage_api: {
+            description: "Mô tả api",
         },
 
         manage_component: {
@@ -5025,8 +5036,8 @@ export default {
                 choose_material: "Chọn nguyên vật liệu",
                 command_code: "Mã lệnh sản xuất",
                 mill_request: "Xưởng yêu cầu",
-                quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!"
-
+                quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!",
+                lot_with_unit: "Lô hàng (Mã lô/ Số lượng)",
 
             },
             inventory_management: {
@@ -5079,7 +5090,7 @@ export default {
                 get_lot_failed: "Lấy lô hàng thất bại",
                 push_lot: "Lô chưa được xếp vào kho",
                 text: "Hàng hóa chưa xếp hết vào kho",
-                add_lot: "Thêm mới lô hàng",
+                add_lot: "Đánh lô hàng",
                 select_lot: "Chọn lô hàng",
             },
         },
@@ -5369,7 +5380,7 @@ export default {
                 error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
                 list_roles: "Chức vụ trưởng đơn vị",
                 manage_roles: "Các role có quyền quản lý",
-                manage_roles_description:"Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
+                manage_roles_description: "Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
                 role_manages_another: "Các quyền quản lý khác",
                 no_roles: "Không có",
             },

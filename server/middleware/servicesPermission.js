@@ -49,6 +49,8 @@ exports.links = [
             { path: '/system-admin/system-link/system-links', method: 'GET' },
             { path: '/system-admin/system-link/system-links', method: 'POST' },
 
+            { path: '/system-admin/system-page/apis', method: 'GET' },
+
             { path: '/links-default-management/paginate', method: 'POST' },
             { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'GET' },
             { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'PATCH' },
@@ -1053,20 +1055,19 @@ exports.links = [
     {
         url: '/carrier-all-times-transport-mission',
         apis: ['@all']
-    },
-
-    {
+    }, {
         url: '/projects-management',
         apis: ['@all']
-    },
-    {
+    }, {
         url: '/user-guide',
         apis: ['@all']
     }, {
         url: '/time-sheet-log/all',
         apis: ['@all']
-    },
-    {
+    }, {
+        url: '/personal-time-sheet-log',
+        apis: ['@all']
+    }, {
         url: '/employees-infomation',
         apis: ['@all']
     }

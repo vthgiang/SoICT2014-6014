@@ -292,6 +292,20 @@ function TaskOrganizationUnitDashboard(props) {
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
 
+    const showTimeSheetDoc = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Thống kê bấm giờ đơn vị</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Thống kê bấm giờ của tất cả nhân viên (active) trong các đơn vị được chọn được liệt kê như sau:</p>
+            <ul>
+                <li>Lấy tất cả các thông tin bấm giờ của mỗi nhân viên trong các đơn vị</li>
+                <li>Bao gồm: Tổng thời gian, bấm giờ, bấm hẹn giờ, bấm bù giờ</li>
+            </ul>`,
+            width: "50%",
+        })
+    }
     return (
         <React.Fragment>
             {currentOrganizationalUnit
@@ -642,6 +656,9 @@ function TaskOrganizationUnitDashboard(props) {
                                                                 </span>
                                                         }
                                                         {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
+                                                        <a onClick={() => showTimeSheetDoc()}>
+                                                            <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                                        </a>
                                                     </div>
                                                     {<ExportExcel id="export-timesheets-logs" style={{right: 0}} exportData={dataTimeSheetsExport}/>}
                                                 </div>

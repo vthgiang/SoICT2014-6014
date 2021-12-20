@@ -6,6 +6,7 @@ import { systemSetting } from '../modules/system-admin/system-setting/redux/redu
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
+import {systemPage} from '../modules/system-admin/system-page/redux/reducers';
 import { systemApis } from '../modules/system-admin/system-api/system-api-management/redux/reducers';
 import { privilegeApis } from '../modules/system-admin/system-api/system-api-privilege/redux/reducers'
 
@@ -138,6 +139,7 @@ const appReducer = combineReducers({
     systemSetting,
     company,
     systemLinks,
+    systemPage,
     systemApis,
     rootRoles,
     systemComponents,
