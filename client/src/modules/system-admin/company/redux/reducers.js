@@ -24,9 +24,9 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     error: null,
-    isLoading: true,
+    isLoading: false,
     item: {
-        image:null,
+        image: null,
         links: {
             isLoading: true,
             list: [],
@@ -56,7 +56,7 @@ const initState = {
             nextPage: 0,
         }
     },
-    importConfiguration:{},
+    importConfiguration: {},
 }
 
 export function company(state = initState, action) {
@@ -150,7 +150,7 @@ export function company(state = initState, action) {
                     }
                 }
             };
-        
+
         case CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_SUCCESS:
             return {
                 ...state,
@@ -172,7 +172,7 @@ export function company(state = initState, action) {
                     }
                 }
             };
-        
+
         case CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_SUCCESS:
             return {
                 ...state,
@@ -185,7 +185,7 @@ export function company(state = initState, action) {
                     }
                 }
             };
-        
+
         case CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_SUCCESS:
             return {
                 ...state,
@@ -214,7 +214,7 @@ export function company(state = initState, action) {
                 list: action.payload,
                 isLoading: false
             };
-        
+
         case CompanyConstants.GET_COMPANIES_PAGINATE_SUCCESS:
             return {
                 ...state,
@@ -248,17 +248,17 @@ export function company(state = initState, action) {
         case CompanyConstants.EDIT_COMPANY_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
-            if(index !== -1){
+            if (index !== -1) {
                 state.list[index] = action.payload;
             }
-            if(indexPaginate !== -1){
+            if (indexPaginate !== -1) {
                 state.listPaginate[indexPaginate] = action.payload;
             }
             return {
                 ...state,
                 isLoading: false
             };
-        
+
         case CompanyConstants.ADD_NEW_LINK_FOR_COMPANY_SUCCESS:
             return {
                 ...state,
@@ -301,25 +301,25 @@ export function company(state = initState, action) {
 
         case CompanyConstants.DELETE_LINK_FOR_COMPANY_SUCCESS:
             // Tìm index của link đó
-            index = findIndex(state.item.links.list, action.payload); 
+            index = findIndex(state.item.links.list, action.payload);
             indexPaginate = findIndex(state.item.links.listPaginate, action.payload);
 
             //Xóa link đó khỏi list các link của công ty
             state.item.links.list.splice(index, 1);
             state.item.links.listPaginate.splice(indexPaginate, 1);
             state.item.links.isLoading = false;
-            return {...state};
+            return { ...state };
 
         case CompanyConstants.DELETE_COMPONENT_FOR_COMPANY_SUCCESS:
             // Tìm index của component đó
-            index = findIndex(state.item.components.list, action.payload); 
+            index = findIndex(state.item.components.list, action.payload);
             indexPaginate = findIndex(state.item.components.listPaginate, action.payload);
 
             //Xóa component đó khỏi list các component của công ty
             state.item.components.list.splice(index, 1);
             state.item.components.listPaginate.splice(indexPaginate, 1);
             state.item.components.isLoading = false;
-            return {...state};
+            return { ...state };
 
         case CompanyConstants.GET_COMPANIES_FAILURE:
         case CompanyConstants.GET_COMPANIES_PAGINATE_FAILURE:
@@ -329,7 +329,7 @@ export function company(state = initState, action) {
                 ...state,
                 isLoading: false
             };
-        
+
         // reducers phần import File
         case CompanyConstants.GET_IMPORT_CONFIGURATION_REQUEST:
         case CompanyConstants.ADD_IMPORT_CONFIGURATION_REQUEST:
@@ -341,19 +341,19 @@ export function company(state = initState, action) {
         case CompanyConstants.GET_IMPORT_CONFIGURATION_SUCCESS:
             return {
                 ...state,
-                importConfiguration:action.payload,
+                importConfiguration: action.payload,
                 isLoading: false
             };
         case CompanyConstants.ADD_IMPORT_CONFIGURATION_SUCCESS:
             return {
                 ...state,
-                importConfiguration:action.payload,
+                importConfiguration: action.payload,
                 isLoading: false
             };
         case CompanyConstants.EDIT_IMPORT_CONFIGURATION_SUCCESS:
             return {
                 ...state,
-                importConfiguration:action.payload,
+                importConfiguration: action.payload,
                 isLoading: false
             };
         case CompanyConstants.GET_IMPORT_CONFIGURATION_FAILURE:
@@ -364,7 +364,7 @@ export function company(state = initState, action) {
                 isLoading: false,
                 error: action.payload
             };
-        
+
         case CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_REQUEST:
             return {
                 ...state,
@@ -373,17 +373,17 @@ export function company(state = initState, action) {
         case CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_SUCCESS:
             return {
                 ...state,
-                item: {...state.item, image:action.payload.organizationalUnitImage},
+                item: { ...state.item, image: action.payload.organizationalUnitImage },
                 isLoading: false,
             }
-        
+
         case CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_FAILURE:
-        return {
+            return {
                 ...state,
-                isLoading:false,
+                isLoading: false,
                 error: action.error
-            } 
-        
+            }
+
         case CompanyConstants.GET_COMPANY_INFOMATION_REQUES:
             return {
                 ...state,
@@ -392,17 +392,17 @@ export function company(state = initState, action) {
         case CompanyConstants.GET_COMPANY_INFOMATION_SUCCESS:
             return {
                 ...state,
-                item: {...state.item, image:action.payload.organizationalUnitImage},
+                item: { ...state.item, image: action.payload.organizationalUnitImage },
                 isLoading: false,
             }
-        
+
         case CompanyConstants.GET_COMPANY_INFOMATION_FAILURE:
-        return {
-             ...state,
-                isLoading:false,
+            return {
+                ...state,
+                isLoading: false,
                 error: action.error
-            } 
-        
+            }
+
         default:
             return state;
     }

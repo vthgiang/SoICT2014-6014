@@ -12,29 +12,29 @@ var findIndex = (array, id) => {
 
 const initialState = {
     lists: [],
-    isLoading: true,
+    isLoading: false,
     error: null,
     totalList: 0,
 }
 export function transportSchedule(state = initialState, action) {
     let index = -1;
     switch (action.type) {
-		case transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_REQUEST:
+        case transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_REQUEST:
         case transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_REQUEST:
         case transportScheduleConstants.CHANGE_TRANSPORT_REQUIREMENT_PROCESS_REQUEST:
         case transportScheduleConstants.GET_ALL_TRANSOPRT_SCHEDULE_ROUTE_BY_CARRIER_ID_REQUEST:
         case transportScheduleConstants.CHANGE_TRANSPORT_STATUS_BY_CARRIER_ID_REQUEST:
-		return {
+            return {
                 ...state,
                 isLoading: true
             }
-		
-		case transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_FAILURE:
+
+        case transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_FAILURE:
         case transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_FAILURE:
         case transportScheduleConstants.CHANGE_TRANSPORT_REQUIREMENT_PROCESS_FAILURE:
         case transportScheduleConstants.GET_TRANSPORT_SCHEDULE_BY_PLAN_ID_FAILURE:
         case transportScheduleConstants.CHANGE_TRANSPORT_STATUS_BY_CARRIER_ID_FAILURE:
-		return {
+            return {
                 ...state,
                 isLoading: false,
                 error: action.error
@@ -55,16 +55,16 @@ export function transportSchedule(state = initialState, action) {
                 transportScheduleByCarrierId: action.payload,
             }
         // case transportScheduleConstants.EDIT_TRANSPORT_SCHEDULE_BY_PLAN_ID_SUCCESS:
-            // // index = findIndex(state.lists, action.payload._id);
-            // // if (index !== -1) {
-            // //     state.lists[index] = action.payload
-            // // }
-            // return {
-            //     ...state,
-            //     isLoading: false,
-            //     currentTransportScheduleAfterEdit: action.payload,
-            // }
-		default:
-            		return state
+        // // index = findIndex(state.lists, action.payload._id);
+        // // if (index !== -1) {
+        // //     state.lists[index] = action.payload
+        // // }
+        // return {
+        //     ...state,
+        //     isLoading: false,
+        //     currentTransportScheduleAfterEdit: action.payload,
+        // }
+        default:
+            return state
     }
 }
