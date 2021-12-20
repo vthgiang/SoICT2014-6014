@@ -5036,8 +5036,8 @@ export default {
                 choose_material: "Chọn nguyên vật liệu",
                 command_code: "Mã lệnh sản xuất",
                 mill_request: "Xưởng yêu cầu",
-                quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!"
-
+                quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!",
+                lot_with_unit: "Lô hàng (Mã lô/ Số lượng)",
 
             },
             inventory_management: {
@@ -5090,7 +5090,7 @@ export default {
                 get_lot_failed: "Lấy lô hàng thất bại",
                 push_lot: "Lô chưa được xếp vào kho",
                 text: "Hàng hóa chưa xếp hết vào kho",
-                add_lot: "Thêm mới lô hàng",
+                add_lot: "Đánh lô hàng",
                 select_lot: "Chọn lô hàng",
             },
         },

@@ -311,7 +311,7 @@ function QuantityLotGoodReceipt(props) {
                 <form id={`form-edit-quantity-receipt`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
-                        {quantity ? (different !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center' }}>{`Bạn cần đánh lô cho ${different} số lượng hàng nhập`}</div> :
+                        {quantity ? (different !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center' }}>{`Bạn cần phải đánh lô cho ${different} số lượng hàng nhập`}</div> :
                             <div className="form-group" style={{ color: 'green', textAlign: 'center' }}>Bạn đã đánh xong lô cho {quantity} số lượng hàng nhập</div>) : []}
                         <div className={`form-group`}>
                             <label>{translate('manage_warehouse.bill_management.lot_number')}</label>
