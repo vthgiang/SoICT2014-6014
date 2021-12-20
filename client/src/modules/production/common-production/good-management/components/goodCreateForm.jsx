@@ -8,6 +8,7 @@ import UnitCreateForm from "./unitCreateForm";
 import ComponentCreateForm from "./componentCreateForm";
 import InfoMillCreateForm from "./infoMillCreateForm";
 import { generateCode } from "../../../../../helpers/generateCode";
+import Swal from "sweetalert2";
 
 function GoodCreateForm(props) {
     const [state, setState] = useState({
@@ -244,6 +245,18 @@ function GoodCreateForm(props) {
         }
     };
 
+    const showListExplainVariance = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Phương sai</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được.
+            /n Ví dụ: Phương sai 50,000 VNĐ, giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán được trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</b></p>`,
+            width: "50%", 
+        })
+    };
+
     const handleClickCreate = () => {
         let code = generateCode("HH");
         setState({
@@ -365,6 +378,9 @@ function GoodCreateForm(props) {
                                     {"Phương sai giá bán"}
                                     <span className="attention"> </span>
                                 </label>
+                                <a onClick={() => showListExplainVariance()}>
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                </a>
                                 <input
                                     type="number"
                                     className="form-control"
