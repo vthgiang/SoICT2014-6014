@@ -961,12 +961,12 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     }
 }
 
-exports.getTaskAnalysOfUser = async (req, res) => {
+exports.getTaskAnalyseOfUser = async (req, res) => {
     try {
         let portal = req.portal;
         let { userId } = req.params;
         let { type, date } = req.query;
-        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type, date);
+        let taskAnalys = await TaskManagementService.getTaskAnalyseOfUser(portal, userId, type, date);
 
         await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
         res.status(200).json({
@@ -1011,8 +1011,8 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
 exports.getUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let { userId, month, year } = req.query;
-        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year);
+        let { userId, month, year, requireActions } = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
         res.status(200).json({
@@ -1034,7 +1034,7 @@ exports.getAllUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
         let { month, year } = req.query;
-        let timesheetlogs = await TaskManagementService.getAllUserTimeSheet(portal, month, year);
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, null, month, year);
 
         await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
         res.status(200).json({

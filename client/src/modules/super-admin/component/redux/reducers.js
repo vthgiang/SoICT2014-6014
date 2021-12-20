@@ -3,7 +3,7 @@ import { ComponentConstants } from "./constants";
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
@@ -23,11 +23,11 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     error: null,
-    isLoading: true,
+    isLoading: false,
     item: null
 }
 
-export function component (state = initState, action) {
+export function component(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
@@ -109,9 +109,9 @@ export function component (state = initState, action) {
             indexPaginate = findIndex(state.listPaginate, action.payload);
 
             if (index !== -1) {
-                state.list.splice(index,1);
+                state.list.splice(index, 1);
             }
-            
+
             if (indexPaginate !== -1) {
                 state.listPaginate.splice(indexPaginate, 1);
             }

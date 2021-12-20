@@ -25,7 +25,7 @@ function getBackups() {
         })
         .catch(error => {
             dispatch({
-                type: SystemConstants.GET_BACKUPS_FAILE,
+                type: SystemConstants.GET_BACKUPS_FAILURE,
                 payload: error
             }) 
         })
@@ -44,7 +44,7 @@ function getConfigBackup() {
         })
         .catch(error => {
             dispatch({
-                type: SystemConstants.GET_CONFIG_BACKUP_FAILE,
+                type: SystemConstants.GET_CONFIG_BACKUP_FAILURE,
                 payload: error
             }) 
         })
@@ -64,7 +64,7 @@ function deleteBackup(version) {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemConstants.DELETE_BACKUP_FAILE,
+                    type: SystemConstants.DELETE_BACKUP_FAILURE,
                     payload: error
                 })
                 
@@ -85,7 +85,7 @@ function createBackup() {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemConstants.CREATE_BACKUP_FAILE,
+                    type: SystemConstants.CREATE_BACKUP_FAILURE,
                     payload: error
                 })
                 
@@ -106,7 +106,7 @@ function configBackup(params, data=undefined) {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemConstants.CONFIG_BACKUP_FAILE,
+                    type: SystemConstants.CONFIG_BACKUP_FAILURE,
                     payload: error
                 })
                 
@@ -127,7 +127,7 @@ function restore(version) {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemConstants.RESTORE_FAILE,
+                    type: SystemConstants.RESTORE_FAILURE,
                     payload: error
                 })
                 
@@ -148,7 +148,7 @@ function editBackupInfo(version, data) {
             })
             .catch(error => {
                 dispatch({
-                    type: SystemConstants.EDIT_BACKUP_INFO_FAILE,
+                    type: SystemConstants.EDIT_BACKUP_INFO_FAILURE,
                     payload: error
                 })
             })
@@ -166,7 +166,7 @@ function downloadBackupVersion(path) {
                 FileDownload(res.data, 'data', content);
             })
             .catch(error => {
-                dispatch({ type: SystemConstants.DOWNLOAD_BACKUP_VERSION_FAILE })
+                dispatch({ type: SystemConstants.DOWNLOAD_BACKUP_VERSION_FAILURE })
             })
     }
 }

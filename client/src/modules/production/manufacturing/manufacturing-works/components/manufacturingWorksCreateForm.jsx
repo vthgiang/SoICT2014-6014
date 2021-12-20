@@ -272,6 +272,7 @@ class ManufacturingWorksCreateForm extends Component {
                                 </fieldset>
                                 <div className="form-group">
                                     <label>{translate('manufacturing.manufacturing_works.manage_roles')}</label>
+                                    <a style={{ cursor: "pointer" }} title = {translate('manufacturing.manufacturing_works.manage_roles_description')}><i class="fa fa-question-circle" aria-hidden="true" style = {{marginLeft: "10px" }}></i></a>
                                     <div>
                                         <SelectBox
                                             id={`select-manage-roles-works`}

@@ -2239,8 +2239,8 @@ exports.createProjectTask = async (portal, task) => {
         taskTemplate: taskTemplate ? taskTemplate : null,
         taskInformations: taskInformations,
         taskActions: taskActions,
-        // parent: (task.parent === "") ? null : task.parent,
-        // level: level,
+        // parent : parent: (task.parent === "") ? null : task.parent,
+        level: 1,
         responsibleEmployees: task.responsibleEmployees,
         accountableEmployees: task.accountableEmployees,
         consultedEmployees: task.consultedEmployees,
@@ -2764,7 +2764,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
  * @param {*} userId 
  * @param {*} roleId 
  */
-exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
+exports.getTaskAnalyseOfUser = async (portal, userId, type, date) => {
     date = JSON.parse(date);
     let { firstDay, lastDay } = date;
     let keySeachDateTime = {}, keySearch = {};
@@ -2871,98 +2871,136 @@ exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
 }
 
 /**
- * 
- * @param {Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm} portal 
- * @param {*} userId 
- * @param {*} month 
- * @param {*} year 
- */
-exports.getUserTimeSheet = async (portal, userId, month, year) => {
-    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
-    let endOfMonth = new Date(year, month); // cần chỉnh lại
-
-    let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
-        {
-            $match: {
-                "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
-                "timesheetLogs.startedAt": { $exists: true },
-                "timesheetLogs.startedAt": { $gte: beginOfMonth },
-                "timesheetLogs.stoppedAt": { $exists: true },
-                "timesheetLogs.stoppedAt": { $lte: endOfMonth }
-            }
-        },
-        { $unwind: "$timesheetLogs" },
-        { $replaceRoot: { newRoot: { $mergeObjects: [{ _id: "$_id", name: "$name" }, "$timesheetLogs"] } } },
-
-        {
-            $match: {
-                "creator": mongoose.Types.ObjectId(userId),
-                "startedAt": { $exists: true },
-                "startedAt": { $gte: beginOfMonth },
-                "stoppedAt": { $exists: true },
-                "stoppedAt": { $lte: endOfMonth }
-            },
-        },
-    ]);
-
-    return tsl;
-}
-
-/**
+ *
+ * Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm hoặc
  * Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống (lấy thóng kê tổng số bấm giờ hợp lệ)
- * @param {*} portal 
- * @param {*} month 
- * @param {*} year 
+ * @param {*} portal
+ * @param {*} userId-(optional)
+ * @param {*} month
+ * @param {*} year
+ * @param {*} requireActions
  */
-exports.getAllUserTimeSheet = async (portal, month, year) => {
-    let users = await User(connect(DB_CONNECTION, portal)).find().select("_id name email");
-
-    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) => {
+    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
-    let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
-        {
-            $match: {
-                "timesheetLogs.startedAt": { $exists: true },
-                "timesheetLogs.startedAt": { $gte: beginOfMonth },
-                "timesheetLogs.stoppedAt": { $exists: true },
-                "timesheetLogs.stoppedAt": { $lte: endOfMonth },
+    // Nếu cần chi lấy chi tiết từng hoạt động trong công việc
+    if (requireActions == 'true') {
+        let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            {
+                $match: {
+                    "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
+                    "taskActions.timesheetLogs.startedAt": {$exists: true},
+                    "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
+                    "taskActions.timesheetLogs.stoppedAt": {$exists: true},
+                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
+                }
+            },
+            {
+                $project: {
+                    "name": 1,
+                    "taskActions.description": 1,
+                    "taskActions.timesheetLogs": 1
+                }
             }
-        },
-        { $unwind: "$timesheetLogs" },
-        { $replaceRoot: { newRoot: "$timesheetLogs" } },
-        {
-            $match: {
-                "startedAt": { $exists: true },
-                "startedAt": { $gte: beginOfMonth },
-                "stoppedAt": { $exists: true },
-                "stoppedAt": { $lte: endOfMonth },
-                "acceptLog": true
-            }
-        },
-        {
-            $group: {
-                _id: "$creator",
-                total: { $sum: "$duration" }
-            }
-        },
-    ]);
-
-    let allTS = [];
-    for (let i = 0; i < tsl.length; i++) {
-        let user = users.find(user => {
-            if (user && tsl[i] && user._id && tsl[i]._id && user._id.toString() === tsl[i]._id.toString()) return true;
-            return false;
-        });
-        if (user) {
-            allTS.push({
-                creator: user,
-                duration: tsl[i].total
-            })
-        }
+        ]);
+        console.log(tsl);
+        return tsl;
     }
+    if (userId) {
+        /**
+         * Nếu trong query có userId thì trả về timesheetLogs của user với ID đó
+         * */
+        let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            {
+                $match: {
+                    "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
+                    "taskActions.timesheetLogs.startedAt": {$exists: true},
+                    "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
+                    "taskActions.timesheetLogs.stoppedAt": {$exists: true},
+                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
+                }
+            },
+            {$unwind: "$taskActions"},
+            {$replaceRoot: {
+                newRoot: { 
+                    $mergeObjects: 
+                    [
+                        { _id: "$_id", name: "$name", actionDescription: "$taskActions.description", actionId: "$taskActions._id"},
+                        "$taskActions"
+                    ]
+                }
+            }},
+            {$unwind: "$timesheetLogs"},
+            {$replaceRoot: {
+                newRoot: { 
+                    $mergeObjects: 
+                    [
+                        { _id: "$_id", name: "$name", actionDescription: "$actionDescription", actionId: "$actionId"},
+                        "$timesheetLogs"
+                    ]
+                }
+            }},
+            {
+                $match: {
+                    "creator": mongoose.Types.ObjectId(userId),
+                    "startedAt": {$exists: true},
+                    "startedAt": {$gte: beginOfMonth},
+                    "stoppedAt": {$exists: true},
+                    "stoppedAt": {$lte: endOfMonth}
+                },
+            },
+        ]);
+        return tsl;
+    } else {
+        /**
+         * Nếu trong query không có userId thì trả về timesheetLogs của tất cả các users
+         * */
+        let users = await User(connect(DB_CONNECTION, portal)).find().select("_id name email");
 
-    return allTS;
+        let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            {
+                $match: {
+                    "timesheetLogs.startedAt": { $exists: true },
+                    "timesheetLogs.startedAt": { $gte: beginOfMonth },
+                    "timesheetLogs.stoppedAt": { $exists: true },
+                    "timesheetLogs.stoppedAt": { $lte: endOfMonth },
+                }
+            },
+            { $unwind: "$timesheetLogs" },
+            { $replaceRoot: { newRoot: "$timesheetLogs" } },
+            {
+                $match: {
+                    "startedAt": { $exists: true },
+                    "startedAt": { $gte: beginOfMonth },
+                    "stoppedAt": { $exists: true },
+                    "stoppedAt": { $lte: endOfMonth },
+                    "acceptLog": true
+                }
+            },
+            {
+                $group: {
+                    _id: "$creator",
+                    total: { $sum: "$duration" }
+                }
+            },
+        ]);
+
+        let allTS = [];
+        for (let i = 0; i < tsl.length; i++) {
+            let user = users.find(user => {
+                if (user && tsl[i] && user._id && tsl[i]._id && user._id.toString() === tsl[i]._id.toString()) return true;
+                return false;
+            });
+            if (user) {
+                allTS.push({
+                    creator: user,
+                    duration: tsl[i].total
+                })
+            }
+        }
+        return allTS;
+    }
 }
 
 exports.getTasksByProject = async (portal, projectId, page, perPage) => {
@@ -3159,6 +3197,7 @@ exports.importTasks = async (dataConvert, portal, user) => {
     }
     console.log('DONE_IMPORT TASK')
 }
+
 
 // kiểm tra giá trị có nằm trong mảng hay ko.
 _checkItemInArray = (arr, x, getLevel = false) => {
@@ -3478,7 +3517,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         query[key] = JSON.parse(query[key])
     });
     const data = query;
-    console.log("data", data)
     const chartArr = Object.keys(data);
     let result = {};
     const { organizationalUnitId, startMonth, endMonth } = data["common-params"]
@@ -3542,7 +3580,6 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         };
     });
 
-    console.log("chartArr", chartArr)
     //data cho tổng quan công việc
     if (chartArr.includes('general-task-chart')) {
         userArray = await UserService._getAllUsersInOrganizationalUnits(portal, newDataUnit);
@@ -3688,7 +3725,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 
     //data cho gantt chart
     if (chartArr.includes('gantt-chart')) {
-        let listTask = organizationUnitTasks
+        let listTask = cloneDeep(organizationUnitTasks)
         const tasksOfSelectedUnit = listTask?.filter(x =>
             organizationalUnitId?.includes(x?.organizationalUnit?._id.toString()))
 
@@ -3840,7 +3877,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 
     //data cho tiến độ công việc
     if (chartArr.includes('in-process-unit-chart')) {
-        let taskList = organizationUnitTasks;
+        let taskList = cloneDeep(organizationUnitTasks);
         let delayed = ['Trễ tiến độ'];
         let intime = ['Đúng tiến độ'];
         let notAchived = ['Quá hạn'];
@@ -3901,7 +3938,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                 ...month,
                 dayjs(startMonth).add(i, 'month').format("MM-YYYY"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
             ];
-            filteredTask = _filterTasksByMonthDomainChart(organizationalUnitId, dataSearch, userId, organizationUnitTasks, currentMonth)
+            filteredTask = _filterTasksByMonthDomainChart(organizationalUnitId, dataSearch, userId, cloneDeep(organizationUnitTasks), currentMonth)
             if (filteredTask) {
                 maxResults.push(filteredTask.max);
                 minResults.push(filteredTask.min)
@@ -3924,7 +3961,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
     //data cho status chart
     if (chartArr.includes('task-status-chart')) {
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
-        let taskList = organizationUnitTasks
+        let taskList = cloneDeep(organizationUnitTasks)
         taskList.map(task => {
             switch (task.status) {
                 case "inprocess":
@@ -3980,7 +4017,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
                 ...month,
                 dayjs(startMonth).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
             ];
-            filteredData = _filterTasksByMonthAverageChart(organizationalUnitId, dataSearch, organizationUnitTasks, currentMonth);
+            filteredData = _filterTasksByMonthAverageChart(organizationalUnitId, dataSearch, cloneDeep(organizationUnitTasks), currentMonth);
             if (organizationalUnitId && organizationalUnitId.length !== 0) {
                 organizationalUnitId.map(item => {
                     dataChart[item] && dataChart[item].push(filteredData[item] || 0)
@@ -4001,7 +4038,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
     if (chartArr.includes('load-task-organization-chart')) {
         let dataLoadTask = [], month = [], monthArr = []
         let newData = [];
-        let taskList = organizationUnitTasks
+        let taskList = cloneDeep(organizationUnitTasks)
         if (taskList?.length > 0) {
 
             let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
@@ -4073,14 +4110,15 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         result["load-task-organization-chart"] = resultLoad
     }
 
+    //data cho thống kê bấm giờ
     if (chartArr.includes('all-time-sheet-log-by-unit')) {
         let dataSearchForAllTimeSheetLogs = {
             ids: organizationalUnitId,
         }
-        const employeeListDistribution = await UserService.getAllEmployeeOfUnitByIds(portal, dataSearchForAllTimeSheetLogs)
-        let listEmployee = employeeListDistribution?.employees;
+        const employeeListDistribution = await UserService.getAllEmployeeOfUnitByIds(portal, dataSearchForAllTimeSheetLogs);
+        let listEmployee = employeeListDistribution?.employees.filter((e) => e.userId.active === true);
         let allTimeSheet = []
-        let taskList = organizationUnitTasks
+        let taskList = cloneDeep(organizationUnitTasks)
         if (listEmployee) {
             for (let i in listEmployee) {
                 if (listEmployee[i] && listEmployee[i].userId && listEmployee[i].userId._id)
@@ -4096,16 +4134,13 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         }
 
         let filterTimeSheetLogs = [];
-        taskList && taskList.forEach((o, index) => {
-            let timeSheetLog = o.timesheetLogs
-            if (timeSheetLog?.length > 0) {
-                for (let i in timeSheetLog) {
-                    filterTimeSheetLogs.push(timeSheetLog[i])
-                }
-            }
-        });
 
-        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog && dayjs(o.startedAt).isSameOrAfter(startMonth, 'month') && dayjs(o.stoppedAt).isSameOrBefore(endMonth, 'month'));
+        taskList?.forEach((task) => {
+            if (task?.timesheetLogs.length) {
+                const x = JSON.parse(JSON.stringify(task.timesheetLogs))
+                filterTimeSheetLogs = x.map((tsl) => ({ ...tsl, taskName: task.name, taskId: task._id.toString() }))
+            }
+        })
 
         for (let i in filterTimeSheetLogs) {
             let autoStopped = filterTimeSheetLogs[i].autoStopped;
@@ -4138,9 +4173,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
             dataChart: dataChart
         }
         result['all-time-sheet-log-by-unit'] = resultAllTimeSheetLog
-        //console.log("resultAllTimeSheetLog dataChart", resultAllTimeSheetLog.dataChart)
     }
-    console.log("result", result)
     return result
 
 

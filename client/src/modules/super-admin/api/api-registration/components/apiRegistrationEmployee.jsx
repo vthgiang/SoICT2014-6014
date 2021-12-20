@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
@@ -60,24 +61,54 @@ function ApiRegistrationEmployee(props) {
         })
     }
 
-    const handleAcceptApiRegistration = (api) => {
-        props.updateStatusPrivilegeApi({
-            privilegeApiIds: [api?._id],
-            status: 3
-        })
-    }
+    // const handleAcceptApiRegistration = (api) => {
+    //     props.updateStatusPrivilegeApi({
+    //         privilegeApiIds: [api?._id],
+    //         status: 3
+    //     })
+    // }
 
-    const handleDeclineApiRegistration = (api) => {
-        props.updateStatusPrivilegeApi({
-            privilegeApiIds: [api?._id],
-            status: 2
-        })
-    }
+    // const handleDeclineApiRegistration = (api) => {
+    //     props.updateStatusPrivilegeApi({
+    //         privilegeApiIds: [api?._id],
+    //         status: 2
+    //     })
+    // }
 
     const handleCancelApiRegistration = (api) => {
-        props.updateStatusPrivilegeApi({
-            privilegeApiIds: [api?._id],
-            status: 0
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('system_admin.privilege_system_api.cancel')}</div></h4>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.updateStatusPrivilegeApi({
+                    privilegeApiIds: [api?._id],
+                    status: 0
+                })
+            }
+        })
+    }
+
+    const handleDeleteApiRegistration = (api) => {
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('system_admin.privilege_system_api.delete')}</div></h4>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deletePrivilegeApi({
+                    privilegeApiIds: [api?._id],
+                })
+            }
         })
     }
 
@@ -135,9 +166,7 @@ function ApiRegistrationEmployee(props) {
 
     return (
         <React.Fragment>
-            <CreateApiRegistrationModal
-                role="employee"
-            />
+            <CreateApiRegistrationModal role="employee" privilegeApisStatus={1} />
 
             <div className="box" >
                 <div className="box-body qlcv">
@@ -191,11 +220,11 @@ function ApiRegistrationEmployee(props) {
                                         <td>{apiRegistration.endDate ? formatDate(apiRegistration.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />
-                                            <div style={{
-                                                marginRight: 40,
-                                            }}>
-                                                {apiRegistration?.token?.slice(0, 60)}...
+                                            {apiRegistration?.token &&
+                                                <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />}
+
+                                            <div style={{ marginRight: 40 }}>
+                                                {apiRegistration?.token ? `${apiRegistration?.token?.slice(0, 60)}...` : 'Waiting for accepting'}
                                             </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
@@ -205,9 +234,15 @@ function ApiRegistrationEmployee(props) {
                                             <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
                                                 <i className="material-icons">remove_circle_outline</i>
                                             </a> */}
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
-                                                <i className="material-icons">highlight_off</i>
-                                            </a>
+                                            {apiRegistration.status === 3 ?
+                                                (<a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
+                                                    <i className="material-icons">highlight_off</i>
+                                                </a>)
+                                                : (
+                                                    <a onClick={() => handleDeleteApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                )}
                                         </td>
                                     </tr>
                                 )
@@ -234,7 +269,8 @@ function mapState(state) {
 }
 const actions = {
     getPrivilegeApis: PrivilegeApiActions.getPrivilegeApis,
-    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi
+    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi,
+    deletePrivilegeApi: PrivilegeApiActions.deletePrivilegeApis
 }
 
 export default connect(mapState, actions)(withTranslate(ApiRegistrationEmployee))

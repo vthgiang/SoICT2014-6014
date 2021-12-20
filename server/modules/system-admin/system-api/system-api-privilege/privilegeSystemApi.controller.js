@@ -1,5 +1,7 @@
 const { SystemApiPrivilegeServices } = require('./privilegeSystemApi.service');
 const Logger = require(`../../../../logs`);
+const { Role, User } = require('../../../../models');
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 const getPrivilegeApis = async (req, res) => {
     try {
@@ -27,9 +29,10 @@ const createPrivilegeApi = async (req, res) => {
     try {
         let data = {
             ...req.body,
-            userId: req.user._id
+            userId: req.user._id,
         }
-        const privilegeApi = await SystemApiPrivilegeServices.createPrivilegeApi(data);
+
+        const privilegeApi = await SystemApiPrivilegeServices.createPrivilegeApi(data, req.user);
 
         Logger.info(req.user.email, 'create privilege api');
         res.status(200).json({
@@ -39,7 +42,8 @@ const createPrivilegeApi = async (req, res) => {
         });
     } catch (error) {
         console.log(error)
-        let messages = error?.messages === 'company_not_exist' || error?.messages === 'privilege_api_exist' ? [error?.messages] : ['create_privilege_api_failure']
+        let messages = error?.messages === 'company_not_exist' || error?.messages === 'privilege_api_exist' ?
+            [error?.messages] : ['create_privilege_api_failure']
 
         Logger.error(req.user.email, 'create privilege api');
         res.status(400).json({

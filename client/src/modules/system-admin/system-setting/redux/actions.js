@@ -1,12 +1,15 @@
 import { SystemSettingServices } from "./services";
 import { SystemSettingConstants } from "./constants";
+const FileDownload = require("js-file-download");
 
 export const SystemSettingActions = {
     getBackups,
     getConfigBackup,
     createBackup,
     configBackup,
+    editBackupInfo,
     deleteBackup,
+    downloadBackupVersion,
     restore
 }
 
@@ -51,6 +54,26 @@ function getConfigBackup() {
     }
 }
 
+function editBackupInfo(version, data) {
+    return dispatch => {
+        dispatch({ type: SystemSettingConstants.EDIT_BACKUP_INFO_REQUEST });
+
+        SystemSettingServices.editBackupInfo(version, data)
+            .then(res => {
+                dispatch({
+                    type: SystemSettingConstants.EDIT_BACKUP_INFO_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: SystemSettingConstants.EDIT_BACKUP_INFO_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
 function deleteBackup(version) {
     return dispatch => {
         dispatch({ type: SystemSettingConstants.DELETE_BACKUP_REQUEST });
@@ -68,6 +91,22 @@ function deleteBackup(version) {
                     payload: error
                 })
                 
+            })
+    }
+}
+
+function downloadBackupVersion(path) {
+    return dispatch => {
+        dispatch({ type: SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_REQUEST });
+
+        SystemSettingServices.downloadBackupVersion(path)
+            .then(res => {
+                dispatch({ type: SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_SUCCESS })
+                const content = res.headers["content-type"];
+                FileDownload(res.data, 'data', content);
+            })
+            .catch(error => {
+                dispatch({ type: SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_FAILURE })
             })
     }
 }

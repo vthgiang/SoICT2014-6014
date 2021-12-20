@@ -146,3 +146,16 @@ exports.restore = async (version) => {
         version
     });
 }
+
+exports.editBackupInfo = (version, data) => {
+    let path = `${SERVER_BACKUP_DIR}/all/${version}`;
+    if (!fs.existsSync(path)) { throw ['backup_version_deleted'] };
+    fs.writeFile(path + '/README.txt', data.description, err => {
+        if (err) throw err;
+    });
+
+    return {
+        version,
+        data
+    };
+}

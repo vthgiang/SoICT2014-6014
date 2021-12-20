@@ -173,7 +173,7 @@ export default {
             partner_management: "Quản lý đối tác",
             proposal_management: "Quản lý phiếu đề nghị",
             bill_management: "Quản lý thông tin phiếu",
-            inventory_management: "Quản lý hàng tồn kho",
+            inventory_management: "Quản lý lô hàng tồn kho",
 
             manage_kpi_unit: "KPI đơn vị",
             manage_kpi_personal: "KPI cá nhân",
@@ -204,7 +204,8 @@ export default {
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
             task_process_template: "Mẫu quy trình",
-            all_time_sheet_log: 'Thống kê bấm giờ',
+            all_time_sheet_log: '-------',
+            personal_time_sheet_log: 'Thống kê bấm giờ',
 
             //*******START */
             // Quản lý tài sản
@@ -739,7 +740,15 @@ export default {
                 system_api_exist: 'System API đã tồn tại'
             },
 
+            system_page: {
+                //Thông điệp trả về từ server
+                get_system_page_apis_success: 'Lấy system page API thành công',
+                get_system_page_api_failure: 'Lấy system page API thất bại',
+            },
+
             privilege_system_api: {
+                cancel: 'Hủy phân quyền API',
+                delete: 'Xóa phân quyền API',
                 table: {
                     email: "Email",
                     description: "Mô tả",
@@ -1002,7 +1011,7 @@ export default {
                     delete: "Xóa các vị trí lưu trữ đã chọn",
                     name: "Tên",
                     description: "Mô tả",
-                    parent: "Vị trí lưu trữ cha",
+                    parent: "Danh mục cha",
                     select_parent: "Chọn vị trí lưu trữ cha",
                     select: "Chọn ",
                     not_select: "Không thuộc về vị trí nào",
@@ -1482,6 +1491,10 @@ export default {
             edit_success: "Chỉnh sửa thành công",
             edit_faile: "Chỉnh sửa thất bại",
             category: "Danh mục",
+        },
+
+        manage_api: {
+            description: "Mô tả api",
         },
 
         manage_component: {
@@ -3510,7 +3523,12 @@ export default {
                 load_task_chart_unit: "Tải công việc đơn vị",
                 explain: "Giải thích",
                 select_responsible: "Chọn người thực hiện",
-
+                timer: "Bấm giờ",
+                additional_timer: "Bấm bù giờ",
+                interval_timer: "Bấm hẹn giờ",
+                start_time: "Thời gian bắt đầu",
+                end_time: "Thời gian kết thúc",
+                timer_type: "Loại bấm giờ",
 
             },
             task_perform: {
@@ -3867,7 +3885,17 @@ export default {
                 overdue: "Quá hạn",
                 task_name: "Công việc",
                 start_date: "Ngày bắt đầu",
-                end_date: "Ngày kết thúc"
+                end_date: "Ngày kết thúc",
+                statistical_timesheet_logs: "Thống kê bấm giờ",
+                statistical_timesheet_logs_unit: "Thống kê bấm giờ đơn vi",
+                from: "từ",
+                to: "đến",
+                index: "STT",
+                name: "Họ và tên",
+                totalhours: "Tổng thời gian bấm giờ",
+                autotimer: "Bấm hẹn giờ",
+                logtimer: "Bấm bù giờ",
+                manualtimer: "Bấm giờ"
             }
         },
 
@@ -4562,7 +4590,7 @@ export default {
             dashboard_inventory: {},
             category_management: {
                 index: "STT",
-                add: "Thêm mới",
+                add: "Thêm mới danh mục hàng hóa",
                 add_title: "Thêm danh mục mới",
                 info: "Thông tin về danh mục hàng hóa",
                 edit: "Chỉnh sửa thông tin danh mục",
@@ -5072,6 +5100,8 @@ export default {
                 get_lot_failed: "Lấy lô hàng thất bại",
                 push_lot: "Lô chưa được xếp vào kho",
                 text: "Hàng hóa chưa xếp hết vào kho",
+                add_lot: "Thêm mới lô hàng",
+                select_lot: "Chọn lô hàng",
             },
         },
 
@@ -5359,7 +5389,8 @@ export default {
                 choose_organizational_unit: "---Chọn đơn vị---",
                 error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
                 list_roles: "Chức vụ trưởng đơn vị",
-                manage_roles: "Thêm quyền quản lý",
+                manage_roles: "Các role có quyền quản lý",
+                manage_roles_description: "Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
                 role_manages_another: "Các quyền quản lý khác",
                 no_roles: "Không có",
             },
@@ -5507,11 +5538,11 @@ export default {
                 sales_order_code: "Mã đơn kinh doanh",
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày dự kiến hoàn thành",
-                approvers: "Người phê duyệt",
+                approvers: "Người phụ trách nguyên vật liệu",
                 description: "Mô tả",
                 list_commands: "Danh sách lệnh sản xuất",
                 approve_plan: "Phê duyệt kế hoạch",
-                approver: "Người phê duyệt",
+                approver: "Người phê duyệtNgười phụ trách nguyên vật liệu",
                 created_at: "Ngày tạo",
                 manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
@@ -5659,16 +5690,10 @@ export default {
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
                 cancel_plan: "Hủy kế hoạch",
                 quantity_by_status: "Số lượng kế hoạch theo trạng thái"
-
-
-
-
-
-
             },
             command: {
                 code: "Mã lệnh sản xuất",
-                accountables: "Người giám sát",
+                accountables: "Người  điều hành",
                 plan_code: "Mã kế hoạch",
                 start_date: "Ngày bắt đầu",
                 from_date: "Từ ngày",

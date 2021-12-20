@@ -1,6 +1,8 @@
 const StatusService = require('./status.service');
 const Logger = require(`../../../logs`);
-
+/**
+ * Các controller cho phần Quản lý khách hàng/ Cấu hình hoạt động chăm sóc khách hàng/Trạng thái khách hàng
+ */
 /**
  * Lấy thông tin tất cả trạng thái khách hàng
  * @param {*} req 
@@ -8,7 +10,7 @@ const Logger = require(`../../../logs`);
  */
 exports.getStatus = async (req, res) => {
     try {
-        const status = await StatusService.getStatus(req.portal, req.user.company._id, req.query,req.currentRole);
+        const status = await StatusService.getStatus(req.portal, req.user.company._id, req.user._id, req.query,req.currentRole);
         await Logger.info(req.user.email, ' get_status_success ', req.portal);
         res.status(200).json({
             success: true,

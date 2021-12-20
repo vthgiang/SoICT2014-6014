@@ -10,6 +10,8 @@ import { PrivilegeApiActions } from '../redux/actions'
 import { CompanyActions } from '../../../company/redux/actions';
 
 import { PrivilegeApiCreateModal } from './privilegeApiCreateModal'
+import { formatDate } from '../../../../../helpers/formatDate';
+import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
 
 function PrivilegeApiManagement(props) {
     const { translate, privilegeApis, company } = props
@@ -215,6 +217,9 @@ function PrivilegeApiManagement(props) {
                                 <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
                                 <th>{translate('system_admin.company.table.name')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.description')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.startDate')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.endDate')}</th>
                                 <th>{translate('task.task_management.col_status')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
@@ -234,26 +239,45 @@ function PrivilegeApiManagement(props) {
                                         <td>{index + 1}</td>
                                         <td>{privilege.email}</td>
                                         <td>{privilege.company?.name}</td>
+                                        <td style={{
+                                            textAlign: 'justify',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            maxWidth: '20vw'
+                                        }}>
+                                            {privilege.description ? privilege.description : 'NaN'}
+                                        </td>
+                                        <td>{privilege.startDate ? formatDate(privilege.startDate) : 'Unlimited'}</td>
+                                        <td>{privilege.endDate ? formatDate(privilege.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(privilege.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }} onClick={() => handleCopyToken(privilege)}>Copy</button>
-                                            {privilege?.token?.slice(0, 60)}...
+                                            <TooltipCopy className="pull-right" copyText={privilege?.token} copySuccessNoti={'Copied'} />
+                                            <div style={{
+                                                marginRight: 40,
+                                            }}>
+                                                {privilege?.token?.slice(0, 60)}...
+                                            </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745" }}>
-                                                <i className="material-icons">check_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleDeclinePrivilegeApi(privilege)} style={{ color: "#E34724" }}>
-                                                <i className="material-icons">remove_circle_outline</i>
-                                            </a>
-                                            <div>
-                                                <a onClick={() => handleCancelPrivilegeApi(privilege)} style={{ color: "#858585" }}>
-                                                    <i className="material-icons">highlight_off</i>
-                                                </a>
-                                                <a className="delete text-red" onClick={() => handleDeletePrivilegeApi(privilege)}>
-                                                    <i className="material-icons">delete</i>
-                                                </a>
-                                            </div>
+                                            {![2, 3].includes(privilege.status) ?
+                                                (<>
+                                                    <a onClick={() => handleAcceptPrivilegeApi(privilege)} style={{ color: "#28A745" }}>
+                                                        <i className="material-icons">check_circle_outline</i>
+                                                    </a>
+                                                    <a onClick={() => handleDeclinePrivilegeApi(privilege)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">remove_circle_outline</i>
+                                                    </a>
+                                                    <a className="delete text-red" onClick={() => handleDeletePrivilegeApi(privilege)}>
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                </>) : (
+                                                    <a onClick={() => handleCancelPrivilegeApi(privilege)} style={{ color: "#858585" }}>
+                                                        <i className="material-icons">highlight_off</i>
+                                                    </a>
+                                                )}
+
+
 
                                         </td>
                                     </tr>

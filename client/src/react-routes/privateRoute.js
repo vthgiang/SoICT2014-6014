@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect} from 'react-router-dom';
+import { Route, Redirect, useLocation} from 'react-router-dom';
 import { getStorage } from  '../config';
 import {CallApiStatus} from '../modules/auth/redux/reducers';
 
@@ -18,6 +18,7 @@ const checkURL = (urlName, linkArr) => {
 
 const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
     // const {password2AlreadyExists} = auth;
+    let location = useLocation();
     
     return <Route {...rest} render={props => {
         var logged = getStorage();
@@ -30,7 +31,7 @@ const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Com
             } 
             return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{
-            return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+            return <Redirect to={{ pathname: `/login${location.pathname}${location.search}`, state: { from: props.location } }} />
         }
     }} />
 }

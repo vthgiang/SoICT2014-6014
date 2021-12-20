@@ -53,7 +53,8 @@ function CustomerHomePage(props) {
 
                 if (user && user.organizationalUnitsOfUser) {
                     let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
-                        item.managers[0] === currentRole
+                        //item.managers[0] === currentRole
+                         item.managers.find(manager => manager === currentRole) === currentRole
                         || item.deputyManagers[0] === currentRole
                         || item.employees[0] === currentRole);
                     if (getCurrentUnit) {
@@ -265,13 +266,18 @@ function CustomerHomePage(props) {
     let unitMembers;
     if (user.usersOfChildrenOrganizationalUnit) {
 
+        console.log("bat dau tim unit members ");
         unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
+        console.log("unit members la");
+        console.log(unitMembers);
     }
 
     // Lấy danh sách đơn vị
     let units;
     if (user.organizationalUnitsOfUser) {
         units = user.organizationalUnitsOfUser;
+        console.log("units la");
+        console.log(units);
     }
 
     // Lấy danh sách nhóm khách hàng
@@ -432,7 +438,7 @@ function CustomerHomePage(props) {
                                     <tr key={cus._id}>
                                         <td>{cus.code}</td>
                                         <td>{cus.name}</td>
-                                        <td>{cus.status && cus.status.length > 0 ? cus.status[cus.status.length - 1].name : null}</td>
+                                        <td>{cus.customerStatus && cus.customerStatus.length > 0 ? cus.customerStatus[cus.customerStatus.length - 1].name : null}</td>
                                         <td>{cus.customerType === 1 ? 'Cá nhân ' : 'Công ty'}</td>
                                         <td>{cus.email}</td>
                                         <td>{cus.mobilephoneNumber}</td>
