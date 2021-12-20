@@ -12,7 +12,7 @@ var findIndex = (array, id) => {
 
 const initialState = {
     lists: [],
-    isLoading: true,
+    isLoading: false,
     error: null,
     totalList: 0,
 }

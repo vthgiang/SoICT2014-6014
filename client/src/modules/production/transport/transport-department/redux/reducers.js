@@ -12,30 +12,30 @@ var findIndex = (array, id) => {
 
 const initialState = {
     lists: [],
-    isLoading: true,
+    isLoading: false,
 }
 export function transportDepartment(state = initialState, action) {
     let index = -1;
     switch (action.type) {
-		case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_REQUEST:
+        case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_REQUEST:
         case transportDepartmentConstants.CREATE_TRANSPORT_DEPARTMENT_REQUEST:
         case transportDepartmentConstants.GET_USER_BY_ROLE_REQUEST:
         case transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_REQUEST:
             return {
-                    ...state,
-                    isLoading: true
-                }
-		
-		case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_FAILURE:
-        case transportDepartmentConstants.CREATE_TRANSPORT_DEPARTMENT_FAILURE:    
+                ...state,
+                isLoading: true
+            }
+
+        case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_FAILURE:
+        case transportDepartmentConstants.CREATE_TRANSPORT_DEPARTMENT_FAILURE:
         case transportDepartmentConstants.GET_USER_BY_ROLE_FAILURE:
-        case transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_FAILURE:        
+        case transportDepartmentConstants.DELETE_TRANSPORT_DEPARTMENT_FAILURE:
             return {
-                    ...state,
-                    isLoading: false,
-                    error: action.error
-                }
-		case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_SUCCESS:
+                ...state,
+                isLoading: false,
+                error: action.error
+            }
+        case transportDepartmentConstants.GET_ALL_TRANSPORT_DEPARTMENTS_SUCCESS:
             return {
                 ...state,
                 lists: action.payload.data,
@@ -52,7 +52,7 @@ export function transportDepartment(state = initialState, action) {
             }
         case transportDepartmentConstants.GET_USER_BY_ROLE_SUCCESS:
             let res = [];
-            if (state && state.listUser && state.listUser.length !==0){
+            if (state && state.listUser && state.listUser.length !== 0) {
                 res = state.listUser.filter(r => Number(r.role) !== Number(action.payload?.role));
                 res.push(action.payload);
             }
@@ -70,7 +70,7 @@ export function transportDepartment(state = initialState, action) {
                 lists: state.lists.filter(department => (department?._id !== action.payload?._id)),
                 isLoading: false
             }
-		default:
-            		return state
-}
+        default:
+            return state
+    }
 }

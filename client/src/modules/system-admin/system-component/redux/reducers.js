@@ -3,7 +3,7 @@ import { SystemComponentConstants } from "./constants";
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
@@ -23,11 +23,11 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     error: null,
-    isLoading: true,
+    isLoading: false,
     item: null
 }
 
-export function systemComponents (state = initState, action) {
+export function systemComponents(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
@@ -101,10 +101,10 @@ export function systemComponents (state = initState, action) {
         case SystemComponentConstants.EDIT_COMPONENT_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
-            if(index !== -1){
+            if (index !== -1) {
                 state.list[index] = action.payload;
             }
-            if(indexPaginate !== -1){
+            if (indexPaginate !== -1) {
                 state.listPaginate[indexPaginate] = action.payload;
             }
             return {
@@ -115,8 +115,8 @@ export function systemComponents (state = initState, action) {
         case SystemComponentConstants.DELETE_COMPONENT_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
-            if(index !== -1) state.list.splice(index,1);
-            if(indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
+            if (index !== -1) state.list.splice(index, 1);
+            if (indexPaginate !== -1) state.listPaginate.splice(indexPaginate, 1);
             return {
                 ...state,
                 isLoading: false
