@@ -506,10 +506,10 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
     };
 }
 
-function getTimeSheetOfUser(userId, month, year) {
+function getTimeSheetOfUser(userId, month, year, requireActions = false) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_TIME_SHEET_OF_USER_REQUEST });
-        taskManagementService.getTimeSheetOfUser(userId, month, year)
+        taskManagementService.getTimeSheetOfUser(userId, month, year, requireActions)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_TIME_SHEET_OF_USER_SUCCESS,

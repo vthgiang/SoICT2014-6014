@@ -23,15 +23,40 @@ function PrivilegeApiCreateModal(props) {
 
     const { email, apis, companyId } = state;
 
-    let listPaginateApi = systemApis?.listPaginateApi
-    let listPaginateCompany = company?.listPaginate
+    let listPaginateApi = systemApis?.listPaginateApi;
+    let listPaginateCompany = company?.listPaginate;
+    const [arrangedApisArr, setArrangedApisArr] = useState([]);
 
     useEffect(() => {
         props.getSystemApis({
             page: 1,
-            perPage: 20
+            perPage: 10000
         })
     }, [])
+
+    useEffect(() => {
+        if (listPaginateApi.length > 0) {
+            let apiCategoryIndex = -1;
+            let apiCategory = 'placeholder';
+
+            const arrangedApisArrTmp = [];
+
+            listPaginateApi.map(api => {
+                if (!api.path.startsWith(apiCategory)) {
+                    apiCategory = '/' + api.path.split('/')[1];
+                    apiCategoryIndex += 1;
+                    arrangedApisArrTmp.push({
+                        category: apiCategory,
+                        apis: [api]
+                    });
+                } else {
+                    arrangedApisArrTmp[apiCategoryIndex].apis.push(api);
+                }
+            });
+
+            setArrangedApisArr(arrangedApisArrTmp);
+        }
+    }, [listPaginateApi]);
 
     useEffect(() => {
         setState({
@@ -40,12 +65,12 @@ function PrivilegeApiCreateModal(props) {
         })
     }, [JSON.stringify(company?.listPaginate)])
 
-    const handleSystemApi = (value) => {
-        setState({
-            ...state,
-            apis: value,
-        })
-    }
+    // const handleSystemApi = (value) => {
+    //     setState({
+    //         ...state,
+    //         apis: value,
+    //     })
+    // }
 
     const handleCompany = (value) => {
         setState({
@@ -139,12 +164,32 @@ function PrivilegeApiCreateModal(props) {
         }
     }
 
+    const handleCheckboxCategory = (e, apiCategory) => {
+        const { checked } = e.target;
+        let arr = state.apis;
+
+        if (checked) {
+            apiCategory.apis.map(api => arr.push(api._id));
+        } else {
+            const apiCategoryId = apiCategory.apis.map(api => api._id);
+            arr = arr.filter((apiId) =>
+                apiCategoryId.findIndex(delApiId => apiId === delApiId) >= 0 ? false : true
+            )
+        }
+
+        setState({
+            ...state,
+            apis: arr,
+        });
+    }
+
     const handleSubmit = () => {
         let requestBody = {
             email: email,
             apis: apis,
             companyId: companyId,
             role: 'system_admin',
+            status: 3,
             description: state.description,
             unlimitedExpirationTime: state.unlimitedExpirationTime,
         }
@@ -168,6 +213,47 @@ function PrivilegeApiCreateModal(props) {
     //         perPage: 20
     //     })
     // }
+
+    const renderApiList = () => {
+        return (
+            arrangedApisArr.map((apisCategory) => (
+                <>
+                    <tr>
+                        <td colspan="3" style={{
+                            textAlign: 'left',
+                        }}></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input
+                                type="checkbox"
+                                onChange={(e) => handleCheckboxCategory(e, apisCategory)}
+                            />
+                        </td>
+                        <td colspan="3" style={{
+                            textAlign: 'left',
+                            fontWeight: 'bold',
+                        }}>Path: <span>{apisCategory.category}</span></td>
+                    </tr>
+
+                    {apisCategory.apis.map(api => (
+                        <tr key={api._id}>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    value={api._id}
+                                    onChange={handleCheckbox}
+                                    checked={checkedCheckbox(api._id, apis)}
+                                />
+                            </td>
+                            <td>{api.path}</td>
+                            <td>{api.method}</td>
+                        </tr>
+                    ))}
+                </>
+            ))
+        )
+    }
 
     return (
         <React.Fragment>
@@ -232,9 +318,26 @@ function PrivilegeApiCreateModal(props) {
                                     onChange={handleEnterEndDate}
                                 />
                             </div>
-
                         </div>)
                     }
+
+                    {/* Company */}
+                    <div className="form-group">
+                        <label className="control-label">{translate('system_admin.company.table.name')}</label>
+                        <SelectBox
+                            id={`create-privilege-api-modal-company`}
+                            className="form-control"
+                            style={{ width: "100%" }}
+                            items={listPaginateCompany?.length > 0 ? listPaginateCompany.map(item => {
+                                return {
+                                    value: item?._id,
+                                    text: item?.name
+                                }
+                            }) : []}
+                            value={companyId}
+                            onChange={handleCompany}
+                        />
+                    </div>
 
                     {/* API */}
                     <fieldset className="scheduler-border" style={{ minHeight: '300px' }}>
@@ -257,20 +360,7 @@ function PrivilegeApiCreateModal(props) {
                             <tbody>
                                 {
                                     listPaginateApi?.length > 0
-                                        ? listPaginateApi.map(api => (
-                                            <tr key={api._id}>
-                                                <td>
-                                                    <input
-                                                        type="checkbox"
-                                                        value={api._id}
-                                                        onChange={handleCheckbox}
-                                                        checked={checkedCheckbox(api._id, apis)}
-                                                    />
-                                                </td>
-                                                <td>{api.path}</td>
-                                                <td>{api.method}</td>
-                                            </tr>
-                                        ))
+                                        ? renderApiList()
                                         : apis.isLoading
                                             ? <tr><td colSpan={4}>{translate('general.loading')}</td></tr>
                                             : <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
@@ -278,24 +368,6 @@ function PrivilegeApiCreateModal(props) {
                             </tbody>
                         </table>
                     </fieldset>
-
-                    {/* Company */}
-                    <div className="form-group">
-                        <label className="control-label">{translate('system_admin.company.table.name')}</label>
-                        <SelectBox
-                            id={`create-privilege-api-modal-company`}
-                            className="form-control"
-                            style={{ width: "100%" }}
-                            items={listPaginateCompany?.length > 0 ? listPaginateCompany.map(item => {
-                                return {
-                                    value: item?._id,
-                                    text: item?.name
-                                }
-                            }) : []}
-                            value={companyId}
-                            onChange={handleCompany}
-                        />
-                    </div>
                 </form>
             </DialogModal>
         </React.Fragment>

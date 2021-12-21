@@ -116,7 +116,6 @@ function InventoryManagement(props) {
             good: ''
         })
     }
-    console.log("type", state.type)
 
     const handleWaste = async () => {
         let newType = 'waste';
@@ -321,7 +320,6 @@ function InventoryManagement(props) {
     }
 
     const checkQuantity = (stock) => {
-        console.log("stock", stock);
         const { stocks } = props;
         var check = 1;
         stock.map(x => {

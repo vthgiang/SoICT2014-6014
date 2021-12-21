@@ -684,6 +684,12 @@ export default {
                 system_api_exist: 'System API already exists'
             },
 
+            system_page: {
+                //Thông điệp trả về từ server
+                get_system_page_apis_success: 'Get system page APIs successfully',
+                get_system_page_api_failure: 'Can not get system page APIs',
+            },
+
             privilege_system_api: {
                 cancel: "Cancel privilege system apis",
                 delete: "Delete privilege system apis",
@@ -939,7 +945,7 @@ export default {
                     delete: "Delete document archive",
                     name: "Archive name",
                     description: "Archive description",
-                    parent: "Archive parent",
+                    parent: "Parent directory",
                     select_parent: "Select archive parent",
                     select: "Select archive",
                     not_select: "Not select archive",
@@ -1374,6 +1380,10 @@ export default {
             edit_success: "Edit successfully!",
             edit_faile: "Edit failed!",
             category: "Category",
+        },
+
+        manage_api: {
+            description: "Description of api",
         },
 
         manage_component: {
@@ -4318,7 +4328,7 @@ export default {
             dashboard_inventory: {},
             category_management: {
                 index: "STT",
-                add: "Add",
+                add: "Add a new list of goods",
                 add_title: "Add new category",
                 info: "Information about the list of commodity",
                 edit: "Edit category information",
@@ -4774,8 +4784,8 @@ export default {
                 choose_material: "Select material",
                 command_code: "Command code",
                 mill_request: "Factory required",
-                quantity_needed_true: "To approve the work order, please fill the issue bill full required quantity of materials!"
-
+                quantity_needed_true: "To approve the work order, please fill the issue bill full required quantity of materials!",
+                lot_with_unit: "Lot (Lot code/ Quantity)",
 
             },
             inventory_management: {
@@ -4828,6 +4838,8 @@ export default {
                 get_lot_failed: "Get consigment failed",
                 push_lot: "The consigment has not been placed in warehouse",
                 text: "Commodity have not been placed in warehouse",
+                add_lot: "Add consigment",
+                select_lot: "Select consigment",
             },
         },
 

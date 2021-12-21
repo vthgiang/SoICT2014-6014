@@ -13,7 +13,7 @@ import GeneralTaskPersonalChart from './generalTaskPersonalChart';
 import { InprocessTask } from './inprocessTask';
 import { LoadTaskChart } from './loadTaskChart';
 
-import { DatePicker, LazyLoadComponent } from '../../../../common-components';
+import { DatePicker, LazyLoadComponent, ExportExcel } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 
@@ -259,6 +259,25 @@ function TaskDashboard(props) {
         })
     }
 
+    const showTimeSheetLogsDescription = () => {
+        const { translate } = props;
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Thống kê bấm giờ cá nhân</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Thống kê lịch sử bấm giờ của bạn trong tháng được chọn.</p>
+            <p>Bảng chỉ liệt kê các hoạt động được thực hiện trọn vẹn trong tháng đó. Ví dụ, bạn chọn tháng 12/2021:</p>
+            <ul>
+                <li>Bấm giờ từ 20:30:00 ngày 31/12/2021 đến 01:30:00 ngày 1/1/2022: <span style="color: red">không hiển thị</span>.</li>
+                <li>Bấm giờ từ 21:00:00 ngày 30/11/2021 đến 02:00:00 ngày 1/12/2021: <span style="color: red">không hiển thị</span>.</li>
+                <li>Bấm giờ từ 20:30:00 ngày 8/12/2021 đến 01:30:00 ngày 9/12/2021: <span style="color: green">hiển thị</span>.</li>
+            </ul>
+            </div>`,
+            width: "50%",
+
+        })
+    }
+
     const showGeneralTaskDescription = () => {
         Swal.fire({
             icon: "question",
@@ -302,6 +321,8 @@ function TaskDashboard(props) {
     let { startMonthTitle, endMonthTitle } = infoSearch;
     let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
 
+    console.log("timesheet", userTimeSheetLogs);
+
     let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0, amountInformedTasks = 0;
     let totalTasks = 0;
     let newNumTask = [], listTasksGeneral = [];
@@ -342,6 +363,37 @@ function TaskDashboard(props) {
         listTasksGeneral = filterDifference(listTasksGeneral);
 
         totalTasks = newNumTask.length;
+    }
+
+    let dataTimeSheetLogsExport = {
+        fileName: `${translate('task.task_dashboard.statistical_timesheet_logs')} ${state.monthTimeSheetLog}`,
+        dataSheets: [
+            {
+                sheetTitle: `${translate('task.task_dashboard.statistical_timesheet_logs')} ${state.monthTimeSheetLog}`,
+                sheetName: `${translate('task.task_dashboard.statistical_timesheet_logs')}`,
+                sheetTitleWidth: 6,
+                tables: [
+                    {
+                        columns: [
+                            {key: 'STT', value: 'STT', width: 7},
+                            {key: 'name', value: 'Tên công việc', width: 20},
+                            {key: 'startedAt', value: 'Thời gian bắt đầu', width: 25},
+                            {key: 'stoppedAt', value: 'Thời gian kết thúc', width: 25},
+                            {key: 'type', value: 'Loại bấm giờ', width: 15},
+                            {key: 'duration', value: 'Bấm giờ', width: 10},
+                        ],
+                        data: userTimeSheetLogs.map((tsl, index) => ({
+                            STT: index + 1,
+                            name: tsl.name ? tsl.name : '...',
+                            startedAt: tsl.startedAt ? dayjs(tsl.startedAt).format("DD-MM-YYYY h:mm:ss A") : '...',
+                            stoppedAt: tsl.stoppedAt ? dayjs(tsl.stoppedAt).format("DD-MM-YYYY h:mm:ss A") : '...',
+                            type: tsl.autoStopped ? convertType(tsl.autoStopped) : '...',
+                            duration: tsl.duration ? convertTime(tsl.duration) : '...',
+                        }))
+                    }
+                ]
+            }
+        ]
     }
 
     return (
@@ -667,6 +719,9 @@ function TaskDashboard(props) {
                             <div className="box-title">
                                 Thống kê bấm giờ theo tháng
                             </div>
+                            <a onClick={() => showTimeSheetLogsDescription()}>
+                                <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                            </a>
                         </div>
                         <div className="box-body qlcv">
                             {/* Seach theo thời gian */}
@@ -682,8 +737,12 @@ function TaskDashboard(props) {
                                     />
                                 </div>
                                 <button className="btn btn-primary" onClick={getUserTimeSheetLogs}>Thống kê</button>
+                                <ExportExcel 
+                                    id="export-personal-timesheets-logs" 
+                                    style={{right: 0}} 
+                                    exportData={dataTimeSheetLogsExport}
+                                />
                             </div>
-
                             <div>
                                 <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
                                     <span style={{ fontWeight: 'bold', marginLeft: 10 }}>

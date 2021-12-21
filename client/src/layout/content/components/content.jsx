@@ -70,8 +70,8 @@ class Content extends Component {
             currentCol = resizer.parentElement;
             nextCol = null;
             console.log(" " + index);
-            
-            for (let i = index+1; i<resizerList.length; i++) {
+
+            for (let i = index + 1; i < resizerList.length; i++) {
                 console.log(i);
                 let col = resizerList[i].parentElement;
                 if (col.style.display !== null && col.style.display !== undefined && col.style.display !== "none") {
@@ -82,7 +82,7 @@ class Content extends Component {
             if (nextCol === null || nextCol === undefined) {
                 return;
             }
-            
+
 
             currentColWidth = parseInt(window.getComputedStyle(currentCol).width, 10);
             nextColWidth = parseInt(window.getComputedStyle(nextCol).width, 10);
@@ -137,11 +137,11 @@ class Content extends Component {
 
             resizerList.push(resizer);
         };
-        
+
         for (let i in resizerList) {
             this.createResizableColumn(resizerList[i], parseInt(i, 10), resizerList, table);
         }
-        
+
     }
 
     removeAllResizer = () => {
@@ -207,7 +207,7 @@ class Content extends Component {
             str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
             return str;
         }
-        
+
         let convertDate = (str) => {
             if (moment(str, 'DD-MM-YYYY', true).isValid()) {
                 str = str.split("-")
@@ -453,7 +453,18 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, pageName, arrPage, isLoading } = this.props;
+        let isLoading = false; // isLoading tổng
+        const { translate, pageName, arrPage } = this.props;
+        // loop qua tất cả các isLoading trong redux store, gặp isLoading nào là true thì để isLoading tổng là true
+        for (const [key, value] of Object.entries(this.props)) {
+            if (value?.isLoading === true) {
+                //ignore các isLoading của module auth, user, role
+                if (key !== 'auth' && key !== 'notifications' && key !== 'user' && key !== 'role') {
+                    isLoading = true;
+                    break;
+                }
+            }
+        }
         return (
             <React.Fragment>
                 <div className="content-wrapper">

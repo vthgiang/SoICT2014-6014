@@ -605,86 +605,88 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
-        let approver = [];
-        let qualityControlStaffs = [];
-        let responsibles = [];
-        let accountables = [];
-        if (props.approvers && props.approvers.length > 0) {
-            for (let i = 0; i < props.approvers.length; i++) {
-                approver = [...approver, props.approvers[i].approver._id];
+    useEffect(() => {
+        if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
+            let approver = [];
+            let qualityControlStaffs = [];
+            let responsibles = [];
+            let accountables = [];
+            if (props.approvers && props.approvers.length > 0) {
+                for (let i = 0; i < props.approvers.length; i++) {
+                    approver = [...approver, props.approvers[i].approver._id];
+                }
+    
             }
-
-        }
-
-        if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
-            for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
-                qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
+    
+            if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
+                for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
+                    qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
+                }
+    
             }
-
-        }
-
-        if (props.responsibles && props.responsibles.length > 0) {
-            for (let i = 0; i < props.responsibles.length; i++) {
-                responsibles = [...responsibles, props.responsibles[i]._id];
+    
+            if (props.responsibles && props.responsibles.length > 0) {
+                for (let i = 0; i < props.responsibles.length; i++) {
+                    responsibles = [...responsibles, props.responsibles[i]._id];
+                }
+    
             }
-
-        }
-
-        if (props.accountables && props.accountables.length > 0) {
-            for (let i = 0; i < props.accountables.length; i++) {
-                accountables = [...accountables, props.accountables[i]._id];
+    
+            if (props.accountables && props.accountables.length > 0) {
+                for (let i = 0; i < props.accountables.length; i++) {
+                    accountables = [...accountables, props.accountables[i]._id];
+                }
+    
             }
-
+            state.good.quantity = 0;
+            state.good.good = '';
+            state.good.description = '';
+            state.good.lots = [];
+    
+            if (props.type === "1") {
+                props.getGoodsByType({ type: "material" });
+            } else if (props.type === "2") {
+                props.getGoodsByType({ type: "product" });
+            }
+    
+            setState({
+                ...state,
+                billId: props.billId,
+                code: props.code,
+                fromStock: props.fromStock,
+                status: props.status,
+                oldStatus: props.oldStatus,
+                group: props.group,
+                type: props.type,
+                users: props.users,
+                creator: props.creator,
+                approvers: props.approvers,
+                approver: approver,
+                qualityControlStaffs: qualityControlStaffs,
+                listQualityControlStaffs: props.listQualityControlStaffs,
+                responsibles: responsibles,
+                accountables: accountables,
+                description: props.description,
+                supplier: props.supplier,
+                manufacturingMill: props.manufacturingMillId,
+                name: props.name,
+                phone: props.phone,
+                email: props.email,
+                address: props.address,
+                listGood: props.listGood,
+                oldGoods: props.listGood,
+                editInfo: false,
+                errorStock: undefined,
+                errorType: undefined,
+                errorApprover: undefined,
+                errorCustomer: undefined,
+                errorQualityControlStaffs: undefined,
+                errorAccountables: undefined,
+                errorResponsibles: undefined
+    
+            })
         }
-        state.good.quantity = 0;
-        state.good.good = '';
-        state.good.description = '';
-        state.good.lots = [];
-
-        if (props.type === "1") {
-            props.getGoodsByType({ type: "material" });
-        } else if (props.type === "2") {
-            props.getGoodsByType({ type: "product" });
-        }
-
-        setState({
-            ...state,
-            billId: props.billId,
-            code: props.code,
-            fromStock: props.fromStock,
-            status: props.status,
-            oldStatus: props.oldStatus,
-            group: props.group,
-            type: props.type,
-            users: props.users,
-            creator: props.creator,
-            approvers: props.approvers,
-            approver: approver,
-            qualityControlStaffs: qualityControlStaffs,
-            listQualityControlStaffs: props.listQualityControlStaffs,
-            responsibles: responsibles,
-            accountables: accountables,
-            description: props.description,
-            supplier: props.supplier,
-            manufacturingMill: props.manufacturingMillId,
-            name: props.name,
-            phone: props.phone,
-            email: props.email,
-            address: props.address,
-            listGood: props.listGood,
-            oldGoods: props.listGood,
-            editInfo: false,
-            errorStock: undefined,
-            errorType: undefined,
-            errorApprover: undefined,
-            errorCustomer: undefined,
-            errorQualityControlStaffs: undefined,
-            errorAccountables: undefined,
-            errorResponsibles: undefined
-
-        })
-    }
+    }, [props.billId, props.oldStatus])
 
     const save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier, manufacturingMill,
@@ -996,7 +998,9 @@ function GoodReceiptEditForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <label>{translate('manage_warehouse.bill_management.number')}</label>
-                                    <div style={{ display: "flex" }}><input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />{good.good && status === '2' && <i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => addQuantity()}></i>}</div>
+                                    <div style={{ display: "flex" }}>
+                                        <input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />
+                                        </div>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -1006,6 +1010,7 @@ function GoodReceiptEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                {good.good && status === '2' && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.add_lot')}</button>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -1025,7 +1030,8 @@ function GoodReceiptEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
                                         </tr>
                                     </thead>
@@ -1043,6 +1049,14 @@ function GoodReceiptEditForm(props) {
                                                                 <span style={{ color: "red" }}>{x.quantity}</span>
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.bill_management.text')}</p></span>
                                                             </td>}
+                                                        {(checkLots(x.lots, x.quantity)) ? 
+                                                            <td>{x.lots.map((lot, index) => 
+                                                                <div key={index}>
+                                                                    <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                </div>)}
+                                                            </td> : 
+                                                            <td>{''}</td> 
+                                                        }
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

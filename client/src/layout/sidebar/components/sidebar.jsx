@@ -258,6 +258,11 @@ class SideBar extends Component {
                                             path: "/task-process-management",
                                         },
                                         {
+                                            name: "menu.personal_time_sheet_log",
+                                            icon: "fa fa-circle-o",
+                                            path: "/personal-time-sheet-log",
+                                        },
+                                        {
                                             name: "menu.all_time_sheet_log",
                                             icon: "fa fa-circle-o",
                                             path: "/time-sheet-log/all",

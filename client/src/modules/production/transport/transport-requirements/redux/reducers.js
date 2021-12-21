@@ -12,35 +12,35 @@ var findIndex = (array, id) => {
 
 const initialState = {
     lists: [],
-    isLoading: true,
+    isLoading: false,
     error: null,
     totalList: 0,
 }
 export function transportRequirements(state = initialState, action) {
     let index = -1;
     switch (action.type) {
-		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_REQUEST:
+        case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_REQUEST:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_REQUEST:
         case transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_REQUEST:
         case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_REQUEST:
         case transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_REQUEST:
-		return {
+            return {
                 ...state,
                 isLoading: true
             }
-		
-		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE:
+
+        case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_FAILURE:
         case transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_FAILURE:
         case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_FAILURE:
         case transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_FAILURE:
-		return {
+            return {
                 ...state,
                 isLoading: false,
                 error: action.error
             }
-		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_SUCCESS:
-		return {
+        case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_SUCCESS:
+            return {
                 ...state,
                 lists: action.payload.data,
                 isLoading: false
@@ -75,7 +75,7 @@ export function transportRequirements(state = initialState, action) {
                 lists: state.lists.filter(transportRequirement => (transportRequirement?._id !== action.payload?._id)),
                 isLoading: false
             }
-		default:
-            		return state
+        default:
+            return state
     }
 }
