@@ -934,8 +934,11 @@ function GoodIssueCreateForm(props) {
                                             <th title={translate("manage_warehouse.bill_management.number")}>
                                                 {translate("manage_warehouse.bill_management.number")}
                                             </th>
+                                            <th title={translate('manage_warehouse.bill_management.lot_with_unit')}>
+                                                {translate('manage_warehouse.bill_management.lot_with_unit')}
+                                            </th>
                                             <th title={translate("manage_warehouse.bill_management.note")}>
-                                                {translate("manage_warehouse.bill_management.note")}
+                                                {translate("manage_warehouse.bill_management.description")}
                                             </th>
                                             <th>{translate("task_template.action")}</th>
                                         </tr>
@@ -955,6 +958,11 @@ function GoodIssueCreateForm(props) {
                                                     <td>{x.good.name}</td>
                                                     <td>{x.good.baseUnit}</td>
                                                     <td>{x.quantity}</td>
+                                                    <td>{x.lots.map((lot, index) => 
+                                                        <div key={index}>
+                                                            <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                        </div>)}
+                                                    </td> 
                                                     <td>{x.description}</td>
                                                     <td>
                                                         <a

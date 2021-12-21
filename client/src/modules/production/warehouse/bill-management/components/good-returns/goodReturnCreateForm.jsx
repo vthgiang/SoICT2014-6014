@@ -803,7 +803,8 @@ function GoodReturnCreateForm(props) {
                                                 <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                                 <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>
                                                 <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>
-                                                <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.lot_with_unit')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                                 <th>{translate('task_template.action')}</th>
                                             </tr>
                                         </thead>
@@ -818,6 +819,11 @@ function GoodReturnCreateForm(props) {
                                                             <td>{x.good.baseUnit}</td>
                                                             <td>{x.quantity}</td>
                                                             <td>{x.returnQuantity}</td>
+                                                            <td>{x.lots.map((lot, index) => 
+                                                                <div key={index}>
+                                                                    <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                </div>)}
+                                                            </td> 
                                                             <td>{x.description}</td>
                                                             <td>
                                                                 <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

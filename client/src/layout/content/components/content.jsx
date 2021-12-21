@@ -460,7 +460,6 @@ class Content extends Component {
             if (value?.isLoading === true) {
                 //ignore các isLoading của module auth, user, role
                 if (key !== 'auth' && key !== 'notifications' && key !== 'user' && key !== 'role') {
-                    console.log(key)
                     isLoading = true;
                     break;
                 }
