@@ -605,86 +605,88 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
-        let approver = [];
-        let qualityControlStaffs = [];
-        let responsibles = [];
-        let accountables = [];
-        if (props.approvers && props.approvers.length > 0) {
-            for (let i = 0; i < props.approvers.length; i++) {
-                approver = [...approver, props.approvers[i].approver._id];
+    useEffect(() => {
+        if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
+            let approver = [];
+            let qualityControlStaffs = [];
+            let responsibles = [];
+            let accountables = [];
+            if (props.approvers && props.approvers.length > 0) {
+                for (let i = 0; i < props.approvers.length; i++) {
+                    approver = [...approver, props.approvers[i].approver._id];
+                }
+    
             }
-
-        }
-
-        if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
-            for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
-                qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
+    
+            if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
+                for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
+                    qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
+                }
+    
             }
-
-        }
-
-        if (props.responsibles && props.responsibles.length > 0) {
-            for (let i = 0; i < props.responsibles.length; i++) {
-                responsibles = [...responsibles, props.responsibles[i]._id];
+    
+            if (props.responsibles && props.responsibles.length > 0) {
+                for (let i = 0; i < props.responsibles.length; i++) {
+                    responsibles = [...responsibles, props.responsibles[i]._id];
+                }
+    
             }
-
-        }
-
-        if (props.accountables && props.accountables.length > 0) {
-            for (let i = 0; i < props.accountables.length; i++) {
-                accountables = [...accountables, props.accountables[i]._id];
+    
+            if (props.accountables && props.accountables.length > 0) {
+                for (let i = 0; i < props.accountables.length; i++) {
+                    accountables = [...accountables, props.accountables[i]._id];
+                }
+    
             }
-
+            state.good.quantity = 0;
+            state.good.good = '';
+            state.good.description = '';
+            state.good.lots = [];
+    
+            if (props.type === "1") {
+                props.getGoodsByType({ type: "material" });
+            } else if (props.type === "2") {
+                props.getGoodsByType({ type: "product" });
+            }
+    
+            setState({
+                ...state,
+                billId: props.billId,
+                code: props.code,
+                fromStock: props.fromStock,
+                status: props.status,
+                oldStatus: props.oldStatus,
+                group: props.group,
+                type: props.type,
+                users: props.users,
+                creator: props.creator,
+                approvers: props.approvers,
+                approver: approver,
+                qualityControlStaffs: qualityControlStaffs,
+                listQualityControlStaffs: props.listQualityControlStaffs,
+                responsibles: responsibles,
+                accountables: accountables,
+                description: props.description,
+                supplier: props.supplier,
+                manufacturingMill: props.manufacturingMillId,
+                name: props.name,
+                phone: props.phone,
+                email: props.email,
+                address: props.address,
+                listGood: props.listGood,
+                oldGoods: props.listGood,
+                editInfo: false,
+                errorStock: undefined,
+                errorType: undefined,
+                errorApprover: undefined,
+                errorCustomer: undefined,
+                errorQualityControlStaffs: undefined,
+                errorAccountables: undefined,
+                errorResponsibles: undefined
+    
+            })
         }
-        state.good.quantity = 0;
-        state.good.good = '';
-        state.good.description = '';
-        state.good.lots = [];
-
-        if (props.type === "1") {
-            props.getGoodsByType({ type: "material" });
-        } else if (props.type === "2") {
-            props.getGoodsByType({ type: "product" });
-        }
-
-        setState({
-            ...state,
-            billId: props.billId,
-            code: props.code,
-            fromStock: props.fromStock,
-            status: props.status,
-            oldStatus: props.oldStatus,
-            group: props.group,
-            type: props.type,
-            users: props.users,
-            creator: props.creator,
-            approvers: props.approvers,
-            approver: approver,
-            qualityControlStaffs: qualityControlStaffs,
-            listQualityControlStaffs: props.listQualityControlStaffs,
-            responsibles: responsibles,
-            accountables: accountables,
-            description: props.description,
-            supplier: props.supplier,
-            manufacturingMill: props.manufacturingMillId,
-            name: props.name,
-            phone: props.phone,
-            email: props.email,
-            address: props.address,
-            listGood: props.listGood,
-            oldGoods: props.listGood,
-            editInfo: false,
-            errorStock: undefined,
-            errorType: undefined,
-            errorApprover: undefined,
-            errorCustomer: undefined,
-            errorQualityControlStaffs: undefined,
-            errorAccountables: undefined,
-            errorResponsibles: undefined
-
-        })
-    }
+    }, [props.billId, props.oldStatus])
 
     const save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier, manufacturingMill,
