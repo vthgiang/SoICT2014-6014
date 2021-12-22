@@ -238,7 +238,8 @@ function BillDetailForm(props) {
                                                 {billDetail.group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>}
                                                 {billDetail.group === '4' && <th title={translate('manage_warehouse.bill_management.real_quantity')}>{translate('manage_warehouse.bill_management.real_quantity')}</th>}
                                                 {billDetail.group === '4' && <th title={translate('manage_warehouse.bill_management.difference')}>{translate('manage_warehouse.bill_management.difference')}</th>}
-                                                <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.lot_with_unit')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             </tr>
                                         </thead>
                                         <tbody id={`good-edit-manage-by-archive`}>
@@ -254,6 +255,11 @@ function BillDetailForm(props) {
                                                         {billDetail.group === '3' && <td>{x.returnQuantity} <a href="#" onClick={() => handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
                                                         {billDetail.group === '4' && <td>{x.realQuantity}</td>}
                                                         {billDetail.group === '4' && <td>{x.damagedQuantity}</td>}
+                                                        <td>{x.lots.map((lot, index) => 
+                                                            <div key={index}>
+                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                            </div>)}
+                                                        </td> 
                                                         <td>{x.description}</td>
                                                     </tr>
                                                 )

@@ -73,21 +73,19 @@ const TabIntegratedStatistics = (props) => {
 
     const { month, listAllEmployees, employeeDashboardData } = props;
 
-
-    let listEmployee = user.employees;
     let employeeOvertime = [], employeeHoursOff = [];
     /* Lấy dữ liệu tăng ca và nghỉ phép của mỗi nhân viên trong đơn vị */
     let listTimesheets = employeeDashboardData.dataOvertimeUnits?.listOvertimeOfUnitsByStartDateAndEndDate;
-    for (let i in listEmployee) {
+    for (let i in listAllEmployees) {
         let totalOvertime = 0, totalHoursOff = 0;
         listTimesheets && listTimesheets.forEach(x => {
-            if (listEmployee[i].userId.email === x.employee.emailInCompany) {
+            if (listAllEmployees[i].emailInCompany === x.employee.emailInCompany) {
                 totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
                 totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;
             };
         });
-        employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
-        employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
+        employeeOvertime = [...employeeOvertime, { _id: listAllEmployees[i]._id, name: listAllEmployees[i].fullName, totalHours: totalOvertime }];
+        employeeHoursOff = [...employeeHoursOff, { _id: listAllEmployees[i]._id, name: listAllEmployees[i].fullName, totalHours: totalHoursOff }];
     };
     /* Sắp xếp theo thứ tự giảm dần */
     if (employeeOvertime.length !== 0) {
@@ -163,7 +161,7 @@ const TabIntegratedStatistics = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {employeeDashboardData.commendation?.totalList?.length !== 0 && Array.isArray(employeeDashboardData.commendation) &&
+                                        {employeeDashboardData.commendation?.totalList?.length !== 0 && Array.isArray(employeeDashboardData.commendation.totalList) &&
                                             employeeDashboardData.commendation.totalList.map((x, index) => index < 5 ? (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
@@ -199,8 +197,8 @@ const TabIntegratedStatistics = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {employeeDashboardData.discipline?.listDisciplines?.length !== 0 && Array.isArray(employeeDashboardData.discipline)
-                                            && employeeDashboardData.discipline.listDisciplines.map((x, index) => index < 5 ? (
+                                        {employeeDashboardData.discipline?.totalList?.length !== 0 && Array.isArray(employeeDashboardData.discipline.totalList)
+                                            && employeeDashboardData.discipline.totalList.map((x, index) => index < 5 ? (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{x.employee.fullName}</td>
@@ -211,7 +209,7 @@ const TabIntegratedStatistics = (props) => {
                                     </tbody>
                                 </table>
                                 {
-                                    (!employeeDashboardData.discipline?.listDisciplines || employeeDashboardData.discipline?.listDisciplines?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    (!employeeDashboardData.discipline?.totalList || employeeDashboardData.discipline?.totalList?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
                             </div>
                             <div className="box-footer text-center">
@@ -299,7 +297,7 @@ const TabIntegratedStatistics = (props) => {
             </div>
             <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên `} viewAll={true} />
             <ViewAllCommendation dataCommendation={employeeDashboardData.commendation?.totalList?.length > 0 ? employeeDashboardData.commendation?.totalList : []} title={`Tổng hợp khen thưởng tháng ${month}`} />
-            <ViewAllDiscipline dataDiscipline={employeeDashboardData.discipline?.listDisciplines?.length > 0 ? employeeDashboardData.discipline.listDisciplines : []} title={`Tổng hợp kỷ luật ${month}`} />
+            <ViewAllDiscipline dataDiscipline={employeeDashboardData.discipline?.totalList?.length > 0 ? employeeDashboardData.discipline.totalList : []} title={`Tổng hợp kỷ luật ${month}`} />
             {
                 state.viewOverTime &&
                 <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca tháng ${month}`} id={state.viewOverTime} />

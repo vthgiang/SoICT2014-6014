@@ -43,7 +43,6 @@ function ModalEditTaskByAccountableEmployee(props) {
         let parent = (task && task.parent) ? task.parent._id : "";
         let parentTask = task && task.parent;
         let taskProject = task && task.taskProject;
-
         let info = {}, taskInfo = task && task.taskInformations;
         for (let i in taskInfo) {
             if (taskInfo[i].type === "date") {

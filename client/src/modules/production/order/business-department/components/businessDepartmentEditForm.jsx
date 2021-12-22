@@ -14,7 +14,7 @@ function BusinessDepartmentEditForm(props) {
         // role:"",
     })
 
-    if (props.businessDepartmentEdit._id !== state.businessDepartmentId) {
+    if (props?.businessDepartmentEdit?._id !== state?.businessDepartmentId) {
         setState((state) => {
             return {
                 ...state,
@@ -51,14 +51,14 @@ function BusinessDepartmentEditForm(props) {
                 }
             }
             listDepartmentArr.push({
-                value: list[i]._id,
-                text: list[i].name,
+                value: list[i]?._id,
+                text: list[i]?.name,
             });
         }
 
         listDepartmentArr.push({
-            value: currentDepartment._id,
-            text: currentDepartment.name,
+            value: currentDepartment?._id,
+            text: currentDepartment?.name,
         });
 
         return listDepartmentArr;
@@ -129,7 +129,7 @@ function BusinessDepartmentEditForm(props) {
     };
 
     const { organizationalUnit, organizationalUnitError, role, roleError, businessDepartmentId } = state;
-    
+
     return (
         <React.Fragment>
             <DialogModal

@@ -3,7 +3,7 @@ import { RootRoleConstants } from "./constants";
 const initState = {
     list: [],
     error: null,
-    isLoading: true
+    isLoading: false
 }
 
 export function rootRoles(state = initState, action) {

@@ -444,7 +444,7 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
 
 function getTaskAnalysOfUser(userId, type) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/analys/user/${userId}`,
+        url: `${process.env.REACT_APP_SERVER}/task/analyse/user/${userId}`,
         method: 'GET',
         params: { type }
     }, false, true, 'task.task_management');
@@ -462,11 +462,11 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
     }, false, true, 'task.task_management');
 }
 
-function getTimeSheetOfUser(userId, month, year) {
+function getTimeSheetOfUser(userId, month, year, requireActions) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/time-sheet`,
         method: 'GET',
-        params: { userId, month, year }
+        params: { userId, month, year, requireActions }
     }, false, true, 'task.task_management');
 }
 
