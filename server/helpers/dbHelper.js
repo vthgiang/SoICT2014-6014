@@ -58,11 +58,11 @@ exports.initModels = (db, models) => {
  */
 exports.restore = async (options) => {
     const commandRestoreDB = (options) => {
-        if (!options.db) { // Restore DB cho 1 portal (1 doanh nghiệp)
+        if (!options.db) { // Restore DB cho cho toàn hệ thống
             return process.env.DB_AUTHENTICATION !== 'true' ?
                 `mongorestore --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database` :
                 `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database`;
-        } else { // Restore DB cho cho toàn hệ thống
+        } else { // Restore DB cho 1 portal (1 doanh nghiệp)
             return process.env.DB_AUTHENTICATION !== 'true' ?
                 `mongorestore  --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}` :
                 `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}`;
