@@ -7,6 +7,7 @@ import ScheduleWeeklyForm from './scheduleWeeklyForm';
 import ScheduleYearlyForm from './scheduleYearlyForm';
 import { SystemSettingActions } from '../redux/actions';
 import BackupInfo from './backupInfo';
+import { FileAddModal } from './fileAddModal';
 
 function SystemSetting(props) {
 
@@ -117,6 +118,9 @@ function SystemSetting(props) {
                         <div className="box-header with-border">
                             <button className="btn btn-success pull-right" onClick={createBackup} title={translate('system_admin.system_setting.backup.backup_button')}>
                                 {translate('system_admin.system_setting.backup.backup_button')}
+                            </button>
+                            <button className="btn btn-success pull-right" style={{backgroundColor: "rgba(32,126,188,0.88)", marginRight: "10px", border: "none"}}  title="Thêm file sao lưu ">
+                                Thêm file sao lưu phục hồi
                             </button>
                         </div>
                         <div className="box-body">
