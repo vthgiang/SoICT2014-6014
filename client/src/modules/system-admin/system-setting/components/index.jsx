@@ -107,6 +107,10 @@ function SystemSetting(props) {
         props.deleteBackup(version)
     }
 
+    const handleAddFile = () => {
+        window.$('#modal-create-file-backup').modal('show');
+    }
+
     const { translate, systemSetting } = props;
     const { schedule, autoBackup, limit } = state;
 
@@ -119,7 +123,9 @@ function SystemSetting(props) {
                             <button className="btn btn-success pull-right" onClick={createBackup} title={translate('system_admin.system_setting.backup.backup_button')}>
                                 {translate('system_admin.system_setting.backup.backup_button')}
                             </button>
-                            <button className="btn btn-success pull-right" style={{backgroundColor: "rgba(32,126,188,0.88)", marginRight: "10px", border: "none"}}  title="Thêm file sao lưu ">
+                            <button className="btn btn-success pull-right" style={{backgroundColor: "rgba(32,126,188,0.88)", marginRight: "10px", border: "none"}}
+                                    onClick={handleAddFile}
+                                    title="Thêm file sao lưu ">
                                 Thêm file sao lưu phục hồi
                             </button>
                         </div>
@@ -168,6 +174,7 @@ function SystemSetting(props) {
                         </div>
                     </div>
                 </div>
+                <FileAddModal />
                 <BackupInfo backupInfo={state.backupInfo} />
                 <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                     <div className="box box-default">

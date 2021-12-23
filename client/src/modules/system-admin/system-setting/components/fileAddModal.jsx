@@ -74,16 +74,14 @@ function FileAddModal(props) {
     }
 
     return (
-        <React.Fragment>
-            <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_file')} />
             <DialogModal
-                size='50' modalID={`modal-create-file-${id}`} isLoading={false}
-                formID={`form-create-file-${id}`}
+                size='50' modalID={`modal-create-file-backup`} isLoading={false}
+                formID={`form-create-file-backup`}
                 title={translate('human_resource.profile.add_file')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
-                <form className="form-group" id={`form-create-file-${id}`}>
+                <form className="form-group" id={`form-create-file-backup`}>
                     {/* Mô tả */}
                     <div className={`form-group ${errorOnDiscFile && "has-error"}`}>
                         <label>{translate('table.description')}<span className="text-red">*</span></label>
@@ -97,7 +95,6 @@ function FileAddModal(props) {
                     </div>
                 </form>
             </DialogModal>
-        </React.Fragment>
     );
 }
 const addModal = connect(null, null)(withTranslate(FileAddModal));
