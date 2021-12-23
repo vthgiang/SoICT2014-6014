@@ -273,7 +273,6 @@ function ReturnManagement(props) {
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
                                             <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
-
                                         }
                                     </td>
                                 </tr>
