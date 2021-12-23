@@ -272,14 +272,7 @@ function ReturnManagement(props) {
                                         }
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.staff_true')}
-                                                content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => handleFinishedQualityControlStaff(x)}
-                                            />
+                                            <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
                                         }
                                     </td>
                                 </tr>
