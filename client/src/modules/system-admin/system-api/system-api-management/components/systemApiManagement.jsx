@@ -58,6 +58,17 @@ const SystemApiManagement = (props) => {
         getSystemApiUpdateLog();
     }, [])
 
+    const deleteSystemApiUpdateLog = async () => {
+        try {
+            const res = await sendRequest({
+                url: `${process.env.REACT_APP_SERVER}/system-admin/system-api/system-apis/update-log`,
+                method: 'DELETE',
+            }, true, true, 'system_admin.system_api');
+
+            setUpdateApiLog(null);
+        } catch (error) { }
+    }
+
     const handleChangePath = (e) => {
         setState({
             ...state,
@@ -357,6 +368,7 @@ const SystemApiManagement = (props) => {
                     </div>
 
                     {updateApiLog &&
+                        (updateApiLog.add.apis.length > 0 || updateApiLog.remove.apis.length > 0) &&
                         <>
                             <div
                                 style={{
@@ -369,7 +381,7 @@ const SystemApiManagement = (props) => {
                                 Api update log
                                 <button
                                     type="button"
-                                    onClick={() => { }}
+                                    onClick={deleteSystemApiUpdateLog}
                                     className="btn delete-update-log-btn"
                                 >
                                     {translate('system_admin.system_api.deleteUpdateLog')}
