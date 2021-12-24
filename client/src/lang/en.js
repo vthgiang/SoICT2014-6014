@@ -657,6 +657,7 @@ export default {
 
             system_api: {
                 update: "Update",
+                deleteUpdateLog: 'Delete update log',
 
                 table: {
                     path: "Path",
