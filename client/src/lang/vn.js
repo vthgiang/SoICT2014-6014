@@ -242,6 +242,21 @@ export default {
             manage_assigned_asset: "Tài sản sử dụng",
             //******END */
 
+            /**Quản lý vật tư */
+            manage_supplies: "Quản lý vật tư",
+            manage_supplies_infor: "Quản lý thông tin vật tư",
+            manage_supplies_purchase_request: "Quản lý yêu cầu mua vật tư",
+            manage_allocation_history: "Quản lý lịch sử cấp phát",
+            manage_purchase_invoice: "Quản lý hóa đơn mua vật tư",
+            recommend_supplies_procurement: "Đăng kí cấp vật tư",
+            
+            add_supplies: "Thêm mới vật tư",
+            add_purchase_invoice: "Thêm mới hóa đơn",
+            add_allocation: "Thêm lịch sử cấp phát",
+
+
+
+
             // QUẢN LÝ BÁO CÁO
             report_management: "Quản lý báo cáo",
             task_report: "Quản lý báo cáo công việc",
@@ -2837,9 +2852,9 @@ export default {
                 create_asset_lot_success: "Thêm lô tài sản thành công",
                 create_asset_lot_failed: "Thêm lô tài sản thất bại",
                 asset_code_lot_exist: "Mã lô đã tồn tại",
-                get_list_asset_lot_success:"Lấy danh sách lô tài sản thành công",
+                get_list_asset_lot_success: "Lấy danh sách lô tài sản thành công",
                 get_list_asset_lot_false: "Lấy danh sách lô tài sản thất bại",
-                update_asset_lot_success:"Cập nhật thông tin lô tài sản thành công",
+                update_asset_lot_success: "Cập nhật thông tin lô tài sản thành công",
                 update_asset_lot_failed: "Cập nhật thông tin lô tài sản thất bại",
                 delete_asset_lot_success: "Xóa lô tài sản thành công",
                 delete_asset_lot_false: "Xóa lô tài sản thất bại",
@@ -3030,6 +3045,144 @@ export default {
                 recommendNumber_exists: "Mã phiếu đăng kí sử dụng tài sản đã tồn tại",
                 dayUse_exists: "Thời gian sử dụng tài sản đã tồn tại",
             },
+        },
+
+        //Modules Quản lý vật tư tiêu hao
+        supplies: {
+            general_information: {
+                add_supplies: "Thêm vật tư",
+                edit_supplies: "Sửa vật tư",
+                delete_supplies: "Xóa vật tư",
+                view_supplies: "Thông tin vật tư",
+
+                add_purchase_invoice: "Thêm hóa đơn",
+                edit_purchase_invoice: "Sửa hóa đơn",
+                delete_purchase_invoice: "Xóa hóa đơn",
+                view_purchase_invoice: "Thông tin hóa đơn",
+
+                add_allocation: "Thêm lịch sử cấp phát",
+                edit_allocation: "Sửa lịch sử cấp phát",
+                delete_allocation: "Xóa lịch sử cấp phát",
+                view_allocation: "Thông tin lịch sử cấp phát",
+
+                delete_recommend_card: "Xóa phiếu",
+                edit_recommend_card: "Chỉnh sửa thông tin phiếu",
+                view_recommend_card: "Thông tin chi tiết phiếu yêu cầu",
+                add_recommend_card: "Thêm phiếu yêu cầu",
+
+                supplies_information: "Thông tin vật tư",
+                invoice_information: "Thông tin hóa đơn mua",
+                allocation_information: "Thông tin lịch sử cấp phát",
+                invoice_history_information: "Lịch sử chỉnh sửa",
+                none_description: "Không có mô tả",
+
+                //button
+                add: "Thêm",
+                select_approver: "Chọn người phê duyệt",
+                search: "Tìm kiếm",
+                select_supplies: "Chọn vật tư",
+                select_all_supplies: "Chọn tất cả vật tư",
+                
+            },
+            supplies_management: {
+                code: "Mã vật tư",
+                suppliesName: "Tên vật tư",
+                totalPurchase: "Số lượng đã mua",
+                totalAllocation: "Số lượng đã cấp phát",
+                price: "Giá tham khảo",
+
+                search_supplies_success: "Lấy danh sách vật tư thành công",
+                search_supplies_failed: "Lấy danh sách vật tư thất bại",
+                create_supplies_success: "Thêm vật tư thành công",
+                supplies_code_exist: "Mã vật tư đã tồn tại",
+                create_supplies_failed: "Thêm vật tư thất bại",
+                update_supplies_success: "Cập nhật vật tư thành công",
+                update_supplies_failed: "Cập nhật vật tư thất bại",
+                delete_supplies_success: "Xóa vật tư thành công",
+                delete_supplies_failed: "Xóa vật tư thất bại",
+                get_supplies_by_id_success: "Lấy thông tin vật tư thành công",
+                get_supplies_by_id_failed: "Lấy thông tin vật tư thất bại",
+
+                delete_info: "Xóa thông tin vật tư",
+            },
+            allocation_management: {
+                date: "Ngày cấp phát",
+                supplies: "Vật tư",
+                quantity: "Số lượng đã cấp",
+                allocationToOrganizationalUnit: "Đơn vị được cấp phát",
+                allocationToUser: "Người dùng được cấp phát",
+
+                search_allocation_success: "Lấy danh sách lịch sử cấp phát thành công",
+                search_allocation_failed: "Lấy danh sách lịch sử cấp phát thất bại",
+                create_allocations_success: "Thêm lịch sử cấp phát thành công",
+                allocation_code_exist: "Mã lịch sử cấp phát đã tồn tại",
+                create_allocations_failed: "Thêm lịch sử cấp phát thất bại",
+                update_allocation_success: "Cập nhật lịch sử cấp phát thành công",
+                update_allocation_failed: "Cập nhật lịch sử cấp phát thất bại",
+                delete_allocations_success: "Xóa lịch sử cấp phát thành công",
+                delete_allocations_failed: "Xóa lịch sử cấp phát thất bại",
+                get_allocation_by_id_success: "Lấy thông tin lịch sử cấp phát thành công",
+                get_allocation_by_id_failed: "Lấy thông tin lịch sử cấp phát thất bại",
+
+                delete_info: "Xóa thông tin cấp phát",
+            },
+            invoice_management: {
+                codeInvoice: "Mã hóa đơn",
+                supplies: "Vật tư",
+                date: "Ngày mua",
+                quantity: "Số lượng đã mua",
+                price: "Giá mua",
+                supplier: "Nhà cung cấp",
+
+                search_purchase_invoice_success: "Lấy danh sách hóa đơn thành công",
+                search_purchase_invoice_failed: "Lấy danh sách hóa đơn thất bại",
+                create_purchase_invoices_success: "Thêm hóa đơn thành công",
+                purchase_invoice_code_exist: "Mã hóa đơn đã tồn tại",
+                create_purchase_invoices_failed: "Thêm hóa đơn thất bại",
+                update_purchase_invoice_success: "Cập nhật hóa đơn thành công",
+                update_purchase_invoice_failed: "Cập nhật hóa đơn thất bại",
+                delete_purchase_invoices_success: "Xóa hóa đơn thành công",
+                delete_purchase_invoices_failed: "Xóa hóa đơn thất bại",
+                get_purchase_invoice_by_id_success: "Lấy thông tin hóa đơn thành công",
+                get_purchase_invoice_by_id_failed: "Lấy thông tin hóa đơn thất bại",
+
+                delete_info: "Xóa thông tin hóa đơn",
+            },
+            purchase_request: {
+                recommendNumber: "Mã phiếu",
+                dateCreate: "Ngày tạo phiếu",
+                proponent: "Người đề nghị",
+                suppliesName: "Tên vật tư",
+                suppliesDescription: "Mô tả",
+                supplier: "Nhà cung cấp",
+                approver: "Người phê duyệt",
+                total: "Số lượng",
+                unit: "Đơn vị tính",
+                estimatePrice: "Giá ước tính",
+                note: "Ghi chú",
+                status: "Trạng thái",
+                files: "Tài liệu đính kèm",
+                recommendUnits: "Đơn vị đề nghị",
+
+                get_purchase_request_success:
+                    "Lấy thông tin đề nghị mua sắm thiết bị thành công",
+                get_purchase_request_failure:
+                    "Lấy thông tin đề nghị mua sắm thiết bị thất bại",
+                create_purchase_request_success:
+                    "Thêm phiếu đề nghị mua sắm thiết bị thành công",
+                create_purchase_request_failure:
+                    "Thêm phiếu đề nghị mua sắm thiết bị thất bại",
+                delete_purchase_request_success:
+                    "Xoá phiếu đề nghị mua sắm thiết bị thành công",
+                delete_purchase_request_failure:
+                    "Xoá phiếu đề nghị mua sắm thiết bị thất bại",
+                edit_purchase_request_success:
+                    "Chỉnh sửa thông tin phiếu thành công",
+                edit_purchase_request_failure:
+                    "Chỉnh sửa thông tin phiếu thất bại",
+                recommend_number_exist: "Mã phiếu đăng ký đã tồn tại",
+            },
+
         },
 
         // Task template

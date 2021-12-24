@@ -476,6 +476,40 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Quản lý vật tư tiêu hao */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_supplies",
+                                    icon: "fa fa-address-book",
+                                    list: [
+                                        {
+                                            name: "menu.manage_supplies_infor",
+                                            icon: "fa fa-dashboard",
+                                            path: "/manage-supplies",
+                                        },
+                                        {
+                                            name: "menu.manage_purchase_invoice",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-purchase-invoice",
+                                        },
+                                        {
+                                            name: "menu.manage_allocation_history",
+                                            icon: "fa fa-balance-scale",
+                                            path: "/manage-allocation-history",
+                                        },
+                                        {
+                                            name: "menu.manage_supplies_purchase_request",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-supplies-request",
+                                        },
+                                        {
+                                            name: "menu.recommend_supplies_procurement",
+                                            icon: "fa fa-calendar",
+                                            path: "/supplies-purchase-request",
+                                        },
+                                    ],
+                                }}
+                            />
 
                             {/* Quản lý tài liệu */}
                             <Item

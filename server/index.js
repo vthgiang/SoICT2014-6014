@@ -194,6 +194,13 @@ router.use(
     require("./modules/asset/use-request/use-request.route")
 );
 
+//supplies
+router.use("/supplies", require("./modules/supplies/supplies-management/supplies.route"));
+router.use("/allocation-supplies", require("./modules/supplies/allocation-management/allocation-history.route"));
+router.use("/purchase-invoice", require("./modules/supplies/purchase-invoice-management/purchase-invoice.route"));
+router.use("/supplies-request", require("./modules/supplies/purchase-request/purchase-request.route"));
+
+
 // Task report
 router.use(
     "/taskreports",

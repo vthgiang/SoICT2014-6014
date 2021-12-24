@@ -79,6 +79,10 @@ const LINK_CATEGORY = {
         name: 'asset-management',
         description: 'Quản lý tài sản'
     },
+    SUPPIES: {
+        name: 'supplies-management',
+        description: 'Quản lý vật tư tiêu hao'
+    },
     REPORT: {
         name: 'report-management',
         description: 'Quản lý báo cáo'
@@ -1005,6 +1009,57 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name,
     ],
     components: getComponentsInLink('/view-building-list')
+},
+
+/**
+ * Quản lý vật tư tiêu hao
+ */
+{
+    url: '/manage-supplies',
+    description: 'Quản lý vật tư tiêu hao',
+    category: LINK_CATEGORY.SUPPIES.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/manage-supplies')
+},
+{
+    url: '/manage-purchase-invoice',
+    description: 'Quản lý hóa đơn mua vật tư',
+    category: LINK_CATEGORY.SUPPIES.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/manage-purchase-invoice')
+},
+{
+    url: '/manage-allocation-history',
+    description: 'Quản lý lịch sử cấp phát vật tư',
+    category: LINK_CATEGORY.SUPPIES.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/manage-allocation-history')
+},
+{
+    url: '/manage-supplies-request',
+    description: 'Quản lý yêu cầu mua sắm vật tư',
+    category: LINK_CATEGORY.SUPPIES.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/manage-supplies-request')
+},
+{
+    url: '/supplies-purchase-request',
+    description: 'Đăng ký mua vật tư',
+    category: LINK_CATEGORY.SUPPIES.name,
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/supplies-purchase-request')
 },
 
 

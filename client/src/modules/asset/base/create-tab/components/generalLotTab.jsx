@@ -444,11 +444,6 @@ function GeneralLotTab(props) {
 
     }
 
-    const saveListAsset = () => {
-        //console.log("hang saveListAsset", listAssets);
-        props.handleGenAssetCode(0, 0, listAssets, false);
-    }
-
     /**
      * Bắt sự kiện xóa thông tin chi tiết
      */
@@ -632,7 +627,6 @@ function GeneralLotTab(props) {
 
     return (
         <div id={id} className="tab-pane active">
-
             <div className="row">
                 {/* Ảnh tài sản */}
                 <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
@@ -654,16 +648,14 @@ function GeneralLotTab(props) {
                 {/* Thông tin cơ bản */}
                 <div className="col-md-8" style={{ paddingLeft: '0px' }}>
                     <div>
-                        <div id="form-create-asset-type" className="col-md-6">
+                        <div id="form-create-asset-lot" className="col-md-6">
                             {/* Mã lô tài sản */}
                             <div className={`form-group ${!errorOnCode ? "" : "has-error"} `}>
                                 <label htmlFor="code">{translate('asset.asset_lot.asset_lot_code')}<span className="text-red">*</span></label>
-                                <div style={{display: 'flex'}}>
-                                    <input type="text" className="form-control" name="code" value={code} onChange={handleCodeChange} placeholder={translate('asset.asset_lot.asset_lot_code')}
-                                        autoComplete="off" />
-                                    <button type="button" className="btn btn-success" onClick={regenerateCode}>{translate('asset.asset_lot.generate_asset_lot_code')}</button>
-                                </div>
-
+                                <a style={{ cursor: "pointer" }} title={translate('asset.asset_lot.generate_asset_lot_code')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
+                                    onClick={regenerateCode} /><span onClick={regenerateCode}>{translate('asset.asset_lot.generate_asset_lot_code')}</span></a>
+                                <input type="text" className="form-control" name="code" value={code} onChange={handleCodeChange} placeholder={translate('asset.asset_lot.asset_lot_code')}
+                                    autoComplete="off" />
                                 <ErrorLabel content={errorOnCode} />
                             </div>
 
@@ -798,7 +790,7 @@ function GeneralLotTab(props) {
                                 />
                                 <ErrorLabel content={errorOnPurchaseDate} />
                             </div>
-
+                            <label></label>
                             {/* Ngày bảo hành */}
                             <div className={`form-group ${!errorOnWarrantyExpirationDate ? "" : "has-error"}`}>
                                 <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}</label>

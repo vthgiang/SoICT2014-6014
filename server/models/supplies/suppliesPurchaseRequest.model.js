@@ -17,6 +17,11 @@ const SuppliesPurchaseRequestSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    proponent: {
+        //người đề nghị
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
     recommendUnits: [{ // Đơn vị đề nghị
         type: Schema.Types.ObjectId,
         ref: "OrganizationalUnit"

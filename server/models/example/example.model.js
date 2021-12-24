@@ -13,6 +13,6 @@ const ExampleSchema = new Schema({
 
 module.exports = (db) => {
     if (!db.models.Example)
-        return db.model('Example', ExampleSchema);
+        return db.model('ExampleNew', ExampleSchema);
     return db.models.Example;
 } 

@@ -64,6 +64,12 @@ import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/re
 //asset lot
 import { assetLotManager } from "../modules/asset/admin/asset-lot/redux/reducers";
 
+//supplies 
+import { suppliesReducer} from "../modules/supplies/admin/supplies/redux/reducers";
+import { purchaseInvoiceReducer} from "../modules/supplies/admin/purchase-invoice/redux/reducers";
+import { allocationHistoryReducer} from "../modules/supplies/admin/allocation-history/redux/reducers";
+import { purchaseRequest} from "../modules/supplies/admin/purchase-request/redux/reducers";
+
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
 
@@ -207,6 +213,12 @@ const appReducer = combineReducers({
     mintainanceManager,
     //asset lot
     assetLotManager,
+
+    //supplies
+    suppliesReducer,
+    purchaseInvoiceReducer,
+    allocationHistoryReducer,
+    purchaseRequest,
 
     dashboardEvaluationEmployeeKpiSet,
 

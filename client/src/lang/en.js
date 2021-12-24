@@ -218,11 +218,27 @@ export default {
             add_update_asset_lot: "Add - Update asset lot",
 
             view_building_list: "View building list",
+
+            
             // NHÂN VIÊN
             recommend_equipment_procurement: "Recommend equipment procurement",
             recommend_distribute_asset: "Recommend distribute asset",
             manage_assigned_asset: "Manage assigned assets",
             //******END */
+
+
+            //Quản lý vật tư 
+            manage_supplies: "Manage supplies",
+            manage_supplies_infor:"Manage supplies information",
+            manage_supplies_purchase_request: "Manage purchase request",
+            manage_allocation_history: "Manage allocation history",
+            manage_purchase_invoice: "Manage purchase invoice",
+
+            add_supplies: "Add supplies",
+            add_purchase_invoice: "Add invoice",
+            add_allocation: "Add allocation history",
+
+
 
             // QUẢN LÝ BÁO CÁO
             report_management: "Report management",
@@ -2654,7 +2670,7 @@ export default {
                 asset_lot_total: "Initial total",
                 rule_generate_code: "Rules for asset code in lots",
                 start_number: "Start number",
-                step_number:"self-incrementing number",
+                step_number: "self-incrementing number",
                 generate_code: "Generate",
                 generate_asset_lot_code: "Gen code",
 
@@ -2666,9 +2682,9 @@ export default {
                 create_asset_lot_success: "Create asset lot success",
                 create_asset_lot_failed: "Create asset lot failed",
                 asset_code_lot_exist: "Asset lot code exist",
-                get_list_asset_lot_success:"Get list asset lot success",
+                get_list_asset_lot_success: "Get list asset lot success",
                 get_list_asset_lot_false: "Get list asset lot failed",
-                update_asset_lot_success:"Update asset lot success",
+                update_asset_lot_success: "Update asset lot success",
                 update_asset_lot_failed: "Update asset lot failed",
                 delete_asset_lot_success: "Delete asset lot success",
                 delete_asset_lot_false: "Delete asset lot failed",
@@ -2811,6 +2827,142 @@ export default {
                 delete_use_request_failure: "Delete use request failed",
                 edit_use_request_success: "Edit use request successfully",
                 edit_use_request_failure: "Edit use request failed",
+            },
+        },
+
+        //Modules Quản lý vật tư tiêu hao
+        supplies: {
+            general_information: {
+                add_supplies: "Add supplies",
+                edit_supplies: "Edit supplies",
+                delete_supplies: "Delete supplies",
+                view_supplies: "Detail supplies",
+
+                add_purchase_invoice: "Add purchase invoice",
+                edit_purchase_invoice: "Edit purchase invoice",
+                delete_purchase_invoice: "Delete purchase invoice",
+                view_purchase_invoice: "Detail purchase invoice",
+
+                add_allocation: "Add allocation",
+                edit_allocation: "Edit allocation",
+                delete_allocation: "Delete allocation",
+                view_allocation: "Detail allocation",
+
+                delete_recommend_card: "Delete request",
+                edit_recommend_card: "Edit request",
+                view_recommend_card: "Detail request",
+                add_recommend_card: "Add request",
+
+                supplies_information: "Supplies information",
+                invoice_information: "Purchase invoice information",
+                allocation_information: "Allocation history information",
+                invoice_history_information: "History update",
+                none_description: "None description",
+
+                //button
+                add: "Add",
+                select_approver: "Select approver",
+                search: "Search",
+                select_supplies: "Select supplies",
+                select_all_supplies: "Select all supplies",
+
+            },
+            supplies_management: {
+                code: "Supplies code",
+                suppliesName: "Supplies name",
+                totalPurchase: "Quantity purchased",
+                totalAllocation: "Amount allocated",
+                price: "Reference Price",
+
+                search_supplies_success: "Search supplies success",
+                search_supplies_failed: "Search supplies failed",
+                create_supplies_success: "Create supplies success",
+                supplies_code_exist: "Supplies code exist",
+                create_supplies_failed: "Create supplies failed",
+                update_supplies_success: "Update supplies success",
+                update_supplies_failed: "Update supplies falied",
+                delete_supplies_success: "Delete supplies success",
+                delete_supplies_failed: "Delete supplies failed",
+                get_supplies_by_id_success: "Get supplies information success",
+                get_supplies_by_id_failed: "Get supplies information failed",
+
+                delete_info: "Delete supplies information",
+
+            },
+            allocation_management: {
+                date: "Allocation date",
+                supplies: "Supplies",
+                quantity: "Allocation quantity",
+                allocationToOrganizationalUnit: "Allocation to unit",
+                allocationToUser: "Allocation to user",
+
+                search_allocation_success: "Search allocation success",
+                search_allocation_failed: "Search allocation failed",
+                create_allocation_success: "Create allocation success",
+                allocation_code_exist: "Allocation code exist",
+                create_allocation_failed: "Create allocation failed",
+                update_allocation_success: "Update allocation success",
+                update_allocation_failed: "Update allocation failed",
+                delete_allocation_success: "Delete allocation success",
+                delete_allocation_failed: "Delete allocation failed",
+                get_allocation_by_id_success: "Get allocation information success",
+                get_allocation_by_id_failed: "Get allocation information failed",
+
+                delete_info: "Delete allocation information",
+
+            },
+            invoice_management: {
+                codeInvoice: "Invoice code",
+                supplies: "Supplies",
+                date: "Purchase date",
+                quantity: "Purchase total",
+                price: "Price",
+                supplier: "Supplier",
+
+                search_purchase_invoice_success: "Search purchase invoice success",
+                search_purchase_invoice_failed: "Search purchase invoice failed",
+                create_purchase_invoice_success: "Create purchase invoice success",
+                purchase_invoice_code_exist: "Purchase invoice code exist",
+                create_purchase_invoice_failed: "Create purchase invoice failed",
+                update_purchase_invoice_success: "Update purchase invoice success",
+                update_purchase_invoice_failed: "Update purchase invoice failed",
+                delete_purchase_invoice_success: "Delete purchase invoice success",
+                delete_purchase_invoice_failed: "Delete purchase invoice failed",
+                get_purchase_invoice_by_id_success: "Get purchase invoice information success",
+                get_purchase_invoice_by_id_failed: "Get purchase invoice information failed",
+
+                delete_info: "Delete invoice information",
+
+            },
+            purchase_request: {
+                recommendNumber: "Form code",
+                dateCreate: "Create date",
+                proponent: "Proponent",
+                suppliesName: "Supplies name",
+                suppliesDescription: "Supplies description",
+                supplier: "Supplier",
+                approver: "Approver",
+                total: "Total",
+                unit: "Unit",
+                estimatePrice: "Estimate price",
+                note: "Note",
+                status: "Status",
+                files: "Files",
+                recommendUnits: "RecommendUnits",
+
+                get_purchase_request_success:
+                    "Get purchase request successfully",
+                get_purchase_request_failure: "Get purchase request faile",
+                create_purchase_request_success:
+                    "Create purchase request successfully",
+                create_purchase_request_failure: "Create purchase request faile",
+                delete_purchase_request_success:
+                    "Delete purchase request successfully",
+                delete_purchase_request_failure: "Delete purchase request faile",
+                edit_purchase_request_success:
+                    "Edit purchase request successfully",
+                edit_purchase_request_failure: "Edit purchase request faile",
+                recommend_number_exist: "Recommend number already exists",
             },
         },
 

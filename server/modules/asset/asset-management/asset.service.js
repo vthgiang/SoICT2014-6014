@@ -79,7 +79,6 @@ exports.searchAssetProfiles = async (portal, company, params) => {
             assetName: { $regex: params.assetName, $options: "i" },
         };
     }
-
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.status) {
         keySearch = { ...keySearch, status: { $in: params.status } };
@@ -363,6 +362,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
                 { startDepreciation: { $ne: null } },
             ],
         };
+
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(
             keySearch
         );
@@ -451,7 +451,6 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  */
 exports.createAsset = async (portal, company, data, fileInfo) => {
     let checkAsset = [];
-    //console.log("hang createAsset",data);
     if (!Array.isArray(data)) {
         data = [data];
     }
@@ -470,7 +469,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
 
     if (checkAsset.length === 0) {
         for (let i = 0; i < data.length; i++) {
-            fileInfo = fileInfo ? fileInfo : {avatar: "", file: ""};
+            fileInfo = fileInfo ? fileInfo : { avatar: "", file: "" };
 
             let avatar =
                 fileInfo && fileInfo.avatar === ""
@@ -928,7 +927,7 @@ exports.updateAssetInformation = async (
         deleteFiles,
     } = data;
 
-    fileInfo = fileInfo ? fileInfo : {avatar: "", file: ""};
+    fileInfo = fileInfo ? fileInfo : { avatar: "", file: "" };
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset(connect(DB_CONNECTION, portal)).findById(id);

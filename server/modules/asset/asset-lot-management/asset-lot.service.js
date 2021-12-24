@@ -16,23 +16,23 @@ exports.searchAssetLots = async (portal, params) => {
     let keySearch = {};
     //tìm kiếm theo mã lô
     if (params.code) {
-        keySearch = { ...keySearch, code: { $regex: param.code, $options: "i" } };
+        keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" }, };
     }
     //tìm kiếm theo tên lô
     if (params.assetLotName) {
-        keySearch = { ...keySearch, assetLotName: { $regex: param.assetLotName, $option: "i" } };
+        keySearch = { ...keySearch, assetLotName: { $regex: params.assetLotName, $options: "i" }, };
     }
     //tìm kiếm theo nha san xuat
     if (params.supplier) {
-        keySearch = { ...keySearch, supplier: { $regex: param.supplier, $option: "i" } };
+        keySearch = { ...keySearch, supplier: { $regex: params.supplier, $options: "i" }, };
     }
     //tim kiem theo loai tai san
     if (params.assetType) {
-        keySearch = { ...keySearch, assetType: { $in: JSON.parse(params.assetType) } };
+        keySearch = { ...keySearch, assetType: { $in: JSON.parse(params.assetType) }, };
     }
     // tim kiem theo nhom tai san
     if (params.group) {
-        keySearch = { ...keySearch, group: { $in: params.group } };
+        keySearch = { ...keySearch, group: { $in: params.group }, };
     }
     let totalList = 0,
         listAssetLots = [];
@@ -228,7 +228,7 @@ exports.updateAssetLot = async (portal, company, userId, id, data, fileInfo) => 
         AssetService.updateAssetInformation(portal, company, userId, element._id, element);
     });
 
-    let assetLot = await await AssetLot(connect(DB_CONNECTION, portal)).find({
+    let assetLot = await AssetLot(connect(DB_CONNECTION, portal)).find({
         _id: oldLot._id
     }).populate({ path: 'assetType' });
     return assetLot;

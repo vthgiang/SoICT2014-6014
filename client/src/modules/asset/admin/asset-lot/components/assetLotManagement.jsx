@@ -61,7 +61,6 @@ function AssetLotManagement(props) {
     }, []);
 
     const handleDeleteOptions = () => {
-        //console.log('selectedData', selectedData)
         const shortTitle = `<h4 style="color: red"><div>${translate('asset.asset_lot.delete_info')} "${selectedData?.length && selectedData.length === 1 ? getAssetLotName(props.assetLotManager?.listAssetLots, selectedData[0]) : ""}" ?</div></h4>`;
         const longTitle = `<h4 style="color: red"><div>Xóa thông tin ${selectedData?.length > 1 ? selectedData.length : ""} lô tài sản ?</div></h4>`;
 

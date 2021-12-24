@@ -41,10 +41,10 @@ function getAllAssetLots(data) {
 function createAssetLot(data) {
     return (dispatch) => {
         // tao moi
-        // dispatch({
-        //     type: AssetLotConstants.CREATE_ASSETLOT_REQUEST,
-        // });
-        // // 
+        dispatch({
+            type: AssetLotConstants.CREATE_ASSETLOT_REQUEST,
+        });
+        // 
         AssetLotService.createAssetLot(data)
             .then((res) => {
                 // console.log("hang action:", res.data);

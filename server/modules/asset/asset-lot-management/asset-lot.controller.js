@@ -52,7 +52,6 @@ exports.createAssetLot = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log('error', error);
         let messages = error && error.messages === 'asset_code_lot_exist' ? ['asset_code_lot_exist'] : ['create_asset_lot_failed'];
 
         await Logger.error(req.user.email, 'CREATE_ASSET_LOT', req.portal);
@@ -80,7 +79,7 @@ exports.updateAssetLot = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log('error', error);
+        
         let messages = error && error.messages === 'asset_code_lot_exist' ? ['asset_code_lot_exist'] : ['update_asset_lot_failed'];
 
         await Logger.error(req.user.email, 'UPDATE_ASSET_LOT', req.portal);

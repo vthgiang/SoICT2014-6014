@@ -84,6 +84,14 @@ const MaintainanceManager = lazy(() => import("../modules/asset/admin/maintainan
 //asset lot
 const AssetLotManager = lazy(() => import("../modules/asset/admin/asset-lot/components"))
 
+
+//supplies
+const ManageSupplies = lazy(() => import("../modules/supplies/admin/supplies/components"))
+const ManagePurchaseInvoice = lazy(() => import("../modules/supplies/admin/purchase-invoice/components"))
+const ManageAllocationHistory = lazy(() => import("../modules/supplies/admin/allocation-history/components"))
+const ManagePurchaseRequest = lazy(() => import("../modules/supplies/admin/purchase-request/components"))
+const UserPurchaseRequest = lazy(() => import("../modules/supplies/user/purchase-request/components"))
+
 // import UsageManager from "../modules/asset/admin/usage/components";
 const IncidentManager = lazy(() => import("../modules/asset/admin/incident/components"))
 const ManagerDepreciation = lazy(() => import("../modules/asset/admin/depreciation/components"))
@@ -1772,6 +1780,109 @@ class Routes extends Component {
                         layout={Layout}
                         component={ManagerRecommendDistribute}
                     />
+
+
+                    {/* Supplies */}
+                    <PrivateRoute
+                        isLoading={this.props.suppliesReducer.isLoading}
+                        key={"manage-supplies"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-supplies",
+                                name: "manage_supplies",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-supplies"}
+                        path={"/manage-supplies"}
+                        pageName={"manage_supplies"}
+                        layout={Layout}
+                        component={ManageSupplies}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.purchaseInvoiceReducer.isLoading}
+                        key={"manage-purchase-invoice"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-supplies",
+                                name: "manage_purchase_invoice",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-purchase-invoice"}
+                        path={"/manage-purchase-invoice"}
+                        pageName={"manage_purchase_invoice"}
+                        layout={Layout}
+                        component={ManagePurchaseInvoice}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.allocationHistoryReducer.isLoading}
+                        key={"manage-allocation-history"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-allocation-history",
+                                name: "manage_allocation_history",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-allocation-history"}
+                        path={"/manage-allocation-history"}
+                        pageName={"manage_allocation_history"}
+                        layout={Layout}
+                        component={ManageAllocationHistory}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.purchaseRequest.isLoading}
+                        key={"manage-supplies-request"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-supplies-request",
+                                name: "manage_supplies_purchase_request",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-supplies-request"}
+                        path={"/manage-supplies-request"}
+                        pageName={"manage_supplies_purchase_request"}
+                        layout={Layout}
+                        component={ManagePurchaseRequest}
+                    />
+
+
+                    <PrivateRoute
+                        isLoading={this.props.purchaseRequest.isLoading}
+                        key={"supplies-purchase-request"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/supplies-purchase-request",
+                                name: "recommend_supplies_procurement",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/supplies-purchase-request"}
+                        path={"/supplies-purchase-request"}
+                        pageName={"recommend_supplies_procurement"}
+                        layout={Layout}
+                        component={UserPurchaseRequest}
+                    />
+
+
 
                     <PrivateRoute
                         isLoading={this.props.reports.isLoading}
