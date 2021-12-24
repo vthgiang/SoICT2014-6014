@@ -710,6 +710,7 @@ export default {
 
             system_api: {
                 update: "Cập nhật",
+                deleteUpdateLog: 'Xóa bản ghi cập nhật',
 
                 table: {
                     path: "Đường dẫn",

@@ -1,7 +1,7 @@
 const { SystemApi, Company, Api } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 const getSystemApis = async (data) => {
     const { path, method, description, page = 1, perPage = 30 } = data
@@ -76,71 +76,134 @@ const createSystemApi = async (data) => {
     }
 };
 
+const updateSystemApi = async (app) => {
+    /**
+     * GET ALL NODEJS ROUTES
+     */
+    let appRoutes = []
 
+    /**
+     * Hàm này dùng để phân tách path hoặc regexp để lấy ra các phần của router path và route path
+     * @param {*} thing 
+     * @returns 
+     */
+    const getPathPortionArr = (thing) => {
+        if (typeof thing === 'string') {
+            /**
+             * Trường hợp là route
+             * thing = e.g. /super-admin/privilege-api
+             */
+            return thing.split('/')
+        } else if (thing.fast_slash) {
+            return ''
+        } else {
+            /**
+             * Trường hợp là router
+             * thing = Layer.regexp
+             */
+            var match = thing.toString()
+                .replace('\\/?', '')
+                .replace('(?=\\/|$)', '$')
+                .match(/^\/\^((?:\\[.*+?^${}()|[\]\\\/]|[^.*+?^${}()|[\]\\\/])*)\$\//)
 
-/** Cập nhật tự động những API mới tạo
- * @app value được khởi tạo bởi express
- */
+            return match
+                ? match[1].replace(/\\(.)/g, '$1').split('/')
+                : '<complex:' + thing.toString() + '>'
+        }
+    }
 
-
-const updateSystemApiAutomatic = async (app) => {
-    let routes = []
-
-    async function print (path, layer) {
+    const getRoute = async (path, layer) => {
         if (layer.route) {
-            layer.route.stack.forEach(print.bind(null, path.concat(split(layer.route.path))))
+            /**
+             * Layer hiện tại là một route
+             * Một route có thể có nhiều Method ứng với nó
+             */
+            layer.route.stack.forEach(getRoute.bind(null, path.concat(getPathPortionArr(layer.route.path))))
         } else if (layer.name === 'router' && layer.handle.stack) {
-            layer.handle.stack.forEach(print.bind(null, path.concat(split(layer.regexp))))
+            /**
+             * Layer hiện tại là một router
+             * Trong một router có thể có một hoặc nhiều routers hoặc routes
+             */
+            layer.handle.stack.forEach(getRoute.bind(null, path.concat(getPathPortionArr(layer.regexp))))
         } else if (layer.method) {
+            /**
+             * Với mỗi method của route, lưu lại vào trong appRoutes
+             */
             let currentMethod = layer.method.toUpperCase()
-            let currentPath = "/" + path.concat(split(layer.regexp)).filter(Boolean).join('/')
-            let category = "/" + path.concat(split(layer.regexp)).filter(Boolean)?.[0]
+            let currentPath = "/" + path.concat(getPathPortionArr(layer.regexp)).filter(Boolean).join('/')
+            let category = "/" + path.concat(getPathPortionArr(layer.regexp)).filter(Boolean)?.[0]
 
-            if (!routes.find(ele => 
-                ele.method === currentMethod
-                && ele.path === currentPath
+            /**
+             * Nếu không có API trùng thì thêm vào appRoutes
+             */
+            if (!appRoutes.find(el =>
+                el.method === currentMethod
+                && el.path === currentPath
             )) {
-                routes.push({
+                appRoutes.push({
                     method: currentMethod,
-                    path: currentPath
+                    path: currentPath,
+                    category: category
                 })
-
-                let check = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({
-                        method: currentMethod,
-                        path: currentPath
-                    })
-                if (!check) {
-                    await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
-                        .create({
-                            method: currentMethod,
-                            path: currentPath,
-                            category: category
-                        })
-                }
             }
         }
     }
-      
-    function split (thing) {
-        if (typeof thing === 'string') {
-          return thing.split('/')
-        } else if (thing.fast_slash) {
-          return ''
+
+    app._router.stack.forEach((layer) => getRoute([], layer));
+
+    /**
+     * So sánh dữ liệu toàn bộ routes mới lấy với dữ liệu của system-api
+     * Xem những api nào được thêm/sửa/xóa
+     * Ghi các thay đổi vào một file log
+     */
+    const systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).find()
+
+    let updateApiLog = {
+        add: {
+            type: 'add',
+            apis: []
+        },
+        remove: {
+            type: 'remove',
+            apis: []
+        }
+    };
+
+    try {
+        const updateApiLogText = JSON.parse(await fs.readFile('middleware/systemApiChangedLog.log', 'utf8'));
+        if (updateApiLogText.add.apis.length > 0 || updateApiLogText.remove.apis.length)
+            updateApiLog = updateApiLogText;
+    } catch (error) { }
+
+    for (let i = 0; i < appRoutes.length; i++) {
+        const systemApiIndex = systemApis.findIndex(systemApi =>
+            appRoutes[i].path === systemApi.path
+            && appRoutes[i].method === systemApi.method);
+
+        if (systemApiIndex >= 0) {
+            systemApis.splice(systemApiIndex, 1);
         } else {
-          var match = thing.toString()
-            .replace('\\/?', '')
-            .replace('(?=\\/|$)', '$')
-            .match(/^\/\^((?:\\[.*+?^${}()|[\]\\\/]|[^.*+?^${}()|[\]\\\/])*)\$\//)
-          return match
-            ? match[1].replace(/\\(.)/g, '$1').split('/')
-            : '<complex:' + thing.toString() + '>'
+            const newApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).create(appRoutes[i])
+            updateApiLog.add.apis.push(newApi)
         }
     }
 
-    app._router.stack.forEach(print.bind(null, []))
+    systemApis.forEach(async api => {
+        updateApiLog.remove.apis.push(api);
+        await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
+            .deleteOne(api)
+    });
 
-    // fs.writeFileSync("middleware/systemApi.json", JSON.stringify(routes));
+    try {
+        await fs.writeFile("middleware/systemApiChangedLog.log", JSON.stringify(updateApiLog), {
+            encoding: "utf8",
+        });
+    } catch (error) { }
+
+    return {
+        updateApiLog,
+        systemApis: appRoutes
+    };
 }
 
 /** Chinh sua API */
@@ -167,7 +230,7 @@ const editSystemApi = async (systemApiId, data) => {
 /** Xoa system API */
 const deleteSystemApi = async (systemApiId) => {
     let systemApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
-        .deleteOne( { "_id" : mongoose.Types.ObjectId(systemApiId) } )
+        .deleteOne({ "_id": mongoose.Types.ObjectId(systemApiId) })
 
     return
 }
@@ -177,5 +240,5 @@ exports.SystemApiServices = {
     createSystemApi,
     editSystemApi,
     deleteSystemApi,
-    updateSystemApiAutomatic,
+    updateSystemApi,
 }
