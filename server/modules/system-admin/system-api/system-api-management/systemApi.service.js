@@ -182,23 +182,15 @@ const updateSystemApi = async (app) => {
         if (systemApiIndex >= 0) {
             systemApis.splice(systemApiIndex, 1);
         } else {
-            await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).create(appRoutes[i])
-
-            updateApiLog.add.apis.push({
-                path: appRoutes[i].path,
-                method: appRoutes[i].method,
-            })
+            const newApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).create(appRoutes[i])
+            updateApiLog.add.apis.push(newApi)
         }
     }
 
     systemApis.forEach(async api => {
+        updateApiLog.remove.apis.push(api);
         await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
             .deleteOne(api)
-
-        updateApiLog.remove.apis.push({
-            path: api.path,
-            method: api.method,
-        })
     });
 
     try {
