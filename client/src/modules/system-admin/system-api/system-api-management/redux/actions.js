@@ -97,7 +97,7 @@ function updateSystemApi() {
     return dispatch => {
         dispatch({ type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_REQUEST, })
 
-        SystemApiServices.updateSystemApi()
+        return SystemApiServices.updateSystemApi()
             .then(res => {
                 dispatch({
                     type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_SUCCESS,
@@ -111,7 +111,6 @@ function updateSystemApi() {
                     type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_FAILURE,
                     payload: error
                 });
-                
             })
     }
 }

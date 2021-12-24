@@ -131,8 +131,8 @@ const SystemApiManagement = (props) => {
         window.$("#edit-system-api-modal").modal("show");
     }
 
-    const handleUpdateSystemApi = () => {
-        const updateLog = props.updateSystemApi();
+    const handleUpdateSystemApi = async () => {
+        const updateLog = await props.updateSystemApi();
 
         // updateLog.add.apis.map((api) => {
         //     const index = listPaginateApi.findIndex(systemAapi => systemAapi.path === api.path && systemAapi.method === api.method);
@@ -230,15 +230,7 @@ const SystemApiManagement = (props) => {
                                     <td>{api?.method}</td>
                                     <td>{api?.description}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_api.modal.edit_title')}><i className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content={translate('system_admin.system_api.modal.delete_title')}
-                                            data={{
-                                                id: api?._id,
-                                                info: api?.path
-                                            }}
-                                            func={props.deleteSystemApi}
-                                        />
+
                                     </td>
                                 </tr>
                             )
@@ -260,21 +252,16 @@ const SystemApiManagement = (props) => {
                             >Removed apis</td>
                         </tr>
                         {updateApiLog.remove.apis.map((api, index) =>
-                            <tr key={api?._id}>
+                            <tr
+                                key={api?._id}
+                                className="api-update-remove"
+                            >
                                 <td>{index + 1}</td>
                                 <td>{api?.path}</td>
                                 <td>{api?.method}</td>
                                 <td>{api?.description}</td>
                                 <td style={{ textAlign: 'center' }}>
-                                    <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_api.modal.edit_title')}><i className="material-icons">edit</i></a>
-                                    <DeleteNotification
-                                        content={translate('system_admin.system_api.modal.delete_title')}
-                                        data={{
-                                            id: api?._id,
-                                            info: api?.path
-                                        }}
-                                        func={props.deleteSystemApi}
-                                    />
+
                                 </td>
                             </tr>
 
