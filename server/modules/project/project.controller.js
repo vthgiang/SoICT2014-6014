@@ -13,10 +13,10 @@ exports.get = async (req, res) => {
         });
     } catch (error) {
 
-        await Logger.error(req.user.email, 'get_task_project_faile', req.portal)
+        await Logger.error(req.user.email, 'get_task_project_fail', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_task_project_faile'],
+            messages: Array.isArray(error) ? error : ['get_task_project_fail'],
             content: error
         })
     }
@@ -37,7 +37,7 @@ exports.show = async (req, res) => {
         await Logger.error(req.user.email, 'show_task_project', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['show_task_project_faile'],
+            messages: Array.isArray(error) ? error : ['show_task_project_fail'],
             content: error
         })
     }
@@ -54,10 +54,10 @@ exports.create = async (req, res) => {
         });
     } catch (error) {
         console.log('error', error)
-        await Logger.error(req.user.email, ' create_task_project_faile ', req.portal);
+        await Logger.error(req.user.email, ' create_task_project_fail ', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['create_task_project_faile'],
+            messages: ['create_task_project_fail'],
             content: error
         })
     }
@@ -73,10 +73,10 @@ exports.edit = async (req, res) => {
             content: project
         });
     } catch (error) {
-        await Logger.error(req.user.email, ' edit_task_project_faile ', req.portal);
+        await Logger.error(req.user.email, ' edit_task_project_fail ', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_task_project_faile'],
+            messages: ['edit_task_project_fail'],
             content: error
         })
     }
@@ -97,7 +97,7 @@ exports.delete = async (req, res) => {
         await Logger.error(req.user.email, 'delete_task_project', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_task_project_faile'],
+            messages: Array.isArray(error) ? error : ['delete_task_project_fail'],
             content: error
         })
     }
@@ -118,7 +118,7 @@ exports.getMembersWithScore = async (req, res) => {
         await Logger.error(req.user.email, 'get_members_with_score', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_members_with_score_faile'],
+            messages: Array.isArray(error) ? error : ['get_members_with_score_fail'],
             content: error
         })
     }
@@ -141,7 +141,7 @@ exports.getListTasksEval = async (req, res) => {
         await Logger.error(req.user.email, 'get_list_tasks_eval', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_list_tasks_eval_faile'],
+            messages: Array.isArray(error) ? error : ['get_list_tasks_eval_fail'],
             content: error
         })
     }
@@ -161,7 +161,7 @@ exports.getSalaryMembers = async (req, res) => {
         await Logger.error(req.user.email, 'get_salary_members', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_salary_members_faile'],
+            messages: Array.isArray(error) ? error : ['get_salary_members_fail'],
             content: error
         })
     }
@@ -181,7 +181,7 @@ exports.createProjectChangeRequest = async (req, res) => {
         await Logger.error(req.user.email, 'create_project_change_request', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_project_change_request_faile'],
+            messages: Array.isArray(error) ? error : ['create_project_change_request_fail'],
             content: error
         })
     }
@@ -201,7 +201,7 @@ exports.getListProjectChangeRequests = async (req, res) => {
         await Logger.error(req.user.email, 'get_list_project_change_requests', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_list_project_change_requests_faile'],
+            messages: Array.isArray(error) ? error : ['get_list_project_change_requests_fail'],
             content: error
         })
     }
@@ -221,7 +221,7 @@ exports.updateStatusProjectChangeRequest = async (req, res) => {
         await Logger.error(req.user.email, 'update_status_project_change_request', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['update_status_project_change_request_faile'],
+            messages: Array.isArray(error) ? error : ['update_status_project_change_request_fail'],
             content: error
         })
     }
@@ -241,7 +241,7 @@ exports.updateListProjectChangeRequests = async (req, res) => {
         await Logger.error(req.user.email, 'update_list_project_change_requests', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['update_list_project_change_requests_faile'],
+            messages: Array.isArray(error) ? error : ['update_list_project_change_requests_fail'],
             content: error
         })
     }
