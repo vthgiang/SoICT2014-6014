@@ -170,8 +170,9 @@ const updateSystemApi = async (app) => {
     };
 
     try {
-        const updateApiLogText = await fs.readFile('middleware/systemApiChangedLog.log', 'utf8');
-        updateApiLog = JSON.parse(updateApiLogText);
+        const updateApiLogText = JSON.parse(await fs.readFile('middleware/systemApiChangedLog.log', 'utf8'));
+        if (updateApiLogText.add.apis.length > 0 || updateApiLogText.remove.apis.length)
+            updateApiLog = updateApiLogText;
     } catch (error) { }
 
     for (let i = 0; i < appRoutes.length; i++) {

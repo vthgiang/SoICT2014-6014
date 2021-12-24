@@ -26,7 +26,6 @@ const getSystemApis = async (req, res) => {
 const getSystemApisUpdateLog = async (req, res) => {
     try {
         const updateApiLogText = await fs.readFile('middleware/systemApiChangedLog.log', 'utf8');
-        console.log(updateApiLogText);
         updateApiLog = JSON.parse(updateApiLogText);
 
         Logger.info(req.user.email, 'get system api update log');
@@ -41,6 +40,29 @@ const getSystemApisUpdateLog = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_system_api_update_log_failure'],
+            content: error
+        });
+    }
+};
+
+const deleteSystemApisUpdateLog = async (req, res) => {
+    try {
+        await fs.writeFile("middleware/systemApiChangedLog.log", JSON.stringify({}), {
+            encoding: "utf8",
+        });
+
+        Logger.info(req.user.email, 'delete system api update log');
+        res.status(200).json({
+            success: true,
+            messages: ['delete_system_api_update_log_success'],
+            content: ''
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'delete system api update log');
+
+        res.status(400).json({
+            success: false,
+            messages: ['delete_system_api_update_log_failure'],
             content: error
         });
     }
@@ -138,4 +160,5 @@ exports.SystemApiControllers = {
     deleteSystemApi,
     updateSystemApi,
     getSystemApisUpdateLog,
+    deleteSystemApisUpdateLog,
 }
