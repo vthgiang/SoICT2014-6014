@@ -492,7 +492,7 @@ function StockRotateEditForm(props) {
         return false;
     }
 
-    useEffect(() => {
+    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
         let approver = [];
         let qualityControlStaffs = [];
         let responsibles = [];
@@ -529,7 +529,7 @@ function StockRotateEditForm(props) {
         state.good.description = '';
         state.good.returnQuantity = 0;
         state.good.lots = [];
-        return {
+        setState ({
             ...state,
             billId: props.billId,
             code: props.code,
@@ -561,8 +561,8 @@ function StockRotateEditForm(props) {
             errorApprover: undefined,
             errorToStock: undefined
 
-        }
-    }, [props.billId, props.oldStatus])
+        })
+    }
 
     const save = async () => {
 
@@ -852,7 +852,8 @@ function StockRotateEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.lot_with_unit')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
                                         </tr>
                                     </thead>
@@ -866,6 +867,11 @@ function StockRotateEditForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
+                                                        <td>{x.lots.map((lot, index) => 
+                                                            <div key={index}>
+                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                            </div>)}
+                                                        </td> 
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

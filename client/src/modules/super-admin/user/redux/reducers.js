@@ -25,7 +25,7 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     error: null,
-    isLoading: true
+    isLoading: false
 }
 
 export function user(state = initState, action) {

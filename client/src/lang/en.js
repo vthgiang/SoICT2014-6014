@@ -4785,8 +4785,8 @@ export default {
                 choose_material: "Select material",
                 command_code: "Command code",
                 mill_request: "Factory required",
-                quantity_needed_true: "To approve the work order, please fill the issue bill full required quantity of materials!"
-
+                quantity_needed_true: "To approve the work order, please fill the issue bill full required quantity of materials!",
+                lot_with_unit: "Lot (Lot code/ Quantity)",
 
             },
             inventory_management: {

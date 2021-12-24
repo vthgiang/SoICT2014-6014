@@ -116,6 +116,9 @@ function SystemManagement(props) {
                             <button className="btn btn-success pull-right" onClick={createBackup} title={translate('system_admin.system_setting.backup.backup_button')}>
                                 {translate('system_admin.system_setting.backup.backup_button')}
                             </button>
+                            <button className="btn btn-success pull-right" style={{backgroundColor: "rgba(32,126,188,0.88)", marginRight: "10px", border: "none"}}  title="Thêm file sao lưu ">
+                                Thêm file sao lưu phục hồi
+                            </button>
                         </div>
                         <div className="box-body">
                             <table className="table table-hover table-striped table-bordered">

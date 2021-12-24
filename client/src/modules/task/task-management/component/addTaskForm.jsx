@@ -611,8 +611,7 @@ function AddTaskForm(props) {
                     {/* Thông tin công việc */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
-
-
+                        
                         <div className={'row'}>
                             {/* Đơn vị quản lý công việc */}
                             <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">

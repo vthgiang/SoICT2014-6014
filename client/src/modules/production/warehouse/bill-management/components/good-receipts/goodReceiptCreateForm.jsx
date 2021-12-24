@@ -125,7 +125,6 @@ function GoodReceiptCreateForm(props) {
                 text: item.name,
             });
         });
-        console.log("props", props);
         return supplierArr;
     };
 
@@ -888,8 +887,8 @@ function GoodReceiptCreateForm(props) {
                                             <th title={translate("manage_warehouse.bill_management.number")}>
                                                 {translate("manage_warehouse.bill_management.number")}
                                             </th>
-                                            <th title={translate("manage_warehouse.bill_management.note")}>
-                                                {translate("manage_warehouse.bill_management.note")}
+                                            <th title={translate("manage_warehouse.bill_management.description")}>
+                                                {translate("manage_warehouse.bill_management.description")}
                                             </th>
                                             <th>{translate("task_template.action")}</th>
                                         </tr>

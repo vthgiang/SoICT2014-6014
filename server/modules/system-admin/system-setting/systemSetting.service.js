@@ -15,7 +15,7 @@ exports.getBackups = async () => {
 
     const backupedList = [];
     list.forEach(dir => {
-        
+
         // Nếu là thư mục có file README.txt -> là thư mục backup
         if (fs.existsSync(`${SERVER_BACKUP_DIR}/all/${dir}/README.txt`)) {
             const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/all/${dir}`);
@@ -138,8 +138,7 @@ exports.deleteBackup = async (version) => {
 exports.restore = async (version) => {
     await restore({
         host: process.env.DB_HOST,
-        dbName: process.env.DB_NAME,
-        dbPort: process.env.DB_PORT || '27017',
+        port: process.env.DB_PORT || '27017',
         store: SERVER_BACKUP_DIR,
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
