@@ -3,17 +3,22 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti, PaginateBar, DataTableSetting, DeleteNotification } from '../../../../../common-components';
+import { sendRequest } from '../../../../../helpers/requestHelper';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import '../styles/systemApiManagement.css';
 
 import { SystemApiActions } from '../redux/actions'
 
 import { SystemApiCreateModal } from './systemApiCreateModal'
 import { SystemApiEditModal } from './systemApiEditModal'
 
-function SystemApiManagement(props) {
+const SystemApiManagement = (props) => {
     const { translate, systemApis } = props
 
+    const [updateApiLog, setUpdateApiLog] = useState(null);
+
     const tableId = "table-management-system-api";
+    const updateApiLogTableId = "table-management-system-api-update-api-log";
     const defaultConfig = { limit: 20 }
     const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
@@ -33,7 +38,36 @@ function SystemApiManagement(props) {
             page: page,
             perPage: perPage
         })
+
+        const getSystemApiUpdateLog = async () => {
+            try {
+                const res = await sendRequest({
+                    url: `${process.env.REACT_APP_SERVER}/system-admin/system-api/system-apis/update-log`,
+                    method: 'GET',
+                }, false, true, 'system_admin.system_api');
+
+                // res.data.content.add.apis.map((api) => {
+                //     const index = listPaginateApi.findIndex(systemAapi => systemAapi.path === api.path && systemAapi.method === api.method);
+                //     if (index >= 0) listPaginateApi.splice(index, 1);
+                // })
+
+                setUpdateApiLog(res.data.content);
+            } catch (error) { }
+        }
+
+        getSystemApiUpdateLog();
     }, [])
+
+    const deleteSystemApiUpdateLog = async () => {
+        try {
+            const res = await sendRequest({
+                url: `${process.env.REACT_APP_SERVER}/system-admin/system-api/system-apis/update-log`,
+                method: 'DELETE',
+            }, true, true, 'system_admin.system_api');
+
+            setUpdateApiLog(null);
+        } catch (error) { }
+    }
 
     const handleChangePath = (e) => {
         setState({
@@ -108,11 +142,146 @@ function SystemApiManagement(props) {
         window.$("#edit-system-api-modal").modal("show");
     }
 
-    const updateSystemApiAuto = () => {
-        props.updateSystemApiAutomatic()
+    const handleUpdateSystemApi = async () => {
+        const updateLog = await props.updateSystemApi();
+
+        // updateLog.add.apis.map((api) => {
+        //     const index = listPaginateApi.findIndex(systemAapi => systemAapi.path === api.path && systemAapi.method === api.method);
+        //     if (index >= 0) listPaginateApi.splice(index, 1);
+        // })
+
+        setUpdateApiLog(updateLog);
     }
 
     let listPaginateApi = systemApis?.listPaginateApi
+
+    const renderSystemApiTable = () => (
+        <table id={tableId} className="table table-hover table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                    <th>{translate('system_admin.system_api.table.path')}</th>
+                    <th>{translate('system_admin.system_api.table.method')}</th>
+                    <th>{translate('system_admin.system_api.table.description')}</th>
+                    <th style={{ width: "120px" }}>
+                        {translate('table.action')}
+                        <DataTableSetting
+                            tableId={tableId}
+                            hideColumn={false}
+                            setLimit={setLimit}
+                        />
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {listPaginateApi?.length > 0
+                    && listPaginateApi.map((api, index) =>
+                        <tr key={api?._id}>
+                            <td>{index + 1}</td>
+                            <td>{api?.path}</td>
+                            <td>{api?.method}</td>
+                            <td>{api?.description}</td>
+                            <td style={{ textAlign: 'center' }}>
+                                <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_api.modal.edit_title')}><i className="material-icons">edit</i></a>
+                                <DeleteNotification
+                                    content={translate('system_admin.system_api.modal.delete_title')}
+                                    data={{
+                                        id: api?._id,
+                                        info: api?.path
+                                    }}
+                                    func={props.deleteSystemApi}
+                                />
+                            </td>
+                        </tr>
+                    )
+                }
+            </tbody>
+        </table>
+    )
+
+    const renderApiUpdateTable = () => (
+        <table
+            id={updateApiLogTableId}
+            className="table table-hover table-striped table-bordered update-log-table"
+        >
+            <thead>
+                <tr>
+                    <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                    <th>{translate('system_admin.system_api.table.path')}</th>
+                    <th>{translate('system_admin.system_api.table.method')}</th>
+                    <th>{translate('system_admin.system_api.table.description')}</th>
+                    <th style={{ width: "120px" }}>
+                        {translate('table.action')}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {updateApiLog.add.apis.length > 0 &&
+                    (
+                        <>
+                            <tr
+                                key="new-apis"
+                            >
+                                <td
+                                    colSpan={10}
+                                    style={{
+                                        fontWeight: 'bold',
+                                        textTransform: 'uppercase',
+                                        textAlign: 'left'
+                                    }}
+                                >New apis</td>
+                            </tr>
+                            {updateApiLog.add.apis.map((api, index) =>
+                                <tr
+                                    key={api?._id}
+                                    className="api-update-add"
+                                >
+                                    <td>{index + 1}</td>
+                                    <td>{api?.path}</td>
+                                    <td>{api?.method}</td>
+                                    <td>{api?.description}</td>
+                                    <td style={{ textAlign: 'center' }}>
+
+                                    </td>
+                                </tr>
+                            )
+                            }
+                        </>)}
+
+                {updateApiLog.remove.apis.length > 0 && (
+                    <>
+                        <tr
+                            key="removed-apis"
+                        >
+                            <td
+                                colSpan={10}
+                                style={{
+                                    fontWeight: 'bold',
+                                    textTransform: 'uppercase',
+                                    textAlign: 'left'
+                                }}
+                            >Removed apis</td>
+                        </tr>
+                        {updateApiLog.remove.apis.map((api, index) =>
+                            <tr
+                                key={api?._id}
+                                className="api-update-remove"
+                            >
+                                <td>{index + 1}</td>
+                                <td>{api?.path}</td>
+                                <td>{api?.method}</td>
+                                <td>{api?.description}</td>
+                                <td style={{ textAlign: 'center' }}>
+
+                                </td>
+                            </tr>
+
+                        )
+                        }
+                    </>)}
+            </tbody>
+        </table>
+    )
 
     return (
         <React.Fragment>
@@ -138,7 +307,7 @@ function SystemApiManagement(props) {
 
                         <button
                             type="button"
-                            onClick={() => updateSystemApiAuto()}
+                            onClick={handleUpdateSystemApi}
                             className="btn btn-success pull-right"
                             title={translate('system_admin.system_api.modal.create_title')}
                         >
@@ -198,47 +367,38 @@ function SystemApiManagement(props) {
                         </div>
                     </div>
 
-                    <table id={tableId} className="table table-hover table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
-                                <th>{translate('system_admin.system_api.table.path')}</th>
-                                <th>{translate('system_admin.system_api.table.method')}</th>
-                                <th>{translate('system_admin.system_api.table.description')}</th>
-                                <th style={{ width: "120px" }}>
-                                    {translate('table.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        hideColumn={false}
-                                        setLimit={setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listPaginateApi?.length > 0
-                                && listPaginateApi.map((api, index) =>
-                                    <tr key={api?._id}>
-                                        <td>{index + 1}</td>
-                                        <td>{api?.path}</td>
-                                        <td>{api?.method}</td>
-                                        <td>{api?.description}</td>
-                                        <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_api.modal.edit_title')}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('system_admin.system_api.modal.delete_title')}
-                                                data={{
-                                                    id: api?._id,
-                                                    info: api?.path
-                                                }}
-                                                func={props.deleteSystemApi}
-                                            />
-                                        </td>
-                                    </tr>
-                                )
-                            }
-                        </tbody>
-                    </table>
+                    {updateApiLog &&
+                        (updateApiLog.add.apis.length > 0 || updateApiLog.remove.apis.length > 0) &&
+                        <>
+                            <div
+                                style={{
+                                    marginBottom: 10,
+                                    marginTop: 50,
+                                    fontSize: '150%',
+                                    fontWeight: 'bold',
+                                    textTransform: 'uppercase'
+                                }}>
+                                Api update log
+                                <button
+                                    type="button"
+                                    onClick={deleteSystemApiUpdateLog}
+                                    className="btn delete-update-log-btn"
+                                >
+                                    {translate('system_admin.system_api.deleteUpdateLog')}
+                                </button>
+                            </div>
+                            {renderApiUpdateTable()}
+                        </>}
+
+                    <div
+                        style={{
+                            marginBottom: 10,
+                            fontSize: '150%',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase'
+                        }}
+                    >System api</div>
+                    {renderSystemApiTable()}
 
                     <PaginateBar
                         display={systemApis?.listPaginateApi?.length}
@@ -259,7 +419,7 @@ function mapState(state) {
 }
 const actions = {
     getSystemApis: SystemApiActions.getSystemApis,
-    updateSystemApiAutomatic: SystemApiActions.updateSystemApiAutomatic,
+    updateSystemApi: SystemApiActions.updateSystemApi,
     deleteSystemApi: SystemApiActions.deleteSystemApi
 }
 

@@ -6,7 +6,7 @@ export const SystemApiActions = {
     createSystemApi,
     editSystemApi,
     deleteSystemApi,
-    updateSystemApiAutomatic
+    updateSystemApi
 }
 
 function getSystemApis(data) {
@@ -93,23 +93,24 @@ function deleteSystemApi (systemApiId) {
     }
 }
 
-function updateSystemApiAutomatic() {
+function updateSystemApi() {
     return dispatch => {
         dispatch({ type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_REQUEST, })
 
-        SystemApiServices.updateSystemApiAutomatic()
+        return SystemApiServices.updateSystemApi()
             .then(res => {
                 dispatch({
                     type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content.systemApis
                 })
+
+                return res.data.content.updateApiLog;
             })
             .catch(error => {
                 dispatch({ 
                     type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_FAILURE,
                     payload: error
                 });
-                
             })
     }
 }

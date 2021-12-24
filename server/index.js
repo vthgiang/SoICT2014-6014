@@ -170,7 +170,7 @@ app.use(router);
 
 // Cập nhật các api mới nhất
 app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) => {
-    SystemApiControllers.updateSystemApiAutomatic(app, req, res)
+    SystemApiControllers.updateSystemApi(app, req, res)
 })
 
 

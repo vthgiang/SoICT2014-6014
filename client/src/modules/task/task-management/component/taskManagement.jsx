@@ -61,7 +61,7 @@ const getId = (data) => {
     else return data;
 }
 
-const isIdValiInArr = (id, arr) => {
+const isIdValidInArr = (id, arr) => {
     if (!arr) return false;
     let result = arr.some(n => n.id === id);
     return result;
@@ -749,9 +749,9 @@ function TaskManagement(props) {
                             icon: node.isTask ? 'fa fa-file-text-o' : 'glyphicon glyphicon-folder-open',
                             text: node.name,
                             state: { "opened": true },
-                            parent: isIdValiInArr(getId(node.parent), getDataTree) ?
+                            parent: isIdValidInArr(getId(node.parent), getDataTree) ?
                                 getId(node.parent) :
-                                isIdValiInArr(getId(node.taskProject), getDataTree) ?
+                                isIdValidInArr(getId(node.taskProject), getDataTree) ?
                                     getId(node.taskProject) :
                                     !node.code ? idProjectNull : '#'
                         }]
