@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { CustomerGroup, Customer } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
+const { addPromotion, editPromotion, deletePromotion } = require("../customer/customer.service");
 
 exports.createGroup = async (portal, companyId, userId, data, role) => {
     const { code, name, description, promotion } = data;
@@ -66,12 +67,12 @@ exports.getGroups = async (portal, companyId, query, userId, role) => {
     return { listGroupTotal, groups };
 }
 
-exports.getGroupById = async (portal, companyId, id) => {
+exports.getGroupById = async (portal, companyId, id, data, userId) => {
 
     let groupById = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'updatedBy', select: '_id name' });
-    const numberOfUsers = await Customer(connect(DB_CONNECTION, portal)).countDocuments({ group: id });
+    const numberOfUsers = await Customer(connect(DB_CONNECTION, portal)).countDocuments({ customerGroup: id });
 
     return { groupById, numberOfUsers: numberOfUsers };
 }
@@ -97,4 +98,134 @@ exports.editGroup = async (portal, companyId, id, data, userId) => {
 exports.deleteGroup = async (portal, companyId, id) => {
     let delGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return delGroup;
+}
+
+exports.addGroupPromotion = async (portal, companyId, groupId, userId, data, role) => {
+    const { value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer } = data;
+    
+    let keySearch = {};
+    if (groupId) {
+        keySearch = {
+            ...keySearch,
+            customerGroup: { $in: groupId }
+        }
+    }
+
+    if (exceptCustomer) {
+        keySearch = {
+            ...keySearch,
+            _id : { $nin: exceptCustomer}
+        }
+    }
+
+    const customerInGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch);
+
+    for (const customer in customerInGroup) {
+        await addPromotion(portal, companyId, customer._id, data, userId);
+    };
+
+    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
+    let promotions = [];
+    if (modifyGroup.promotions) promotions = modifyGroup.promotions;
+    promotions = await [...promotions, {value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), exceptCustomer}];
+    modifyGroup = await { modifyGroup, promotions};
+    await CustomerGroup(connect(DB_CONNECTION), portal).findByIdAndUpdate(groupId,{
+        $set: getGroup
+    }, { new: true });
+    
+    return await getGroupById(portal, companyId, groupId, data, userId);
+}
+
+exports.editGroupPromotion = async (portal, companyId, groupId, userId, data, role) => {
+    const { promotion } = data;
+    
+    const exceptCustomer = promotion.exceptCustomer;
+    let keySearch = {};
+    if (groupId) {
+        keySearch = {
+            ...keySearch,
+            customerGroup: { $in: groupId }
+        }
+    }
+
+    if (exceptCustomer) {
+        keySearch = {
+            ...keySearch,
+            _id : { $nin: exceptCustomer}
+        }
+    }
+
+    const customerInGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch);
+
+    for (const customer in customerInGroup) {
+        let promotions = [];
+        for (const modifyPromotion in customer.promotions) {
+            if (modifyPromotion.code = promotion.code) modifyPromotion = promotion;
+            promotions = await [...promotions, modifyPromotion];
+        };
+        customer = { ...customer, promotions };
+        await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
+            $set: customer
+        }, { new: true });
+    };
+
+    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
+    let promotions = [];
+    if (modifyGroup.promotions) promotions = modifyGroup.promotions;
+    promotions[promotion.index] = promotion;
+    modifyGroup = await { modifyGroup, promotions};
+    await CustomerGroup(connect(DB_CONNECTION), portal).findByIdAndUpdate(groupId,{
+        $set: getGroup
+    }, { new: true });
+    
+    return await getGroupById(portal, companyId, groupId, data, userId);
+}
+
+exports.deleteGroupPromotion = async (portal, companyId, groupId, userId, data, role) => {
+    const { value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer } = data;
+    
+    let keySearch = {};
+    if (groupId) {
+        keySearch = {
+            ...keySearch,
+            customerGroup: { $in: groupId }
+        }
+    }
+
+    if (exceptCustomer) {
+        keySearch = {
+            ...keySearch,
+            _id : { $nin: exceptCustomer}
+        }
+    }
+
+    const customerInGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch);
+
+    for (const customer in customerInGroup) {
+        let promotions = [];
+        for (const modifyPromotion in customer.promotions) {
+            if (modifyPromotion.code = promotion.code) {
+                modifyPromotion = promotion;
+            } else { 
+                promotions = await [...promotions, modifyPromotion];
+            }
+        };
+        customer = { ...customer, promotions };
+        await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
+            $set: customer
+        }, { new: true });
+    };
+
+    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
+    let promotions = [];
+    if (modifyGroup.promotions) {
+        promotions = modifyGroup.promotions;
+        promotions = promotions.splice(promoIndex, 1);
+    }
+    modifyGroup = await { modifyGroup, promotions};
+    await CustomerGroup(connect(DB_CONNECTION), portal).findByIdAndUpdate(groupId,{
+        $set: getGroup
+    }, { new: true });
+    
+    return await getGroupById(portal, companyId, groupId, data, userId);
 }
