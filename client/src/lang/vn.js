@@ -144,6 +144,7 @@ export default {
             detail_employee: "Thông tin cá nhân",
             update_employee: "Cập nhật thông tin cá nhân",
             dashboard_employee: "Bảng tin quản lý nhân sự",
+            employee_time_sheet_log: "Thống kê bấm giờ nhân sự",
             dashboard_personal: "Bảng tin cá nhân",
             dashboard_unit: "Bảng tin đơn vị",
             dashboard_all_unit: "Bảng tin doanh nghiệp",
