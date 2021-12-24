@@ -1,10 +1,11 @@
 const { SystemApiServices } = require('./systemApi.service');
 const Logger = require(`../../../../logs`);
+const fs = require('fs').promises;
 
 const getSystemApis = async (req, res) => {
     try {
         const data = await SystemApiServices.getSystemApis(req.query);
-        
+
         Logger.info(req.user.email, 'get system api');
         res.status(200).json({
             success: true,
@@ -13,10 +14,33 @@ const getSystemApis = async (req, res) => {
         });
     } catch (error) {
         Logger.error(req.user.email, 'get system api');
-       
+
         res.status(400).json({
             success: false,
             messages: ['get_system_api_failure'],
+            content: error
+        });
+    }
+};
+
+const getSystemApisUpdateLog = async (req, res) => {
+    try {
+        const updateApiLogText = await fs.readFile('middleware/systemApiChangedLog.log', 'utf8');
+        console.log(updateApiLogText);
+        updateApiLog = JSON.parse(updateApiLogText);
+
+        Logger.info(req.user.email, 'get system api update log');
+        res.status(200).json({
+            success: true,
+            messages: ['get_system_api_update_log_success'],
+            content: updateApiLog
+        });
+    } catch (error) {
+        Logger.error(req.user.email, 'get system api update log');
+
+        res.status(400).json({
+            success: false,
+            messages: ['get_system_api_update_log_failure'],
             content: error
         });
     }
@@ -26,7 +50,7 @@ const getSystemApis = async (req, res) => {
 const createSystemApi = async (req, res) => {
     try {
         const systemAPi = await SystemApiServices.createSystemApi(req.body);
-        
+
         Logger.info(req.user.email, 'create system api');
         res.status(200).json({
             success: true,
@@ -36,7 +60,7 @@ const createSystemApi = async (req, res) => {
     } catch (error) {
         Logger.error(req.user.email, 'create system api');
         let messages = error?.messages === 'system_api_exist' ? ['system_api_exist'] : ['create_system_api_failure']
-       
+
         res.status(400).json({
             success: false,
             messages: messages,
@@ -49,7 +73,7 @@ const createSystemApi = async (req, res) => {
 const editSystemApi = async (req, res) => {
     try {
         const systemApi = await SystemApiServices.editSystemApi(req.params.id, req.body);
-        
+
         Logger.info(req.user.email, 'edit system api');
         res.status(200).json({
             success: true,
@@ -70,7 +94,7 @@ const editSystemApi = async (req, res) => {
 const deleteSystemApi = async (req, res) => {
     try {
         const systemApi = await SystemApiServices.deleteSystemApi(req.params.id);
-        
+
         Logger.info(req.user.email, 'delete system api');
         res.status(200).json({
             success: true,
@@ -87,22 +111,21 @@ const deleteSystemApi = async (req, res) => {
     }
 }
 
-const updateSystemApiAutomatic = async (app, req, res) => {
+const updateSystemApi = async (app, req, res) => {
     try {
-        const systemAPi = await SystemApiServices.updateSystemApiAutomatic(app);
-        
-        Logger.info(req.user.email, 'create system api');
+        const content = await SystemApiServices.updateSystemApi(app);
+
+        Logger.info(req.user.email, 'update system api');
         res.status(200).json({
             success: true,
-            messages: ['create_system_api_success'],
-            content: systemAPi
+            messages: ['update_system_api_success'],
+            content
         });
     } catch (error) {
-        console.log(error)
-        Logger.error(req.user.email, 'create system api');
+        Logger.error(req.user.email, 'update system api');
         res.status(400).json({
             success: false,
-            messages: ['create_system_api_failure'],
+            messages: ['update_system_api_failure'],
             content: error
         });
     }
@@ -113,5 +136,6 @@ exports.SystemApiControllers = {
     createSystemApi,
     editSystemApi,
     deleteSystemApi,
-    updateSystemApiAutomatic,
+    updateSystemApi,
+    getSystemApisUpdateLog,
 }
