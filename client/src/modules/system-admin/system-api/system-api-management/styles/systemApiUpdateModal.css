@@ -5,3 +5,7 @@
 .api-update-remove {
     background-color: #dd4b39 !important;
 }
+
+.api-update-modified {
+    background-color: #ecd313 !important;
+}

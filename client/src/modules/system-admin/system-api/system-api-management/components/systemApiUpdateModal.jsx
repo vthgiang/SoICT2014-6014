@@ -15,27 +15,35 @@ function SystemApiUpdateModal(props) {
     const apiUpdateCategory = {
         ADD: 'add',
         REMOVE: 'remove',
+        MODIFIED: 'modified'
     }
 
     const [addApiChecked, setAddApiChecked] = useState(updateApiLog.add.apis.map(() => false));
     const [removeApiChecked, setRemoveApiChecked] = useState(updateApiLog.remove.apis.map(() => false));
+    const [modifiedApiChecked, setModifiedApiChecked] = useState(updateApiLog.modified.apis.map(() => false));
 
     useEffect(() => {
         setAddApiChecked(updateApiLog.add.apis.map(() => false));
         setRemoveApiChecked(updateApiLog.remove.apis.map(() => false));
+        setModifiedApiChecked(updateApiLog.modified.apis.map(() => false));
     }, [updateApiLog]);
 
     const checkedAll = () => {
         let compare = false;
+
         if (addApiChecked.length > 0) {
             compare = addApiChecked[0]
         } else if (removeApiChecked.length > 0) {
             compare = removeApiChecked[0]
+        } else if (modifiedApiChecked.length > 0) {
+            compare = modifiedApiChecked[0]
         }
 
         return addApiChecked.filter(el => el === compare).length === addApiChecked.length ?
             removeApiChecked.filter(el => el === compare).length === removeApiChecked.length ?
-                compare
+                modifiedApiChecked.filter(el => el === compare).length === modifiedApiChecked.length ?
+                    compare
+                    : false
                 : false
             : false;
     }
@@ -44,6 +52,7 @@ function SystemApiUpdateModal(props) {
         const { checked } = e.target;
         setAddApiChecked(prev => prev.map(() => checked));
         setRemoveApiChecked(prev => prev.map(() => checked));
+        setModifiedApiChecked(prev => prev.map(() => checked));
     }
 
     const handleCheckboxAddApi = (e) => {
@@ -56,6 +65,11 @@ function SystemApiUpdateModal(props) {
         setRemoveApiChecked(prev => prev.map((apiCheck, index) => index === Number(value) ? checked : apiCheck));
     }
 
+    const handleCheckboxModifiedApi = (e) => {
+        const { value, checked } = e.target;
+        setModifiedApiChecked(prev => prev.map((apiCheck, index) => index === Number(value) ? checked : apiCheck));
+    }
+
     const checkedCategory = (category) => {
         if (category === apiUpdateCategory.ADD) {
             return addApiChecked.filter(el => el === addApiChecked[0]).length === addApiChecked.length ?
@@ -64,6 +78,10 @@ function SystemApiUpdateModal(props) {
         } else if (category === apiUpdateCategory.REMOVE) {
             return removeApiChecked.filter(el => el === removeApiChecked[0]).length === removeApiChecked.length ?
                 removeApiChecked[0]
+                : false;
+        } else if (category === apiUpdateCategory.MODIFIED) {
+            return modifiedApiChecked.filter(el => el === modifiedApiChecked[0]).length === modifiedApiChecked.length ?
+                modifiedApiChecked[0]
                 : false;
         }
     }
@@ -74,6 +92,8 @@ function SystemApiUpdateModal(props) {
             setAddApiChecked(prev => prev.map(() => checked));
         } else if (category === apiUpdateCategory.REMOVE) {
             setRemoveApiChecked(prev => prev.map(() => checked));
+        } else if (category === apiUpdateCategory.MODIFIED) {
+            setModifiedApiChecked(prev => prev.map(() => checked));
         }
     }
 
@@ -89,6 +109,18 @@ function SystemApiUpdateModal(props) {
             updateApiLog.remove.apis.map((api, index) => {
                 if (removeApiChecked[index])
                     props.deleteSystemApi(api._id);
+            });
+        }
+
+        if (updateApiLog.modified.apis.length > 0) {
+            updateApiLog.modified.apis.map((api, index) => {
+                if (modifiedApiChecked[index]) {
+                    props.editSystemApi(api._id, {
+                        path: api.path,
+                        method: api.method,
+                        description: api.description
+                    });
+                }
             });
         }
 
@@ -113,6 +145,12 @@ function SystemApiUpdateModal(props) {
                 </tr>
             </thead>
             <tbody>
+                {updateApiLog.add.apis.length <= 0
+                    && updateApiLog.remove.apis.length <= 0
+                    && updateApiLog.modified.apis.length <= 0
+                    && <tr key={'no_data'}><td colSpan={4}>{translate('general.no_data')}</td></tr>
+                }
+
                 {updateApiLog.add.apis.length > 0
                     && (
                         <>
@@ -189,6 +227,44 @@ function SystemApiUpdateModal(props) {
                                 </tr>)}
                         </>)
                 }
+
+                {updateApiLog.modified.apis.length > 0
+                    && (
+                        <>
+                            <tr>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={checkedCategory(apiUpdateCategory.MODIFIED)}
+                                        onChange={(e) => handleCheckboxAllCategory(e, apiUpdateCategory.MODIFIED)}
+                                    />
+                                </td>
+                                <td
+                                    colSpan="5"
+                                    style={{
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }}>Modified apis</td>
+                            </tr>
+                            {updateApiLog.modified.apis.map((api, index) =>
+                                <tr
+                                    key={index}
+                                    className='api-update-modified'
+                                >
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            value={index}
+                                            checked={modifiedApiChecked[index] ? modifiedApiChecked[index] : false}
+                                            onChange={handleCheckboxModifiedApi}
+                                        />
+                                    </td>
+                                    <td>{api?.path}</td>
+                                    <td>{api?.method}</td>
+                                    <td>{api?.description}</td>
+                                </tr>)}
+                        </>)
+                }
             </tbody>
         </table>
     )
@@ -224,6 +300,7 @@ function mapState(state) {
 const actionCreators = {
     createSystemApi: SystemApiActions.createSystemApi,
     deleteSystemApi: SystemApiActions.deleteSystemApi,
+    editSystemApi: SystemApiActions.editSystemApi,
 };
 
 const connectedSystemApiUpdateModal = connect(mapState, actionCreators)(withTranslate(SystemApiUpdateModal));
