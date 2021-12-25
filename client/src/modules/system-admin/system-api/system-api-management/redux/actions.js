@@ -101,10 +101,9 @@ function updateSystemApi() {
             .then(res => {
                 dispatch({
                     type: SystemApiConstants.UPDATE_AUTO_SYSTEM_API_SUCCESS,
-                    payload: res.data.content.systemApis
                 })
 
-                return res.data.content.updateApiLog;
+                return res.data.content;
             })
             .catch(error => {
                 dispatch({ 

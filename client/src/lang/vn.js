@@ -711,7 +711,6 @@ export default {
 
             system_api: {
                 update: "Cập nhật",
-                deleteUpdateLog: 'Xóa bản ghi cập nhật',
 
                 table: {
                     path: "Đường dẫn",
@@ -733,6 +732,7 @@ export default {
                 modal: {
                     create_title: 'Thêm mới API',
                     edit_title: 'Chỉnh sửa API',
+                    update_title: 'Cập nhật API',
                     delete_title: 'Xóa API'
                 },
 

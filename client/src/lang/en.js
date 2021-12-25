@@ -657,7 +657,6 @@ export default {
 
             system_api: {
                 update: "Update",
-                deleteUpdateLog: 'Delete update log',
 
                 table: {
                     path: "Path",
@@ -671,6 +670,7 @@ export default {
                 modal: {
                     create_title: 'Create a API',
                     edit_title: 'Edit a API',
+                    update_title: 'Update a API',
                     delete_title: 'Delete a API'
                 },
 
