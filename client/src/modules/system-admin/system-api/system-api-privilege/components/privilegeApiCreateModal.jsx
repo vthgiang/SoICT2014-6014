@@ -286,7 +286,7 @@ function PrivilegeApiCreateModal(props) {
                         />
                     </div>
 
-                    <td>
+                    <div>
                         <input
                             style={{ marginBottom: 10 }}
                             type="checkbox"
@@ -294,7 +294,7 @@ function PrivilegeApiCreateModal(props) {
                             onChange={handleOnChangeUnlimitedExpirationTimeCheckbox}
                         />
                         Unlimited expiration time
-                    </td>
+                    </div>
 
                     {!state.unlimitedExpirationTime &&
                         (<div className="row">
