@@ -361,7 +361,7 @@ function UnitCreateForm(props) {
             </table>
             {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
-                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="attention"> * </span></label>
+                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="text-red"> * </span></label>
                         <SelectMulti
                             id={`multi-select-base-unit-${id}`}
                             items={getListUnitArray()}
