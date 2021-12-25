@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 import parse from 'html-react-parser';
-function PersonalTimeSheetLog(props) {
+function EmployeeTimeSheetLog(props) {
     const { tasks, translate } = props;
     console.log("props: ", props);
 
@@ -129,24 +129,17 @@ function PersonalTimeSheetLog(props) {
                     <button className="btn btn-primary" onClick={getUserTimeSheetLogs}>Thống kê</button>
                 </div>
 
-                <div>
-                    <p className="pull-right" style={{ fontWeight: 'bold' }}>Tổng thời gian
-                        <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
-                            {
-                                !tasks.isLoading ? getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
-                            }
-                        </span>
-                    </p >
-                </div>
                 <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
                     <thead>
                         <tr>
                             <th style={{ width: 80 }}>STT</th>
-                            <th style={{ width: 130 }}>Tên công việc</th>
-                            <th>Hoạt động</th>
-                            <th style={{ width: 130, textAlign: 'center' }}>Bấm giờ</th>
-                            <th style={{ width: 130, textAlign: 'center' }}>Bấm hẹn giờ</th>
-                            <th style={{ width: 130, textAlign: 'center' }} className="col-sort">Bấm bù giờ</th>
+                            <th style={{ width: 130 }}>Họ và tên</th>
+                            <th style={{ textAlign: 'center' }}>Số CV thực hiện</th>
+                            <th style={{ textAlign: 'center' }}>Số CV phê duyệt</th>
+                            <th style={{ textAlign: 'center' }}>Số CV quan sát</th>
+                            <th style={{ textAlign: 'center' }}>Số CV tư vấn</th>
+                            <th style={{ textAlign: 'center' }}>Tổng số CV thực hiện</th>
+                            <th style={{ textAlign: 'center' }}>Tổng thời gian bấm giờ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -207,4 +200,4 @@ const actionCreators = {
     getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser,
 };
 
-export default connect(mapState, actionCreators)(withTranslate(PersonalTimeSheetLog));
+export default connect(mapState, actionCreators)(withTranslate(EmployeeTimeSheetLog));

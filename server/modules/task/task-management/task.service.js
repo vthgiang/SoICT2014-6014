@@ -2893,7 +2893,6 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                     "taskActions.timesheetLogs.startedAt": {$exists: true},
                     "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
                     "taskActions.timesheetLogs.stoppedAt": {$exists: true},
-                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
                 }
             },
             {
@@ -2918,7 +2917,6 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                     "taskActions.timesheetLogs.startedAt": {$exists: true},
                     "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
                     "taskActions.timesheetLogs.stoppedAt": {$exists: true},
-                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
                 }
             },
             {$unwind: "$taskActions"},
@@ -2947,7 +2945,6 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                     "startedAt": {$exists: true},
                     "startedAt": {$gte: beginOfMonth},
                     "stoppedAt": {$exists: true},
-                    "stoppedAt": {$lte: endOfMonth}
                 },
             },
         ]);
@@ -2964,7 +2961,6 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                     "timesheetLogs.startedAt": { $exists: true },
                     "timesheetLogs.startedAt": { $gte: beginOfMonth },
                     "timesheetLogs.stoppedAt": { $exists: true },
-                    "timesheetLogs.stoppedAt": { $lte: endOfMonth },
                 }
             },
             { $unwind: "$timesheetLogs" },
@@ -2974,7 +2970,6 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                     "startedAt": { $exists: true },
                     "startedAt": { $gte: beginOfMonth },
                     "stoppedAt": { $exists: true },
-                    "stoppedAt": { $lte: endOfMonth },
                     "acceptLog": true
                 }
             },

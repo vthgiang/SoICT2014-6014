@@ -168,6 +168,7 @@ const ProjectReport = lazy(() => import("../modules/project/reports/components/i
 const ProjectStatistic = lazy(() => import("../modules/project/statistic/components/index"))
 const UserGuide = lazy(() => import("../modules/user-guide/components"))
 const PersonalTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/personalTimeSheetLog"))
+const EmployeeTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/employeeTimeSheetLog"))
 
 const Notifications = lazy(() => import("../modules/notification/components/index"))
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
@@ -2956,6 +2957,26 @@ class Routes extends Component {
                         pageName={"personal_time_sheet_log"}
                         layout={Layout}
                         component={PersonalTimeSheetLog}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"time-sheet-log/all"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/time-sheet-log/all",
+                                name: "employee-time-sheet-log",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/time-sheet-log/all"}
+                        path={"/time-sheet-log/all"}
+                        pageName={"employee-time-sheet-log"}
+                        layout={Layout}
+                        component={EmployeeTimeSheetLog}
                     />
 
 
