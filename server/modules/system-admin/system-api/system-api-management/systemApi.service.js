@@ -1,7 +1,7 @@
 const { SystemApi, Company, Api } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
-const fs = require('fs').promises;
+const swaggerJsDoc = require("swagger-jsdoc");
 
 const getSystemApis = async (data) => {
     const { path, method, description, page = 1, perPage = 30 } = data
@@ -49,6 +49,28 @@ const getSystemApis = async (data) => {
         "totalSystemApis": totalSystemApis,
         "totalPages": totalPages
     };
+}
+
+const getApiSpecs = () => {
+    const options = {
+        definition: {
+            openapi: "3.0.0",
+            info: {
+                title: "Library API",
+                version: "1.0.0",
+                description: "QLCV Library API",
+            },
+            servers: [
+                {
+                    url: process.env.WEBSITE,
+                },
+            ],
+        },
+        apis: ["./modules/**/*.route.js"],
+    };
+
+    const specs = swaggerJsDoc(options);
+    console.log(specs.paths);
 }
 
 const createSystemApi = async (data) => {
@@ -169,12 +191,6 @@ const updateSystemApi = async (app) => {
         }
     };
 
-    try {
-        const updateApiLogText = JSON.parse(await fs.readFile('middleware/systemApiChangedLog.log', 'utf8'));
-        if (updateApiLogText.add.apis.length > 0 || updateApiLogText.remove.apis.length)
-            updateApiLog = updateApiLogText;
-    } catch (error) { }
-
     for (let i = 0; i < appRoutes.length; i++) {
         const systemApiIndex = systemApis.findIndex(systemApi =>
             appRoutes[i].path === systemApi.path
@@ -183,27 +199,22 @@ const updateSystemApi = async (app) => {
         if (systemApiIndex >= 0) {
             systemApis.splice(systemApiIndex, 1);
         } else {
-            const newApi = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).create(appRoutes[i])
             updateApiLog.add.apis.push(newApi)
         }
     }
 
     systemApis.forEach(async api => {
         updateApiLog.remove.apis.push(api);
-        await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME))
-            .deleteOne(api)
     });
 
-    try {
-        await fs.writeFile("middleware/systemApiChangedLog.log", JSON.stringify(updateApiLog), {
-            encoding: "utf8",
-        });
-    } catch (error) { }
+    // const fs = require('fs').promises;
+    // try {
+    //     await fs.writeFile("middleware/systemApiChangedLog.log", JSON.stringify(updateApiLog), {
+    //         encoding: "utf8",
+    //     });
+    // } catch (error) { }
 
-    return {
-        updateApiLog,
-        systemApis: appRoutes
-    };
+    return updateApiLog;
 }
 
 /** Chinh sua API */
@@ -237,6 +248,7 @@ const deleteSystemApi = async (systemApiId) => {
 
 exports.SystemApiServices = {
     getSystemApis,
+    getApiSpecs,
     createSystemApi,
     editSystemApi,
     deleteSystemApi,

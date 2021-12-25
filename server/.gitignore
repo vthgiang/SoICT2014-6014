@@ -5,8 +5,6 @@
 /logs/_multi-tenant
 /logs/history
 
-/middleware/systemApiChangedLog.log
-
 /models/_multi-tenant
 /middleware/_multi-tenant
 /modules/_multi-tenant
