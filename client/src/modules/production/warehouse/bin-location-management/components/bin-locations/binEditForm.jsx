@@ -336,11 +336,11 @@ function BinEditForm(props) {
             <div className="scroll-row">
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.code')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.code')}<span className="text-red"> * </span></label>
                         {/* <input type="text" className="form-control" value={binCode} disabled onChange={handleCodeChange} /> */}
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.status')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.status')}<span className="text-red"> * </span></label>
                         <SelectBox
                             id={`select-status-bin-location`}
                             className="form-control select2"
@@ -358,7 +358,7 @@ function BinEditForm(props) {
                         />
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.department')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.department')}<span className="text-red"> * </span></label>
                         <SelectBox
                             id={`select-department-bin`}
                             className="form-control select2"
@@ -370,22 +370,22 @@ function BinEditForm(props) {
                         />
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="text-red"> * </span></label>
                         <input type="text" className="form-control" value={binUnit} onChange={handleUnitChange} />
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorName ? "" : "has-error"}`}>
-                        <label>{translate('manage_warehouse.bin_location_management.name')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.name')}<span className="text-red"> * </span></label>
                         <input type="text" className="form-control" value={binName} onChange={handleNameChange} />
                         <ErrorLabel content={errorName} />
                     </div>
                     <div className="form-group">
-                        <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="text-red"> * </span></label>
                         <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={handleCapacityTotalChange} />
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="text-red"> * </span></label>
                         <SelectBox
                             id={`select-management-location-stock`}
                             className="form-control select2"

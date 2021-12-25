@@ -4797,7 +4797,7 @@ export default {
                 contained: "Đã chứa",
                 address: "Địa chỉ",
                 description: "Mô tả",
-                choose_status: "Chọn trạng thái",
+                choose_status: "Chọn kho",
                 choose_department: "--Chọn đơn vị--",
                 department: "Đơn vị quản lý",
                 management_location: "Người đang quản lý",
