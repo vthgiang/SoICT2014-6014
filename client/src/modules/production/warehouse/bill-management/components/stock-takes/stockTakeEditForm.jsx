@@ -585,7 +585,7 @@ function StockTakeEditForm(props) {
                                     <input type="text" className="form-control" value={code} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-type-take-edit-${billId}`}
                                         className="form-control select2"
@@ -601,7 +601,7 @@ function StockTakeEditForm(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-stock-bill-take-edit-${billId}`}
                                         className="form-control select2"
@@ -642,7 +642,7 @@ function StockTakeEditForm(props) {
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-approver-bill-take-edit-${billId}`}
                                             className="form-control select2"
@@ -655,7 +655,7 @@ function StockTakeEditForm(props) {
                                         <ErrorLabel content={errorApprover} />
                                     </div>
                                     <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-accountables-bill-take-edit-${billId}`}
                                             className="form-control select2"
@@ -670,7 +670,7 @@ function StockTakeEditForm(props) {
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-qualityControlStaffs-bill-take-edit-${billId}`}
                                             className="form-control select2"
@@ -683,7 +683,7 @@ function StockTakeEditForm(props) {
                                         <ErrorLabel content={errorQualityControlStaffs} />
                                     </div>
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-responsibles-bill-take-edit-${billId}`}
                                             className="form-control select2"

@@ -390,12 +390,12 @@ function BinCreateForm(props) {
                     <form id={`form-create-bin-location`} >
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorCode ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.bin_location_management.code')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.bin_location_management.code')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" onChange={handleCodeChange}/>
                                 <ErrorLabel content = { errorCode }/>
                             </div>
                             <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.bin_location_management.stock')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.bin_location_management.stock')}<span className="text-red"> * </span></label>
                                 <SelectBox
                                     id={`select-stock-bin-location-create`}
                                     className="form-control select2"
@@ -408,7 +408,7 @@ function BinCreateForm(props) {
                                 <ErrorLabel content = { errorStock }/>
                             </div>
                             <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.bin_location_management.status')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.bin_location_management.status')}<span className="text-red"> * </span></label>
                                 <SelectBox
                                     id={`select-status-bin-location-create`}
                                     className="form-control select2"
@@ -426,7 +426,7 @@ function BinCreateForm(props) {
                                 />
                             </div>
                             <div className={`form-group ${!errorDepartment ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.bin_location_management.department')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.bin_location_management.department')}<span className="text-red"> * </span></label>
                                 <SelectBox
                                     id={`select-department-bin-create`}
                                     className="form-control select2"
@@ -439,13 +439,13 @@ function BinCreateForm(props) {
                                 <ErrorLabel content = { errorDepartment }/>
                             </div>
                             <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" onChange={handleUnitChange} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorName ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.bin_location_management.name')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.bin_location_management.name')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" onChange={handleNameChange} />
                                 <ErrorLabel content = { errorName }/>
                             </div>
@@ -458,7 +458,7 @@ function BinCreateForm(props) {
                                 <input type="number" className="form-control" disabled value= {binContained} onChange={handleContainedTotalChange} />
                             </div>
                             <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="text-red"> * </span></label>
                                 <SelectBox
                                     id={`select-management-location-stock-create`}
                                     className="form-control select2"

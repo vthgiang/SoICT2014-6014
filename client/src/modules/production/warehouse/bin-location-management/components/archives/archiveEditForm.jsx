@@ -271,7 +271,7 @@ function ArchiveEditForm(props) {
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bin_location_management.status')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bin_location_management.status')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-status-bin-location-edit`}
                                         className="form-control select2"
@@ -291,7 +291,7 @@ function ArchiveEditForm(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorContained ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bin_location_management.contained')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bin_location_management.contained')}<span className="text-red"> * </span></label>
                                     <input type="number" className="form-control" value={binContained ? binContained : ""} onChange={handleContainedTotalChange} />
                                     <ErrorLabel content = { errorContained }/>
                                 </div>

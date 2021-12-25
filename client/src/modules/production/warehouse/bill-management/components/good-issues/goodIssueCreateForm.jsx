@@ -656,7 +656,7 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.type")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-type-issue-create`}
@@ -693,7 +693,7 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.stock")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-stock-issue-create`}
@@ -709,7 +709,7 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.customer")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-customer-issue-create`}
@@ -738,7 +738,7 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.approved")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-approver-bill-issue-create`}
@@ -754,7 +754,7 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.users")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-accountables-bill-issue-create`}
@@ -772,7 +772,7 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.qualityControlStaffs")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-qualityControlStaffs-bill-issue-create`}
@@ -788,7 +788,7 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.accountables")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-responsibles-bill-issue-create`}
@@ -811,14 +811,14 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.name")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.phone")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="number" className="form-control" onChange={handlePhoneChange} />
                                 </div>
@@ -827,14 +827,14 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.email")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.address")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
                                 </div>
