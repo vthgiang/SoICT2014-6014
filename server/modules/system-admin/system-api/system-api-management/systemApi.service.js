@@ -2,6 +2,7 @@ const { SystemApi, Company, Api } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 const swaggerJsDoc = require("swagger-jsdoc");
+const appJSDocs = require('../../../../api-docs/appJSDocs');
 
 const getSystemApis = async (data) => {
     const { path, method, description, page = 1, perPage = 30 } = data
@@ -51,28 +52,6 @@ const getSystemApis = async (data) => {
     };
 }
 
-const getApiSpecs = () => {
-    const options = {
-        definition: {
-            openapi: "3.0.0",
-            info: {
-                title: "Library API",
-                version: "1.0.0",
-                description: "QLCV Library API",
-            },
-            servers: [
-                {
-                    url: process.env.WEBSITE,
-                },
-            ],
-        },
-        apis: ["./modules/**/*.route.js"],
-    };
-
-    const specs = swaggerJsDoc(options);
-    console.log(specs.paths);
-}
-
 const createSystemApi = async (data) => {
     const { path, method, description } = data
 
@@ -99,122 +78,159 @@ const createSystemApi = async (data) => {
 };
 
 const updateSystemApi = async (app) => {
-    /**
-     * GET ALL NODEJS ROUTES
-     */
-    let appRoutes = []
+    try {
+        /**
+         * GET ALL NODEJS ROUTES
+         */
+        let appRoutes = []
 
-    /**
-     * Hàm này dùng để phân tách path hoặc regexp để lấy ra các phần của router path và route path
-     * @param {*} thing 
-     * @returns 
-     */
-    const getPathPortionArr = (thing) => {
-        if (typeof thing === 'string') {
-            /**
-             * Trường hợp là route
-             * thing = e.g. /super-admin/privilege-api
-             */
-            return thing.split('/')
-        } else if (thing.fast_slash) {
-            return ''
-        } else {
-            /**
-             * Trường hợp là router
-             * thing = Layer.regexp
-             */
-            var match = thing.toString()
-                .replace('\\/?', '')
-                .replace('(?=\\/|$)', '$')
-                .match(/^\/\^((?:\\[.*+?^${}()|[\]\\\/]|[^.*+?^${}()|[\]\\\/])*)\$\//)
+        /**
+         * Hàm này dùng để phân tách path hoặc regexp để lấy ra các phần của router path và route path
+         * @param {*} thing 
+         * @returns 
+         */
+        const getPathPortionArr = (thing) => {
+            if (typeof thing === 'string') {
+                /**
+                 * Trường hợp là route
+                 * thing = e.g. /super-admin/privilege-api
+                 */
+                return thing.split('/')
+            } else if (thing.fast_slash) {
+                return ''
+            } else {
+                /**
+                 * Trường hợp là router
+                 * thing = Layer.regexp
+                 */
+                var match = thing.toString()
+                    .replace('\\/?', '')
+                    .replace('(?=\\/|$)', '$')
+                    .match(/^\/\^((?:\\[.*+?^${}()|[\]\\\/]|[^.*+?^${}()|[\]\\\/])*)\$\//)
 
-            return match
-                ? match[1].replace(/\\(.)/g, '$1').split('/')
-                : '<complex:' + thing.toString() + '>'
+                return match
+                    ? match[1].replace(/\\(.)/g, '$1').split('/')
+                    : '<complex:' + thing.toString() + '>'
+            }
         }
-    }
 
-    const getRoute = async (path, layer) => {
-        if (layer.route) {
-            /**
-             * Layer hiện tại là một route
-             * Một route có thể có nhiều Method ứng với nó
-             */
-            layer.route.stack.forEach(getRoute.bind(null, path.concat(getPathPortionArr(layer.route.path))))
-        } else if (layer.name === 'router' && layer.handle.stack) {
-            /**
-             * Layer hiện tại là một router
-             * Trong một router có thể có một hoặc nhiều routers hoặc routes
-             */
-            layer.handle.stack.forEach(getRoute.bind(null, path.concat(getPathPortionArr(layer.regexp))))
-        } else if (layer.method) {
-            /**
-             * Với mỗi method của route, lưu lại vào trong appRoutes
-             */
-            let currentMethod = layer.method.toUpperCase()
-            let currentPath = "/" + path.concat(getPathPortionArr(layer.regexp)).filter(Boolean).join('/')
-            let category = "/" + path.concat(getPathPortionArr(layer.regexp)).filter(Boolean)?.[0]
+        const getRoute = async (path, layer) => {
+            if (layer.route) {
+                /**
+                 * Layer hiện tại là một route
+                 * Một route có thể có nhiều Method ứng với nó
+                 */
+                layer.route.stack.forEach(getRoute.bind(null, path.concat(getPathPortionArr(layer.route.path))))
+            } else if (layer.name === 'router' && layer.handle.stack) {
+                /**
+                 * Layer hiện tại là một router
+                 * Trong một router có thể có một hoặc nhiều routers hoặc routes
+                 */
+                layer.handle.stack.forEach(getRoute.bind(null, path.concat(getPathPortionArr(layer.regexp))))
+            } else if (layer.method) {
+                /**
+                 * Với mỗi method của route, lưu lại vào trong appRoutes
+                 */
+                let currentMethod = layer.method.toUpperCase()
+                let currentPath = "/" + path.concat(getPathPortionArr(layer.regexp)).filter(Boolean).join('/')
+                let category = "/" + path.concat(getPathPortionArr(layer.regexp)).filter(Boolean)?.[0]
 
-            /**
-             * Nếu không có API trùng thì thêm vào appRoutes
-             */
-            if (!appRoutes.find(el =>
-                el.method === currentMethod
-                && el.path === currentPath
-            )) {
-                appRoutes.push({
-                    method: currentMethod,
-                    path: currentPath,
-                    category: category
+                /**
+                 * Nếu không có API trùng thì thêm vào appRoutes
+                 */
+                if (!appRoutes.find(el =>
+                    el.method === currentMethod
+                    && el.path === currentPath
+                )) {
+                    appRoutes.push({
+                        method: currentMethod,
+                        path: currentPath,
+                        category: category
+                    })
+                }
+            }
+        }
+
+        app._router.stack.forEach((layer) => getRoute([], layer));
+
+        /**
+         * TODO: Kiểm tra xem appJSDocs có phải chạy, lấy lại nhiều lần hay không
+         * Nếu có, thì hãy  lưu ra một biến để tối ưu hơn
+         */
+        const apisSpecs = [];
+        for (const api in appJSDocs.paths) {
+            for (const method in appJSDocs.paths[api]) {
+                apisSpecs.push({
+                    path: api,
+                    method: method.toUpperCase(),
+                    description: appJSDocs.paths[api][method].description
                 })
             }
         }
-    }
 
-    app._router.stack.forEach((layer) => getRoute([], layer));
-
-    /**
-     * So sánh dữ liệu toàn bộ routes mới lấy với dữ liệu của system-api
-     * Xem những api nào được thêm/sửa/xóa
-     * Ghi các thay đổi vào một file log
-     */
-    const systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).find()
-
-    let updateApiLog = {
-        add: {
-            type: 'add',
-            apis: []
-        },
-        remove: {
-            type: 'remove',
-            apis: []
+        for (let i = 0; i < appRoutes.length; i++) {
+            const api = apisSpecs.find(api => api.path === appRoutes[i].path && api.method === appRoutes[i].method);
+            if (api) appRoutes[i].description = api.description;
         }
-    };
 
-    for (let i = 0; i < appRoutes.length; i++) {
-        const systemApiIndex = systemApis.findIndex(systemApi =>
-            appRoutes[i].path === systemApi.path
-            && appRoutes[i].method === systemApi.method);
+        /**
+         * So sánh dữ liệu toàn bộ routes mới lấy với dữ liệu của system-api
+         * Xem những api nào được thêm/sửa/xóa
+         * Ghi các thay đổi vào một file log
+         */
+        const systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).find()
 
-        if (systemApiIndex >= 0) {
-            systemApis.splice(systemApiIndex, 1);
-        } else {
-            updateApiLog.add.apis.push(newApi)
+        let updateApiLog = {
+            add: {
+                type: 'add',
+                apis: []
+            },
+            remove: {
+                type: 'remove',
+                apis: []
+            },
+            modified: {
+                type: 'modified',
+                apis: []
+            }
+        };
+
+        for (let i = 0; i < appRoutes.length; i++) {
+            const systemApiIndex = systemApis.findIndex(systemApi =>
+                appRoutes[i].path === systemApi.path
+                && appRoutes[i].method === systemApi.method);
+
+            if (systemApiIndex >= 0) {
+                if (appRoutes[i].description &&
+                    (!systemApis[systemApiIndex].description
+                        || appRoutes[i].description !== systemApis[systemApiIndex].description)
+                ) {
+                    const api = systemApis[systemApiIndex];
+                    api.description = appRoutes[i].description;
+                    updateApiLog.modified.apis.push(api);
+                }
+
+                systemApis.splice(systemApiIndex, 1);
+            } else {
+                updateApiLog.add.apis.push(appRoutes[i])
+            }
         }
+
+        systemApis.forEach(api => {
+            updateApiLog.remove.apis.push(api);
+        });
+
+        // const fs = require('fs').promises;
+        // try {
+        //     await fs.writeFile("middleware/systemApiChangedLog.log", JSON.stringify(updateApiLog), {
+        //         encoding: "utf8",
+        //     });
+        // } catch (error) { }
+
+        return updateApiLog;
+    } catch (error) {
+        console.error(error)
     }
-
-    systemApis.forEach(async api => {
-        updateApiLog.remove.apis.push(api);
-    });
-
-    // const fs = require('fs').promises;
-    // try {
-    //     await fs.writeFile("middleware/systemApiChangedLog.log", JSON.stringify(updateApiLog), {
-    //         encoding: "utf8",
-    //     });
-    // } catch (error) { }
-
-    return updateApiLog;
 }
 
 /** Chinh sua API */
@@ -248,7 +264,6 @@ const deleteSystemApi = async (systemApiId) => {
 
 exports.SystemApiServices = {
     getSystemApis,
-    getApiSpecs,
     createSystemApi,
     editSystemApi,
     deleteSystemApi,
