@@ -102,6 +102,7 @@ exports.getXmlDiagramById = (portal, params) => {
  */
 exports.createXmlDiagram = async (portal, body) => {
     let info = [];
+    let processTemplates = [];
     for (const x in body.info) {
         body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
             return {
@@ -125,7 +126,15 @@ exports.createXmlDiagram = async (portal, body) => {
         }
         info.push(body.info[x])
     }
-
+    for (const x in body.infoTemplate) {
+        // console.log(body.infoTemplate[x]);
+        processTemplates.push({
+            process:body.infoTemplate[x]._id,
+            code:body.infoTemplate[x].code,
+            followingTasks:body.infoTemplate[x].followingTasks,
+            preceedingTasks:body.infoTemplate[x].preceedingTasks
+        })
+    }
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).create({
         xmlDiagram: body.xmlDiagram,
         processName: body.processName,
@@ -133,6 +142,7 @@ exports.createXmlDiagram = async (portal, body) => {
         manager: body.manager,
         viewer: body.viewer,
         tasks: info,
+        processTemplates: processTemplates,
         creator: body.creator,
     })
 
@@ -184,6 +194,7 @@ exports.createXmlDiagram = async (portal, body) => {
         { path: 'creator', select: 'name email' },
         { path: 'manager', select: 'name email' },
         { path: 'viewer', select: 'name email' },
+        { path: 'processTemplates.process' },
         { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);

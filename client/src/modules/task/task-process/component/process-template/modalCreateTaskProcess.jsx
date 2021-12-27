@@ -10,7 +10,7 @@ import { AddTaskTemplate } from "../../../task-template/component/addTaskTemplat
 
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
-
+import BpmnViewer from 'bpmn-js';
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
@@ -20,12 +20,19 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { AddProcessTemplate } from "./addProcessTemplateChild";
+import { ModalViewTaskProcess } from "./modalViewTaskProcess";
+import { ModalViewProcess } from "./viewProcessTemplateChild";
 
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 	if (is(semantic, 'bpmn:Task')) {
 		return { width: 160, height: 130 };
+	}
+
+	if (is(semantic, 'bpmn:SubProcess')) {
+		return { width: 260, height: 180 };
 	}
 
 	if (is(semantic, 'bpmn:Gateway')) {
@@ -54,6 +61,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 	delete entries['create.participant-expanded'];
 	delete entries['create.intermediate-event'];
 	delete entries['create.task'];
+	delete entries['create.process'];
 	return entries;
 }
 
@@ -87,14 +95,18 @@ function ModalCreateTaskProcess(props) {
 		userId: getStorage("userId"),
 		currentRole: getStorage('currentRole'),
 		showInfo: false,
+		showInfoProcess:false,
 		selectedCreate: 'info',
 		info: {},
+		infoTemplate: {},
 		save: false,
 		manager: [],
 		viewer: [],
 		processName: '',
 		processDescription: '',
 		indexRenderer: 0,
+		showProcessTemplate:false,
+		dataProcessTask:{},
 	})
 	const initialDiagram = InitialDiagram
 	const [modeler, setModeler] = useState(new BpmnModeler({
@@ -104,7 +116,6 @@ function ModalCreateTaskProcess(props) {
 		],
 	}))
 	const generateId = "createprocess"
-
 	if (state.save === true) {
 		props.getAllDepartments()
 		modeler.importXML(initialDiagram);
@@ -113,6 +124,7 @@ function ModalCreateTaskProcess(props) {
 			save: false,
 		});
 	}
+
 	useEffect(() => {
 		props.getAllDepartments();
 		modeler.attachTo('#' + generateId);
@@ -123,6 +135,9 @@ function ModalCreateTaskProcess(props) {
 			var element = event.element;
 
 			if (isAny(element, ['bpmn:Task'])) {
+				return false; // will cancel event
+			}
+			if (isAny(element, ['bpmn:SubProcess'])) {
 				return false; // will cancel event
 			}
 		});
@@ -254,6 +269,32 @@ function ModalCreateTaskProcess(props) {
 		});
 	}
 
+	// const handleChangeViewerBpmn = async (value) => {
+	// 	const modeling = modeler.get('modeling');
+	// 	let element1 = modeler.get('elementRegistry').get(state.id);
+	// 	let viewer = []
+	// 	value.forEach(x => {
+	// 		viewer.push(x.name)
+	// 	})
+	// 	modeling.updateProperties(element1, {
+	// 		viewerName: viewer
+	// 	});
+
+	// }
+
+	// // hàm cập nhật người phê duyệt công việc
+	// const handleChangeManagerBpmn = async (value) => {
+	// 	const modeling = modeler.get('modeling');
+	// 	let element1 = modeler.get('elementRegistry').get(state.id);
+	// 	let manager = []
+	// 	value.forEach(x => {
+	// 		manager.push(x.name)
+	// 	})
+	// 	modeling.updateProperties(element1, {
+	// 		managereName: manager
+	// 	});
+	// }
+
 	// hàm cập nhật màu sắc trong diagram
 	const done = (e) => {
 		const modeling = modeler.get('modeling');
@@ -293,6 +334,24 @@ function ModalCreateTaskProcess(props) {
 				return {
 					...state,
 					showInfo: true,
+					showInfoProcess:false,
+					type: element.type,
+					name: nameStr[1],
+					taskName: element.businessObject.name,
+					id: `${element.businessObject.id}`,
+				}
+			} else if (element.type === "bpmn:SubProcess") {
+				
+				if (!state.infoTemplate[`${element.businessObject.id}`] || (state.infoTemplate[`${element.businessObject.id}`] && !state.infoTemplate[`${element.businessObject.id}`].organizationalUnit)) {
+					state.infoTemplate[`${element.businessObject.id}`] = {
+						...state.infoTemplate[`${element.businessObject.id}`],
+					}
+					// console.log('props.listOrganizationalUnit[0]?._id', props.listOrganizationalUnit[0]?._id);
+				}
+				return {
+					...state,
+					showInfo: false,
+					showInfoProcess:true,
 					type: element.type,
 					name: nameStr[1],
 					taskName: element.businessObject.name,
@@ -300,7 +359,7 @@ function ModalCreateTaskProcess(props) {
 				}
 			}
 			else {
-				return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
+				return { ...state,showInfoProcess:false, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
 			}
 		})
 	}
@@ -313,6 +372,7 @@ function ModalCreateTaskProcess(props) {
 			return {
 				...state,
 				showInfo: false,
+				showInfoProcess:false,
 			}
 		})
 		// console.log(state);
@@ -489,6 +549,16 @@ function ModalCreateTaskProcess(props) {
 
 	}
 
+	const handleDataProcessTempalte = async (value) => {
+		await setState({
+			...state,
+			dataProcessTask:value,
+			showProcessTemplate:true,
+		})
+		// modeler.importXML(value.xmlDiagram)
+		await window.$(`#modal-view-process`).modal("show");
+	}
+
 	// validate quy trình
 	const isFormValidate = () => {
 		// let elementList = await modeler.get('elementRegistry')._elements;
@@ -540,6 +610,38 @@ function ModalCreateTaskProcess(props) {
 			&& state.errorOnProcessName === undefined && state.errorOnViewer === undefined;
 	}
 
+	
+	const setBpmnProcess = (data) =>{
+		const modeling = modeler.get('modeling');
+		let element1 = modeler.get('elementRegistry').get(state.id);
+		let manager = []
+		data.manager.forEach(x => {
+			manager.push(x.name)
+		})
+		let viewer = []
+		data.viewer.forEach(x => {
+			viewer.push(x.name)
+		})
+		if (element1) {
+			modeling.updateProperties(element1, {
+				shapeName: data.processName,
+				managerName:manager,
+				viewerName:viewer
+			});
+		}
+		let infoTemplate = {
+			...data,
+			code: state.id
+		}
+		const infoTemplates = state.infoTemplate
+        infoTemplates[`${state.id}`] = infoTemplate ;
+        state.infoTemplate[`${state.id}`] = infoTemplate
+        setState({
+                ...state,
+                infoTemplate: infoTemplates
+            })
+	}
+
 	// hàm lưu
 	const save = async () => {
 		let elementList = modeler.get('elementRegistry')._elements
@@ -549,7 +651,7 @@ function ModalCreateTaskProcess(props) {
 		modeler.saveXML({ format: true }, function (err, xml) {
 			xmlStr = xml;
 		});
-
+		console.log('infooo', state);
 		await setState(state => {
 			let { info } = state;
 			for (let j in info) {
@@ -563,20 +665,90 @@ function ModalCreateTaskProcess(props) {
 							if (elem.businessObject.incoming) {
 								let incoming = elem.businessObject.incoming;
 								for (let x in incoming) {
-									info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
-										task: incoming[x].sourceRef.id,
-										link: incoming[x].name,
-										// TODO: activated: false
-									})
+									let types = incoming[x].sourceRef.$type.split(":")
+									console.log(incoming[x].sourceRef.$type,types);
+									if (types[1] === 'Process'){
+										info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+											process: incoming[x].sourceRef.id,
+											link: incoming[x].name,
+											// TODO: activated: false
+										})
+									} else {
+										info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+											task: incoming[x].sourceRef.id,
+											link: incoming[x].name,
+											// TODO: activated: false
+										})
+									}
 								}
 							}
 							if (elem.businessObject.outgoing) {
 								let outgoing = elem.businessObject.outgoing;
 								for (let y in outgoing) {
-									info[j].followingTasks.push({ // các công việc sau công việc hiện tại
-										task: outgoing[y].targetRef.id,
-										link: outgoing[y].name,
-									})
+									let types = outgoing[y].sourceRef.$type.split(":")
+									if (types[1] === 'Process'){
+										info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+											process: outgoing[y].targetRef.id,
+											link: outgoing[y].name,
+										})
+									} else {
+										info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+											task: outgoing[y].targetRef.id,
+											link: outgoing[y].name,
+										})
+									}
+								}
+							}
+						}
+
+					
+					}
+				}
+			}
+			let { infoTemplate } = state;
+			for (let j in infoTemplate) {
+				if (Object.keys(infoTemplate[j]).length !== 0) {
+					infoTemplate[j].followingTasks = [];
+					infoTemplate[j].preceedingTasks = [];
+
+					for (let i in elementList) {
+						let elem = elementList[i].element;
+						if (infoTemplate[j].code === elem.id) {
+							if (elem.businessObject.incoming) {
+								let incoming = elem.businessObject.incoming;
+								for (let x in incoming) {
+									let types = incoming[x].sourceRef.$type.split(":")
+									console.log(incoming[x].sourceRef.$type,types);
+									if (types[1] === 'Process'){
+										infoTemplate[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+											process: incoming[x].sourceRef.id,
+											link: incoming[x].name,
+											// TODO: activated: false
+										})
+									} else {
+										infoTemplate[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+											task: incoming[x].sourceRef.id,
+											link: incoming[x].name,
+											// TODO: activated: false
+										})
+									}
+								}
+							}
+							if (elem.businessObject.outgoing) {
+								let outgoing = elem.businessObject.outgoing;
+								for (let y in outgoing) {
+									let types = outgoing[y].sourceRef.$type.split(":")
+									if (types[1] === 'Process'){
+										infoTemplate[j].followingTasks.push({ // các công việc sau công việc hiện tại
+											process: outgoing[y].targetRef.id,
+											link: outgoing[y].name,
+										})
+									} else {
+										infoTemplate[j].followingTasks.push({ // các công việc sau công việc hiện tại
+											task: outgoing[y].targetRef.id,
+											link: outgoing[y].name,
+										})
+									}
 								}
 							}
 						}
@@ -589,10 +761,11 @@ function ModalCreateTaskProcess(props) {
 			}
 		})
 
-		// console.log('infooo', state.info);
+		// console.log('infooo', state);
 
 		let data = {
 			info: info,
+			infoTemplate: infoTemplate,
 			xmlDiagram: xmlStr,
 			processName: state.processName,
 			processDescription: state.processDescription,
@@ -600,7 +773,7 @@ function ModalCreateTaskProcess(props) {
 			viewer: state.viewer,
 			creator: getStorage("userId")
 		}
-		// console.log(data)
+		console.log(data)
 		await props.createXmlDiagram(data)
 
 		// RESET FORM CREATE
@@ -623,10 +796,10 @@ function ModalCreateTaskProcess(props) {
 		// });
 		// modeler.importXML(initialDiagram);
 	}
-
+	
 
 	const { translate, department, role } = props;
-	const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type } = state;
+	const { id, name, info, showInfo, showInfoProcess, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, infoTemplate } = state;
 	const { listOrganizationalUnit } = props;
 	if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
 		window.$(`.task-process-gate-way-title`).css("background-color", "white")
@@ -732,20 +905,48 @@ function ModalCreateTaskProcess(props) {
 							{/* Tab quy trình - công việc */}
 							<div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
 								<div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
-
+											
 									<div className="">
 										{/* Quy trình công việc */}
-										<div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+										<div className={`contain-border ${showInfo || showInfoProcess ? 'col-md-8' : 'col-md-12'}`}>
+											{/*
+												state.showProcessTemplate &&
+												<ModalViewTaskProcess
+													title={translate("task.task_process.view_process_template_modal")}
+													data={state.dataProcessTask}
+													idProcess={state.dataProcessTask._id}
+													xmlDiagram={state.dataProcessTask.xmlDiagram}
+													processName={state.dataProcessTask.processName}
+													processDescription={state.dataProcessTask.processDescription}
+													infoTask={state.dataProcessTask.tasks}
+													creator={state.dataProcessTask.creator}
+												/>*/
+											}
+												
 											{/* nút export, import diagram,... */}
+											{state.showProcessTemplate &&
+												<ModalViewProcess
+													idProcess={state.dataProcessTask._id}
+													tasks={state.dataProcessTask.tasks}
+													processDescription={state.dataProcessTask.processDescription}
+													processName={state.dataProcessTask.processName}
+													viewer={state.dataProcessTask.viewer}
+													manager={state.dataProcessTask.manager}
+													xmlDiagram={state.dataProcessTask.xmlDiagram}
+													>
+												</ModalViewProcess>
+											}
+											<div>
 											<div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
 												<button onClick={exportDiagram}>Export XML</button>
 												<button onClick={downloadAsSVG}>Save SVG</button>
 												<button onClick={downloadAsImage}>Save Image</button>
 												<button onClick={downloadAsBpmn}>Download BPMN</button>
 											</div>
-
+											
 											{/* phần vẽ biểu đồ */}
 											<div id={generateId}></div>
+											
 
 											{/* Nút zoom in, zoom out */}
 											<div className="row">
@@ -769,27 +970,43 @@ function ModalCreateTaskProcess(props) {
 													</ul>
 												</div>
 											</div>
+											</div>
 										</div>
 
 										{/* form thông tin công việc */}
-										<div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
-											{
-												(showInfo) &&
+										<div className={`right-content ${showInfo || showInfoProcess ? 'col-md-4' : undefined}`}>
+											{ showInfo &&
 												<div>
-													{/* <div>
-															<h1>Option {name}</h1>
-														</div> */}
+												{/* <div>
+														<h1>Option {name}</h1>
+													</div> */}
 
-													<AddTaskTemplate
-														isProcess={true}
-														id={id}
-														info={(info && info[`${id}`]) && info[`${id}`]}
-														onChangeTemplateData={handleChangeInfo}
-														handleChangeName={handleChangeName} // cập nhật tên vào diagram
-														handleChangeResponsible={handleChangeResponsible} // cập nhật hiển thi diagram
-														handleChangeAccountable={handleChangeAccountable} // cập nhật hiển thị diagram
-													/>
-												</div>
+												<AddTaskTemplate
+													isProcess={true}
+													id={id}
+													info={(info && info[`${id}`]) && info[`${id}`]}
+													onChangeTemplateData={handleChangeInfo}
+													handleChangeName={handleChangeName} // cập nhật tên vào diagram
+													handleChangeResponsible={handleChangeResponsible} // cập nhật hiển thi diagram
+													handleChangeAccountable={handleChangeAccountable} // cập nhật hiển thị diagram
+												/>
+											</div>}
+											{showInfoProcess&&
+												<div>
+												{/* <div>
+														<h1>Option {name}</h1>
+													</div> */}
+
+												<AddProcessTemplate
+													id={id}
+													infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`]}
+													handleDataProcessTempalte={handleDataProcessTempalte}
+													setBpmnProcess={setBpmnProcess}
+													handleChangeName={handleChangeName} // cập nhật tên vào diagram
+													// handleChangeViewerBpmn={handleChangeViewerBpmn} // cập nhật hiển thi diagram
+													// handleChangeManagerBpmn={handleChangeManagerBpmn} // cập nhật hiển thị diagram
+												/>
+											</div>
 											}
 										</div>
 									</div>

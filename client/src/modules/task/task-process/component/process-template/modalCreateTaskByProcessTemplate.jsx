@@ -26,7 +26,9 @@ ElementFactory.prototype._getDefaultSize = function (semantic) {
     if (is(semantic, 'bpmn:Task')) {
         return { width: 160, height: 130 };
     }
-
+    if (is(semantic, 'bpmn:SubProcess')) {
+		return { width: 260, height: 180 };
+	}
     if (is(semantic, 'bpmn:Gateway')) {
         return { width: 50, height: 50 };
     }
