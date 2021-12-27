@@ -711,7 +711,6 @@ export default {
 
             system_api: {
                 update: "Cập nhật",
-                deleteUpdateLog: 'Xóa bản ghi cập nhật',
 
                 table: {
                     path: "Đường dẫn",
@@ -733,6 +732,7 @@ export default {
                 modal: {
                     create_title: 'Thêm mới API',
                     edit_title: 'Chỉnh sửa API',
+                    update_title: 'Cập nhật API',
                     delete_title: 'Xóa API'
                 },
 
@@ -3849,6 +3849,8 @@ export default {
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
+                select_task_process_template:"Chọn quy trình mẫu",
+                process_template_name:"Tên mẫu quy trình",
             },
             task_dashboard: {
                 general_unit_task: "Tổng quan công việc",
@@ -4797,7 +4799,7 @@ export default {
                 contained: "Đã chứa",
                 address: "Địa chỉ",
                 description: "Mô tả",
-                choose_status: "Chọn trạng thái",
+                choose_status: "Chọn kho",
                 choose_department: "--Chọn đơn vị--",
                 department: "Đơn vị quản lý",
                 management_location: "Người đang quản lý",

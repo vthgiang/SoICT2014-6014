@@ -197,7 +197,7 @@ const CompanyManageApi = (props) => {
                                     />
                                 </td>
                                 <td
-                                    colspan="3"
+                                    colSpan="3"
                                     style={{
                                         textAlign: 'left',
                                         fontWeight: '700'

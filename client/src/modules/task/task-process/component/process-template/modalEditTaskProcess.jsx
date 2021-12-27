@@ -38,7 +38,9 @@ ElementFactory.prototype._getDefaultSize = function (semantic) {
     if (is(semantic, 'bpmn:Task')) {
         return { width: 160, height: 130 };
     }
-
+    if (is(semantic, 'bpmn:SubProcess')) {
+		return { width: 260, height: 180 };
+	}
     if (is(semantic, 'bpmn:Gateway')) {
         return { width: 50, height: 50 };
     }
@@ -383,6 +385,7 @@ function ModalEditTaskProcess(props) {
 
     // Các hàm cho nút export, import, download BPMN
     const downloadAsSVG = () => {
+        console.log(modeler);
         modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
@@ -441,21 +444,21 @@ function ModalEditTaskProcess(props) {
             var DOMURL = window.URL || window.webkitURL || window;
 
             var img = new Image();
+            img.crossOrigin = "anonymous";
             var svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
             var url = DOMURL.createObjectURL(svgBlob);
-
+            img.src = url;
+            // console.log(canvas);
+            // console.log(canvas.toDataURL());
+            ctx.drawImage(img, 0, 0);
             img.onload = function () {
-
                 DOMURL.revokeObjectURL(url);
-                ctx.drawImage(img, 0, 0);
-                var imgURI = canvas
-                    .toDataURL('image/png')
-                    .replace('image/png', 'image/octet-stream');
+                // console.log(canvas);
+                // console.log(canvas.toDataURL());
+                var imgURI = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
 
                 triggerDownload(imgURI);
             };
-
-            img.src = url;
         });
     }
 

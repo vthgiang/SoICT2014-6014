@@ -619,7 +619,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.type")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-type-receipt-create`}
@@ -656,7 +656,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.stock")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-stock-bill-receipt-create-${purchaseOrderId}`}
@@ -672,7 +672,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.supplier")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-customer-receipt-create-${purchaseOrderId}`}
@@ -701,7 +701,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.approved")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-approver-bill-receipt-create`}
@@ -717,7 +717,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.users")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-accountables-bill-receipt-create`}
@@ -735,7 +735,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.qualityControlStaffs")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-qualityControlStaffs-bill-receipt-create`}
@@ -751,7 +751,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.accountables")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-responsibles-bill-receipt-create`}
@@ -774,14 +774,14 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.name")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={name} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.phone")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="number" className="form-control" value={phone} onChange={handlePhoneChange} />
                                 </div>
@@ -790,14 +790,14 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.email")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={email} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.address")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
                                 </div>

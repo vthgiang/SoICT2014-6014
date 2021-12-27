@@ -214,7 +214,7 @@ function QuantityLotGoodIssueEdit(props) {
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
-                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
+                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`select-lot-issue-edit-by-${group}`}
                                 className="form-control select2"

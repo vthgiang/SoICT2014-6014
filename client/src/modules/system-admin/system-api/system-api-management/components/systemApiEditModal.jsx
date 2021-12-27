@@ -51,9 +51,9 @@ function SystemApiEditModal(props) {
 
     const handleSubmit = () => {
         props.editSystemApi(id, {
-            path: path, 
-            method: method, 
-            description: description, 
+            path: path,
+            method: method,
+            description: description,
         })
         window.$("#edit-system-api-modal").modal("hide");
     }
@@ -82,7 +82,7 @@ function SystemApiEditModal(props) {
                         <SelectBox
                             id={`method-create-system-api`}
                             className="form-control select2"
-                            style={{width: "100%"}}
+                            style={{ width: "100%" }}
                             items={[
                                 {
                                     text: 'GET',
@@ -124,8 +124,8 @@ function SystemApiEditModal(props) {
 }
 
 function mapState(state) {
-    const {  } = state;
-    return {  };
+    const { } = state;
+    return {};
 }
 
 const actionCreators = {

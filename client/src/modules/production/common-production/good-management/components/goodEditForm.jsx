@@ -291,7 +291,7 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.code")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <input type="text" className="form-control" value={code} onChange={handleCodeChange} />
                                 <ErrorLabel content={errorOnCode} />
@@ -299,7 +299,7 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.baseUnit")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <input type="text" className="form-control" value={baseUnit} onChange={handleBaseUnitChange} />
                                 <ErrorLabel content={errorOnBaseUnit} />
@@ -310,7 +310,7 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.name")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <input type="text" className="form-control" value={name} onChange={handleNameChange} />
                                 <ErrorLabel content={errorOnName} />
@@ -318,7 +318,7 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.category")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <TreeSelect data={dataSelectBox} value={category} handleChange={handleCategoryChange} mode="hierarchical" />
                                 <ErrorLabel content={errorOnCategory} />
@@ -328,7 +328,7 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>
                                 <label>
                                     {"Giá một đơn vị tính cơ bản"}
-                                    <span className="attention"> </span>
+                                    <span className="text-red"> </span>
                                 </label>
                                 <input
                                     type="number"
@@ -342,7 +342,7 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!errorOnNumberExpirationDate ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.numberExpirationDate")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <input type="number" className="form-control" value={numberExpirationDate} onChange={handleNumberExpirationDateChange} />
                                 <ErrorLabel content={errorOnNumberExpirationDate} />
@@ -352,7 +352,7 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
                                 <label>
                                     {"Phương sai giá bán"}
-                                    <span className="attention"> </span>
+                                    <span className="text-red"> </span>
                                 </label>
                                 <input
                                     type="number"

@@ -103,7 +103,6 @@ export function systemApis (state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listPaginateApi: action.payload
             };
         case SystemApiConstants.UPDATE_AUTO_SYSTEM_API_FAILURE:
             return {
