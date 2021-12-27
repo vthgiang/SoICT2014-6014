@@ -1,10 +1,8 @@
 .StyleScrollDiv{
-	width: 100%;
 	overflow: auto;
 }
 
 .StyleScrollDiv.StyleScrollDiv-y {
-	width: 100%;
 	overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -40,8 +38,8 @@ Di chuột ra ngoài thì ẩn scroll bar
 */
 .StyleScrollDiv::-webkit-scrollbar-track
 {
-	border-radius: 8px;
-	background-color: #ffffff;
+	border-radius: inherit;
+	background-color: #e2e0ff;
 	bottom: 0px;
 }
 
@@ -49,11 +47,12 @@ Di chuột ra ngoài thì ẩn scroll bar
 {
 	width: 8px;
 	height: 8px;
-	background-color: #ffffff;
+	border-radius: inherit;
+	background-color: #e2e0ff;
 }
 
 .StyleScrollDiv::-webkit-scrollbar-thumb
 {
-	border-radius: 8px;
-	background-color: #ffffff;
+	border-radius: inherit;
+	background-color: #e2e0ff;
 }
