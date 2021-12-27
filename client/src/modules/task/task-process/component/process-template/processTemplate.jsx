@@ -488,6 +488,7 @@ function ProcessTemplate(props) {
                 <table className="table table-bordered table-striped table-hover" id={tableId}>
                     <thead>
                         <tr>
+                            <th title={translate('task.task_template.process_template_name')}>{translate('task_template.tasktemplate_name')}</th>
                             <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
                             <th title={translate('task_template.description')}>{translate('task_template.description')}</th>
                             <th title={translate('task.task_process.num_task')}>{translate('task.task_process.num_task')}</th>

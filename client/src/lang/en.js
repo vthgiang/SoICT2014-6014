@@ -3585,6 +3585,8 @@ export default {
                 view_task_process_template: "View task process template",
                 import_task_template_success: "Import task template success",
                 import_task_template_failure: "Import task template failure",
+                select_task_process_template:"Select taskprocess template",
+                process_template_name:"Process template name",
             },
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
