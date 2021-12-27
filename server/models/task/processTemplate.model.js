@@ -180,6 +180,38 @@ const ProcessTemplateSchema = new Schema({
             ],
         },
     ],
+    processTemplates:[
+        {
+            process:{
+                type: Schema.Types.ObjectId,
+                ref: "ProcessTemplate",
+            },
+            code:{
+                type: String,
+            },
+            preceedingTasks: [
+                {
+                    task: {
+                        type: String,
+                    },
+                    link: {
+                        type: String,
+                    },
+                },
+            ],
+            followingTasks: [
+                {
+                    task: {
+                        type: String,
+                    },
+                    link: {
+                        type: String,
+                    },
+                },
+            ],
+        }
+    ]
+    ,
     numberOfUse: {
         type: Number,
         default: 0,
