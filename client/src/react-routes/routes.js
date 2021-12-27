@@ -2961,12 +2961,12 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"time-sheet-log/all"}
+                        key={"/time-sheet-log/all"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
                                 link: "/time-sheet-log/all",
-                                name: "employee-time-sheet-log",
+                                name: "employee_time_sheet_log",
                                 icon: "fa fa-newspaper-o",
                             },
                         ]}
@@ -2974,7 +2974,7 @@ class Routes extends Component {
                         exact={true}
                         link={"/time-sheet-log/all"}
                         path={"/time-sheet-log/all"}
-                        pageName={"employee-time-sheet-log"}
+                        pageName={"employee_time_sheet_log"}
                         layout={Layout}
                         component={EmployeeTimeSheetLog}
                     />

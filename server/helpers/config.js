@@ -663,7 +663,7 @@ const LINKS = [{
 }, 
 {
     url: "/time-sheet-log/all",
-    description: "Thống kê thời gian số lượng công việc và thời gian bấm giờ của toàn bộ nhân sự",
+    description: "Thống kê thời gian số lượng công việc và thời gian bấm giờ của toàn bộ nhân viên",
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,

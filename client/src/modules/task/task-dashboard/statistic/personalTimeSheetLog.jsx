@@ -48,17 +48,6 @@ function PersonalTimeSheetLog(props) {
        props.getTimeSheetOfUser(getStorage('userId'), month, year, requireActions);
     }, [])
 
-    const convertType = (value) => {
-        // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
-        if (value == 1) {
-            return "Bấm giờ"
-        } else if (value == 2) {
-            return "Bấm hẹn giờ"
-        } else {
-            return "Bấm bù giờ"
-        }
-    }
-
     const handleChangeMonthTimeSheetLog = (value) => {
         setState({
             ...state,

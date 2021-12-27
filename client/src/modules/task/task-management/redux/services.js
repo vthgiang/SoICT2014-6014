@@ -471,11 +471,11 @@ function getTimeSheetOfUser(userId, month, year, requireActions) {
 }
 
 
-function getAllUserTimeSheet(month, year) {
+function getAllUserTimeSheet(month, year, limit, page) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/time-sheet/all`,
         method: 'GET',
-        params: { month, year }
+        params: { month, year, limit, page }
     }, false, true, 'task.task_management');
 }
 

@@ -5,59 +5,48 @@ import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../task-management/redux/actions';
 
 import { DatePicker } from '../../../../common-components';
-import dayjs from 'dayjs';
 
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 import parse from 'html-react-parser';
+import { PaginateBar, DataTableSetting } from '../../../../common-components/index';
 function EmployeeTimeSheetLog(props) {
     const { tasks, translate } = props;
     console.log("props: ", props);
 
     const [state, setState] = useState(initState())
     function initState() {
-
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
         let endMonth;
-
         if (month < 10) {
             endMonth = '0' + month;
         } else {
             endMonth = month;
         }
-
         const INFO_SEARCH = {
             endMonthTitle: [endMonth, year].join('-'),
         }
-
         return {
             type: 'status',
             monthTimeSheetLog: INFO_SEARCH.endMonthTitle,
         }
+        
     }
 
+    let { allTimeSheetLogs } = tasks; // Thống kê bấm giờ
+    console.log("--time", allTimeSheetLogs);
     const { monthTimeSheetLog } = state;
 
     useEffect(() => {
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear(),
-            requireActions = true;
-       props.getTimeSheetOfUser(getStorage('userId'), month, year, requireActions);
+            limit = 15,
+            page = 1;
+        props.getAllUserTimeSheet(month, year, limit, page);
     }, [])
-
-    const convertType = (value) => {
-        // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
-        if (value == 1) {
-            return "Bấm giờ"
-        } else if (value == 2) {
-            return "Bấm hẹn giờ"
-        } else {
-            return "Bấm bù giờ"
-        }
-    }
 
     const handleChangeMonthTimeSheetLog = (value) => {
         setState({
@@ -66,46 +55,27 @@ function EmployeeTimeSheetLog(props) {
         });
     }
 
-    const getUserTimeSheetLogs = () => {
+    const getAllUserTimeSheetLogs = () => {
         let { monthTimeSheetLog } = state;
         if (monthTimeSheetLog) {
             let d = monthTimeSheetLog.split('-');
             let month = d[0];
             let year = d[1];
-            let userId = getStorage('userId');
-            let requireActions = true;
-            props.getTimeSheetOfUser(userId, month, year, requireActions);
+            let limit = 15, page = 1;
+            props.getAllUserTimeSheet( month, year, limit, page);
         }
     }
 
-    const getTotalTimeSheet = (ts) => {  // Tính tổng thời gian bấm giờ trong tháng
-        console.log("ts", ts);
-        let total = 0;
-        for (let task of ts) {
-            for (let action of task.taskActions) {
-                for (let tsl of action.timesheetLogs) {
-                    if (tsl.acceptLog) total+= tsl.duration;
-                }
-            }
+    const handlePaginationAllTimeSheetLogs = (page) => {
+        let { monthTimeSheetLog } = state;
+        if (monthTimeSheetLog) {
+            let d = monthTimeSheetLog.split('-');
+            let month = d[0];
+            let year = d[1];
+            let limit = 15;
+            props.getAllUserTimeSheet( month, year, limit, page);
         }
-        return convertTime(total);
     }
-
-    // Tìm tổng thời gian bấm giờ của bấm giờ
-    // type= 1: tắt bấm giờ bằng tay, 2: bấm hẹn giờ, 3: bấm bù giờ
-    const getTotalTimeSheetByType = (task, type) => {
-        let total = 0;
-        for (let action of task.taskActions) {
-            for (let tsl of action.timesheetLogs) {
-                if (tsl.acceptLog && tsl.autoStopped === type) total+= tsl.duration;
-            }
-        }
-        return convertTime(total);
-    }
-
-    let { userTimeSheetLogs } = tasks; // Thống kê bấm giờ
-
-
 
     return (
         <React.Fragment>
@@ -126,63 +96,51 @@ function EmployeeTimeSheetLog(props) {
                             disabled={false}
                         />
                     </div>
-                    <button className="btn btn-primary" onClick={getUserTimeSheetLogs}>Thống kê</button>
+                    <button className="btn btn-primary" onClick={getAllUserTimeSheetLogs}>Thống kê</button>
                 </div>
-
+            </div>
+            <div className="box-body qlcv">
                 <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
                     <thead>
                         <tr>
-                            <th style={{ width: 80 }}>STT</th>
-                            <th style={{ width: 130 }}>Họ và tên</th>
+                            <th style={{ textAlign: 'center' }}>STT</th>
+                            <th style={{ width: 180 }}>Họ và tên</th>
                             <th style={{ textAlign: 'center' }}>Số CV thực hiện</th>
                             <th style={{ textAlign: 'center' }}>Số CV phê duyệt</th>
                             <th style={{ textAlign: 'center' }}>Số CV quan sát</th>
                             <th style={{ textAlign: 'center' }}>Số CV tư vấn</th>
-                            <th style={{ textAlign: 'center' }}>Tổng số CV thực hiện</th>
+                            <th style={{ textAlign: 'center' }}>Tổng số CV</th> 
                             <th style={{ textAlign: 'center' }}>Tổng thời gian bấm giờ</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            userTimeSheetLogs.map((task, taskIndex) => {
-                                return (<>
-                                    <tr key={taskIndex}>
-                                        <td rowSpan={ task.taskActions.length + 2}>{taskIndex + 1}</td>
-                                        <td rowSpan={ task.taskActions.length + 2} style={{color: '#0c5c8a', fontWeight: 'bold'}}>{task.name}</td>
+                            allTimeSheetLogs?.docs?.map((tsl, index) => {
+                                if (tsl.active == true)
+                                return (
+                                    <tr key={index}>
+                                        <td style={{ textAlign: 'center' }}>{index + 1}</td>
+                                        <td><a>{tsl.name}</a></td>
+                                        <td style={{ textAlign: 'center' }}>{tsl.countResponsibleTasks}</td>
+                                        <td style={{ textAlign: 'center' }}>{tsl.countAccountableTasks}</td>
+                                        <td style={{ textAlign: 'center' }}>{tsl.countInformedTasks}</td>
+                                        <td style={{ textAlign: 'center' }}>{tsl.countConsultedTasks}</td>
+                                        <td style={{ textAlign: 'center' }}>{tsl.totalTasks}</td>
+                                        <td style={{ textAlign: 'center' }}>{convertTime(tsl.totalDuration)}</td>
                                     </tr>
-                                    {
-                                        task.taskActions.map((action, actionIndex) => {
-                                            let sum = [0,0,0,0];
-                                            for (let tsl of action.timesheetLogs) {
-                                                if (tsl.acceptLog)
-                                                    sum[tsl.autoStopped]+= tsl.duration;
-                                                console.log("sum", sum);
-                                            }
-                                            return (
-                                                <tr key = {actionIndex}>
-                                                    <td>{ parse(action.description) }</td>
-                                                    <td style={{ textAlign: 'center' }}>{convertTime(sum[1])}</td>
-                                                    <td style={{ textAlign: 'center' }}>{convertTime(sum[2])}</td>
-                                                    <td style={{ textAlign: 'center' }}>{convertTime(sum[3])}</td>
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                    {
-                                        <tr>
-                                            <td style={{ textAlign: 'right', color: '#0c5c8a'}}>Tổng thời gian</td>
-                                            <td style={{ textAlign: 'center', color: '#0c5c8a'}}>{getTotalTimeSheetByType(task, 1)}</td>
-                                            <td style={{ textAlign: 'center', color: '#0c5c8a' }}>{getTotalTimeSheetByType(task, 2)}</td>
-                                            <td style={{ textAlign: 'center', color: '#0c5c8a' }}>{getTotalTimeSheetByType(task, 3)}</td>
-                                        </tr>
-                                        
-                                    }
-                                    {<tr></tr>}
-                                </>)
+                                )
                             })
                         }
                     </tbody>
                 </table>
+
+                <PaginateBar
+                    display={allTimeSheetLogs ? allTimeSheetLogs?.docs?.length : 0 }
+                    total={allTimeSheetLogs ? allTimeSheetLogs.totalDocs : 0 }
+                    pageTotal={allTimeSheetLogs ? allTimeSheetLogs.totalPages : 0}
+                    currentPage={allTimeSheetLogs ? allTimeSheetLogs.page : 1 }
+                    func={handlePaginationAllTimeSheetLogs}
+                />
             </div>
             </div>
             </div>
@@ -197,7 +155,7 @@ function mapState(state) {
     return { tasks };
 }
 const actionCreators = {
-    getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser,
+    getAllUserTimeSheet: taskManagementActions.getAllUserTimeSheet,
 };
 
 export default connect(mapState, actionCreators)(withTranslate(EmployeeTimeSheetLog));
