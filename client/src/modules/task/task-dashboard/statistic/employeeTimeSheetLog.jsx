@@ -110,7 +110,10 @@ function EmployeeTimeSheetLog(props) {
                             <th style={{ textAlign: 'center' }}>Số CV quan sát</th>
                             <th style={{ textAlign: 'center' }}>Số CV tư vấn</th>
                             <th style={{ textAlign: 'center' }}>Tổng số CV</th> 
-                            <th style={{ textAlign: 'center' }}>Tổng thời gian bấm giờ</th>
+                            <th style={{ textAlign: 'center' }}>Bấm giờ</th>
+                            <th style={{ textAlign: 'center' }}>Bấm hẹn giờ</th>
+                            <th style={{ textAlign: 'center' }}>Bấm bù giờ</th>
+                            <th style={{ textAlign: 'center' }}>Tổng thời gian</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -126,7 +129,12 @@ function EmployeeTimeSheetLog(props) {
                                         <td style={{ textAlign: 'center' }}>{tsl.countInformedTasks}</td>
                                         <td style={{ textAlign: 'center' }}>{tsl.countConsultedTasks}</td>
                                         <td style={{ textAlign: 'center' }}>{tsl.totalTasks}</td>
-                                        <td style={{ textAlign: 'center' }}>{convertTime(tsl.totalDuration)}</td>
+                                        <td style={{ textAlign: 'center' }}>{convertTime(tsl.totalDuration[1])}</td>
+                                        <td style={{ textAlign: 'center' }}>{convertTime(tsl.totalDuration[2])}</td>
+                                        <td style={{ textAlign: 'center' }}>{convertTime(tsl.totalDuration[3])}</td>
+                                        <td style={{ textAlign: 'center' }} className="col-sort">
+                                            {convertTime(tsl.totalDuration[1] + tsl.totalDuration[2] + tsl.totalDuration[3] )}
+                                        </td>
                                     </tr>
                                 )
                             })

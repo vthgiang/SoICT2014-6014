@@ -2983,7 +2983,7 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions, l
             countConsultedTasks: 0,
             countInformedTasks: 0,
             totalTasks: 0,
-            totalDuration: 0
+            totalDuration: [0, 0, 0, 0] // 1: Bấm giờ, 2: Bấm hẹn giờ, 3: Bấm bù giờ
         }))
 
         for (let employee of listEmployee.docs) {
@@ -3020,7 +3020,7 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions, l
 
                 for (let a of task.timesheetLogs) {
                     if (a.acceptLog == true && beginOfMonth <= a.startedAt && a.startedAt <= endOfMonth && a.creator.toString() == employee._id.toString()) {
-                        employee.totalDuration+= a.duration;
+                        employee.totalDuration[a.autoStopped] += a.duration;
                     }
                 }
                 employee.totalTasks+= hasTask;
