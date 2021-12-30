@@ -280,8 +280,8 @@ function UnitCreateForm(props) {
 
             html: `<h3 style="color: red"><div>Đơn vị tính</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <p>Đơn vị quy đổi từ đơn vị cơ bản
-            Ví dụ : đơn vị tính cơ bản chiếc
+            <p>Đơn vị quy đổi từ đơn vị cơ bản</p>
+            <p>Ví dụ : đơn vị tính cơ bản chiếc
             Đơn vị quy đổi : Hộp
             1 Hộp = 20 chiếc.</b></p>`,
             width: "50%", 
