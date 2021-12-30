@@ -1,21 +1,22 @@
-import React, { Component, Fragment, useEffect, useState } from 'react';
+import React, { Component, Fragment, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { taskManagementActions } from '../../task-management/redux/actions';
-
 import { DatePicker } from '../../../../common-components';
-
 import { convertTime } from '../../../../helpers/stringMethod';
-import { getStorage } from '../../../../config';
-import parse from 'html-react-parser';
-import { PaginateBar, DataTableSetting } from '../../../../common-components/index';
+import { PaginateBar, DataTableSetting, ExportExcel } from '../../../../common-components/index';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+
 function EmployeeTimeSheetLog(props) {
+
+    console.log("__render");
     const { tasks, translate } = props;
-    console.log("props: ", props);
 
     const [state, setState] = useState(initState())
     function initState() {
+        const defaultConfig = { limit: 15 }
+        const allTimeSheetLogsId = "all-time-sheet-logs"
+        const perPage = getTableConfiguration(allTimeSheetLogsId, defaultConfig).limit;
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
@@ -31,20 +32,60 @@ function EmployeeTimeSheetLog(props) {
         return {
             type: 'status',
             monthTimeSheetLog: INFO_SEARCH.endMonthTitle,
+            limit: perPage,
+            page: 1,
         }
         
     }
 
+    let { monthTimeSheetLog, limit, page } = state;
     let { allTimeSheetLogs } = tasks; // Thống kê bấm giờ
-    console.log("--time", allTimeSheetLogs);
-    const { monthTimeSheetLog } = state;
+
+    let dataExport = {
+        fileName: `${"Thống kê công việc nhân viên"} ${state.monthTimeSheetLog}`,
+        dataSheets: [
+            {
+                sheetTitle: `${'Thống kê công việc nhân viên'} ${state.monthTimeSheetLog}`,
+                sheetName: `${'Thống kê công việc nhân viên'}`,
+                sheetTitleWidth: 11,
+                tables: [
+                    {
+                        columns: [
+                            {key: 'STT', value: 'STT', width: 7},
+                            {key: 'name', value: 'Họ và tên', width: 30, horizontal:'left'},
+                            {key: 'countResponsibleTasks', value: 'Số CV thực hiện', width: 15},
+                            {key: 'countAccountableTasks', value: 'Số CV phê duyệt', width: 15},
+                            {key: 'countInformedTasks', value: 'Số CV quan sát', width: 15},
+                            {key: 'countConsultedTasks', value: 'Số CV tư vấn', width: 15},
+                            {key: 'totalTasks', value: 'Tổng số CV', width: 15},
+                            {key: 'totalDuration_1', value: 'Bấm giờ', width: 15},
+                            {key: 'totalDuration_2', value: 'Bấm hẹn giờ', width: 15},
+                            {key: 'totalDuration_3', value: 'Bấm bù giờ', width: 15},
+                            {key: 'totalDuration', value: 'Tổng thời gian', width: 15},
+                        ],
+                        data: allTimeSheetLogs?.docs?.map((tsl, index) => ({
+                            STT: index + 1,
+                            name: tsl.name ? tsl.name : '...',
+                            countResponsibleTasks: tsl.countResponsibleTasks,
+                            countAccountableTasks: tsl.countAccountableTasks,
+                            countInformedTasks: tsl.countInformedTasks,
+                            countConsultedTasks: tsl.countConsultedTasks,
+                            totalTasks: tsl.totalTasks,
+                            totalDuration_1: convertTime(tsl.totalDuration[1]),
+                            totalDuration_2: convertTime(tsl.totalDuration[2]),
+                            totalDuration_3: convertTime(tsl.totalDuration[3]),
+                            totalDuration: convertTime(tsl.totalDuration[1] + tsl.totalDuration[2] + tsl.totalDuration[3])
+                        }))
+                    }
+                ]
+            }
+        ]
+    }
 
     useEffect(() => {
         let d = new Date(),
             month = d.getMonth() + 1,
-            year = d.getFullYear(),
-            limit = 15,
-            page = 1;
+            year = d.getFullYear();
         props.getAllUserTimeSheet(month, year, limit, page);
     }, [])
 
@@ -61,7 +102,6 @@ function EmployeeTimeSheetLog(props) {
             let d = monthTimeSheetLog.split('-');
             let month = d[0];
             let year = d[1];
-            let limit = 15, page = 1;
             props.getAllUserTimeSheet( month, year, limit, page);
         }
     }
@@ -72,8 +112,26 @@ function EmployeeTimeSheetLog(props) {
             let d = monthTimeSheetLog.split('-');
             let month = d[0];
             let year = d[1];
-            let limit = 15;
+            setState({
+                ...state,
+                page: page
+            })
             props.getAllUserTimeSheet( month, year, limit, page);
+        }
+    }
+    
+    const setRowLimit = (limit) => {
+        let { monthTimeSheetLog } = state;
+        if (monthTimeSheetLog) {
+            let d = monthTimeSheetLog.split('-');
+            let month = d[0];
+            let year = d[1];
+            setState({
+                ...state,
+                page: 1,
+                limit: limit
+            })
+            props.getAllUserTimeSheet( month, year, limit, 1);
         }
     }
 
@@ -97,7 +155,18 @@ function EmployeeTimeSheetLog(props) {
                         />
                     </div>
                     <button className="btn btn-primary" onClick={getAllUserTimeSheetLogs}>Thống kê</button>
+                    <ExportExcel 
+                        id="export-excel" 
+                        style={{right: 0}} 
+                        exportData={dataExport}
+                    />
                 </div>
+            </div>
+            <div className="box-body qlcv">
+                <DataTableSetting
+                    tableId={"all-time-sheet-logs"}
+                    setLimit={setRowLimit}
+                />
             </div>
             <div className="box-body qlcv">
                 <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
