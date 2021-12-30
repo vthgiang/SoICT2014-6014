@@ -1,17 +1,17 @@
-const { backup, restore } = require("../../../helpers/dbHelper");
+const { backup, restore, versionName } = require("../../../helpers/dbHelper");
 const { connect } = require("../../../helpers/dbHelper");
 const { time } = require('cron');
 const fs = require('fs');
 const exec = require('child_process').exec;
 const { Configuration } = require(`../../../models`);
 
-exports.getBackups = async () => {
+exports.getBackups = () => {
     if (!fs.existsSync(`${SERVER_BACKUP_DIR}/all`)) {
         fs.mkdirSync(`${SERVER_BACKUP_DIR}/all`, {
             recursive: true
         });
     };
-    const list = await fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
+    const list = fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
 
     const backupedList = [];
     list.forEach(dir => {

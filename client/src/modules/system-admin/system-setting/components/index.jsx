@@ -125,8 +125,8 @@ function SystemSetting(props) {
                             </button>
                             <button className="btn btn-success pull-right"
                                     onClick={handleAddFile}
-                                    title="Thêm file sao lưu ">
-                                Thêm file sao lưu phục hồi
+                                    title="Thêm file sao lưu phục hồi">
+                                Thêm file
                             </button>
                         </div>
                         <div className="box-body">

@@ -15,8 +15,8 @@ const versionName = () => {
 
 /**
  * Tạo thư mục nếu thư mục chưa tồn tại
- * @param {*} path 
- * @returns 
+ * @param {*} path
+ * @returns
  */
 const checkDirectory = (path) => {
     if (!fs.existsSync(path)) {
@@ -30,7 +30,7 @@ const checkDirectory = (path) => {
 
 /**
  * Hàm kiểm tra và chuyển kết nối cơ sở dữ liệu
- * @param {*} db kết nối đang được sử dụng đến cơ sở dữ liệu 
+ * @param {*} db kết nối đang được sử dụng đến cơ sở dữ liệu
  * @param {*} portal db muốn chuyển
  */
 exports.connect = (db, portal) => {
@@ -43,7 +43,7 @@ exports.connect = (db, portal) => {
 
 /**
  * Hàm khởi tạo models nếu chưa tồn tại
- * @param {*} db kết nối đến cơ sở dữ liệu nào đó 
+ * @param {*} db kết nối đến cơ sở dữ liệu nào đó
  * @param {*} models các models được khai báo trong thư mục models
  */
 exports.initModels = (db, models) => {
@@ -76,14 +76,14 @@ exports.restore = async (options) => {
 
             return {
                 delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
-                new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
+                new: `copy -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && copy -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
             }
         }
         else { // Restore file cho toàn hệ thống
             checkDirectory(`${SERVER_DIR}`);
             return {
                 delete: `rm -rf ${SERVER_DIR}/upload`,
-                new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload ${SERVER_DIR}`
+                new: `copy -r ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload ${SERVER_DIR}`
             }
         }
     }
@@ -137,6 +137,8 @@ exports.backup = async (options) => {
     const command = commandBackupDB(options);
 
     // 1. Backup database
+    console.log('command: ', command);
+
     await exec(command, (error, stdout, stderr) => {
         if (error !== null) console.log(error);
     });
@@ -148,19 +150,23 @@ exports.backup = async (options) => {
             checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
             checkDirectory(`${backupPath}/data/avatars`);
 
-            return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
+            return `copy -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && copy -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
         } else { // Backup file cho toàn hệ thống
             checkDirectory(`${SERVER_DIR}/upload`);
             checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/data/upload`);
 
-            return `cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/data/upload`;
+            return `copy -r ${SERVER_DIR}\\upload\\* ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload`;
         }
     }
 
     // 2. Backup file dữ liệu trong thư mục upload
     const commandBackupFile = getCommandBackupFile(options);
+
+    console.log('backup', commandBackupFile);
     await exec(commandBackupFile, (error, stdout, stderr) => {
         if (error) console.log(error);
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
     });
     const folderInfo = options.db ?
         fs.statSync(backupPath) :

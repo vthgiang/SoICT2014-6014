@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, UploadFile } from '../../../../common-components';
 
 import ValidationHelper from '../../../../helpers/validationHelper';
+import {SystemSettingActions} from "../redux/actions";
 
 function FileAddModal(props) {
     const [state, setState] = useState({
@@ -15,9 +16,6 @@ function FileAddModal(props) {
     });
 
     const { translate } = props;
-
-    const { id } = props;
-
     const {description, errorOnDiscFile } = state;
 
     const handleChangeFile = (value) => {
@@ -27,7 +25,6 @@ function FileAddModal(props) {
                 file: value[0].fileName,
                 urlFile: value[0].urlFile,
                 fileUpload: value[0].fileUpload
-
             })
         } else {
             setState({
@@ -61,15 +58,17 @@ function FileAddModal(props) {
     }
 
     const isFormValidated = () => {
-        const { name, description, number } = state;
-        let result = validateDiscFile(description, false);
-        return result;
+        const { description, file} = state;
+        return validateDiscFile(description, false) && file.match(/\.(zip)$/);
     }
 
     /** Bắt sự kiện submit form */
     const save = () => {
         if (isFormValidated()) {
-            return props.handleChange(state);
+            let formData = new FormData();
+            formData.append("description", description);
+            formData.append("files", state.fileUpload)
+            return props.uploadBackupFiles(formData);
         }
     }
 
@@ -90,12 +89,16 @@ function FileAddModal(props) {
                     </div>
                     {/* File đính kèm */}
                     <div className="form-group">
-                        <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
+                        <label htmlFor="file">File backup upload (Dạng .zip)</label>
                         <UploadFile onChange={handleChangeFile} />
                     </div>
                 </form>
             </DialogModal>
     );
 }
-const addModal = connect(null, null)(withTranslate(FileAddModal));
+
+const mapDispatchToProps = {
+    uploadBackupFiles: SystemSettingActions.uploadBackupFiles,
+}
+const addModal = connect(null, mapDispatchToProps)(withTranslate(FileAddModal));
 export { addModal as FileAddModal };
