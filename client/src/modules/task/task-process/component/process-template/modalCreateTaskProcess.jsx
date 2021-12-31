@@ -22,7 +22,7 @@ import './processDiagram.css'
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { AddProcessTemplate } from "./addProcessTemplateChild";
 import { ModalViewTaskProcess } from "./modalViewTaskProcess";
-import { ModalViewProcess } from "./viewProcessTemplateChild";
+import { ModalViewBpmnProcessTemplateChild } from "./viewBpmnProcessTemplateChild";
 
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
@@ -550,6 +550,7 @@ function ModalCreateTaskProcess(props) {
 	}
 
 	const handleDataProcessTempalte = async (value) => {
+		// console.log(value);
 		await setState({
 			...state,
 			dataProcessTask:value,
@@ -651,7 +652,7 @@ function ModalCreateTaskProcess(props) {
 		modeler.saveXML({ format: true }, function (err, xml) {
 			xmlStr = xml;
 		});
-		console.log('infooo', state);
+		// console.log('infooo', state);
 		await setState(state => {
 			let { info } = state;
 			for (let j in info) {
@@ -666,7 +667,7 @@ function ModalCreateTaskProcess(props) {
 								let incoming = elem.businessObject.incoming;
 								for (let x in incoming) {
 									let types = incoming[x].sourceRef.$type.split(":")
-									console.log(incoming[x].sourceRef.$type,types);
+									// console.log(incoming[x].sourceRef.$type,types);
 									if (types[1] === 'Process'){
 										info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
 											process: incoming[x].sourceRef.id,
@@ -718,7 +719,7 @@ function ModalCreateTaskProcess(props) {
 								let incoming = elem.businessObject.incoming;
 								for (let x in incoming) {
 									let types = incoming[x].sourceRef.$type.split(":")
-									console.log(incoming[x].sourceRef.$type,types);
+									// console.log(incoming[x].sourceRef.$type,types);
 									if (types[1] === 'Process'){
 										infoTemplate[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
 											process: incoming[x].sourceRef.id,
@@ -773,7 +774,7 @@ function ModalCreateTaskProcess(props) {
 			viewer: state.viewer,
 			creator: getStorage("userId")
 		}
-		console.log(data)
+		// console.log(data)
 		await props.createXmlDiagram(data)
 
 		// RESET FORM CREATE
@@ -808,7 +809,7 @@ function ModalCreateTaskProcess(props) {
 	if (role && role.list.length !== 0) listRole = role.list;
 	let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
 		.map(item => { return { text: item.name, value: item._id } });
-
+	// console.log(state.dataProcessTask);
 	return (
 		<React.Fragment>
 			<DialogModal
@@ -925,51 +926,52 @@ function ModalCreateTaskProcess(props) {
 												
 											{/* nút export, import diagram,... */}
 											{state.showProcessTemplate &&
-												<ModalViewProcess
+												<ModalViewBpmnProcessTemplateChild
 													idProcess={state.dataProcessTask._id}
 													tasks={state.dataProcessTask.tasks}
+													processTemplates={state.dataProcessTask.processTemplates}
 													processDescription={state.dataProcessTask.processDescription}
 													processName={state.dataProcessTask.processName}
 													viewer={state.dataProcessTask.viewer}
 													manager={state.dataProcessTask.manager}
 													xmlDiagram={state.dataProcessTask.xmlDiagram}
 													>
-												</ModalViewProcess>
+												</ModalViewBpmnProcessTemplateChild>
 											}
 											<div>
-											<div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
-												<button onClick={exportDiagram}>Export XML</button>
-												<button onClick={downloadAsSVG}>Save SVG</button>
-												<button onClick={downloadAsImage}>Save Image</button>
-												<button onClick={downloadAsBpmn}>Download BPMN</button>
-											</div>
-											
-											{/* phần vẽ biểu đồ */}
-											<div id={generateId}></div>
-											
-
-											{/* Nút zoom in, zoom out */}
-											<div className="row">
-												<div className="io-zoom-controls">
-													<ul className="io-zoom-reset io-control io-control-list">
-														<li>
-															<a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
-																<i className="fa fa-crosshairs"></i>
-															</a>
-														</li>
-														<li>
-															<a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
-																<i className="fa fa-plus"></i>
-															</a>
-														</li>
-														<li>
-															<a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
-																<i className="fa fa-minus"></i>
-															</a>
-														</li>
-													</ul>
+												<div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
+													<button onClick={exportDiagram}>Export XML</button>
+													<button onClick={downloadAsSVG}>Save SVG</button>
+													<button onClick={downloadAsImage}>Save Image</button>
+													<button onClick={downloadAsBpmn}>Download BPMN</button>
 												</div>
-											</div>
+												
+												{/* phần vẽ biểu đồ */}
+												<div id={generateId}></div>
+												
+
+												{/* Nút zoom in, zoom out */}
+												<div className="row">
+													<div className="io-zoom-controls">
+														<ul className="io-zoom-reset io-control io-control-list">
+															<li>
+																<a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
+																	<i className="fa fa-crosshairs"></i>
+																</a>
+															</li>
+															<li>
+																<a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
+																	<i className="fa fa-plus"></i>
+																</a>
+															</li>
+															<li>
+																<a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
+																	<i className="fa fa-minus"></i>
+																</a>
+															</li>
+														</ul>
+													</div>
+												</div>
 											</div>
 										</div>
 
@@ -999,7 +1001,7 @@ function ModalCreateTaskProcess(props) {
 
 												<AddProcessTemplate
 													id={id}
-													infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`]}
+													infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`]._id}
 													handleDataProcessTempalte={handleDataProcessTempalte}
 													setBpmnProcess={setBpmnProcess}
 													handleChangeName={handleChangeName} // cập nhật tên vào diagram
