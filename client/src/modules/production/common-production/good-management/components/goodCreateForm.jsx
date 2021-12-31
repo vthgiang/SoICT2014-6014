@@ -251,8 +251,8 @@ function GoodCreateForm(props) {
 
             html: `<h3 style="color: red"><div>Phương sai</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được.
-            /n Ví dụ: Phương sai 50,000 VNĐ, giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán được trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</b></p>`,
+            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được.</p>
+            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán được trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
             width: "50%", 
         })
     };
