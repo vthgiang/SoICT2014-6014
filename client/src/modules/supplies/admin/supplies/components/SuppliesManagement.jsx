@@ -6,6 +6,8 @@ import { DeleteNotification, PaginateBar, SmartTable } from "../../../../../comm
 import { getTableConfiguration } from "../../../../../helpers/tableConfiguration";
 import { SuppliesActions } from "../redux/actions";
 import { SuppliesCreateForm } from "./SuppliesCreateForm";
+import { SuppliesDetail } from "./SuppliesDetail";
+import { SuppliesEditForm } from "./SuppliesEditForm";
 
 const getSuppliesName = (listSupplies, idSupplies) => {
     let suppliesName;
@@ -41,7 +43,7 @@ function SuppliesManagement(props) {
     }
 
     const { suppliesReducer, translate, } = props;
-    const { page, limit, tableId, code, suppliesName, currentRow, } = state;
+    const { page, limit, tableId, code, suppliesName, currentRow, currentRowEdit } = state;
 
     useEffect(() => {
         props.searchSupplies(state);
@@ -101,6 +103,26 @@ function SuppliesManagement(props) {
             }
         })
 
+    }
+
+    // Bắt sự kiện click xem thông tin vật tư
+    const handleView = async (value) => {
+        await setState({
+            ...state,
+            currentRow: value
+        });
+        props.getSuppliesById(value._id);
+        window.$('#modal-view-supplies').modal('show');
+    }
+
+    // Bắt sự kiện click chỉnh sửa thông tin vat tu
+    const handleEdit = async (value) => {
+        await setState({
+            ...state,
+            currentRowEdit: value
+        });
+        props.getSuppliesById(value._id);
+        window.$('#modal-edit-supplies').modal('show');
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -195,8 +217,8 @@ function SuppliesManagement(props) {
                             totalAllocation: <td>{item.totalAllocation}</td>,
                             price: <th>{item.price}</th>,
                             action: <td style={{ textAlign: "center" }}>
-                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} ><i className="material-icons">visibility</i></a>
-                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} ><i className="material-icons">edit</i></a>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleView(item)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
                                 <DeleteNotification
                                     content={translate('asset.general_information.delete_info')}
                                     data={{
@@ -226,8 +248,34 @@ function SuppliesManagement(props) {
                     currentPage={currentPage}
                     func={setPage}
                 />
-
             </div>
+            {/* Form xem thông tin hóa đơn */}
+            {
+                currentRow &&
+                <SuppliesDetail
+                    _id={currentRow._id}
+                    code={currentRow.code}
+                    suppliesName={currentRow.suppliesName}
+                    price={currentRow.price}
+                    totalPurchase={currentRow.totalPurchase}
+                    totalAllocation={currentRow.totalAllocation}
+                />
+            }
+
+            {/* Form chỉnh sửa thông tin tài sản */}
+            {
+                currentRowEdit &&
+                <SuppliesEditForm
+                    _id={currentRowEdit._id}
+                    code={currentRowEdit.code}
+                    suppliesName={currentRowEdit.suppliesName}
+                    totalAllocation={currentRowEdit.totalAllocation}
+                    totalPurchase={currentRowEdit.totalPurchase}
+                    price={currentRowEdit.price}
+                    listPurchaseInvoice={suppliesReducer.listPurchaseInvoice}
+                    listAllocation={suppliesReducer.listAllocation}
+                />
+            }
         </div>
     );
 };
@@ -240,6 +288,7 @@ function mapState(state) {
 const actionCreators = {
     searchSupplies: SuppliesActions.searchSupplies,
     deleteSupplies: SuppliesActions.deleteSupplies,
+    getSuppliesById: SuppliesActions.getSuppliesById,
 };
 
 const connectedSuppliesManagement = connect(mapState, actionCreators)(withTranslate(SuppliesManagement));

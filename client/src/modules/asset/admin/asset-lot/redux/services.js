@@ -19,6 +19,7 @@ function getAllAssetLots(data) {
             url: `${process.env.REACT_APP_SERVER}/assetlot/asset-lots`,
             method: "GET",
             params: {
+                getAll: data ? data.getAll: data,
                 code: data ? data.code : data,
                 assetLotName: data ? data.assetLotName : data,
                 group: data ? data.group : data,

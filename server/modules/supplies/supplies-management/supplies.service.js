@@ -140,8 +140,8 @@ exports.updateSupplies = async (portal, company, id, data) => {
         updateAllocations,
         createAllocations,
     } = data;
-
-    let oldSupplies = await Supplies(connect(DB_CONNECTION), portal).findById(id);
+    let oldSupplies = await Supplies(connect(DB_CONNECTION, portal))
+        .findById(id);
     if (oldSupplies.code !== suppliesUpdate.code) {
         let checkSuppliesCode = await Supplies(connect(DB_CONNECTION), portal).findOne({
             code: suppliesUpdate.code
@@ -181,7 +181,6 @@ exports.updateSupplies = async (portal, company, id, data) => {
             supplies: id
         }
     });
-
     //thêm, sửa, xóa hóa đơn
     await PurchaseInvoiceService.createPurchaseInvoices(portal, createInvoices);
     await PurchaseInvoiceService.deletePurchaseInvoices(portal, deleteInvoices);
@@ -224,6 +223,10 @@ exports.getSuppliesById = async (portal, id) => {
         .populate({ path: 'supplies' });
     let listAllocation = await AllocationHistory(connect(DB_CONNECTION, portal))
         .find({ supplies: mongoose.Types.ObjectId(id) })
-        .populate({ path: 'supplies' });
+        .populate([
+            { path: "supplies" },
+            { path: "allocationToUser", select: "_id name email" },
+            { path: "allocationToOrganizationalUnit", select: "_id name" },
+        ]);
     return { supplies, listPurchaseInvoice, listAllocation }
 };

@@ -49,11 +49,16 @@ export function purchaseInvoiceReducer(state = initState, action) {
         case PurchaseInvoiceConstants.UPDATE_PURCHASE_INVOICE_REQUEST:
         case PurchaseInvoiceConstants.UPDATE_PURCHASE_INVOICE_SUCCESS:
             if (action.payload) {
+                let data = {
+                    ...action.payload.data,
+                    logs: action.payload.invoiceLog,
+                }
+                let listPurchaseInvoice = state.listPurchaseInvoice.filter(item => item._id !== data._id);
+                listPurchaseInvoice.unshift(data);
                 return {
                     ...state,
                     isLoading: false,
-                    listPurchaseInvoice: [...action.payload,
-                    state.listPurchaseInvoice.filter(item => item._id !== action.payload._id)]
+                    listPurchaseInvoice: listPurchaseInvoice
                 }
             } else {
                 return { ...state, isLoading: false }

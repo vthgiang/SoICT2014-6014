@@ -38,7 +38,7 @@ function createSupplies(data) {
 
 function updateSupplies(id, data) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/supplies/supplies/${id}}`,
+        url: `${process.env.REACT_APP_SERVER}/supplies/supplies/${id}`,
         method: 'PATCH',
         data: data,
     },

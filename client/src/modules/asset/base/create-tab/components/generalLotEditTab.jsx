@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
 import { saveListAssetsAction } from '../../../admin/asset-lot/redux/actions';
-import { AssetEditForm } from '../../../admin/asset-lot/components/assetEditForm';
+import { AssetEditForm } from '../../../admin/asset-lot/components/combinedContent';
 function GeneralLotEditTab(props) {
     const dispatch = useDispatch();
     let listAssets = useSelector(state => state.assetLotManager.listAssets);
@@ -40,7 +40,7 @@ function GeneralLotEditTab(props) {
         assignedToUser: null,
         assignedToOrganizationalUnit: null,
     })
-
+    
     // Function format dữ liệu Date thành string
     const formatDate = (date, monthYear = false) => {
         if (!date) return null;
@@ -372,7 +372,7 @@ function GeneralLotEditTab(props) {
             currentRow: value,
             currentIndex: index,
         });
-        window.$('#modal-edit-asset-in-lot').modal('show');
+        window.$('#modal-edit-asset-in-edit-lot').modal('show');
     }
 
     return (
@@ -478,8 +478,6 @@ function GeneralLotEditTab(props) {
             <div className="row" style={{ marginTop: '1rem' }}>
                 <div className='col-md-12'>
                     <label>{translate('asset.asset_lot.assets_information')}:
-                        {/* <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-save" style={{ color: "#28A745", marginLeft: 5 }}
-                            onClick={saveListAsset} /><span onClick={saveListAsset}>Lưu các giá trị vừa thay đổi</span></a> */}
                     </label>
                     {/* Bảng thông tin tài sản */}
 
@@ -513,7 +511,6 @@ function GeneralLotEditTab(props) {
                             action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                         }}
                         tableBodyData={listAssets?.length > 0 && listAssets.map((x, index) => {
-                            //console.log("hang x data:",x.assetType);
                             return {
                                 id: x?._id,
                                 index: <td>{index + 1}</td>,
@@ -530,7 +527,6 @@ function GeneralLotEditTab(props) {
                                 action: <td style={{ textAlign: "center" }}>
                                     <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(x, index)}><i className="material-icons">edit</i></a>
                                     <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(x, index)} ><i className="material-icons"></i></a>
-                                    {/* onClick={() => delete_function(index)} */}
                                 </td>
                             }
                         })}
@@ -554,6 +550,7 @@ function GeneralLotEditTab(props) {
                         <AssetEditForm
                             _id={currentRow._id}
                             index={currentIndex}
+                            edit={true}
                             employeeId={currentRow.managedBy}
                             avatar={currentRow.avatar}
                             code={currentRow.code}
@@ -598,6 +595,8 @@ function GeneralLotEditTab(props) {
                             files={currentRow.documents}
                             linkPage={"management"}
                             page={page}
+                            listAssets={listAssets}
+                            
                         />
                     }
                 </div>

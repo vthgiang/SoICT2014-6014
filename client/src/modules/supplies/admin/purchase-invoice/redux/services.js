@@ -27,7 +27,6 @@ function searchPurchaseInvoice(data) {
 }
 
 function createPurchaseInvoices(data) {
-    console.log("hang createPurchaseInvoices", data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/purchase-invoice/purchase-invoice`,
         method: 'POST',
@@ -46,7 +45,7 @@ function updatePurchaseInvoice(id, data) {
     },
     true,
     true,
-    'supplies.supplies_management');
+    'supplies.invoice_management');
 }
 
 function deletePurchaseInvoices(ids) {

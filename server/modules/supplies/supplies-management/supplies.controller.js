@@ -107,7 +107,7 @@ exports.searchSupplies = async (req, res) => {
  exports.getSuppliesById = async (req, res) => {
     try {
         let data;
-        data = await AssetLotService.getAssetLotInforById(req.portal, req.params.id);
+        data = await SuppliesService.getSuppliesById(req.portal, req.params.id);
         await Logger.info(req.user.email, 'GET_SUPPLIES_BY_ID', req.portal);
         res.status(200).json({
             success: true,

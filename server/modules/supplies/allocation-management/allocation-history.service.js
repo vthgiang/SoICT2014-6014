@@ -128,7 +128,7 @@ exports.updateAllocation = async (portal, id, data) => {
     oldAllocation.quantity = data.quantity;
     oldAllocation.allocationToOrganizationalUnit = data.allocationToOrganizationalUnit;
     oldAllocation.allocationToUser = data.allocationToUser;
-    oldAllocation.save();
+    await oldAllocation.save();
 
     let allocation = await AllocationHistory(connect(DB_CONNECTION, portal))
         .findById({ _id: oldAllocation._id })

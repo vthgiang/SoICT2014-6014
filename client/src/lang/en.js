@@ -2508,6 +2508,7 @@ export default {
                 start_depreciation: "Start date of depreciation",
                 end_depreciation: "End date of depreciation",
                 depreciation_type: "Depreciation type",
+                asset_lot: "Asset lot",
 
                 incident_code: "Incident code",
                 reported_by: "Announcer",
@@ -2531,6 +2532,8 @@ export default {
                 not_for_registering: "Not for registering",
                 register_by_hour: "Register by hour",
                 register_for_long_term: "Register for long term",
+                select_asset_lot: "Select asset lot",
+                select_all_asset_lot: "Select all asset lot",
 
                 create_reception_date: "Reception date",
                 select_reception_type: "Select reception type",

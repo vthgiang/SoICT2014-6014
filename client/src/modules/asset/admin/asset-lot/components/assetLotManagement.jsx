@@ -38,6 +38,7 @@ function AssetLotManagement(props) {
         assetLotName: "",
         supplier: "",
         group: "",
+        getAll: false,
         page: 0,
         limit: limit_constructor
     });

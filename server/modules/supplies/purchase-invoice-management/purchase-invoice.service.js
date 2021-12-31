@@ -116,6 +116,7 @@ exports.createPurchaseInvoices = async (portal, data) => {
  * @param {*} data 
  */
 exports.updatePurchaseInvoice = async (portal, id, data) => {
+    console.log("data",data);
     data = freshObject(data);
     let oldInvoice = await PurchaseInvoice(connect(DB_CONNECTION, portal)).findById(id);
 
@@ -130,14 +131,15 @@ exports.updatePurchaseInvoice = async (portal, id, data) => {
             throw ["purchase_invoice_code_exist"];
         }
     }
-
     oldInvoice.codeInvoice = data.codeInvoice;
     oldInvoice.supplies = data.supplies;
     oldInvoice.date = data.date;
     oldInvoice.supplier = data.supplier;
     oldInvoice.price = data.price;
     oldInvoice.quantity = data.quantity;
-    oldInvoice.save();
+    console.log("oldInvoice",oldInvoice);
+
+    await oldInvoice.save();
 
     let purchaseInvoice = await PurchaseInvoice(connect(DB_CONNECTION, portal))
         .findById({ _id: oldInvoice._id })

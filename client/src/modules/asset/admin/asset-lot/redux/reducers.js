@@ -29,7 +29,8 @@ const initState = {
         depreciationType: null,
     },
     // listAssetsDetail: [], // danh sách tài sản trong lô (dùng xem chi tiết)
-    currentRow: {}
+    currentRow: {},
+    listAssetCreates: [],
 }
 
 export function assetLotManager(state = initState, action) {
@@ -120,10 +121,18 @@ export function assetLotManager(state = initState, action) {
         case AssetLotConstants.GET_ASSET_LOT_INFOR_FAILURE:
 
         case AssetLotConstants.UPDATE_LIST_ASSETS_ACTION:
-            return {
-                ...state,
-                listAssets: action.listAssets,
+            if(action.edit){
+                return {
+                    ...state,
+                    listAssets: action.listAssets,
+                }
+            } else {
+                return {
+                    ...state,
+                    listAssetCreates: action.listAssets,
+                }
             }
+            
         case AssetLotConstants.UPDATE_ASSET_LOT_ACTION:
             return {
                 ...state,

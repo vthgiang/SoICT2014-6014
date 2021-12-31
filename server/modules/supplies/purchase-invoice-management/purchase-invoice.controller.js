@@ -67,7 +67,7 @@ exports.updatePurchaseInvoice = async (req, res) => {
         let oldInvoice = await PurchaseInvoiceService.getPurchaseInvoiceById(req.portal, req.params.id);
         let data = await PurchaseInvoiceService.updatePurchaseInvoice(req.portal, req.params.id, req.body);
         // Thêm lịch sử chỉnh sửa
-        let description = await PurchaseInvoiceService.createDescriptionEditInvoiceLogs(req.portal, req.user._id, data, oldInvoice);
+        let description = await PurchaseInvoiceService.createDescriptionEditInvoiceLogs(req.portal, req.user._id, data, oldInvoice.purchaseInvoice);
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
@@ -82,7 +82,7 @@ exports.updatePurchaseInvoice = async (req, res) => {
             messages: ["update_purchase_invoice_success"],
             content: {
                 data,
-                invoiceLog
+                invoiceLog,
             }
         });
     } catch (error) {

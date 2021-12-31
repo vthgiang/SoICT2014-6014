@@ -1,13 +1,12 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { ButtonModal } from '../../../../../common-components';
 import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AllocationAddModal } from './allocationAddModal';
 import { AllocationEditModal } from './allocationEditModal';
-
-import { PurchaseAddModal, PurchaseEditModal } from './combinedContent';
 
 function AllocationTab(props) {
     const [state, setState] = useState({
@@ -127,10 +126,12 @@ function AllocationTab(props) {
         <div id={id} className="tab-pane">
             <div className="box-body qlcv">
 
+                <ButtonModal modalID={`modal-create-allocation-tab-${id}`} button_name={translate('asset.general_information.add')} title={translate('supplies.general_information.add_allocation')} />
+
                 {/* Form thêm thông tin bảo trì */}
                 <AllocationAddModal
                     handleChange={handleAddAllocation}
-                    id={`addAllocation${id}`}
+                    id={`${id}`}
                 />
 
                 {/* Bảng hoa don */}

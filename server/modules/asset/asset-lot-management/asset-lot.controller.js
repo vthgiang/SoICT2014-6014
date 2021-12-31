@@ -8,6 +8,7 @@ exports.searchAssetLots = async (req, res) => {
     try {
         let data;
         let params = {
+            getAll: req.query.getAll,
             code: req.query.code,
             assetLotName: req.query.assetLotName,
             assetType: req.query.assetType,

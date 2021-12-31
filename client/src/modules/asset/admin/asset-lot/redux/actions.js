@@ -145,9 +145,10 @@ function getAssetLotInforById(id) {
  * 
  * action thay doi state reducer
  */
-export const saveListAssetsAction = (listAssets) => ({
+export const saveListAssetsAction = (listAssets, edit) => ({
     type: AssetLotConstants.UPDATE_LIST_ASSETS_ACTION, // dinh danh cho action
-    listAssets: listAssets
+    listAssets: listAssets,
+    edit: edit,
 })
 
 export const updateAssetLotAction = (assetLot) => ({

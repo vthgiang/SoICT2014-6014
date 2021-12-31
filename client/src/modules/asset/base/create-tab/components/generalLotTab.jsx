@@ -12,13 +12,12 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { saveListAssetsAction } from '../../../admin/asset-lot/redux/actions';
 import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
-import { AssetEditForm } from '../../../admin/asset-lot/components/assetEditForm';
+import { AssetInCreateForm, AssetEditForm } from '../../../admin/asset-lot/components/combinedContent';
 
 function GeneralLotTab(props) {
 
     const dispatch = useDispatch();
-    let listAssets = useSelector(state => state.assetLotManager.listAssets);
-    //console.log("hang general listAsset", listAssets);
+    let listAssets = useSelector(state => state.assetLotManager.listAssetCreates);
 
     const tableId_constructor = "table-asset-lot-create";
 
@@ -42,7 +41,6 @@ function GeneralLotTab(props) {
         status: '',
         typeRegisterForUse: '',
         code: "",
-        //listAssets: useSelector(state => state.assetLotManager.listAssets),
         page: 0,
         limit: limit_constructor,
 
@@ -69,13 +67,6 @@ function GeneralLotTab(props) {
         }));
         validateCode(code);
     }
-
-    // useEffect(() => {
-    //     window.$('#modal-add-asset-lot').on('shown.bs.modal', regenerateCode);
-    //     return () =>{
-    //         window.$('#modal-add-asset-lot').unbind('shown.bs.modal', regenerateCode)
-    //     }
-    // }, [])
 
     const convertGroupAsset = (group) => {
         const { translate } = props;
@@ -603,7 +594,8 @@ function GeneralLotTab(props) {
             currentRow: value,
             currentIndex: index,
         });
-        window.$('#modal-edit-asset-in-lot').modal('show');
+        console.log("hang modal-edit-asset-in-create-lot");
+        window.$('#modal-edit-asset-in-create-lot').modal('show');
     }
 
     /**
@@ -713,6 +705,7 @@ function GeneralLotTab(props) {
                                     autoComplete="off" />
                                 <ErrorLabel content={errorOnStep} />
                             </div>
+                            {/* button sinh tai san */}
                             <button type="button" disabled={!disabledGenButton} className="btn btn-success" onClick={generateAssetCode}>{translate('asset.asset_lot.generate_code')}</button>
                         </div>
 
@@ -824,7 +817,7 @@ function GeneralLotTab(props) {
                                 <label>{translate('system_admin.system_link.table.roles')}</label>
                                 <div>
                                     <SelectBox
-                                        id={`select-link-default-roles-${id}`}
+                                        id={`select-read-by-roles-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
@@ -834,7 +827,6 @@ function GeneralLotTab(props) {
                                     />
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -913,8 +905,8 @@ function GeneralLotTab(props) {
                     {/* Form chỉnh sửa thông tin tài sản */}
                     {
                         currentRow &&
-                        <AssetEditForm
-                            _id={currentRow._id}
+                        <AssetInCreateForm
+                            _id={currentRow.code}
                             index={currentIndex}
                             employeeId={managedBy}
                             avatar={currentRow.avatar}
@@ -935,7 +927,7 @@ function GeneralLotTab(props) {
                             status={currentRow.status}
                             typeRegisterForUse={currentRow.typeRegisterForUse}
                             detailInfo={currentRow.detailInfo}
-                            readByRoles={currentRow.readByRoles}
+                            readByRoles={getPropertyOfValue(currentRow.readByRoles, '_id', true, role.list)}
                             cost={currentRow.cost}
                             residualValue={currentRow.residualValue}
                             startDepreciation={currentRow.startDepreciation}
@@ -960,6 +952,8 @@ function GeneralLotTab(props) {
                             files={currentRow.documents}
                             linkPage={"management"}
                             page={page}
+                            listAssets={listAssets}
+                            edit={false}
                         />
                     }
                 </div>

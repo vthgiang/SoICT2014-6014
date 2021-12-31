@@ -10,6 +10,7 @@ import { SuppliesActions } from '../../supplies/redux/actions';
 import { PurchaseInvoiceActions } from '../redux/actions';
 import { PurchaseInvoiceCreateForm } from './PurchaseInvoiceCreateForm';
 import { PurchaseInvoiceDetail } from './PurchaseInvoiceDetail';
+import { PurchaseInvoiceEditFormditForm } from './PurchaseInvoiceEditForm';
 
 const getInvoiceName = (listInvoice, idInvoice) => {
     let invoiceName;
@@ -69,7 +70,7 @@ function PurchaseInvoiceManagement(props) {
     }
 
     const { purchaseInvoiceReducer, suppliesReducer, translate, user, } = props;
-    const { page, limit, tableId, currentRow, codeInvoice, supplies, date, supplier, } = state;
+    const { page, limit, tableId, currentRow, currentRowEdit, codeInvoice, supplies, date, supplier, } = state;
 
     useEffect(() => {
         props.searchPurchaseInvoice(state);
@@ -207,11 +208,11 @@ function PurchaseInvoiceManagement(props) {
     }
     // Bắt sự kiện click sửa thông tin hóa đơn
     const handleEdit = async (value) => {
-        // await setState({
-        //     ...state,
-        //     currentRow: value
-        // });
-        // window.$('#modal-view-purchase-invoice').modal('show');
+        await setState({
+            ...state,
+            currentRowEdit: value
+        });
+        window.$('#modal-edit-purchase-invoice').modal('show');
     }
 
     const getSupplies = () => {
@@ -374,6 +375,20 @@ function PurchaseInvoiceManagement(props) {
                     price={currentRow.price}
                     date={currentRow.date}
                     logs={currentRow.logs}
+                />
+            }
+
+            {
+                currentRowEdit &&
+                <PurchaseInvoiceEditFormditForm
+                    id={currentRowEdit.id}
+                    _id={currentRowEdit._id}
+                    codeInvoice={currentRowEdit.codeInvoice}
+                    supplies={getPropertyOfValue(currentRowEdit.supplies, '_id', true, suppliesList)}
+                    supplier={currentRowEdit.supplier}
+                    quantity={currentRowEdit.quantity}
+                    price={currentRowEdit.price}
+                    date={currentRowEdit.date}
                 />
             }
         </div>

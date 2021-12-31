@@ -53,8 +53,8 @@ export function suppliesReducer(state = initState, action) {
                 return {
                     ...state,
                     isLoading: false,
-                    listSupplies: [...action.payload,
-                    state.listSupplies.filter(item => item._id !== action.payload._id)]
+                    listSupplies: [action.payload,
+                    ...state.listSupplies.filter(item => item._id !== action.payload._id)]
                 }
             } else {
                 return { ...state, isLoading: false }

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { translate } from "react-redux-multilingual/lib/utils";
-import { parse } from "uuid";
+import parse from 'html-react-parser';
 import { ShowMoreShowLess } from "../../../../common-components";
 
 function InvoiceLogTab(props) {
@@ -31,7 +31,7 @@ function InvoiceLogTab(props) {
     } = state;
 
     return (
-        <div id={id} className="tab-pane active">
+        <div id={id} className="tab-pane">
             <div className="box-body" >
                 <div className="row" style={{ paddingRight: '0px', paddingLeft: '0px' }}>
                     {/* Thông tin cơ bản */}

@@ -83,11 +83,12 @@ function AllocationAddModal(props) {
 
     // Bắt sự kiện thay đổi "đơn vị đc cấp"
     const handleUnitChange = (e) => {
+        console.log("hang e",e);
         let value = e[0] !== 'null' ? e[0] : null;
-        setState({
-            ...state,
-            allocationToOrganizationalUnit: value,
-        });
+        // setState({
+        //     ...state,
+        //     allocationToOrganizationalUnit: value,
+        // });
     }
     const validateUnit = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
@@ -145,25 +146,21 @@ function AllocationAddModal(props) {
         return unitArr;
     }
 
-    var userList = user.list && user.list.map(x => {
-        return { value: x._id, text: x.name + " - " + x.email }
-    })
-    let departmentList = getDepartment();
+    var userlist = user.list, departmentlist = department.list;
 
     return (
         <React.Fragment>
             {/* Button thêm mới thong tin cap phat */}
-            <ButtonModal modalID={`modal-create-allocation-${id}`} button_name={translate('asset.general_information.add')} title={translate('supplies.general_information.add_allocation')} />
 
             <DialogModal
-                size='75' modalID={`modal-create-allocation-${id}`} isLoading={false}
-                formID={`form-create-allocation-${id}`}
-                title={translate('asset.asset_info.add_maintenance_card')}
+                size='75' modalID={`modal-create-allocation-tab-${id}`} isLoading={false}
+                formID={`form-create-allocation-tab-${id}`}
+                title={translate('supplies.general_information.add_allocation')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
                 {/* Form thêm mới thong tin cap phat */}
-                <form className="form-group" id={`form-create-allocation-${id}`}>
+                <form className="form-group" id={`form-create-allocation-tab-${id}`}>
                     <div className="col-md-12">
                         {/* Ngày cấp */}
                         <div className="form-group">
@@ -188,12 +185,12 @@ function AllocationAddModal(props) {
                         <div className="form-group">
                             <label>{translate('supplies.allocation_management.allocationToOrganizationalUnit')}</label>
                             <div>
-                                <div id="unitBox">
+                                <div id={`unitEditBox-${id}`}>
                                     <SelectBox
-                                        id={`unitSelectBox`}
+                                        id={`unitEditSelectBox-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[{ value: "", text: "Chọn đơn vị" }, ...departmentList]}
+                                        items={[{ value: 'null', text: 'Chọn đơn vị sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
                                         onChange={handleUnitChange}
                                         value={allocationToOrganizationalUnit}
                                         multiple={false}
@@ -206,12 +203,12 @@ function AllocationAddModal(props) {
                         <div className="form-group">
                             <label>{translate('supplies.allocation_management.allocationToUser')}</label>
                             <div>
-                                <div id="userBox">
+                                <div id={`userEditBox-${id}`}>
                                     <SelectBox
-                                        id={`userSelectBox`}
+                                        id={`userEditSelectBox-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[{ value: "", text: "Chọn người dùng" }, ...userList]}
+                                        items={[{ value: 'null', text: 'Chọn người được cấp phát' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
                                         onChange={handleUserChange}
                                         value={allocationToUser}
                                         multiple={false}

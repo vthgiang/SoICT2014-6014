@@ -1,18 +1,14 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox, UploadFile } from '../../../../../common-components';
-import { generateCode } from "../../../../../helpers/generateCode";
-import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
-
-import { UserActions } from '../../../../super-admin/user/redux/actions';
-
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
-import { AllocationHistoryActions } from '../redux/actions';
-import { SuppliesActions } from '../../supplies/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { SuppliesActions } from '../../supplies/redux/actions';
+import { AllocationHistoryActions, PurchaseInvoiceActions } from '../redux/actions';
 
-function AllocationCreateForm(props) {
+function AllocationEditForm(props) {
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     const formatDate = (date) => {
         if (!date) return null;
@@ -32,12 +28,10 @@ function AllocationCreateForm(props) {
         return [day, month, year].join('-');
     }
     const getAll = true;
+
+    // Khởi tạo state
     const [state, setState] = useState({
-        date: formatDate(Date.now()),
-        supplies: "",
-        quantity: 0,
-        allocationToOrganizationalUnit: "",
-        allocationToUser: "",
+
     })
 
     useEffect(() => {
@@ -46,11 +40,38 @@ function AllocationCreateForm(props) {
         props.getAllDepartments();
     }, []);
 
-    const { _id, translate, allocationHistoryReducer, user, auth, suppliesReducer, department } = props;
-    const {
-        date, supplies, supplier, quantity, allocationToOrganizationalUnit, allocationToUser,
+    const { id, translate, allocationHistoryReducer, suppliesReducer, user, department, } = props;
+    const { _id, date, supplies, supplier, quantity, allocationToOrganizationalUnit, allocationToUser,
         errorOnSupplies, errorOnQuantity, errorOnDate, errorOnUnit, errorOnUser,
     } = state;
+
+    // setState từ props mới
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
+
+    if (prevProps.id !== props.id) {
+        setState(state => {
+            return {
+                ...state,
+                _id: props._id,
+                id: props.id,
+                index: props.index,
+                supplies: props.supplies,
+                date: props.date,
+                quantity: props.quantity,
+                allocationToOrganizationalUnit: props.allocationToOrganizationalUnit,
+                allocationToUser: props.allocationToUser,
+
+                errorOnQuantity: undefined,
+                errorOnDate: undefined,
+                errorOnSupplies: undefined,
+                errorOnUnit: undefined,
+                errorOnUser: undefined,
+            }
+        })
+        setPrevProps(props)
+    }
 
     // Bắt sự kiện thay đổi "Ngày cấp"
     const handleDateChange = (value) => {
@@ -151,66 +172,32 @@ function AllocationCreateForm(props) {
         return result;
     }
 
+
     // Bắt sự kiện submit form
     const save = () => {
-        let { date } = state;
-        let dateData = date.split("-");
+        let { date, supplies, quantity, allocationToOrganizationalUnit, allocationToUser } = state;
         let dataToSubmit = {
-            ...state,
-            date: new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
+            supplies: supplies,
+            quantity: quantity,
+            allocationToOrganizationalUnit: allocationToOrganizationalUnit,
+            allocationToUser: allocationToUser,
+            date: date
         }
-        if (isFormValidated()) {
-            return props.createAllocations(dataToSubmit);
-        }
+        return props.updateAllocation(id, dataToSubmit);
     }
-
-    const getDepartment = () => {
-        let { department } = props;
-        let listUnit = department && department.list
-        let unitArr = [];
-
-        listUnit.map(item => {
-            unitArr.push({
-                value: item._id,
-                text: item.name
-            })
-        })
-
-        return unitArr;
-    }
-
-    const getSupplies = () => {
-        let { suppliesReducer } = props;
-        let listSupplies = suppliesReducer && suppliesReducer.listSupplies;
-        let suppliesArr = [];
-
-        listSupplies.map(item => {
-            suppliesArr.push({
-                value: item._id,
-                text: item.suppliesName
-            })
-        })
-
-        return suppliesArr;
-    }
-
-    let suppliesList = getSupplies();
-    var userList = user.list && user.list.map(x => {
-        return { value: x._id, text: x.name + " - " + x.email }
-    })
-    let departmentList = getDepartment();
 
     return (
         <React.Fragment>
             <DialogModal
-                size='25' modalID="modal-create-allocation" isLoading={allocationHistoryReducer.isLoading}
-                formID="form-create-allocation"
-                title={translate('supplies.general_information.add_allocation')}
-                func={save}
+                modalID={`modal-edit-allocation`} isLoading={allocationHistoryReducer.isLoading}
+                formID={`form-edit-allocation`}
+                title={translate('supplies.general_information.edit_allocation')}
                 disableSubmit={!isFormValidated()}
+                func={save}
+                size={50}
+                maxWidth={500}
             >
-                {/* Form thêm mới lịch sử cấp vật tư */}
-                <form className="form-group" id="form-create-allocation">
+                <form className="form-group" id="form-edit-allocation">
                     <div className="col-md-12">
                         {/* Ngày cấp */}
                         <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
@@ -223,18 +210,18 @@ function AllocationCreateForm(props) {
                             <ErrorLabel content={errorOnDate} />
                         </div>
 
-                        {/* vật tư */}
+                        {/* vật tư cấp */}
                         <div className={`form-group ${errorOnSupplies === undefined ? "" : "has-error"}`}>
-                            <label>{translate('supplies.allocation_management.supplies')}<span className="text-red">*</span></label>
+                            <label>{translate('supplies.invoice_management.supplies')}<span className="text-red">*</span></label>
                             <div>
-                                <div id="suppliesBox">
+                                <div id={`suppliesBox-${id}`}>
                                     <SelectBox
-                                        id={`suppliesSelectBox`}
+                                        id={`suppliesSelectBox-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[{ value: "", text: "Chọn vật tư" }, ...suppliesList]}
+                                        items={[{ value: null, text: 'Không có vật tư' }, ...suppliesReducer.listSupplies.map(x => { return { value: x.id, text: x.code + " - " + x.suppliesName } })]}
                                         onChange={handleSuppliesChange}
-                                        value={supplies}
+                                        value={supplies ?? null}
                                         multiple={false}
                                     />
                                 </div>
@@ -244,7 +231,7 @@ function AllocationCreateForm(props) {
 
                         {/* Số lượng */}
                         <div className={`form-group ${errorOnQuantity === undefined ? "" : "has-error"}`}>
-                            <label>{translate('supplies.allocation_management.quantity')} <span className="text-red">*</span></label>
+                            <label>{translate('supplies.invoice_management.quantity')} <span className="text-red">*</span></label>
                             <input type="number" className="form-control" name="quantity" min="1" value={quantity}
                                 onChange={handleQuantityChange} autoComplete="off" placeholder="Số lượng" />
                             <ErrorLabel content={errorOnQuantity} />
@@ -254,14 +241,14 @@ function AllocationCreateForm(props) {
                         <div className="form-group">
                             <label>{translate('supplies.allocation_management.allocationToOrganizationalUnit')}</label>
                             <div>
-                                <div id="unitBox">
+                                <div id={`unitBox-${id}`}>
                                     <SelectBox
-                                        id={`unitSelectBox`}
+                                        id={`unitSelectBox-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[{ value: "", text: "Chọn đơn vị" }, ...departmentList]}
+                                        items={[{ value: null, text: 'Không có đơn vị được cấp phát' }, ...department.list.map(x => { return { value: x._id, text: x.name } })]}
+                                        value={allocationToOrganizationalUnit ?? null}
                                         onChange={handleUnitChange}
-                                        value={allocationToOrganizationalUnit}
                                         multiple={false}
                                     />
                                 </div>
@@ -272,39 +259,38 @@ function AllocationCreateForm(props) {
                         <div className="form-group">
                             <label>{translate('supplies.allocation_management.allocationToUser')}</label>
                             <div>
-                                <div id="userBox">
+                                <div id={`userBox-${id}`}>
                                     <SelectBox
-                                        id={`userSelectBox`}
+                                        id={`userSelectBox-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[{ value: "", text: "Chọn người dùng" }, ...userList]}
+                                        value={allocationToUser ?? null}
+                                        items={[{ value: null, text: 'Chưa có người được giao sử dụng' }, ...user.list.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
                                         onChange={handleUserChange}
-                                        value={allocationToUser}
                                         multiple={false}
                                     />
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </form>
             </DialogModal>
         </React.Fragment>
     );
-};
+}
 
 function mapState(state) {
-    const { allocationHistoryReducer, auth, user, suppliesReducer, department } = state;
-    return { allocationHistoryReducer, auth, user, suppliesReducer, department };
+    const { allocationHistoryReducer, suppliesReducer, user, department, auth } = state;
+    return { allocationHistoryReducer, suppliesReducer, user, department, auth };
 };
 
 const actionCreators = {
-    getUser: UserActions.get,
-    createAllocations: AllocationHistoryActions.createAllocations,
     searchSupplies: SuppliesActions.searchSupplies,
+    updateAllocation: AllocationHistoryActions.updateAllocation,
+
+    getUser: UserActions.get,
     getAllDepartments: DepartmentActions.get,
 };
 
-const createAllocationForm = connect(mapState, actionCreators)(withTranslate(AllocationCreateForm));
-export { createAllocationForm as AllocationCreateForm };
-
+const connectedAllocationEditForm = connect(mapState, actionCreators)(withTranslate(AllocationEditForm));
+export { connectedAllocationEditForm as AllocationEditForm };

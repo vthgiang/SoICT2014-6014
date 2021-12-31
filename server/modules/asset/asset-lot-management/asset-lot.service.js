@@ -34,22 +34,40 @@ exports.searchAssetLots = async (portal, params) => {
     if (params.group) {
         keySearch = { ...keySearch, group: { $in: params.group }, };
     }
-    let totalList = 0,
-        listAssetLots = [];
-    // Lấy danh sách lô tài sản
-    totalList = await AssetLot(connect(DB_CONNECTION, portal)).countDocuments(
-        keySearch
-    );
+    let totalList = 0, listAssetLots = [];
 
-    listAssetLots = await AssetLot(connect(DB_CONNECTION, portal))
-        .find(keySearch)
-        .populate([
-            { path: "assetType assignedToOrganizationalUnit" },
-        ])
-        .sort({ createdAt: "desc" })
-        .skip(params.page)
-        .limit(params.limit);
-    return { data: listAssetLots, totalList };
+    if (params.getAll === false) {
+        console.log("hang");
+
+        // Lấy danh sách lô tài sản
+        totalList = await AssetLot(connect(DB_CONNECTION, portal)).countDocuments(
+            keySearch
+        );
+
+        listAssetLots = await AssetLot(connect(DB_CONNECTION, portal))
+            .find(keySearch)
+            .populate([
+                { path: "assetType assignedToOrganizationalUnit" },
+            ])
+            .sort({ createdAt: "desc" })
+            .skip(params.page)
+            .limit(params.limit);
+        return { data: listAssetLots, totalList };
+    } else {
+        // Lấy danh sách lô tài sản
+        totalList = await AssetLot(connect(DB_CONNECTION, portal)).countDocuments(
+            keySearch
+        );
+
+        listAssetLots = await AssetLot(connect(DB_CONNECTION, portal))
+            .find(keySearch)
+            .populate([
+                { path: "assetType assignedToOrganizationalUnit" },
+            ])
+            .sort({ createdAt: "desc" })
+        return { data: listAssetLots, totalList };
+    }
+
 }
 
 /**

@@ -38,7 +38,7 @@ function AssetLotCreateForm(props) {
     });
 
     const dispatch = useDispatch();
-    let listAssets = useSelector(state => state.assetLotManager.listAssets);
+    let listAssets = useSelector(state => state.assetLotManager.listAssetCreates);
     let assetLot = useSelector(state => state.assetLotManager.assetLot);
     //console.log("hang createform assetLot", assetLot);
 
@@ -77,7 +77,6 @@ function AssetLotCreateForm(props) {
             ...state,
             img: img,
             avatar: avatar,
-            //listAssets: listAssets,
         });
     }
 
@@ -137,7 +136,6 @@ function AssetLotCreateForm(props) {
     const handleTypeRegisterChange = (value) => {
         //let { assetLot } = state;
         if (listAssets && listAssets.length > 0) {
-            console.log("hang typeRegister", value);
             listAssets = listAssets.map(item => {
                 return {
                     ...item,
@@ -225,8 +223,6 @@ function AssetLotCreateForm(props) {
 
     //function cập nhật danh sách tài sản cho lô
     const handleGenAssetCode = (startNumber, step, data, gen) => {
-        //let {listAssets} = state;
-        //const { assetLot } = state;
         let total = assetLot.total;
         if (gen) {
             if (listAssets) {
@@ -253,7 +249,6 @@ function AssetLotCreateForm(props) {
                             assetName: assetLot.assetName
                         });
                     }
-                    //listAssets = listAssets;
                 } else {
                     listAssets = listAssets.splice(0, total).map((item, index) => {
                         number = parseInt(startNumber) + step * index;
@@ -289,7 +284,7 @@ function AssetLotCreateForm(props) {
         } else {
             listAssets = data;
         }
-        dispatch(saveListAssetsAction(listAssets));
+        dispatch(saveListAssetsAction(listAssets, false));
         dispatch(updateAssetLotAction(assetLot));
     }
 
@@ -340,6 +335,7 @@ function AssetLotCreateForm(props) {
         });
         formData.append("fileAvatar", avatar);
         props.createAssetLot(formData);
+        props.saveListAssetsAction([], false);
     }
 
     return (
@@ -355,15 +351,15 @@ function AssetLotCreateForm(props) {
                 <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                     {/* Nav-tabs */}
                     <ul className="nav nav-tabs">
-                        <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general`}>{translate('asset.general_information.general_information')}</a></li>
-                        <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation`}>{translate('asset.general_information.depreciation_information')}</a></li>
-                        <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments`}>{translate('asset.general_information.attach_infomation')}</a></li>
+                        <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#create_general_asset_lot`}>{translate('asset.general_information.general_information')}</a></li>
+                        <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#depreciation_asset_lot`}>{translate('asset.general_information.depreciation_information')}</a></li>
+                        <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#attachments_asset_lot`}>{translate('asset.general_information.attach_infomation')}</a></li>
                     </ul>
 
                     <div className="tab-content">
                         {/* Thông tin chung */}
                         <GeneralLotTab
-                            id={`create_general`}
+                            id={`create_general_asset_lot`}
                             avatar={avatar}
                             handleChange={handleChange}
                             handleUpload={handleUpload}
@@ -380,14 +376,14 @@ function AssetLotCreateForm(props) {
 
                         {/* Thông tin khấu hao */}
                         <DepreciationTab
-                            id={`depreciation`}
+                            id={`depreciation_asset_lot`}
                             asset={assetLot}
                             handleChange={handleChange}
                         />
 
                         {/* Tài liệu đính kèm */}
                         <FileTab
-                            id="attachments"
+                            id="attachments_asset_lot"
                             files={files}
                             asset={assetLot}
                             handleChange={handleChange}

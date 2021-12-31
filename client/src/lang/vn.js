@@ -249,7 +249,7 @@ export default {
             manage_allocation_history: "Quản lý lịch sử cấp phát",
             manage_purchase_invoice: "Quản lý hóa đơn mua vật tư",
             recommend_supplies_procurement: "Đăng kí cấp vật tư",
-            
+
             add_supplies: "Thêm mới vật tư",
             add_purchase_invoice: "Thêm mới hóa đơn",
             add_allocation: "Thêm lịch sử cấp phát",
@@ -2625,6 +2625,7 @@ export default {
                 select_all_register: "Chọn tất cả quyền đăng ký",
                 can_register: "Được phép đăng ký sử dụng",
                 cant_register: "Không được phép đăng ký sử dụng",
+                select_asset_lot: "Chọn lô tài sản",
 
                 asset_code: "Mã tài sản",
                 asset_name: "Tên tài sản",
@@ -2647,6 +2648,8 @@ export default {
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
                 not_disposal_date: "Chưa nhập ngày thanh lý",
+                asset_lot: "Lô tài sản",
+                select_all_asset_lot: "Chọn tất cả lô tài sản",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -3082,7 +3085,7 @@ export default {
                 search: "Tìm kiếm",
                 select_supplies: "Chọn vật tư",
                 select_all_supplies: "Chọn tất cả vật tư",
-                
+
             },
             supplies_management: {
                 code: "Mã vật tư",

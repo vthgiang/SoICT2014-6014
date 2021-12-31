@@ -11,6 +11,7 @@ import { SuppliesActions } from "../../supplies/redux/actions";
 import { AllocationHistoryActions } from "../redux/actions";
 import { AllocationCreateForm } from "./AllocationCreateForm";
 import { AllocationDetail } from "./AllocationDetail";
+import { AllocationEditForm } from "./AllocationEditForm";
 
 const getAllocationName = (listAllocation, idAllocation) => {
     let allocationName;
@@ -71,7 +72,7 @@ function AllocationManagement(props) {
     }
 
     const { allocationHistoryReducer, suppliesReducer, translate, user, department, } = props;
-    const { page, limit, tableId, currentRow, date, supplies, allocationToOrganizationalUnit, allocationToUser, } = state;
+    const { page, limit, tableId, currentRow, currentRowEdit, date, supplies, allocationToOrganizationalUnit, allocationToUser, } = state;
 
     useEffect(() => {
         props.searchAllocation(state);
@@ -194,11 +195,11 @@ function AllocationManagement(props) {
 
     // Bắt sự kiện click sửa thông tin cấp phát
     const handleEdit = async (value) => {
-        // await setState({
-        //     ...state,
-        //     currentRow: value
-        // });
-        // window.$('#modal-view-allocation').modal('show');
+        await setState({
+            ...state,
+            currentRowEdit: value
+        });
+        window.$('#modal-edit-allocation').modal('show');
     }
 
     const getDepartment = () => {
@@ -375,7 +376,7 @@ function AllocationManagement(props) {
                     func={setPage}
                 />
             </div>
-            {/* Form xem thông tin hóa đơn */}
+            {/* Form xem thông tin cấp phát */}
             {
                 currentRow &&
                 <AllocationDetail
@@ -385,6 +386,22 @@ function AllocationManagement(props) {
                     quantity={currentRow.quantity}
                     allocationToUser={currentRow.allocationToUser}
                     date={currentRow.date}
+                />
+            }
+
+            {/* Form sửa thông tin cấp phát */}
+            {
+                currentRowEdit &&
+                <AllocationEditForm
+                    id={currentRowEdit.id}
+                    _id={currentRowEdit._id}
+                    supplies={getPropertyOfValue(currentRowEdit.supplies, '_id', true, suppliesList)}
+                    quantity={currentRowEdit.quantity}
+                    date={currentRowEdit.date}
+                    allocationToOrganizationalUnit=
+                    {getPropertyOfValue(currentRowEdit.allocationToOrganizationalUnit, '_id', true, userlist)}
+                    allocationToUser=
+                    {getPropertyOfValue(currentRowEdit.allocationToUser, '_id', true, departmentlist)}
                 />
             }
         </div>
