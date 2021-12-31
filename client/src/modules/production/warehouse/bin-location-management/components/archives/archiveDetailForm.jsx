@@ -34,7 +34,7 @@ function ArchiveDetailForm(props){
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.status')}:&emsp;</strong>
-                                   {status && <span style={{ color: translate(`manage_warehouse.bin_location_management.${status}.color`)}}>{translate(`manage_warehouse.bin_location_management.${status}.status`)}</span>}
+                                   {status && <span>{translate(`manage_warehouse.bin_location_management.${status}.status`)}</span>}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bin_location_management.department')}:&emsp;</strong>
