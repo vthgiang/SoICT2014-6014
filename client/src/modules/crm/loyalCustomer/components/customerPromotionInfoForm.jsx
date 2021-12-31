@@ -55,6 +55,7 @@ function CustomerPromotionInfoForm(props) {
                 <thead>
                     <tr>
                         <th>{"Số thứ tự"}</th>
+                        <th>{"Mã khuyến mãi"}</th>
                         <th>{"Giá trị khuyến mãi (%)"}</th>
                         <th>{"Giá trị đơn hàng tối thiểu (VNĐ)"}</th>
                         <th>{"Số tiền giảm tối đa (VNĐ)"}</th>
@@ -66,6 +67,7 @@ function CustomerPromotionInfoForm(props) {
                             <DataTableSetting
                                 columnArr={[
                                     'Số thứ tự',
+                                    'Mã khuyến mãi',
                                     'Giá trị khuyến mãi (%)',
                                     'Giá trị đơn hàng tối thiểu (VNĐ)',
                                     'Số tiền giảm tối đa (VNĐ)',
@@ -85,6 +87,7 @@ function CustomerPromotionInfoForm(props) {
                             <tr >
 
                                 <td>{index + 1}</td>
+                                <td>{o.code}</td>
                                 <td>{o.value}</td>
                                 <td>{o.minimumOrderValue}</td>
                                 <td>{o.promotionalValueMax}</td>
@@ -129,3 +132,5 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerPromotionInfoForm));
+
+/* Thêm 58, 70,90*/

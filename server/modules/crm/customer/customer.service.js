@@ -39,6 +39,25 @@ const createCustomerCode = async (portal) => {
     return code;
 }
 
+const createCustomerCareCode = async (portal, id) => {
+
+    // Tạo mã khuyến mãi
+    const customer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
+
+    const lastCustomerCare = customer.promotions[customer.promotions.length - 1];
+    let code;
+    if (lastCustomerCare == null) code = 'KM001';
+    else {
+        let customerCareNumber = await lastCustomerCare.code;
+        customerCareNumber = customerCareNumber.slice(2);
+        customerCareNumber = parseInt(customerCareNumber) + 1;
+        if (customerCareNumber < 10) code = 'KM00' + customerCareNumber;
+        else if (customerCareNumber < 100) code = 'KM0' + customerCareNumber;
+        else code = 'KM' + customerCareNumber;
+    }
+    return code;
+}
+
 exports.createCustomer = async (portal, companyId, data, userId, fileConverts, role) => {
     data = await JSON.parse(JSON.stringify(data));
     let { companyEstablishmentDate, birthDate, files } = data;
@@ -383,18 +402,24 @@ exports.editCustomerPoint = async (portal, companyId, id, data, userId) => {
     }, { new: true });
 }
 
-exports.addPromotion = async (portal, companyId, id, data, userId) => {
+exports.addPromotion = async (portal, companyId, id, data, userId, careCode) => {
     let { value, description, minimumOrderValue, promotionalValueMax, expirationDate } = data;
 
+    if (!careCode) { 
+        console.log(careCode);
+        careCode = await createCustomerCareCode(portal, id);
+    }
 
     let promotions = [];
+    const code = careCode;
     let getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
     if (getCustomer.promotions) promotions = getCustomer.promotions;
-    promotions = await [...promotions, { value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), status: 1 }]
+    promotions = await [...promotions, { code, value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), status: 1 }]
     getCustomer = await { getCustomer, promotions };
     await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: getCustomer
     }, { new: true });
+    
     return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: 'customerGroup', select: '_id name' })
         .populate({ path: 'customerStatus', select: '_id name' })
@@ -494,3 +519,5 @@ exports.editPromotion = async (portal, companyId, customerId, data, userId) => {
     }, { new: true });
 
 }
+
+/* Thêm từ 42 -> 60 , 408-> 411, 414, Sửa 405, 417 */ 

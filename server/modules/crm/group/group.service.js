@@ -4,6 +4,25 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 const { addPromotion, editPromotion, deletePromotion } = require("../customer/customer.service");
 
+const createGroupCareCode = async (portal, groupId) => {
+
+    // Tạo mã khuyến mãi
+    const group = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
+
+    const lastGroupCare = group.promotions[group.promotions.length - 1];
+    let code;
+    if (lastGroupCare == null) code = 'KMN001';
+    else {
+        let groupCareNumber = await lastGroupCare.code;
+        groupCareNumber = groupCareNumber.slice(2);
+        groupCareNumber = parseInt(groupCareNumber) + 1;
+        if (groupCareNumber < 10) code = 'KMN00' + groupCareNumber;
+        else if (groupCareNumber < 100) code = 'KMN0' + groupCareNumber;
+        else code = 'KMN' + groupCareNumber;
+    }
+    return code;
+}
+
 exports.createGroup = async (portal, companyId, userId, data, role) => {
     const { code, name, description, promotion } = data;
     //tạo trường đơn vị CSKH'
@@ -102,7 +121,8 @@ exports.deleteGroup = async (portal, companyId, id) => {
 
 exports.addGroupPromotion = async (portal, companyId, groupId, userId, data, role) => {
     const { value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer } = data;
-    
+    const code = await createGroupCareCode(portal, groupId);
+
     let keySearch = {};
     if (groupId) {
         keySearch = {
@@ -121,13 +141,14 @@ exports.addGroupPromotion = async (portal, companyId, groupId, userId, data, rol
     const customerInGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch);
 
     for (const customer in customerInGroup) {
-        await addPromotion(portal, companyId, customer._id, data, userId);
+        await addPromotion(portal, companyId, customer._id, data, userId, code);
     };
 
     let modifyGroup = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
+
     let promotions = [];
     if (modifyGroup.promotions) promotions = modifyGroup.promotions;
-    promotions = await [...promotions, {value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), exceptCustomer}];
+    promotions = await [...promotions, {code, value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), exceptCustomer}];
     modifyGroup = await { modifyGroup, promotions};
     await CustomerGroup(connect(DB_CONNECTION), portal).findByIdAndUpdate(groupId,{
         $set: getGroup
@@ -229,3 +250,4 @@ exports.deleteGroupPromotion = async (portal, companyId, groupId, userId, data, 
     
     return await getGroupById(portal, companyId, groupId, data, userId);
 }
+/* Thêm từ 7-> 25, 122-> 252*/
