@@ -110,11 +110,19 @@ exports.getDetailLot = async (id, portal) => {
 }
 
 exports.createOrUpdateLots = async (data, portal) => {
+    console.log(data);
     let lots = [];
     if (data.lots && data.lots.length > 0) {
         for (let i = 0; i < data.lots.length; i++) {
             let date = data.lots[i].expirationDate.split("-");
             let expirationDate = new Date(date[2], date[1] - 1, date[0]);
+            let rfid = {
+                rfidCode: data.lots[i].rfidCode,
+                quantity: data.lots[i].rfidQuantity
+            }
+            let rfids = [];
+            rfids.push(rfid);
+            console.log(rfid);
             let lot = await Lot(connect(DB_CONNECTION, portal)).findOne({ code: data.lots[i].code });
             if (lot) {
                 lot.stocks[0].stock = data.stock;
@@ -125,6 +133,7 @@ exports.createOrUpdateLots = async (data, portal) => {
                 lot.code = lot.code;
                 lot.good = lot.good;
                 lot.type = data.type;
+                lot.rfid = rfids;
                 lot.description = data.lots[i].note;
                 lot.lotLogs[0].bill = data.bill;
                 lot.lotLogs[0].quantity = data.lots[i].quantity;
@@ -153,10 +162,18 @@ exports.createOrUpdateLots = async (data, portal) => {
                 let lotLogs = [];
                 lotLogs.push(lotLog);
 
+                let rfid = {
+                    rfidCode: data.lots[i].rfidCode,
+                    quantity: data.lots[i].rfidQuantity
+                }
+                let rfids = [];
+                rfids.push(rfid);
+
                 let query = {
                     code: data.lots[i].code,
                     good: data.good,
                     type: data.type,
+                    rfid: rfids,
                     stocks: stocks,
                     originalQuantity: data.lots[i].quantity,
                     quantity: data.lots[i].quantity,
