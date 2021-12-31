@@ -24,6 +24,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 purchaseDateEnd: req.query.purchaseDateEnd,
                 disposalDate: req.query.disposalDate,
                 handoverUnit: req.query.handoverUnit,
+                assetLot: req.query.assetLot,
                 handoverUser: req.query.handoverUser,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),

@@ -776,7 +776,7 @@ function AssetManagement(props) {
         listLot.map(item => {
             lotArr.push({
                 value: item._id,
-                text: item.name
+                text: item.assetLotName
             })
         })
 
