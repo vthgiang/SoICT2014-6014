@@ -352,27 +352,28 @@ exports.uploadFile = (arrData, type) => {
 
 exports.uploadBackupFiles = () => {
     // 1. Tạo folder backup/all nếu chưa tồn tại -> tạo folder backup/all/'version'/data
-    const time = new Date(),
-        month = time.getMonth() + 1,
-        date = time.getDate(),
-        year = time.getFullYear(),
-        hour = time.getHours(),
-        minute = time.getMinutes(),
-        second = time.getSeconds();
-
-    const version = `${year}.${month}.${date}.${hour}.${minute}.${second}`;
-    const path = `${SERVER_BACKUP_DIR}/all/${version}/data`;
-    if (!fs.existsSync(path)) {
-        fs.mkdirSync(path, {
-            recursive: true
-        });
-    }
+    console.log('start upload 1')
 
     // 2. copy file được gửi lên vào backup/all/'version'/data
-    let fileName = '';
     const getFile = multer({
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
+                const time = new Date(),
+                    month = time.getMonth() + 1,
+                    date = time.getDate(),
+                    year = time.getFullYear(),
+                    hour = time.getHours(),
+                    minute = time.getMinutes(),
+                    second = time.getSeconds();
+
+                const version = `${year}.${month}.${date}.${hour}.${minute}.${second}`;
+                const path = `${SERVER_BACKUP_DIR}/all/${version}/data`;
+                if (!fs.existsSync(path)) {
+                    fs.mkdirSync(path, {
+                        recursive: true
+                    });
+                }
+                console.log(`create ${version} in multer`)
                 cb(null, path)
             },
             filename: function (req, file, cb) {
@@ -387,6 +388,8 @@ exports.uploadBackupFiles = () => {
             },
         }),
     });
+
+    console.log('start upload 2')
     return getFile.single('files');
 }
 /**

@@ -193,7 +193,7 @@ exports.editBackupInfo = async (req, res) => {
 
 exports.uploadBackupFiles = (req, res) => {
     try {
-        setTimeout( () => {
+        // setTimeout(() => {
             let description = req.body.description;
 
             // 3. unzip file vừa copy, xóa file .zip còn tồn tại
@@ -213,12 +213,13 @@ exports.uploadBackupFiles = (req, res) => {
                 if (err) throw err;
             });
             const content = SystemSettingServices.getBackups();
+            console.log('upload success')
             res.status(200).json({
                 success: true,
                 messages: ['upload_backup_files_success'],
                 content: content
             })
-        }, 3000)
+        // }, 3000)
     } catch (error) {
         Logger.error(req.user.email, 'edit_backup_info_failure');
         res.status(400).json({
