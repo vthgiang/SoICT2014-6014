@@ -110,7 +110,6 @@ exports.getDetailLot = async (id, portal) => {
 }
 
 exports.createOrUpdateLots = async (data, portal) => {
-    console.log(data);
     let lots = [];
     if (data.lots && data.lots.length > 0) {
         for (let i = 0; i < data.lots.length; i++) {
@@ -122,7 +121,6 @@ exports.createOrUpdateLots = async (data, portal) => {
             }
             let rfids = [];
             rfids.push(rfid);
-            console.log(rfid);
             let lot = await Lot(connect(DB_CONNECTION, portal)).findOne({ code: data.lots[i].code });
             if (lot) {
                 lot.stocks[0].stock = data.stock;
@@ -200,7 +198,6 @@ exports.deleteManyLots = async (arrayId, portal) => {
 }
 
 exports.editLot = async (id, data, portal) => {
-    console.log(data);
     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(id);
     const oldLot = lot;
 
