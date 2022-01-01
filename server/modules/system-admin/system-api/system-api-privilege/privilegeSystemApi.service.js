@@ -162,7 +162,9 @@ const createPrivilegeApi = async (data) => {
          * System admin thì có thể ủy quyền tùy ý, không cần phải kiểm soát
          */
         if (role === ROLE.SYSTEM_ADMIN) {
-            // Them vao csdl system admin
+            /**
+             * Thêm privilege api vào csdl của system admin
+             */
             privilege = await PrivilegeApi(connect(DB_CONNECTION, process.env.DB_NAME))
                 .create({
                     email: email,
@@ -178,7 +180,9 @@ const createPrivilegeApi = async (data) => {
             await Company(connect(DB_CONNECTION, process.env.DB_NAME))
                 .populate(privilege, { path: "company" })
 
-            // Them vao csdl cua tung cty
+            /**
+             * Thêm phân quyền vào db cty
+             */
             await PrivilegeApi(connect(DB_CONNECTION, company.shortName))
                 .create({
                     email: email,

@@ -180,11 +180,6 @@ exports.authFunc = (checkPage = true) => {
                             const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
                             if (!perAPI) throw ['api_permission_invalid'];
                         }
-
-                        /**
-                         * Ques: Truy cập với API được phân quyền thì nên được xử lý như thế nào?
-                         * Ques: Sử dụng API riêng rẽ như thế nào khi các API được gắn với trang chưa API và ko có trang riêng cho việc sử dụng API được đặc cấp
-                         */
                     }
                 }
             } else {
@@ -222,16 +217,18 @@ exports.authFunc = (checkPage = true) => {
                 }
 
                 // Kiểm tra phân quyền api cho 1 cty
-                let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({
-                        apis: {
-                            $in: [systemApi?._id]
-                        },
-                        company: verified.company
-                    })
-                if (!apiInCompany) {
-                    throw ['api_permission_to_company_invalid']
-                };
+                // let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                //     .findOne({
+                //         apis: {
+                //             $in: [systemApi?._id]
+                //         },
+                //         shortName: req.portal,
+                //         // company: verified.company
+                //     })
+
+                //     if (!apiInCompany) {
+                //     throw ['api_permission_to_company_invalid']
+                // };
 
                 req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
                     .findOne({company: verified.company});
