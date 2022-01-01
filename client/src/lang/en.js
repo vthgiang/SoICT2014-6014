@@ -4724,6 +4724,7 @@ export default {
                 validate_customer: "Must select customer",
                 validate_lot: "Must select consignment",
                 validate_quantity: "Must enter number of consignment",
+                validate_quantity_rfid: "Must enter number of rfid",
                 validate_norm: "Out of quantity of inventory",
                 add_lot: "Add new consignment",
                 expiration_date: "Expiration date",
@@ -4789,6 +4790,9 @@ export default {
                 mill_request: "Factory required",
                 quantity_needed_true: "To approve the work order, please fill the issue bill full required quantity of materials!",
                 lot_with_unit: "Lot (Lot code/ Quantity)",
+                rfid_code: "RFID code",
+                rfid_quantity: "Number products / 1 RFID",
+                create_rfid_code: "Create RFID code",
 
             },
             inventory_management: {

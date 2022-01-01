@@ -4977,6 +4977,7 @@ export default {
                 validate_customer: "Bạn cần chọn khách hàng",
                 validate_lot: "Bạn cần chọn lô hàng",
                 validate_quantity: "Bạn cần nhập số lượng cho lô hàng",
+                validate_quantity_rfid: "Bạn cần nhập mã RFID từ 1 đến số lượng hàng hóa đã nhập ở trên",
                 validate_norm: "Bạn đã nhập quá số lượng tồn kho",
                 add_lot: "Thêm mới lô hàng",
                 expiration_date: "Ngày hết hạn",
@@ -5042,6 +5043,9 @@ export default {
                 mill_request: "Xưởng yêu cầu",
                 quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!",
                 lot_with_unit: "Lô hàng (Mã lô/ Số lượng)",
+                rfid_code: "Mã RFID",
+                rfid_quantity: "Số lượng mã sản phẩm / 1 mã  RFID",
+                create_rfid_code: "Thêm mã RFID",
 
             },
             inventory_management: {
