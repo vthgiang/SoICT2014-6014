@@ -7,10 +7,9 @@ const app = express();
 const server = require("http").createServer(app);
 
 const swaggerUI = require("swagger-ui-express");
-const swaggerJSDoc = require('swagger-jsdoc');
 const { auth } = require(`./middleware`);
 const { SystemApiControllers } = require('./modules/system-admin/system-api/system-api-management/systemApi.controller');
-const appJSDocs = require('./api-docs/appJSDocs');
+const { openApiData } = require('./api-docs/openapi');
 require("dotenv").config();
 // require("./connectDatabase");
 require("./global")(server);
@@ -21,7 +20,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cookieParser());
 
 // Api-docs
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(appJSDocs));
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openApiData));
 
 // Route upload
 app.use("/upload/avatars", express.static("upload/avatars"));
@@ -171,10 +170,7 @@ app.use("/transport-department", require("./modules/production/transport/transpo
 app.use(router);
 
 // Cập nhật các api mới nhất
-app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) => {
-    SystemApiControllers.updateSystemApi(app, req, res)
-})
-
+app.post('/system-admin/system-api/system-apis/update-auto', auth, (req, res) => SystemApiControllers.updateSystemApi(app, req, res));
 
 /**
  * Server initial
