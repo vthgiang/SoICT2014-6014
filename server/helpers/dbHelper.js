@@ -1,5 +1,6 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
+const {checkOS} = require("./osHelper");
 
 const versionName = () => {
     const time = new Date(),
@@ -74,16 +75,30 @@ exports.restore = async (options) => {
             checkDirectory(`${SERVER_DIR}/upload/private/${options.db}`);
             checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
 
-            return {
-                delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
-                new: `copy -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && copy -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
+            if (checkOS() === 1) {
+                return {
+                    delete: `del /f ${SERVER_DIR}/upload/private/${options.db}/* && del /f ${SERVER_DIR}/upload/avatars/${options.db}/*`,
+                    new: `copy source ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* destination ${SERVER_DIR}/upload/private/${options.db} && copy source ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* destination ${SERVER_DIR}/upload/avatars/${options.db}`
+                }
+            } else if (checkOS() === 2) {
+                return {
+                    delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
+                    new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
+                }
             }
         }
         else { // Restore file cho toàn hệ thống
             checkDirectory(`${SERVER_DIR}`);
-            return {
-                delete: `rm -rf ${SERVER_DIR}/upload`,
-                new: `copy -r ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload ${SERVER_DIR}`
+            if (checkOS() === 1) {
+                return {
+                    delete: `del /f ${SERVER_DIR}/upload`,
+                    new: `copy source ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload destination ${SERVER_DIR}`
+                }
+            } else if (checkOS() === 2) {
+                return {
+                    delete: `rm -rf ${SERVER_DIR}/upload`,
+                    new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload ${SERVER_DIR}`
+                }
             }
         }
     }
@@ -150,12 +165,20 @@ exports.backup = async (options) => {
             checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
             checkDirectory(`${backupPath}/data/avatars`);
 
-            return `copy -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && copy -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
+            if (checkOS() === 1) {
+                return `copy source ${SERVER_DIR}/upload/private/${options.db}/* destination ${backupPath}/data/private && copy source ${SERVER_DIR}/upload/avatars/${options.db}/* destination ${backupPath}/data/avatars`;
+            } else if (checkOS() === 2) {
+                return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
+            }
         } else { // Backup file cho toàn hệ thống
             checkDirectory(`${SERVER_DIR}/upload`);
             checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/data/upload`);
 
-            return `copy -r ${SERVER_DIR}\\upload\\* ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload`;
+            if (checkOS() === 1) {
+                return `copy source ${SERVER_DIR}\\upload\\* destination ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload`;
+            } else if (checkOS() === 2) {
+                return `cp -r ${SERVER_DIR}\\upload\\* ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload`;
+            }
         }
     }
 
@@ -195,8 +218,13 @@ exports.backup = async (options) => {
             for (let i = 0; i < newList.length; i++) {
                 if (i > limit - 1) { //phiên bản cũ vượt quá số lượng backup lưu trữ (limit)
                     // xóa version backup cũ
-                    if (options.db) exec(`rm -rf ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { });
-                    else exec(`rm -rf ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { });
+                    if (checkOS() === 1) {
+                        if (options.db) exec(`del /f ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { });
+                        else exec(`del /f ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { });
+                    } else if (checkOS() === 2) {
+                        if (options.db) exec(`rm -rf ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { });
+                        else exec(`rm -rf ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { });
+                    }
                 }
             }
         }

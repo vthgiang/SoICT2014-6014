@@ -5,6 +5,7 @@ const archiver = require('archiver');
 const multer = require("multer");
 const CryptoJS = require("crypto-js");
 const {Extract} = require("unzipper");
+const {checkOS} = require("../../../helpers/osHelper");
 const exec = require('child_process').exec;
 
 // lấy danh sách folder backup
@@ -200,9 +201,17 @@ exports.uploadBackupFiles = (req, res) => {
             fs.createReadStream(req.file.path).pipe(Extract({path: req.file.destination}))
                 .on('close', () => {
                     console.log('extract file success');
-                    exec(`del /f ${req.file.path}`, (error) => {
-                        if (error) throw error;
-                    });
+
+                    // command chạy trên window
+                    if (checkOS() === 1) {
+                        exec(`del /f ${req.file.path}`, (error) => {
+                            if (error) throw error;
+                        });
+                    } else if (checkOS() === 2) {
+                        exec(`rm -rf ${req.file.path}`, (error) => {
+                            if (error) throw error;
+                        });
+                    }
                 })
                 .on('error', (error) => {
                     if (error) throw error;

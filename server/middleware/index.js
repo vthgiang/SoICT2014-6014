@@ -352,8 +352,6 @@ exports.uploadFile = (arrData, type) => {
 
 exports.uploadBackupFiles = () => {
     // 1. Tạo folder backup/all nếu chưa tồn tại -> tạo folder backup/all/'version'/data
-    console.log('start upload 1')
-
     // 2. copy file được gửi lên vào backup/all/'version'/data
     const getFile = multer({
         storage: multer.diskStorage({
@@ -389,7 +387,6 @@ exports.uploadBackupFiles = () => {
         }),
     });
 
-    console.log('start upload 2')
     return getFile.single('files');
 }
 /**
