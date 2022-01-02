@@ -9,6 +9,8 @@ const CryptoJS = require("crypto-js");
 const { initModels, connect } = require(`../helpers/dbHelper`);
 const { decryptMessage } = require('../helpers/functionHelper');
 const rateLimit = require("express-rate-limit");
+const {Extract} = require("unzipper");
+const {exec} = require("child_process");
 
 /**
  * ****************************************
@@ -345,6 +347,45 @@ exports.uploadFile = (arrData, type) => {
     }
 };
 
+exports.uploadBackupFiles = () => {
+    // 1. Tạo folder backup/all nếu chưa tồn tại -> tạo folder backup/all/'version'/data
+    // 2. copy file được gửi lên vào backup/all/'version'/data
+    const getFile = multer({
+        storage: multer.diskStorage({
+            destination: (req, file, cb) => {
+                const time = new Date(),
+                    month = time.getMonth() + 1,
+                    date = time.getDate(),
+                    year = time.getFullYear(),
+                    hour = time.getHours(),
+                    minute = time.getMinutes(),
+                    second = time.getSeconds();
+
+                const version = `${year}.${month}.${date}.${hour}.${minute}.${second}`;
+                const path = `${SERVER_BACKUP_DIR}/all/${version}/data`;
+                if (!fs.existsSync(path)) {
+                    fs.mkdirSync(path, {
+                        recursive: true
+                    });
+                }
+                console.log(`create ${version} in multer`)
+                cb(null, path)
+            },
+            filename: function (req, file, cb) {
+                let extend = file.originalname.split(".");
+                let oldNameFile = extend.splice(0, extend.length - 1);
+                oldNameFile = oldNameFile.join(".");
+                let hash =
+                    `${req.user._id}_${Date.now()}_` +
+                    CryptoJS.MD5(oldNameFile).toString();
+                fileName = `${hash}.${extend[extend.length - 1]}`;
+                cb(null, fileName);
+            },
+        }),
+    });
+
+    return getFile.single('files');
+}
 /**
  * Middleware kiểm tra userId gửi trong param có trùng với userId lưu trong jwt
  * @param {*} req 

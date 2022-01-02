@@ -1057,7 +1057,6 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.error
             }
-        
         default:
             return state
     }

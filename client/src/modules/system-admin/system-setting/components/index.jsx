@@ -107,6 +107,10 @@ function SystemSetting(props) {
         props.deleteBackup(version)
     }
 
+    const handleAddFile = () => {
+        window.$('#modal-create-file-backup').modal('show');
+    }
+
     const { translate, systemSetting } = props;
     const { schedule, autoBackup, limit } = state;
 
@@ -114,13 +118,15 @@ function SystemSetting(props) {
         <React.Fragment>
             <div className="row">
                 <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">
-                    <div className="box box-default">
-                        <div className="box-header with-border">
+                    <div className="box box-default ">
+                            <div className="box-header with-border btn-toolbar">
                             <button className="btn btn-success pull-right" onClick={createBackup} title={translate('system_admin.system_setting.backup.backup_button')}>
                                 {translate('system_admin.system_setting.backup.backup_button')}
                             </button>
-                            <button className="btn btn-success pull-right" style={{backgroundColor: "rgba(32,126,188,0.88)", marginRight: "10px", border: "none"}}  title="Thêm file sao lưu ">
-                                Thêm file sao lưu phục hồi
+                            <button className="btn btn-success pull-right"
+                                    onClick={handleAddFile}
+                                    title="Thêm file sao lưu phục hồi">
+                                Thêm file
                             </button>
                         </div>
                         <div className="box-body">
@@ -168,6 +174,7 @@ function SystemSetting(props) {
                         </div>
                     </div>
                 </div>
+                <FileAddModal />
                 <BackupInfo backupInfo={state.backupInfo} />
                 <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                     <div className="box box-default">
