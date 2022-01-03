@@ -150,6 +150,13 @@ function QuantityLotGoodReceipt(props) {
         return result
     }
 
+    const isRfidCodeValidate = () => {
+        let result =
+        validateQuantity(state.lot.quantity, false) &&
+        validateRfidQuantity(state.lot.rfidQuantity, false)
+        return result
+    }
+
     const validateRfidQuantity = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
@@ -336,7 +343,6 @@ function QuantityLotGoodReceipt(props) {
 
     const { translate, group, good, quantity } = props;
     const { lot, errorQuantity, errorRfidQuantity, lots, errorExpirationDate } = state;
-
     let different = difference();
 
     return (
@@ -395,7 +401,7 @@ function QuantityLotGoodReceipt(props) {
                         </div>
 
                         <div className="pull-right" style={{ marginBottom: "10px" }}>
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</button>
+                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={!isRfidCodeValidate()} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</button>
                             {state.editInfo ?
                                 <React.Fragment>
                                     <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>

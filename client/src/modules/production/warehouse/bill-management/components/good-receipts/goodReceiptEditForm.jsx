@@ -499,6 +499,7 @@ function GoodReceiptEditForm(props) {
                     code: item.lot.code,
                     quantity: item.quantity,
                     note: item.note,
+                    rfidCode: item.lot.rfid ? item.lot.rfid[0].rfidCode : '',
                 })
             })
         } else {
@@ -509,6 +510,7 @@ function GoodReceiptEditForm(props) {
                     code: item.code,
                     quantity: item.quantity,
                     note: item.note,
+                    // rfidCode: item.rfid[0].rfidCode,
                 })
             })
         }
@@ -807,7 +809,7 @@ function GoodReceiptEditForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code} disabled />
+                                    <input type="text" className="form-control" value={code ? code : '' } disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>

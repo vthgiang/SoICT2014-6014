@@ -22,7 +22,7 @@ BƯỚC 2: Sử dụng component, truyền vào các thuộc tính
                 ExportExcel.export(exportData)      // exportData dữ liệu export có định dạng như LƯU Ý 1
             }
 
-        + Cách 1: Sử dụng nút button export có sẵn của component và khi dữ liệu export có sẵn (không phải gọi server để lấy dữ liệu)
+        + Cách 2: Sử dụng nút button export có sẵn của component và khi dữ liệu export có sẵn (không phải gọi server để lấy dữ liệu)
             <ExportExcel
                 id="export-salary"
                 type='button'                               // Có 2 giá trị là 'button' và 'link'; 'button': Hiện thị 1 button, 'link': Hiện thị 1 link (thẻ <a>)             
