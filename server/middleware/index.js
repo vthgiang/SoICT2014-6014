@@ -9,8 +9,7 @@ const CryptoJS = require("crypto-js");
 const { initModels, connect } = require(`../helpers/dbHelper`);
 const { decryptMessage } = require('../helpers/functionHelper');
 const rateLimit = require("express-rate-limit");
-const {Extract} = require("unzipper");
-const {exec} = require("child_process");
+
 
 /**
  * ****************************************
@@ -378,7 +377,7 @@ exports.uploadBackupFiles = () => {
                 let hash =
                     `${req.user._id}_${Date.now()}_` +
                     CryptoJS.MD5(oldNameFile).toString();
-                fileName = `${hash}.${extend[extend.length - 1]}`;
+                let fileName = `${hash}.${extend[extend.length - 1]}`;
                 cb(null, fileName);
             },
         }),
