@@ -11,9 +11,8 @@ import { ViewTaskTemplate } from "../../../task-template/component/viewTaskTempl
 import BpmnViewer from 'bpmn-js';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import customModule from '../custom-task-process-template';
-import { AddProcessTemplate } from "./addProcessTemplateChild";
 import { ViewProcessTemplateChild } from "./viewProcessTemplateChild";
-import { ModalViewBpmnProcessTemplateChild } from "./viewBpmnProcessTemplateChild";
+
 var zlevel = 1;
 function areEqual(prevProps, nextProps) {
     if (prevProps.idProcess === nextProps.idProcess ){
@@ -22,7 +21,7 @@ function areEqual(prevProps, nextProps) {
         return false
     }
 }
-function ModalViewTaskProcess(props) {
+function ModalViewBpmnProcessTemplateChild(props) {
     let { data } = props;
     const [state, setState] = useState({
         userId: getStorage("userId"),
@@ -30,10 +29,8 @@ function ModalViewTaskProcess(props) {
         showInfo: false,
         showInfoProcess: false,
         selectedView: 'info',
-        info: data.tasks,
-        xmlDiagram: data.xmlDiagram,
-        dataProcessTask:'',
-        showProcessTemplate:false,
+        info: props.tasks,
+        xmlDiagram: props.xmlDiagram,
         render:0
     })
     const [modeler,setmodeler] = useState( new BpmnModeler({
@@ -44,7 +41,7 @@ function ModalViewTaskProcess(props) {
             { zoomScroll: ['value', ''] }, // chặn chức năng lăn chuột, zoom on mouse wheel
         ]
     }))
-    const generateId = 'viewprocess';
+    const generateId = 'viewprocesschild';
     // modeler.importXML(props.xmlDiagram)
     // const interactPopup = async (event) => {
     //     let element = event.element;
@@ -54,31 +51,29 @@ function ModalViewTaskProcess(props) {
     //         id: element.businessObject.id
     //     });
     // }
-    const interactPopup = async (event) => {
+    const interactPopup = (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
-        // console.log(element);
-        await setState(state => {
+        setState(state => {
             if (element.type === "bpmn:SubProcess") {
                 return {
-                    ...state,
-                    showInfo: false,
-                    showInfoProcess:true,
-                    type: element.type,
-                    name: nameStr[1],
-                    taskName: element.businessObject.name,
-                    id: `${element.businessObject.id}`,
-                }
-                
-            } else if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
+					...state,
+					showInfo: false,
+					showInfoProcess:true,
+					type: element.type,
+					name: nameStr[1],
+					taskName: element.businessObject.name,
+					id: `${element.businessObject.id}`,
+				}
+            } else if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
                 // console.log("object");
-                return { ...state, showInfo: true,showInfoProcess:false, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
+                return { ...state, showInfo: true, showInfoProcess:false, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
             }
             else {
-                return { ...state, showInfo: false,showInfoProcess:false, type: element.type, name: '', id: element.businessObject.id, }
+                return { ...state, showInfo: false, showInfoProcess:false, type: element.type, name: '', id: element.businessObject.id, }
             }
+
         })
-        
     }
     useEffect(() => {
         props.getAllUsers();
@@ -95,32 +90,25 @@ function ModalViewTaskProcess(props) {
         // console.log("2");
         if(props.idProcess != state.idProcess){
             let info = {};
-            let infoTask = props.data.tasks; // TODO task list
+            let infoTask = props.tasks; // TODO task list
             for (let i in infoTask) {
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
             let infoTemplate = {};
-            let infoProcessTemplates = props.data.processTemplates; // TODO task list
+            let infoProcessTemplates = props.processTemplates; // TODO task list
             for (let i in infoProcessTemplates) {
                 infoTemplate[`${infoProcessTemplates[i].code}`] = infoProcessTemplates[i];
             }
             modeler.attachTo('#' + generateId);
-            modeler.importXML(props.data.xmlDiagram);
+            modeler.importXML(props.xmlDiagram);
             setState({
                 ...state,
                 idProcess: props.idProcess,
                 showInfo: false,
-                showInfoProcess: false,
                 info: info,
-                infoTemplate: infoTemplate,
-                processDescription: props.data.processDescription ? props.data.processDescription : '',
-                processName: props.data.processName ? props.data.processName : '',
-                viewer: props.data.viewer ? props.data.viewer.map(x => x._id) : [],
-                manager: props.data.manager ? props.data.manager.map(x => x._id) : [],
-                xmlDiagram: props.data.xmlDiagram,
-                selectedView:"info",
-                dataProcessTask:'',
-                showProcessTemplate:false,
+                infoTemplate:infoTemplate,
+                processName: props.processName ? props.processName : '',
+                xmlDiagram: props.xmlDiagram,
             })
         }
         
@@ -224,111 +212,26 @@ function ModalViewTaskProcess(props) {
     const downloadAsSVG=()=>{
 
     }
-    const handleDataProcessTempalte = async (value) => {
-		await setState({
-			...state,
-			dataProcessTask:value,
-			showProcessTemplate:true,
-		})
-		// modeler.importXML(value.xmlDiagram)
-		await window.$(`#modal-view-process`).modal("show");
-	}
     const { translate, role, user } = props;
     const { listOrganizationalUnit } = props
-    const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedView, showInfoProcess ,infoTemplate ,showProcessTemplate} = state;
-
-    let listRole = [];
-    let listUser = user.list
-    if (role && role.list.length !== 0) listRole = role.list;
-
-    let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
-        .map(item => { return { text: item.name, value: item._id } });
-
-    let listViewer = [];
-    if (viewer) {
-        listViewer = listItem.filter(e => viewer.indexOf(e.value) !== -1)
-    }
-
-    let listManager = [];
-    if (manager) {
-        listManager = listItem.filter(e => manager.indexOf(e.value) !== -1)
-    }
+    const { name, id, idProcess, info, showInfo, selectedView, showInfoProcess, infoTemplate } = state;
     return (
         <React.Fragment>
             <DialogModal
-                size='100' modalID={`modal-view-process-task`}
+                size='100' modalID={`modal-view-process`}
                 isLoading={false}
                 formID="form-task-process"
-                title={props.title}
+                title={props.processName}
                 hasSaveButton={false}
-                bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
             >
                 <div>
                     <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a href="#info-view" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
-                            <li><a href="#process-view" onClick={() => handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
-                        </ul>
-                        <div className="tab-content">
-                            <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
-                                <div className="description-box without-border">
-                                    {/* Thông tin chung */}
-                                    <div>
-                                        <strong>{translate("task.task_process.process_name")}:</strong>
-                                        <span>{processName}</span>
-                                    </div>
-                                    <div>
-                                        <strong>{translate("task.task_process.process_description")}:</strong>
-                                        <span>{processDescription}</span>
-                                    </div>
-
-
-                                    {/* Người xem, quản lý */}
-                                    <strong>{translate("task.task_process.viewer")}:</strong>
-                                    <ul>
-                                        {
-                                            listViewer.map((x, key) => {
-                                                return <li key={key}>{x.text}</li>
-                                            })
-                                        }
-                                    </ul>
-                                    <strong>{translate("task.task_process.manager")}:</strong>
-                                    <ul>
-                                        {
-                                            listManager.map((x, key) => {
-                                                return <li key={key}>{x.text}</li>
-                                            })
-                                        }
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-
                         <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
-                            <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
+                            <div className={selectedView !== "process" ? "active tab-pane" : "tab-pane"} id="process-view">
                                 <div className="">
                                     {/* Quy trình công việc */}
-                                    {state.showProcessTemplate && state.dataProcessTask &&
-                                        <ModalViewBpmnProcessTemplateChild
-                                            idProcess={state.dataProcessTask._id}
-                                            tasks={state.dataProcessTask.tasks}
-                                            processTemplates={state.dataProcessTask.processTemplates}
-                                            processDescription={state.dataProcessTask.processDescription}
-                                            processName={state.dataProcessTask.processName}
-                                            viewer={state.dataProcessTask.viewer}
-                                            manager={state.dataProcessTask.manager}
-                                            xmlDiagram={state.dataProcessTask.xmlDiagram}
-                                            >
-                                        </ModalViewBpmnProcessTemplateChild>
-                                    }
-                                    <div className={`contain-border ${showInfo || showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
-                                        <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
-                                            <button onClick={exportDiagram}>Export XML</button>
-                                            <button onClick={downloadAsSVG}>Save SVG</button>
-                                            <button onClick={downloadAsImage}>Save Image</button>
-                                            <button onClick={downloadAsBpmn}>Download BPMN</button>
-                                        </div>
+                                    <div className={`contain-border ${showInfo|| showInfoProcess ? 'col-md-8' : 'col-md-12'}`}>
+                                        
                                         <div id={generateId}></div>
                                         <div className="row">
                                             <div className="io-zoom-controls">
@@ -352,8 +255,9 @@ function ModalViewTaskProcess(props) {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className={`right-content ${showInfo || showInfoProcess? 'col-md-4' : undefined}`}>
-                                        {showInfo&&
+                                    <div className={`right-content ${showInfo || showInfoProcess ? 'col-md-4' : undefined}`}>
+                                        {
+                                            (showInfo) &&
                                             <div>
                                                 {/* <div>
                                                         <h1>Option {name}</h1>
@@ -361,10 +265,11 @@ function ModalViewTaskProcess(props) {
                                                 <ViewTaskTemplate
                                                     isProcess={true}
                                                     taskTemplate={info?.[`${id}`]}
-                                                    listUser={listUser}
+                                                    // listUser={listUser}
                                                 />
                                             </div>
                                         }
+
                                         {showInfoProcess&&
                                             <div>
                                             {/* <div>
@@ -373,7 +278,7 @@ function ModalViewTaskProcess(props) {
                                                 <ViewProcessTemplateChild
                                                     id={id}
                                                     infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`]}
-                                                    handleDataProcessTempalte={handleDataProcessTempalte}
+                                                    // handleDataProcessTempalte={handleDataProcessTempalte}
                                                     // setBpmnProcess={setBpmnProcess}
                                                     // handleChangeName={handleChangeName} // cập nhật tên vào diagram
                                                     // handleChangeViewerBpmn={handleChangeViewerBpmn} // cập nhật hiển thi diagram
@@ -405,5 +310,5 @@ const actionCreators = {
     editXmlDiagram: TaskProcessActions.editXmlDiagram,
     getAllUsers: UserActions.get
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(React.memo(ModalViewTaskProcess,areEqual)));
-export { connectedModalAddProcess as ModalViewTaskProcess };
+const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(React.memo(ModalViewBpmnProcessTemplateChild,areEqual)));
+export { connectedModalAddProcess as ModalViewBpmnProcessTemplateChild };

@@ -827,6 +827,18 @@ const LINKS = [{
 
 },
 {
+    url: '/process-template',
+    description: 'Chi tiết mẫu quy trình công việc',
+    category: LINK_CATEGORY.TASK.name,
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/process-template')
+
+},
+{
     url: '/task-management-dashboard',
     description: 'Dashboard công việc',
     category: LINK_CATEGORY.TASK.name,

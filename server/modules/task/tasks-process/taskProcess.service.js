@@ -91,8 +91,11 @@ exports.getAllXmlDiagram = async (portal, query) => {
  * Lấy diagram theo id
  * @param {*} params 
  */
-exports.getXmlDiagramById = (portal, params) => {
-    let data = ProcessTemplate(connect(DB_CONNECTION, portal)).findById(params.diagramId);
+exports.getXmlDiagramById = async(portal, params) => {
+    let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findById(params.diagramId);
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(data, { path: 'creator', select: 'name' });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(data, { path: 'manager', select: 'name' });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(data, { path: 'viewer', select: 'name' });
     return data
 }
 
@@ -208,8 +211,9 @@ exports.createXmlDiagram = async (portal, body) => {
  * @param {*} body dữ liệu gửi vào body từ client
  */
 exports.editXmlDiagram = async (portal, params, body) => {
-    // console.log(body);
+    console.log(body.infoTemplate);
     let info = [];
+    let processTemplates = [];
     for (let x in body.info) {
         if (Object.keys(body.info[x]).length > 4) {
             body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
@@ -233,12 +237,22 @@ exports.editXmlDiagram = async (portal, params, body) => {
             info.push(body.info[x])
         }
     }
+    for (const x in body.infoTemplate) {
+        // console.log(body.infoTemplate[x]);
+        processTemplates.push({
+            process:body.infoTemplate[x]._id,
+            code:body.infoTemplate[x].code,
+            followingTasks:body.infoTemplate[x].followingTasks,
+            preceedingTasks:body.infoTemplate[x].preceedingTasks
+        })
+    }
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.diagramId,
         {
             $set: {
                 xmlDiagram: body.xmlDiagram,
                 tasks: info,
                 processDescription: body.processDescription,
+                processTemplates: processTemplates,
                 processName: body.processName,
                 creator: body.creator,
                 viewer: body.viewer,
