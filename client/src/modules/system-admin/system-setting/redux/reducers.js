@@ -29,6 +29,7 @@ export function systemSetting(state = initState, action) {
         case SystemSettingConstants.EDIT_BACKUP_INFO_REQUEST:
         case SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_REQUEST:
         case SystemSettingConstants.RESTORE_REQUEST:
+        case SystemSettingConstants.UPLOAD_BACKUP_FILE_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -43,6 +44,7 @@ export function systemSetting(state = initState, action) {
         case SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_FAILURE:
         case SystemSettingConstants.DOWNLOAD_BACKUP_VERSION_SUCCESS: 
         case SystemSettingConstants.RESTORE_FAILURE:
+        case SystemSettingConstants.UPLOAD_BACKUP_FILE_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -115,7 +117,15 @@ export function systemSetting(state = initState, action) {
                 },
                 isLoading: false
             }
-
+        case SystemSettingConstants.UPLOAD_BACKUP_FILE_SUCCESS:
+            return {
+                ...state,
+                backup: {
+                    ...state.backup,
+                    list: action.payload
+                },
+                isLoading: false
+            }
         default:
             return state;
     }

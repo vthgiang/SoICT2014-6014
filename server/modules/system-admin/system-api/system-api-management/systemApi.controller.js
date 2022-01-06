@@ -101,7 +101,7 @@ const updateSystemApi = async (app, req, res) => {
         Logger.error(req.user.email, 'update system api');
         res.status(400).json({
             success: false,
-            messages: ['update_system_api_failure'],
+            messages: ['update_system_api_failed'],
             content: error
         });
     }

@@ -10,9 +10,28 @@ export const SystemSettingActions = {
     editBackupInfo,
     deleteBackup,
     downloadBackupVersion,
-    restore
+    restore,
+    uploadBackupFiles
 }
+function uploadBackupFiles(data) {
+    return dispatch => {
+        dispatch({ type: SystemSettingConstants.UPLOAD_BACKUP_FILE_REQUEST });
 
+        SystemSettingServices.uploadBackupFiles(data)
+            .then(res => {
+                dispatch({
+                    type: SystemSettingConstants.UPLOAD_BACKUP_FILE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: SystemSettingConstants.UPLOAD_BACKUP_FILE_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
 function getBackups() {
     return dispatch => {
         dispatch({ type: SystemSettingConstants.GET_BACKUPS_REQUEST });
@@ -36,10 +55,8 @@ function getBackups() {
 function getConfigBackup() {
     return dispatch => {
         dispatch({ type: SystemSettingConstants.GET_CONFIG_BACKUP_REQUEST });
-        console.log("alaoaoala")
         SystemSettingServices.getConfigBackup()
             .then(res => {
-                console.log("FSDFSDFSD", res.data.content.backup)
                 dispatch({
                     type: SystemSettingConstants.GET_CONFIG_BACKUP_SUCCESS,
                     payload: res.data.content.backup

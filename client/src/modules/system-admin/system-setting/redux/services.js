@@ -8,8 +8,17 @@ export const SystemSettingServices = {
     deleteBackup,
     restore,
     editBackupInfo,
-    downloadBackupVersion
+    downloadBackupVersion,
+    uploadBackupFiles
 };
+
+function uploadBackupFiles(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup/upload`,
+        method: 'POST',
+        data: data
+    }, true, true, 'super_admin.system');
+}
 
 function getBackups() {
     return sendRequest({
@@ -19,7 +28,6 @@ function getBackups() {
 }
 
 function getConfigBackup() {
-    console.log("sdfsdf")
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/system-admin/system-setting/backup/config`,
         method: 'GET'
