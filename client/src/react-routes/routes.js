@@ -9,6 +9,7 @@ import Layout from "../layout/layout";
 import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
+import { ModalViewTaskProcess2 } from "../modules/task/task-process/component/process-template/modalViewTaskProcess2";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -1412,6 +1413,21 @@ class Routes extends Component {
                         pageName={"task"}
                         layout={Layout}
                         component={TaskComponent}
+                    />
+                    <PrivateRoute // Trang chi tiết quy trinhf  (không có trên menu)
+                        isLoading={this.props.tasks.isLoading}
+                        key={"task"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            { link: "/process-template", name: "process-template", icon: "" },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/process-template"}
+                        path={"/process-template"}
+                        pageName={"process-template"}
+                        layout={Layout}
+                        component={ModalViewTaskProcess2}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}
