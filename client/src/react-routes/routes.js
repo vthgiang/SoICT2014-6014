@@ -9,7 +9,7 @@ import Layout from "../layout/layout";
 import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
-import { ModalViewTaskProcess2 } from "../modules/task/task-process/component/process-template/modalViewTaskProcess2";
+import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -1427,7 +1427,7 @@ class Routes extends Component {
                         path={"/process-template"}
                         pageName={"process-template"}
                         layout={Layout}
-                        component={ModalViewTaskProcess2}
+                        component={ModalViewTaskProcessById}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}
