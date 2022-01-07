@@ -5391,6 +5391,7 @@ export default {
                 manage_roles_description: "Người dùng bất kỳ có 1 trong các role dưới đây cũng có quyền quản lý như trưởng đơn vị",
                 role_manages_another: "Các quyền quản lý khác",
                 no_roles: "Không có",
+                turn: "Số ca làm việc"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
@@ -5480,6 +5481,13 @@ export default {
                 turn_3: "Ca 3",
                 turn_4: "Ca 4",
                 turn_5: "Ca 5",
+                turn_6: "Ca 6",
+                turn_7: "Ca 7",
+                turn_8: "Ca 8",
+                turn_9: "Ca 9",
+                turn_10: "Ca 10",
+                turn_11: "Ca 11",
+                turn_12: "Ca 12",
                 add_work_schedule_button: "Tạo lịch",
                 add_work_schedule: "Tạo lịch làm việc",
                 number_turns: "Số ca / ngày",

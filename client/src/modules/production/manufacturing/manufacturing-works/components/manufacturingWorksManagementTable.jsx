@@ -123,6 +123,7 @@ class ManufacturingWorksManagementTable extends Component {
                         name={this.state.currentRow.name}
                         phoneNumber={this.state.currentRow.phoneNumber}
                         address={this.state.currentRow.address}
+                        turn={this.state.currentRow.turn}
                         status={this.state.currentRow.status}
                         description={this.state.currentRow.description}
                         organizationalUnit={this.state.currentRow.organizationalUnit}
