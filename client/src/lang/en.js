@@ -137,6 +137,7 @@ export default {
             annual_leave_personal: "Annual Leave",
             manage_unit: "Manage Units",
             manage_work_plan: "Manage Work Plan",
+            manage_major: "Manage Major",
             add_employee: "Add New Staffs",
             list_employee: "Manage Staffs Information",
             detail_employee: "Personal Information",
@@ -157,6 +158,8 @@ export default {
             list_major: "Manage majors",
             list_career_position: "Manage career position",
             list_search_for_package: "Search employee for package",
+            list_bidding_package: "Manage bidding packages",
+            list_certificate: "Manage bidding certificates",
 
             manage_warehouse: "Manage warehouses",
             dashboard_material: "Dashboad manage materials",
@@ -2295,6 +2298,23 @@ export default {
 
                 // Nhóm action
                 create_annual_leave: "Apply leave",
+            },
+
+            // Chuyên ngành
+            major: {
+                add: "Add",
+                add_title: "Add new major",
+                description: "Description",
+                info: "Major information",
+                name: "Major name",
+                parents: "Extends of",
+                users: "Users has major",
+                edit: "Edit major information",
+                delete: "Delete major",
+                add_success: "Add new major successfully",
+                add_faile: "Add new major failed",
+                edit_success: "Edit major successfully",
+                edit_faile: "Edit major failed",
             },
         },
 

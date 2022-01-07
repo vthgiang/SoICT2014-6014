@@ -1,8 +1,7 @@
 const { Role } = require('../models');
 const { connect } = require('../helpers/dbHelper');
 
-exports.links = [
-    {
+exports.links = [{
         url: '/system/companies-management',
         apis: [
             // Authentication
@@ -130,8 +129,8 @@ exports.links = [
             { path: '/educationProgram/educationPrograms/:id', method: 'PATCH' },
 
             // Dashboard unit
-            { path: '/dashboard-unit/all-unit-dashboard-data',method: 'GET' },
-            
+            { path: '/dashboard-unit/all-unit-dashboard-data', method: 'GET' },
+
             { path: '/course/courses', method: 'GET' },
             { path: '/course/courses', method: 'POST' },
             { path: '/course/courses/:id', method: 'DELETE' },
@@ -737,16 +736,22 @@ exports.links = [
         url: '/hr-list-education',
         apis: ['@all']
     },
-    // {
-    //     url: '/hr-list-major',
-    //     apis: ['@all']
-    // }, {
-    //     url: '/hr-list-career-position',
-    //     apis: ['@all']
-    // }, {
-    //     url: '/hr-search-for-package',
-    //     apis: ['@all']
-    // },
+    {
+        url: '/hr-list-major',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-certificate',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-career-position',
+        apis: ['@all']
+    }, {
+        url: '/hr-search-for-package',
+        apis: ['@all']
+    },
     {
         url: '/kpi-units/create-for-admin',
         apis: ['@all']
@@ -913,13 +918,11 @@ exports.links = [
     {
         url: '/crm/dashboard',
         apis: ['@all']
-    }
-    ,
+    },
     {
         url: '/crm/dashboardUnit',
         apis: ['@all']
-    }
-    , {
+    }, {
         url: '/crm/customer',
         apis: ['@all']
     }, {
@@ -1072,6 +1075,10 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/employees-infomation',
+        apis: ['@all']
+    },
+    {
+        url: '/majors',
         apis: ['@all']
     }
 ];

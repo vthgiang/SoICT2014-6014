@@ -57,6 +57,12 @@ const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/man
 const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi"))
 
+const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
+const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
+const BiddingPackage = lazy(() => import("../modules/human-resource/biddingPackage/component"))
+const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
+const Major = lazy(() => import("../modules/human-resource/major/component"))
+
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
 const DashBoardEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/dashboard/component/employeeKpiDashboard"))
@@ -1062,6 +1068,108 @@ class Routes extends Component {
                         pageName={"training_plan"}
                         layout={Layout}
                         component={TrainingPlan}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-search-for-package"}
+                        path={"/hr-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchEmployeeForPackage}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_major"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-major",
+                                name: "list_major",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-major"}
+                        path={"/hr-list-major"}
+                        pageName={"list_major"}
+                        layout={Layout}
+                        component={Major}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_career_position"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-career-position",
+                                name: "list_career_position",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-career-position"}
+                        path={"/hr-list-career-position"}
+                        pageName={"list_career_position"}
+                        layout={Layout}
+                        component={CareerPosition}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_bidding_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-bidding-package",
+                                name: "list_bidding_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-bidding-package"}
+                        path={"/hr-list-bidding-package"}
+                        pageName={"list_bidding_package"}
+                        layout={Layout}
+                        component={BiddingPackage}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_certificate"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-certificate",
+                                name: "list_certificate",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-certificate"}
+                        path={"/hr-list-certificate"}
+                        pageName={"list_certificate"}
+                        layout={Layout}
+                        component={Certificate}
                     />
 
                     <PrivateRoute

@@ -160,6 +160,8 @@ export default {
             list_major: "Danh sách chuyên ngành",
             list_career_position: "Danh sách vị trí công việc",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
+            list_bidding_package: "Danh sách gói thầu",
+            list_certificate: "Bằng cấp - chứng chỉ",
 
             employee_unit: "Nhân sự đơn vị",
             employee_infomation: "Thông tin nhân viên",

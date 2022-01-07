@@ -10,6 +10,8 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { MajorActions } from "../../../major/redux/actions";
+import { CareerReduxAction } from "../../../career/redux/actions";
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 
@@ -54,6 +56,7 @@ const EmployeeManagement = (props) => {
 
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
+        props.getListMajor({ name: '', page: 1, limit: 1000 });
         props.getDepartment();
     }, [])
 
@@ -1231,9 +1234,13 @@ function mapState(state) {
 
 const actionCreators = {
     getListFields: FieldsActions.getListFields,
+    getListMajor: MajorActions.getListMajor,
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
+    getListCareerAction: CareerReduxAction.getListCareerAction,
+    getListCareerField: CareerReduxAction.getListCareerField,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

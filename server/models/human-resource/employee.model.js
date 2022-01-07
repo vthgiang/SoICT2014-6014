@@ -198,8 +198,10 @@ const EmployeeSchema = new Schema({
     taxAuthority: { // Cơ quan quản lý thuế (theo mã số thuế đã cấp)
         type: String,
     },
-    degrees: [{ // Bằng cấp
+    degrees: [{ // Bằng cấp (join từ bảng cetificate)
         name: String,
+        abbreviations: String,
+        code: String,
         issuedBy: String,
         year: Date,
         degreeType: {
@@ -213,15 +215,17 @@ const EmployeeSchema = new Schema({
         file: String,
         urlFile: String
     }],
-    certificates: [{ // Chứng chỉ ngắn hạn
+    certificates: [{ // Chứng chỉ ngắn hạn (join từ bảng cetificate)
         name: String,
+        abbreviations: String,
+        code: String,
         issuedBy: String,
         startDate: Date,
         endDate: Date,
         file: String,
         urlFile: String
     }],
-    workProcess: [{ //QUas trinhf cong tac
+    workProcess: [{ //Qúa trinhf cong tac
         startDate: Date,
         endDate: Date,
         company: String,
@@ -294,7 +298,29 @@ const EmployeeSchema = new Schema({
             numberPassport: { type: String }, // Số CMND, Hộ chiếu
             note: { type: String } // Ghi chú
         }]
-    }
+    },
+
+    // Kiểm tra điều kiện dự thầu
+    majors: [{
+        major: {
+            type: Schema.Types.ObjectId,
+            ref: "Major"
+        },
+        certificate: {
+            type: Schema.Types.ObjectId,
+            ref: "Certificate"
+        }
+    }],
+    careerPositions: [{
+        careerPosition: {
+            type: Schema.Types.ObjectId,
+            ref: "CareerPosition"
+        },
+        biddingPackage: {
+            type: Schema.Types.ObjectId,
+            ref: "BiddingPackage"
+        },
+    }]
 }, {
     timestamps: true,
 });
