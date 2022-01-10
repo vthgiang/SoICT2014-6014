@@ -92,7 +92,7 @@ exports.restore = async (options) => {
             if (checkOS() === 1) {
                 return {
                     delete: `rmdir /s /q ${SERVER_DIR}\\upload`,
-                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR} /E/H/C/I`
+                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR}\\upload /E/H/C/I`
                 }
             } else if (checkOS() === 2) {
                 return {
@@ -112,6 +112,11 @@ exports.restore = async (options) => {
     // 2. Khôi phục các file ( image, video, file, doc, excel, v.v. )
     const command2 = commandRestoreFile(options);
     exec(command2.delete, function (err) {
+        if (checkOS() === 1) {
+            fs.mkdirSync(`${SERVER_DIR}/upload`, {
+                recursive: true
+            });
+        }
         exec(command2.new, function (err) { });
     });
 }
