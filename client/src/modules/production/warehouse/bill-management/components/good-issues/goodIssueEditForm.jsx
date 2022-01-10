@@ -646,7 +646,7 @@ function GoodIssueEditForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code} disabled />
+                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
