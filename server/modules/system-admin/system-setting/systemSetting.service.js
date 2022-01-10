@@ -4,6 +4,7 @@ const { time } = require('cron');
 const fs = require('fs');
 const exec = require('child_process').exec;
 const { Configuration } = require(`../../../models`);
+const {checkOS} = require("../../../helpers/osHelper");
 
 exports.getBackups = () => {
     if (!fs.existsSync(`${SERVER_BACKUP_DIR}/all`)) {
@@ -127,9 +128,14 @@ exports.createBackup = async () => {
 };
 
 exports.deleteBackup = async (version) => {
-    const path = `${SERVER_BACKUP_DIR}/all/${version}`;
+    const path = `${SERVER_BACKUP_DIR}\\all\\${version}`;
     if (fs.existsSync(path)) {
-        exec("rm -rf " + path, function (err) { });
+        if (checkOS() === 1) {
+            exec("rmdir /s /q " + path, function (err) { });
+        } else if (checkOS() === 2) {
+            exec("rm -rf " + path, function (err) {
+            });
+        }
         return version;
     }
     return null;
