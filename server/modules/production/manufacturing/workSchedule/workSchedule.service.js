@@ -194,10 +194,17 @@ exports.createWorkSchedule = async (data, portal) => {
             }
             let schedules = [];
             for (let i = 0; i < manufacturingMills.length; i++) {
+                let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+                .findById({ _id: manufacturingMills[i].manufacturingWorks });
+                let numberOfTurns1 = manufacturingWorks.turn;
+                let turnArray = [];
+                for (let i = 0; i < numberOfTurns1; i++) {
+                    turnArray[i] = itemOfTurns;
+                }
                 schedules.push({
                     manufacturingMill: manufacturingMills[i],
                     month: month,
-                    turns: turns
+                    turns: turnArray
                 });
             }
             workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).insertMany(schedules);

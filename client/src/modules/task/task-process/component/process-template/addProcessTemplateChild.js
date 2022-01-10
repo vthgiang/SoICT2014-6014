@@ -28,22 +28,24 @@ function AddProcessTemplate(props) {
         props.getAllXmlDiagram(1,100000000,"");
     }, [])
     useEffect(() => {
-        const {infoTemplate} = props
+        const {infoTemplate, taskProcess} = props
+        const taskProcessSelected = taskProcess.xmlDiagram.find(data => data._id === infoTemplate)
+        // console.log(infoTemplate, taskProcessSelected);
         setState({
             ...state,
             newProcessTemplate: {
-                creator:infoTemplate.creator ? infoTemplate.creator : '',
-                numberOfUse:infoTemplate.numberOfUse ? infoTemplate.numberOfUse : "",
-                privileges:infoTemplate.privileges ? infoTemplate.privileges : "",
-                processDescription:infoTemplate.processDescription ? infoTemplate.processDescription : "",
-                processName:infoTemplate.processName ? infoTemplate.processName : "",
-                tasks:infoTemplate.tasks ? infoTemplate.tasks : [],
-                xmlDiagram:infoTemplate.xmlDiagram ? infoTemplate.xmlDiagram : "",
-                _id:infoTemplate._id,
-                viewer: infoTemplate.viewer ? infoTemplate.viewer : [],
-                manager: infoTemplate.manager ? infoTemplate.manager : [] ,
+                creator:taskProcessSelected&&taskProcessSelected.creator ? taskProcessSelected.creator : '',
+                numberOfUse:taskProcessSelected&&taskProcessSelected.numberOfUse ? taskProcessSelected.numberOfUse : "",
+                privileges:taskProcessSelected&&taskProcessSelected.privileges ? taskProcessSelected.privileges : "",
+                processDescription:taskProcessSelected&&taskProcessSelected.processDescription ? taskProcessSelected.processDescription : "",
+                processName:taskProcessSelected&&taskProcessSelected.processName ? taskProcessSelected.processName : "",
+                tasks:taskProcessSelected&&taskProcessSelected.tasks ? taskProcessSelected.tasks : [],
+                xmlDiagram:taskProcessSelected&&taskProcessSelected.xmlDiagram ? taskProcessSelected.xmlDiagram : "",
+                _id:taskProcessSelected&&taskProcessSelected._id,
+                viewer: taskProcessSelected&&taskProcessSelected.viewer ? taskProcessSelected.viewer : [],
+                manager: taskProcessSelected&&taskProcessSelected.manager ? taskProcessSelected.manager : [] ,
             },
-            show:infoTemplate.processName ? true : false ,
+            show:taskProcessSelected&&taskProcessSelected.processName ? true : false ,
         })
         
         // props.getAllDepartments()
@@ -63,6 +65,7 @@ function AddProcessTemplate(props) {
                 quillDescriptionDefault:taskProcessSelected.processDescription,
                 processName:taskProcessSelected.processName,
                 tasks:taskProcessSelected.tasks,
+                processTemplates:taskProcessSelected.processTemplates,
                 xmlDiagram:taskProcessSelected.xmlDiagram,
                 _id:taskProcessSelected._id,
                 viewer: taskProcessSelected.viewer ,
@@ -140,9 +143,9 @@ function AddProcessTemplate(props) {
     const {translate, taskProcess, role} = props
     const {newProcessTemplate,show} = state
 
-    console.log(state.newProcessTemplate._id,taskProcess.xmlDiagram && taskProcess.xmlDiagram.map(x => {
-        return {  value: x._id , text: x.processName}
-    }));
+    // console.log(state.newProcessTemplate._id,taskProcess.xmlDiagram && taskProcess.xmlDiagram.map(x => {
+    //     return {  value: x._id , text: x.processName}
+    // }));
     return (
         <React.Fragment>
             <div className="row">
@@ -172,7 +175,7 @@ function AddProcessTemplate(props) {
                             {/* Mô tả quy trình */}
                             <div className={`form-group`}>
                                 <label className="control-label">{translate('task.task_process.process_description')}</label>
-                                <p>{newProcessTemplate.quillDescriptionDefault}</p>
+                                <p>{newProcessTemplate.processDescription}</p>
                             </div>
                             <div className="description-box">
                                 <div style={{ display: 'flex', alignItems: 'center' }}>

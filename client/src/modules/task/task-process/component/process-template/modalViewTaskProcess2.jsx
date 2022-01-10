@@ -7,13 +7,14 @@ import { DialogModal, SelectBox } from "../../../../../common-components";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../../redux/actions";
 import { ViewTaskTemplate } from "../../../task-template/component/viewTaskTemplate";
-
+import qs from 'qs';
 import BpmnViewer from 'bpmn-js';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import customModule from '../custom-task-process-template';
 import { AddProcessTemplate } from "./addProcessTemplateChild";
 import { ViewProcessTemplateChild } from "./viewProcessTemplateChild";
 import { ModalViewBpmnProcessTemplateChild } from "./viewBpmnProcessTemplateChild";
+import { TaskProcessService } from "../../redux/services";
 var zlevel = 1;
 function areEqual(prevProps, nextProps) {
     if (prevProps.idProcess === nextProps.idProcess ){
@@ -22,16 +23,16 @@ function areEqual(prevProps, nextProps) {
         return false
     }
 }
-function ModalViewTaskProcess(props) {
-    let { data } = props;
+function ModalViewTaskProcess2(props) {
+    // let { data } = props;
     const [state, setState] = useState({
         userId: getStorage("userId"),
         currentRole: getStorage('currentRole'),
         showInfo: false,
         showInfoProcess: false,
         selectedView: 'info',
-        info: data.tasks,
-        xmlDiagram: data.xmlDiagram,
+        info: [],
+        xmlDiagram: [],
         dataProcessTask:'',
         showProcessTemplate:false,
         render:0
@@ -92,8 +93,9 @@ function ModalViewTaskProcess(props) {
         modeler.on('element.click', 1000, (e) => interactPopup(e));
     }, [])
     useEffect(() => {
-        // console.log("2");
-        if(props.idProcess != state.idProcess){
+        console.log(props);
+        if(props.idProcess&&props.idProcess != state.idProcess){
+            console.log("object");
             let info = {};
             let infoTask = props.data.tasks; // TODO task list
             for (let i in infoTask) {
@@ -125,6 +127,7 @@ function ModalViewTaskProcess(props) {
         }
         
     }, [props.idProcess])
+    
     // static getDerivedStateFromProps(nextProps, prevState) {
     //     if (nextProps.idProcess !== prevState.idProcess) {
     //         let info = {};
@@ -255,146 +258,137 @@ function ModalViewTaskProcess(props) {
     }
     return (
         <React.Fragment>
-            <DialogModal
-                size='100' modalID={`modal-view-process-task`}
-                isLoading={false}
-                formID="form-task-process"
-                title={props.title}
-                hasSaveButton={false}
-                bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
-            >
-                <div>
-                    <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a href="#info-view" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
-                            <li><a href="#process-view" onClick={() => handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
-                        </ul>
-                        <div className="tab-content">
-                            <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
-                                <div className="description-box without-border">
-                                    {/* Thông tin chung */}
-                                    <div>
-                                        <strong>{translate("task.task_process.process_name")}:</strong>
-                                        <span>{processName}</span>
-                                    </div>
-                                    <div>
-                                        <strong>{translate("task.task_process.process_description")}:</strong>
-                                        <span>{processDescription}</span>
-                                    </div>
+            
+            <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
+                <ul className="nav nav-tabs">
+                    <li className="active"><a href="#info-view" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+                    <li><a href="#process-view" onClick={() => handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
+                </ul>
+                <div className="tab-content">
+                    <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
+                        <div className="description-box without-border">
+                            {/* Thông tin chung */}
+                            <div>
+                                <strong>{translate("task.task_process.process_name")}:</strong>
+                                <span>{processName}</span>
+                            </div>
+                            <div>
+                                <strong>{translate("task.task_process.process_description")}:</strong>
+                                <span>{processDescription}</span>
+                            </div>
 
 
-                                    {/* Người xem, quản lý */}
-                                    <strong>{translate("task.task_process.viewer")}:</strong>
-                                    <ul>
-                                        {
-                                            listViewer.map((x, key) => {
-                                                return <li key={key}>{x.text}</li>
-                                            })
-                                        }
-                                    </ul>
-                                    <strong>{translate("task.task_process.manager")}:</strong>
-                                    <ul>
-                                        {
-                                            listManager.map((x, key) => {
-                                                return <li key={key}>{x.text}</li>
-                                            })
-                                        }
-                                    </ul>
+                            {/* Người xem, quản lý */}
+                            <strong>{translate("task.task_process.viewer")}:</strong>
+                            <ul>
+                                {
+                                    listViewer.map((x, key) => {
+                                        return <li key={key}>{x.text}</li>
+                                    })
+                                }
+                            </ul>
+                            <strong>{translate("task.task_process.manager")}:</strong>
+                            <ul>
+                                {
+                                    listManager.map((x, key) => {
+                                        return <li key={key}>{x.text}</li>
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
+                    <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
+                        <div className="">
+                            {/* Quy trình công việc */}
+                            {state.showProcessTemplate && state.dataProcessTask &&
+                                <ModalViewBpmnProcessTemplateChild
+                                    idProcess={state.dataProcessTask._id}
+                                    tasks={state.dataProcessTask.tasks}
+                                    processTemplates={state.dataProcessTask.processTemplates}
+                                    processDescription={state.dataProcessTask.processDescription}
+                                    processName={state.dataProcessTask.processName}
+                                    viewer={state.dataProcessTask.viewer}
+                                    manager={state.dataProcessTask.manager}
+                                    xmlDiagram={state.dataProcessTask.xmlDiagram}
+                                    >
+                                </ModalViewBpmnProcessTemplateChild>
+                            }
+                            <div className={`contain-border ${showInfo || showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
+                                <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
+                                    <button onClick={exportDiagram}>Export XML</button>
+                                    <button onClick={downloadAsSVG}>Save SVG</button>
+                                    <button onClick={downloadAsImage}>Save Image</button>
+                                    <button onClick={downloadAsBpmn}>Download BPMN</button>
+                                </div>
+                                <div id={generateId}></div>
+                                <div className="row">
+                                    <div className="io-zoom-controls">
+                                        <ul className="io-zoom-reset io-control io-control-list">
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
+                                                    <i className="fa fa-crosshairs"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
+                                                    <i className="fa fa-plus"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
+                                                    <i className="fa fa-minus"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-
-                        <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
-                            <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
-                                <div className="">
-                                    {/* Quy trình công việc */}
-                                    {state.showProcessTemplate && state.dataProcessTask &&
-                                        <ModalViewBpmnProcessTemplateChild
-                                            idProcess={state.dataProcessTask._id}
-                                            tasks={state.dataProcessTask.tasks}
-                                            processTemplates={state.dataProcessTask.processTemplates}
-                                            processDescription={state.dataProcessTask.processDescription}
-                                            processName={state.dataProcessTask.processName}
-                                            viewer={state.dataProcessTask.viewer}
-                                            manager={state.dataProcessTask.manager}
-                                            xmlDiagram={state.dataProcessTask.xmlDiagram}
-                                            >
-                                        </ModalViewBpmnProcessTemplateChild>
-                                    }
-                                    <div className={`contain-border ${showInfo || showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
-                                        <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
-                                            <button onClick={exportDiagram}>Export XML</button>
-                                            <button onClick={downloadAsSVG}>Save SVG</button>
-                                            <button onClick={downloadAsImage}>Save Image</button>
-                                            <button onClick={downloadAsBpmn}>Download BPMN</button>
-                                        </div>
-                                        <div id={generateId}></div>
-                                        <div className="row">
-                                            <div className="io-zoom-controls">
-                                                <ul className="io-zoom-reset io-control io-control-list">
-                                                    <li>
-                                                        <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
-                                                            <i className="fa fa-crosshairs"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
-                                                            <i className="fa fa-plus"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
-                                                            <i className="fa fa-minus"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                            <div className={`right-content ${showInfo || showInfoProcess? 'col-md-4' : undefined}`}>
+                                {showInfo&&
+                                    <div>
+                                        {/* <div>
+                                                <h1>Option {name}</h1>
+                                            </div> */}
+                                        <ViewTaskTemplate
+                                            isProcess={true}
+                                            taskTemplate={info?.[`${id}`]}
+                                            listUser={listUser}
+                                        />
                                     </div>
-                                    <div className={`right-content ${showInfo || showInfoProcess? 'col-md-4' : undefined}`}>
-                                        {showInfo&&
-                                            <div>
-                                                {/* <div>
-                                                        <h1>Option {name}</h1>
-                                                    </div> */}
-                                                <ViewTaskTemplate
-                                                    isProcess={true}
-                                                    taskTemplate={info?.[`${id}`]}
-                                                    listUser={listUser}
-                                                />
-                                            </div>
-                                        }
-                                        {showInfoProcess&&
-                                            <div>
-                                            {/* <div>
-                                                    <h1>Option {name}</h1>
-                                                </div> */}
-                                                <ViewProcessTemplateChild
-                                                    id={id}
-                                                    infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`]}
-                                                    handleDataProcessTempalte={handleDataProcessTempalte}
-                                                    // setBpmnProcess={setBpmnProcess}
-                                                    // handleChangeName={handleChangeName} // cập nhật tên vào diagram
-                                                    // handleChangeViewerBpmn={handleChangeViewerBpmn} // cập nhật hiển thi diagram
-                                                    // handleChangeManagerBpmn={handleChangeManagerBpmn} // cập nhật hiển thị diagram
-                                                />
-                                            </div>
-                                        }
+                                }
+                                {showInfoProcess&&
+                                    <div>
+                                    {/* <div>
+                                            <h1>Option {name}</h1>
+                                        </div> */}
+                                        <ViewProcessTemplateChild
+                                            id={id}
+                                            infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`]}
+                                            handleDataProcessTempalte={handleDataProcessTempalte}
+                                            // setBpmnProcess={setBpmnProcess}
+                                            // handleChangeName={handleChangeName} // cập nhật tên vào diagram
+                                            // handleChangeViewerBpmn={handleChangeViewerBpmn} // cập nhật hiển thi diagram
+                                            // handleChangeManagerBpmn={handleChangeManagerBpmn} // cập nhật hiển thị diagram
+                                        />
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
-            </DialogModal>
+            </div>
+    
         </React.Fragment>
     );
 }
 
 function mapState(state) {
-    const { user, auth, role } = state;
-    return { user, auth, role };
+    const { user, auth, role, taskProcess } = state;
+    return { user, auth, role, taskProcess };
 }
 
 const actionCreators = {
@@ -403,7 +397,7 @@ const actionCreators = {
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     editXmlDiagram: TaskProcessActions.editXmlDiagram,
-    getAllUsers: UserActions.get
+    getAllUsers: UserActions.get,
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(React.memo(ModalViewTaskProcess,areEqual)));
-export { connectedModalAddProcess as ModalViewTaskProcess };
+const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(React.memo(ModalViewTaskProcess2,areEqual)));
+export { connectedModalAddProcess as ModalViewTaskProcess2 };

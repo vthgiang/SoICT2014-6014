@@ -130,7 +130,7 @@ function ManufacturingMillScheduleManagentTable(props) {
     }
     const { totalPages, page } = workSchedule;
     const { month, allDaysOfMonth, code } = state;
-
+    console.log(listWorkSchedules);
     const arrayStatus = [0, 6, 1, 2, 3, 4]
     return (
         <React.Fragment>
@@ -215,6 +215,7 @@ function ManufacturingMillScheduleManagentTable(props) {
                                                 </td>
                                             </tr>
                                             {
+                                                
                                                 arrayTurnsWithoutOne.map((x, index) => (
                                                     <tr key={index}>
                                                         <td>{translate(`manufacturing.work_schedule.turn_${x}`)}</td>

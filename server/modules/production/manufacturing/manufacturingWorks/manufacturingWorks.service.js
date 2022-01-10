@@ -22,6 +22,7 @@ exports.createManufacturingWorks = async (data, portal) => {
         manufacturingMills: data.manufacturingMills,
         description: data.description,
         organizationalUnit: data.organizationalUnit,
+        turn: data.turn,
         manageRoles: data.manageRoles.map(role => {
             return role
         })
@@ -203,9 +204,11 @@ exports.editManufacturingWorks = async (id, data, portal) => {
     oldManufacturingWorks.organizationalUnit = data.organizationalUnit ? data.organizationalUnit : oldManufacturingWorks.organizationalUnit;
     oldManufacturingWorks.phoneNumber = data.phoneNumber ? data.phoneNumber : oldManufacturingWorks.phoneNumber;
     oldManufacturingWorks.address = data.address ? data.address : oldManufacturingWorks.address;
+    oldManufacturingWorks.turn = data.turn ? data.turn : oldManufacturingWorks.turn;
     oldManufacturingWorks.description = data.description ? data.description : oldManufacturingWorks.description;
     oldManufacturingWorks.status = data.status ? data.status : oldManufacturingWorks.status;
     oldManufacturingWorks.manageRoles = data.manageRoles ? data.manageRoles.map(role => { return role }) : oldManufacturingWorks.manageRoles
+
 
     await oldManufacturingWorks.save();
 

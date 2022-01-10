@@ -18,6 +18,7 @@ class ManufacturingWorksCreateForm extends Component {
             status: "",
             description: "",
             manageRoles: [],
+            turn: 3
         }
     }
 
@@ -138,6 +139,19 @@ class ManufacturingWorksCreateForm extends Component {
         this.setState({ addressError: message })
     }
 
+    handleTurnChange = (e) => {
+        const { value } = e.target;
+        this.setState({ turn: value })
+        if(value <= 0 || value > 12){
+            let message = "Số ca làm việc phải nằm trong khoảng từ 1 đến 12"
+            this.setState({ turnError: message })
+            return;
+        } else {
+            this.setState({ turnError: "" })
+        }
+       
+    }
+
     handleStatusChange = (value) => {
         let status = value[0];
         this.validateStatus(status, true);
@@ -176,6 +190,8 @@ class ManufacturingWorksCreateForm extends Component {
             || !ValidationHelper.validateEmpty(translate, phoneNumber).status
             || this.validateOrganizationalUnitValue(organizationalUnitValue, false)
             || this.validateStatus(status, false)
+            || this.state.turn <=0
+            || this.state.turn >12
         ) {
             return false;
         }
@@ -192,7 +208,8 @@ class ManufacturingWorksCreateForm extends Component {
                 phoneNumber: this.state.phoneNumber,
                 status: this.state.status,
                 description: this.state.description,
-                manageRoles: this.state.manageRoles
+                manageRoles: this.state.manageRoles,
+                turn: this.state.turn
             }
             this.props.createManufacturingWorks(data);
         }
@@ -209,7 +226,7 @@ class ManufacturingWorksCreateForm extends Component {
     render() {
         const { translate, manufacturingWorks } = this.props;
         const { name, nameError, phoneNumber, phoneNumberError, address, addressError, status, statusError, description, code, organizationalUnitError, organizationalUnitValue, currentDepartment
-            , manageRoles } = this.state;
+            , manageRoles, turn, turnError } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-works" button_name={translate('manufacturing.manufacturing_works.create_works')} title={translate('manufacturing.manufacturing_works.create_works')} />
@@ -296,6 +313,11 @@ class ManufacturingWorksCreateForm extends Component {
                             <label>{translate('manufacturing.manufacturing_works.address')}<span className="text-red">*</span></label>
                             <input type="text" value={address} className="form-control" onChange={this.handleAddressChange}></input>
                             <ErrorLabel content={addressError} />
+                        </div>
+                        <div className={`form-group ${!turnError ? "" : "has-error"}`}>
+                            <label>Số ca làm việc<span className="text-red">*</span></label>
+                            <input type="number" value={turn} className="form-control" onChange={this.handleTurnChange}></input>
+                            <ErrorLabel content={turnError} />
                         </div>
                         <div className={`form-group ${!statusError ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.manufacturing_works.status')}<span className="text-red">*</span></label>

@@ -1,8 +1,8 @@
 const { SystemApi, Company, Api } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
-const swaggerJsDoc = require("swagger-jsdoc");
-const appJSDocs = require('../../../../api-docs/appJSDocs');
+const {allAppRouteSpec} = require('../../../../api-docs/openapi');
+const fs = require('fs');
 
 const getSystemApis = async (data) => {
     const { path, method, description, page = 1, perPage = 30 } = data
@@ -153,17 +153,13 @@ const updateSystemApi = async (app) => {
 
         app._router.stack.forEach((layer) => getRoute([], layer));
 
-        /**
-         * TODO: Kiểm tra xem appJSDocs có phải chạy, lấy lại nhiều lần hay không
-         * Nếu có, thì hãy  lưu ra một biến để tối ưu hơn
-         */
         const apisSpecs = [];
-        for (const api in appJSDocs.paths) {
-            for (const method in appJSDocs.paths[api]) {
+        for (const api in allAppRouteSpec) {
+            for (const method in allAppRouteSpec[api]) {
                 apisSpecs.push({
                     path: api,
                     method: method.toUpperCase(),
-                    description: appJSDocs.paths[api][method].description
+                    description: allAppRouteSpec[api][method].description
                 })
             }
         }
@@ -173,11 +169,6 @@ const updateSystemApi = async (app) => {
             if (api) appRoutes[i].description = api.description;
         }
 
-        /**
-         * So sánh dữ liệu toàn bộ routes mới lấy với dữ liệu của system-api
-         * Xem những api nào được thêm/sửa/xóa
-         * Ghi các thay đổi vào một file log
-         */
         const systemApis = await SystemApi(connect(DB_CONNECTION, process.env.DB_NAME)).find()
 
         let updateApiLog = {
@@ -220,12 +211,9 @@ const updateSystemApi = async (app) => {
             updateApiLog.remove.apis.push(api);
         });
 
-        // const fs = require('fs').promises;
-        // try {
-        //     await fs.writeFile("middleware/systemApiChangedLog.log", JSON.stringify(updateApiLog), {
-        //         encoding: "utf8",
-        //     });
-        // } catch (error) { }
+        // Thêm tất cả route hiện thời vào file system
+        // HOANG - TODO: chỗ này cũng cần khi nào admin đồng ý mới được phép ghi vào file
+        fs.writeFileSync("middleware/systemApi.json", JSON.stringify(appRoutes));
 
         return updateApiLog;
     } catch (error) {

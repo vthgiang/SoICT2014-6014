@@ -3596,6 +3596,7 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thuốc bột của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythuocbot._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
+            turn: 5
         },
         {
             code: "NMSX202011112",
@@ -3607,6 +3608,7 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thuốc nước của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythuocnuoc._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
+            turn: 6
         },
         {
             code: "NMSX202011113",
@@ -3618,6 +3620,7 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thực phẩm chức năng của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythucphamchucnang._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
+            turn: 7
         },
     ];
     const manufacturingWorks = await ManufacturingWorks(vnistDB).insertMany(

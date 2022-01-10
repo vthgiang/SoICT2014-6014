@@ -378,7 +378,7 @@ function ProcessTemplate(props) {
     let exportData = convertDataExport([]);
     if (listDiagram && listDiagram.length !== 0) {
         exportData = convertDataExport(listDiagram);
-        console.log('list diagram', listDiagram);
+        // console.log('list diagram', listDiagram);
     }
 // console.log("");
     let totalPage = taskProcess.totalPage

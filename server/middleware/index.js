@@ -10,6 +10,7 @@ const { initModels, connect } = require(`../helpers/dbHelper`);
 const { decryptMessage } = require('../helpers/functionHelper');
 const rateLimit = require("express-rate-limit");
 
+
 /**
  * ****************************************
  * Middleware xác thực truy cập người dùng
@@ -180,11 +181,6 @@ exports.authFunc = (checkPage = true) => {
                             const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
                             if (!perAPI) throw ['api_permission_invalid'];
                         }
-
-                        /**
-                         * Ques: Truy cập với API được phân quyền thì nên được xử lý như thế nào?
-                         * Ques: Sử dụng API riêng rẽ như thế nào khi các API được gắn với trang chưa API và ko có trang riêng cho việc sử dụng API được đặc cấp
-                         */
                     }
                 }
             } else {
@@ -222,16 +218,18 @@ exports.authFunc = (checkPage = true) => {
                 }
 
                 // Kiểm tra phân quyền api cho 1 cty
-                let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({
-                        apis: {
-                            $in: [systemApi?._id]
-                        },
-                        company: verified.company
-                    })
-                if (!apiInCompany) {
-                    throw ['api_permission_to_company_invalid']
-                };
+                // let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                //     .findOne({
+                //         apis: {
+                //             $in: [systemApi?._id]
+                //         },
+                //         shortName: req.portal,
+                //         // company: verified.company
+                //     })
+
+                //     if (!apiInCompany) {
+                //     throw ['api_permission_to_company_invalid']
+                // };
 
                 req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
                     .findOne({company: verified.company});
@@ -348,6 +346,45 @@ exports.uploadFile = (arrData, type) => {
     }
 };
 
+exports.uploadBackupFiles = () => {
+    // 1. Tạo folder backup/all nếu chưa tồn tại -> tạo folder backup/all/'version'/data
+    // 2. copy file được gửi lên vào backup/all/'version'/data
+    const getFile = multer({
+        storage: multer.diskStorage({
+            destination: (req, file, cb) => {
+                const time = new Date(),
+                    month = time.getMonth() + 1,
+                    date = time.getDate(),
+                    year = time.getFullYear(),
+                    hour = time.getHours(),
+                    minute = time.getMinutes(),
+                    second = time.getSeconds();
+
+                const version = `${year}.${month}.${date}.${hour}.${minute}.${second}`;
+                const path = `${SERVER_BACKUP_DIR}/all/${version}/data`;
+                if (!fs.existsSync(path)) {
+                    fs.mkdirSync(path, {
+                        recursive: true
+                    });
+                }
+                console.log(`create ${version} in multer`)
+                cb(null, path)
+            },
+            filename: function (req, file, cb) {
+                let extend = file.originalname.split(".");
+                let oldNameFile = extend.splice(0, extend.length - 1);
+                oldNameFile = oldNameFile.join(".");
+                let hash =
+                    `${req.user._id}_${Date.now()}_` +
+                    CryptoJS.MD5(oldNameFile).toString();
+                let fileName = `${hash}.${extend[extend.length - 1]}`;
+                cb(null, fileName);
+            },
+        }),
+    });
+
+    return getFile.single('files');
+}
 /**
  * Middleware kiểm tra userId gửi trong param có trùng với userId lưu trong jwt
  * @param {*} req 
