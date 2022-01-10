@@ -4631,6 +4631,8 @@ export default {
                 edit_success: "Chỉnh sửa thành công",
                 edit_faile: "Chỉnh sửa thất bại",
                 name: "Tên hàng hóa",
+                good_source: "Nguồn hàng hóa",
+                validate_source_product: 'Bạn cần chọn nguồn hàng hóa',
                 code: "Mã hàng hóa",
                 type: "Kiểu hàng hóa",
                 good: "Hàng hóa",
@@ -4655,6 +4657,7 @@ export default {
                 conversion_rate: "Giá trị chuyển đổi",
                 quantity: "Số lượng",
                 choose_category: "Chọn danh mục",
+                choose_source: "Chọn nguồn hàng hóa",
                 choose_base_unit:
                     "Vui lòng chọn đơn vị để tạo quy tắc đóng gói",
                 packing_rule: "Quy tắc đóng gói",
