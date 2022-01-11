@@ -12,6 +12,6 @@ router.patch("/backup/config", auth, SystemSettingController.configBackup);
 router.patch("/backup/:version/edit", auth, SystemSettingController.editBackupInfo);
 router.delete("/backup/:version", auth, SystemSettingController.deleteBackup);
 router.patch("/restore/:version", auth, SystemSettingController.restore);
-router.post("/backup/upload", auth, uploadBackupFiles(), SystemSettingController.uploadBackupFiles);
+router.post("/backup/upload", auth, uploadBackupFiles({}), SystemSettingController.uploadBackupFiles);
 
 module.exports = router;

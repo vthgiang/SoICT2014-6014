@@ -28,6 +28,7 @@ export function system(state = initState, action) {
         case SystemConstants.DELETE_BACKUP_REQUEST:
         case SystemConstants.EDIT_BACKUP_INFO_REQUEST:
         case SystemConstants.DOWNLOAD_BACKUP_VERSION_REQUEST:
+        case SystemConstants.UPLOAD_BACKUP_FILE_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -43,6 +44,7 @@ export function system(state = initState, action) {
         case SystemConstants.EDIT_BACKUP_INFO_FAILURE:
         case SystemConstants.DOWNLOAD_BACKUP_VERSION_SUCCESS:
         case SystemConstants.DOWNLOAD_BACKUP_VERSION_FAILURE:
+        case SystemConstants.UPLOAD_BACKUP_FILE_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -114,7 +116,15 @@ export function system(state = initState, action) {
                 },
                 isLoading: false
             }
-
+        case SystemConstants.UPLOAD_BACKUP_FILE_SUCCESS:
+            return {
+                ...state,
+                backup: {
+                    ...state.backup,
+                    list: action.payload
+                },
+                isLoading: false
+            }
         default:
             return state;
     }
