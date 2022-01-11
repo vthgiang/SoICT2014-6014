@@ -1066,7 +1066,7 @@ div.notification-title ::after {
 	height: auto !important;
 	font-size: 13px !important;
 
-	border: 1px solid #989da5 !important;
+	/*border: 1px solid #989da5 !important;*/
 }
 
 .text-input-level2 {

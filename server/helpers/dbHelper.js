@@ -77,8 +77,8 @@ exports.restore = async (options) => {
 
             if (checkOS() === 1) {
                 return {
-                    delete: `rmdir /s ${SERVER_DIR}/upload/private/${options.db}/* && rmdir /s ${SERVER_DIR}/upload/avatars/${options.db}/*`,
-                    new: `xcopy  ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/*  ${SERVER_DIR}/upload/private/${options.db} /E/H/C/I && xcopy  ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/*  ${SERVER_DIR}/upload/avatars/${options.db} /E/H/C/I`
+                    delete: `rmdir /s /q ${SERVER_DIR}\\upload\\private\\${options.db}\\* && rmdir /s /q ${SERVER_DIR}\\upload\\avatars\\${options.db}\\*`,
+                    new: `xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\private\\*  ${SERVER_DIR}\\upload\\private\\${options.db} /E/H/C/I && xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\avatars\\*  ${SERVER_DIR}\\upload\\avatars\\${options.db} /E/H/C/I`
                 }
             } else if (checkOS() === 2) {
                 return {
@@ -91,8 +91,8 @@ exports.restore = async (options) => {
             checkDirectory(`${SERVER_DIR}`);
             if (checkOS() === 1) {
                 return {
-                    delete: `rmdir /s ${SERVER_DIR}/upload`,
-                    new: `xcopy  ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload  ${SERVER_DIR} /E/H/C/I`
+                    delete: `rmdir /s /q ${SERVER_DIR}\\upload`,
+                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR}\\upload /E/H/C/I`
                 }
             } else if (checkOS() === 2) {
                 return {
@@ -112,6 +112,11 @@ exports.restore = async (options) => {
     // 2. Khôi phục các file ( image, video, file, doc, excel, v.v. )
     const command2 = commandRestoreFile(options);
     exec(command2.delete, function (err) {
+        if (checkOS() === 1) {
+            fs.mkdirSync(`${SERVER_DIR}/upload`, {
+                recursive: true
+            });
+        }
         exec(command2.new, function (err) { });
     });
 }
@@ -166,7 +171,7 @@ exports.backup = async (options) => {
             checkDirectory(`${backupPath}/data/avatars`);
 
             if (checkOS() === 1) {
-                return `xcopy  ${SERVER_DIR}/upload/private/${options.db}/*  ${backupPath}/data/private /E/H/C/I && xcopy  ${SERVER_DIR}/upload/avatars/${options.db}/*  ${backupPath}/data/avatars /E/H/C/I`;
+                return `xcopy  ${SERVER_DIR}\\upload\\private\\${options.db}\\*  ${backupPath}\\data\\private /E/H/C/I && xcopy  ${SERVER_DIR}\\upload\\avatars\\${options.db}\\*  ${backupPath}\\data\\avatars /E/H/C/I`;
             } else if (checkOS() === 2) {
                 return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
             }
@@ -177,7 +182,7 @@ exports.backup = async (options) => {
             if (checkOS() === 1) {
                 return `xcopy  ${SERVER_DIR}\\upload\\*  ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload /E/H/C/I`;
             } else if (checkOS() === 2) {
-                return `cp -r ${SERVER_DIR}\\upload\\* ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload`;
+                return `cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/data/upload`;
             }
         }
     }
@@ -219,8 +224,8 @@ exports.backup = async (options) => {
                 if (i > limit - 1) { //phiên bản cũ vượt quá số lượng backup lưu trữ (limit)
                     // xóa version backup cũ
                     if (checkOS() === 1) {
-                        if (options.db) exec(`rmdir /s ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { });
-                        else exec(`rmdir /s ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { });
+                        if (options.db) exec(`rmdir /s /q ${SERVER_BACKUP_DIR}\\${options.db}\\${newList[i].version}`, function (err) { });
+                        else exec(`rmdir /s /q ${SERVER_BACKUP_DIR}\\all\\${newList[i].version}`, function (err) { });
                     } else if (checkOS() === 2) {
                         if (options.db) exec(`rm -rf ${SERVER_BACKUP_DIR}/${options.db}/${newList[i].version}`, function (err) { });
                         else exec(`rm -rf ${SERVER_BACKUP_DIR}/all/${newList[i].version}`, function (err) { });
