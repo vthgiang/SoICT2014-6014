@@ -346,7 +346,7 @@ exports.uploadFile = (arrData, type) => {
     }
 };
 
-exports.uploadBackupFiles = () => {
+exports.uploadBackupFiles = (options) => {
     // 1. Tạo folder backup/all nếu chưa tồn tại -> tạo folder backup/all/'version'/data
     // 2. copy file được gửi lên vào backup/all/'version'/data
     const getFile = multer({
@@ -361,7 +361,12 @@ exports.uploadBackupFiles = () => {
                     second = time.getSeconds();
 
                 const version = `${year}.${month}.${date}.${hour}.${minute}.${second}`;
-                const path = `${SERVER_BACKUP_DIR}/all/${version}/data`;
+                let path;
+                if (options.db) {
+                    path = `${SERVER_BACKUP_DIR}/${req.portal}/${version}/data`;
+                } else {
+                    path = `${SERVER_BACKUP_DIR}/all/${version}/data`;
+                }
                 if (!fs.existsSync(path)) {
                     fs.mkdirSync(path, {
                         recursive: true
