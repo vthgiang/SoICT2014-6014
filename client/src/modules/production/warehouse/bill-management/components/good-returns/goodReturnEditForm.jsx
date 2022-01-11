@@ -880,7 +880,7 @@ function GoodReturnEditForm(props) {
                                             </div>
                                         </div>
                                         <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                        <button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</button>
+                                        <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>
                                             {state.editInfo &&
                                                 <React.Fragment>
                                                     <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
