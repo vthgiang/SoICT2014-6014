@@ -6,6 +6,7 @@ const { freshObject } = require(`../../../helpers/functionHelper`);
 const { Supplies, PurchaseInvoice, AllocationHistory } = Models;
 const PurchaseInvoiceService = require('../purchase-invoice-management/purchase-invoice.service');
 const AllocationService = require('../allocation-management/allocation-history.service');
+const { result } = require("lodash");
 
 
 /**
@@ -15,7 +16,7 @@ const AllocationService = require('../allocation-management/allocation-history.s
  */
 exports.searchSupplies = async (portal, params) => {
     let { getAll } = params;
-    if (getAll) {
+    if (getAll === 'true') {
         let totalList = 0, listSupplies = [];
         listSupplies = await Supplies(connect(DB_CONNECTION, portal)).find();
         totalList = listSupplies.length;
@@ -230,3 +231,19 @@ exports.getSuppliesById = async (portal, id) => {
         ]);
     return { supplies, listPurchaseInvoice, listAllocation }
 };
+
+exports.getDashboardSupplies = async (portal, data) => {
+    let listSupplies = await Supplies(
+        connect(DB_CONNECTION, portal))
+        .find({});
+    let listInvoice = await Supplies(
+        connect(DB_CONNECTION, portal))
+        .find({})
+        .sort({ 'createDate': 'desc' });
+    let listAllocation = await AllocationHistory(
+        connect(DB_CONNECTION, portal))
+        .find({})
+        .sort({ 'createDate': 'desc' });
+
+    let result = { listSupplies, listInvoice, listAllocation }
+}

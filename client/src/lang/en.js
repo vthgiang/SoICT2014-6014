@@ -2714,12 +2714,16 @@ export default {
 
             // Quản lý sử dụng
             usage: {
+                choose_status: "Choose status",
                 approved: "Approved",
                 waiting_approval: "Waiting for approval",
                 not_approved: "Not approved",
                 proponent: "Proponent",
                 accountable: "Accountable",
                 note: "Note",
+                time_created: "Time created",
+                task_in_use_request: "Task use asset",
+                recommend_units: "Recommend units",
 
                 //Thông điệp trả về từ server
                 get_usage_success: "Get usage successfully",

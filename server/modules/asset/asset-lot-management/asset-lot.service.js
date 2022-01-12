@@ -36,9 +36,7 @@ exports.searchAssetLots = async (portal, params) => {
     }
     let totalList = 0, listAssetLots = [];
 
-    if (params.getAll === false) {
-        console.log("hang");
-
+    if (params.getAll === 'false') {
         // Lấy danh sách lô tài sản
         totalList = await AssetLot(connect(DB_CONNECTION, portal)).countDocuments(
             keySearch

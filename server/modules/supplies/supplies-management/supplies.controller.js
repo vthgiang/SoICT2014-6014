@@ -9,6 +9,7 @@ exports.searchSupplies = async (req, res) => {
     try {
         let data;
         let params = {
+            getAll: req.query.getAll,
             code: req.query.code,
             suppliesName: req.query.suppliesName,
             page: Number(req.query.page),
@@ -119,6 +120,28 @@ exports.searchSupplies = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ["get_supplies_by_id_failed"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
+
+exports.getDashboardSupplies = async (req, res) => {
+    try {
+        let data;
+        data = await SuppliesService.getDashboardSupplies(req.portal, req.body);
+        await Logger.info(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_dashboard_supplies_success"],
+            content: data
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_dashboard_supplies_success_failed"],
             content: {
                 error: error
             }

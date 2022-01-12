@@ -245,6 +245,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
                 $lte: end,
             },
         };
+
+        console.log("ngày bắt đầu và kết thúc", start, end);
     }
 
 

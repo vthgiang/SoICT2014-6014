@@ -331,7 +331,9 @@ getPaginatedTasks = async (req, res) => {
             creatorEmployees: req.query.creatorEmployees,
             creatorTime: req.query.creatorTime,
             projectSearch: req.query.projectSearch,
-            tags: req.query.tags
+            tags: req.query.tags,
+
+            getAll: req.query.getAll,
         };
 
         let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);

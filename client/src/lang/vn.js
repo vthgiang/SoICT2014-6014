@@ -2902,6 +2902,7 @@ export default {
                 accountable: "Người phê duyệt",
                 note: "Ghi chú",
                 time_created: "Thời gian lập phiếu",
+                task_in_use_request: "Công việc sử dụng tài sản",
 
                 //Thông điệp trả về từ server
                 get_usage_success: "Lấy thông tin sử dụng thành công",

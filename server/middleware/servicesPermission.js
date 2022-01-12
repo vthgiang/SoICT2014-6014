@@ -493,6 +493,8 @@ exports.links = [
             { path: '/supplies-request/purchase-request', method: 'POST' },
             { path: '/supplies-request/purchase-request/:id', method: 'PUT' },
             { path: '/supplies-request/purchase-request/:id', method: 'DELETE' },
+            //supplies dashboard 
+            { path: '/supplies/dashboard-supplies', method: 'GET' },
 
             // Recommend-procure
             { path: '/purchase-request/purchase-request', method: 'GET' },
@@ -878,7 +880,12 @@ exports.links = [
         url: '/view-building-list',
         apis: ['@all']
     },
-    
+
+
+    {
+        url: '/dashboard-supplies',
+        apis: ['@all']
+    },
     {
         url: '/manage-supplies',
         apis: ['@all']

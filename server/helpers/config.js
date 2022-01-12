@@ -1015,6 +1015,15 @@ const LINKS = [{
  * Quản lý vật tư tiêu hao
  */
 {
+    url: '/dashboard-supplies',
+    description: 'DashBoard quản lý vật tư',
+    category: LINK_CATEGORY.SUPPIES.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/dashboard-supplies')
+},
+{
     url: '/manage-supplies',
     description: 'Quản lý vật tư tiêu hao',
     category: LINK_CATEGORY.SUPPIES.name,
