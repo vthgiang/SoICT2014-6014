@@ -33,13 +33,15 @@ function GoodManagement(props) {
         props.getAllStocks({ managementLocation: currentRole })
     }, [])
 
-    if (state.oldType !== state.type) {
-        props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-        setState ({
-            ...state,
-            oldType: state.type,
-        });
-    }
+    useEffect(() => {
+        if (state.oldType !== state.type) {
+            props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
+            setState ({
+                ...state,
+                oldType: state.type,
+            });
+        }
+    }, [state.type])
 
     useEffect(() => {
         if(!state.type) {
@@ -243,7 +245,7 @@ function GoodManagement(props) {
                 ...state,
                 type: 'product',
                  activeP: true 
-                });
+            });
         } else if (checkManagementGood('material')) {
             setState({ 
                 ...state, 
@@ -255,13 +257,13 @@ function GoodManagement(props) {
                 ...state, 
                 type: 'equipment',
                 activeE: true 
-                });
+            });
         } else if (checkManagementGood('waste')) {
             setState({ 
                 ...state, 
                 type: 'waste',
                  activeW: true
-                 });
+            });
         }
     }
 

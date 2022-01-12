@@ -26,9 +26,9 @@ function GoodCreateForm(props) {
         numberExpirationDate: "",
         sourceType: "",
         selfProducedCheck: false,
+        sourceType: "",
     })
 
-    let source = '';
     let dataSource = [
         {
             value: '0',
@@ -115,7 +115,6 @@ function GoodCreateForm(props) {
     };
 
     const handleSourceChange = (value) => {
-        console.log(value);
         validateSourceProduct(value[0], true);
     }
 
@@ -238,7 +237,6 @@ function GoodCreateForm(props) {
             msg = translate("manage_warehouse.good_management.validate_number_expiration_date_input");
         }
         if (willUpdateState) {
-            console.log(msg)
             setState({
                 ...state,
                 errorOnNumberExpirationDate: msg,
@@ -325,12 +323,12 @@ function GoodCreateForm(props) {
         numberExpirationDate,
         errorOnNumberExpirationDate,
         selfProducedCheck,
+        sourceType,
     } = state;
     const dataSelectBox = getAllCategory();
 
     if (units) listUnit = units;
     if (materials) listMaterial = materials;
-    console.log("dataSource", dataSource);
     return (
         <React.Fragment>
             <ButtonModal
@@ -376,13 +374,13 @@ function GoodCreateForm(props) {
                                 <label>{translate('manage_warehouse.good_management.good_source')}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
-                                    id={`select-material-by`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={source ? source : { value: '0', text: translate('manage_warehouse.good_management.choose_source') }}
-                                    items={dataSource}
-                                    onChange={handleSourceChange}
-                                    multiple={false}
+                                        id={`select-source-type`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={sourceType}
+                                        items={dataSource}
+                                        onChange={handleSourceChange}
+                                        multiple={false}
                                 />
                                 <ErrorLabel content={errorOnName} />
                             </div>
