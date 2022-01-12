@@ -151,10 +151,10 @@ exports.searchUseRequests = async (portal, company, query) => {
 
         let tempListRecommendDistributes = recommendDistributes.filter(item =>
             item.asset && item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
-
         listRecommendDistributes = tempListRecommendDistributes.length && tempListRecommendDistributes.slice(parseInt(page), parseInt(page) + parseInt(limit));
         totalList = tempListRecommendDistributes.length;
     }
+
     return { totalList, listRecommendDistributes };
 }
 

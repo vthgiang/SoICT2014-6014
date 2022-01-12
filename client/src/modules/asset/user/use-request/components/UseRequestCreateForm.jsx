@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -10,6 +10,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import Swal from 'sweetalert2';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { generateCode } from "../../../../../helpers/generateCode";
+import { taskManagementActions } from '../../../../task/task-management/redux/actions';
 
 function UseRequestCreateForm(props) {
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -31,7 +32,7 @@ function UseRequestCreateForm(props) {
         return [day, month, year].join('-');
     }
 
-    
+
     const [state, setState] = useState({
         recommendNumber: "",
         dateCreate: formatDate(Date.now()),
@@ -43,23 +44,25 @@ function UseRequestCreateForm(props) {
         stopTime: null,
         status: "waiting_for_approval",
         asset: "",
+        task: "",
     })
     const [prevProps, setPrevProps] = useState({
         _id: null
     })
     const { _id } = props;
-    const { translate, recommendDistribute, assetsManager, user, auth } = props;
+    const { translate, recommendDistribute, assetsManager, user, auth, tasks } = props;
     const {
-        recommendNumber, dateCreate, asset, reqContent, dateStartUse, dateEndUse,
+        recommendNumber, dateCreate, asset, reqContent, dateStartUse, dateEndUse, task,
         errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, startTime, stopTime
     } = state;
-    // 
+    const getAll = true;
+
     var assetlist = assetsManager.listAssets;
     var userlist = user.list;
 
-    if(prevProps._id !== props._id){
-        setState(state =>{
-            return{ 
+    if (prevProps._id !== props._id) {
+        setState(state => {
+            return {
                 ...state,
                 _id: props._id,
                 asset: props.asset,
@@ -69,7 +72,7 @@ function UseRequestCreateForm(props) {
         })
         setPrevProps(props)
     }
-    
+
     useEffect(() => {
         // Mỗi khi modal mở, cần sinh lại code
         let { _id } = props;
@@ -79,7 +82,12 @@ function UseRequestCreateForm(props) {
             _id && window.$(`#modal-create-recommenddistribute-${_id}`).unbind('shown.bs.modal', regenerateCode)
         }
     }, [])
-    
+
+    useEffect(() => {
+        let data = { getAll };
+        props.getPaginateTasks(data);
+    }, [])
+
 
     const regenerateCode = () => {
         let code = generateCode("UR");
@@ -94,8 +102,8 @@ function UseRequestCreateForm(props) {
         let { value } = e.target;
         let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        setState(state =>{
-            return{ 
+        setState(state => {
+            return {
                 ...state,
                 recommendNumber: value,
                 errorOnRecommendNumber: message
@@ -108,7 +116,7 @@ function UseRequestCreateForm(props) {
         let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
         setState(state => {
-            return{
+            return {
                 ...state,
                 dateCreate: value,
                 errorOnDateCreate: message
@@ -121,7 +129,18 @@ function UseRequestCreateForm(props) {
      */
     const handleProponentChange = (value) => {
         setState({
+            ...state,
             proponent: value[0]
+        });
+    }
+
+    /**
+     * Bắt sự kiện thay đổi công việc
+     */
+    const handleTaskChange = (value) => {
+        setState({
+            ...state,
+            task: value[0]
         });
     }
 
@@ -130,8 +149,8 @@ function UseRequestCreateForm(props) {
         let { value } = e.target;
         let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 reqContent: value,
                 errorOnReqContent: message
@@ -144,7 +163,7 @@ function UseRequestCreateForm(props) {
      */
     const handleAssetChange = (value) => {
         setState(state => {
-            return{
+            return {
                 ...state,
                 asset: value[0]
             }
@@ -155,8 +174,8 @@ function UseRequestCreateForm(props) {
     const handleDateStartUseChange = (value) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 dateStartUse: value,
                 errorOnDateStartUse: message
@@ -166,7 +185,7 @@ function UseRequestCreateForm(props) {
 
     const handleStartTimeChange = (value) => {
         setState(state => {
-            return{
+            return {
                 ...state,
                 startTime: value
             }
@@ -174,8 +193,8 @@ function UseRequestCreateForm(props) {
     }
 
     const handleStopTimeChange = (value) => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 stopTime: value
             }
@@ -186,8 +205,8 @@ function UseRequestCreateForm(props) {
     const handleDateEndUseChange = (value) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 dateEndUse: value,
                 errorOnDateEndUse: props.typeRegisterForUse == 3 ? undefined : message
@@ -196,19 +215,19 @@ function UseRequestCreateForm(props) {
     }
 
     const getDefaultStartValue = (value) => {
-        setState(state =>{ 
-            return{
+        setState(state => {
+            return {
                 ...state,
-                startTime: value 
+                startTime: value
             }
         });
     }
 
     const getDefaultEndValue = (value) => {
-        setState(state =>{ 
-            return{
+        setState(state => {
+            return {
                 ...state,
-                stopTime: value 
+                stopTime: value
             }
         });
     }
@@ -262,7 +281,7 @@ function UseRequestCreateForm(props) {
             date = state.dateStartUse.split("-");
             date = [date[2], date[1], date[0]].join('/')
             dateStartUse = new Date(date)
-            console.log('dataToSubmitdataToSubmit',dataToSubmit)
+            console.log('dataToSubmitdataToSubmit', dataToSubmit)
             if (compareTime(nowDate, dateStartUse) === 1) {
                 Swal.fire({
                     title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
@@ -278,6 +297,10 @@ function UseRequestCreateForm(props) {
             }
         }
     }
+
+    var taskList = tasks.tasks && tasks.tasks.map(x => {
+        return { value: x._id, text: x.name }
+    })
 
     return (
         <React.Fragment>
@@ -399,6 +422,21 @@ function UseRequestCreateForm(props) {
                                 <ErrorLabel content={errorOnDateEndUse} />
                             </div>
 
+                            {/* công việc*/}
+                            <div className="form-group">
+                                <label>{translate('asset.usage.task_in_use_request')}</label>
+                                <div id="taskCreateRequestDiv">
+                                    <SelectBox
+                                        id={`taskCreateRequestBox`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={[{ value: "", text: "Chọn công việc" }, ...(taskList ? taskList : [])]}
+                                        onChange={handleTaskChange}
+                                        value={task}
+                                        multiple={false}
+                                    />
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -409,14 +447,15 @@ function UseRequestCreateForm(props) {
 };
 
 function mapState(state) {
-    const { recommendDistribute, auth, user, assetsManager } = state;
-    return { recommendDistribute, auth, user, assetsManager };
+    const { recommendDistribute, auth, user, assetsManager, tasks } = state;
+    return { recommendDistribute, auth, user, assetsManager, tasks };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     createRecommendDistribute: RecommendDistributeActions.createRecommendDistribute,
+    getPaginateTasks: taskManagementActions.getPaginateTasks,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(UseRequestCreateForm));
