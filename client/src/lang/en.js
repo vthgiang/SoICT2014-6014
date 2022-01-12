@@ -4378,6 +4378,8 @@ export default {
                 edit_success: "Edit success",
                 edit_faile: "Edit failed",
                 name: "Commodity name",
+                good_source: "Good source",
+                validate_source_product: 'Product source cannot be empty',
                 code: "Commodity code",
                 type: "Commodity type",
                 good: "Commodity",
@@ -4402,6 +4404,7 @@ export default {
                 conversion_rate: "Conversion rate",
                 quantity: "Quantity",
                 choose_category: "Choose category",
+                choose_source: "Choose source good",
                 choose_base_unit:
                     "Please select the unit to create the packing rule",
                 packing_rule: "Packing rule",

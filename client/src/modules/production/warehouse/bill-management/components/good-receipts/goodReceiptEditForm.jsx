@@ -1012,7 +1012,7 @@ function GoodReceiptEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {good.good && status === '2' && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.add_lot')}</button>)}
+                                {good.good && status === '2' && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.add_lot')}</p>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>

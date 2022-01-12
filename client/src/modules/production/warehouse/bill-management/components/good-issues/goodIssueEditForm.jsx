@@ -646,7 +646,7 @@ function GoodIssueEditForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code} disabled />
+                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
@@ -832,7 +832,7 @@ function GoodIssueEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {good.good && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</button>)}
+                                {good.good && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
