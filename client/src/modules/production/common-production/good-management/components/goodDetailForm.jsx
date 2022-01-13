@@ -39,7 +39,7 @@ function GoodDetailForm(props) {
         });
     }
 
-    const { translate, goods, type, categories } = props;
+    const { translate, goods, type, categories, sourceType } = props;
     const {
         goodId,
         code,
@@ -53,7 +53,7 @@ function GoodDetailForm(props) {
         manufacturingMills,
         pricePerBaseUnit,
         salesPriceVariance,
-        numberExpirationDate
+        numberExpirationDate,
     } = state;
     return (
         <React.Fragment >
@@ -73,22 +73,26 @@ function GoodDetailForm(props) {
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.code")}:&emsp;</strong>
-                                {code}
+                                {code ? code : ''}
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.name")}:&emsp;</strong>
-                                {name}
+                                {name ? name : ''}
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.baseUnit")}:&emsp;</strong>
-                                {baseUnit}
+                                {baseUnit ? baseUnit : ''}
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.expirationDate")}:&emsp;</strong>
-                                {numberExpirationDate}{" " + translate("manage_warehouse.good_management.day")}
+                                {numberExpirationDate ? numberExpirationDate : ''}{" " + translate("manage_warehouse.good_management.day")}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="form-group">
+                                <strong>{translate("manage_warehouse.good_management.good_source")}:&emsp;</strong>
+                                {sourceType ? (sourceType === "1" ? translate("manage_warehouse.good_management.selfProduced") : translate("manage_warehouse.good_management.importedFromSuppliers")) : ''}
+                            </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.category")}:&emsp;</strong>
                                 {category &&
@@ -107,7 +111,7 @@ function GoodDetailForm(props) {
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.description")}:&emsp;</strong>
-                                {description}
+                                {description ? description : ''}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -148,7 +152,8 @@ function GoodDetailForm(props) {
                             </fieldset>
                             {type === "product" ? (
                                 <React.Fragment>
-                                    <fieldset className="scheduler-border">
+                                    { sourceType === "1" ? (
+                                        <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">{translate("manage_warehouse.good_management.materials")}</legend>
                                         <table className="table table-bordered">
                                             <thead>
@@ -178,7 +183,7 @@ function GoodDetailForm(props) {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </fieldset>
+                                    </fieldset>) : ""}
                                     <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">{translate("manage_warehouse.good_management.info_mill")}</legend>
                                         <table className="table table-bordered">

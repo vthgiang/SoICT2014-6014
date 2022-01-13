@@ -325,6 +325,7 @@ function GoodManagement(props) {
                         pricePerBaseUnit={state.currentRow.pricePerBaseUnit}
                         salesPriceVariance={state.currentRow.salesPriceVariance}
                         numberExpirationDate={state.currentRow.numberExpirationDate}
+                        sourceType={state.currentRow.sourceType}
                     />
                 )}
 
@@ -344,6 +345,7 @@ function GoodManagement(props) {
                         pricePerBaseUnit={state.currentRow.pricePerBaseUnit}
                         salesPriceVariance={state.currentRow.salesPriceVariance}
                         numberExpirationDate={state.currentRow.numberExpirationDate}
+                        sourceType={state.currentRow.sourceType}
                     />
                 )}
                 <div className="form-inline">
@@ -419,6 +421,7 @@ function GoodManagement(props) {
                             <th>{translate("manage_warehouse.good_management.unit")}</th>
                             {/* <th>{translate("manage_warehouse.good_management.packing_rule")}</th> */}
                             {type === "product" && <th>{translate("manage_warehouse.good_management.materials")}</th>}
+                            <th>{translate("manage_warehouse.good_management.good_source")}</th>
                             <th>{translate("manage_warehouse.good_management.description")}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>
                                 {translate("table.action")}
@@ -458,16 +461,18 @@ function GoodManagement(props) {
                                     </td>
                                     <td>{x.baseUnit}</td>
                                     {
-                                        type === "product" && (x.materials.length > 0 ? 
-                                        (<td>{
-                                            x.materials.map((y, i) => {
-                                                if (x.materials.length === i + 1) {
-                                                    return y.good.name
-                                                }
-                                                return y.good.name + ", "
-                                            })
-                                        }</td>) : <td>{translate("manage_warehouse.good_management.importedFromSuppliers")}</td>)
+                                        type === "product" && 
+                                        <td>{
+                                        x.materials.length > 0 &&
+                                        x.materials.map((y, i)  => {
+                                            if(x.materials.length === i + 1){
+                                                return y.good.name
+                                            }
+                                            return y.good.name + ", "
+                                        })
+                                        }</td>
                                     }
+                                    <td>{x.sourceType === "1" ? translate("manage_warehouse.good_management.selfProduced") : translate("manage_warehouse.good_management.importedFromSuppliers")}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a onClick={() => handleShowDetailInfo(x)}>
