@@ -123,6 +123,7 @@ exports.editGood = async (id, data, portal) => {
         good.code = data.code,
         good.name = data.name,
         good.type = data.type,
+        good.sourceType = data.sourceType,
         good.baseUnit = data.baseUnit,
         // good.packingRule = data.packingRule,
         good.numberExpirationDate = data.numberExpirationDate,

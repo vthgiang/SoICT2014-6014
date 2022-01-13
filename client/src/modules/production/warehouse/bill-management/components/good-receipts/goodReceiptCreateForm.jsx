@@ -81,8 +81,16 @@ function GoodReceiptCreateForm(props) {
     const getAllGoods = () => {
         let { translate } = props;
         let goodArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_good") }];
-
-        props.goods.listGoods.map((item) => {
+        let listGoodsCheckBySourceType = [];
+        let goods = props.goods.listGoods;
+        console.log("listGoods", goods);
+        for (let i = 0; i < goods.length; i++) {
+            if (goods[i].sourceType === state.sourceType) {
+                listGoodsCheckBySourceType.push(goods[i]);
+            }
+        }
+        console.log(listGoodsCheckBySourceType);
+        listGoodsCheckBySourceType.map((item) => {
             goodArr.push({
                 value: item._id,
                 text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
@@ -516,9 +524,6 @@ function GoodReceiptCreateForm(props) {
         }
         return false;
     };
-
-    // useEffect(() => {
-    // }, [props.purchaseOrderAddBill])
 
     //---Lập phiếu từ đơn mua nguyên vật liệu---
     let { purchaseOrderAddBill = { code: "" } } = props;

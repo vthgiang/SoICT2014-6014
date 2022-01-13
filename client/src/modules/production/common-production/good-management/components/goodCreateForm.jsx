@@ -255,7 +255,7 @@ function GoodCreateForm(props) {
                 ...state,
                 errorOnSourceProduct: msg,
                 sourceType: value,
-                selfProducedCheck: value === "1" ? true : false,
+                materials: value === "2" ? [] : state.materials,
             });
         }
         return msg === undefined;
@@ -322,7 +322,6 @@ function GoodCreateForm(props) {
         salesPriceVarianceError,
         numberExpirationDate,
         errorOnNumberExpirationDate,
-        selfProducedCheck,
         sourceType,
     } = state;
     const dataSelectBox = getAllCategory();
@@ -341,7 +340,7 @@ function GoodCreateForm(props) {
                 modalID={`modal-create-${type}`}
                 isLoading={goods.isLoading}
                 formID={`form-create-${type}`}
-                title={translate("manage_warehouse.good_management.add_title")}
+                title={translate(`manage_warehouse.good_management.add_title.${type}`)}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
                 msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 disableSubmit={!isFormValidated()}
