@@ -25,8 +25,6 @@ function GoodCreateForm(props) {
         salesPriceVariance: "",
         numberExpirationDate: "",
         sourceType: "",
-        selfProducedCheck: false,
-        sourceType: "",
     })
 
     let dataSource = [
@@ -255,6 +253,7 @@ function GoodCreateForm(props) {
         if (willUpdateState) {
             setState({
                 ...state,
+                errorOnSourceProduct: msg,
                 sourceType: value,
                 selfProducedCheck: value === "1" ? true : false,
             });
@@ -269,7 +268,7 @@ function GoodCreateForm(props) {
             validateCode(code, false) &&
             validateBaseUnit(baseUnit, false) &&
             validateCategory(category, false) &&
-            ((type && type === "product") && sourceType === "2") ? materials.length > 0 : true &&
+            ((type && type === "product") && sourceType === "1") ? materials.length > 0 : true &&
             validateNumberExpirationDate(numberExpirationDate, false) &&
             validateSourceProduct(sourceType, false);
         return result;
@@ -309,6 +308,7 @@ function GoodCreateForm(props) {
         errorOnCode,
         errorOnBaseUnit,
         errorOnCategory,
+        errorOnSourceProduct,
         code,
         name,
         category,
@@ -370,7 +370,7 @@ function GoodCreateForm(props) {
                         </div>
 
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.good_management.good_source')}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
@@ -382,7 +382,7 @@ function GoodCreateForm(props) {
                                         onChange={handleSourceChange}
                                         multiple={false}
                                 />
-                                <ErrorLabel content={errorOnName} />
+                                <ErrorLabel content={errorOnSourceProduct} />
                             </div>
                             <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
                                 <label>
@@ -452,7 +452,7 @@ function GoodCreateForm(props) {
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
                             {type === "product" ? (
                                 <React.Fragment>
-                                    {selfProducedCheck == false ? <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} /> : null}
+                                    {sourceType === "1" ? <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} /> : null}
                                     <InfoMillCreateForm onDataChange={handleListMillsChange} />
                                 </React.Fragment>
                             ) : (

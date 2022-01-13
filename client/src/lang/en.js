@@ -4389,6 +4389,8 @@ export default {
                 all_type: "Choose all type of commodity",
                 product: "Products",
                 material: "Material",
+                importedFromSuppliers: "Imported from suppliers",
+                selfProduced: "Self-produced",
                 equipment: "Equipment",
                 waste: "Waste",
                 search: "Search",

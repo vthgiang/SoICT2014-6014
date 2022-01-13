@@ -17,6 +17,10 @@ exports.getGoodsByType = async (company, query, portal) => {
             type: type
         }
 
+        if (query.sourceType) {
+            option.sourceType = query.sourceType;
+        }
+
         if (query.category) {
             option.category = query.category;
         }
@@ -66,6 +70,7 @@ exports.createGoodByType = async (company, data, portal) => {
         code: data.code,
         name: data.name,
         type: data.type,
+        sourceType: data.sourceType,
         baseUnit: data.baseUnit,
         // packingRule: data.packingRule,
         numberExpirationDate: data.numberExpirationDate,
@@ -215,9 +220,7 @@ exports.getManufacturingWorksByProductId = async (productId, portal) => {
     let product = await Good(connect(DB_CONNECTION, portal)).findOne({
         _id: productId
     });
-    console.log(product)
     let manufacturingMills = product.manufacturingMills;
-    console.log(manufacturingMills);
     manufacturingMillId = manufacturingMills.map(x => x.manufacturingMill);
     let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         manufacturingMills: {

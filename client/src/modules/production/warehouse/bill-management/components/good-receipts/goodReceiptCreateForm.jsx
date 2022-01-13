@@ -55,11 +55,28 @@ function GoodReceiptCreateForm(props) {
         errorType,
         errorApprover,
         errorSupplier,
+        errorOnSourceProduct,
+        sourceType,
         errorQualityControlStaffs,
         errorAccountables,
         errorResponsibles,
         purchaseOrderId,
     } = state;
+
+    let dataSource = [
+        {
+            value: '0',
+            text: 'Chọn nguồn hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Hàng hóa tự sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Hàng hóa nhập từ nhà cung cấp',
+        }
+    ];
 
     const getAllGoods = () => {
         let { translate } = props;
@@ -92,6 +109,27 @@ function GoodReceiptCreateForm(props) {
             lotName: lotName,
         });
     };
+
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
+
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                selfProducedCheck: value === "1" ? true : false,
+            });
+        }
+        return msg === undefined;
+    }
 
     const handleClickCreate = () => {
         const value = generateCode("BIRE");
@@ -378,7 +416,8 @@ function GoodReceiptCreateForm(props) {
             // validateSupplier(state.supplier, false) &&
             validateAccountables(state.accountables, false) &&
             validateQualityControlStaffs(state.qualityControlStaffs, false) &&
-            validateResponsibles(state.responsibles, false);
+            validateResponsibles(state.responsibles, false) &&
+            validateSourceProduct(state.sourceType, false);
         return result;
     };
 
@@ -632,6 +671,10 @@ function GoodReceiptCreateForm(props) {
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
+                                <div className="form-group">
+                                    <label>{translate("manage_warehouse.bill_management.description")}</label>
+                                    <textarea type="text" className="form-control" onChange={handleDescriptionChange} />
+                                </div>
                                 {/* <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
@@ -669,28 +712,39 @@ function GoodReceiptCreateForm(props) {
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
-                                <div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
-                                    <label>
-                                        {translate("manage_warehouse.bill_management.supplier")}
-                                        <span className="text-red"> * </span>
-                                    </label>
+                                <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                                    <span className="text-red"> * </span>
                                     <SelectBox
-                                        id={`select-customer-receipt-create-${purchaseOrderId}`}
+                                        id={`select-source-type`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={supplier}
-                                        items={dataCustomer}
-                                        onChange={handleSupplierChange}
+                                        value={sourceType}
+                                        items={dataSource}
+                                        onChange={handleSourceChange}
                                         multiple={false}
                                     />
-                                    <ErrorLabel content={errorSupplier} />
+                                    <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
-                                    <label>{translate("manage_warehouse.bill_management.description")}</label>
-                                    <textarea type="text" className="form-control" onChange={handleDescriptionChange} />
-                                </div>
+                                {sourceType === "2" ? 
+                                    (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
+                                        <label>
+                                            {translate("manage_warehouse.bill_management.supplier")}
+                                            <span className="text-red"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-customer-receipt-create-${purchaseOrderId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={supplier}
+                                            items={dataCustomer}
+                                            onChange={handleSupplierChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content={errorSupplier} />
+                                    </div>) 
+                                : null}
+                                
                             </div>
                         </fieldset>
                     </div>

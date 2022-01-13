@@ -42,16 +42,18 @@ function InventoryManagement(props) {
         props.getAllGoodsByType({ type });
     }, [])
 
-    if (state.oldType !== state.type) {
-        props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-        props.getAllLots({ type: state.type, managementLocation: state.currentRole });
-        props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
-        props.getAllGoodsByType({ type: state.type });
-        setState({
-            ...state,
-            oldType: state.type,
-        })
-    }
+    useEffect(() => {
+        if (state.oldType !== state.type) {
+            props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
+            props.getAllLots({ type: state.type, managementLocation: state.currentRole });
+            props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
+            props.getAllGoodsByType({ type: state.type });
+            setState({
+                ...state,
+                oldType: state.type,
+            })
+        }
+    }, [state.type])
 
 
     useEffect(() => {

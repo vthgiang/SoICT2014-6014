@@ -4,7 +4,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../redux/actions";
 import { CategoryActions } from "../../category-management/redux/actions";
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
-import { DataTableSetting, DeleteNotification, PaginateBar, TreeSelect } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, TreeSelect, SelectMulti } from "../../../../../common-components";
 import GoodCreateForm from "./goodCreateForm";
 import GoodEditForm from "./goodEditForm";
 import GoodDetailForm from "./goodDetailForm";
@@ -23,6 +23,7 @@ function GoodManagement(props) {
         activeP: true,
         activeM: false,
         activeE: false,
+        sourceType: "",
     })
 
     useEffect(() => {
@@ -156,6 +157,13 @@ function GoodManagement(props) {
         });
     };
 
+    const handleSourceChange = async (e) => {
+        setState({
+            ...state,
+            sourceType: e
+        });
+    };
+
     const handleCategoryChange = (value) => {
         if (value.length === 0) {
             value = null;
@@ -175,6 +183,7 @@ function GoodManagement(props) {
             code: state.code,
             name: state.name,
             category: state.category,
+            sourceType: state.sourceType,
         };
         await props.getGoodsByType(data);
     };
@@ -366,8 +375,29 @@ function GoodManagement(props) {
                         <label className="form-control-static">{translate("manage_warehouse.good_management.category")}</label>
                         <TreeSelect data={dataCategory} value={categorySearch} handleChange={handleCategoryChange} mode="hierarchical" />
                     </div>
+                    {type === "product" && 
+                    (<div className="form-group">
+                        <label className="form-control-static">{translate('manage_warehouse.good_management.choose_source')}</label>
+                        <SelectMulti
+                            id={`select-multi-partner-source-type`}
+                            multiple="multiple"
+                            options={{ nonSelectedText: "Chọn nguồn hàng hóa", allSelectedText: "Chọn tất cả" }}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[
+                                    {
+                                        value: '1',
+                                        text: translate('manage_warehouse.good_management.selfProduced'),
+                                    },
+                                    {
+                                        value: '2',
+                                        text: translate('manage_warehouse.good_management.importedFromSuppliers'),
+                                    }
+                                ]}
+                            onChange={handleSourceChange}
+                        />
+                    </div>)}
                     <div className="form-group">
-                        <label></label>
                         <button
                             type="button"
                             className="btn btn-success"
@@ -428,16 +458,15 @@ function GoodManagement(props) {
                                     </td>
                                     <td>{x.baseUnit}</td>
                                     {
-                                        type === "product" &&
-                                        <td>{
-                                            x.materials.length > 0 &&
+                                        type === "product" && (x.materials.length > 0 ? 
+                                        (<td>{
                                             x.materials.map((y, i) => {
                                                 if (x.materials.length === i + 1) {
                                                     return y.good.name
                                                 }
                                                 return y.good.name + ", "
                                             })
-                                        }</td>
+                                        }</td>) : <td>{translate("manage_warehouse.good_management.importedFromSuppliers")}</td>)
                                     }
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: "center" }}>
