@@ -4653,6 +4653,8 @@ export default {
                 unit: "Đơn vị tính",
                 baseUnit: "Đơn vị tính cơ bản",
                 materials: "Thành phần chính",
+                importedFromSuppliers: "Hàng hóa nhập từ nhà cung cấp",
+                selfProduced: "Hàng hóa tự sản xuất",
                 unit_name: "Tên",
                 conversion_rate: "Giá trị chuyển đổi",
                 quantity: "Số lượng",
