@@ -132,6 +132,8 @@ function GoodReceiptEditForm(props) {
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
             { value: '1', text: translate('manage_warehouse.bill_management.billType.1') },
             { value: '2', text: translate('manage_warehouse.bill_management.billType.2') },
+            { value: "3", text: translate("manage_warehouse.bill_management.billType.3") },
+            { value: "4", text: translate("manage_warehouse.bill_management.billType.4") },
         ]
         return typeArr;
     }

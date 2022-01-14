@@ -83,13 +83,11 @@ function GoodReceiptCreateForm(props) {
         let goodArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_good") }];
         let listGoodsCheckBySourceType = [];
         let goods = props.goods.listGoods;
-        console.log("listGoods", goods);
         for (let i = 0; i < goods.length; i++) {
             if (goods[i].sourceType === state.sourceType) {
                 listGoodsCheckBySourceType.push(goods[i]);
             }
         }
-        console.log(listGoodsCheckBySourceType);
         listGoodsCheckBySourceType.map((item) => {
             goodArr.push({
                 value: item._id,
@@ -195,6 +193,8 @@ function GoodReceiptCreateForm(props) {
             { value: "0", text: translate("manage_warehouse.bill_management.choose_type") },
             { value: "1", text: translate("manage_warehouse.bill_management.billType.1") },
             { value: "2", text: translate("manage_warehouse.bill_management.billType.2") },
+            { value: "3", text: translate("manage_warehouse.bill_management.billType.3") },
+            { value: "4", text: translate("manage_warehouse.bill_management.billType.4") },
         ];
         return typeArr;
     };
@@ -205,6 +205,10 @@ function GoodReceiptCreateForm(props) {
             await props.getGoodsByType({ type: "material" });
         } else if (type === "2") {
             await props.getGoodsByType({ type: "product" });
+        } else if (type === "3") {
+            await props.getGoodsByType({ type: "equipment" });
+        } else if (type === "4") {
+            await props.getGoodsByType({ type: "waste" });
         }
         validateType(type, true);
     };
