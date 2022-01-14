@@ -113,8 +113,10 @@ function GoodIssueEditForm(props) {
         let typeArr = [];
         typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
-            { value: '3', text: translate('manage_warehouse.bill_management.billType.3') },
-            { value: '4', text: translate('manage_warehouse.bill_management.billType.4') },
+            { value: "5", text: translate("manage_warehouse.bill_management.billType.5") },
+            { value: "6", text: translate("manage_warehouse.bill_management.billType.6") },
+            { value: "7", text: translate("manage_warehouse.bill_management.billType.7") },
+            { value: "8", text: translate("manage_warehouse.bill_management.billType.8") },
         ]
         return typeArr;
     }

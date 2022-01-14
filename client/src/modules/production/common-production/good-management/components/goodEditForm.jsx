@@ -23,6 +23,7 @@ function GoodEditForm(props) {
         salesPriceVariance: "",
         numberExpirationDate: "",
         sourceType: "",
+        isSeflProduced: props.sourceType === "1" ? true : false,
     })
 
     useEffect(() => {
@@ -221,6 +222,8 @@ function GoodEditForm(props) {
                 errorOnSourceProduct: msg,
                 sourceType: value,
                 materials: value === "2" ? [] : state.materials,
+                manufacturingMills: value === "2" ? [] : state.manufacturingMills,
+                isSeflProduced: value === "1" ? true : false,
             });
         }
         return msg === undefined;
@@ -245,7 +248,6 @@ function GoodEditForm(props) {
             ...state,
             manufacturingMills: data,
         });
-        console.log(state.manufacturingMills);
     };
 
 
@@ -264,7 +266,6 @@ function GoodEditForm(props) {
             msg = translate("manage_warehouse.good_management.validate_number_expiration_date_input");
         }
         if (willUpdateState) {
-            console.log(msg)
             setState({
                 ...state,
                 errorOnNumberExpirationDate: msg,
@@ -281,14 +282,13 @@ function GoodEditForm(props) {
             validateBaseUnit(state.baseUnit, false) &&
             validateCategory(state.category, false) &&
             validateSourceProduct(state.sourceType, false) &&
-            ((state.type && state.type === "product") && state.sourceType === "1") ? state.materials.length > 0 : true &&
+            ((state.type && state.type === "product") && state.isSeflProduced === true) ? state.materials.length > 0 : true &&
             validateNumberExpirationDate(state.numberExpirationDate, false)
         return result;
     };
 
     const save = () => {
         if (isFormValidated()) {
-            console.log("state", state);
             props.editGood(props.goodId, state);
         }
     };
@@ -296,7 +296,7 @@ function GoodEditForm(props) {
     let listUnit = [];
     let listMaterial = [];
     let listManfaucturingMills = [];
-    const { translate, goods, categories, type } = props;
+    const { translate, goods, categories, type, sourceType } = props;
     const {
         errorOnName,
         errorOnCode,
@@ -319,7 +319,7 @@ function GoodEditForm(props) {
         salesPriceVarianceError,
         numberExpirationDate,
         errorOnNumberExpirationDate,
-        sourceType,
+        isSeflProduced,
     } = state;
     const dataSelectBox = getAllCategory();
 
@@ -445,9 +445,9 @@ function GoodEditForm(props) {
                                 initialData={listUnit}
                                 onDataChange={handleListUnitChange}
                             />
-                            {type === "product" ? (
+                            {(type === "product" && isSeflProduced === true) ? (
                                 <React.Fragment>
-                                    {sourceType === "1" ? <ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} /> : null}
+                                    <ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />
                                     <InfoMillCreateForm
                                         id={goodId}
                                         onDataChange={handleListMillsChange}

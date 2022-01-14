@@ -37,7 +37,6 @@ function StockEditForm(props) {
     })
 
     if (props.stockId !== state.stockId) {
-        // console.log(nextProps.status);
         setState({
             ...state,
             stockId: props.stockId,
@@ -221,7 +220,6 @@ function StockEditForm(props) {
     const handleMaxQuantityChange = (e) => {
         let value = e.target.value;
         state.good.maxQuantity = value;
-        console.log(value);
         setState({
             ...state
         })
@@ -463,7 +461,6 @@ function StockEditForm(props) {
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
-    console.log(status);
     return (
         <React.Fragment>
             <DialogModal

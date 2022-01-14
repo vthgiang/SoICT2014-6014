@@ -49,7 +49,6 @@ function UnitCreateForm(props) {
     }
 
     const validateMultiBaseUnit = (value, willUpdateState) => {
-        console.log(value);
         let msg = undefined;
 
         const { translate } = props;
