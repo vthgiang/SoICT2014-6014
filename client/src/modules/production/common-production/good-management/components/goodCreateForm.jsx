@@ -256,6 +256,7 @@ function GoodCreateForm(props) {
                 errorOnSourceProduct: msg,
                 sourceType: value,
                 materials: value === "2" ? [] : state.materials,
+                manufacturingMills: value === "2" ? [] : state.manufacturingMills,
             });
         }
         return msg === undefined;
@@ -449,9 +450,9 @@ function GoodCreateForm(props) {
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
-                            {type === "product" ? (
+                            {(type === "product" && sourceType === "1") ? (
                                 <React.Fragment>
-                                    {sourceType === "1" ? <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} /> : null}
+                                    <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} />
                                     <InfoMillCreateForm onDataChange={handleListMillsChange} />
                                 </React.Fragment>
                             ) : (

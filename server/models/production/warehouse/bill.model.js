@@ -31,9 +31,13 @@ const BillSchema = new Schema({
     },
 
     // LSX 2, 4
-    type: { //1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3:Xuất sản phẩm, 4: Xuất nguyên vật liệu, 5: Kiểm kê định kỳ, 6: Kiểm kê thường xuyên, 7: Trả hàng, 8: Luân chuyển
+    // 1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3: Nhập công cụ, dụng cụ, 4: Nhập phế phẩm 
+    // 5:Xuất sản phẩm, 6: Xuất nguyên vật liệu, 7: Xuất công cụ, dụng cụ, 8: Xuất phế phẩm
+    // 9: Kiểm kê định kỳ, 10: Kiểm kê thường xuyên, 
+    // 11: Trả hàng, 12: Luân chuyển
+    type: {
         type: String,
-        enum: ["1", "2", "3", "4", "5", "6", "7", "8"]
+        enum: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
     },
 
     // LSX 1

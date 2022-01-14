@@ -243,7 +243,6 @@ function BinEditForm(props) {
 
     const handleCapacityTotalChange = (e) => {
         let value = e.target.value;
-        console.log(value);
         setState({
             ...state,
             binCapacity: value

@@ -35,7 +35,7 @@ exports.authFunc = (checkPage = true) => {
             /**
              * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập/không có token để sử dụng previlegeAPI
              */
-            if (!token) throw ["access_denied"];
+            if (!token) throw ["access_denied_4001"];
 
             /**
              * Giải mã token gửi lên để check dữ liệu trong token
@@ -44,12 +44,12 @@ exports.authFunc = (checkPage = true) => {
             try {
                 verified = await jwt.verify(token, process.env.TOKEN_SECRET);
             } catch (error) {
-                throw ["access_denied"];
+                throw ["access_denied_4002"];
             }
 
             req.user = verified;
             req.token = token;
-            req.thirdParty = verified.thirdParty
+            req.thirdParty = verified.thirdParty;
             req.portal = req.thirdParty ? verified.portal : (!req.user.company
                 ? process.env.DB_NAME
                 : req.user.company.shortName);
@@ -74,7 +74,7 @@ exports.authFunc = (checkPage = true) => {
 
                     const checkToken = userParse?.tokens?.find(element => element === req.token);
                     if (!checkToken)
-                        throw ['access_denied']
+                        throw ['access_denied_4003']
                 }
 
                 let crtp, crtr, fgp;
@@ -399,19 +399,19 @@ exports.uploadBackupFiles = (options) => {
 exports.authTrueOwner = async (req, res, next) => {
     try {
         const token = req.header("utk"); //JWT nhận từ người dùng
-        if (!token) throw ["access_denied"];
+        if (!token) throw ["access_denied_4004"];
         let verified;
         try {
             verified = await jwt.verify(token, process.env.TOKEN_SECRET);
         } catch (error) {
-            throw ["access_denied"];
+            throw ["access_denied_4005"];
         }
 
         let userIdJwt = verified._id; // id người dùng lấy từ jwt
         let userIdParam = req.params.userId; // id người dùng trong params
 
         if (userIdJwt !== userIdParam) { // người gửi yêu cầu không phải chủ nhân thật sự của tài khoản
-            throw ['access_denied'];
+            throw ['access_denied_4006'];
         }
 
         next();
@@ -432,12 +432,12 @@ exports.authTrueOwner = async (req, res, next) => {
 exports.authAdminSuperAdmin = async (req, res, next) => {
     try {
         const token = req.header("utk"); //JWT nhận từ người dùng
-        if (!token) throw ["access_denied"];
+        if (!token) throw ["access_denied_4007"];
         let verified;
         try {
             verified = await jwt.verify(token, process.env.TOKEN_SECRET);
         } catch (error) {
-            throw ["access_denied"];
+            throw ["access_denied_4008"];
         }
 
         let userId = verified._id; // id người dùng lấy từ jwt
@@ -451,7 +451,7 @@ exports.authAdminSuperAdmin = async (req, res, next) => {
         let ad = await Role(connect(DB_CONNECTION, portal)).find({
             name: { $in: ['Super Admin', 'Admin'] }
         });
-        if (ad.length === 0) throw ['access_denied'];
+        if (ad.length === 0) throw ['access_denied_4009'];
 
         // Check người gửi request có quyền là SuperAdmin, Admin hay không?
         let userrole = await UserRole(connect(DB_CONNECTION, portal)).find({
@@ -459,7 +459,7 @@ exports.authAdminSuperAdmin = async (req, res, next) => {
             roleId: { $in: ad.map(r => r._id) }
         });
 
-        if (userrole.length === 0) throw ['access_denied'];
+        if (userrole.length === 0) throw ['access_denied_4010'];
 
         next();
     } catch (err) {

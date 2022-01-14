@@ -456,7 +456,6 @@ function StockCreateForm(props) {
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
-    // console.log('state', state)
 
     return (
         <React.Fragment>

@@ -160,7 +160,7 @@ function GoodReturnCreateForm(props) {
         const { group, translate } = props;
         let typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
-            { value: '7', text: translate('manage_warehouse.bill_management.billType.7') },
+            { value: '11', text: translate('manage_warehouse.bill_management.billType.11') },
         ];
         return typeArr;
     }
