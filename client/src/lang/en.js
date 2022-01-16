@@ -229,6 +229,7 @@ export default {
 
             //Quản lý vật tư 
             manage_supplies: "Manage supplies",
+            dashboard_supplies: "Dashboard manage supplies",
             manage_supplies_infor:"Manage supplies information",
             manage_supplies_purchase_request: "Manage purchase request",
             manage_allocation_history: "Manage allocation history",

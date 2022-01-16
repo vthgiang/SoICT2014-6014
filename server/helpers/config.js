@@ -1016,7 +1016,7 @@ const LINKS = [{
  */
 {
     url: '/dashboard-supplies',
-    description: 'DashBoard quản lý vật tư',
+    description: 'Dashboard quản lý vật tư',
     category: LINK_CATEGORY.SUPPIES.name,
     roles: [
         ROOT_ROLES.ADMIN.name,

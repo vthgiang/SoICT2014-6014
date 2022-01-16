@@ -236,7 +236,7 @@ exports.getDashboardSupplies = async (portal, data) => {
     let listSupplies = await Supplies(
         connect(DB_CONNECTION, portal))
         .find({});
-    let listInvoice = await Supplies(
+    let listInvoice = await PurchaseInvoice(
         connect(DB_CONNECTION, portal))
         .find({})
         .sort({ 'createDate': 'desc' });
@@ -246,4 +246,5 @@ exports.getDashboardSupplies = async (portal, data) => {
         .sort({ 'createDate': 'desc' });
 
     let result = { listSupplies, listInvoice, listAllocation }
+    return result;
 }

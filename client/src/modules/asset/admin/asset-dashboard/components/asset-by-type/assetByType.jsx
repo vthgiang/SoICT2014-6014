@@ -265,7 +265,6 @@ class AssetByType extends Component {
             typeName : listAssetsAmount.typeName.slice(startIndex, endIndex + 1),
             listType : listAssetsAmount.listType.slice(startIndex, endIndex + 1)
         }
-        console.log(listAssetsAmount);
         // if (type && JSON.parse(type).length > 0 && listAssetTypePaginate && listAssetTypePaginate.length > 0) {
         //     assetTypes = listAssetTypePaginate.filter((obj, index) => JSON.parse(type).some(item => obj._id === item));
         // } else {
@@ -275,6 +274,9 @@ class AssetByType extends Component {
         if (chartAsset.dataChartType.listType){
             dataSelect = this.getAssetTypes(chartAsset.dataChartType.listType)
         }
+        console.log("hang",amountOfAsset);
+        console.log("hang depreciation",depreciation);
+
         return (
             <React.Fragment>
                 <div className="qlcv">

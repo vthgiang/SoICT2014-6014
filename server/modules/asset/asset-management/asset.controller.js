@@ -1002,12 +1002,11 @@ exports.getAssetPurchaseChart = async (req, res) => {
         let purchaseDateBefore = [year, endMonth].join('-')
         let startDate = new Date(purchaseDateAfter);
         let endDate = new Date(purchaseDateBefore);
-        console.log(purchaseDateAfter,purchaseDateBefore,startDate,endDate)
+        // console.log(purchaseDateAfter,purchaseDateBefore,startDate,endDate)
         let period = Math.round((endDate - startDate) / 2592000000) + 1;
         let listMonth = [], value = [], countAsset = [], category = [], arr = [];
         let m = purchaseDateAfter.slice(5, 7);
         let y = purchaseDateAfter.slice(0, 4);
-        console.log(purchaseDateAfter)
         for (let i = 0; i <= period; i++) {
             if (m > 12) {
                 m = 1;
@@ -1020,7 +1019,7 @@ exports.getAssetPurchaseChart = async (req, res) => {
             listMonth.push([y, m].join(','));
             m++;
         }
-        
+        console.log(listMonth);
         let countType = [], valueType = []
         if (purchaseChart) {
             for (let i = 0; i < listMonth.length - 1; i++) {

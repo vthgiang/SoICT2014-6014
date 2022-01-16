@@ -87,6 +87,7 @@ const AssetLotManager = lazy(() => import("../modules/asset/admin/asset-lot/comp
 
 //supplies
 const ManageSupplies = lazy(() => import("../modules/supplies/admin/supplies/components"))
+const ManageSupplieDashboard = lazy(() => import("../modules/supplies/admin/supplies-dashboard/components"))
 const ManagePurchaseInvoice = lazy(() => import("../modules/supplies/admin/purchase-invoice/components"))
 const ManageAllocationHistory = lazy(() => import("../modules/supplies/admin/allocation-history/components"))
 const ManagePurchaseRequest = lazy(() => import("../modules/supplies/admin/purchase-request/components"))
@@ -1783,6 +1784,26 @@ class Routes extends Component {
 
 
                     {/* Supplies */}
+                    <PrivateRoute
+                        isLoading={this.props.suppliesDashboardReducer.isLoading}
+                        key={"dashboard-supplies"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/dashboard-supplies",
+                                name: "dashboard_supplies",
+                                icon: "fa fa-dashboard",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/dashboard-supplies"}
+                        path={"/dashboard-supplies"}
+                        pageName={"dashboard_supplies"}
+                        layout={Layout}
+                        component={ManageSupplieDashboard}
+                    />
+
                     <PrivateRoute
                         isLoading={this.props.suppliesReducer.isLoading}
                         key={"manage-supplies"}

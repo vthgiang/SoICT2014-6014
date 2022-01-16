@@ -244,6 +244,7 @@ export default {
 
             /**Quản lý vật tư */
             manage_supplies: "Quản lý vật tư",
+            dashboard_supplies: "Dashboard quản lý vật tư",
             manage_supplies_infor: "Quản lý thông tin vật tư",
             manage_supplies_purchase_request: "Quản lý yêu cầu mua vật tư",
             manage_allocation_history: "Quản lý lịch sử cấp phát",

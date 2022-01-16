@@ -483,6 +483,11 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         {
+                                            name: "menu.dashboard_supplies",
+                                            icon: "fa fa-dashboard",
+                                            path: "/dashboard-supplies",
+                                        },
+                                        {
                                             name: "menu.manage_supplies_infor",
                                             icon: "fa fa-dashboard",
                                             path: "/manage-supplies",
@@ -507,6 +512,7 @@ class SideBar extends Component {
                                             icon: "fa fa-calendar",
                                             path: "/supplies-purchase-request",
                                         },
+
                                     ],
                                 }}
                             />
