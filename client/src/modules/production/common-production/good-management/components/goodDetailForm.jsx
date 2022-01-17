@@ -150,8 +150,8 @@ function GoodDetailForm(props) {
                                     </tbody>
                                 </table>
                             </fieldset>
-                            {(type === "product" && sourceType === "1") ? (
                                 <React.Fragment>
+                                    {(type === "product" && sourceType === "1") ? (
                                     <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">{translate("manage_warehouse.good_management.materials")}</legend>
                                         <table className="table table-bordered">
@@ -182,7 +182,8 @@ function GoodDetailForm(props) {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </fieldset>
+                                    </fieldset>) : ("")}
+                                    {(type !== "waste" && sourceType === "1") ? (
                                     <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">{translate("manage_warehouse.good_management.info_mill")}</legend>
                                         <table className="table table-bordered">
@@ -215,11 +216,9 @@ function GoodDetailForm(props) {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </fieldset>
+                                    </fieldset>) : ("")}
                                 </React.Fragment>
-                            ) : (
-                                ""
-                            )}
+                            
                         </div>
                     </div>
                 </form>

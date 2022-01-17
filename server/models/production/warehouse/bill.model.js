@@ -135,6 +135,11 @@ const BillSchema = new Schema({
         type: String
     },
 
+    sourceType: {
+        type: String,
+        required: true
+    },
+
     // LSX
     goods: [{
         //LSX

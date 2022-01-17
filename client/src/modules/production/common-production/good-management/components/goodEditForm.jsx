@@ -445,18 +445,16 @@ function GoodEditForm(props) {
                                 initialData={listUnit}
                                 onDataChange={handleListUnitChange}
                             />
-                            {(type === "product" && isSeflProduced === true) ? (
                                 <React.Fragment>
-                                    <ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />
-                                    <InfoMillCreateForm
+                                    {(type === "product" && isSeflProduced === true) ? (<ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ""}
+                                    
+                                    {(type !== "waste" && isSeflProduced === true) ? (<InfoMillCreateForm
                                         id={goodId}
                                         onDataChange={handleListMillsChange}
                                         initialData={listManfaucturingMills}
-                                    />
+                                    />) : ""}
                                 </React.Fragment>
-                            ) : (
-                                ""
-                            )}
+                            
                         </div>
                     </div>
                 </form>

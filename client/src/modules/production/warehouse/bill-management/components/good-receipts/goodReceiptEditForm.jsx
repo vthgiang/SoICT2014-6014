@@ -32,6 +32,21 @@ function GoodReceiptEditForm(props) {
         approver: []
     })
 
+    let dataSource = [
+        {
+            value: '0',
+            text: 'Chọn nguồn hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Hàng hóa tự sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Hàng hóa nhập từ nhà cung cấp',
+        }
+    ];
+
     const getAllGoods = () => {
         let { translate } = props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
@@ -176,6 +191,27 @@ function GoodReceiptEditForm(props) {
                 fromStock: value,
                 errorStock: msg,
             })
+        }
+        return msg === undefined;
+    }
+
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
+
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                selfProducedCheck: value === "1" ? true : false,
+            });
         }
         return msg === undefined;
     }
@@ -777,9 +813,9 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    const { translate, group } = props;
+    const { translate, group, sourceType } = props;
     const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
-        qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, manufacturingMill,
+        qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
         errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
     const listGoods = getAllGoods();
     const dataApprover = getApprover();
@@ -788,6 +824,7 @@ function GoodReceiptEditForm(props) {
     const dataStock = getStock();
     const dataType = getType();
     const dataStatus = getStatus();
+    console.log("good", good);
     // const checkApproved = checkApproved(approvers, listQualityControlStaffs);
 
     return (
@@ -855,6 +892,21 @@ function GoodReceiptEditForm(props) {
                                         disabled={true}
                                     />
                                     <ErrorLabel content={errorStock} />
+                                </div>
+                                <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                                    <span className="text-red"> * </span>
+                                    <SelectBox
+                                        id={`select-source-type`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={sourceType}
+                                        items={dataSource}
+                                        onChange={handleSourceChange}
+                                        multiple={false}
+                                        disabled={true}
+                                    />
+                                    <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
                                 {type === '1' && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.supplier')}<span className="text-red"> * </span></label>

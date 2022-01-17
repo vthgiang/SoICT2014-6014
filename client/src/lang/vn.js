@@ -4937,6 +4937,7 @@ export default {
                 choose_type: "Chọn loại phiếu",
                 choose_approver: "Chọn người phê duyệt",
                 choose_customer: "Chọn khách hàng",
+                choose_manufacturing_mills: "Chọn xưởng sản xuất",
                 choose_lot: "Chọn lô",
                 choose_stock: "Chọn kho",
                 add_title: {
@@ -4994,6 +4995,7 @@ export default {
                 validate_stock: "Bạn cần chọn kho",
                 validate_approver: "Bạn cần chọn người phê duyệt",
                 validate_customer: "Bạn cần chọn khách hàng",
+                validate_manufacturing_mills: "Bạn cần chọn xưởng sản xuất",
                 validate_lot: "Bạn cần chọn lô hàng",
                 validate_quantity: "Bạn cần nhập số lượng cho lô hàng",
                 validate_quantity_rfid: "Bạn cần nhập mã RFID từ 1 đến số lượng hàng hóa đã nhập ở trên",
