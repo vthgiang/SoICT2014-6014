@@ -6,6 +6,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { DialogModal, SelectBox } from "../../../../../common-components";
 import { ModalViewTaskProcess2 } from './modalViewTaskProcess2';
 import { TaskProcessActions } from "../../redux/actions";
+import "./processDiagram.css"
 import qs from 'qs';
 var zlevel = 1;
 function areEqual(prevProps, nextProps) {
@@ -39,7 +40,7 @@ function ModalViewTaskProcessById(props) {
     console.log(currentDiagram);
     return (
         <React.Fragment>
-            <div>
+            <div className="processbyid">
             <ModalViewTaskProcess2
                 title={translate("task.task_process.view_process_template_modal")}
                 listOrganizationalUnit={currentDiagram ? currentDiagram.listOrganizationalUnit : ""}

@@ -325,3 +325,12 @@
 .entry.bpmn-icon-screw-wrench, .entry.bpmn-icon-text-annotation {
     display: none;
 }
+
+.viewbpmnprocesschild{
+    cursor: pointer;
+}
+
+.processbyid{
+    height: 100%;
+    background-color: #fff;
+}

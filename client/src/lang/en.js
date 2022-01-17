@@ -183,6 +183,7 @@ export default {
 
             tasks: "Task management",
             task: "Detailed Task",
+            process_template: "Detailed Process Template",
             task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
             task_management_dashboard: "Personal task dashboard",

@@ -198,6 +198,7 @@ export default {
 
             tasks: "Công việc cá nhân",
             task: "Chi tiết công việc",
+            process_template: "Chi tiết quy trình công việc mẫu",
             task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
             task_management_dashboard: "Dashboard công việc cá nhân",
