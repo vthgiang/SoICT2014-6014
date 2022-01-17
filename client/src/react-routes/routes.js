@@ -1425,7 +1425,7 @@ class Routes extends Component {
                         exact={true}
                         link={"/process-template"}
                         path={"/process-template"}
-                        pageName={"process-template"}
+                        pageName={"process_template"}
                         layout={Layout}
                         component={ModalViewTaskProcessById}
                     />

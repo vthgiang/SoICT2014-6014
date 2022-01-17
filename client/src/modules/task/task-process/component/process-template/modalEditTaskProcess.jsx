@@ -660,6 +660,7 @@ function ModalEditTaskProcess(props) {
         modeler.saveXML({ format: true }, function (err, xml) {
             xmlStr = xml;
         });
+        console.log(xmlStr);
         await setState(state => {
             for (let j in info) {
                 if (Object.keys(info[j]).length !== 0) {
@@ -763,7 +764,6 @@ function ModalEditTaskProcess(props) {
             noResultsPerPage: props.noResultsPerPage,
             name: props.name,
         }
-        console.log(data);
         props.editXmlDiagram(state.idProcess, data)
     }
 

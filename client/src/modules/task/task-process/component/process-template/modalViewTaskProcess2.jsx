@@ -55,11 +55,11 @@ function ModalViewTaskProcess2(props) {
     //         id: element.businessObject.id
     //     });
     // }
-    const interactPopup = async (event) => {
+    const interactPopup =  (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
         // console.log(element);
-        await setState(state => {
+         setState(state => {
             if (element.type === "bpmn:SubProcess") {
                 return {
                     ...state,
@@ -71,8 +71,9 @@ function ModalViewTaskProcess2(props) {
                     id: `${element.businessObject.id}`,
                 }
                 
-            } else if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
-                // console.log("object");
+            } else 
+            if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
+                console.log("object");
                 return { ...state, showInfo: true,showInfoProcess:false, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
             }
             else {
@@ -93,9 +94,7 @@ function ModalViewTaskProcess2(props) {
         modeler.on('element.click', 1000, (e) => interactPopup(e));
     }, [])
     useEffect(() => {
-        console.log(props);
         if(props.idProcess&&props.idProcess != state.idProcess){
-            console.log("object");
             let info = {};
             let infoTask = props.data.tasks; // TODO task list
             for (let i in infoTask) {
@@ -304,19 +303,6 @@ function ModalViewTaskProcess2(props) {
                     <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
                         <div className="">
                             {/* Quy trình công việc */}
-                            {state.showProcessTemplate && state.dataProcessTask &&
-                                <ModalViewBpmnProcessTemplateChild
-                                    idProcess={state.dataProcessTask._id}
-                                    tasks={state.dataProcessTask.tasks}
-                                    processTemplates={state.dataProcessTask.processTemplates}
-                                    processDescription={state.dataProcessTask.processDescription}
-                                    processName={state.dataProcessTask.processName}
-                                    viewer={state.dataProcessTask.viewer}
-                                    manager={state.dataProcessTask.manager}
-                                    xmlDiagram={state.dataProcessTask.xmlDiagram}
-                                    >
-                                </ModalViewBpmnProcessTemplateChild>
-                            }
                             <div className={`contain-border ${showInfo || showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
                                 <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                     <button onClick={exportDiagram}>Export XML</button>
@@ -361,7 +347,7 @@ function ModalViewTaskProcess2(props) {
                                     </div>
                                 }
                                 {showInfoProcess&&
-                                    <div>
+                                    <div >
                                     {/* <div>
                                             <h1>Option {name}</h1>
                                         </div> */}
