@@ -310,6 +310,7 @@ exports.createBill = async (userId, data, portal) => {
             address: data.address,
         },
         description: data.description,
+        sourceType: data.sourceType,
         goods: data.goods ? data.goods.map(item => {
             return {
                 good: item.good,
@@ -424,6 +425,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         address: data.address ? data.address : bill.receiver.address
     };
     bill.description = data.description ? data.description : bill.description;
+    bill.sourceType = data.sourceType ? data.sourceType : bill.sourceType;
     bill.goods = data.goods ? data.goods.map(item => {
         return {
             good: item.good,

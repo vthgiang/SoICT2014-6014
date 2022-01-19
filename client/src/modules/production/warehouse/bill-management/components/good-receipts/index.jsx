@@ -203,6 +203,7 @@ function ReceiptManagement(props) {
                         description={currentRow.description}
                         listGood={currentRow.goods}
                         creator={currentRow.creator ? currentRow.creator._id : ''}
+                        sourceType={currentRow.sourceType}
                     />
                 }
 
