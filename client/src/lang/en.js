@@ -4374,7 +4374,12 @@ export default {
                     equipment: "Add new equipment",
                     waste: "Add new waste",
                 },
-                info: "commodity information",
+                info: {
+                    product: "Product information",
+                    material: "Material information",
+                    equipment: "Equipment information",
+                    waste: "Waste information",
+                },
                 edit: {
                     product: "Edit new product",
                     material: "Edit new material",
@@ -4685,6 +4690,7 @@ export default {
                 choose_type: "Select bill",
                 choose_approver: "Select approver",
                 choose_customer: "Select customer",
+                choose_manufacturing_mills: "Select mill",
                 choose_lot: "Select consignment",
                 choose_stock: "Select warehouse",
                 add_title: {
@@ -4742,6 +4748,7 @@ export default {
                 validate_stock: "Must select warehouse",
                 validate_approver: "Must select approver",
                 validate_customer: "Must select customer",
+                validate_manufacturing_mills: "Must select mill",
                 validate_lot: "Must select consignment",
                 validate_quantity: "Must enter number of consignment",
                 validate_quantity_rfid: "Must enter number of rfid",

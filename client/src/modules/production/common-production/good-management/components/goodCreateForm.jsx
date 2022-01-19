@@ -450,14 +450,13 @@ function GoodCreateForm(props) {
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
-                            {(type === "product" && sourceType === "1") ? (
+                            
                                 <React.Fragment>
-                                    <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} />
-                                    <InfoMillCreateForm onDataChange={handleListMillsChange} />
+                                    {(type === "product" && sourceType === "1") ? (
+                                    <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ("")}
+                                    {(sourceType ==="1" ? ( <InfoMillCreateForm onDataChange={handleListMillsChange} />) : "")}
                                 </React.Fragment>
-                            ) : (
-                                ""
-                            )}
+                            
                         </div>
                     </div>
                 </form>

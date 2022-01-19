@@ -4627,7 +4627,12 @@ export default {
                     equipment: "Thêm mới công cụ dụng cụ",
                     waste: "Thêm mới phế phẩm",
                 },
-                info: "Thông tin về hàng hóa",
+                info: {
+                    product: "Thông tin về sản phẩm",
+                    material: "Thông tin nguyên vật liệu",
+                    equipment: "Thông tin công cụ dụng cụ",
+                    waste: "Thông tin phế phẩm",
+                },
                 edit: {
                     product: "Chỉnh sửa thông tin sản phẩm",
                     material: "Chỉnh sửa thông tin nguyên vật liệu",
@@ -4938,6 +4943,7 @@ export default {
                 choose_type: "Chọn loại phiếu",
                 choose_approver: "Chọn người phê duyệt",
                 choose_customer: "Chọn khách hàng",
+                choose_manufacturing_mills: "Chọn xưởng sản xuất",
                 choose_lot: "Chọn lô",
                 choose_stock: "Chọn kho",
                 add_title: {
@@ -4995,6 +5001,7 @@ export default {
                 validate_stock: "Bạn cần chọn kho",
                 validate_approver: "Bạn cần chọn người phê duyệt",
                 validate_customer: "Bạn cần chọn khách hàng",
+                validate_manufacturing_mills: "Bạn cần chọn xưởng sản xuất",
                 validate_lot: "Bạn cần chọn lô hàng",
                 validate_quantity: "Bạn cần nhập số lượng cho lô hàng",
                 validate_quantity_rfid: "Bạn cần nhập mã RFID từ 1 đến số lượng hàng hóa đã nhập ở trên",
