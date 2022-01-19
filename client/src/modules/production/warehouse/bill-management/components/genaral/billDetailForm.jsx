@@ -77,7 +77,13 @@ function BillDetailForm(props) {
                                         <strong>{translate('manage_warehouse.bill_management.date')}:&emsp;</strong>
                                         {formatDate(billDetail.createdAt)}
                                     </div>
-                                    {billDetail.group === '1' &&
+                                    {billDetail.group === '1' && billDetail.sourceType === '1' &&
+                                        <div className="form-group">
+                                            <strong>{translate('manage_warehouse.bill_management.mill')}:&emsp;</strong>
+                                            {billDetail.manufacturingMill ? billDetail.manufacturingMill.name : "Mill is deleted"}
+                                        </div>
+                                    }
+                                    {billDetail.group === '1' && billDetail.sourceType === '2' &&
                                         <div className="form-group">
                                             <strong>{translate('manage_warehouse.bill_management.supplier')}:&emsp;</strong>
                                             {billDetail.supplier ? billDetail.supplier.name : "Supplier is deleted"}

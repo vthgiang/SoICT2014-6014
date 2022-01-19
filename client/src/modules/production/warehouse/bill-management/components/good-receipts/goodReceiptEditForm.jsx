@@ -52,8 +52,15 @@ function GoodReceiptEditForm(props) {
     const getAllGoods = () => {
         let { translate } = props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
+        let listGoodsCheckBySourceType = [];
+        let goods = props.goods.listGoods;
+        for (let i = 0; i < goods.length; i++) {
+            if (goods[i].sourceType === state.sourceType) {
+                listGoodsCheckBySourceType.push(goods[i]);
+            }
+        }
 
-        props.goods.listGoods.map(item => {
+        listGoodsCheckBySourceType.map(item => {
             goodArr.push({
                 value: item._id,
                 text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
@@ -214,6 +221,7 @@ function GoodReceiptEditForm(props) {
                 errorOnSourceProduct: msg,
                 sourceType: value,
                 listGood: [],
+                supplier: '',
                 isSeflProduced: value === "1" ? true : false,
             });
         }
@@ -828,8 +836,7 @@ function GoodReceiptEditForm(props) {
     const dataStock = getStock();
     const dataType = getType();
     const dataStatus = getStatus();
-    console.log("good", good);
-    // const checkApproved = checkApproved(approvers, listQualityControlStaffs);
+    // const checkApprove = checkApproved(approvers, listQualityControlStaffs);
 
     return (
         <React.Fragment>
@@ -878,7 +885,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        disabled={checkApproved}
+                                        // disabled={checkApprove}
                                     />
                                 </div>
                             </div>

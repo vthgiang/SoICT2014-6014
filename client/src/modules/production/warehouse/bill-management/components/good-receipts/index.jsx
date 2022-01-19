@@ -26,6 +26,7 @@ function ReceiptManagement(props) {
 
     const { translate, bills, stocks, user } = props;
     const { listPaginate, totalPages, page } = bills;
+    console.log(listPaginate);
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow } = state;
     const dataPartner = props.getPartner();
@@ -252,8 +253,8 @@ function ReceiptManagement(props) {
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                    { x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
-                                    { x.type === '2' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
+                                    { x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
+                                    { x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
