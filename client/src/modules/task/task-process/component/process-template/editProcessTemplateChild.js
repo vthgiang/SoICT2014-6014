@@ -7,7 +7,7 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import { ErrorLabel, QuillEditor, SelectBox } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-function ViewProcessTemplateChild(props) {
+function EditProcessTemplateChild(props) {
     // let userId = getStorage
     let userId = getStorage("userId")
 
@@ -15,10 +15,10 @@ function ViewProcessTemplateChild(props) {
         
         currentRole: localStorage.getItem('currentRole'),
     })
-    useEffect(() => {
+    useEffect(async() => {
         const {infoTemplate} = props
         console.log(infoTemplate);
-         props.getXmlDiagramById(infoTemplate.process)
+        await props.getXmlDiagramById(infoTemplate)
        
     }, [props.id])
    
@@ -27,7 +27,7 @@ function ViewProcessTemplateChild(props) {
     const {translate, taskProcess, role} = props
     const {newProcessTemplate,show} = state
     const { currentDiagram} = taskProcess
-    // console.log(currentDiagram);
+    console.log(currentDiagram);
 
     return (
         <React.Fragment>
@@ -86,7 +86,7 @@ function ViewProcessTemplateChild(props) {
                                 </div>
                             </div>
                             <a className='viewbpmnprocesschild' href={`/process-template?processId=${currentDiagram?currentDiagram._id:""}`} target="_blank">
-                                Xem chi tiết quy trình
+                                sửa quy trình
                             </a>
                         </div>
                     }
@@ -104,5 +104,5 @@ function mapState(state) {
 const actionCreators = {
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
 };
-const connectedAddProcessTemplate = connect(mapState, actionCreators)(withTranslate(ViewProcessTemplateChild));
-export { connectedAddProcessTemplate as ViewProcessTemplateChild };
+const connectedAddProcessTemplate = connect(mapState, actionCreators)(withTranslate(EditProcessTemplateChild));
+export { connectedAddProcessTemplate as EditProcessTemplateChild };

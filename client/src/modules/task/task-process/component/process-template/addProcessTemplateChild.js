@@ -30,7 +30,7 @@ function AddProcessTemplate(props) {
     useEffect(() => {
         const {infoTemplate, taskProcess} = props
         const taskProcessSelected = taskProcess.xmlDiagram.find(data => data._id === infoTemplate)
-        // console.log(infoTemplate, taskProcessSelected);
+        console.log(infoTemplate, taskProcessSelected,taskProcess);
         setState({
             ...state,
             newProcessTemplate: {
@@ -217,9 +217,9 @@ function AddProcessTemplate(props) {
                                     }
                                 </div>
                             </div>
-                            <span onClick={showProcessTemplate}>
+                            <a className='viewbpmnprocesschild' href={`/process-template?processId=${newProcessTemplate._id}`} target="_blank">
                                 Xem chi tiết quy trình 
-                            </span>
+                            </a>
                         </div>
                     }
                 </div>

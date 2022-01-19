@@ -1048,7 +1048,9 @@ function ActionTab(props) {
         }
         else return false;
     }
-
+    const reverseArr = (arr) => {
+        return [].concat(arr).reverse()
+    }
     let task, documents, taskComments, logTimer, logs, subtasks;
     if (typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
         task = performtasks.task;
@@ -1399,7 +1401,7 @@ function ActionTab(props) {
                                                 {/* Hiển thị bình luận cho hoạt động */}
                                                 {!showSort && task && showChildComment.some(obj => obj === item._id) &&
                                                     <div>
-                                                        {item.comments.map(child => {
+                                                        {reverseArr(item.comments).map(child => {
                                                             let listImage = child.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                             return <div key={child._id}>
                                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />
@@ -1736,7 +1738,7 @@ function ActionTab(props) {
                                                 {/* Hiển thị bình luận cho bình luận */}
                                                 {showChildComment.some(x => x === item._id) &&
                                                     <div className="comment-content-child">
-                                                        {item.comments.map(child => {
+                                                        {reverseArr(item.comments).map(child => {
                                                             let listImage = child.files.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                                             return <div key={child._id}>
                                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + child.creator?.avatar)} alt="User Image" />

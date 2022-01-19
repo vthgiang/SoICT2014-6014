@@ -5,48 +5,30 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { DatePicker } from '../../../../common-components';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { PaginateBar, DataTableSetting, ExportExcel } from '../../../../common-components/index';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import NumberFormat from 'react-number-format';
 
 function EmployeeTimeSheetLog(props) {
-
-    console.log("__render");
     const { tasks, translate } = props;
+    console.log('tasks', tasks);
 
-    const [state, setState] = useState(initState())
-    function initState() {
-        const defaultConfig = { limit: 15 }
-        const allTimeSheetLogsId = "all-time-sheet-logs"
-        const perPage = getTableConfiguration(allTimeSheetLogsId, defaultConfig).limit;
-        let d = new Date(),
+    let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
-        let endMonth;
-        if (month < 10) {
-            endMonth = '0' + month;
-        } else {
-            endMonth = month;
-        }
-        const INFO_SEARCH = {
-            endMonthTitle: [endMonth, year].join('-'),
-        }
-        return {
-            type: 'status',
-            monthTimeSheetLog: INFO_SEARCH.endMonthTitle,
-            limit: perPage,
-            page: 1,
-        }
-        
-    }
+    let endMonth = month < 10 ? '0' + month : '' + month;
+    endMonth = [endMonth, year].join('-');
 
-    let { monthTimeSheetLog, limit, page } = state;
+    let monthTimeSheetLog = useRef(endMonth),
+        rowLimit = useRef(15),
+        page = useRef(1),
+        timeLimit = useRef(0);
     let { allTimeSheetLogs } = tasks; // Thống kê bấm giờ
 
     let dataExport = {
-        fileName: `${"Thống kê công việc nhân viên"} ${state.monthTimeSheetLog}`,
+        fileName: `${"Thống kê công việc nhân viên tháng"} ${monthTimeSheetLog.current}`,
         dataSheets: [
             {
-                sheetTitle: `${'Thống kê công việc nhân viên'} ${state.monthTimeSheetLog}`,
-                sheetName: `${'Thống kê công việc nhân viên'}`,
+                sheetTitle: `${'Thống kê công việc nhân viên tháng'} ${monthTimeSheetLog.current}`,
+                sheetName: `${monthTimeSheetLog.current}`,
                 sheetTitleWidth: 11,
                 tables: [
                     {
@@ -86,52 +68,46 @@ function EmployeeTimeSheetLog(props) {
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
-        props.getAllUserTimeSheet(month, year, limit, page);
+        props.getAllUserTimeSheet(month, year, 15, 1, 0);
     }, [])
 
     const handleChangeMonthTimeSheetLog = (value) => {
-        setState({
-            ...state,
-            monthTimeSheetLog: value
-        });
+        monthTimeSheetLog.current = value;
+    }
+    const handleChangeTimeLimit = (value) => {
+        timeLimit.current = value.floatValue;
     }
 
+    // Lấy dữ liệu từ theo tháng được chọn
     const getAllUserTimeSheetLogs = () => {
-        let { monthTimeSheetLog } = state;
         if (monthTimeSheetLog) {
-            let d = monthTimeSheetLog.split('-');
+            let d = monthTimeSheetLog.current.split('-');
             let month = d[0];
             let year = d[1];
-            props.getAllUserTimeSheet( month, year, limit, page);
+            props.getAllUserTimeSheet( month, year, rowLimit.current, page.current, timeLimit.current);
         }
     }
 
-    const handlePaginationAllTimeSheetLogs = (page) => {
-        let { monthTimeSheetLog } = state;
+    // Lấy dữ liệu tại trang được chọn
+    const handlePaginationAllTimeSheetLogs = (pageIndex) => {
         if (monthTimeSheetLog) {
-            let d = monthTimeSheetLog.split('-');
+            let d = monthTimeSheetLog.current.split('-');
             let month = d[0];
             let year = d[1];
-            setState({
-                ...state,
-                page: page
-            })
-            props.getAllUserTimeSheet( month, year, limit, page);
+            page.current = pageIndex
+            props.getAllUserTimeSheet( month, year, rowLimit.current, page.current, timeLimit.current);
         }
     }
     
-    const setRowLimit = (limit) => {
-        let { monthTimeSheetLog } = state;
+    // Giới hạn số lượng cột, mỗi khi chọn sẽ reset về trang 1
+    const setRowLimit = (limitValue) => {
         if (monthTimeSheetLog) {
-            let d = monthTimeSheetLog.split('-');
+            let d = monthTimeSheetLog.current.split('-');
             let month = d[0];
             let year = d[1];
-            setState({
-                ...state,
-                page: 1,
-                limit: limit
-            })
-            props.getAllUserTimeSheet( month, year, limit, 1);
+            page.current = 1;
+            rowLimit.current = limitValue;
+            props.getAllUserTimeSheet( month, year, rowLimit.current, 1, timeLimit.current);
         }
     }
 
@@ -145,13 +121,24 @@ function EmployeeTimeSheetLog(props) {
                 {/* Seach theo thời gian */}
                 <div className="form-inline" >
                     <div className="form-group">
-                        <label style={{ width: "auto" }}>Tháng</label>
+                        <label style={{ width: "auto" }} >Tháng</label>
                         <DatePicker
                             id="month-time-sheet-log"
                             dateFormat="month-year"
-                            value={monthTimeSheetLog}
+                            value={monthTimeSheetLog.current}
                             onChange={handleChangeMonthTimeSheetLog}
                             disabled={false}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{'Thời gian tối thiểu'}</label>
+                        {/* <input autoComplete="off" className="form-control" type="number" placeholder={translate('task.task_management.search_by_employees')} name="name" /> */}
+                        <NumberFormat
+                            className="form-control"
+                            value={timeLimit.current}
+                            displayType={'input'}
+                            suffix={' giờ'}
+                            onValueChange={handleChangeTimeLimit}
                         />
                     </div>
                     <button className="btn btn-primary" onClick={getAllUserTimeSheetLogs}>Thống kê</button>
@@ -169,7 +156,7 @@ function EmployeeTimeSheetLog(props) {
                 />
             </div>
             <div className="box-body qlcv">
-                <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+                <table className="table table-hover table-striped table-bordered" id="all-time-sheet-logs">
                     <thead>
                         <tr>
                             <th style={{ textAlign: 'center' }}>STT</th>
@@ -188,7 +175,6 @@ function EmployeeTimeSheetLog(props) {
                     <tbody>
                         {
                             allTimeSheetLogs?.docs?.map((tsl, index) => {
-                                if (tsl.active == true)
                                 return (
                                     <tr key={index}>
                                         <td style={{ textAlign: 'center' }}>{index + 1}</td>

@@ -1033,8 +1033,8 @@ exports.getUserTimeSheet = async (req, res) => {
 exports.getAllUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let { month, year, limit, page } = req.query;
-        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, null, month, year, false, limit, page);
+        let { month, year, rowLimit, page, timeLimit } = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, null, month, year, false, rowLimit, page, timeLimit);
 
         await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
         res.status(200).json({
