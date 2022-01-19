@@ -454,7 +454,7 @@ function GoodCreateForm(props) {
                                 <React.Fragment>
                                     {(type === "product" && sourceType === "1") ? (
                                     <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ("")}
-                                    {(type !== "waste" && sourceType ==="1" ? ( <InfoMillCreateForm onDataChange={handleListMillsChange} />) : "")}
+                                    {(sourceType ==="1" ? ( <InfoMillCreateForm onDataChange={handleListMillsChange} />) : "")}
                                 </React.Fragment>
                             
                         </div>

@@ -365,7 +365,7 @@ function GoodEditForm(props) {
                                 <label>{translate('manage_warehouse.good_management.good_source')}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
-                                    id={`edit-source-type-${goodId}`}
+                                    id={`edit-source-type-${dataSource.value}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={sourceType ? sourceType : ""}
@@ -448,7 +448,7 @@ function GoodEditForm(props) {
                                 <React.Fragment>
                                     {(type === "product" && isSeflProduced === true) ? (<ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ""}
                                     
-                                    {(type !== "waste" && isSeflProduced === true) ? (<InfoMillCreateForm
+                                    {(isSeflProduced === true) ? (<InfoMillCreateForm
                                         id={goodId}
                                         onDataChange={handleListMillsChange}
                                         initialData={listManfaucturingMills}

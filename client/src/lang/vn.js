@@ -4627,7 +4627,12 @@ export default {
                     equipment: "Thêm mới công cụ dụng cụ",
                     waste: "Thêm mới phế phẩm",
                 },
-                info: "Thông tin về hàng hóa",
+                info: {
+                    product: "Thông tin về sản phẩm",
+                    material: "Thông tin nguyên vật liệu",
+                    equipment: "Thông tin công cụ dụng cụ",
+                    waste: "Thông tin phế phẩm",
+                },
                 edit: {
                     product: "Chỉnh sửa thông tin sản phẩm",
                     material: "Chỉnh sửa thông tin nguyên vật liệu",

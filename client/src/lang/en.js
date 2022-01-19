@@ -4374,7 +4374,12 @@ export default {
                     equipment: "Add new equipment",
                     waste: "Add new waste",
                 },
-                info: "commodity information",
+                info: {
+                    product: "Product information",
+                    material: "Material information",
+                    equipment: "Equipment information",
+                    waste: "Waste information",
+                },
                 edit: {
                     product: "Edit new product",
                     material: "Edit new material",

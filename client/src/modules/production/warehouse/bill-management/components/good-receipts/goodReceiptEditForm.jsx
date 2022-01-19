@@ -29,7 +29,9 @@ function GoodReceiptEditForm(props) {
         users: [],
         status: '1',
         fromStock: '',
-        approver: []
+        approver: [],
+        sourceType: "",
+        isSeflProduced: props.sourceType === "1" ? true : false,
     })
 
     let dataSource = [
@@ -114,7 +116,7 @@ function GoodReceiptEditForm(props) {
 
     const getMills = () => {
         const { manufacturingMill, translate } = props;
-        let MillArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
+        let MillArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_manufacturing_mills') }];
 
         manufacturingMill.listMills.map(item => {
             MillArr.push({
@@ -169,6 +171,7 @@ function GoodReceiptEditForm(props) {
                 ...state,
                 type: value,
                 errorType: msg,
+                listGood: [],
             })
         }
         return msg === undefined;
@@ -210,7 +213,8 @@ function GoodReceiptEditForm(props) {
                 ...state,
                 errorOnSourceProduct: msg,
                 sourceType: value,
-                selfProducedCheck: value === "1" ? true : false,
+                listGood: [],
+                isSeflProduced: value === "1" ? true : false,
             });
         }
         return msg === undefined;
@@ -816,7 +820,7 @@ function GoodReceiptEditForm(props) {
     const { translate, group, sourceType } = props;
     const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
         qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
-        errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
+        errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
     const listGoods = getAllGoods();
     const dataApprover = getApprover();
     const dataCustomer = getCustomer();
@@ -860,7 +864,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false :true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -874,7 +878,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        // disabled={checkApproved}
+                                        disabled={checkApproved}
                                     />
                                 </div>
                             </div>
@@ -889,7 +893,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false :true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
@@ -897,18 +901,18 @@ function GoodReceiptEditForm(props) {
                                     <label>{translate('manage_warehouse.good_management.good_source')}</label>
                                     <span className="text-red"> * </span>
                                     <SelectBox
-                                        id={`select-source-type`}
+                                        id={`select-source-type-${dataSource.value}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={sourceType}
                                         items={dataSource}
                                         onChange={handleSourceChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false :true}
                                     />
                                     <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
-                                {type === '1' && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                {isSeflProduced === false ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.supplier')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-supplier-receipt-edit-${billId}`}
@@ -918,11 +922,11 @@ function GoodReceiptEditForm(props) {
                                         items={dataCustomer}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false :true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
-                                </div>}
-                                {type === '2' && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                </div>) : null}
+                                {isSeflProduced === true ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.mill')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-mill-receipt-edit-${billId}`}
@@ -932,10 +936,10 @@ function GoodReceiptEditForm(props) {
                                         items={dataMills}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false :true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
-                                </div>}
+                                </div>) : null}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
@@ -978,7 +982,7 @@ function GoodReceiptEditForm(props) {
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    {type === '1' && <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                    <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-qualityControlStaffs-bill-receipt-edit-${billId}`}
@@ -990,7 +994,7 @@ function GoodReceiptEditForm(props) {
                                             multiple={true}
                                         />
                                         <ErrorLabel content={errorQualityControlStaffs} />
-                                    </div>}
+                                    </div>
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.accountables')}<span className="text-red"> * </span></label>
                                         <SelectBox

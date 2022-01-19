@@ -135,6 +135,7 @@ function GoodReceiptCreateForm(props) {
                 errorOnSourceProduct: msg,
                 sourceType: value,
                 selfProducedCheck: value === "1" ? true : false,
+                listGood: [],
             });
         }
         return msg === undefined;
