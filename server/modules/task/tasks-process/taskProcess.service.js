@@ -238,9 +238,8 @@ exports.editXmlDiagram = async (portal, params, body) => {
         }
     }
     for (const x in body.infoTemplate) {
-        // console.log(body.infoTemplate[x]);
         processTemplates.push({
-            process:body.infoTemplate[x]._id,
+            process:body.infoTemplate[x].process,
             code:body.infoTemplate[x].code,
             followingTasks:body.infoTemplate[x].followingTasks,
             preceedingTasks:body.infoTemplate[x].preceedingTasks

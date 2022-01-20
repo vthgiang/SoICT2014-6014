@@ -258,7 +258,6 @@ function ModalEditTaskProcess(props) {
             selectedEdit: content
         })
     }
-
     // cập nhật tên công việc trong quy trình
     const handleChangeName = async (value) => {
         const modeling = modeler.get('modeling');
@@ -590,13 +589,9 @@ function ModalEditTaskProcess(props) {
 				viewerName:viewer
 			});
 		}
-		let infoTemplate = {
-			...data,
-			code: state.id
-		}
 		const infoTemplates = state.infoTemplate
-        infoTemplates[`${state.id}`] = infoTemplate ;
-        state.infoTemplate[`${state.id}`] = infoTemplate
+        infoTemplates[`${state.id}`].process = data._id ;
+        state.infoTemplate[`${state.id}`].process = data._id
         setState({
                 ...state,
                 infoTemplate: infoTemplates
@@ -928,6 +923,7 @@ function ModalEditTaskProcess(props) {
                                                 </div> */}
 
                                             <AddProcessTemplate
+                                                idParent={props.idProcess}
                                                 id={id}
                                                 infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`].process}
                                                 // handleDataProcessTempalte={handleDataProcessTempalte}
