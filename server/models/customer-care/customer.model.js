@@ -159,6 +159,10 @@ const CustomerSchema = new Schema({
     }
     ,
     promotions: [{// danh sach khuyen mai cua khach hang 
+        code: { // Mã ưu đãi, cái này mới thêm khi làm chức năng thêm mã khuyến mãi cho nhóm KH, vì liên quan đến nhiều phần khác chưa sửa nên tạm thời để require = false
+            type: String,
+            require: false 
+        },
         value: { type: Number },
         description: { type: String },
         minimumOrderValue: { type: Number },

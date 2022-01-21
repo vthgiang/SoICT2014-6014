@@ -5841,7 +5841,8 @@ const initSampleCompanyDB = async () => {
             const name = await getRandomCustomerName();
             const now = new Date();
             const month = (now.getMonth() - i > 0) ? now.getMonth() - i : now.getMonth() - i + 12;
-            const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
+            //const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
+            const year = now.getFullYear();
             const customer = {
 
                 "owner": [
