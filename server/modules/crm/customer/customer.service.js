@@ -1,4 +1,4 @@
-const { Customer, User } = require('../../../models');
+const { Customer, User, CustomerGroup } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { createTaskAction } = require('../../task/task-perform/taskPerform.service');
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
@@ -406,7 +406,6 @@ exports.addPromotion = async (portal, companyId, id, data, userId, careCode) => 
     let { value, description, minimumOrderValue, promotionalValueMax, expirationDate } = data;
 
     if (!careCode) { 
-        console.log(careCode);
         careCode = await createCustomerCareCode(portal, id);
     }
 
@@ -428,11 +427,42 @@ exports.addPromotion = async (portal, companyId, id, data, userId, careCode) => 
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
 }
 
+// Lấy tất cả danh sách khuyến mãi của 1 khách hàng ( Lấy từ bảng customer và khuyến mãi từ bảng customerGroup)
 exports.getCustomerPromotions = async (portal, companyId, customerId) => {
     console.log('vao get promotion');
+    
+    let promotions = [];
     const customer = await this.getCustomerById(portal, companyId, customerId);
-    if (!customer || customer.promotions) return [];
-    return customer.promotions;
+    
+    if (customer && customer.promotions) promotions = [...promotions, customer.promotions]
+    console.log("sau khi lay khuyen mai tu bang khach hang");
+    console.log(promotions);
+
+    let group;
+    if (customer.customerGroup) {
+        group = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(customer.customerGroup);
+    }
+    console.log("promotion cua nhom");
+    console.log(group.promotions);
+    
+    
+    if (group.promotions) {
+        const groupPromotions = group.promotions;
+        groupPromotions.forEach(x => {
+            if (!x.exceptCustomer ) {                    
+                promotions = [...promotions, x];
+            } else {
+                let check = true;
+                x.exceptCustomer.map((o) => {
+                    if (o._id == customer._id) check = false;                    
+                })
+                if (check) promotions = [...promotions, x];             
+            }
+        })
+    }
+    console.log("ket qua tra ve");
+    console.log(promotions);
+    return promotions;
 
 }
 
@@ -463,17 +493,20 @@ exports.deleteCustomer = async (portal, companyId, id) => {
     return delCustomer;
 }
 
+// Xóa khuyến mãi của khách hàng 
 exports.deletePromotion = async (portal, companyId, customerId, data, userId) => {
-    console.log('vao day');
-    console.log(data);
-    let { promoIndex } = data;
+    let { code } = data;
     let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
     let promotions = [];
     if (customer.promotions) {
-        promotions = customer.promotions;
-        promotions = promotions.splice(promoIndex, 1);
+        const listPromotions = customer.promotions;
+        listPromotions.forEach(x => {
+            if (x.code !== code ) { 
+                promotions = [...promotions, x];
+            }
+        })
     }
-    customer = { ...customer, promotions };
+    customer.promotions = promotions;
     return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
         $set: customer
     }, { new: true });
@@ -502,18 +535,20 @@ exports.usePromotion = async (portal, companyId, customerId, data, userId) => {
 
 }
 
+// Chỉnh sửa khuyến mãi của khách hàng
 exports.editPromotion = async (portal, companyId, customerId, data, userId) => {
-    console.log(1);
     let { promotion } = data;
     let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
     let promotions = [];
     if (customer.promotions) {
-        promotions = customer.promotions;
+        const listPromotions = customer.promotions;
+        listPromotions.forEach(x => {
+            if (x.code == promotion.code) { 
+                promotions = [...promotions, promotion]
+            } else promotions =  [...promotions, x ];
+        })
     }
-    console.log(1);
-    promotions[promotion.index] = promotion;
-    customer = { ...customer, promotions };
-    console.log(1);
+    customer.promotions = promotions; 
     return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
         $set: customer
     }, { new: true });

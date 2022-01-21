@@ -125,7 +125,7 @@ exports.deleteGroup = async (req, res) => {
 
 exports.addGroupPromotion = async (req, res) => {
     try {
-        const newGroupPromotion = await GroupService.addGroupPromotion(req.portal, req.user.company._id, req.user._id, req.body, req.currentRole);
+        const newGroupPromotion = await GroupService.addGroupPromotion(req.portal, req.user.company._id, req.params.id, req.user._id, req.body, req.currentRole);
         await Logger.info(req.user.email, 'create_group_promotion_success', req.portal);
 
         res.status(200).json({
@@ -135,7 +135,7 @@ exports.addGroupPromotion = async (req, res) => {
         })
     } catch (error) {
         await Logger.error(req.user.email, 'create_group_promotion_false', req.portal);
-        req.status(400).json({
+        res.status(400).json({
             success: false,
             messages: ['create_group_promotion_false'],
             content: error
@@ -145,7 +145,7 @@ exports.addGroupPromotion = async (req, res) => {
 
 exports.editGroupPromotion = async (req, res) => {
     try {
-        const editGroupPromotion = await GroupService.editGroupPromotion(req.portal, req.user.company._id, req.user._id, req.body, req.currentRole);
+        const editGroupPromotion = await GroupService.editGroupPromotion(req.portal, req.user.company._id, req.params.id, req.user._id, req.body, req.currentRole);
         await Logger.info(req.user.email, 'edit_group_promotion_success', req.portal);
 
         res.status(200).json({
@@ -155,7 +155,7 @@ exports.editGroupPromotion = async (req, res) => {
         })
     } catch (error) {
         await Logger.error(req.user.email, 'edit_group_promotion_false', req.portal);
-        req.status(400).json({
+        res.status(400).json({
             success: false,
             messages: ['edit_group_promotion_false'],
             content: error
@@ -165,7 +165,7 @@ exports.editGroupPromotion = async (req, res) => {
 
 exports.deleteGroupPromotion = async (req, res) => {
     try {
-        const deleteGroupPromotion = await GroupService.deleteGroupPromotion(req.portal, req.user.company._id, req.user._id, req.body, req.currentRole);
+        const deleteGroupPromotion = await GroupService.deleteGroupPromotion(req.portal, req.user.company._id, req.params.id, req.user._id, req.body, req.currentRole);
         await Logger.info(req.user.email, 'delete_group_promotion_success', req.portal);
 
         res.status(200).json({
@@ -175,11 +175,30 @@ exports.deleteGroupPromotion = async (req, res) => {
         })
     } catch (error) {
         await Logger.error(req.user.email, 'delete_group_promotion_false', req.portal);
-        req.status(400).json({
+        res.status(400).json({
             success: false,
             messages: ['delete_group_promotion_false'],
             content: error
         })
     }
 }
-/* Thêm 126-> 184*/
+
+exports.getMembersInGroup = async (req, res) => {
+    try {
+        const membersGroup = await GroupService.getMembersInGroup(req.portal, req.user.company._id, req.params.id, req.user._id, req.currentRole);
+        await Logger.error(req.user.email, 'get_member_promotion_success', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_members_group_true'],
+            content: membersGroup
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'get_members_group_false', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_members_group_false'],
+            content: error
+        })
+    }
+}

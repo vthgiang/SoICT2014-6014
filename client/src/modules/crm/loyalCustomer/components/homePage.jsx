@@ -17,7 +17,7 @@ import CustomerPromotionInfoForm from './customerPromotionInfoForm';
 function LoyalCustomerHomePage(props) {
     const { translate, crm, user } = props;
     const [customerId, setCustomerId] = useState();
-    const [customerGetPromotion, setCustomerGetPromotion] = useState();
+    const [customerGetPromotion, setCustomerGetPromotion] = useState(undefined);
     const [customerCode, setCustomerCode] = useState();
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
@@ -25,15 +25,19 @@ function LoyalCustomerHomePage(props) {
         await setCustomerId(id);
         window.$('#modal-crm-care-common-create').modal('show')
     }
-    const handleGetPromotion = async (customer) => {
-        await setCustomerGetPromotion(customer);
+
+    // Xử lí lấy khuyến mãi 
+    const handleGetPromotion = (id) => {
+        setCustomerGetPromotion(id);
         window.$('#modal-customer-promotion-info').modal('show')
     }
+
     const { loyalCustomers, } = crm;
     const [searchState, setSearchState] = useState({ page: 0, limit: 10 })
     let pageTotal
     if (loyalCustomers)
         pageTotal = (loyalCustomers.totalDocs / limit )
+
     useEffect(() => {
         props.getLoyalCustomers({ ...searchState, page, limit });
         const currentRole = getStorage('currentRole');
@@ -49,7 +53,7 @@ function LoyalCustomerHomePage(props) {
 
     }, [])
 
-
+    // Xử lí tìm kiếm 
     const handleSearchByCustomerCode = async (e) => {
         const value = e.target.value;
         setCustomerCode(value);
@@ -57,6 +61,8 @@ function LoyalCustomerHomePage(props) {
     const search = () => {
         props.getLoyalCustomers({ customerCode, limit,page });
     }
+
+    // Phân hạng khách hàng
     let listCustomerRankPoints;
     if (crm && crm.customerRankPoints) listCustomerRankPoints = crm.customerRankPoints.list;
 
@@ -146,7 +152,7 @@ function LoyalCustomerHomePage(props) {
         <div className="box">
             <div className="box-body qlcv">
                 {customerId && <CreateCareCommonForm customerId={customerId} type={1}></CreateCareCommonForm>}
-                {customerGetPromotion && <CustomerPromotionInfoForm customerId={customerGetPromotion._id} getLoyalCustomersData = {()=>getLoyalCustomersData()} />}
+                {customerGetPromotion && <CustomerPromotionInfoForm customerId={customerGetPromotion} getLoyalCustomersData = {()=>getLoyalCustomersData()} />}
                 <div className="form-inline">
                     {/* export excel danh sách khách hàng */}
                     <ExportExcel id="export-customer" buttonName={translate('human_resource.name_button_export')}
@@ -202,7 +208,7 @@ function LoyalCustomerHomePage(props) {
                     <tbody>
                         {
                             loyalCustomers && loyalCustomers.list.map((o, index) => (
-                                <tr >
+                                <tr key={o.customer._id}>
 
                                     <td>{index + 1}</td>
                                     <td>{o.customer.code}</td>
@@ -217,7 +223,7 @@ function LoyalCustomerHomePage(props) {
                                             onClick={() => handleCreateCareAcrion(o.customer._id)}
                                         ><i className="material-icons">add_comment</i></a>
                                         <a className="text-orange" title="Khuyến mãi của khách hàng"
-                                            onClick={() => handleGetPromotion(o.customer)}
+                                            onClick={() => handleGetPromotion(o.customer._id)}
                                         ><i className="material-icons">loyalty</i></a>
                                     </td>
                                 </tr>

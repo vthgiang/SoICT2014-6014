@@ -3,18 +3,19 @@ const { CustomerGroup, Customer } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getCrmUnitByRole } = require("../crmUnit/crmUnit.service");
 const { addPromotion, editPromotion, deletePromotion } = require("../customer/customer.service");
+const { result } = require("lodash");
 
 const createGroupCareCode = async (portal, groupId) => {
 
     // Tạo mã khuyến mãi
-    const group = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
+    const group = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(groupId);
 
     const lastGroupCare = group.promotions[group.promotions.length - 1];
     let code;
     if (lastGroupCare == null) code = 'KMN001';
     else {
         let groupCareNumber = await lastGroupCare.code;
-        groupCareNumber = groupCareNumber.slice(2);
+        groupCareNumber = groupCareNumber.slice(3);
         groupCareNumber = parseInt(groupCareNumber) + 1;
         if (groupCareNumber < 10) code = 'KMN00' + groupCareNumber;
         else if (groupCareNumber < 100) code = 'KMN0' + groupCareNumber;
@@ -90,7 +91,8 @@ exports.getGroupById = async (portal, companyId, id, data, userId) => {
 
     let groupById = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(id)
         .populate({ path: 'creator', select: '_id name' })
-        .populate({ path: 'updatedBy', select: '_id name' });
+        .populate({ path: 'updatedBy', select: '_id name' })
+        .populate({ path: 'promotions.exceptCustomer', select:'_id name'});
     const numberOfUsers = await Customer(connect(DB_CONNECTION, portal)).countDocuments({ customerGroup: id });
 
     return { groupById, numberOfUsers: numberOfUsers };
@@ -120,134 +122,84 @@ exports.deleteGroup = async (portal, companyId, id) => {
 }
 
 exports.addGroupPromotion = async (portal, companyId, groupId, userId, data, role) => {
-    const { value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer } = data;
+    let { value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer } = data;
+    expirationDate = formatDate(expirationDate);
+
     const code = await createGroupCareCode(portal, groupId);
-
-    let keySearch = {};
-    if (groupId) {
-        keySearch = {
-            ...keySearch,
-            customerGroup: { $in: groupId }
-        }
-    }
-
-    if (exceptCustomer) {
-        keySearch = {
-            ...keySearch,
-            _id : { $nin: exceptCustomer}
-        }
-    }
-
-    const customerInGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch);
-
-    for (const customer in customerInGroup) {
-        await addPromotion(portal, companyId, customer._id, data, userId, code);
-    };
-
-    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
-
+    
+    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(groupId);
+    
     let promotions = [];
     if (modifyGroup.promotions) promotions = modifyGroup.promotions;
-    promotions = await [...promotions, {code, value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), exceptCustomer}];
-    modifyGroup = await { modifyGroup, promotions};
-    await CustomerGroup(connect(DB_CONNECTION), portal).findByIdAndUpdate(groupId,{
-        $set: getGroup
-    }, { new: true });
+    const promo = {code, value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer};   
+    promotions = await [...promotions, promo];
+    modifyGroup.promotions = promotions;
     
-    return await getGroupById(portal, companyId, groupId, data, userId);
+    await CustomerGroup(connect(DB_CONNECTION, portal)).findByIdAndUpdate(groupId,{
+        $set: modifyGroup
+    }, { new: true });
+    const result = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(groupId)
+                        .populate({ path: 'creator', select: '_id name' })
+                        .populate({ path: 'updatedBy', select: '_id name' });
+    return result;
 }
 
 exports.editGroupPromotion = async (portal, companyId, groupId, userId, data, role) => {
     const { promotion } = data;
-    
-    const exceptCustomer = promotion.exceptCustomer;
-    let keySearch = {};
-    if (groupId) {
-        keySearch = {
-            ...keySearch,
-            customerGroup: { $in: groupId }
-        }
-    }
+    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(groupId);
 
-    if (exceptCustomer) {
-        keySearch = {
-            ...keySearch,
-            _id : { $nin: exceptCustomer}
-        }
-    }
-
-    const customerInGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch);
-
-    for (const customer in customerInGroup) {
-        let promotions = [];
-        for (const modifyPromotion in customer.promotions) {
-            if (modifyPromotion.code = promotion.code) modifyPromotion = promotion;
-            promotions = await [...promotions, modifyPromotion];
-        };
-        customer = { ...customer, promotions };
-        await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
-            $set: customer
-        }, { new: true });
-    };
-
-    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
     let promotions = [];
-    if (modifyGroup.promotions) promotions = modifyGroup.promotions;
-    promotions[promotion.index] = promotion;
-    modifyGroup = await { modifyGroup, promotions};
-    await CustomerGroup(connect(DB_CONNECTION), portal).findByIdAndUpdate(groupId,{
-        $set: getGroup
+    let listPromotions;
+    if (modifyGroup.promotions) listPromotions = modifyGroup.promotions;
+    listPromotions.forEach(x => {
+        if (x.code !== promotion.code) {
+            promotions = [...promotions, x];
+        } else {
+            promotions = [...promotions, promotion];
+        }
+    })
+    modifyGroup.promotions = promotions;
+    
+    await CustomerGroup(connect(DB_CONNECTION, portal)).findByIdAndUpdate(groupId,{
+        $set: modifyGroup
     }, { new: true });
     
-    return await getGroupById(portal, companyId, groupId, data, userId);
+    const result = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(groupId)
+                        .populate({ path: 'creator', select: '_id name' })
+                        .populate({ path: 'updatedBy', select: '_id name' });
+    return result;
 }
 
 exports.deleteGroupPromotion = async (portal, companyId, groupId, userId, data, role) => {
-    const { value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer } = data;
+
+    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(groupId);
     
-    let keySearch = {};
-    if (groupId) {
-        keySearch = {
-            ...keySearch,
-            customerGroup: { $in: groupId }
-        }
-    }
-
-    if (exceptCustomer) {
-        keySearch = {
-            ...keySearch,
-            _id : { $nin: exceptCustomer}
-        }
-    }
-
-    const customerInGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch);
-
-    for (const customer in customerInGroup) {
-        let promotions = [];
-        for (const modifyPromotion in customer.promotions) {
-            if (modifyPromotion.code = promotion.code) {
-                modifyPromotion = promotion;
-            } else { 
-                promotions = await [...promotions, modifyPromotion];
-            }
-        };
-        customer = { ...customer, promotions };
-        await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
-            $set: customer
-        }, { new: true });
-    };
-
-    let modifyGroup = await CustomerGroup(connect(DB_CONNECTION), portal).findById(groupId);
     let promotions = [];
-    if (modifyGroup.promotions) {
-        promotions = modifyGroup.promotions;
-        promotions = promotions.splice(promoIndex, 1);
-    }
-    modifyGroup = await { modifyGroup, promotions};
-    await CustomerGroup(connect(DB_CONNECTION), portal).findByIdAndUpdate(groupId,{
-        $set: getGroup
+    let listPromotions;
+    if (modifyGroup.promotions) listPromotions = modifyGroup.promotions;
+    listPromotions.forEach(x => {
+        if (x.code !== data.code) {
+            promotions = [...promotions, x];
+        }
+    })
+    modifyGroup.promotions = promotions;
+
+    await CustomerGroup(connect(DB_CONNECTION, portal)).findByIdAndUpdate(groupId,{
+        $set: modifyGroup
     }, { new: true });
     
-    return await getGroupById(portal, companyId, groupId, data, userId);
+    const result = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(groupId)
+                        .populate({ path: 'creator', select: '_id name' })
+                        .populate({ path: 'updatedBy', select: '_id name' });
+    return result;
 }
-/* Thêm từ 7-> 25, 122-> 252*/
+
+exports.getMembersInGroup = async (portal, companyId, groupId, userId, role) => {
+    let keySearch = {};
+    if ( groupId ) {
+        keySearch = {...keySearch, customerGroup: groupId}
+    };
+
+    let membersGroup = await Customer(connect(DB_CONNECTION, portal)).find(keySearch, "_id name");
+    return membersGroup;
+}
