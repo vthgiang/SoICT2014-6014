@@ -333,7 +333,9 @@ function BillManagement(props) {
         const { qualityControlStaffs } = bill;
         const userId = localStorage.getItem("userId");
         let qualityControlStaffId = qualityControlStaffs.map(x => x.staff._id);
-        if (qualityControlStaffId.includes(userId) && qualityControlStaffs[qualityControlStaffId.indexOf(userId)].time === null) {
+        if (qualityControlStaffId.includes(userId) 
+        && (qualityControlStaffs[qualityControlStaffId.indexOf(userId)].time === null ? true 
+        : (qualityControlStaffs[qualityControlStaffId.indexOf(userId)].status === 1 ? true : false))) {
             return true;
         }
         return false

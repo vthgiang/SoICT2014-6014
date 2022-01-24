@@ -5380,6 +5380,7 @@ const initSampleCompanyDB = async () => {
             status: "2",
             timestamp: "02-06-2020",
             description: "Nhập kho thành phẩm",
+            sourceType: "1",
             goods: [
                 {
                     good: listProduct[0]._id,
