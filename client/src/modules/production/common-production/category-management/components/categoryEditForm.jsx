@@ -81,19 +81,21 @@ function CategoryEditForm(props) {
         }
     }
 
-    if(props.categoryId !== state.categoryId){
-        setState({
-            ...state,
-            categoryId: props.categoryId,
-            code: props.code,
-            name: props.name,
-            type: props.type,
-            goods: props.goods,
-            description: props.description,
-            errorOnCode: undefined,
-            errorOnName: undefined
-        })
-    }
+    useEffect(() => {
+        if(props.categoryId !== state.categoryId){
+            setState({
+                ...state,
+                categoryId: props.categoryId,
+                code: props.code,
+                name: props.name,
+                type: props.type,
+                goods: props.goods,
+                description: props.description,
+                errorOnCode: undefined,
+                errorOnName: undefined
+            })
+        }
+    }, [props.categoryId])
 
     const { translate, categories } = props;
     const { errorOnName, errorOnCode, id, code, name, type, description } = state;
@@ -114,12 +116,12 @@ function CategoryEditForm(props) {
                 <form id="form-edit-category" >
                     <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                         <label>{translate('manage_warehouse.category_management.code')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={code} onChange={handleCodeChange} />
+                        <input type="text" className="form-control" value={code ? code : ''} onChange={handleCodeChange} />
                         <ErrorLabel content={errorOnCode} />
                     </div>
                     <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
                         <label>{translate('manage_warehouse.category_management.name')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={name} onChange={handleNameChange} />
+                        <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                         <ErrorLabel content={errorOnName} />
                     </div>
                     <div className="form-group">
@@ -128,7 +130,7 @@ function CategoryEditForm(props) {
                             id={`select-edit-category-type${id}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
-                            value={type}
+                            value={type ? type : ''}
                             items={[{ value: "product", text: translate('manage_warehouse.category_management.product') },
                             { value: "material", text: translate('manage_warehouse.category_management.material') },
                             { value: "equipment", text: translate('manage_warehouse.category_management.equipment') },
@@ -152,7 +154,7 @@ function CategoryEditForm(props) {
                         </div> */}
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.description')}</label>
-                        <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
+                        <textarea type="text" className="form-control" value={description ? description : ''} onChange={handleDescriptionChange} />
                         <ErrorLabel />
                     </div>
                 </form>

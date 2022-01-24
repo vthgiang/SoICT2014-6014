@@ -26,7 +26,6 @@ function ReceiptManagement(props) {
 
     const { translate, bills, stocks, user } = props;
     const { listPaginate, totalPages, page } = bills;
-    console.log(listPaginate);
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow } = state;
     const dataPartner = props.getPartner();
