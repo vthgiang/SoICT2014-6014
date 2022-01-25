@@ -4332,7 +4332,7 @@ export default {
             dashboard_inventory: {},
             category_management: {
                 index: "STT",
-                add: "Add a new list of goods",
+                add: "Add a new",
                 add_title: "Add new category",
                 info: "Information about the list of commodity",
                 edit: "Edit category information",
@@ -4521,6 +4521,8 @@ export default {
                 equipment: "Equipment",
                 asset: "Asset",
                 bin_location: "Storage location",
+                category_tree: "Tree directory",
+                category_table:"Table list",
                 archive: "Storage category",
                 1: {
                     status: "Ready to use",
