@@ -4585,7 +4585,7 @@ export default {
             dashboard_inventory: {},
             category_management: {
                 index: "STT",
-                add: "Thêm mới danh mục hàng hóa",
+                add: "Thêm mới",
                 add_title: "Thêm danh mục mới",
                 info: "Thông tin về danh mục hàng hóa",
                 edit: "Chỉnh sửa thông tin danh mục",
@@ -4773,6 +4773,8 @@ export default {
                 material: "Nguyên vật liệu",
                 equipment: "Công cụ dụng cụ",
                 asset: "Tài sản",
+                category_tree: "Danh mục cây",
+                category_table:"Danh mục bảng",
                 bin_location: "Nơi lưu trữ",
                 archive: "Danh mục lưu trữ",
                 1: {
