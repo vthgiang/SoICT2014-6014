@@ -92,7 +92,7 @@ exports.restore = async (options) => {
             if (checkOS() === 1) {
                 return {
                     delete: `rmdir /s /q ${SERVER_DIR}\\upload`,
-                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR}\\upload /E/H/C/I`
+                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR} /E/H/C/I`
                 }
             } else if (checkOS() === 2) {
                 return {
