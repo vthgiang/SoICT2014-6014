@@ -40,7 +40,7 @@ function QualityControlForm(props) {
         const data = {
             qualityControlStaffs: {
                 staff: userId,
-                status: state.status,
+                status: state.status !== "" ? state.status : 1,
                 content: state.content,
             }
         }

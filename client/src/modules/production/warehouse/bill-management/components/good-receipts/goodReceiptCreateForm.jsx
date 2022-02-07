@@ -175,7 +175,6 @@ function GoodReceiptCreateForm(props) {
         });
         return supplierArr;
     };
-    console.log(props);
 
     const getManufacturingMills = () => {
         const { manufacturingMill, translate } = props;

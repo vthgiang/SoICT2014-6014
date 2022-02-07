@@ -17,7 +17,7 @@ const { forEach } = require("lodash");
  * @param {*} currentRole 
  * @returns 
  */
-exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole) => {
+ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole) => {
     console.log(query);
     let { customerCode, page, limit } = query;
     // lay danh sach khach hang
@@ -62,4 +62,3 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
 
     return { listDocsTotal: loyalCustomers.length, loyalCustomers }
 }
-

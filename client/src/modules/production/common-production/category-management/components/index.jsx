@@ -8,7 +8,7 @@ function CategoryManagement(props) {
     return (
         <div className="box" style={{ minHeight: "450px" }}>
             <div className="box-body">
-                <CategoryManagementTree />
+                <CategoryManagementTable />
             </div>
         </div>
     );

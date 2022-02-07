@@ -1,71 +1,96 @@
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import React, { useEffect, useState } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
-import { translate } from 'react-redux-multilingual/lib/utils';
-import { ConfirmNotification, DataTableSetting, DatePicker, DialogModal } from '../../../../common-components';
+import { translate  } from 'react-redux-multilingual/lib/utils';
+import { ConfirmNotification, DataTableSetting, SelectBox, DatePicker, DialogModal } from '../../../../common-components';
 import { formatFunction } from '../../common';
-import { CrmCustomerActions } from '../../customer/redux/actions';
-import PromotionAddForm from './promotionAddForm';
+import { CrmGroupActions } from '../redux/actions';
 
 function PromotionEditForm(props) {
-    const { customerId, promotion, promotionIndex, crm } = props;
-    const [promotionEdit, setPromotionEdit] = useState(promotion);
+    const { groupId, groupPromotionEdit, crm } = props;
+    const [promotionEdit, setPromotionEdit] = useState();
 
-    
+    let allMembersGroup;
+    if ( crm?.groups?.membersInGroup ) {
+        allMembersGroup = crm.groups.membersInGroup;
+    };
+
+    allMembersGroup = allMembersGroup.map((e) => {
+        return {
+            value: e._id,
+            text: e.name
+        }
+    });
+
+    if (!promotionEdit || !promotionEdit.code || promotionEdit.code != groupPromotionEdit.code) {
+        setPromotionEdit({...groupPromotionEdit});
+    }
+
+    let exceptCustomer;
+    if (promotionEdit && promotionEdit.exceptCustomer) {
+        exceptCustomer = promotionEdit.exceptCustomer.map((e) => {
+            return {
+                value: e._id,
+                text: e.name
+            }
+        });
+        console.log(exceptCustomer);
+    }
+
 
     const handleChangeValue = async (e) => {
         const value = e.target.value;
-         setPromotionEdit({ ...promotionEdit, value: value });
+        setPromotionEdit({...promotionEdit, value: value});
     }
 
-    const handleChangeMinimumOrderValue = async (e) => {
+    const handleChangeMinimumOrderValue = async (e)=> {
         const value = e.target.value;
-        await setPromotionEdit({ ...promotionEdit, minimumOrderValue: value });
+        await setPromotionEdit({...promotionEdit, minimumOrderValue: value});
     }
 
     const handleChangePromotionalValueMax = async (e) => {
         const value = e.target.value;
-        await setPromotionEdit({ ...promotionEdit, promotionalValueMax: value });
+        await setPromotionEdit({...promotionEdit, promotionalValueMax: value});
     }
 
     const handleChangeExpirationDate = async (value) => {
-        await setPromotionEdit({ ...promotionEdit, expirationDate: value });
+        await setPromotionEdit({...promotionEdit, expirationDate:value});
     }
+
+
     const handleChangeDescription = async (e) => {
         const value = e.target.value;
-        await setPromotionEdit({
-            ...promotionEdit, description: value
-        })
+        await setPromotionEdit({...promotionEdit, description: value})
+    }
+
+    const handleChangeExceptCustomer = async (value) => {
+        await setPromotionEdit({...promotionEdit, exceptCustomer: value});
     }
 
     const save = async () => {
         if (promotionEdit) {
-            await props.editPromotion(customerId, { promotion: promotionEdit } );
+            await props.editPromotion(groupId, { promotion: {...promotionEdit}});
+            await props.getRefreshData();
         }
-
     }
-
 
     return (
         <DialogModal
-            modalID="modal-crm-customer-promotion-edit"
-            formID="form-crm-customer-promotion-edit"
-            title={'Chỉnh sửa khuyến mãi khách hàng'}
+            modalID="modal-crm-group-promotion-edit"
+            formID="form-crm-group-promotion-edit"
+            title={'Chỉnh sửa khuyến mãi nhóm khách hàng'}
             func={save}
             size={50}
-        // disableSubmit={!this.isFormValidated()}
         >
-            <form id="form-crm-customer-promotion-edit" className='qlcv'>
-                {/* Khách hàng  */}
+            <form id="form-crm-group-promotion-edit" className='qlcv'>
                 <div className="row">
                     <div className="col-md-12">
                         <div className={`form-group`}>
-                            <label style={{ marginRight: '10px' }}>Tên khách hàng:</label>
+                            <label style={{ marginRight: '10px' }}>Tên nhóm khách hàng:</label>
                             {
-                                crm.customers.customerById &&
-                                <strong> {crm.customers.customerById.name} </strong>
+                                crm.groups.groupById.groupById &&
+                                <strong> {crm.groups.groupById.groupById.name}</strong>
                             }
-                            {/* <ErrorLabel content={groupCodeError} /> */}
                         </div>
                     </div>
                 </div>
@@ -87,9 +112,6 @@ function PromotionEditForm(props) {
                         />
                     </div>
 
-
-                    {/* Giảm tối đa */}
-
                     <div className={`form-group}`}>
                         <label>{'Giá trị giảm tối đa (VNĐ) '}<span className="text-red">*</span></label>
                         <input type="number" className="form-control"
@@ -97,8 +119,6 @@ function PromotionEditForm(props) {
                             onChange={handleChangePromotionalValueMax}
                         />
                     </div>
-
-                    {/* Ngày hết hạn */}
 
                     <div className="form-group">
                         <label>{'Ngày hết hạn'}</label>
@@ -110,14 +130,28 @@ function PromotionEditForm(props) {
                         />
                     </div>
 
-                    {/* Mô tả */}
-
                     <div className={`form-group}`}>
                         <label>{'Mô tả  '}<span className="text-red">*</span></label>
                         <textarea type="text" className="form-control"
                             value={promotionEdit.description}
                             onChange={handleChangeDescription}
                         />
+                    </div>
+
+                    <div className='form-group'>
+                        <label className="control-label">{'Áp dụng với nhóm khách hàng ngoại trừ:'}</label>
+                        {allMembersGroup && 
+                            <SelectBox
+                                id={`edit-form`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={allMembersGroup}
+                                onChange={handleChangeExceptCustomer}     
+                                value={exceptCustomer}
+                                multiple={true}
+                                options={{ placeholder: "Ngoại trừ" }}
+                            />
+                        }
                     </div>
 
                 </>}
@@ -129,13 +163,12 @@ function PromotionEditForm(props) {
 }
 
 function mapStateToProps(state) {
-    const { crm, user } = state;
-    return { crm, user };
+    const { crm, group } = state;
+    return { crm, group };
 }
 
 const mapDispatchToProps = {
-    editPromotion: CrmCustomerActions.editPromotion
-
+    editPromotion: CrmGroupActions.editPromotion
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PromotionEditForm));

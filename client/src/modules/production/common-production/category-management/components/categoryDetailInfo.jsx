@@ -11,22 +11,24 @@ function CategoryDetailForm(props) {
 
     })
 
-    if(props.categoryId !== state.categoryId){
-        setState({
-            ...state,
-            categoryId: props.categoryId,
-            code: props.code,
-            name: props.name,
-            type: props.type,
-            goods: props.goods,
-            description: props.description,
-            errorOnCode: undefined,
-            errorOnName: undefined
-        })
-    }
+    useEffect(() => {
+        if(props.categoryId !== state.categoryId){
+            setState({
+                ...state,
+                categoryId: props.categoryId,
+                code: props.code,
+                name: props.name,
+                type: props.type,
+                goods: props.goods,
+                description: props.description,
+                errorOnCode: undefined,
+                errorOnName: undefined
+            })
+        }
+    }, [props.categoryId])
 
-    const { translate, categories, goods } = this.props;
-    const { code, name, type, description } = this.state;
+    const { translate, categories, goods } = props;
+    const { code, name, type, description } = state;
     const { listGoodsByCategory } = goods;
     return (
         <React.Fragment>
