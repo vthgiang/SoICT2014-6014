@@ -1851,6 +1851,7 @@ export default {
 
                 diploma: "Degrees",
                 certificate: "Certificate",
+                bidding_package: "Bidding Package",
                 name_diploma: "Name of degree",
                 name_certificate: "Name of certificate",
                 diploma_issued_by: "Issued by",
@@ -2117,6 +2118,21 @@ export default {
                     tax_representative_required: "Tax representative required",
                     tax_authority_required: "Tax authority required",
                 },
+
+                bidding_package_management: {
+                    type: {
+                        1: "Advise",
+                        2: "Non-consulation",
+                        3: "Goods",
+                        4: "Build",
+                        5: "Mixture"
+                    },
+                    status: {
+                        1: "Active",
+                        0: "Inactive",
+                        2: "Finish"
+                    },
+                }
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)

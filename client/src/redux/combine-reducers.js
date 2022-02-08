@@ -34,7 +34,8 @@ import { timesheets } from '../modules/human-resource/timesheets/redux/reducers'
 import { career } from '../modules/human-resource/career/redux/reducers';
 import { major } from '../modules/human-resource/major/redux/reducers';
 import { certificate } from '../modules/human-resource/certificate/redux/reducers';
-import { biddingPackage } from '../modules/human-resource/biddingPackage/redux/reducers';
+import { biddingPackageInfo } from '../modules/human-resource/biddingPackage/redux/reducers';
+import { biddingPackagesManager } from '../modules/human-resource/biddingPackage/biddingPackageManagement/redux/reducers';
 
 import { employeeDashboardData } from '../modules/human-resource/employee-dashboard/redux/reducers'
 
@@ -185,8 +186,8 @@ const appReducer = combineReducers({
     career,
     major,
     certificate,
-    biddingPackage,
-
+    biddingPackageInfo,
+    biddingPackagesManager,
 
     // hr-tranning
     education,

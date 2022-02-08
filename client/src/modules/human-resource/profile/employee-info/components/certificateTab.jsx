@@ -5,13 +5,19 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
 import dayjs from 'dayjs';
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
 function CertificateTab(props) {
     const [state, setState] = useState({
 
     })
 
     useEffect(() => {
-        props.getListFields()
+        props.getListFields();
+        props.getListMajor({ name: '', page: 1, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
+        props.getListCertificate({ name: '', page: 1, limit: 1000 });
     }, [])
 
     useEffect(() => {
@@ -25,7 +31,7 @@ function CertificateTab(props) {
         })
     }, [props.id])
 
-    const { translate, field } = props;
+    const { translate, field, listMajor, listCertificate } = props;
 
     const { id, degrees, certificates } = state;
     let listFields = field.listFields;
@@ -75,6 +81,7 @@ function CertificateTab(props) {
                                 <th>{translate('human_resource.profile.name_diploma')}</th>
                                 <th>{translate('human_resource.profile.diploma_issued_by')}</th>
                                 <th>{translate('human_resource.profile.career_fields')}</th>
+                                <th>Chuyên ngành</th>
                                 <th>{translate('human_resource.profile.graduation_year')}</th>
                                 <th>{translate('human_resource.profile.ranking_learning')}</th>
                                 <th>{translate('human_resource.profile.attached_files')}</th>
@@ -98,6 +105,7 @@ function CertificateTab(props) {
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{field}</td>
+                                            <td>{x.major?.name}</td>
                                             <td>{x.year ? dayjs(x.year).format("DD-MM-YYYY") : null}</td>
                                             <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
                                             <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
@@ -135,7 +143,7 @@ function CertificateTab(props) {
                                 certificates && certificates.length !== 0 &&
                                 certificates.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.name}</td>
+                                        <td>{x.certificate?.name}</td>
                                         <td>{x.issuedBy}</td>
                                         <td>{formatDate(x.startDate)}</td>
                                         <td>{formatDate(x.endDate)}</td>
@@ -160,13 +168,16 @@ function CertificateTab(props) {
 };
 
 function mapState(state) {
-    const { field } = state;
-    return { field };
+    const { field, major, career, certificate } = state;
+    return { field, major, career, certificate };
 };
 
 const actionCreators = {
     downloadFile: AuthActions.downloadFile,
     getListFields: FieldsActions.getListFields,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate
 };
 
 const tabCertificate = connect(mapState, actionCreators)(withTranslate(CertificateTab));

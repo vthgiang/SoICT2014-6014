@@ -26,9 +26,8 @@ exports.searchBiddingPackage = async (portal, params) => {
             }
         };
     }
-    console.log('key bidding package', params, keySearch, portal);
     
-    let listBiddingPackage = await BiddingPackage(connect(DB_CONNECTION, portal)).find()
+    let listBiddingPackages = await BiddingPackage(connect(DB_CONNECTION, portal)).find()
         // .sort({
         //     'createdAt': 'desc'
         // }).skip(params.limit * (params.page - 1)).limit(params.limit);
@@ -36,7 +35,26 @@ exports.searchBiddingPackage = async (portal, params) => {
 
     return {
         totalList,
-        listBiddingPackage
+        listBiddingPackages
+    }
+}
+
+/**
+ * Lấy danh sách thông tin nghỉ phép
+ * @params : Dữ liệu key tìm kiếm
+ * @company : Id công ty người dùng
+ */
+exports.getDetailBiddingPackage = async (portal, params) => {
+    
+    let listBiddingPackages = await BiddingPackage(connect(DB_CONNECTION, portal)).find({ _id: params.id })
+        // .sort({
+        //     'createdAt': 'desc'
+        // }).skip(params.limit * (params.page - 1)).limit(params.limit);
+    let totalList = await BiddingPackage(connect(DB_CONNECTION, portal)).countDocuments();
+
+    return {
+        totalList,
+        listBiddingPackages
     }
 }
 
@@ -46,13 +64,15 @@ exports.searchBiddingPackage = async (portal, params) => {
  *
  */
 exports.createNewBiddingPackage = async (portal, data) => {
-    let position;
-    console.log('data.action', data);
     position = await BiddingPackage(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         code: data.code,
-        otherNames: data.otherNames,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        status: data.status ? data.status : 1,
+        type: data.type ? data.type : 1,
         description: data.description,
+        keyPersonnelRequires: data.keyPersonnelRequires,
     })
 
     return await this.searchBiddingPackage(portal, {})
@@ -63,18 +83,26 @@ exports.createNewBiddingPackage = async (portal, data) => {
  * @data dữ liệu chỉnh sửa
  */
 exports.editBiddingPackage = async (portal, data, params) => {
-    console.log(params)
+    console.log(data)
 
-        await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
-            {
-                $set: {
-                    name: data.name,
-                    code: data.code,
-                    otherNames: data.otherNames,
-                    description: data.description,
-                },
-            }, { $new: true }
-        )
+    await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
+        {
+            $set: {
+                name: data.name,
+                code: data.code,
+                startDate: data.startDate,
+                endDate: data.endDate,
+                status: data.status ? data.status : 1,
+                type: data.type ? data.type : 1,
+                description: data.description,
+                keyPersonnelRequires: data.keyPersonnelRequires,
+                certificateRequirements: {
+                    certificates: data.certificates,
+                    count: data.count
+                }
+            },
+        }, { $new: true }
+    )
 
     return await this.searchBiddingPackage(portal, {});
 }
@@ -83,30 +111,17 @@ exports.editBiddingPackage = async (portal, data, params) => {
  * Xoá vị trí
  * @data : list id xóa
  */
-exports.deleteBiddingPackage = async (portal, data) => {
-    for (let i in data) {
-        await CareerField(connect(DB_CONNECTION, portal)).updateMany(
-            {
-                "position.position": data[i],
-            },
-            {
-                $pull: { position: { "position": data[i], } },
-            }
-        );
-        await BiddingPackage(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: data[i] });
-    }
+exports.deleteBiddingPackage = async (portal, id) => {
+    await BiddingPackage(connect(DB_CONNECTION, portal)).deleteOne({ _id: id});
 
-    for (let i in data) {
-        await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                "description._id": data[i],
-            },
-            {
-                $pull: { description: { "_id": data[i], } },
-            },
-            { safe: true }
-        );
-    }
+    let listBiddingPackages = await BiddingPackage(connect(DB_CONNECTION, portal)).find()
+        // .sort({
+        //     'createdAt': 'desc'
+        // }).skip(params.limit * (params.page - 1)).limit(params.limit);
+    let totalList = await BiddingPackage(connect(DB_CONNECTION, portal)).countDocuments();
 
-    return await BiddingPackage(connect(DB_CONNECTION, portal)).find({}).populate([{ path: "description.action" }])
+    return {
+        totalList,
+        listBiddingPackages
+    }
 }

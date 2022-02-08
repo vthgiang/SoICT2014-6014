@@ -11,6 +11,9 @@ import {
 
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import FamilyMemberTabInfo from '../../employee-info/components/familyMemberTab';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
 
 const EmployeeDetailForm = (props) => {
 
@@ -63,9 +66,9 @@ const EmployeeDetailForm = (props) => {
         }
     }, [props._id, props.employeesInfo.isLoading, state.dataStatus]);
 
-    const { employeesInfo, translate } = props;
+    const { employeesInfo, translate, certificate, major } = props;
 
-    let { _id, employees, annualLeaves, commendations, disciplines, courses, roles = [], career, major, houseHold } = state;
+    let { _id, employees, annualLeaves, commendations, disciplines, courses, roles = [], houseHold } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -119,6 +122,8 @@ const EmployeeDetailForm = (props) => {
                                         id={`view_diploma${_id}`}
                                         degrees={x.degrees}
                                         certificates={x.certificates}
+                                        listMajor={major?.listMajor}
+                                        listCertificate={certificate?.listCertificate}
                                     />
                                     {/* bảo hiểm y tế */}
                                     <InsurranceTab
@@ -164,12 +169,15 @@ const EmployeeDetailForm = (props) => {
 }
 
 function mapState(state) {
-    const { employeesInfo } = state;
-    return { employeesInfo };
+    const { employeesInfo, major, career, certificate } = state;
+    return { employeesInfo, major, career, certificate };
 };
 
 const actionCreators = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertification: CertificateActions.getListCertificate
 }
 
 const detailEmployee = connect(mapState, actionCreators)(withTranslate(EmployeeDetailForm));

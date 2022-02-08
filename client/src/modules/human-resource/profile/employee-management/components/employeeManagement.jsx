@@ -14,6 +14,7 @@ import { MajorActions } from "../../../major/redux/actions";
 import { CareerReduxAction } from "../../../career/redux/actions";
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
+import { CertificateActions } from '../../../certificate/redux/actions';
 
 const EmployeeManagement = (props) => {
 
@@ -114,7 +115,10 @@ const EmployeeManagement = (props) => {
                 currentRowView: value
             }
         });
-        window.$(`#modal-detail-employee${value._id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modal-detail-employee${value._id}`).modal('show');
+        }, 500);
+        
     }
 
     /**
@@ -1228,8 +1232,8 @@ const EmployeeManagement = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, department, field } = state;
-    return { employeesManager, department, field };
+    const { employeesManager, department, field, major, certificates } = state;
+    return { employeesManager, department, field, major,  certificates };
 }
 
 const actionCreators = {
@@ -1241,6 +1245,7 @@ const actionCreators = {
     getListCareerAction: CareerReduxAction.getListCareerAction,
     getListCareerField: CareerReduxAction.getListCareerField,
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertification: CertificateActions.getListCertificate
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

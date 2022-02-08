@@ -28,7 +28,7 @@ exports.searchMajor = async (portal, params) => {
         };
     }
     let task = await Task(connect(DB_CONNECTION, portal)).find({});
-    console.log('key', params, keySearch, portal, task.length);
+    // console.log('key', params, keySearch, portal, task.length);
 
     let listMajor = await Major(connect(DB_CONNECTION, portal)).find(keySearch).populate([{ path: 'parents'}]);
     let totalList = await Major(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
@@ -45,7 +45,7 @@ exports.searchMajor = async (portal, params) => {
  * 
  */
 exports.crateNewMajor = async (portal, data) => {
-    console.log(data);
+    // console.log(data);
     await Major(connect(DB_CONNECTION, portal)).create({
             name: data.name,
             code: data.code,

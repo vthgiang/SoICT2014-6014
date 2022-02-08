@@ -9,7 +9,8 @@ export const EmployeeManagerActions = {
     addNewEmployee,
     updateInformationEmployee,
     deleteEmployee,
-    importEmployees
+    importEmployees,
+    searchForPackage
 };
 
 /**
@@ -32,6 +33,27 @@ function getAllEmployee(data) {
             .catch(err => {
                 dispatch({
                     type: EmployeeConstants.GETALL_FAILURE,
+                    error: err
+                });
+            })
+    };
+}
+
+function searchForPackage(data) {
+    return dispatch => {
+        dispatch({
+            type: EmployeeConstants.SEARCH_FOR_PACKAGE_REQUEST
+        });
+        EmployeeService.searchForPackage(data)
+            .then(res => {
+                dispatch({
+                    type: EmployeeConstants.SEARCH_FOR_PACKAGE_SUCCESS,
+                    payload: res.data.content,
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EmployeeConstants.SEARCH_FOR_PACKAGE_FAILURE,
                     error: err
                 });
             })

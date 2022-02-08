@@ -60,8 +60,11 @@ const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/stat
 const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
 const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
 const BiddingPackage = lazy(() => import("../modules/human-resource/biddingPackage/component"))
+const SearchKeyEmployee =  lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
 const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
 const Major = lazy(() => import("../modules/human-resource/major/component"))
+// const Major = lazy(() => import("../modules/human-resource/major/component"))
+const BiddingPackagesManagement = lazy(() => import("../modules/human-resource/biddingPackage/biddingPackageManagement/components"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
@@ -1070,6 +1073,27 @@ class Routes extends Component {
                         component={TrainingPlan}
                     />
 
+                    {/* Quản lý gói thầu */}
+                    {/* <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-search-for-package"}
+                        path={"/hr-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchEmployeeForPackage}
+                    /> */}
+
                     {/* Nhân sự gói thầu */}
                     <PrivateRoute
                         isLoading={this.props.course.isLoading}
@@ -1088,7 +1112,7 @@ class Routes extends Component {
                         path={"/hr-search-for-package"}
                         pageName={"list_search_for_package"}
                         layout={Layout}
-                        component={SearchEmployeeForPackage}
+                        component={SearchKeyEmployee}
                     />
 
                     {/* Nhân sự gói thầu */}
@@ -1149,7 +1173,7 @@ class Routes extends Component {
                         path={"/hr-list-bidding-package"}
                         pageName={"list_bidding_package"}
                         layout={Layout}
-                        component={BiddingPackage}
+                        component={BiddingPackagesManagement}
                     />
 
                     <PrivateRoute

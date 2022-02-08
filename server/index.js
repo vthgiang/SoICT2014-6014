@@ -54,7 +54,7 @@ router.use(
     require("./modules/human-resource/career-position/careerPosition.route")
 );
 router.use(
-    "/bidding-packages",
+    "/bidding-package",
     require("./modules/human-resource/bidding-package/biddingPackage.route")
 );
 router.use(

@@ -85,20 +85,20 @@ exports.searchEmployeeProfiles = async (req, res) => {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
                 professionalSkill: req.query.professionalSkill,
-                major: req.query.majorInfo,
-                certificatesName: req.query.certificatesName,
-                certificatesType: req.query.certificatesType,
+                majors: req.query.majors,
+                certificates: req.query.certificates,
+                certificatesCount: req.query.certificatesCount,
                 certificatesEndDate: req.query.certificatesEndDate,
-                field: req.query.field,
                 package: req.query.package,
-                position: req.query.position,
-                action: req.query.action,
+                careerPosition: req.query.careerPosition,
                 exp: Number(req.query.exp),
                 sameExp: Number(req.query.sameExp),
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company);
+            listId = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company);
+
+            data = await EmployeeService.getEmployeeInforByListId(req.portal, listId, req.user.company._id, params)
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
@@ -464,41 +464,53 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
  * Lấy danh sách nhân viên
  */
 exports.searchEmployeeForPackage = async (req, res) => {
-    // try {
+    try {
         let data;
-
-        let params = {
-            organizationalUnits: req.query.organizationalUnits,
-            professionalSkill: req.query.professionalSkill,
-            major: req.query.majorInfo,
-            certificatesName: req.query.certificatesName,
-            certificatesType: req.query.certificatesType,
-            certificatesEndDate: req.query.certificatesEndDate,
-            field: req.query.field,
-            package: req.query.package,
-            position: req.query.position,
-            action: req.query.action,
-            exp: Number(req.query.exp),
-            sameExp: Number(req.query.sameExp),
-            page: Number(req.query.page),
-            limit: Number(req.query.limit),
+        
+        await Log.info(req.user.email, 'GET_EMPLOYEES_FOR_BIDDING_PACKAGE', req.portal);
+        console.log("package", req.query.package)
+        if (req.query.package) {
+            data = await EmployeeService.getEmployeeByPackageId(req.portal, req.query.package, req.user.company._id)
         }
-        data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company._id);
+        console.log("data2", data)
 
-        await Log.info(req.user.email, 'GET_EMPLOYEES', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["search_for_package_success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, 'GET_EMPLOYEES_FOR_BIDDING_PACKAGE', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["search_for_package_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
+
+
+exports.getEmployeesByPackage = async (req, res) => {
+    try {
+        let data;
+        data = await EmployeeService.getEmployeeByPackageId(req.portal, params.packageId? params.packageId : '1' , req.user.company._id);
+
+        await Log.info(req.user.email, 'GET_EMPLOYEES_BY_PACKAGE', req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_list_employee_success"],
             content: data
         });
-    // } catch (error) {
-    //     await Log.error(req.user.email, 'GET_EMPLOYEES', req.portal);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ["get_list_employee_faile"],
-    //         content: {
-    //             error: error
-    //         }
-    //     });
-    // }
+    } catch (error) {
+        await Log.error(req.user.email, 'GET_EMPLOYEES_BY_PACKAGE', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_list_employee_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { CareerReduxAction } from '../../../career/redux/actions';
 
 function ExperiencTab(props) {
     const [state, setState] = useState({
@@ -103,10 +104,51 @@ function ExperiencTab(props) {
                         (!experiences || experiences.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                 </fieldset>
+                {/* Danh sách vị trí công việc */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border"><h4 className="box-title">Dự án từng tham gia</h4></legend>
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                        <thead>
+                            <tr>
+                                <th>{translate('human_resource.profile.from_month_year')}</th>
+                                <th>{translate('human_resource.profile.to_month_year')}</th>
+                                <th>{translate('human_resource.profile.unit')}</th>
+                                <th>{translate('table.position')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                (experiences && experiences.length !== 0) &&
+                                experiences.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{formatDate(x.startDate, true)}</td>
+                                        <td>{formatDate(x.endDate, true)}</td>
+                                        <td>{x.company}</td>
+                                        <td>{x.position}</td>
+                                    </tr>
+
+                                ))
+                            }
+
+                        </tbody>
+                    </table>
+                    {
+                        (!experiences || experiences.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                </fieldset>
             </div>
         </div>
     );
 };
 
-const tabExperience = connect(null, null)(withTranslate(ExperiencTab));
+function mapState(state) {
+    const { career } = state;
+    return { career };
+};
+
+const actionCreators = {
+    getListCareerPosition: CareerReduxAction.getListCareerPosition
+};
+
+const tabExperience = connect(mapState, actionCreators)(withTranslate(ExperiencTab));
 export { tabExperience as ExperiencTab };

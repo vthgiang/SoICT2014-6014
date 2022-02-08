@@ -35,15 +35,19 @@ const BiddingPackageSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Major"
         }],
-        certificateRequirements: [{
+        count: Number,
+
+        certificateRequirements: {
             certificates: [{
                 type: Schema.Types.ObjectId,
                 ref: "Certificate"
             }],
-            count: Number
-        }],
+            count: Number,
+            certificatesEndDate: Date
+        },
         numberYearsOfExperience: Number,
-        experienceWorkInCarreer: Number
+        experienceWorkInCarreer: Number,
+        numblePackageWorkInCarreer: Number
     }]
 }, {
     timestamps: true,

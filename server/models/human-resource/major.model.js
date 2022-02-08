@@ -12,7 +12,11 @@ const MajorSchema = new Schema({
     parents: [{
         type: Schema.Types.ObjectId,
         replies: this
-    }]
+    }],
+    company: {
+        type: Schema.Types.ObjectId,
+        ref: "Company"
+    },
 }, {
     timestamps: true,
 });

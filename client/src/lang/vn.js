@@ -2248,6 +2248,21 @@ export default {
                     temporary_residence_required:
                         "Nơi ở hiện tại không được để trống",
                 },
+
+                bidding_package_management: {
+                    type: {
+                        1: "Tư vẫn",
+                        2: "Phi tư vấn",
+                        3: "Hàng hóa",
+                        4: "Xây dựng",
+                        5: "Hỗn hợp"
+                    },
+                    status: {
+                        1: "Hoạt động",
+                        0: "Hủy",
+                        2: "Hoàn thành"
+                    },
+                }
             },
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)

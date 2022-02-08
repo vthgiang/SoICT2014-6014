@@ -9,7 +9,7 @@ const initState = {
     error: '',
 }
 
-export function biddingPackage(state = initState, action) {
+export function biddingPackageInfo(state = initState, action) {
     switch (action.type) {
         case BiddingPackageConstant.GET_BIDDING_PACKAGE_REQUEST:
         case BiddingPackageConstant.CREATE_BIDDING_PACKAGE_REQUEST:

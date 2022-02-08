@@ -751,6 +751,9 @@ exports.links = [{
     }, {
         url: '/hr-search-for-package',
         apis: ['@all']
+    }, {
+        url: '/hr-management-package',
+        apis: ['@all']
     },
     {
         url: '/kpi-units/create-for-admin',
