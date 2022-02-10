@@ -97,7 +97,7 @@ function CategoryManagementTree(props) {
         <React.Fragment>
 
             <div className="form-inline">
-                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                <div className="dropdown pull-right" style={{ marginBottom: 15 },{marginTop: 15}}>
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_warehouse.category_management.add')}
                         disabled={categoryParent.length > 1 ? true : false}>{translate('manage_warehouse.category_management.add')}</button>
                     <ul className="dropdown-menu pull-right">
