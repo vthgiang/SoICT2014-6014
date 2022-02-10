@@ -4603,8 +4603,10 @@ export default {
                     8: "Export waste",
                     9: "Periodic inventory",
                     10: "Regular inventory",
-                    11: "Returns commodity",
-                    12: "commodity rotation",
+                    11: "Return of self-produced goods that do not pass quality inspection",
+                    12: "Return goods imported from suppliers that do not pass quality inspection",
+                    13: "return goods that have been shipped",
+                    14: "commodity rotation",
                 },
                 1: {
                     status: "Waiting for approval",
@@ -4747,6 +4749,7 @@ export default {
                 email: "Email",
                 address: "Address",
                 validate_type: "Bill type cannot be left blank",
+                validate_bill: "Bill cannot be left blank",
                 validate_stock: "Must select warehouse",
                 validate_approver: "Must select approver",
                 validate_customer: "Must select customer",
@@ -4822,6 +4825,8 @@ export default {
                 rfid_code: "RFID code",
                 rfid_quantity: "Number products / 1 RFID",
                 create_rfid_code: "Create RFID code",
+                goods_returned_to_the_factory: "Goods returned to the factory",
+                goods_returned_to_the_supplier: "Goods returned to the supplier",
 
             },
             inventory_management: {

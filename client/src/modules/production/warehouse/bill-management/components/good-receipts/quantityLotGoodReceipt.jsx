@@ -401,7 +401,7 @@ function QuantityLotGoodReceipt(props) {
                         </div>
 
                         <div className="pull-right" style={{ marginBottom: "10px" }}>
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={!isRfidCodeValidate()} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</button>
+                            <p type="button" className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={!isRfidCodeValidate()} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</p>
                             {state.editInfo ?
                                 <React.Fragment>
                                     <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
