@@ -49,7 +49,37 @@ const TaskProcessSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Task',
     }],
-    
+    processChilds:[{
+        type: Schema.Types.ObjectId,
+        ref: "Process",
+    }],
+    processParent:{
+        type: Schema.Types.ObjectId,
+        ref: "Process",
+    },
+    codeInProcess:{
+        type: String,
+    },
+    preceedingTasks: [
+        {
+            task: {
+                type: String,
+            },
+            link: {
+                type: String,
+            },
+        },
+    ],
+    followingTasks: [
+        {
+            task: {
+                type: String,
+            },
+            link: {
+                type: String,
+            },
+        },
+    ],
 });
 
 module.exports = (db) => {
