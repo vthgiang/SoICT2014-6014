@@ -127,7 +127,7 @@ function StockRotateCreateForm(props) {
         let typeArr = [];
         typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
-            { value: '12', text: translate('manage_warehouse.bill_management.billType.12') }
+            { value: '14', text: translate('manage_warehouse.bill_management.billType.14') }
         ]
         return typeArr;
     }

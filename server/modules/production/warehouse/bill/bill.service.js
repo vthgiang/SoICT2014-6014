@@ -247,8 +247,12 @@ exports.getDetailBill = async (id, portal) => {
 
 
 exports.getBillsByStatus = async (query, portal) => {
-    const { group, status, fromStock } = query;
-    return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock })
+    console.log(query);
+    const { group, status, fromStock, type } = query;
+    let sourceType = type !== '13' ? (type === '11' ? '1' : '2') : null;
+    let qualityControlStaffsStatus = type !== '13' ? "3" : '2';
+    console.log(qualityControlStaffsStatus, sourceType);
+    return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock, sourceType, "qualityControlStaffs.status": qualityControlStaffsStatus })
         .populate([
             { path: 'creator', select: "_id name email avatar" },
             { path: 'approvers.approver', select: "_id name email avatar" },
@@ -266,6 +270,7 @@ exports.getBillsByStatus = async (query, portal) => {
 }
 
 exports.createBill = async (userId, data, portal) => {
+    console.log(data);
     var logs = [];
     let log = {};
     log.creator = userId;
@@ -310,7 +315,7 @@ exports.createBill = async (userId, data, portal) => {
             address: data.address,
         },
         description: data.description,
-        sourceType: data.sourceType,
+        sourceType: data.sourceType ? data.sourceType : null,
         goods: data.goods ? data.goods.map(item => {
             return {
                 good: item.good,
