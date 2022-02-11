@@ -359,6 +359,7 @@ function ModalEditTaskProcess(props) {
         var element = event.element;
         setState(state => {
             delete state.info[`${state.id}`];
+            delete state.infoTemplate[`${state.id}`];
             return {
                 ...state,
                 showInfo: false,
@@ -590,14 +591,17 @@ function ModalEditTaskProcess(props) {
 			});
 		}
 		const infoTemplates = state.infoTemplate
-        infoTemplates[`${state.id}`].process = data._id ;
-        state.infoTemplate[`${state.id}`].process = data._id
+        if (!state.infoTemplate[`${state.id}`].code){
+            state.infoTemplate[`${state.id}`].code=state.id
+        }
+        infoTemplates[`${state.id}`].process = data ;
+        state.infoTemplate[`${state.id}`].process = data
         setState({
                 ...state,
                 infoTemplate: infoTemplates
             })
 	}
-
+    
     // validate quy trình
     const isFormValidate = () => {
         let elementList = modeler.get('elementRegistry')._elements;
@@ -655,7 +659,6 @@ function ModalEditTaskProcess(props) {
         modeler.saveXML({ format: true }, function (err, xml) {
             xmlStr = xml;
         });
-        console.log(xmlStr);
         await setState(state => {
             for (let j in info) {
                 if (Object.keys(info[j]).length !== 0) {
@@ -925,7 +928,7 @@ function ModalEditTaskProcess(props) {
                                             <AddProcessTemplate
                                                 idParent={props.idProcess}
                                                 id={id}
-                                                infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`].process}
+                                                infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`].process && infoTemplate[`${id}`].process._id}
                                                 // handleDataProcessTempalte={handleDataProcessTempalte}
                                                 setBpmnProcess={setBpmnProcess}
                                                 // handleChangeName={handleChangeName} // cập nhật tên vào diagram
