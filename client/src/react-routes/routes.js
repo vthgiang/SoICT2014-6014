@@ -59,7 +59,7 @@ const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/stat
 
 const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
 const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
-const BiddingPackage = lazy(() => import("../modules/human-resource/biddingPackage/component"))
+// const BiddingPackage = lazy(() => import("../modules/human-resource/biddingPackage/component"))
 const SearchKeyEmployee =  lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
 const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
 const Major = lazy(() => import("../modules/human-resource/major/component"))

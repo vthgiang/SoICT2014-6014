@@ -23,9 +23,9 @@ export function biddingPackagesManager(state = initState, action) {
             return {
                 ...state,
                 isLoading: true,
-                    exportData: [],
-                    // listBiddingPackagesOfOrganizationalUnits:[],
-                    // listAllBiddingPackages:[],
+                exportData: [],
+                // listBiddingPackagesOfOrganizationalUnits:[],
+                // listAllBiddingPackages:[],
             };
         case BiddingPackageConstants.GETALL_SUCCESS:
             return {

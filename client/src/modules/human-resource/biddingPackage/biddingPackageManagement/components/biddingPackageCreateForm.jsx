@@ -163,6 +163,8 @@ const BiddingPackageCreateForm = (props) => {
     const { translate, biddingPackagesManager, career, major, certificate } = props;
     const { img, biddingPackage } = state;
 
+    console.log("createForm", biddingPackagesManager.isLoading)
+
     return (
         <React.Fragment>
             <DialogModal

@@ -27,7 +27,14 @@ exports.searchBiddingPackage = async (portal, params) => {
         };
     }
     
-    let listBiddingPackages = await BiddingPackage(connect(DB_CONNECTION, portal)).find()
+    let listBiddingPackages = await BiddingPackage(connect(DB_CONNECTION, portal))
+        .find()
+        .populate([
+            { 
+                path: "keyPeople.employees", 
+                populate: { path: 'employees' }
+            }
+        ])
         // .sort({
         //     'createdAt': 'desc'
         // }).skip(params.limit * (params.page - 1)).limit(params.limit);
@@ -46,7 +53,12 @@ exports.searchBiddingPackage = async (portal, params) => {
  */
 exports.getDetailBiddingPackage = async (portal, params) => {
     
-    let listBiddingPackages = await BiddingPackage(connect(DB_CONNECTION, portal)).find({ _id: params.id })
+    let listBiddingPackages = await BiddingPackage(connect(DB_CONNECTION, portal)).find({ _id: params.id }).populate([
+            { 
+                path: "keyPeople.employees", 
+                populate: { path: 'employees' }
+            }
+        ])
         // .sort({
         //     'createdAt': 'desc'
         // }).skip(params.limit * (params.page - 1)).limit(params.limit);
@@ -85,24 +97,37 @@ exports.createNewBiddingPackage = async (portal, data) => {
 exports.editBiddingPackage = async (portal, data, params) => {
     console.log(data)
 
-    await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
+    if (data?.addEmployeeForPackage) {
+        await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
         {
             $set: {
-                name: data.name,
-                code: data.code,
-                startDate: data.startDate,
-                endDate: data.endDate,
-                status: data.status ? data.status : 1,
-                type: data.type ? data.type : 1,
-                description: data.description,
-                keyPersonnelRequires: data.keyPersonnelRequires,
-                certificateRequirements: {
-                    certificates: data.certificates,
-                    count: data.count
-                }
+                keyPeople: data?.keyPeople,
             },
         }, { $new: true }
     )
+
+    } 
+    else {
+        await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
+            {
+                $set: {
+                    name: data.name,
+                    code: data.code,
+                    startDate: data.startDate,
+                    endDate: data.endDate,
+                    status: data.status ? data.status : 1,
+                    type: data.type ? data.type : 1,
+                    description: data.description,
+                    keyPersonnelRequires: data.keyPersonnelRequires,
+                    keyPeople: data?.keyPeople,
+                    certificateRequirements: {
+                        certificates: data.certificates,
+                        count: data.count
+                    }
+                },
+            }, { $new: true }
+        )
+    }
 
     return await this.searchBiddingPackage(portal, {});
 }

@@ -30,10 +30,10 @@ export function field(state = initState, action) {
             return {
                 ...state,
                 listFields: [
-                        ...state.listFields,
-                        action.payload
-                    ],
-                    isLoading: false,
+                    ...state.listFields,
+                    action.payload
+                ],
+                isLoading: false,
             };
         case FieldsConstants.DELETE_FIELDS_SUCCESS:
             return {

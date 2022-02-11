@@ -27,7 +27,7 @@ function getAllBiddingPackage(data) {
                 dispatch({
                     type: BiddingPackageConstants.GETALL_SUCCESS,
                     payload: res.data.content,
-                    exportData: data ? data.exportData : data
+                    // exportData: data ? data.exportData : data
                 })
             })
             .catch(err => {

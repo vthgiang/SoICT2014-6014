@@ -2648,12 +2648,12 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
   let keySearch = [{ $match: { status: "active" } }];
 
   // Bắt sựu kiện theo trình độ chuyên môn
-  if (params.professionalSkill && params.professionalSkill !== "") {
-    keySearch = [
-      ...keySearch,
-      { $match: { professionalSkill: params.professionalSkill } },
-    ];
-  }
+  // if (params.professionalSkill && params.professionalSkill !== "") {
+  //   keySearch = [
+  //     ...keySearch,
+  //     { $match: { professionalSkill: params.professionalSkill } },
+  //   ];
+  // }
 
   // Bắt sựu kiện theo chuyên ngành
   if (params.majors) {
@@ -2671,18 +2671,21 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
 
   // Bắt sự kiện tìm kiếm theo số năm kinh nghiệm
   if (params.exp) {
-    let year = new Date().getFullYear();
-    let yearOfExp = year - params.exp;
+    let year = new Date();
+    let yearOfExp = year.getFullYear() - params.exp;
+    year.setFullYear(yearOfExp)
     keySearch = [
       ...keySearch,
       {
         $match: {
           "degrees.year": {
-            $lte: yearOfExp,
+            $lte: year,
           },
         },
       },
     ];
+
+    console.log("yearOf", year)
   }
 
   // Bắt sựu kiện theo tên chứng chỉ
@@ -2836,7 +2839,7 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
   let listEmployees = [];
   let totalList = 1000;
 
-  // console.log("keySearch", keySearch);
+  console.log("keySearch", keySearch);
 
   listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(
     keySearch
@@ -2887,8 +2890,17 @@ exports.getEmployeeByPackageId = async (portal, biddingPackageId, companyId) => 
   }      
 
   console.log("employees", employees)
-  let otherEmployee = []
 
+  let [valid] = await Promise.all([
+    employees.filter((item, index) => item.length < numberEmployees[index])
+  ]) 
+
+  if (valid?.length) 
+    return {
+      listEmployees: null,
+      isComplete: 0
+    }
+  
   let data = await findEmployee(employees, [], [], [], numberEmployees, 0)
   
   let listEmployees = [];
@@ -2902,11 +2914,18 @@ exports.getEmployeeByPackageId = async (portal, biddingPackageId, companyId) => 
         employees: a.listEmployees
       })
     }
+
+    return {
+      listEmployees,
+      isComplete: 1
+    }
+  } else {
+    return {
+      listEmployees: null,
+      isComplete: 0
+    }
   }
 
-  return {
-    listEmployees
-  }
 };
 
 const findEmployee = async (keyPeople, otherPeople, result, resultIndex, number, index) => {

@@ -124,26 +124,26 @@ exports.deleteBiddingPackage = async (req, res) => {
         });
     }
 }
-// ====================DELETE=======================
+// // ====================DELETE=======================
 
-/** Xóa vị trí công việc */
-exports.deleteBiddingPackage = async (req, res) => {
-    try {
-        data = await biddingPackageService.deleteBiddingPackage(req.portal, req.params.id);
-        await Log.info(req.user.email, 'DELETE_BIDDING_PACKGAGE', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ["delete_bidding_package_success"],
-            content: data
-        });
-    } catch (error) {
-        await Log.error(req.user.email, 'DELETE_BIDDING_PACKGAGE', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ["delete_bidding_package_failure"],
-            content: {
-                error: error
-            }
-        });
-    }
-}
+// /** Xóa vị trí công việc */
+// exports.deleteBiddingPackage = async (req, res) => {
+//     try {
+//         data = await biddingPackageService.deleteBiddingPackage(req.portal, req.params.id);
+//         await Log.info(req.user.email, 'DELETE_BIDDING_PACKGAGE', req.portal);
+//         res.status(200).json({
+//             success: true,
+//             messages: ["delete_bidding_package_success"],
+//             content: data
+//         });
+//     } catch (error) {
+//         await Log.error(req.user.email, 'DELETE_BIDDING_PACKGAGE', req.portal);
+//         res.status(400).json({
+//             success: false,
+//             messages: ["delete_bidding_package_failure"],
+//             content: {
+//                 error: error
+//             }
+//         });
+//     }
+// }

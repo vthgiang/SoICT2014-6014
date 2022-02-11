@@ -53,6 +53,8 @@ const BiddingPackageDetailForm = (props) => {
 
     let { _id, biddingPackageDetail } = state;
 
+    console.log("detail", biddingPackagesManager.isLoading)
+
     return (
         <React.Fragment>
             <DialogModal

@@ -269,7 +269,7 @@ const EmployeeSchema = new Schema(
         },
         degreeQualification: {
           type: Number,
-          Enum: [1, 2, 3, 4, 5, 6, 7], // 1: trung cấp, 2: cao đẳng, 3: đại học, 4: thạc sĩ, 5: tiến sĩ, 6: phó GS, 7: giáo sư
+          Enum: [1, 2, 3, 4, 5, 6, 7], // 1: trung cấp, 2: cao đẳng, 3: cử nhân, 4: kĩ sư, 5: thạc sĩ, 6: tiến sĩ, 7: giáo sư
         },
         field: {
           type: Schema.Types.ObjectId,

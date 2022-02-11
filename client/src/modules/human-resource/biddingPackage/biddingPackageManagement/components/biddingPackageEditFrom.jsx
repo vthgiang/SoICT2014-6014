@@ -10,6 +10,7 @@ import { BiddingPackageManagerActions } from '../redux/actions';
 import { MajorActions } from '../../../major/redux/actions';
 import { CareerReduxAction } from '../../../career/redux/actions';
 import { CertificateActions } from '../../../certificate/redux/actions';
+import { KeyPeople } from './keyPeople';
 
 const initMember = {
     name: '',
@@ -79,7 +80,7 @@ const BiddingPackageEditFrom = (props) => {
 
     const { translate, biddingPackagesManager, career, major, certificate } = props;
 
-    let { _id, biddingPackage, roles, files  } = state;
+    let { _id, biddingPackage } = state;
 
     // console.log("biddingPackage", biddingPackage)
 
@@ -175,26 +176,15 @@ const BiddingPackageEditFrom = (props) => {
             }
         }))
 
-        // career.forEach(x => {
-        //     formData.append("fileCareer", x.fileUpload);
-        // })
-        // major.forEach(x => {
-        //     formData.append("fileMajor", x.fileUpload);
-        // })
-
-        // files.forEach(x => {
-        //     formData.append("file", x.fileUpload);
-        // })
-        // formData.append("fileAvatar", avatar);
         await props.updateBiddingPackage(_id, biddingPackage);
-        console.log("formData", biddingPackage)
         await props.getDetailBiddingPackage( props._id, {} );
         setState({
             ...state,
             dataStatus: DATA_STATUS.QUERYING,
         })
     }
-
+    
+    console.log("state", state)
     return (
         <React.Fragment>
             <DialogModal
@@ -210,7 +200,7 @@ const BiddingPackageEditFrom = (props) => {
                         <ul className="nav nav-tabs">
                             <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general_bidding_package${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                             <li><a title="Yêu cầu nhân sự chủ chốt" data-toggle="tab" href={`#edit_contact_bidding_package${_id}`}>Yêu cầu nhân sự chủ chốt</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href={`#edit_experience${_id}`}>Nhân sự chủ chốt</a></li>
+                            <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#edit_key_people_bidding_package${_id}`}>Nhân sự chủ chốt</a></li>
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */
@@ -231,19 +221,14 @@ const BiddingPackageEditFrom = (props) => {
                                     biddingPackage={biddingPackage}
                                 />
                             {/* Tab học vấn - kinh nghiệm */}
-                            {/* <ExperienceTab
-                                id={`edit_experience${_id}`}
-                                biddingPackage={biddingPackage}
-                                handleChange={handleChange}
-
-                                handleAddExperience={handleCreateExperiences}
-                                handleEditExperience={handleEditExperiences}
-                                handleDeleteExperience={handleDeleteExperiences}
-
-                                handleAddWorkProcess={handleCreateWorkProcess}
-                                handleDeleteWorkProcess={handleDeleteWorkProcess}
-                                handleEditWorkProcess={handleEditWorkProcess}
-                            /> */}
+                            <KeyPeople
+                                id={`edit_key_people_bidding_package${_id}`}
+                                    handleChange={handleChange}
+                                    listCareer={career?.listPosition?.listPosition}
+                                    listMajor={major?.listMajor}
+                                    listCertificate={certificate?.listCertificate}
+                                    biddingPackage={biddingPackage}
+                            />
                         </div>
                     </div>}
                 {/* </form> */}

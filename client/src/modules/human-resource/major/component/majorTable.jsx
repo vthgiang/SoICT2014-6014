@@ -73,6 +73,21 @@ function MajorTable(props) {
         props.get(data);
     }
 
+    const setName = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            name: value
+        });
+        let { name, page, limit } = state;
+        const data = {
+            limit: limit,
+            page: page,
+            name: name,
+        };
+        props.get(data);
+    }
+
     const setLimit = (number) => {
         setState({
             ...state,
@@ -87,14 +102,23 @@ function MajorTable(props) {
         props.get(data);
     }
 
+    const searchWithOption = async () => {
+        const data = {
+            limit: state.limit,
+            page: state.page,
+            name: state.name
+        };
+        await props.get(data);
+    }
+
     useEffect(() => {
         props.get({ name: '', page: 1, limit: 1000 });
         props.get({ name: state.name, page: state.page, limit: state.limit });
     }, [])
 
     const { major, translate } = props;
-    console.log("major", major)
-    const { currentRow, option, tableId } = state;
+    const { currentRow, option, tableId, isLoading } = state;
+    console.log("isLoading")
 
     return (
         <React.Fragment>
@@ -112,17 +136,16 @@ function MajorTable(props) {
             }
 
             {/* Thanh tìm kiếm */}
-            {/* <div className="form-inline">
-                Mã tài sản
-                <div className="form-group">
-                    <label className="form-control-static">Chuyên ngành</label>
+            <div className="form-inline">
+                <div className="form-group" style={{ marginRight: '20px' }}>
+                    <label className="form-control-static" style={{ marginRight: '20px' }}>Chuyên ngành</label>
                     <input type="text" className="form-control" name="name" onChange={setName} placeholder={"Nhập tên chuyên ngành"} autoComplete="off" />
                 </div>
                 <div className="form-group">
                     <label></label>
                     <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={searchWithOption}>{translate('asset.general_information.search')}</button>
                 </div>
-            </div> */}
+            </div>
 
             {/* Kết quả kiểm tra trùng lặp */}
             {/* {majorDuplicate && majorDuplicate.length !== 0 && (

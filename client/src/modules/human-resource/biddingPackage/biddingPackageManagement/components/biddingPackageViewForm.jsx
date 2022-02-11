@@ -25,54 +25,7 @@ const BiddingPackageViewForm = (props) => {
         }))
     }
 
-    // shouldComponentUpdate = async (nextProps, nextState) => {
-    //     if (nextProps._id !== this.state._id && !nextProps.employeesInfo.isLoading) {
-    //         await this.props.getBiddingPackageProfile({ id: nextProps._id, callAPIByUser: false });
-    //         this.props.getListWorkPlan({ year: new Date().getFullYear() });
-    //         this.setState({
-    //             dataStatus: this.DATA_STATUS.QUERYING,
-    //             employees: [],
-    //             roles: [],
-    //             totalAnnualLeaves: "",
-    //         })
-    //         return false;
-    //     };
-    //     if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.employeesInfo.isLoading && !nextProps.workPlan.isLoading) {
-    //         let annualLeaves = nextProps.employeesInfo.annualLeaves;
-    //         let total = 0, data = [];
-    //         annualLeaves.forEach(x => {
-    //             let check = false;
-    //             data.forEach(y => {
-    //                 if (x.startDate === y.startDate && x.endDate === y.endDate) {
-    //                     check = true;
-    //                 }
-    //             })
-    //             if (!check) {
-    //                 data = [...data, x];
-    //             }
-    //         })
-    //         data = data.filter(x => x.status === 'approved');
-    //         data.forEach(x => {
-    //             if (x.totalHours && x.totalHours !== 0) {
-    //                 total = total + x.totalHours;
-    //             } else {
-    //                 total = total + (Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (24 * 60 * 60 * 1000)) + 1) * 8;
-    //             }
-    //         });
-    //         let totalAnnualLeaves = nextProps.workPlan.maximumNumberOfLeaveDays * 8 - total;
-    //         this.setState({
-    //             dataStatus: this.DATA_STATUS.AVAILABLE,
-    //             employees: nextProps.employeesInfo.employees,
-    //             roles: nextProps.employeesInfo.roles,
-    //             totalAnnualLeaves: totalAnnualLeaves > 0 ? totalAnnualLeaves : 0
-
-    //         });
-    //         return true;
-    //     };
-    //     return false;
-    // }
-
-    useEffect(() => {
+       useEffect(() => {
         const shouldComponentDidUpdate = async () => {
             if (props._id !== state._id && !props.employeesInfo.isLoading) {
                 await props.getBiddingPackageProfile({ id: props._id, callAPIByUser: false });

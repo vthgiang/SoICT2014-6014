@@ -35,6 +35,10 @@ const BiddingPackageSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Major"
         }],
+        professionalSkill: {
+          type: Number,
+          Enum: [1, 2, 3, 4, 5, 6, 7], // 1: trung cấp, 2: cao đẳng, 3: cử nhân, 4: kĩ sư, 5: thạc sĩ, 6: tiến sĩ, 7: giáo sư
+        },
         count: Number,
 
         certificateRequirements: {
@@ -48,7 +52,19 @@ const BiddingPackageSchema = new Schema({
         numberYearsOfExperience: Number,
         experienceWorkInCarreer: Number,
         numblePackageWorkInCarreer: Number
-    }]
+    }],
+    keyPeople: [
+        {
+            careerPosition: {
+                type: Schema.Types.ObjectId,
+                ref: "CareerPosition"
+            },
+            employees: [{
+                type: Schema.Types.ObjectId,
+                ref: "Employee"
+            }],
+        }
+    ], 
 }, {
     timestamps: true,
 });

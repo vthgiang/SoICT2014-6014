@@ -56,7 +56,6 @@ const BiddingPackageManagement = (props) => {
         props.getListMajor({ name: '', page: 1, limit: 1000 });
         props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
         props.getListCertificate({ name: '', page: 1, limit: 1000 });
-        props.getDepartment();
     }, [])
 
     useEffect(() => {
@@ -238,9 +237,9 @@ const BiddingPackageManagement = (props) => {
 
     // }, [props.biddingPackagesManager.exportData]);
 
-    const { biddingPackagesManager, translate, department, field, career, major } = props;
+    const { biddingPackagesManager, translate } = props;
 
-    const { importBiddingPackage, limit, page, nameSearch, codeSearch, startDateSearch, endDateSearch, currentRow, currentRowView, status } = state;
+    const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, status, isLoading } = state;
 
     let listBiddingPackages = [];
     if (biddingPackagesManager.listBiddingPackages) {
@@ -251,6 +250,8 @@ const BiddingPackageManagement = (props) => {
         parseInt(biddingPackagesManager.totalList / limit) :
         parseInt((biddingPackagesManager.totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
+
+    console.log("biddingPackageManager", biddingPackagesManager)
 
     return (
         <div className="box">
@@ -406,7 +407,6 @@ function mapState(state) {
 const actionCreators = {
     getListFields: FieldsActions.getListFields,
     getListMajor: MajorActions.getListMajor,
-    getDepartment: DepartmentActions.get,
     getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
     getDetailBiddingPackage: BiddingPackageManagerActions.getDetailBiddingPackage,
     deleteBiddingPackage: BiddingPackageManagerActions.deleteBiddingPackage,

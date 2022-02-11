@@ -30,10 +30,6 @@ exports.searchCertificate = async (portal, params) => {
         path: 'majors',
     }]);
     let totalList = await Certificate(connect(DB_CONNECTION, portal)).countDocuments({});
-    console.log({
-        totalList,
-        listCertificate
-    })
 
     return {
         totalList,

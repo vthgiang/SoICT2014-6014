@@ -10,7 +10,7 @@ const initState = {
     employeesHaveBirthdateInCurrentMonth: 0,
     totalEmployeeOfOrganizationalUnits: 0,
     totalAllEmployee: 0,
-
+    isSearchComplete: '',
     arrMonth: [],
     totalEmployees: [],
     listEmployeesHaveStartingDateOfNumberMonth: [],
@@ -83,7 +83,7 @@ export function employeesManager(state = initState, action) {
             return {
                 ...state,
                 listEmployeesPackage: action.payload?.listEmployees,
-                listAllEmployees: action.payload,
+                isSearchComplete: action.payload?.isComplete,
                 isLoading: false,
             }
         case EmployeeConstants.ADDEMPLOYEE_SUCCESS:

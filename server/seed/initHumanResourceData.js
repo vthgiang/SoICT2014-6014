@@ -1494,7 +1494,7 @@ const initHumanResourceData = async () => {
               }`
             ),
             endDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
                 days[Math.floor(Math.random() * 19)]
               }`
             ),
@@ -1508,7 +1508,7 @@ const initHumanResourceData = async () => {
               }`
             ),
             endDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
                 days[Math.floor(Math.random() * 19)]
               }`
             ),
@@ -1522,7 +1522,7 @@ const initHumanResourceData = async () => {
               }`
             ),
             endDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
                 days[Math.floor(Math.random() * 19)]
               }`
             ),
@@ -1536,7 +1536,7 @@ const initHumanResourceData = async () => {
               }`
             ),
             endDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
                 days[Math.floor(Math.random() * 19)]
               }`
             ),
@@ -1550,7 +1550,7 @@ const initHumanResourceData = async () => {
               }`
             ),
             endDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
                 days[Math.floor(Math.random() * 19)]
               }`
             ),
@@ -1708,7 +1708,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1722,7 +1722,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1736,7 +1736,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1750,7 +1750,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1764,7 +1764,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1902,7 +1902,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1916,7 +1916,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1930,7 +1930,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1944,7 +1944,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -1958,7 +1958,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2097,7 +2097,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2111,7 +2111,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2125,7 +2125,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2139,7 +2139,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2153,7 +2153,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2250,7 +2250,7 @@ const initHumanResourceData = async () => {
           name: "Bằng tốt nghiệp",
           issuedBy: "Đại học Bách Khoa",
           year: currentYear,
-          field: fields[Math.floor(Math.random() * 6)]._id,
+          field: fields[Math. (Math.random() * 6)]._id,
           major: majors[Math.floor(Math.random() * 12)]._id,
           degreeQualification: Math.floor(Math.random() * 6) + 1,
           degreeType: "good",
@@ -2292,7 +2292,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2306,7 +2306,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2320,7 +2320,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2334,7 +2334,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2348,7 +2348,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2487,7 +2487,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2501,7 +2501,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2515,7 +2515,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2529,7 +2529,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2543,7 +2543,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2689,7 +2689,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2703,7 +2703,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2717,7 +2717,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2731,7 +2731,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2745,7 +2745,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2884,7 +2884,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2898,7 +2898,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2912,7 +2912,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2926,7 +2926,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -2940,7 +2940,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3079,7 +3079,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3093,7 +3093,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3107,7 +3107,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3121,7 +3121,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3135,7 +3135,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3274,7 +3274,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3288,7 +3288,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3302,7 +3302,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3316,7 +3316,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3330,7 +3330,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3469,7 +3469,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3483,7 +3483,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3497,7 +3497,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3511,7 +3511,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3525,7 +3525,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3664,7 +3664,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3678,7 +3678,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3692,7 +3692,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3706,7 +3706,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3720,7 +3720,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3859,7 +3859,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3873,7 +3873,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3887,7 +3887,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3901,7 +3901,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -3915,7 +3915,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4053,7 +4053,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4067,7 +4067,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4081,7 +4081,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4095,7 +4095,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4109,7 +4109,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4247,7 +4247,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4261,7 +4261,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4275,7 +4275,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4289,7 +4289,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4303,7 +4303,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4441,7 +4441,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4455,7 +4455,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4469,7 +4469,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4483,7 +4483,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4497,7 +4497,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4635,7 +4635,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4649,7 +4649,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4663,7 +4663,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4677,7 +4677,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4691,7 +4691,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4829,7 +4829,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4843,7 +4843,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4857,7 +4857,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4871,7 +4871,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -4885,7 +4885,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5023,7 +5023,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5037,7 +5037,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5051,7 +5051,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5065,7 +5065,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5079,7 +5079,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5217,7 +5217,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5231,7 +5231,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5245,7 +5245,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5259,7 +5259,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5273,7 +5273,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5411,7 +5411,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5425,7 +5425,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5439,7 +5439,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5453,7 +5453,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5467,7 +5467,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5619,7 +5619,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5633,7 +5633,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5647,7 +5647,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5661,7 +5661,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5675,7 +5675,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5813,7 +5813,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5827,7 +5827,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5841,7 +5841,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5855,7 +5855,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -5869,7 +5869,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6007,7 +6007,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6021,7 +6021,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6035,7 +6035,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6049,7 +6049,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6063,7 +6063,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6201,7 +6201,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6215,7 +6215,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6229,7 +6229,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6243,7 +6243,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6257,7 +6257,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6396,7 +6396,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6410,7 +6410,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6424,7 +6424,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6438,7 +6438,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),
@@ -6452,7 +6452,7 @@ const initHumanResourceData = async () => {
             }`
           ),
           endDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
               days[Math.floor(Math.random() * 19)]
             }`
           ),

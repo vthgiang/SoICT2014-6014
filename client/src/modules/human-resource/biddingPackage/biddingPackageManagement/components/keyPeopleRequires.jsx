@@ -34,10 +34,22 @@ function KeyPeopleRequire(props) {
                     keyPersonnelRequires: list
                 }
         })
-
-        console.log("list", list)
-        console.log("state", state)
     }, [list])
+
+    useEffect(() => {
+        
+        if (props.biddingPackage) {
+            setState(state => {
+                return {
+                    ...state,
+                    id: props.id,
+                    keyPersonnelRequires: props.biddingPackage ? props.biddingPackage.keyPersonnelRequires : []
+                }
+            })
+
+            setList(props.biddingPackage ? props.biddingPackage.keyPersonnelRequires : [])
+        }
+    }, [])
 
     useEffect(() => {
         
@@ -279,6 +291,7 @@ function KeyPeopleRequire(props) {
                                     <label >Chuyên ngành</label>
                                     <SelectBox
                                         id={`major-${id}-${listIndex}`}
+                                        key={`major-${id}-${listIndex}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listMajor?.map(x => {
@@ -317,6 +330,7 @@ function KeyPeopleRequire(props) {
                                         <label >Danh sách chứng chỉ</label>
                                         <SelectBox
                                             id={`certificate-${id}-${listIndex}`}
+                                            key={`certificate-${id}-${listIndex}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={listCertificate?.map(x => {
