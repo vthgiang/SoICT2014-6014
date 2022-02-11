@@ -842,7 +842,7 @@ function GoodIssueCreateForm(props) {
                                         {translate("manage_warehouse.bill_management.address")}
                                         <span className="text-red"> * </span>
                                     </label>
-                                    <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
+                                    <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
                         </fieldset>

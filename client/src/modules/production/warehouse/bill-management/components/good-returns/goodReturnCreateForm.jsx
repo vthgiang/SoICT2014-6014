@@ -32,7 +32,7 @@ function GoodReturnCreateForm(props) {
         accountables: [],
         responsibles: [],
         approver: [],
-        type: '7'
+        type: '',
     })
 
     function formatDate(date, monthYear = false) {
@@ -55,27 +55,104 @@ function GoodReturnCreateForm(props) {
         }
     }
 
-    const getAllGoods = () => {
-        let { translate } = props;
-        let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
+    // const getAllGoods = () => {
+    //     let { translate } = props;
+    //     let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
 
-        props.goods.listALLGoods.map(item => {
-            goodArr.push({
-                value: item._id,
-                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
-                code: item.code,
-                name: item.name,
-                baseUnit: item.baseUnit
-            })
-        })
+    //     props.goods.listALLGoods.map(item => {
+    //         goodArr.push({
+    //             value: item._id,
+    //             text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
+    //             code: item.code,
+    //             name: item.name,
+    //             baseUnit: item.baseUnit
+    //         })
+    //     })
 
-        return goodArr;
-    }
+    //     return goodArr;
+    // }
+
+    // const handleGoodChange = async (value) => {
+    //     const dataGoods = await getAllGoods();
+    //     let good = value[0];
+    //     state.good.quantity = 0;
+    //     let goodName = dataGoods.find(x => x.value === good);
+    //     state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit };
+    //     await setState({
+    //         ...state,
+    //         lots: []
+    //     })
+    //     const { fromStock } = state;
+
+    //     await props.getLotsByGood({ good, stock: fromStock });
+    // }
+
+    // const getCustomer = () => {
+    //     const { crm, translate } = props;
+    //     let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
+
+    //     crm.customers.list.map(item => {
+    //         CustomerArr.push({
+    //             value: item._id,
+    //             text: item.name
+    //         })
+    //     })
+
+    //     return CustomerArr;
+    // }
+
+        // const handleSupplierChange = (value) => {
+    //     let supplier = value[0];
+    //     validateSupplier(supplier, true);
+    // }
+
+     // const handlePartnerChange = (value) => {
+    //     let partner = value[0];
+    //     validatePartner(partner, true);
+    // }
+
+    // const validateSupplier = (value, willUpdateState = true) => {
+    //     let msg = undefined;
+    //     const { translate } = props;
+    //     if (!value) {
+    //         msg = translate('manage_warehouse.bill_management.validate_customer')
+    //     }
+    //     if (willUpdateState) {
+    //         setState({
+    //             ...state,
+    //             supplier: value,
+    //             errorSuppler: msg,
+    //         })
+    //     }
+    //     return msg === undefined;
+    // }
+
+    // const handleStatusChange = (value) => {
+    //     setState({
+    //         ...state,
+    //         status: value[0]
+    //     })
+    // }
+
+    // const validatePartner = (value, willUpdateState = true) => {
+    //     let msg = undefined;
+    //     const { translate } = props;
+    //     if (!value) {
+    //         msg = translate('manage_warehouse.bill_management.validate_customer')
+    //     }
+    //     if (willUpdateState) {
+    //         setState({
+    //             ...state,
+    //             customer: value,
+    //             errorCustomer: msg,
+    //         })
+    //     }
+    //     return msg === undefined;
+    // }
 
     const getBillByStatus = () => {
         let { translate, bills } = props;
         let billArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_bill') }];
-
         bills.listBillByStatus.map(item => {
             billArr.push({
                 value: item._id,
@@ -85,21 +162,6 @@ function GoodReturnCreateForm(props) {
         })
 
         return billArr;
-    }
-
-    const handleGoodChange = async (value) => {
-        const dataGoods = await getAllGoods();
-        let good = value[0];
-        state.good.quantity = 0;
-        let goodName = dataGoods.find(x => x.value === good);
-        state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit };
-        await setState({
-            ...state,
-            lots: []
-        })
-        const { fromStock } = state;
-
-        await props.getLotsByGood({ good, stock: fromStock });
     }
 
     const addQuantity = () => {
@@ -128,20 +190,6 @@ function GoodReturnCreateForm(props) {
         return ApproverArr;
     }
 
-    const getCustomer = () => {
-        const { crm, translate } = props;
-        let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
-
-        crm.customers.list.map(item => {
-            CustomerArr.push({
-                value: item._id,
-                text: item.name
-            })
-        })
-
-        return CustomerArr;
-    }
-
     const getStock = () => {
         const { stocks, translate } = props;
         let stockArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_stock') }];
@@ -161,13 +209,23 @@ function GoodReturnCreateForm(props) {
         let typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
             { value: '11', text: translate('manage_warehouse.bill_management.billType.11') },
+            { value: '12', text: translate('manage_warehouse.bill_management.billType.12') },
+            { value: '13', text: translate('manage_warehouse.bill_management.billType.13') },
         ];
         return typeArr;
     }
 
-    const handleTypeChange = (value) => {
+    const handleTypeChange = async (value) => {
         let type = value[0];
-        validateType(type, true);
+        await validateType(type, true);
+        
+        let group = type === '13' ? '2' : '1';
+        let status = '2';
+        if (type && state.fromStock) {
+            await props.getBillsByStatus({ group, status, type, fromStock: state.fromStock });
+        } else {
+            await props.getBillsByStatus({ group, status, type: null,  fromStock: null });
+        }
     }
 
     const validateType = (value, willUpdateState = true) => {
@@ -190,12 +248,12 @@ function GoodReturnCreateForm(props) {
         let fromStock = value[0];
         await validateStock(fromStock, true);
 
-        let group = '2';
+        let group = state.type === '13' ? '2' : '1';
         let status = '2';
-        if (fromStock) {
-            await props.getBillsByStatus({ group, status, fromStock });
+        if (fromStock && state.type) {
+            await props.getBillsByStatus({ group, status, type: state.type, fromStock });
         } else {
-            await props.getBillsByStatus({ group, status, fromStock: null });
+            await props.getBillsByStatus({ group, status, type: null, fromStock: null });
         }
 
     }
@@ -319,48 +377,6 @@ function GoodReturnCreateForm(props) {
         return msg === undefined;
     }
 
-    const handlePartnerChange = (value) => {
-        let partner = value[0];
-        validatePartner(partner, true);
-    }
-
-    const validatePartner = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.bill_management.validate_customer')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                customer: value,
-                errorCustomer: msg,
-            })
-        }
-        return msg === undefined;
-    }
-
-    const handleSupplierChange = (value) => {
-        let supplier = value[0];
-        validateSupplier(supplier, true);
-    }
-
-    const validateSupplier = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.bill_management.validate_customer')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                supplier: value,
-                errorSuppler: msg,
-            })
-        }
-        return msg === undefined;
-    }
-
     const handleDescriptionChange = (e) => {
         let value = e.target.value;
         setState({
@@ -398,13 +414,6 @@ function GoodReturnCreateForm(props) {
         setState({
             ...state,
             address: value,
-        })
-    }
-
-    const handleStatusChange = (value) => {
-        setState({
-            ...state,
-            status: value[0]
         })
     }
 
@@ -514,11 +523,14 @@ function GoodReturnCreateForm(props) {
             })
             await props.getDetailBill(bill);
         } else {
+            let msg = translate('manage_warehouse.bill_management.validate_bill')
             setState({
                 ...state,
                 bill: bill,
-                getGoodInfo: false
+                getGoodInfo: false,
+                errorBill: msg
             })
+            return msg === undefined;
         }
 
     }
@@ -541,6 +553,7 @@ function GoodReturnCreateForm(props) {
         const { group, bills } = props;
         if (bills.billDetail) {
             var customer = bills.billDetail.customer;
+            var manufacturingMill = bills.billDetail.manufacturingMill;
         }
         await props.createBill({
             fromStock: fromStock,
@@ -561,13 +574,14 @@ function GoodReturnCreateForm(props) {
             email: email,
             address: address,
             description: description,
-            goods: listGood
+            goods: listGood,
+            manufacturingMill: manufacturingMill
         })
     }
 
     const { translate, group, bills } = props;
     const { lots, listGood, good, code, approver, accountables, responsibles, qualityControlStaffs, status, fromStock, type, name, phone, email, address,
-        errorStock, errorType, errorApprover, errorCustomer, errorSupplier, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
+        errorStock, errorType, errorApprover, errorBill, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
     const dataApprover = getApprover();
     const dataStock = getStock();
     const dataType = getType();
@@ -595,7 +609,7 @@ function GoodReturnCreateForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code} disabled />
+                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
@@ -644,10 +658,10 @@ function GoodReturnCreateForm(props) {
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
-                                <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.bill_issued')}<span className="text-red"> * </span></label>
+                                <div className={`form-group ${!errorBill ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.bill_management.choose_bill')}<span className="text-red"> * </span></label>
                                     <SelectBox
-                                        id={`select-customer-return-create`}
+                                        id={`select-bill-return-create`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={bill}
@@ -655,7 +669,7 @@ function GoodReturnCreateForm(props) {
                                         onChange={handleBillChange}
                                         multiple={false}
                                     />
-                                    <ErrorLabel content={errorCustomer} />
+                                    <ErrorLabel content={errorBill} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -770,7 +784,7 @@ function GoodReturnCreateForm(props) {
                                                 <div className="form-group">
                                                     <label>{translate('manage_warehouse.bill_management.quantity_return')}</label>
                                                     <div style={{ display: "flex" }}>
-                                                        <input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={handleQuantityChange} type="number" />
+                                                        <input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={handleQuantityChange} type="number" disabled/>
                                                     </div>
                                                 </div>
                                             </div>

@@ -137,6 +137,7 @@ function GoodIssueEditForm(props) {
                 ...state,
                 type: value,
                 errorType: msg,
+                listGood: []
             })
         }
         return msg === undefined;
@@ -158,6 +159,7 @@ function GoodIssueEditForm(props) {
                 ...state,
                 fromStock: value,
                 errorStock: msg,
+                listGood: []
             })
         }
         return msg === undefined;
@@ -660,7 +662,7 @@ function GoodIssueEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false :true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -689,7 +691,7 @@ function GoodIssueEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false :true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
