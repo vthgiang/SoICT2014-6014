@@ -23,8 +23,9 @@ function DegreeAddModal(props) {
 
     const { id } = props;
 
-    const { name, issuedBy, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
+    const { name, issuedBy, major, degreeQualification, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
     let listFields = props.field.listFields;
+    let listMajor = props.major.listMajor;
 
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
@@ -130,10 +131,23 @@ function DegreeAddModal(props) {
      * @param {*} value : id Ngành nghề lĩnh vực
      */
     const handleFieldChange = (value) => {
-        // console.log(value);
         setState({
             ...state,
             field: value[0]
+        });
+    }
+
+    const handleMajorChange = (value) => {
+        setState({
+            ...state,
+            major: value[0]
+        });
+    }
+
+    const handlerDegreeQualificationChange = (value) => {
+        setState({
+            ...state,
+            degreeQualification: value[0]
         });
     }
 
@@ -148,15 +162,29 @@ function DegreeAddModal(props) {
 
     /** Bắt sự kiện submit form */
     const save = () => {
-        let { field } = state;
+        let { field, degreeQualification } = state;
+        degreeQualification = Number(degreeQualification)
         let valueField = props.field;
         if (isFormValidated()) {
             if (!field && valueField && valueField.listFields && valueField.listFields[0]) {
                 field = props.field.listFields[0]._id
             }
-            return props.handleChange({ ...state, field: field });
+            return props.handleChange({ ...state, field: field, degreeQualification: degreeQualification });
         }
     }
+
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
 
     return (
         <React.Fragment>
@@ -193,6 +221,29 @@ function DegreeAddModal(props) {
                             onChange={handleFieldChange}
                         />
                     </div>
+                    <div className="form-group">
+                        <label>Chọn chuyên ngnành</label>
+                        <SelectBox
+                            id={`create-major${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={major}
+                            items={[...listMajor.map(y => { return { value: y._id, text: y.name } }), { value: '', text: 'Chọn ngành nghề' }]}
+                            onChange={handleMajorChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Chọn trình độ chuyên môn</label>
+                        <SelectBox
+                            id={`create-professional${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={degreeQualification}
+                            items={professionalSkillArr}
+                            onChange={handlerDegreeQualificationChange}
+                        />
+                    </div>
+
                     <div className="row">
                         {/* Năm tốt nghiệp */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
@@ -230,8 +281,8 @@ function DegreeAddModal(props) {
 };
 
 function mapState(state) {
-    const { field } = state;
-    return { field };
+    const { field, major } = state;
+    return { field, major };
 };
 
 const addModal = connect(mapState, null)(withTranslate(DegreeAddModal));

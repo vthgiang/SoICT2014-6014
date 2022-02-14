@@ -66,7 +66,9 @@ const EmployeeDetailForm = (props) => {
         }
     }, [props._id, props.employeesInfo.isLoading, state.dataStatus]);
 
-    const { employeesInfo, translate, certificate, major } = props;
+    const { employeesInfo, translate, certificate, major, career } = props;
+
+    console.log("Dataaaaa", certificate, major, career)
 
     let { _id, employees, annualLeaves, commendations, disciplines, courses, roles = [], houseHold } = state;
     return (
@@ -111,6 +113,8 @@ const EmployeeDetailForm = (props) => {
                                     <ExperiencTab
                                         id={`view_experience${_id}`}
                                         employee={x}
+                                        listMajor={major?.listMajor}
+                                        listPosition={career?.listPosition}
                                     />
                                     {/* Thuế thu nhập cá nhân */}
                                     <TaxTab

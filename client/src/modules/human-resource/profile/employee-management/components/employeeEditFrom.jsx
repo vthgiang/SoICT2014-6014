@@ -13,6 +13,9 @@ import {
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
 
 const initMember = {
     name: '',
@@ -178,12 +181,12 @@ const EmployeeEditFrom = (props) => {
         }
     }, [props._id, props.employeesInfo.isLoading, state.dataStatus]);
 
-    const { translate, employeesInfo } = props;
+    const { translate, employeesInfo, career, major, certificate} = props;
 
+    
     let { _id, img, employee, experiences, workProcess, degrees, certificates, socialInsuranceDetails, contracts, courses,
         organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
-
-
+        
 
     /**
      * Function upload avatar 
@@ -957,7 +960,7 @@ const EmployeeEditFrom = (props) => {
 
     const save = async () => {
         let { _id, experiences, workProcess, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
+            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses, major } = state;
 
         let degreesConvert = [];
         const createDegrees = degrees?.length ? degrees.filter(x => x._id === undefined) : [];
@@ -1220,6 +1223,9 @@ const EmployeeEditFrom = (props) => {
                                 id={`edit_experience${_id}`}
                                 employee={employee}
                                 handleChange={handleChange}
+                                major={major?.listMajor}
+                                certificate={certificate?.listMajor}
+                                careerPosition={career?.listPosition}
 
                                 handleAddExperience={handleCreateExperiences}
                                 handleEditExperience={handleEditExperiences}
@@ -1235,6 +1241,9 @@ const EmployeeEditFrom = (props) => {
                                 degrees={degrees}
                                 certificates={certificates}
                                 employee={employee}
+                                listMajors={major?.listMajor}
+                                listCertificates={certificate?.listCertificate}
+                                listPositions={career?.listPosition}
                                 handleAddDegree={handleCreateDegree}
                                 handleEditDegree={handleEditDegree}
                                 handleDeleteDegree={handleDeleteDegree}
@@ -1340,13 +1349,16 @@ const EmployeeEditFrom = (props) => {
 };
 
 function mapState(state) {
-    const { employeesInfo, employeesManager } = state;
-    return { employeesInfo, employeesManager };
+    const { employeesInfo, employeesManager, major, career, certificate } = state;
+    return { employeesInfo, employeesManager, major, career, certificate };
 };
 
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
 };
 
 const editFrom = connect(mapState, actionCreators)(withTranslate(EmployeeEditFrom));

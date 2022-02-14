@@ -265,13 +265,15 @@ function KeyPeople(props) {
     }
 
     let professionalSkillArr = [
-        { value: 1, text: "Trung cấp" },
-        { value: 2, text: "Cao đẳng" },
-        { value: 3, text: "Đại học" },
-        { value: 4, text: "Cử nhân" },
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
         { value: 5, text: "Kỹ sư" },
         { value: 6, text: "Thạc sĩ" },
         { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
         { value: 0, text: "Không có" },
     ];
 

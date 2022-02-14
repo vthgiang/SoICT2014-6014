@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, UploadFile, SelectBox } from '../../../../../common-components';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -39,11 +39,11 @@ function CertificateEditModal(props) {
         file: "",
     })
 
-    const { translate } = props;
+    const { translate, listCertificates } = props;
 
     const { id } = props;
 
-    const { name, issuedBy, endDate, startDate, file, urlFile, fileUpload, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
+    const { certificate, issuedBy, endDate, startDate, file, urlFile, fileUpload, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
 
     useEffect(() => {
         setState(state => {
@@ -54,7 +54,7 @@ function CertificateEditModal(props) {
                 issuedBy: props.issuedBy,
                 startDate: props.startDate,
                 endDate: props.endDate,
-                name: props.name,
+                certificate: props.certificate,
                 file: props.file,
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
@@ -99,12 +99,15 @@ function CertificateEditModal(props) {
     }
 
     /** Bắt sự kiên thay đổi tên chứng chỉ */
-    const handleNameChange = (e) => {
-        let { value } = e.target;
-        validateNameCertificate(value, true);
+        /** Bắt sự kiên thay đổi chứng chỉ */
+    const handleCertificateChange = (value) => {
+        setState({
+            ...state,
+            certificate: value[0]
+        });
     }
 
-    const validateNameCertificate = (value, willUpdateState = true) => {
+    const validateCertificate = (value, willUpdateState = true) => {
         const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
@@ -113,7 +116,7 @@ function CertificateEditModal(props) {
                 return {
                     ...state,
                     errorOnName: message,
-                    name: value,
+                    certificate: value,
                 }
             });
         }
@@ -206,9 +209,9 @@ function CertificateEditModal(props) {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
-        const { endDate, startDate, name, issuedBy } = state;
+        const { endDate, startDate, certificate, issuedBy } = state;
 
-        let result = validateNameCertificate(name, false) && validateIssuedByCertificate(issuedBy, false);
+        let result = validateCertificate(certificate, false) && validateIssuedByCertificate(issuedBy, false);
 
         let partStart = startDate?.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
@@ -257,9 +260,15 @@ function CertificateEditModal(props) {
                 <form className="form-group" id={`form-edit-certificateShort-${id}`}>
                     {/* Tên chứng chỉ */}
                     <div className={`form-group ${errorOnName && "has-error"}`}>
-                        <label>{translate('human_resource.profile.name_certificate')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" name="name" value={name} onChange={handleNameChange} autoComplete="off" />
-                        <ErrorLabel content={errorOnName} />
+                        <label>Chọn chứng chỉ<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`create-degree-field${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={certificate}
+                            items={[{ value: '', text: 'Chọn chứng chỉ' }, ...listCertificates.map(y => { return { value: y._id, text: y.name } })]}
+                            onChange={handleCertificateChange}
+                        />
                     </div>
                     {/* Nơi cấp */}
                     <div className={`form-group ${errorOnUnit && "has-error"}`}>

@@ -212,14 +212,14 @@ const BiddingPackageEditFrom = (props) => {
                                 />
                             }
                             {/* Tab thông tin liên hệ */}
-                                <KeyPeopleRequire
-                                    id={`edit_contact_bidding_package${_id}`}
-                                    handleChange={handleChange}
-                                    listCareer={career?.listPosition?.listPosition}
-                                    listMajor={major?.listMajor}
-                                    listCertificate={certificate?.listCertificate}
-                                    biddingPackage={biddingPackage}
-                                />
+                            <KeyPeopleRequire
+                                id={`edit_contact_bidding_package${_id}`}
+                                handleChange={handleChange}
+                                listCareer={career?.listPosition?.listPosition}
+                                listMajor={major?.listMajor}
+                                listCertificate={certificate?.listCertificate}
+                                biddingPackage={biddingPackage}
+                            />
                             {/* Tab học vấn - kinh nghiệm */}
                             <KeyPeople
                                 id={`edit_key_people_bidding_package${_id}`}

@@ -64,7 +64,7 @@ const SearchKeyEmployee =  lazy(() => import("../modules/human-resource/profile/
 const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
 const Major = lazy(() => import("../modules/human-resource/major/component"))
 // const Major = lazy(() => import("../modules/human-resource/major/component"))
-const BiddingPackagesManagement = lazy(() => import("../modules/human-resource/biddingPackage/biddingPackageManagement/components"))
+const BiddingPackagesManagement = lazy(() => import("../modules/human-resource/bidding-package/biddingPackageManagement/components"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))

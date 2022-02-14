@@ -2250,7 +2250,7 @@ const initHumanResourceData = async () => {
           name: "Bằng tốt nghiệp",
           issuedBy: "Đại học Bách Khoa",
           year: currentYear,
-          field: fields[Math. (Math.random() * 6)]._id,
+          field: fields[Math.floor(Math.random() * 6)]._id,
           major: majors[Math.floor(Math.random() * 12)]._id,
           degreeQualification: Math.floor(Math.random() * 6) + 1,
           degreeType: "good",

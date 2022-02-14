@@ -103,20 +103,6 @@ class SearchEmployeeForCareerPosition extends Component {
 
     /**
      * Function lưu giá trị unit vào state khi thay đổi
-     * @param {*} value : Array id đơn vị
-     */
-    handleUnitChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            organizationalUnits: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị unit vào state khi thay đổi
      * @param {*} value : Array id trình độ
      */
     handleChangeProfessionalSkill = (value) => {
@@ -151,28 +137,28 @@ class SearchEmployeeForCareerPosition extends Component {
      */
 
     handlePosition = (value) => {
-        // let { career } = this.props;
-        // let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
-        // let position = listPosition?.find(e => e._id === value[0]);
+        
         this.setState({ careerPosition: value[0] });
     };
 
-    // handleCareer = (value) => {
-    //     this.setState({ careerInfo: value[0] });
-    // }
-
+    
     /**
      * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
      * @param {*} value : Tháng hết hạn hợp đồng
      */
     handleEndDateOfCertificateChange = (value) => {
-        // if (value) {
-        //     let partMonth = value.split('-');
-        //     value = [partMonth[1], partMonth[0]].join('-');
-        // }
+        
         this.setState({
             ...this.state,
             certificatesEndDate: value
+        });
+    }
+
+    handleStartDateOfBiddingPackage = (value) => {
+        
+        this.setState({
+            ...this.state,
+            biddingPackgaeStartDate: value
         });
     }
 
@@ -221,67 +207,6 @@ class SearchEmployeeForCareerPosition extends Component {
         });
     }
 
-    // import thông tin tìm kiếm
-    clickImport = async () => {
-        await this.setState({
-            importSearch: true
-        })
-        window.$('#modal_import_file_search').modal('show');
-    }
-
-    clickExport = () => {
-        console.log('export data search click');
-    }
-
-    convertDataExport = () => {
-        let datas = [];
-        let { careerPosition, professionalSkill, majors,
-            certificatesCount, certificates, certificatesEndDate,
-            exp, sameExp, field, action } = this.state;
-        let out = {
-            STT: 1,
-            careerPosition: careerPosition,
-            professionalSkill: professionalSkill,
-            majorSearch: majors,
-            certificates: certificates,
-            certificatesCount: certificatesCount,
-            certificatesEndDate: certificatesEndDate,
-            exp: exp,
-            sameExp: sameExp,
-            field: field,
-            package: this.state.package,
-            action: action && action.join(","),
-        }
-        datas = [...datas, out];
-
-        let res = {
-            fileName: "Mẫu thông tin tìm kiếm",
-            dataSheets: [{
-                sheetName: "Sheet1",
-                sheetTitle: 'Mẫu thông tin tìm kiếm',
-                tables: [{
-                    rowHeader: 1,
-                    merges: [],
-                    columns: [
-                        { key: "position", value: "Vị trí công việc" },
-                        { key: "professionalSkill", value: "Trình độ chuyên môn" },
-                        { key: "majorSearch", value: "Chuyên ngành" },
-                        { key: "certificatesType", value: "Loại chứng chỉ" },
-                        { key: "certificatesCount", value: "Tên chứng chỉ" },
-                        { key: "certificatesEndDate", value: "Hiệu lực chứng chỉ" },
-                        { key: "exp", value: "Số năm kinh nghiệm" },
-                        { key: "sameExp", value: "Số năm kinh nghiệm tương đương" },
-                        { key: "field", value: "Lĩnh vực công việc" },
-                        { key: "package", value: "Gói thầu" },
-                        { key: "action", value: "Hoạt động công việc" },
-                    ],
-                    data: datas
-                }]
-            }]
-        }
-        return res;
-    }
-
     updateSearchData = async (data) => {
         let { careerPosition, professionalSkill, majorSearch,
             certificatesCount, certificates, certificatesEndDate,
@@ -302,12 +227,9 @@ class SearchEmployeeForCareerPosition extends Component {
     
     render() {
         console.log('oppend', this.state);
-        const { employeesManager, translate, department, career, major, certificate } = this.props;
+        const { employeesManager, translate, career, major, certificate } = this.props;
 
-        const { showMore, importEmployee, limit, page, currentRow, currentRowView,
-                certificatesEndDate, certificatesType, certificatesCount, 
-                professionalSkill, majors, exp, sameExp, majorID, 
-                field, careerPosition, certificates, action } = this.state; // filterField, filterPosition, filterAction, 
+        const {  importEmployee, limit, page, currentRow, currentRowView, certificatesEndDate, certificatesCount, professionalSkill, majors, exp, sameExp, biddingPackgaeStartDate, careerPosition, certificates, action } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -325,15 +247,16 @@ class SearchEmployeeForCareerPosition extends Component {
         const listCertificate = certificate.listCertificate;
         
         let professionalSkillArr = [
-            { value: "", text: "Chọn trình độ" },
-            { value: "intermediate_degree", text: "Trung cấp" },
-            { value: "colleges", text: "Cao đẳng" },
-            { value: "university", text: "Đại học" },
-            { value: "bachelor", text: "Cử nhân" },
-            { value: "engineer", text: "Kỹ sư" },
-            { value: "master_degree", text: "Thạc sĩ" },
-            { value: "phd", text: "Tiến sĩ" },
-            { value: "unavailable", text: "Không có" },
+            { value: null, text: "Chọn trình độ" },
+            { value: 1, text: "Trình độ phổ thông" },
+            { value: 2, text: "Trung cấp" },
+            { value: 3, text: "Cao đẳng" },
+            { value: 4, text: "Đại học / Cử nhân" },
+            { value: 5, text: "Kỹ sư" },
+            { value: 6, text: "Thạc sĩ" },
+            { value: 7, text: "Tiến sĩ" },
+            { value: 8, text: "Giáo sư" },
+            { value: 0, text: "Không có" },
         ];
 
         // Filter danh sách
@@ -438,6 +361,16 @@ class SearchEmployeeForCareerPosition extends Component {
                             <label className="form-control-static">Số năm KN công việc tương đương</label>
                             <input type="number" className="form-control" value={sameExp} step={0.1} name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
                         </div>
+                        {/* Thời gian bắt đầu gói thầu */}
+                        <div className="form-group col-md-4">
+                            <label className="form-control-static">Thới gian bắt đầu gói thầu</label>
+                            <DatePicker
+                                id="month-endDate-certificate"
+                                // dateFormat="month-year"
+                                value={biddingPackgaeStartDate}
+                                onChange={this.handleStartDateOfBiddingPackage}
+                            />
+                        </div>
                     </div>
                     
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -499,7 +432,7 @@ class SearchEmployeeForCareerPosition extends Component {
                                         </td>
                                         <td>
                                             {x.degrees.length > 0 ? x.degrees?.map((e, key) => {
-                                                return <li key={key}> {this.formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {e.degreeQualification}</li>
+                                                return <li key={key}> {this.formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {professionalSkillArr.filter(item => item.value == e.degreeQualification).name }</li>
                                             }) : <p>Chưa có dữ liệu</p>}
                                         </td>
                                         <td>

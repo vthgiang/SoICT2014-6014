@@ -260,11 +260,7 @@ const BiddingPackageManagement = (props) => {
                     <div className="col-lg-12 col-md-12 col-sm-12">
                         {/* Button thêm mới nhân viên */}
                         <div className="dropdown">
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title="Thêm gói thầu" >Thêm gói thầu</button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={createBiddingPackage}>Thêm gói thầu</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={_importBiddingPackage}>Import</a></li>
-                            </ul>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title="Thêm gói thầu" onClick={createBiddingPackage} >Thêm gói thầu</button>
                         </div>
                         {/* <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button> */}
                     </div>

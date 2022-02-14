@@ -67,6 +67,18 @@ function CertificateTab(props) {
         props.downloadFile(path, fileName)
     }
 
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
     // console.log('listFields', listFields)
 
     return (
@@ -83,6 +95,7 @@ function CertificateTab(props) {
                                 <th>{translate('human_resource.profile.career_fields')}</th>
                                 <th>Chuyên ngành</th>
                                 <th>{translate('human_resource.profile.graduation_year')}</th>
+                                <th>Trình độ chuyên môn</th>
                                 <th>{translate('human_resource.profile.ranking_learning')}</th>
                                 <th>{translate('human_resource.profile.attached_files')}</th>
                             </tr>
@@ -100,13 +113,32 @@ function CertificateTab(props) {
                                             field = 'DELETED'
                                         }
                                     }
+                                    let major = '';
+                                    if (x.major) {
+                                        major = listMajor.find(y => y._id.toString() === x.major.toString());
+                                        if (major) {
+                                            major = major.name
+                                        } else {
+                                            major = 'DELETED'
+                                        }
+                                    }
+                                    let degreeQualification = '';
+                                    if (x.degreeQualification) {
+                                        degreeQualification = professionalSkillArr.find(y => y.value === x.degreeQualification);
+                                        if (degreeQualification) {
+                                            degreeQualification = degreeQualification.text
+                                        } else {
+                                            degreeQualification = 'DELETED'
+                                        }
+                                    }
                                     return (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{field}</td>
-                                            <td>{x.major?.name}</td>
+                                            <td>{major}</td>
                                             <td>{x.year ? dayjs(x.year).format("DD-MM-YYYY") : null}</td>
+                                            <td>{degreeQualification}</td>
                                             <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
                                             <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
@@ -141,9 +173,19 @@ function CertificateTab(props) {
                         <tbody>
                             {
                                 certificates && certificates.length !== 0 &&
-                                certificates.map((x, index) => (
+                                certificates.map((x, index) => {
+                                    let certificate = '';
+                                    if (x.certificate) {
+                                        certificate = listCertificate.find(y => y._id.toString() === x.certificate.toString());
+                                        if (certificate) {
+                                            certificate = certificate.name
+                                        } else {
+                                            certificate = 'DELETED'
+                                        }
+                                    }
+                                    return (
                                     <tr key={index}>
-                                        <td>{x.certificate?.name}</td>
+                                        <td>{certificate}</td>
                                         <td>{x.issuedBy}</td>
                                         <td>{formatDate(x.startDate)}</td>
                                         <td>{formatDate(x.endDate)}</td>
@@ -155,7 +197,7 @@ function CertificateTab(props) {
                                             </a>
                                         }</td>
                                     </tr>
-                                ))
+                                )})
                             }
                         </tbody>
                     </table>

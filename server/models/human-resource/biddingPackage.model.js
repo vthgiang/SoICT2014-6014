@@ -23,11 +23,15 @@ const BiddingPackageSchema = new Schema({
         type: String
     },
     status: {
-        type: Number, // 1: hoạt động, 0: ngưng hoạt động, 2: hoàn thành
+        type: Number, // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: trúng thầu, 4: không trúng thầu, 5:hoàn thành
         default: 1
     },
     keyPersonnelRequires: [{
         careerPosition: {
+            type: Schema.Types.ObjectId,
+            ref: "CareerPosition"
+        },
+        sameCareerPosition: {
             type: Schema.Types.ObjectId,
             ref: "CareerPosition"
         },
@@ -37,7 +41,7 @@ const BiddingPackageSchema = new Schema({
         }],
         professionalSkill: {
           type: Number,
-          Enum: [1, 2, 3, 4, 5, 6, 7], // 1: trung cấp, 2: cao đẳng, 3: cử nhân, 4: kĩ sư, 5: thạc sĩ, 6: tiến sĩ, 7: giáo sư
+          Enum: [0, 1, 2, 3, 4, 5, 6, 7, 8], // 0: không có, 1: trình độ phổ thông, 2: trung cấp, 3: cao đẳng, 4: cử nhân/đại học, 5: kĩ sư, 6: thạc sĩ, 7: tiến sĩ, 8: giáo sư
         },
         count: Number,
 

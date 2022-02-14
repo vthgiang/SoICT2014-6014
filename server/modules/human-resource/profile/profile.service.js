@@ -160,8 +160,6 @@ exports.getEmployeeProfile = async (portal, email) => {
       { path: "career.field" },
       { path: "career.position" },
       { path: "career.action" },
-      { path: "certificates.certificate" },
-      { path: "degrees.major" },
     ]);
 
   if (employees.length === 0) {
@@ -2762,16 +2760,7 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
   }
 
   if (params.sameExp) {
-    // Đổi sameExp về miliseconds
-
-    // let now = new Date();
-    // let day = now.getDate();
-    // let month = now.getMonth();
-    // let yearOfNow = now.getFullYear();
-    // let prevYear = yearOfNow - params.sameExp;
-    // let prevExpTime = new Date(month, day - 1, yearOfExp).getTime();
-
-    let expInMiliseconds = params.sameExp * 86400000 * 365;
+        let expInMiliseconds = params.sameExp * 86400000 * 365;
 
     keySearch = [
       ...keySearch,
@@ -2967,7 +2956,6 @@ const findEmployee = async (keyPeople, otherPeople, result, resultIndex, number,
       }
 
     }
-    
     if (flat == 0 && index == 0) {
       return {
         result: [],
@@ -2975,8 +2963,7 @@ const findEmployee = async (keyPeople, otherPeople, result, resultIndex, number,
       }
     }
   }
-
-  else  {
+  else  { // nếu chưa 
     result[index] = [];
     resultIndex[index] = [];
     let a = keyPeople[index];

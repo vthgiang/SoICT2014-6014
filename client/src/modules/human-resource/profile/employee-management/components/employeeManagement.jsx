@@ -58,6 +58,8 @@ const EmployeeManagement = (props) => {
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
         props.getListMajor({ name: '', page: 1, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
+        props.getListCertificate({ name: '', page: 1, limit: 1000 });
         props.getDepartment();
     }, [])
 
@@ -132,7 +134,10 @@ const EmployeeManagement = (props) => {
                 currentRow: value
             }
         });
-        window.$(`#modal-edit-employee${value._id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modal-edit-employee${value._id}`).modal('show');
+        }, 500);
+        
     }
 
     /**
@@ -1238,14 +1243,12 @@ function mapState(state) {
 
 const actionCreators = {
     getListFields: FieldsActions.getListFields,
-    getListMajor: MajorActions.getListMajor,
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
-    getListCareerAction: CareerReduxAction.getListCareerAction,
-    getListCareerField: CareerReduxAction.getListCareerField,
+    getListMajor: MajorActions.getListMajor,
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
-    getListCertification: CertificateActions.getListCertificate
+    getListCertificate: CertificateActions.getListCertificate
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

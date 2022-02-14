@@ -1,3 +1,4 @@
+import { random } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -268,6 +269,13 @@ function KeyPeopleRequire(props) {
                 list?.map((item, listIndex) => {
                     return (
                         <div key={listIndex} className="box-body" style={{ border: '1px solid #ccc', marginBottom: '10px' }}>
+                            <div style={{width: '100%', height: '10px', position: 'relative'}}>
+
+                                <button className='pull-right btn btn-danger' style={{fontWeight: 700}} onClick={() => {
+                                    const newList = list.splice(listIndex, 1)
+                                    setList(list.filter(item => item != newList[0]))
+                                }}>–</button>
+                            </div>
                             <div className="row" style={{ marginTop: '15px' }}>
                                 <div className="form-group col-md-6">
                                     <label >Vị trí công việc</label>
@@ -362,7 +370,7 @@ function KeyPeopleRequire(props) {
                 })
             }
             
-            <button onClick={() => {
+            <button className='btn btn-success' onClick={() => {
                 const newList = [...list, {
                     careerPosition: '',
                     majors: [],

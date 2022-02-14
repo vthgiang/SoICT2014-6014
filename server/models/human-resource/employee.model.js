@@ -249,7 +249,7 @@ const EmployeeSchema = new Schema(
     },
     degrees: [
       {
-        // Bằng cấp (join từ bảng cetificate)
+        // Bằng cấp tốt nghiệp
         name: String,
         abbreviations: String,
         code: String,
@@ -269,7 +269,7 @@ const EmployeeSchema = new Schema(
         },
         degreeQualification: {
           type: Number,
-          Enum: [1, 2, 3, 4, 5, 6, 7], // 1: trung cấp, 2: cao đẳng, 3: cử nhân, 4: kĩ sư, 5: thạc sĩ, 6: tiến sĩ, 7: giáo sư
+          Enum: [0, 1, 2, 3, 4, 5, 6, 7, 8], // 0: không có, 1: trình độ phổ thông, 2: trung cấp, 3: cao đẳng, 4: cử nhân/đại học, 5: kĩ sư, 6: thạc sĩ, 7: tiến sĩ, 8: giáo sư
         },
         field: {
           type: Schema.Types.ObjectId,
@@ -290,9 +290,6 @@ const EmployeeSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: "Certificate",
         },
-        name: String,
-        abbreviations: String,
-        code: String,
         issuedBy: String,
         startDate: Date,
         endDate: Date,
@@ -323,6 +320,19 @@ const EmployeeSchema = new Schema(
         jobDescription: String,
       },
     ],
+    packageStatus: {
+      // active - Chưa nhận dự án nào, waiting - Đã dự kiến vào dự án khác, working: Đã tham gia dự án
+      type: String,
+      default: "active",
+      enum: [
+        "active",
+        "waiting",
+        "working"
+      ],
+    },
+    packageEndDate: {
+      type: Date,
+    },
     contractEndDate: {
       type: Date,
     },
@@ -413,6 +423,9 @@ const EmployeeSchema = new Schema(
         biddingPackage: {
           type: Schema.Types.ObjectId,
           ref: "BiddingPackage",
+        },
+        biddingPackageName: {
+          type: String,
         },
         company: {
           type: String,
