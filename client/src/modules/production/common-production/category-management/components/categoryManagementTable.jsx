@@ -92,6 +92,19 @@ function CategoryManagementTable(props) {
         window.$('#modal-detail-category').modal('show');
     }
 
+    const changeIdToName = (parentId) => {
+        let name = "Danh mục cấp 1";
+        if (parentId){
+            listPaginate.forEach((item) => {
+                if (item._id === parentId) {
+                    name = item.name;
+                }
+            })
+            return name;
+        }
+        return name;
+    }
+
     const { categories, translate } = props;
     const { listPaginate, totalPages, page, categoryToTree } = categories;
     // const { tableId } = state;
@@ -105,7 +118,7 @@ function CategoryManagementTable(props) {
                     columns={[
                         { title: translate('manage_warehouse.category_management.code'), value: 'code' },
                         { title: translate('manage_warehouse.category_management.name'), value: 'name' },
-                        { title: translate('manage_warehouse.category_management.type'), value: 'type' }
+                        { title: translate('manage_warehouse.category_management.type'), value: 'parent' }
                     ]}
                     valueOption={{ nonSelectedText: translate('manage_warehouse.category_management.choose_type'), allSelectedText: translate('manage_warehouse.category_management.all_type') }}
                     typeColumns={[
@@ -126,6 +139,7 @@ function CategoryManagementTable(props) {
                         code={state.currentRow.code}
                         name={state.currentRow.name}
                         type={state.currentRow.type}
+                        parent={state.currentRow.parent}
                         description={state.currentRow.description}
                     />
                 }
@@ -137,6 +151,7 @@ function CategoryManagementTable(props) {
                         code={state.currentRow.code}
                         name={state.currentRow.name}
                         type={state.currentRow.type}
+                        parent={state.currentRow.parent}
                         description={state.currentRow.description}
                     />
                 }
@@ -171,7 +186,7 @@ function CategoryManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{x.code}</td>
                                     <td>{x.name}</td>
-                                    <td>{translate(`manage_warehouse.category_management.${x.type}`)}</td>
+                                    <td>{changeIdToName(x.parent)}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a className="text-green" onClick={() => handleShowDetailInfo(x)}><i className="material-icons">visibility</i></a>

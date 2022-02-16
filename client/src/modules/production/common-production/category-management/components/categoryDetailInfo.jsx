@@ -19,6 +19,7 @@ function CategoryDetailForm(props) {
                 code: props.code,
                 name: props.name,
                 type: props.type,
+                parent: props.parent,
                 goods: props.goods,
                 description: props.description,
                 errorOnCode: undefined,
@@ -28,8 +29,9 @@ function CategoryDetailForm(props) {
     }, [props.categoryId])
 
     const { translate, categories, goods } = props;
-    const { code, name, type, description } = state;
+    const { code, name, type, description, parent } = state;
     const { listGoodsByCategory } = goods;
+    console.log(state);
     return (
         <React.Fragment>
 
@@ -55,7 +57,7 @@ function CategoryDetailForm(props) {
                     </div>
                     <div className="form-group">
                         <strong>{translate('manage_warehouse.category_management.type')}:&emsp; </strong>
-                        {translate(`manage_warehouse.category_management.${type}`)}
+                        {parent}
                     </div>
                     <div className="form-group">
                         <strong>{translate('manage_warehouse.category_management.good')}:&emsp; </strong>

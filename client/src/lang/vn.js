@@ -4598,7 +4598,6 @@ export default {
                 edit_faile: "Chỉnh sửa thất bại",
                 name: "Tên danh mục",
                 code: "Mã danh mục",
-                parent:"nghia",
                 type: "Danh mục cha",
                 good: "Hàng hóa",
                 address: "Địa chỉ",

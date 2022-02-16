@@ -108,7 +108,7 @@ function CategoryManagementTree(props) {
             </div>
 
             {
-                deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={deleteCategory}>{translate('general.delete')}</button>
+                deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' },{marginTop: 15}} onClick={deleteCategory}>{translate('general.delete')}</button>
             }
             <CategoryCreateTree categoryParent={state.categoryParent[0]} />
             <div className="row">
