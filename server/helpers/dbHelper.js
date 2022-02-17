@@ -81,6 +81,7 @@ exports.restore = async (options) => {
                     new: `xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\private\\*  ${SERVER_DIR}\\upload\\private\\${options.db} /E/H/C/I && xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\avatars\\*  ${SERVER_DIR}\\upload\\avatars\\${options.db} /E/H/C/I`
                 }
             } else if (checkOS() === 2) {
+                console.log('new cmd: ', `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`)
                 return {
                     delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
                     new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
@@ -92,7 +93,7 @@ exports.restore = async (options) => {
             if (checkOS() === 1) {
                 return {
                     delete: `rmdir /s /q ${SERVER_DIR}\\upload`,
-                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR} /E/H/C/I`
+                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR}\\upload /E/H/C/I`
                 }
             } else if (checkOS() === 2) {
                 return {
