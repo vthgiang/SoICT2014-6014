@@ -68,8 +68,6 @@ const EmployeeDetailForm = (props) => {
 
     const { employeesInfo, translate, certificate, major, career } = props;
 
-    console.log("Dataaaaa", certificate, major, career)
-
     let { _id, employees, annualLeaves, commendations, disciplines, courses, roles = [], houseHold } = state;
     return (
         <React.Fragment>

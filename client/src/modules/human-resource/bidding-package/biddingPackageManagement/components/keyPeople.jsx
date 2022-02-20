@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DatePicker, SelectBox } from '../../../../../common-components';
+import { ConfirmNotification, DataTableSetting, DatePicker, SelectBox } from '../../../../../common-components';
 
 function KeyPeople(props) {
     const [state, setState] = useState({
@@ -22,7 +22,8 @@ function KeyPeople(props) {
         }
     }])
     
-    const { translate, listMajor, listCareer, listCertificate } = props;
+    const { translate, listMajor, listCareer, listCertificate, keyPersonnelRequires } = props;
+    console.log("keyPersonnelRequires", keyPersonnelRequires)
     const { id,  biddingPackage, keyPeople } = state;
 
     useEffect(() => {
@@ -33,8 +34,6 @@ function KeyPeople(props) {
                 }
         })
 
-        // console.log("list", list)
-        // console.log("state", state)
     }, [list])
 
     useEffect(() => {
@@ -315,7 +314,14 @@ function KeyPeople(props) {
                                             Vị trí công việc: { `${listCareer?.filter(x => x._id == item.careerPosition)[0]?.name}` }</p>
                                         </div>
                                         <div className="box-body collapse" data-toggle="collapse" id={`employee-table-${index}`}>
-
+                                            <div className="col-lg-12 col-md-12 col-sm-12" style={{marginTop: "10px", padding: '10px'}}>
+                                                {/* Button thêm mới nhân viên */}
+                                                <div className="dropdown">
+                                                    <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title="Thêm gói thầu" >Thêm nhân viên</button>
+                                                </div>
+                                                {/* <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button> */}
+                                            </div>
+                                            
                                             <table key={`table-${index}`} className="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
@@ -324,9 +330,8 @@ function KeyPeople(props) {
                                                         <th>Trình độ chuyên môn</th>
                                                         <th>Chuyên ngành</th>
                                                         <th>Chứng chỉ</th>
-                                                        <th>Bằng cấp</th>
                                                         <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
-                                                            <DataTableSetting
+                                                            {/* <DataTableSetting
                                                                 tableId="employee-table"
                                                                 columnArr={[
                                                                     translate('human_resource.staff_name'),
@@ -338,41 +343,77 @@ function KeyPeople(props) {
                                                                 ]}
                                                                 limit={500}
                                                                 hideColumnOption={true}
-                                                            />
+                                                            /> */}
                                                         </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {item.employees && item.employees.length !== 0 &&
-                                                        item.employees.map((x, index) => (
-                                                            <tr key={index}>
-                                                                <td>{x.fullName}</td>
-                                                                <td>
-                                                                    {x.careerPositions?.length > 0 ? (x.careerPositions?.map((e, key) => {
-                                                                        return <li key={key}> {e?.careerPosition?.name} {e?.startDate ? "- Ngày bắt đầu: "+formatDate(e?.startDate) : ""} {e?.endDate ? "- Ngày kết thúc: "+formatDate(e?.endDate) : ""} </li>
-                                                                    })) : <p>Chưa có dữ liệu</p>
+                                                        item.employees.map((x, index) => {
+                                                            let professionalSkill = 0
+                                                            if (x.degrees) {
+                                                                for(let y of x.degrees) {
+                                                                    if (state.keyPeopleRequires?.[index]?.majors && y.majors) {
+                                                                        if (state.keyPeopleRequires?.[index]?.majors?.includes(y.majors) && y.degreeQualification > professionalSkill)
+                                                                            professionalSkill = y.degreeQualification
+                                                                    } else if (y.major) {
+                                                                        if (y.degreeQualification > professionalSkill) professionalSkill = y.degreeQualification
                                                                     }
-                                                                </td>
-                                                                <td>{x.professionalSkill}</td>
-                                                                <td>{x.degrees?.length > 0 ? (x.degrees?.map((e, key) => {
-                                                                    return <li key={key}> {e?.major?.name ? e?.major?.name : ""} </li>
-                                                                })) : <p>Chưa có dữ liệu</p>}
-                                                                </td>
-                                                                <td>
-                                                                    {x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
-                                                                        return <li key={key}> {e.certificate?.name}{e.certificate?.abbreviation ? "("+e.certificate?.abbreviation+")" : ""} - {e?.issuedBy} - hiệu lực: {formatDate(e?.endDate)} </li>
-                                                                    }) : <p>Chưa có dữ liệu</p>}
-                                                                </td>
-                                                                <td>
-                                                                    {x.degrees.length > 0 ? x.degrees?.map((e, key) => {
-                                                                        return <li key={key}> {formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {e.degreeQualification}</li>
-                                                                    }) : <p>Chưa có dữ liệu</p>}
-                                                                </td>
-                                                                <td>
-                                                                    <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
+                                                                }
+                                                            }
+
+                                                            professionalSkill = professionalSkillArr.find(item => item.value == professionalSkill).text ? professionalSkillArr.find(item => item.value == professionalSkill).text : "Không có"
+                                                            return (
+                                                                <tr key={index}>
+                                                                    <td>{x.fullName}</td>
+                                                                    <td>
+                                                                        {x.careerPositions?.length > 0 ? (x.careerPositions?.map((e, key) => {
+                                                                            return <li key={key}> {listCareer?.filter(x => x._id == item.careerPosition)[0]?.name} {e?.startDate ? "- Ngày bắt đầu: "+formatDate(e?.startDate) : ""} {e?.endDate ? "- Ngày kết thúc: "+formatDate(e?.endDate) : ""} </li>
+                                                                        })) : <p>Chưa có dữ liệu</p>
+                                                                        }
+                                                                    </td>
+                                                                    <td>{professionalSkill}</td>
+                                                                    <td>
+                                                                        {x.degrees.length > 0 ? x.degrees?.map((e, key) => {
+                                                                            let degreeQualification = ''
+                                                                            if (e.degreeQualification) {
+
+                                                                                degreeQualification = professionalSkillArr.find(item => item.value == e.degreeQualification).text
+                                                                            } else {
+                                                                                degreeQualification = "Không có"
+                                                                            }
+                                                                            let degreeMajor = ''
+                                                                            if (e.major) {
+
+                                                                                degreeMajor = listMajor.find(item => item._id == e.major).name
+                                                                            } else {
+                                                                                degreeMajor = "Không có"
+                                                                            }
+                                                                            if (!degreeMajor) return
+                                                                            else
+                                                                            return <li key={key}> {degreeMajor} ({degreeQualification} - {formatDate(e?.year)})</li>
+                                                                        }) : <p>Chưa có dữ liệu</p>}
+                                                                    </td>
+                                                                    <td>
+                                                                        {x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
+                                                                            let certificate = listCertificate.find(x => x._id == e.certificate)
+                                                                            return <li key={key}> {certificate?.name}{certificate?.abbreviation ? "("+e.certificate?.abbreviation+")" : ""} - {e?.issuedBy} - hiệu lực: {formatDate(e?.endDate)} </li>
+                                                                        }) : <p>Chưa có dữ liệu</p>}
+                                                                    </td>
+                                                                    <td>
+                                                                        <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
+                                                                        <ConfirmNotification
+                                                                            icon="question"
+                                                                            title="Xóa nhân viên"
+                                                                            name="delete"
+                                                                            className="text-red"
+                                                                            content={`<h4>Delete ${x.fullName} ?</h4>`}
+                                                                            func={() => props.deleteBiddingPackage(x._id)}
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                        )}
                                                 </tbody>
 
                                             </table>

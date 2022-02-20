@@ -23,10 +23,19 @@ class CreateForm extends Component {
 
     handleAbbreviation = (e) => {
         const {value} = e.target;
-        let msg;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateCode(translate, value, 1, 255);;
         this.setState({
             abbreviation: value,
-            codeError: msg,
+            codeError: message,
+        });
+    }
+
+    handleDescription = (e) => {
+        const {value} = e.target;
+        const { translate } = this.props;
+        this.setState({
+            description: value
         });
     }
 
@@ -35,9 +44,10 @@ class CreateForm extends Component {
     };
 
     isValidateForm = () => {
-        let {name} = this.state;
+        let {name, abbreviation} = this.state;
         let {translate} = this.props;
         if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        if(!ValidationHelper.validateCode(translate, abbreviation, 1, 255).status) return false;
         return true;
     }
 
@@ -60,7 +70,7 @@ class CreateForm extends Component {
                 <DialogModal
                     modalID="modal-create-certificate"
                     formID="form-create-certificate"
-                    title="Thêm bằng cấp - chứng chỉ"
+                    title="Thêm chứng chỉ"
                     disableSubmit={!this.isValidateForm()}
                     func={this.save}
                 >
@@ -73,12 +83,16 @@ class CreateForm extends Component {
                         <div className={`form-group ${!codeError ? "" : "has-error"}`}>
                             <label>Tên viết tắt<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleAbbreviation} />
-                            <ErrorLabel content={nameError} />
+                            <ErrorLabel content={codeError} />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group`}>
+                            <label>Mô tả</label>
+                            <input type="text" className="form-control" onChange={this.handleDescription} />
+                        </div>
+                        {/* <div className="form-group">
                             <label>Chuyên ngành
                             </label>
-                            {/* <TreeSelect data={list} value={parent} handleChange={this.handleMajor} mode="radioSelect" /> */}
+                            <TreeSelect data={list} value={parent} handleChange={this.handleMajor} mode="radioSelect" />
                             <SelectBox
                                 id={`field-certificate-add`}
                                 lassName="form-control select2"
@@ -91,7 +105,7 @@ class CreateForm extends Component {
                                 value={majors}
                                 multiple={true}
                             />
-                        </div>
+                        </div> */}
                         
                     </form>
                 </DialogModal>

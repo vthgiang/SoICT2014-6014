@@ -298,9 +298,11 @@ function GeneralTab(props) {
                                 style={{ width: "100%" }}
                                 value={status}
                                 items={[
-                                    { value: 1, text: 'Hoạt động' },
-                                    { value: 0, text: 'Đã hủy' },
-                                    { value: 2, text: 'Hoàn thành' },
+                                    { value: '0', text: 'Đã đóng thầu' },
+                                    { value: '1', text: 'Hoạt động' },
+                                    { value: '2', text: 'Chờ kết quả dự thầu' },
+                                    { value: '3', text: 'Đang thực hiện' },
+                                    { value: '4', text: 'Hoàn thành' },
                                 ]}
                                 onChange={handleChangeStatus}
                             />

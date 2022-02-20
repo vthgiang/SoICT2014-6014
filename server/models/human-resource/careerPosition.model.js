@@ -5,10 +5,6 @@ const Schema = mongoose.Schema;
 const CareerPositionSchema = new Schema({
     name: String,
     code: String, // lưu lại trong db của employees hoặc hợp đồng
-    
-    otherNames: {
-        type: String,
-    },
     description: String  
 }, {
     timestamps: true,

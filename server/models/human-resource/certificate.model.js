@@ -9,10 +9,9 @@ const CertificateSchema = new Schema({
     abbreviation: { // Tên viết tắt
         type: String,
     },
-    majors: [{ //chuyên ngành
-        type: Schema.Types.ObjectId,
-        ref: "Major"
-    }]
+    description: {
+        type: String,
+    }
 }, {
     timestamps: true,
 });

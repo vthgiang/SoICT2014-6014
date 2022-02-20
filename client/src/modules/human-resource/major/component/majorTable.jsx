@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip, ConfirmNotification } from '../../../../common-components';
 
 import { MajorActions } from '../redux/actions';
 import EditForm from './editForm';
@@ -170,7 +170,8 @@ function MajorTable(props) {
                     <tr>
                         <th>Tên</th>
                         <th>Code</th>
-                        <th>Chuyên ngành cha</th>
+                        {/* <th>Chuyên ngành cha</th> */}
+                        <th>Mô tả</th>
                         <th style={{ width: '120px', textAlign: 'center' }}>
                             {translate('table.action')}
                             <DataTableSetting
@@ -192,17 +193,21 @@ function MajorTable(props) {
                             <tr key={`majorList${major._id}`} style={majorDuplicateName && majorDuplicateName.includes(major.name.trim().toLowerCase().replaceAll(" ", "")) ? { color: "orangered", fontWeight: "bold" } : { color: "" }}>
                                 <td> {major.name} </td>
                                 <td> {major.code} </td>
-                                <td><ToolTip dataTooltip={major?.parents?.length ? major.parents.map(parent => parent ? parent.name : "") : []} /></td>
+                                {/* <td><ToolTip dataTooltip={major?.parents?.length ? major.parents.map(parent => parent ? parent.name : "") : []} /></td> */}
+                                <td> {major.description} </td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" href={`#${major._id}`} onClick={() => handleEdit(major)}><i className="material-icons">edit</i></a>
-                                    <a className="delete" href={`#${major._id}`} onClick={() => handleDelete(major)}><i className="material-icons">delete</i></a>
-                                    {/* {
-                                        <DeleteNotification
-                                            content={translate('human_resource.major.delete')}
-                                            data={{ id: major._id, info: major.name }}
-                                            func={props.destroy}
+                                    {/* <a className="delete" href={`#${major._id}`} onClick={() => handleDelete(major)}><i className="material-icons">delete</i></a> */}
+                                    {
+                                        <ConfirmNotification
+                                            icon="question"
+                                            title="Xóa chuyên ngành"
+                                            name="delete"
+                                            className="text-red"
+                                            content={`<h4>Delete ${major.name + " - " + major.code}</h4>`}
+                                            func={() => props.deleteMajor(major._id)}
                                         />
-                                    } */}
+                                    }
                                 </td>
                             </tr>
                         )

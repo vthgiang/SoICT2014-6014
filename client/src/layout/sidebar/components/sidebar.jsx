@@ -389,11 +389,11 @@ class SideBar extends Component {
                                         { name: "menu.manage_work_plan", icon: "fa fa-calendar", path: "/hr-manage-work-plan" },
                                         { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
                                         // nhân sự gói thầu
-                                        { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
-                                        { name: "menu.list_bidding_package", icon: "fa fa-calendar", path: "/hr-list-bidding-package" },
-                                        { name: "menu.list_certificate", icon: "fa fa-calendar", path: "/hr-list-certificate" },
-                                        { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
-                                        { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
+                                        { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/hr-search-for-package" },
+                                        { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/hr-list-bidding-package" },
+                                        { name: "menu.list_certificate", icon: "fa fa-certificate", path: "/hr-list-certificate" },
+                                        { name: "menu.list_major", icon: "fa fa-briefcase", path: "/hr-list-major" },
+                                        { name: "menu.list_career_position", icon: "fa fa-handshake-o", path: "/hr-list-career-position" },
                                     ],
                                 }}
                             />

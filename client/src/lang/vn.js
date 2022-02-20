@@ -1822,6 +1822,16 @@ export default {
 
             // Quản lý thông tin nhân viên
             profile: {
+                // Quản lý gói thầu
+                bidding_package: {
+                    get_bidding_package_success: "Lấy danh sách gói thầu thành công",
+                    get_bidding_package_failure: "Lấy danh sách gói thầu thất bại",
+                    create_bidding_package_success: "Tạo gói thầu thành công",
+                    create_bidding_package_failure: "Tạo gói thầu thất bại",
+                    delete_bidding_package_success: "Xóa gói thầu thành công",
+                    delete_bidding_package_failure: "Xóa gói thầu thất bại",
+                },
+
                 // Nhóm dùng chung cho chức năng quản lý tông tin nhân viên
                 tab_name: {
                     menu_basic_infor: "Thông tin cơ bản",
@@ -2197,6 +2207,7 @@ export default {
                     update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
+                    
                     get_list_employee_success:
                         "Lấy danh sách nhân viên thành công",
                     get_list_employee_faile: "Lấy danh sách nhân viên thất bại",
@@ -2259,11 +2270,15 @@ export default {
                     },
                     status: {
                         1: "Hoạt động",
-                        0: "Hủy",
-                        2: "Hoàn thành"
+                        0: "Đã đóng thầu",
+                        2: "Chờ kết quả dự thầu",
+                        3: "Đang thực hiện",
+                        4: "Hoàn thành"
                     },
                 }
             },
+
+            
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {

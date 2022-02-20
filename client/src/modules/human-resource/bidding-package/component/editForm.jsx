@@ -91,7 +91,6 @@ class EditForm extends Component {
         const { majorId, name, code, majorParent } = this.state;
         const { list } = documents.administration.archives;
 
-        console.log("aaaaaaaaaaaaaa", this.state)
         this.props.editCareerPosition(this.state);
     }
 

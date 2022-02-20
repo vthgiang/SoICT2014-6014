@@ -1,5 +1,6 @@
 const {
     BiddingPackage,
+    Employee,
 } = require('../../../models');
 
 const {
@@ -99,13 +100,31 @@ exports.editBiddingPackage = async (portal, data, params) => {
 
     if (data?.addEmployeeForPackage) {
         await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
-        {
-            $set: {
-                keyPeople: data?.keyPeople,
-            },
-        }, { $new: true }
-    )
+            {
+                $set: {
+                    keyPeople: data?.keyPeople,
+                    status: 2,
+                },
+            }, { $new: true }
+        )
 
+        const biddingPackage =  await BiddingPackage(connect(DB_CONNECTION, portal)).find({ _id: params.id, endDate: { "$gte": new Date() }, status: { $id: [1, 2, 3]} })
+        if (biddingPackage) {
+            if (biddingPackage[0].keyPeople) {
+                for (let position of biddingPackage[0].keyPeople ) {
+                    for (let employee of position.employees) {
+                        await Employee(connect(DB_CONNECTION, portal)).updateOne({_id: employee}, 
+                            { 
+                                $set: {
+                                    biddingPackagePersonalStatus: 2,
+                                    packageEndDate: biddingPackage.endDate
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
     } 
     else {
         await BiddingPackage(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
@@ -115,7 +134,7 @@ exports.editBiddingPackage = async (portal, data, params) => {
                     code: data.code,
                     startDate: data.startDate,
                     endDate: data.endDate,
-                    status: data.status ? data.status : 1,
+                    status: data.status ? Number(data.status) : 1,
                     type: data.type ? data.type : 1,
                     description: data.description,
                     keyPersonnelRequires: data.keyPersonnelRequires,
@@ -127,6 +146,27 @@ exports.editBiddingPackage = async (portal, data, params) => {
                 },
             }, { $new: true }
         )
+        const biddingPackage =  await BiddingPackage(connect(DB_CONNECTION, portal)).find({ _id: params.id, status: { $in: [2, 3]}, endDate: { "$gte": new Date() } })
+        console.log("biddingPackage", biddingPackage)
+        if (biddingPackage.length) {
+            let status = 1;
+            if (biddingPackage[0].status === 2 || biddingPackage[0].status === 1 ) status = 2;
+            else if (biddingPackage === 3) status = 3;
+            if (biddingPackage[0].keyPeople) {
+                for (let position of biddingPackage[0].keyPeople ) {
+                    for (let employee of position.employees) {
+                        await Employee(connect(DB_CONNECTION, portal)).updateOne({_id: employee}, 
+                            { 
+                                $set: {
+                                    biddingPackagePersonalStatus: status,
+                                    packageEndDate: biddingPackage.endDate
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
     }
 
     return await this.searchBiddingPackage(portal, {});
@@ -149,4 +189,14 @@ exports.deleteBiddingPackage = async (portal, id) => {
         totalList,
         listBiddingPackages
     }
+}
+
+exports.autoUpdateEmployeeBiddingStatus = async (portal) => {
+    await await Employee(connect(DB_CONNECTION, portal)).updateMany({ packageEndDate: { "$lt": new Date() }}, 
+        { 
+            $set: {
+                biddingPackagePersonalStatus: 1
+            }
+        }
+    )
 }

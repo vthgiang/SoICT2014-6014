@@ -1703,6 +1703,16 @@ export default {
 
             // Quản lý thông tin nhân viên
             profile: {
+
+                // Quản lý gói thầu
+                bidding_package: {
+                    get_bidding_package_success: "Get list bidding packages success",
+                    get_bidding_package_failure: "Get list bidding packages fail",
+                    create_bidding_package_success: "Create bidding package success",
+                    create_bidding_package_failure: "Create bidding package fail",
+                    delete_bidding_package_success: "Delete bidding package success",
+                    delete_bidding_package_failure: "Delete bidding package fail",
+                },
                 // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
                 tab_name: {
                     menu_basic_infor: "Basic information",
@@ -2130,10 +2140,14 @@ export default {
                     status: {
                         1: "Active",
                         0: "Inactive",
-                        2: "Finish"
-                    },
+                        2: "Waiting",
+                        3: "Working",
+                        4: "Finish"
+                    }
                 }
             },
+
+            
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {

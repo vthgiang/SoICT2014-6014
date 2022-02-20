@@ -96,8 +96,16 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            listId = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company);
+            let listId = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company);
 
+            
+
+            if (req.query.listPeople) {
+                let listPeople = req.query.listPeople;
+                listId = listId.filter(item => !listPeople.includes(item))
+            }
+            
+            console.log("asssssssssss", listId)
             data = await EmployeeService.getEmployeeInforByListId(req.portal, listId, req.user.company._id, params)
         } else {
             let params = {
@@ -492,7 +500,7 @@ exports.searchEmployeeForPackage = async (req, res) => {
 }
 
 
-exports.getEmployeesByPackage = async (req, res) => {
+exports.getEmployeesInCareerPosition = async (req, res) => {
     try {
         let data;
         data = await EmployeeService.getEmployeeByPackageId(req.portal, params.packageId? params.packageId : '1' , req.user.company._id);

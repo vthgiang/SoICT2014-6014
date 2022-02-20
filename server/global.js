@@ -128,5 +128,9 @@ module.exports = async (server) => {
         "/scheduler/scheduler.service").createNotificationEndOfContract;
     AUTO_CREATE_NOTIFICATION_END_CONTRACT.start();
 
+    global.AUTO_UPDATE_STATUS_PACKAGE_PERSONAL = require("./modules" +
+        "/scheduler/scheduler.service").updateStatusPackagePersonStatus;
+    AUTO_UPDATE_STATUS_PACKAGE_PERSONAL.start();
+
     global.PORTAL = process.env.DB_NAME; // tên db cần kết nối
 };

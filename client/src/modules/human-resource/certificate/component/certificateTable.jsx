@@ -148,7 +148,8 @@ function CertificateTable(props) {
                     <tr>
                         <th>Tên</th>
                         <th>Tên viết tắt</th>
-                        <th>Chuyên ngành</th>
+                        {/* <th>Chuyên ngành</th> */}
+                        <th>Mô tả</th>
                         <th style={{ width: '120px', textAlign: 'center' }}>
                             {translate('table.action')}
                             <DataTableSetting
@@ -170,7 +171,8 @@ function CertificateTable(props) {
                             <tr key={`certificateList${certificate._id}`} style={certificateDuplicateName && certificateDuplicateName.includes(certificate.name.trim().toLowerCase().replaceAll(" ", "")) ? { color: "orangered", fontWeight: "bold" } : { color: "" }}>
                                 <td> {certificate.name} </td>
                                 <td> {certificate.abbreviation} </td>
-                                <td><ToolTip dataTooltip={certificate?.majors?.length ? certificate.majors.map(major => major ? major.name : "") : []} /></td>
+                                {/* <td><ToolTip dataTooltip={certificate?.majors?.length ? certificate.majors.map(major => major ? major.name : "") : []} /></td> */}
+                                <td> {certificate.description}</td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" href={`#${certificate._id}`} onClick={() => handleEdit(certificate)}><i className="material-icons">edit</i></a>
                                     <a className="delete" href={`#${certificate._id}`} onClick={() => handleDelete(certificate)}><i className="material-icons">delete</i></a>

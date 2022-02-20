@@ -43,6 +43,7 @@ const BiddingPackageManagement = (props) => {
         position: null,
         gender: null,
         status: 1,
+        type: 1,
         professionalSkills: null,
         careerFields: null,
         page: 0,
@@ -239,7 +240,7 @@ const BiddingPackageManagement = (props) => {
 
     const { biddingPackagesManager, translate } = props;
 
-    const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, status, isLoading } = state;
+    const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, status, type, isLoading } = state;
 
     let listBiddingPackages = [];
     if (biddingPackagesManager.listBiddingPackages) {
@@ -274,7 +275,7 @@ const BiddingPackageManagement = (props) => {
                     </div>
                     {/* Loại gói thầu  */}
                     <div className="form-group">
-                        <label className="form-control-static">Loại gói thầu</label>
+                        <label className="form-control-static">Mã gói thầu</label>
                         <input type="text" className="form-control" name="codeSearch" onChange={handleChange} placeholder="Mã gói thầu" autoComplete="off" />
                     </div>
                     {/* Trạng thái */}
@@ -284,9 +285,11 @@ const BiddingPackageManagement = (props) => {
                             id={`multiSelectStatus`} 
                             style={{ width: "100%" }}
                             items={[
-                                { value: '0', text: 'Inactive' },
-                                { value: '1', text: 'Active' },
-                                { value: '2', text: 'Finish' },
+                                { value: '0', text: 'Đã đóng thầu' },
+                                { value: '1', text: 'Hoạt động' },
+                                { value: '2', text: 'Chờ kết quả dự thầu' },
+                                { value: '3', text: 'Đang thực hiện' },
+                                { value: '4', text: 'Hoàn thành' },
                             ]}
                             value={status}
                             onChange={handleStatusChange}>
@@ -295,6 +298,23 @@ const BiddingPackageManagement = (props) => {
                 </div>
 
                 <div className="form-inline">
+                    {/* Loại gói thầu */}
+                    <div className="form-group">
+                        <label className="form-control-static">Loại gói thầu</label>
+                        <SelectBox 
+                            id={`multiSelectType`} 
+                            style={{ width: "100%" }}
+                            items={[
+                                { value: '1', text: 'Tư vấn' },
+                                { value: '2', text: 'Phi tư vấn' },
+                                { value: '3', text: 'Hàng hóa' },
+                                { value: '4', text: 'Xây dựng' },
+                                { value: '5', text: 'Hỗn hợp' },
+                            ]}
+                            value={type}
+                            onChange={handleStatusChange}>
+                        </SelectBox>
+                    </div>
                     {/* Thời gian bắt đầu */}
                     <div className="form-group">
                         <label title="Thời gian bắt đầu" className="form-control-static">Start Date</label>
@@ -347,17 +367,17 @@ const BiddingPackageManagement = (props) => {
                                     <td>{formatDate(x.startDate)}</td>
                                     <td>{formatDate(x.endDate)}</td>
                                     <td>{translate(`human_resource.profile.bidding_package_management.type.${x.type}`)}</td>
-                                    <td style={{ color: x.status == 1 ? "#28A745" : (x.status == 1 ? '#dd4b39' : null) }}>{translate(`human_resource.profile.bidding_package_management.status.${x.status}`)}</td>
+                                    <td style={{ color: x.status == 1 ? "#28A745" : (x.status == 2 ? '#f39c12' : (x.status == 0 ? '#dd4b39' : null)) }}>{translate(`human_resource.profile.bidding_package_management.status.${x.status}`)}</td>
                                     <td style={{ color: x.status === "active" ? "#28A745" : (x.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${x.status}`)}</td>
                                     <td>
                                         <a onClick={() => handleView(x)} style={{ width: '5px' }} title="detail"><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="edit"><i className="material-icons">edit</i></a>
                                         <ConfirmNotification
                                             icon="question"
-                                            title="Xóa thông tin nhân viên"
+                                            title="Xóa thông tin gói thầu"
                                             name="delete"
                                             className="text-red"
-                                            content={`<h4>Delete ${x.fullName + " - " + x.biddingPackageNumber}</h4>`}
+                                            content={`<h4>Delete ${x.name + " - " + x.code}</h4>`}
                                             func={() => props.deleteBiddingPackage(x._id)}
                                         />
                                     </td>

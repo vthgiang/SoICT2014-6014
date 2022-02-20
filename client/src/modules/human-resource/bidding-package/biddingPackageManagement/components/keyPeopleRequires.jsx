@@ -67,19 +67,7 @@ function KeyPeopleRequire(props) {
         }
     }, [props.id, props.biddingPackage])
 
-
-    /** Function lưu các trường thông tin vào state */
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setState(state => {
-            return {
-                ...state,
-                [name]: value,
-            }
-        })
-        props.handleChange(name, value);
-    }
-
+    
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
@@ -105,6 +93,19 @@ function KeyPeopleRequire(props) {
         }
     }
 
+    /** Function lưu các trường thông tin vào state */
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setState(state => {
+            return {
+                ...state,
+                [name]: value,
+            }
+        })
+        props.handleChange(name, value);
+    }
+
+
     /** Function bắt sự kiện thay đổi vị trí công việc */
     const handleCareer = (e, listIndex) => {
         let { value } = e.target;
@@ -120,6 +121,39 @@ function KeyPeopleRequire(props) {
         setList(newList);
         props.handleChange("keyPersonnelRequires", newList);
     }
+
+    /** Function bắt sự kiện thay đổi vị trí công việc tương tự*/
+    const handleSameCareer = (value, listIndex) => {
+        let newList = list.map((item, index) => {
+            if (index === listIndex) {
+                return {
+                    ...item,
+                    sameCareerPosition: value
+                }
+            }
+            return item;
+        })
+        setList(newList);
+        props.handleChange("keyPersonnelRequires", newList);
+    }
+
+    
+    /** Function bắt sự kiện thay đổi điều kiện chuyên ngành */
+    const handleMajor = (value, listIndex) => {
+
+        let newList = list.map((item, index) => {
+            if (index === listIndex) {
+                return {
+                    ...item,
+                    majors: value
+                }
+            }
+            return item;
+        })
+        setList(newList);
+        props.handleChange("keyPersonnelRequires", newList);
+    }
+
 
     /** Function bắt sự kiện thay đổi vị trí công việc */
     const handleCount = (e, listIndex) => {
@@ -186,13 +220,13 @@ function KeyPeopleRequire(props) {
     }
 
     /** Function bắt sự kiện thay đổi điện thoại đi động 1 */
-    const handleMajor = (value, listIndex) => {
+    const handleChangeProfessionalSkill = (value, listIndex) => {
 
         let newList = list.map((item, index) => {
             if (index === listIndex) {
                 return {
                     ...item,
-                    majors: value
+                    professionalSkill: Number(value[0])
                 }
             }
             return item;
@@ -263,22 +297,34 @@ function KeyPeopleRequire(props) {
         }
     }
 
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
+
     return (
         <div id={id} className="tab-pane">
             {
                 list?.map((item, listIndex) => {
                     return (
                         <div key={listIndex} className="box-body" style={{ border: '1px solid #ccc', marginBottom: '10px' }}>
-                            <div style={{width: '100%', height: '10px', position: 'relative'}}>
-
+                            <div className="row" style={{ marginRight: '5px' }}>
                                 <button className='pull-right btn btn-danger' style={{fontWeight: 700}} onClick={() => {
                                     const newList = list.splice(listIndex, 1)
                                     setList(list.filter(item => item != newList[0]))
                                 }}>–</button>
                             </div>
-                            <div className="row" style={{ marginTop: '15px' }}>
+                            <div className="row" style={{ paddingTop: '10px' }}>
                                 <div className="form-group col-md-6">
-                                    <label >Vị trí công việc</label>
+                                    <label className="form-control-static">Vị trí công việc</label>
                                     <select key={`careerPosition${id}-${listIndex}`} name={`career-${listIndex}`} style={{ border: '1px solid #aaa', borderRadius: "4px" }} className="form-control select2" value={item?.careerPosition} onChange={value => handleCareer(value, listIndex)}>
                                         <option key={`id-${listIndex}`} value="0">Chọn vị trí công việc</option>
                                         {
@@ -288,11 +334,26 @@ function KeyPeopleRequire(props) {
                                         }
                                     </select>
                                 </div>
+                                
+                                {/* Vị trí công việc tương tự  */}
                                 <div className="form-group col-md-6">
-                                    <label >Số lượng</label>
-                                    <input type="number" className="form-control" name={`count-${listIndex}`} onChange={(value) => handleCount(value, listIndex)} value={item.count} placeholder="Số lượng nhân viên" autoComplete="off" />
+                                    <label className="form-control-static">Vị trí công việc tương đương</label>
+                                    <SelectBox
+                                        id={`same-careerPosition-${id}-${listIndex}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listCareer?.map(x => {
+                                            return { text: x.name, value: x._id }
+                                        })}
+                                        options={{ placeholder: "Chọn vị trí công việc tương đương" }}
+                                        onChange={(value) => handleSameCareer(value, listIndex)}
+                                        value={item?.sameCareerPosition}
+                                        multiple={true}
+                                    />
                                 </div>
                             </div>
+
+                            
 
                             <div className="row" style={{ marginTop: '15px' }}>
                                 <div className="form-group col-md-6">
@@ -311,6 +372,27 @@ function KeyPeopleRequire(props) {
                                         multiple={true}
                                     />
                                 </div>
+                                <div className="form-group col-md-6">
+                                    <label >Trình độ chuyên môn</label>
+                                    <SelectBox
+                                        id={`professionalSkill-${id}-${listIndex}`}
+                                        key={`professionalSkill-${id}-${listIndex}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={professionalSkillArr}
+                                        options={{ placeholder: "Chọn trình độ chuyên môn" }}
+                                        onChange={(value) => handleChangeProfessionalSkill(value, listIndex)}
+                                        value={item?.majors}
+                                        multiple={true}
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" style={{ marginTop: '15px' }}>
+                                <div className="form-group col-md-6">
+                                    <label >Số lượng</label>
+                                    <input type="number" className="form-control" name={`count-${listIndex}`} onChange={(value) => handleCount(value, listIndex)} value={item.count} placeholder="Số lượng nhân viên" autoComplete="off" />
+                                </div>
+                                
                                 <div className="form-group col-md-6">
                                     <label >Năm kinh nghiệm</label>
                                     <input type="number" className="form-control" step={0.5} name={`year-experiment-${listIndex}`} onChange={(value) => handleYearOfExperiment(value, listIndex)} value={item.numberYearsOfExperience} placeholder="Số năm kinh nghiệm" autoComplete="off" />
@@ -373,6 +455,7 @@ function KeyPeopleRequire(props) {
             <button className='btn btn-success' onClick={() => {
                 const newList = [...list, {
                     careerPosition: '',
+                    sameCareerPosition: [],
                     majors: [],
                     count: 0,
                     numberYearsOfExperience: 0,

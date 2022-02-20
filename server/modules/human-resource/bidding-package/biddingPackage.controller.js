@@ -1,4 +1,5 @@
 const biddingPackageService = require('./biddingPackage.service');
+const CompanyServices = require(`../../system-admin/company/company.service`);
 
 const Log = require(`../../../logs`);
 
@@ -124,26 +125,14 @@ exports.deleteBiddingPackage = async (req, res) => {
         });
     }
 }
-// // ====================DELETE=======================
 
-// /** Xóa vị trí công việc */
-// exports.deleteBiddingPackage = async (req, res) => {
-//     try {
-//         data = await biddingPackageService.deleteBiddingPackage(req.portal, req.params.id);
-//         await Log.info(req.user.email, 'DELETE_BIDDING_PACKGAGE', req.portal);
-//         res.status(200).json({
-//             success: true,
-//             messages: ["delete_bidding_package_success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         await Log.error(req.user.email, 'DELETE_BIDDING_PACKGAGE', req.portal);
-//         res.status(400).json({
-//             success: false,
-//             messages: ["delete_bidding_package_failure"],
-//             content: {
-//                 error: error
-//             }
-//         });
-//     }
-// }
+exports.autoUpdateEmployeeBiddingStatus= async () => {
+    let companys = await CompanyServices.getAllCompanies({
+        page: undefined,
+        limit: undefined
+    });
+    companys = companys.map(x => x.shortName);
+    for (let n in companys) {
+        await EmployeeService.autoUpdateEmployeeBiddingStatus(companys[n]);
+    }
+}

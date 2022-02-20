@@ -23,7 +23,7 @@ const BiddingPackageSchema = new Schema({
         type: String
     },
     status: {
-        type: Number, // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: trúng thầu, 4: không trúng thầu, 5:hoàn thành
+        type: Number, // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: Đang thực hiện gói thầu, 4:hoàn thành
         default: 1
     },
     keyPersonnelRequires: [{

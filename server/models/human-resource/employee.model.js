@@ -330,9 +330,6 @@ const EmployeeSchema = new Schema(
         "working"
       ],
     },
-    packageEndDate: {
-      type: Date,
-    },
     contractEndDate: {
       type: Date,
     },
@@ -414,6 +411,13 @@ const EmployeeSchema = new Schema(
         urlFile: String,
       },
     ],
+    packageEndDate: {
+      type: Date,
+    },
+    biddingPackagePersonalStatus: {
+      type: Number, // 1: Không tham gia gói thầu, 2: Đang chờ kết quả dự thầu, 3: Đang tham gia gói thầu 
+      default: 1
+    },
     careerPositions: [
       {
         careerPosition: {

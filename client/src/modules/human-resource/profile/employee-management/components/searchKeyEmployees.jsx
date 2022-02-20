@@ -11,15 +11,15 @@ function SearchKeyEmployee(props) {
             <div className="get-employee">
                 <div className="nav-tabs-custom" >
                     <ul className="nav nav-tabs">
-                        <li><a title="Tìm kiếm nhân sự gói thầu theo vị trí công việc" data-toggle="tab" href="#find_by_position">Tìm kiếm theo vị trí công việc</a></li>
-                        <li  className="active"><a title="Tìm kiếm theo gói thầu" data-toggle="tab" href="#find_by_bidding_package">Tìm kiếm theo gói thầu</a></li>
+                        <li  className="active"><a title="Tìm kiếm nhân sự gói thầu theo vị trí công việc" data-toggle="tab" href="#find_by_position">Tìm kiếm theo vị trí công việc</a></li>
+                        <li><a title="Tìm kiếm theo gói thầu" data-toggle="tab" href="#find_by_bidding_package">Tìm kiếm theo gói thầu</a></li>
                     </ul>
                     < div className="tab-content">
                         {/* Tab thông tin chung */}
-                        <div className="tab-pane" id="find_by_position">
+                        <div className="tab-pane active" id="find_by_position">
                             <SearchEmployeeForCareerPositiion/>
                         </div>
-                        <div className="tab-pane active" id="find_by_bidding_package">
+                        <div className="tab-pane " id="find_by_bidding_package">
                             <SearchEmployeeForPackage/>
                         </div>
                     </div>

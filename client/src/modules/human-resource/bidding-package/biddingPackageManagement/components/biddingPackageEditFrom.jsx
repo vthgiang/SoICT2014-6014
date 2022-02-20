@@ -227,6 +227,7 @@ const BiddingPackageEditFrom = (props) => {
                                     listCareer={career?.listPosition?.listPosition}
                                     listMajor={major?.listMajor}
                                     listCertificate={certificate?.listCertificate}
+                                    keyPersonnelRequires={state.biddingPackage.keyPersonnelRequires}
                                     biddingPackage={biddingPackage}
                             />
                         </div>

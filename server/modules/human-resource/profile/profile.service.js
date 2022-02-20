@@ -2641,6 +2641,7 @@ const checkEmployeePackageValid = async (employees, require, otherEmployee) => {
 };
 
 exports.searchEmployeeForPackage = async (portal, params, companyId) => {
+  console.log("params", params)
   let noResultsPerPage = parseInt(params.limit);
   let pageNumber = parseInt(params.page);
   let keySearch = [{ $match: { status: "active" } }];
@@ -2655,16 +2656,37 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
 
   // Bắt sựu kiện theo chuyên ngành
   if (params.majors) {
-    keySearch = [
-      ...keySearch,
-      {
-        $match: {
-          "degrees.major": {
-            $in: params.majors.map((item) => mongoose.Types.ObjectId(item)),
+    if (params.professionalSkill) {
+      console.log("professionalSkill", params.professionalSkill)
+      keySearch = [
+        ...keySearch,
+        {
+          $match: {
+            $and: [
+              {
+                "degrees.major": {
+                  $in: params.majors.map((item) => mongoose.Types.ObjectId(item)),
+                }
+              },
+              {
+                "degrees.degreeQualification" : { $gte: Number(params.professionalSkill) }
+              }
+            ]
           },
         },
-      },
-    ];
+      ];
+    } else {
+      keySearch = [
+        ...keySearch,
+        {
+          $match: {
+            "degrees.major": {
+              $in: params.majors.map((item) => mongoose.Types.ObjectId(item)),
+            },
+          },
+        },
+      ];
+    }
   }
 
   // Bắt sự kiện tìm kiếm theo số năm kinh nghiệm
@@ -2836,9 +2858,9 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
 
   let listEmpId = [];
   if (params.sameExp || params.certificates) {
-    listEmpId = listData.map((e) => e._id.employee);
+    listEmpId = listData.map((e) => e._id.employee.toString());
   } else {
-    listEmpId = listData.map((e) => e._id);
+    listEmpId = listData.map((e) => e._id.toString());
   }
 
   return  listEmpId
@@ -2895,6 +2917,7 @@ exports.getEmployeeByPackageId = async (portal, biddingPackageId, companyId) => 
   let listEmployees = [];
   if (data.isComplete == 1) {
     console.log("data", data.result[0])
+    console.log("data", data.result[1])
 
     for (const [index, item] of data.result.entries()) {
       let a = await this.getEmployeeInforByListId(portal, item, companyId, {page: 0, limit: 100})
@@ -2918,10 +2941,14 @@ exports.getEmployeeByPackageId = async (portal, biddingPackageId, companyId) => 
 };
 
 const findEmployee = async (keyPeople, otherPeople, result, resultIndex, number, index) => {
-  if (index >= keyPeople.length) return {
-    result: result,
-    isComplete: 1
-  }
+
+  // console.log("otherPeople", keyPeople,  otherPeople)
+  if (index >= keyPeople.length) {
+    return {
+      result: result,
+      isComplete: 1
+    }
+  } 
 
   let t = number[index] - 1; 
   let oldOtherPeople = [...otherPeople];
@@ -2938,7 +2965,7 @@ const findEmployee = async (keyPeople, otherPeople, result, resultIndex, number,
       while (value < n - 1) {
         value = value + 1;
         if (i < t) {
-          if (value >= !!resultIndex[index][i+1]) break;
+          if (value >= resultIndex[index][i+1]) break;
         }
         if (!otherPeople.includes(a[value])) {
           otherPeople.splice(otherPeople.indexOf(result[index][i]), 1);
@@ -2972,10 +2999,10 @@ const findEmployee = async (keyPeople, otherPeople, result, resultIndex, number,
     let key = 0;
     for (let j = 0; j <= t; j++) {
       while (i<n) {
-        if (!otherPeople.includes(a[i])) {
+        if (!otherPeople.includes(a[i].toString())) {
           result[index].push(a[i]);
           resultIndex[index].push(i);
-          otherPeople.push(a[i]);
+          otherPeople.push(a[i].toString());
           if (j == t) key = 1;
           i = i + 1;
           break;

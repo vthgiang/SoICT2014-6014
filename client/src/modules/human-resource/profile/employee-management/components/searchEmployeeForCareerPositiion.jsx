@@ -197,16 +197,6 @@ class SearchEmployeeForCareerPosition extends Component {
         this.props.getAllEmployee(this.state);
     }
 
-    /** show more option search */
-    clickShowMore = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                showMore: !state.showMore,
-            }
-        });
-    }
-
     updateSearchData = async (data) => {
         let { careerPosition, professionalSkill, majorSearch,
             certificatesCount, certificates, certificatesEndDate,
@@ -265,7 +255,7 @@ class SearchEmployeeForCareerPosition extends Component {
         let posCodeArr = [];
         let dataTreePosition = [];
 
-        // console.log('listEmployees', listEmployees);
+        console.log('listEmployees', listEmployees);
 
         return (
             <div className="box">
@@ -382,64 +372,69 @@ class SearchEmployeeForCareerPosition extends Component {
                         </div>
                     </div>
 
-                    <table id="employee-table" className="table table-striped table-bordered table-hover">
+                    <table id="employee-career-position" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.staff_name')}</th>
                                 <th>Vị trí công việc</th>
                                 <th>Trình độ chuyên môn</th>
-                                <th>Chuyên ngành</th>
                                 <th>Chứng chỉ</th>
                                 <th>Bằng cấp</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
-                                    <DataTableSetting
-                                        tableId="employee-table"
-                                        columnArr={[
-                                            translate('human_resource.staff_name'),
-                                            "Vị trí công việc",
-                                            "Trình độ chuyên môn",
-                                            "Chuyên ngành",
-                                            "Chứng chỉ",
-                                            "Bằng cấp",
-                                        ]}
-                                        limit={this.state.limit}
-                                        setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {listEmployees && listEmployees.length !== 0 &&
-                                listEmployees.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.fullName}</td>
-                                        <td>
-                                            {x.careerPositions?.length > 0 ? (x.careerPositions?.map((e, key) => {
-                                                return <li key={key}> {e?.careerPosition?.name} {e?.startDate ? "- Ngày bắt đầu: "+this.formatDate(e?.startDate) : ""} {e?.endDate ? "- Ngày kết thúc: "+this.formatDate(e?.endDate) : ""} </li>
-                                            })) : <p>Chưa có dữ liệu</p>
-                                            }
-                                        </td>
-                                        <td>{x.professionalSkill}</td>
-                                        <td>{x.degrees?.length > 0 ? (x.degrees?.map((e, key) => {
-                                            return <li key={key}> {e?.major?.name ? e?.major?.name : ""} </li>
-                                        })) : <p>Chưa có dữ liệu</p>}
-                                        </td>
-                                        <td>
-                                            {x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
-                                                return <li key={key}> {e.certificate?.name}{e.certificate?.abbreviation ? "("+e.certificate?.abbreviation+")" : ""} - {e?.issuedBy} - hiệu lực: {this.formatDate(e?.endDate)} </li>
-                                            }) : <p>Chưa có dữ liệu</p>}
-                                        </td>
-                                        <td>
-                                            {x.degrees.length > 0 ? x.degrees?.map((e, key) => {
-                                                return <li key={key}> {this.formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {professionalSkillArr.filter(item => item.value == e.degreeQualification).name }</li>
-                                            }) : <p>Chưa có dữ liệu</p>}
-                                        </td>
-                                        <td>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
-                                        </td>
-                                    </tr>
-                                ))}
+                            {listEmployees && listEmployees?.length !== 0 &&
+                                listEmployees.map((x, index) => {    
+                                    return (
+                                        <tr key={index}>
+                                            <td>{x.fullName}</td>
+                                            <td>
+                                                {x.careerPositions?.length > 0 ? (x.careerPositions?.map((e, key) => {
+                                                    return <li key={key}> {e?.careerPosition?.name} {e?.startDate ? "- Ngày bắt đầu: "+this.formatDate(e?.startDate) : ""} {e?.endDate ? "- Ngày kết thúc: "+this.formatDate(e?.endDate) : ""} </li>
+                                                })) : <p>Chưa có dữ liệu</p>
+                                                }
+                                            </td>
+                                            <td>{x.degrees?.length > 0 ? (x.degrees?.map((e, key) => {
+                                                let degreeQualification = ''
+                                                if (e.degreeQualification) {
+
+                                                    degreeQualification = professionalSkillArr.find(item => item.value == e.degreeQualification).text
+                                                } else {
+                                                    degreeQualification = "Không có"
+                                                }
+                                                if (e.major)
+                                                return (
+                                                    <li>
+                                                        {degreeQualification} ({e.major.name})
+                                                    </li>
+                                                )
+                                                else return ''
+                                            })) : <p>Chưa có dữ liệu</p>}
+                                            </td>
+                                            <td>
+                                                {x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
+                                                    return <li key={key}> {e.certificate?.name}{e.certificate?.abbreviation ? "("+e.certificate?.abbreviation+")" : ""} - {e?.issuedBy} - hiệu lực: {this.formatDate(e?.endDate)} </li>
+                                                }) : <p>Chưa có dữ liệu</p>}
+                                            </td>
+                                            <td>
+                                                {x.degrees?.length > 0 ? x.degrees?.map((e, key) => {
+                                                    let degreeQualification = ''
+                                                    if (e.degreeQualification) {
+
+                                                        degreeQualification = professionalSkillArr.find(item => item.value == e.degreeQualification).text
+                                                    } else {
+                                                        degreeQualification = "Không có"
+                                                    }
+                                                    return <li key={key}> {this.formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {degreeQualification}</li>
+                                                }) : <p>Chưa có dữ liệu</p>}
+                                            </td>
+                                            <td>
+                                                <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
+                                            </td>
+                                        </tr>
+                                    )}
+                                )}
                         </tbody>
 
                     </table>

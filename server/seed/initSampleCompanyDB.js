@@ -21,6 +21,8 @@ const {
   SystemComponent,
   SystemApi,
 
+  Major,
+  Certificate,
   Employee,
   Salary,
   AnnualLeave,
@@ -1150,134 +1152,134 @@ const initSampleCompanyDB = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-  const majorsParent = await Major(vnistDB).insertMany([
-    {
-      // 0
-      name: "Công nghệ thông tin",
-      code: "74802",
-      parents: [],
-      company: vnist._id,
-    },
-    {
-      // 1
-      name: "Máy tính",
-      code: "74801",
-      parents: [],
-      company: vnist._id,
-    },
-    {
-      // 2
-      name: "Toán học",
-      code: "74601",
-      parents: [],
-      company: vnist._id,
-    },
-    {
-      // 3
-      name: "Công nghệ kỹ thuật điện, điện tử và viễn thông",
-      code: "75103",
-      parents: [],
-      company: vnist._id,
-    },
-    {
-      // 4
-      name: "Kỹ thuật điện, điện tử và viễn thông",
-      code: "75202",
-      parents: [],
-      company: vnist._id,
-    },
-  ]);
+  // const majorsParent = await Major(vnistDB).insertMany([
+  //   {
+  //     // 0
+  //     name: "Công nghệ thông tin",
+  //     code: "74802",
+  //     parents: [],
+  //     company: vnist._id,
+  //   },
+  //   {
+  //     // 1
+  //     name: "Máy tính",
+  //     code: "74801",
+  //     parents: [],
+  //     company: vnist._id,
+  //   },
+  //   {
+  //     // 2
+  //     name: "Toán học",
+  //     code: "74601",
+  //     parents: [],
+  //     company: vnist._id,
+  //   },
+  //   {
+  //     // 3
+  //     name: "Công nghệ kỹ thuật điện, điện tử và viễn thông",
+  //     code: "75103",
+  //     parents: [],
+  //     company: vnist._id,
+  //   },
+  //   {
+  //     // 4
+  //     name: "Kỹ thuật điện, điện tử và viễn thông",
+  //     code: "75202",
+  //     parents: [],
+  //     company: vnist._id,
+  //   },
+  // ]);
 
   const majors = await Major(vnistDB).insertMany([
     {
       // 0
       name: "Công nghệ thông tin",
       code: "7480201",
-      parents: [majorsParent[0]._id],
+      // parents: [majorsParent[0]._id],
       company: vnist._id,
     },
     {
       // 1
       name: "An toàn thông tin",
       code: "7480202",
-      parents: [majorsParent[0]._id],
+      // parents: [majorsParent[0]._id],
       company: vnist._id,
     },
     {
       // 2
       name: "Khoa học máy tính",
       code: "7480101",
-      parents: [majorsParent[1]._id],
+      // parents: [majorsParent[1]._id],
       company: vnist._id,
     },
     {
       // 3
       name: "Mạng máy tính và truyền thông dữ liệu",
       code: "7480102",
-      parents: [majorsParent[1]._id],
+      // parents: [majorsParent[1]._id],
       company: vnist._id,
     },
     {
       // 4
       name: "Kỹ thuật phần mềm",
       code: "7480103",
-      parents: [majorsParent[1]._id],
+      // parents: [majorsParent[1]._id],
       company: vnist._id,
     },
     {
       // 5
       name: "Hệ thống thông tin",
       code: "7480104",
-      parents: [majorsParent[1]._id],
+      // parents: [majorsParent[1]._id],
       company: vnist._id,
     },
     {
       // 6
       name: "Kỹ thuật máy tính",
       code: "7480106",
-      parents: [majorsParent[1]._id],
+      // parents: [majorsParent[1]._id],
       company: vnist._id,
     },
     {
       // 7
       name: "Công nghệ kỹ thuật máy tính",
       code: "7480108",
-      parents: [majorsParent[1]._id],
+      // parents: [majorsParent[1]._id],
       company: vnist._id,
     },
     {
       // 8
       name: "Toán học",
       code: "7460101",
-      parents: [majorsParent[2]._id],
+      // parents: [majorsParent[2]._id],
       company: vnist._id,
     },
     {
       // 9
       name: "Khoa học tính toán",
       code: "7480108",
-      parents: [majorsParent[2]._id],
+      // parents: [majorsParent[2]._id],
       company: vnist._id,
     },
     {
       // 10
       name: "Toán ứng dụng",
       code: "7460112",
-      parents: [majorsParent[2]._id],
+      // parents: [majorsParent[2]._id],
       company: vnist._id,
     },
     {
       // 11
       name: "Toán cơ",
       code: "7460115",
-      parents: [majorsParent[2]._id],
+      // parents: [majorsParent[2]._id],
       company: vnist._id,
     },
     {
       // 12
       name: "Toán tin",
       code: "7460117",
-      parents: [majorsParent[2]._id],
+      // parents: [majorsParent[2]._id],
       company: vnist._id,
     },
   ]);
@@ -4002,6 +4004,7 @@ const initSampleCompanyDB = async () => {
       type: "material",
       baseUnit: "ml",
       unit: [],
+      sourceType: "1",
       quantity: 20,
       description: "Nguyên liệu thuốc thú u",
     },
@@ -4013,6 +4016,7 @@ const initSampleCompanyDB = async () => {
       type: "material",
       baseUnit: "kg",
       unit: [],
+      sourceType: "1",
       quantity: 30,
       description: "Nguyên vật liệu thuốc thú y",
     },
@@ -4024,6 +4028,7 @@ const initSampleCompanyDB = async () => {
       type: "material",
       baseUnit: "Chiếc",
       unit: [],
+      sourceType: "1",
       quantity: 10,
       description: "Công cụ dụng cụ thuốc thú y",
     },
@@ -4035,6 +4040,7 @@ const initSampleCompanyDB = async () => {
       type: "material",
       baseUnit: "Chiếc",
       unit: [],
+      sourceType: "1",
       quantity: 10,
       description: "Công cụ dụng cụ thuốc thú y",
     },

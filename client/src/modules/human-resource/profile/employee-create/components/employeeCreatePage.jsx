@@ -9,6 +9,10 @@ import FamilyMemberTab from './familyMemberTab';
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { generateCode } from "../../../../../helpers/generateCode";
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
 
 const initMember = {
     name: '',
@@ -139,7 +143,8 @@ function EmployeeCreatePage(props) {
         regenerateCode();
     }, [])
 
-    const { translate } = props;
+    const { translate, career, major, certificate, biddingPackagesManager } = props;
+    console.log("propsss", career, major, certificate, biddingPackagesManager)
 
     /**
      * Function upload avatar
@@ -652,6 +657,9 @@ function EmployeeCreatePage(props) {
                         id="kinhnghiem"
                         employee={employee}
                         handleChange={handleChange}
+                        major={major?.listMajor}
+                        certificate={certificate?.listMajor}
+                        careerPosition={career?.listPosition}
 
                         handleAddExperience={handleChangeExperience}
                         handleEditExperience={handleChangeExperience}
@@ -666,6 +674,9 @@ function EmployeeCreatePage(props) {
                         id="bangcap"
                         degrees={degrees}
                         certificates={certificates}
+                        listMajors={major?.listMajor}
+                        listCertificates={certificate?.listCertificate}
+                        listPositions={career?.listPosition}
                         handleAddDegree={handleChangeDegree}
                         handleEditDegree={handleChangeDegree}
                         handleDeleteDegree={handleChangeDegree}
@@ -772,13 +783,17 @@ function EmployeeCreatePage(props) {
 };
 
 function mapState(state) {
-    const { employeesManager, } = state;
-    return { employeesManager };
+    const { employeesManager, biddingPackagesManager, major, career, certificate } = state;
+    return { employeesManager, biddingPackagesManager, major, career, certificate };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
     getDepartment: DepartmentActions.get,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 };
 
 const createPage = connect(mapState, actionCreators)(withTranslate(EmployeeCreatePage));

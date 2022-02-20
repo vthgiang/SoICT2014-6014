@@ -1103,7 +1103,7 @@ class Routes extends Component {
                             {
                                 link: "/hr-search-for-package",
                                 name: "list_search_for_package",
-                                icon: "fa fa-list-alt",
+                                icon: "fa-regular fa-file-magnifying-glass",
                             },
                         ]}
                         auth={auth}
