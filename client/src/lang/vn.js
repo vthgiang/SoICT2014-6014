@@ -5080,6 +5080,7 @@ export default {
                 create_rfid_code: "Thêm mã RFID",
                 goods_returned_to_the_factory: "Hàng trả về xưởng",
                 goods_returned_to_the_supplier: "Hàng trả về nhà cung cấp",
+                goods_returned_to_the_stock: "Hàng trả kho",
             },
             inventory_management: {
                 product: "Sản phẩm",
