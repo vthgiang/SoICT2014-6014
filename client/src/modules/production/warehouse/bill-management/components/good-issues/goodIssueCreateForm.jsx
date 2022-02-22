@@ -1,4 +1,4 @@
-import React, { useState ,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from "react-redux";
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from "../../../../../../common-components";
@@ -530,11 +530,11 @@ function GoodIssueCreateForm(props) {
         });
     }
 
-     //---Kết thúc phần lập phiếu từ đơn bán hàng---
+    //---Kết thúc phần lập phiếu từ đơn bán hàng---
 
-        //---Lập phiếu xuất nguyên vật liệu từ lệnh sản xuất---
+    //---Lập phiếu xuất nguyên vật liệu từ lệnh sản xuất---
 
-        //---Kế thúc lập phiếu xuất nguyên liệu từ lệnh sản xuất---
+    //---Kế thúc lập phiếu xuất nguyên liệu từ lệnh sản xuất---
 
     if (props.group !== state.group) {
         setState({
@@ -965,11 +965,11 @@ function GoodIssueCreateForm(props) {
                                                     <td>{x.good.name}</td>
                                                     <td>{x.good.baseUnit}</td>
                                                     <td>{x.quantity}</td>
-                                                    <td>{x.lots.map((lot, index) => 
+                                                    <td>{x.lots.map((lot, index) =>
                                                         <div key={index}>
                                                             <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                         </div>)}
-                                                    </td> 
+                                                    </td>
                                                     <td>{x.description}</td>
                                                     <td>
                                                         <a

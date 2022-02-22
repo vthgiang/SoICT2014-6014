@@ -667,40 +667,40 @@ function GoodReceiptEditForm(props) {
                 for (let i = 0; i < props.approvers.length; i++) {
                     approver = [...approver, props.approvers[i].approver._id];
                 }
-    
+
             }
-    
+
             if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
                 for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
                     qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
                 }
-    
+
             }
-    
+
             if (props.responsibles && props.responsibles.length > 0) {
                 for (let i = 0; i < props.responsibles.length; i++) {
                     responsibles = [...responsibles, props.responsibles[i]._id];
                 }
-    
+
             }
-    
+
             if (props.accountables && props.accountables.length > 0) {
                 for (let i = 0; i < props.accountables.length; i++) {
                     accountables = [...accountables, props.accountables[i]._id];
                 }
-    
+
             }
             state.good.quantity = 0;
             state.good.good = '';
             state.good.description = '';
             state.good.lots = [];
-    
+
             if (props.type === "1") {
                 props.getGoodsByType({ type: "material" });
             } else if (props.type === "2") {
                 props.getGoodsByType({ type: "product" });
             }
-    
+
             setState({
                 ...state,
                 billId: props.billId,
@@ -735,7 +735,7 @@ function GoodReceiptEditForm(props) {
                 errorQualityControlStaffs: undefined,
                 errorAccountables: undefined,
                 errorResponsibles: undefined
-    
+
             })
         }
     }, [props.billId, props.oldStatus])
@@ -859,7 +859,7 @@ function GoodReceiptEditForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code ? code : '' } disabled />
+                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
@@ -871,7 +871,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -885,7 +885,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        // disabled={checkApprove}
+                                    // disabled={checkApprove}
                                     />
                                 </div>
                             </div>
@@ -900,7 +900,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
@@ -915,7 +915,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataSource}
                                         onChange={handleSourceChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
@@ -929,7 +929,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataCustomer}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
                                 </div>) : null}
@@ -943,7 +943,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataMills}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
                                 </div>) : null}
@@ -1067,7 +1067,7 @@ function GoodReceiptEditForm(props) {
                                     <label>{translate('manage_warehouse.bill_management.number')}</label>
                                     <div style={{ display: "flex" }}>
                                         <input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />
-                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -1116,13 +1116,13 @@ function GoodReceiptEditForm(props) {
                                                                 <span style={{ color: "red" }}>{x.quantity}</span>
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.bill_management.text')}</p></span>
                                                             </td>}
-                                                        {(checkLots(x.lots, x.quantity)) ? 
-                                                            <td>{x.lots.map((lot, index) => 
+                                                        {(checkLots(x.lots, x.quantity)) ?
+                                                            <td>{x.lots.map((lot, index) =>
                                                                 <div key={index}>
                                                                     <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                                 </div>)}
-                                                            </td> : 
-                                                            <td>{''}</td> 
+                                                            </td> :
+                                                            <td>{''}</td>
                                                         }
                                                         <td>{x.description}</td>
                                                         <td>

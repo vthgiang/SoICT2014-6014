@@ -283,7 +283,7 @@ function UnitCreateForm(props) {
             <p>Ví dụ : đơn vị tính cơ bản chiếc
             Đơn vị quy đổi : Hộp
             1 Hộp = 20 chiếc.</b></p>`,
-            width: "50%", 
+            width: "50%",
         })
     };
 

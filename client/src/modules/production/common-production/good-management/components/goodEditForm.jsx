@@ -278,11 +278,11 @@ function GoodEditForm(props) {
     const isFormValidated = () => {
         let result =
             validateName(state.name, false) &&
-            validateCode(state.code, false) &&
-            validateBaseUnit(state.baseUnit, false) &&
-            validateCategory(state.category, false) &&
-            validateSourceProduct(state.sourceType, false) &&
-            ((state.type && state.type === "product") && state.isSeflProduced === true) ? state.materials.length > 0 : true &&
+                validateCode(state.code, false) &&
+                validateBaseUnit(state.baseUnit, false) &&
+                validateCategory(state.category, false) &&
+                validateSourceProduct(state.sourceType, false) &&
+                ((state.type && state.type === "product") && state.isSeflProduced === true) ? state.materials.length > 0 : true &&
             validateNumberExpirationDate(state.numberExpirationDate, false)
         return result;
     };
@@ -398,7 +398,7 @@ function GoodEditForm(props) {
                                     {translate("manage_warehouse.good_management.numberExpirationDate")}
                                     <span className="text-red"> * </span>
                                 </label>
-                                <input type="number" className="form-control" value={numberExpirationDate ? numberExpirationDate : '' } onChange={handleNumberExpirationDateChange} />
+                                <input type="number" className="form-control" value={numberExpirationDate ? numberExpirationDate : ''} onChange={handleNumberExpirationDateChange} />
                                 <ErrorLabel content={errorOnNumberExpirationDate} />
                             </div>
                         </div>
@@ -445,16 +445,16 @@ function GoodEditForm(props) {
                                 initialData={listUnit}
                                 onDataChange={handleListUnitChange}
                             />
-                                <React.Fragment>
-                                    {(type === "product" && isSeflProduced === true) ? (<ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ""}
-                                    
-                                    {(isSeflProduced === true) ? (<InfoMillCreateForm
-                                        id={goodId}
-                                        onDataChange={handleListMillsChange}
-                                        initialData={listManfaucturingMills}
-                                    />) : ""}
-                                </React.Fragment>
-                            
+                            <React.Fragment>
+                                {(type === "product" && isSeflProduced === true) ? (<ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ""}
+
+                                {(isSeflProduced === true) ? (<InfoMillCreateForm
+                                    id={goodId}
+                                    onDataChange={handleListMillsChange}
+                                    initialData={listManfaucturingMills}
+                                />) : ""}
+                            </React.Fragment>
+
                         </div>
                     </div>
                 </form>

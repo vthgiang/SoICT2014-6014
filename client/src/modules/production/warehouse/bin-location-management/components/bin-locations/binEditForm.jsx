@@ -19,27 +19,29 @@ function BinEditForm(props) {
         editInfo: false,
     })
 
-    if (props.binId !== state.binId) {
-        setState({
-            ...state,
-            binId: props.binId,
-            binParent: props.binParent,
-            binCode: props.binCode,
-            binName: props.binName,
-            binStatus: props.binStatus,
-            binUnit: props.binUnit,
-            binUsers: props.binUsers,
-            binPath: props.binPath,
-            binContained: props.binContained,
-            binCapacity: props.binCapacity,
-            binDescription: props.binDescription,
-            binDepartment: props.binDepartment,
-            binEnableGoods: props.binEnableGoods,
-            binStock: props.binStock,
-            errorName: undefined,
-            errorCode: undefined
-        })
-    }
+    useEffect(() => {
+        if (props.binId !== state.binId) {
+            setState({
+                ...state,
+                binId: props.binId,
+                binParent: props.binParent,
+                binCode: props.binCode,
+                binName: props.binName,
+                binStatus: props.binStatus,
+                binUnit: props.binUnit,
+                binUsers: props.binUsers,
+                binPath: props.binPath,
+                binContained: props.binContained,
+                binCapacity: props.binCapacity,
+                binDescription: props.binDescription,
+                binDepartment: props.binDepartment,
+                binEnableGoods: props.binEnableGoods,
+                binStock: props.binStock,
+                errorName: undefined,
+                errorCode: undefined
+            })
+        }
+    }, [props.binId])
 
     const getAllDepartment = () => {
         let { translate, department } = props;
@@ -329,7 +331,6 @@ function BinEditForm(props) {
     const dataDepartment = getAllDepartment();
     const dataGoods = getAllGoods();
     const listUsers = list;
-
     return (
         <div id="edit-bin-location">
             <div className="scroll-row">
@@ -370,13 +371,13 @@ function BinEditForm(props) {
                     </div>
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="text-red"> * </span></label>
-                        <input type="text" className="form-control" value={binUnit} onChange={handleUnitChange} />
+                        <input type="text" className="form-control" value={binUnit ? binUnit : ''} onChange={handleUnitChange} />
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorName ? "" : "has-error"}`}>
                         <label>{translate('manage_warehouse.bin_location_management.name')}<span className="text-red"> * </span></label>
-                        <input type="text" className="form-control" value={binName} onChange={handleNameChange} />
+                        <input type="text" className="form-control" value={binName ? binName : ''} onChange={handleNameChange} />
                         <ErrorLabel content={errorName} />
                     </div>
                     <div className="form-group">
@@ -390,7 +391,7 @@ function BinEditForm(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={binUsers ? binUsers : []}
-                            items={listUsers.map(x => { return { value: x.id, text: x.name } })}
+                            items={user.list.map(x => { return { value: x.id, text: x.name } })}
                             onChange={handleManagementLocationtChange}    
                             multiple={true}
                         />
