@@ -574,7 +574,7 @@ function GoodReceiptCreateForm(props) {
         purchaseOrderAddBill.code !== "" &&
         purchaseOrderAddBill.code !== state.purchaseOrderCode
     ) {
-        setState ({
+        setState({
             ...state,
             group: props.group,
             code: props.billCode,
@@ -658,7 +658,7 @@ function GoodReceiptCreateForm(props) {
             description: description,
             goods: listGood,
             purchaseOrderId,
-            sourceType : sourceType,
+            sourceType: sourceType,
             manufacturingMill: manufacturingMills,
         });
 
@@ -777,7 +777,7 @@ function GoodReceiptCreateForm(props) {
                                     />
                                     <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
-                                {sourceType === "2" ? 
+                                {sourceType === "2" ?
                                     (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
                                         <label>
                                             {translate("manage_warehouse.bill_management.supplier")}
@@ -793,9 +793,9 @@ function GoodReceiptCreateForm(props) {
                                             multiple={false}
                                         />
                                         <ErrorLabel content={errorSupplier} />
-                                    </div>) 
-                                : null}
-                                {sourceType === "1" ? 
+                                    </div>)
+                                    : null}
+                                {sourceType === "1" ?
                                     (<div className={`form-group ${!errorManufacturingMills ? "" : "has-error"}`}>
                                         <label>
                                             {translate("manage_warehouse.bill_management.mill")}
@@ -811,8 +811,8 @@ function GoodReceiptCreateForm(props) {
                                             multiple={false}
                                         />
                                         <ErrorLabel content={errorManufacturingMills} />
-                                    </div>) 
-                                : null}
+                                    </div>)
+                                    : null}
                             </div>
                         </fieldset>
                     </div>

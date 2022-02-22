@@ -70,8 +70,11 @@ function BillManagement(props) {
         }
     }
 
-    const setPage = (page) => {
-        setState({ page });
+    const setPage = async (page) => {
+        setState({
+            ...state,
+            page: page
+        });
         const data = {
             limit: state.limit,
             managementLocation: state.currentRole,
@@ -91,11 +94,15 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        props.getBillsByType(data);
+        console.log(state.currentRole, data);
+        await props.getBillsByType(data);
     }
 
-    const setLimit = (number) => {
-        setState({ limit: number });
+    const setLimit = async (number) => {
+        setState({
+            ...state,
+            limit: number
+        });
         const data = {
             limit: number,
             page: state.page,
@@ -115,7 +122,8 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        props.getBillsByType(data);
+        console.log(state.currentRole);
+        await props.getBillsByType(data);
     }
 
     const handleStockChange = (value) => {

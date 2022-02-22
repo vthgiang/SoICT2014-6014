@@ -8,7 +8,7 @@ import GoodIssueEditForm from './goodIssueEditForm';
 import GoodIssueCreateForm from './goodIssueCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
 
-import {TransportRequirementsCreateForm} from '../../../../transport/transport-requirements/components/transportRequirementsCreateForm'
+import { TransportRequirementsCreateForm } from '../../../../transport/transport-requirements/components/transportRequirementsCreateForm'
 
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 function IssueManagement(props) {
@@ -34,7 +34,7 @@ function IssueManagement(props) {
             ...state,
             currentRow: bill
         })
-        
+
         window.$('#modal-edit-bill-issue').modal('show');
     }
 

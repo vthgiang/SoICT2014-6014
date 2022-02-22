@@ -708,11 +708,11 @@ function StockTakeCreateForm(props) {
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
                                                         <td>{x.realQuantity}</td>
-                                                        <td>{x.lots.map((lot, index) => 
-                                                                <div key={index}>
-                                                                    <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
-                                                                </div>)}
-                                                        </td> 
+                                                        <td>{x.lots.map((lot, index) =>
+                                                            <div key={index}>
+                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                            </div>)}
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

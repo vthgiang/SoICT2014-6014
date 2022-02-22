@@ -36,9 +36,9 @@ function StockManagementTable(props) {
     }, [])
 
     const setPage = (page) => {
-        setState({ 
-            ...state, 
-            page 
+        setState({
+            ...state,
+            page
         });
         const data = {
             limit: state.limit,
@@ -234,13 +234,13 @@ function StockManagementTable(props) {
                                         <a onClick={() => handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
                                         <DeleteNotification
-                                                content={translate('manage_warehouse.stock_management.delete_info')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.code + " - " + x.name
-                                                }}
-                                                func={props.deleteStock}
-                                            />
+                                            content={translate('manage_warehouse.stock_management.delete_info')}
+                                            data={{
+                                                id: x._id,
+                                                info: x.code + " - " + x.name
+                                            }}
+                                            func={props.deleteStock}
+                                        />
                                     </td>
                                 </tr>
                             ))
