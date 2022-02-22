@@ -4827,6 +4827,7 @@ export default {
                 create_rfid_code: "Create RFID code",
                 goods_returned_to_the_factory: "Goods returned to the factory",
                 goods_returned_to_the_supplier: "Goods returned to the supplier",
+                goods_returned_to_the_stock: "Goods returned to the stock",
 
             },
             inventory_management: {

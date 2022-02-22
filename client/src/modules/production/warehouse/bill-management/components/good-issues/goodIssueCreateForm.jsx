@@ -102,6 +102,7 @@ function GoodIssueCreateForm(props) {
                 text: item.name,
             });
         });
+        console.log(CustomerArr);
 
         return CustomerArr;
     };

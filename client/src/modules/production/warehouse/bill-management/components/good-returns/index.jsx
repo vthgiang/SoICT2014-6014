@@ -257,7 +257,7 @@ function ReturnManagement(props) {
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     <td>{x.customer ? x.customer.name : translate(`manage_warehouse.bill_management.goods_returned_to_the_factory`)}</td>
-                                    <td>{x.manufacturingMill ? x.manufacturingMill.name : translate(`manage_warehouse.bill_management.goods_returned_to_the_supplier`)}</td>
+                                    <td>{x.manufacturingMill ? x.manufacturingMill.name : (x.type === "12" ? translate(`manage_warehouse.bill_management.goods_returned_to_the_supplier`) : translate(`manage_warehouse.bill_management.goods_returned_to_the_stock`))}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
