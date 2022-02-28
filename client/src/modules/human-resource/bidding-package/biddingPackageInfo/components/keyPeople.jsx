@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ConfirmNotification, DataTableSetting, DatePicker, ExportExcel, SelectBox } from '../../../../../common-components';
@@ -312,10 +313,17 @@ function KeyPeople(props) {
         return res;
     }
 
+    const createBackup = () => {
+        props.createBackup()
+    }
+
     return (
         <div id = {id} className="tab-pane">
             <div className="form-group pull-right" style={{padding: '6px 12px', margin: '5px'}}>
                 <ExportExcel id="download_template_search_package" type='link' exportData={convertDataExport()} buttonName='Download hồ sơ nhân sự chủ chốt' />
+                <button className="btn btn-success pull-right" onClick={createBackup} title={translate('system_admin.system_setting.backup.backup_button')}>
+                    {translate('system_admin.system_setting.backup.backup_button')}
+                </button>
             </div>
             <div className="box-body qlcv">
                 {

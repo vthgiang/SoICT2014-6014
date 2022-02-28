@@ -1,5 +1,5 @@
 const { BiddingPackage, Employee } = require("../../../models");
-
+const fs = require("fs");
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getEmployeeInforByListId } = require("../profile/profile.service");
 
@@ -56,7 +56,7 @@ exports.getDetailBiddingPackage = async (portal, params) => {
     let keyPeopleArr = {};
     keyPeopleArr = {
         ...listBiddingPackages._doc,
-        keyPeople: []
+        keyPeople: [],
     };
 
     if (listBiddingPackages.keyPeople) {
@@ -248,18 +248,78 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
             path: "keyPeople.employees",
             select: {
                 _id: 1,
-                careerPositions: 1,
-                degrees: 1,
-                certificates: 1,
+                emailInCompany: 1,
+                // careerPositions: 1,
+                // degrees: 1,
+                // certificates: 1,
                 experiences: 1,
             },
         });
     let people = [];
+    let documentList = [];
     console.log(biddingPackage);
     if (biddingPackage.keyPeople.length) {
-        console.log("aaaaaaa");
+        if (!fs.existsSync(`${SERVER_UPLOAD_DIR}/${portal}/document`)) {
+            fs.mkdirSync(`${SERVER_UPLOAD_DIR}/${portal}/document`, {
+                recursive: true,
+            });
+        }
 
         people = biddingPackage.keyPeople.map((item) => item.employees);
     }
-    return Array.prototype.concat.apply([], people);
+    people = Array.prototype.concat.apply([], people);
+    people.map((x) => {
+        if (
+            !fs.existsSync(
+                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}`
+            )
+        ) {
+            fs.mkdirSync(
+                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}`,
+                {
+                    recursive: true,
+                }
+            );
+            fs.mkdirSync(
+                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences`,
+                {
+                    recursive: true,
+                }
+            );
+            fs.mkdirSync(
+                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/`,
+                {
+                    recursive: true,
+                }
+            );
+            fs.mkdirSync(
+                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}`,
+                {
+                    recursive: true,
+                }
+            );
+            fs.mkdirSync(
+                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}`,
+                {
+                    recursive: true,
+                }
+            );
+        }
+        x.experiences.map((y) => {
+            fs.copyFile(
+                `${SERVER_DIR}/${y.urlFile}`,
+                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/${y.file}`,
+                (err) => {
+                    if (err) {
+                        console.log("Error Found:", err);
+                    }
+                }
+            );
+            if (y.urlFile)
+                documentList.push(
+                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/${y.file}`
+                );
+        });
+    });
+    return people;
 };

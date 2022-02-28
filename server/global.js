@@ -53,6 +53,7 @@ module.exports = async (server) => {
   global.SERVER_DIR = __dirname;
   global.SERVER_BACKUP_DIR = path.resolve(__dirname, "..", "backup");
   global.SERVER_MODELS_DIR = SERVER_DIR + "/models";
+  global.SERVER_UPLOAD_DIR = SERVER_DIR + "/upload";
   global.SERVER_MODULES_DIR = SERVER_DIR + "/modules";
   global.SERVER_HELPERS_DIR = SERVER_DIR + "/helpers";
   global.SERVER_MIDDLEWARE_DIR = SERVER_DIR + "/middleware";
