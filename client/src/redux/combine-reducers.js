@@ -186,7 +186,7 @@ const appReducer = combineReducers({
     career,
     major,
     certificate,
-    // biddingPackageInfo,
+    biddingPackageInfo,
     biddingPackagesManager,
 
     // hr-tranning

@@ -19,6 +19,7 @@ export function biddingPackagesManager(state = initState, action) {
         case BiddingPackageConstants.ADD_BIDDING_PACKAGE_REQUEST:
         case BiddingPackageConstants.UPDATE_INFOR_BIDDING_PACKAGE_REQUEST:
         case BiddingPackageConstants.DELETE_BIDDING_PACKAGE_REQUEST:
+        case BiddingPackageConstants.GET_DOCUMENT_REQUEST:
         case BiddingPackageConstants.IMPORT_BIDDING_PACKAGE_REQUEST:
             return {
                 ...state,
@@ -76,6 +77,7 @@ export function biddingPackagesManager(state = initState, action) {
         case BiddingPackageConstants.ADD_BIDDING_PACKAGE_FAILURE:
         case BiddingPackageConstants.UPDATE_INFOR_BIDDING_PACKAGE_FAILURE:
         case BiddingPackageConstants.DELETE_BIDDING_PACKAGE_FAILURE:
+        case BiddingPackageConstants.IMPORT_BIDDING_PACKAGE_FAILURE:
         case BiddingPackageConstants.IMPORT_BIDDING_PACKAGE_FAILURE:
             return {
                 ...state,

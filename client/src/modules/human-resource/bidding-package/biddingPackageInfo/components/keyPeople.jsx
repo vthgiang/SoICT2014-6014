@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ConfirmNotification, DataTableSetting, DatePicker, ExportExcel, SelectBox } from '../../../../../common-components';
+import { BiddingPackageManagerActions } from '../../biddingPackageManagement/redux/actions';
+import { BiddingPackageReduxAction } from '../../redux/actions';
 
 function KeyPeople(props) {
     const [state, setState] = useState({
@@ -314,8 +317,11 @@ function KeyPeople(props) {
 
     return (
         <div id = {id} className="tab-pane">
-            <div className="form-group pull-right" style={{padding: '6px 12px', margin: '5px'}}>
+            <div className="form-group pull-right" style={{padding: '6px 12px', margin: '5px', width: '100%'}}>
                 <ExportExcel id="download_template_search_package" type='link' exportData={convertDataExport()} buttonName='Download hồ sơ nhân sự chủ chốt' />
+                <a className="btn btn-success" style={{ paddingLeft: '15px', marginLeft: '15px'}} onClick={() => props.downLoadDocument(props._id)} title="Tải xuống file minh chứng">
+                    Tải xuống file minh chứng
+                </a>
             </div>
             <div className="box-body qlcv">
                 {
@@ -427,7 +433,7 @@ function KeyPeople(props) {
 
 const mapState = (state) => {
     const { career, auth } = state;
-    return { career, auth };
+    return {  career, auth };
 }
 
 const keyPeople = connect(mapState, null)(withTranslate(KeyPeople));
