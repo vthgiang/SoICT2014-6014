@@ -12,6 +12,7 @@ import { BiddingPackageManagerActions } from '../redux/actions';
 import { MajorActions } from '../../../major/redux/actions';
 import { CareerReduxAction } from '../../../career/redux/actions';
 import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageReduxAction } from '../../redux/actions';
 
 const BiddingPackageDetailForm = (props) => {
 
@@ -54,6 +55,10 @@ const BiddingPackageDetailForm = (props) => {
     let { _id, biddingPackageDetail } = state;
     console.log("biddingPackageDetail", biddingPackageDetail)
 
+    const handleDownLoadDocument = (id) => {
+        props.downLoadDocument(id)
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -88,12 +93,14 @@ const BiddingPackageDetailForm = (props) => {
                                     {/* Danh sách nhân sự chủ chốt */}
                                     <KeyPeople
                                         id={`view_key_people_bidding_package${_id}`}
+                                        _id={_id}
                                         listCareer={career?.listPosition}
                                         listMajor={major?.listMajor}
                                         listCertificate={certificate?.listCertificate}
                                         keyPersonnelRequires={biddingPackageDetail.keyPersonnelRequires}
                                         keyPeople={biddingPackageDetail.keyPeople}
                                         biddingPackage={biddingPackageDetail}
+                                        downLoadDocument={handleDownLoadDocument}
                                     />
                                 </div>
                             </div>
@@ -111,9 +118,11 @@ function mapState(state) {
 
 const actionCreators = {
     getDetailBiddingPackage: BiddingPackageManagerActions.getDetailBiddingPackage,
+    downLoadDocument: BiddingPackageManagerActions.downloadPackageDocument,
     getListMajor: MajorActions.getListMajor,
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
-    getListCertification: CertificateActions.getListCertificate
+    getListCertification: CertificateActions.getListCertificate,
+    downLoadDocument: BiddingPackageReduxAction.downloadPackageDocument,
 };
 
 const detailBiddingPackage = connect(mapState, actionCreators)(withTranslate(BiddingPackageDetailForm));

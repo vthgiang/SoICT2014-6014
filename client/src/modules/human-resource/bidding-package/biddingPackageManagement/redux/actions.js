@@ -4,12 +4,16 @@ import {
 import {
     BiddingPackageService
 } from "./services";
+
+const FileDownload = require("js-file-download");
+
 export const BiddingPackageManagerActions = {
     getAllBiddingPackage,
     addNewBiddingPackage,
     updateBiddingPackage,
     deleteBiddingPackage,
-    getDetailBiddingPackage
+    getDetailBiddingPackage,
+    downloadPackageDocument
     // importBiddingPackages
 };
 
@@ -138,6 +142,34 @@ function deleteBiddingPackage(id, email) {
             .catch(err => {
                 dispatch({
                     type: BiddingPackageConstants.DELETE_BIDDING_PACKAGE_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+/**
+ * Tải file minh chứng nhân sự chủ chốt
+ * @id : id gói thầu
+ */
+
+function downloadPackageDocument(id) {
+    return dispatch => {
+        dispatch({
+            type: BiddingPackageConstants.DELETE_BIDDING_PACKAGE_REQUEST
+        });
+
+        BiddingPackageService.getBiddingPackageDocument(id)
+            .then(res => {
+                dispatch({
+                    type: BiddingPackageConstants.GET_DOCUMENT_SUCCESS,
+                })
+                const content = res.headers["content-type"];
+                FileDownload(res.data, 'data', content);
+            })
+            .catch(err => {
+                dispatch({
+                    type: BiddingPackageConstants.GET_DOCUMENT_FAILURE,
                     error: err
                 });
             })

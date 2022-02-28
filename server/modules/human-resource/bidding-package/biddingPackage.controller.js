@@ -1,7 +1,9 @@
 const biddingPackageService = require("./biddingPackage.service");
 const CompanyServices = require(`../../system-admin/company/company.service`);
-
+const fs = require("fs");
 const Log = require(`../../../logs`);
+const archiver = require("archiver");
+const exec = require("child_process").exec;
 
 /** Lấy danh sách vị trí công việc */
 exports.searchBiddingPackage = async (req, res) => {
@@ -163,25 +165,56 @@ exports.autoUpdateEmployeeBiddingStatus = async () => {
 
 exports.getBiddingPackageDocument = async (req, res) => {
     try {
-        data = await biddingPackageService.getBiddingPackageDocument(
+        const rootPath = await biddingPackageService.getBiddingPackageDocument(
             req.params.id,
             req.portal
         );
-        console.log(data, req.params.id);
-        await Log.info(req.user.email, "GET_BIDDING_PACKGAGE_DOCUMENT", req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ["get_bidding_package_success"],
-            content: data,
-        });
+        await Log.info(
+            req.user.email,
+            "download_all_file_of_document_success",
+            req.portal
+        );
+        if (rootPath) {
+            const output = fs.createWriteStream(rootPath + "/document.zip");
+            const archive = archiver("zip");
+
+            archive.pipe(output);
+            archive.directory(rootPath, false);
+            archive.on("error", (err) => {
+                throw err;
+            });
+            archive.on("end", function () {
+                setTimeout(() => {
+                    console.log("gửi file");
+                    res.download(rootPath + "/document.zip", 'document.zip');
+                    // xong rồi xóa thư mục đi
+                    if (
+                        fs.existsSync(`${SERVER_UPLOAD_DIR}/${req.portal}`)
+                    ) {
+                        exec(
+                            `rm -rf ${SERVER_UPLOAD_DIR}/${req.portal}`,
+                            function (err) {
+                                console.log("er", err);
+                            }
+                        );
+                    }
+                }, 2000);
+            });
+            archive.finalize("close");
+        }
     } catch (error) {
-        await Log.error(req.user.email, "GET_BIDDING_PACKGAGE_DOCUMENT", req.portal);
+        console.log("error", error);
+        await Log.error(
+            req.user.email,
+            "download_all_file_of_document_faile",
+            req.portal
+        );
         res.status(400).json({
             success: false,
-            messages: ["get_bidding_package_failure"],
-            content: {
-                error: error,
-            },
+            messages: Array.isArray(error)
+                ? error
+                : ["download_all_file_of_document_faile"],
+            content: error,
         });
     }
 };

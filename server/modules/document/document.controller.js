@@ -1,8 +1,8 @@
 const DocumentServices = require("./document.service");
 const Logger = require(`../../logs`);
-const fs = require('fs');
-const archiver = require('archiver');
-const exec = require('child_process').exec;
+const fs = require("fs");
+const archiver = require("archiver");
+const exec = require("child_process").exec;
 /**
  * Các controller cho phần quản lý tài liệu văn bản
  */
@@ -303,7 +303,7 @@ exports.downloadDocumentFileScan = async (req, res) => {
 exports.downloadAllFileOfDocument = async (req, res) => {
     try {
         const rootPath = await DocumentServices.downloadAllFileOfDocument(
-           req.query,
+            req.query,
             req.portal
         );
         await Logger.info(
@@ -314,27 +314,32 @@ exports.downloadAllFileOfDocument = async (req, res) => {
 
         if (rootPath) {
             const output = fs.createWriteStream(rootPath + "/document.zip");
-            const archive = archiver('zip');
+            const archive = archiver("zip");
 
             archive.pipe(output);
             archive.directory(rootPath, false);
-            archive.on('error', (err) => {
-                throw(err);
+            archive.on("error", (err) => {
+                throw err;
             });
-            archive.on('end', function() {
-                setTimeout(()=>{
-                    console.log('gửi file')
-                    res.download(rootPath + '/document.zip');
+            archive.on("end", function () {
+                setTimeout(() => {
+                    console.log("gửi file");
+                    res.download(rootPath + "/document.zip");
                     // xong rồi xóa thư mục đi
                     if (fs.existsSync(`${SERVER_BACKUP_DIR}/download`)) {
-                        exec(`rm -rf ${SERVER_BACKUP_DIR}/download`, function (err) {console.log('er', err)});
-                    };
-                }, 3000)
-            })
-            archive.finalize('close');
+                        exec(
+                            `rm -rf ${SERVER_BACKUP_DIR}/download`,
+                            function (err) {
+                                console.log("er", err);
+                            }
+                        );
+                    }
+                }, 3000);
+            });
+            archive.finalize("close");
         }
     } catch (error) {
-        console.log('error', error);
+        console.log("error", error);
         await Logger.error(
             req.user.email,
             "download_all_file_of_document_faile",
@@ -420,7 +425,7 @@ exports.createDocumentCategory = async (req, res) => {
     }
 };
 
-exports.showDocumentCategory = (req, res) => { };
+exports.showDocumentCategory = (req, res) => {};
 
 exports.editDocumentCategory = async (req, res) => {
     try {
@@ -952,36 +957,50 @@ exports.importDocumentArchive = async (req, res) => {
 };
 
 exports.chartDataDocument = async (req, res) => {
-
     try {
         const chartDoc = await DocumentServices.chartDataDocument(
             req.portal,
             req.user.company._id,
             req.query.listChart
         );
-        let chartDocChart = chartDoc.result
-        let docList = chartDocChart.document
-        let result = {}
+        let chartDocChart = chartDoc.result;
+        let docList = chartDocChart.document;
+        let result = {};
         // data chart document by category
 
-        if (req.query.listChart[0] === "all" || req.query.listChart.indexOf("documentByCategory") !== -1 ){
-            let categoryList = chartDocChart.categorys
-            const dataCategory = categoryList.map(category => {
-                let docs = docList.filter(doc => doc.category !== undefined && JSON.stringify(doc.category) === JSON.stringify(category._id)).length;
-                return [
-                    category.name,
-                    docs
-                ]
+        if (
+            req.query.listChart[0] === "all" ||
+            req.query.listChart.indexOf("documentByCategory") !== -1
+        ) {
+            let categoryList = chartDocChart.categorys;
+            const dataCategory = categoryList.map((category) => {
+                let docs = docList.filter(
+                    (doc) =>
+                        doc.category !== undefined &&
+                        JSON.stringify(doc.category) ===
+                            JSON.stringify(category._id)
+                ).length;
+                return [category.name, docs];
             });
-            let valueCatagory = dataCategory.filter(d => d[1] > 0 || d[2] > 0)
-            result = {...result,chartCategory : valueCatagory}
+            let valueCatagory = dataCategory.filter(
+                (d) => d[1] > 0 || d[2] > 0
+            );
+            result = { ...result, chartCategory: valueCatagory };
         }
 
         // data chart document by view,download
-        if (req.query.listChart[0] === "all" || req.query.listChart.indexOf("documentByViewAndDownload") !== -1 ){
-            let categoryList = chartDocChart.categorys
-            const dataViewDownload = categoryList.map(category => {
-                let docs = docList.filter(doc => doc.category !== undefined && JSON.stringify(doc.category) === JSON.stringify(category._id));
+        if (
+            req.query.listChart[0] === "all" ||
+            req.query.listChart.indexOf("documentByViewAndDownload") !== -1
+        ) {
+            let categoryList = chartDocChart.categorys;
+            const dataViewDownload = categoryList.map((category) => {
+                let docs = docList.filter(
+                    (doc) =>
+                        doc.category !== undefined &&
+                        JSON.stringify(doc.category) ===
+                            JSON.stringify(category._id)
+                );
                 let totalDownload = 0;
                 let totalView = 0;
                 for (let index = 0; index < docs.length; index++) {
@@ -989,93 +1008,116 @@ exports.chartDataDocument = async (req, res) => {
                     totalDownload = totalDownload + element.numberOfDownload;
                     totalView = totalView + element.numberOfView;
                 }
-                return [
-                    category.name,
-                    totalView,
-                    totalDownload
-                ]
+                return [category.name, totalView, totalDownload];
             });
-            let valueViewDownLoad = dataViewDownload.filter(d => d[1] > 0 || d[2] > 0)
-            result = {...result,chartViewDownLoad : valueViewDownLoad}
+            let valueViewDownLoad = dataViewDownload.filter(
+                (d) => d[1] > 0 || d[2] > 0
+            );
+            result = { ...result, chartViewDownLoad: valueViewDownLoad };
         }
         // data chart document by archive
 
-        if (req.query.listChart[0] === "all" || req.query.listChart.indexOf("documentByArchive") !== -1){
-            let archives = chartDocChart.archives
-            let  countArchive = [], idArchive = [];
-            for (let i = 0; i< archives.list.length;i++) {
+        if (
+            req.query.listChart[0] === "all" ||
+            req.query.listChart.indexOf("documentByArchive") !== -1
+        ) {
+            let archives = chartDocChart.archives;
+            let countArchive = [],
+                idArchive = [];
+            for (let i = 0; i < archives.list.length; i++) {
                 countArchive[i] = 0;
-                idArchive.push(archives.list[i]._id)
+                idArchive.push(archives.list[i]._id);
             }
-            docList.map(doc => {
-                doc.archives.map(archive => {
-                    let idx = idArchive.findIndex(vl => JSON.stringify(vl) === JSON.stringify(archive))
+            docList.map((doc) => {
+                doc.archives.map((archive) => {
+                    let idx = idArchive.findIndex(
+                        (vl) => JSON.stringify(vl) === JSON.stringify(archive)
+                    );
                     countArchive[idx]++;
-                })
-            })
-            let typeNameArchive = [], shortNameArchive = [];
+                });
+            });
+            let typeNameArchive = [],
+                shortNameArchive = [];
             for (let i in archives.list) {
                 let length = archives.list[i].path.length;
-                let longName = "..." + archives.list[i].path.slice(length - 18 > 0 ? length - 18 : 0, length);
-                let name = archives.list[i].path.length > 15 ? longName : archives.list[i].path;
+                let longName =
+                    "..." +
+                    archives.list[i].path.slice(
+                        length - 18 > 0 ? length - 18 : 0,
+                        length
+                    );
+                let name =
+                    archives.list[i].path.length > 15
+                        ? longName
+                        : archives.list[i].path;
                 shortNameArchive.push(name);
                 typeNameArchive.push(archives.list[i].path);
             }
-            let countArchiveChart =[].concat(countArchive);
-            countArchiveChart.unshift(' ')
+            let countArchiveChart = [].concat(countArchive);
+            countArchiveChart.unshift(" ");
             let dataArchiveChart = {
                 count: countArchiveChart,
                 type: typeNameArchive,
-                shortName: shortNameArchive
-            }
+                shortName: shortNameArchive,
+            };
             let valueArchive = {
-                dataTree :{
-                    archives : archives,
-                    countArchive:countArchive,
-                    idArchive:idArchive
+                dataTree: {
+                    archives: archives,
+                    countArchive: countArchive,
+                    idArchive: idArchive,
                 },
-                dataChart:dataArchiveChart
-            }
-            result = {...result,chartArchive:valueArchive}
+                dataChart: dataArchiveChart,
+            };
+            result = { ...result, chartArchive: valueArchive };
         }
 
         // // data chart document by domain
-        if (req.query.listChart[0] === "all" || req.query.listChart.indexOf("documentByDomain") !== -1){
-            let domains = chartDocChart.domains
-            let  countDomain = [], idDomain = [];
+        if (
+            req.query.listChart[0] === "all" ||
+            req.query.listChart.indexOf("documentByDomain") !== -1
+        ) {
+            let domains = chartDocChart.domains;
+            let countDomain = [],
+                idDomain = [];
             for (let i in domains.list) {
                 countDomain[i] = 0;
-                idDomain.push(domains.list[i]._id)
+                idDomain.push(domains.list[i]._id);
             }
-            docList.map(doc => {
-                doc.domains.map(domain => {
-                    let idx = idDomain.findIndex(vl => JSON.stringify(vl) === JSON.stringify(domain))
+            docList.map((doc) => {
+                doc.domains.map((domain) => {
+                    let idx = idDomain.findIndex(
+                        (vl) => JSON.stringify(vl) === JSON.stringify(domain)
+                    );
                     countDomain[idx]++;
-                })
-            })
-            let typeNameDomain = [], shortNameDomain = []
+                });
+            });
+            let typeNameDomain = [],
+                shortNameDomain = [];
             for (let i in domains.list) {
                 let longName = domains.list[i].name.slice(0, 15) + "...";
-                let name = domains.list[i].name.length > 15 ? longName : domains.list[i].name;
+                let name =
+                    domains.list[i].name.length > 15
+                        ? longName
+                        : domains.list[i].name;
                 shortNameDomain.push(name);
                 typeNameDomain.push(domains.list[i].name);
             }
-            let countDomainChart =[].concat(countDomain);
-            countDomainChart.unshift(' ')
+            let countDomainChart = [].concat(countDomain);
+            countDomainChart.unshift(" ");
             let dataDomainChart = {
                 count: countDomainChart,
                 type: typeNameDomain,
-                shortName: shortNameDomain
-            }
+                shortName: shortNameDomain,
+            };
             let valueDomain = {
-                dataTree :{
-                    domains : domains,
-                    countDomain:countDomain,
-                    idDomain:idDomain
+                dataTree: {
+                    domains: domains,
+                    countDomain: countDomain,
+                    idDomain: idDomain,
                 },
-                dataChart:dataDomainChart
-            }
-            result = { ...result, chartDomain:valueDomain}
+                dataChart: dataDomainChart,
+            };
+            result = { ...result, chartDomain: valueDomain };
         }
         await Logger.info(
             req.user.email,
@@ -1087,8 +1129,7 @@ exports.chartDataDocument = async (req, res) => {
             messages: ["chart_document_by_category"],
             content: result,
         });
-    }
-    catch (error) {
+    } catch (error) {
         await Logger.error(
             req.user.email,
             "chart_document_by_category",
@@ -1102,4 +1143,4 @@ exports.chartDataDocument = async (req, res) => {
             content: error,
         });
     }
-}
+};
