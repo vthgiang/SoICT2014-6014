@@ -263,7 +263,7 @@ function BillDetailForm(props) {
                                                     {billDetail.group === '4' && <td>{x.damagedQuantity}</td>}
                                                     <td>{x.lots.map((lot, index) =>
                                                         <div key={index}>
-                                                            <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                            {lot.lot.code} ? <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p> : ''
                                                         </div>)}
                                                     </td>
                                                     <td>{x.description}</td>
