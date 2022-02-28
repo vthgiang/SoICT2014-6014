@@ -155,7 +155,7 @@ function OrganizationalUnitKpiEditTargetModal(props) {
                 formID="form-edit-target"
                 title={translate('kpi.organizational_unit.edit_target_kpi_modal.edit_organizational_unit_kpi')}
                 msg_success={translate('kpi.organizational_unit.edit_target_kpi_modal.success')}
-                msg_faile={translate('kpi.organizational_unit.edit_target_kpi_modal.failure')}
+                msg_failure={translate('kpi.organizational_unit.edit_target_kpi_modal.failure')}
                 func={handleEditTarget}
                 disableSubmit={!isFormValidated()}
             >

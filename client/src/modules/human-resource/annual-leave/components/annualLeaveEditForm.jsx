@@ -7,6 +7,7 @@ import { DialogModal, ErrorLabel, DatePicker, TimePicker, SelectBox } from '../.
 import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
 
 import { AnnualLeaveActions } from '../redux/actions';
+import isEqual from 'lodash/isEqual';
 
 function AnnualLeaveEditForm(props) {
 
@@ -39,25 +40,43 @@ function AnnualLeaveEditForm(props) {
     });
 
     useEffect(() => {
-        setState({
-            ...state,
-            _id: props._id,
-            employee: props.employee,
-            employeeNumber: props.employeeNumber,
-            organizationalUnit: props.organizationalUnit,
-            endDate: props.endDate,
-            startDate: props.startDate,
-            reason: props.reason,
-            status: props.status,
-            type: props.type,
-            startTime: props.startTime,
-            endTime: props.endTime,
-            totalHours: props.totalHours ? props.totalHours : "",
-            errorOnReason: undefined,
-            errorOnStartDate: undefined,
-            errorOnEndDate: undefined,
-            errorOnTotalHours: undefined,
-        })
+        if (props.requestToChange) {
+            setState({
+                _id: props._id,
+                employee: props.employee,
+                employeeNumber: props.employeeNumber,
+                organizationalUnit: props.organizationalUnit,
+                startDate: formatDate(props?.requestToChange?.startDate),
+                endDate: formatDate(props?.requestToChange?.endDate),
+                type: props?.requestToChange?.type,
+                startTime: props?.requestToChange?.startTime,
+                endTime: props?.requestToChange?.endTime,
+                reason: props?.requestToChange?.reason,
+                status: props.status,
+                totalHours: props?.requestToChange?.totalHours ? props.requestToChange.totalHours : "",
+
+            })
+        } else {
+            setState({
+                ...state,
+                _id: props._id,
+                employee: props.employee,
+                employeeNumber: props.employeeNumber,
+                organizationalUnit: props.organizationalUnit,
+                endDate: props.endDate,
+                startDate: props.startDate,
+                reason: props.reason,
+                status: props.status,
+                type: props.type,
+                startTime: props.startTime,
+                endTime: props.endTime,
+                totalHours: props.totalHours ? props.totalHours : "",
+                errorOnReason: undefined,
+                errorOnStartDate: undefined,
+                errorOnEndDate: undefined,
+                errorOnTotalHours: undefined,
+            })
+        }
     }, [props._id])
 
     const { translate, annualLeave, department } = props;
@@ -247,12 +266,13 @@ function AnnualLeaveEditForm(props) {
         }
     }
 
+    let title = props?.requestToChange ? "Phê duyệt yêu cầu chỉnh sửa nghỉ phép" : translate('human_resource.annual_leave.edit_annual_leave')
     return (
         <React.Fragment>
             <DialogModal
                 size='50' modalID="modal-edit-sabbtical" isLoading={annualLeave.isLoading}
                 formID="form-edit-sabbtical"
-                title={translate('human_resource.annual_leave.edit_annual_leave')}
+                title={title}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
@@ -289,13 +309,18 @@ function AnnualLeaveEditForm(props) {
                                 value={startDate}
                                 onChange={handleStartDateChange}
                             />
+                            <div className="help-block" style={{ color: "#e06a6a" }}>{!isEqual(state.startDate, props.startDate) ? ` Giá trị cũ ${props.startDate}` : ""}</div>
                             {type &&
-                                < TimePicker
-                                    id="edit_start_time"
-                                    ref={editStartTime}
-                                    value={startTime}
-                                    onChange={handleStartTimeChange}
-                                />
+                                <>
+                                    < TimePicker
+                                        id="edit_start_time"
+                                        ref={editStartTime}
+                                        value={startTime}
+                                        onChange={handleStartTimeChange}
+                                    />
+                                    <div className="help-block" style={{ color: "#e06a6a" }}>{!isEqual(state.startTime, props.startTime) ? ` Giá trị cũ ${props.startTime}` : ""}</div>
+                                </>
+
                             }
                             <ErrorLabel content={errorOnStartDate} />
                         </div>
@@ -308,13 +333,18 @@ function AnnualLeaveEditForm(props) {
                                 value={endDate}
                                 onChange={handleEndDateChange}
                             />
+                            <div className="help-block" style={{ color: "#e06a6a" }}>{!isEqual(state.endDate, props.endDate) ? ` Giá trị cũ ${props.endDate}` : ""}</div>
                             {type &&
-                                < TimePicker
-                                    id="edit_end_time"
-                                    ref={editEndTime}
-                                    value={endTime}
-                                    onChange={handleEndTimeChange}
-                                />
+                                <>
+                                    <div className="help-block" style={{ color: "#e06a6a" }}>{!isEqual(state.endTime, props.endTime) ? ` Giá trị cũ ${props.endTime}` : ""}</div>
+                                    < TimePicker
+                                        id="edit_end_time"
+                                        ref={editEndTime}
+                                        value={endTime}
+                                        onChange={handleEndTimeChange}
+                                    />
+                                </>
+
                             }
                             <ErrorLabel content={errorOnEndDate} />
                         </div>
@@ -325,6 +355,7 @@ function AnnualLeaveEditForm(props) {
                             <label>{translate('human_resource.annual_leave.totalHours')} <span className="text-red">*</span></label>
                             <input type="number" className="form-control" value={totalHours} onChange={handleTotalHoursChange} />
                             <ErrorLabel content={errorOnTotalHours} />
+                            <div className="help-block" style={{ color: "#e06a6a" }}>{!isEqual(state.totalHours, props.totalHours) ? ` Giá trị cũ ${props.totalHours}` : ""}</div>
                         </div>
                     }
                     {/* Lý do */}
@@ -332,6 +363,8 @@ function AnnualLeaveEditForm(props) {
                         <label>{translate('human_resource.annual_leave.table.reason')}<span className="text-red">*</span></label>
                         <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={handleReasonChange}></textarea>
                         <ErrorLabel content={errorOnReason} />
+                        <div className="help-block" style={{ color: "#e06a6a" }}>{!isEqual(state.reason, props.reason) ? ` Giá trị cũ ${props.reason}` : ""}</div>
+
                     </div>
                     {/* Trạng thái */}
                     <div className="form-group">

@@ -73,7 +73,7 @@ function TransportDepartmentDetails(props) {
                 formID="form-create-transport-requirements"
                 title={"Chi tiết đơn vị vận chuyển"}
                 msg_success={"success"}
-                msg_faile={"fail"}
+                msg_failure={"fail"}
                 // disableSubmit={!isFormValidated()}
                 hasNote={false}
                 size={50}

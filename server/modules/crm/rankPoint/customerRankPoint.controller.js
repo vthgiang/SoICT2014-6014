@@ -1,9 +1,11 @@
 const CustomerRankPointService = require('./customerRankPoint.service');
 const Logger = require(`../../../logs`);
-
+/**
+ * Các controller cho phần Quản lý khách hàng/ Cấu hình hoạt động chăm sóc khách hàng/Phân hạng khách hàng
+ */
 exports.getCustomerRankPoints = async (req, res) => {
     try {
-        const customerRankPoints = await CustomerRankPointService.getCustomerRankPoints(req.portal, req.user.company._id, req.query,req.currentRole);
+        const customerRankPoints = await CustomerRankPointService.getCustomerRankPoints(req.portal, req.user.company._id, req.user._id, req.query,req.currentRole);
         await Logger.info(req.user.email, ' get_customerRankPoints_success ', req.portal);
         res.status(200).json({
             success: true,
@@ -44,7 +46,7 @@ exports.getCustomerRankPointById = async (req, res) => {
 exports.createCustomerRankPoint = async (req, res) => {
     console.log('vao controller');
     try {
-        const newCustomerRankPoint = await CustomerRankPointService.createCustomerRankPoint(req.portal, req.user.company._id, req.body, req.user._id,req.currentRole,req.currentRole);
+        const newCustomerRankPoint = await CustomerRankPointService.createCustomerRankPoint(req.portal, req.user.company._id, req.body, req.user._id,req.currentRole);
         await Logger.info(req.user.email, ' create_customerRankPoint_success ', req.portal);
         res.status(200).json({
             success: true,

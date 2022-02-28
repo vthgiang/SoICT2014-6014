@@ -29,6 +29,7 @@ function searchTimesheets(data) {
                     type: TimesheetsConstants.GET_TIMESHEETS_SUCCESS,
                     payload: res.data.content,
                     callApiByEmployeeId: data.callApiByEmployeeId,
+                    callApiByDashboardPersional: data.callApiByDashboardPersional,
                     trendHoursOff: data.trendHoursOff,
                     trendOvertime: data.trendOvertime,
                 })

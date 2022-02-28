@@ -25,7 +25,7 @@ function ManufacturingMillScheduleCreateForm(props) {
     const [state, setState] = useState({
         month: currentMonthYearDefault,
         allDaysOfMonth: allDaysOfMonthDefault,
-        numberOfTurns: 3,
+        numberOfTurns: 4,
         manufacturingMill: 'all'
     })
    
@@ -113,7 +113,7 @@ function ManufacturingMillScheduleCreateForm(props) {
                 formID="form-create-mill-work-schedule"
                 title={translate('manufacturing.work_schedule.add_work_schedule_mill')}
                 msg_success={translate('manufacturing.work_schedule.create_successfully')}
-                msg_faile={translate('manufacturing.work_schedule.create_failed')}
+                msg_failure={translate('manufacturing.work_schedule.create_failed')}
                 func={save}
                 // disableSubmit={!isFormValidated()}
                 hasNote={false}
@@ -143,10 +143,7 @@ function ManufacturingMillScheduleCreateForm(props) {
                             disabled={false}
                         />
                     </div>
-                    <div className="form-group">
-                        <label>{translate('manufacturing.work_schedule.number_turns')}<span className="text-red">*</span></label>
-                        <input type="number" disabled={true} value={numberOfTurns} className="form-control" ></input>
-                    </div>
+                   
                     <div id="create-croll-table" className="form-inline">
                         <table id="create-work-schedule-table" className="table table-striped table-bordered table-hover not-sort">
                             <thead>

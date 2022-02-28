@@ -26,6 +26,9 @@ const ManufacturingWorksSchema = new Schema({
     address: { // Địa chỉ nhà máy
         type: String
     },
+    turn: { // Số ca làm việc
+        type: Number
+    },
     description: { // Mô tả nhà máy
         type: String
     },

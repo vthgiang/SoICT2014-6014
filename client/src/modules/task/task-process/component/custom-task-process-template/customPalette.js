@@ -34,6 +34,20 @@ export default class CustomPalette {
         create.start(event, shape); 
       }
     }
+    function createProcessTask(suitabilityScore) {
+      return function(event) {
+        const businessObject = bpmnFactory.create('bpmn:SubProcess');
+  
+        businessObject.suitable = suitabilityScore;
+  
+        const shape = elementFactory.createShape({
+          type: 'bpmn:SubProcess',
+          businessObject: businessObject
+        });
+  
+        create.start(event, shape); 
+      }
+    }
 
     return {
       'create.average-task': {
@@ -43,6 +57,15 @@ export default class CustomPalette {
         action: {
           dragstart: createTask(SUITABILITY_SCORE_AVERGE),
           click: createTask(SUITABILITY_SCORE_AVERGE)
+        }
+      },
+      'create.group': {
+        group: 'activity',
+        className: 'bpmn-icon-subprocess-collapsed yellow',
+        title: translate('Create Process Task'),
+        action: {
+          dragstart: createProcessTask(SUITABILITY_SCORE_HIGH),
+          click: createProcessTask(SUITABILITY_SCORE_HIGH)
         }
       },
     }

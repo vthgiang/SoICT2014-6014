@@ -9,9 +9,8 @@ import { customAxisC3js } from '../../../helpers/customAxisC3js';
 
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
-import { UserActions } from '../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
-import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
+import { DashboardUnitActions } from '../redux/actions';
 
 import { AnnualLeaveChartAndTable } from '../../human-resource/employee-dashboard/components/combinedContent';
 import { LoadTaskOrganizationChart } from '../../task/task-dashboard/task-organization-dashboard/loadTaskOrganizationChart'
@@ -23,118 +22,117 @@ import { StatisticsTaskUnits } from './statisticsTaskUnits'
 import c3 from 'c3';
 import "./dashboardUnit.css";
 
-function DashboardUnitForAdmin(props) {
-    const { translate, department, employeesManager, user, tasks } = props;
+/**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
 
+function formatDate(date, monthYear = false, yearMonth = false) {
+    if (date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (yearMonth) {
+            return [year, month].join('-');
+        } else if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+    return date;
+};
+
+let INFO_SEARCH = { // Bộ lọc tìm kiếm
+    organizationalUnits: null,
+}
+
+// giá trị tìm kiếm mặc định mỗi khi search
+const DEFAULT_SEARCH = {
+    'common-params': {
+        organizationalUnits: 'allUnit',
+        currentDate: formatDate(Date.now(), false),
+        month: formatDate(Date.now(), true, true),
+    },
+    'urgent-task': {},
+    'need-to-do-task': {},
+    'annual-leave-chart-and-table': {},
+    'load-task-organization-chart': {},
+    'statistics-task-units': {},
+    'statistics-kpi-units': {},
+}
+
+function DashboardUnitForAdmin(props) {
+    const { translate, department, dashboardUnit } = props;
+    const {allUnitDashboard} = dashboardUnit
     const [state, setState] = useState({
         monthTitle: formatDate(Date.now(), true),
         month: formatDate(Date.now(), true, true),
-        organizationalUnits: null,
-        infoSearch: {
-            organizationalUnits: null,
-        },
+        organizationalUnits: INFO_SEARCH.organizationalUnits,
         // Biểu đồ khẩn cấp / cần làm
         currentDate: formatDate(Date.now(), false),
         listUnit: null,
         urgent: null,
         taskNeedToDo: null,
-        listUnitSelect: []
+        listUnitSelect: [],
     })
-    const { listUnit, urgent, taskNeedToDo, 
+
+    const {
         organizationalUnits, monthTitle, month,
         currentDate, clickUrgentChart, clickNeedTodoChart,
-        listUnitSelect, infoSearch
-    } = state
-    
-    if (tasks && tasks.organizationUnitTasksChart && props.childOrganizationalUnit
-        && (!listUnit || !urgent || !taskNeedToDo)
-    ) {
-        setState({
-            ...state,
-            listUnit: props.childOrganizationalUnit,
-            urgent: tasks.organizationUnitTasksChart.urgent,
-            taskNeedToDo: tasks.organizationUnitTasksChart.taskNeedToDo,
-        })
-    }
+        listUnitSelect
+    } = state;
+
+    useEffect(() => {
+        if (allUnitDashboard?.['urgent-task']?.tasks || allUnitDashboard?.['need-to-do-task']?.tasks)
+            setState({
+                ...state,
+                urgent: allUnitDashboard?.['urgent-task']?.tasks,
+                taskNeedToDo: allUnitDashboard?.['need-to-do-task']?.tasks,
+            })
+    }, [JSON.stringify(allUnitDashboard?.['urgent-task']?.isLoading, allUnitDashboard?.['need-to-do-task']?.isLoading)])
+
 
     useEffect(() => {
         props.getAllUnit();
     }, [])
 
     useEffect(() => {
-        setState({
-            ...state,
-            organizationalUnits: null,
-            infoSearch: {
-                ...state.infoSearch,
-                organizationalUnits: null,
-            },
-        })
-    }, [department.list])
-
-    useEffect(() => {
-        if (!infoSearch?.organizationalUnits && department?.list) {
+        if (department?.list?.length && !department?.isLoading) {
             let unit = department.list.map(item => item?._id)
-    
-            /* Lấy danh sách nhân viên  */
-            props.getAllEmployee({ organizationalUnits: unit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-    
-            /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-            props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: unit });
-            props.getTaskInOrganizationUnitByMonth(unit, month, month, "in_month");
-    
-            /** Lấy dữ liệu công việc sắp hết hạn */
-            props.getTaskByUser({ organizationUnitId: unit, type: "organizationUnit" })
-    
-            let partDate = currentDate.split('-');
-            let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-            props.getTaskInOrganizationUnitByDateNow(unit, newDate)
+            if (unit) {
+                props.getAllUnitDashboardData({
+                    ...DEFAULT_SEARCH,
+                    'common-params': {
+                        organizationalUnits: unit,
+                        currentDate: formatDate(Date.now(), false),
+                        month: formatDate(Date.now(), true, true),
+                    }
+                });
+            }
 
             setState({
                 ...state,
                 organizationalUnits: unit,
-                infoSearch: {
-                    ...state.infoSearch,
-                    organizationalUnits: unit,
-                },
                 listUnitSelect: department.list.map(item => {
                     return { text: item?.name, value: item?._id }
                 })
             })
+
+            handleSelectOrganizationalUnitUrgent(unit);            
         }
-    })
+    }, [JSON.stringify(department?.list),department?.isLoading])
 
     useEffect(() => {
         pieChartNeedTodo();
         pieChartUrgent();
     })
-
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    function formatDate (date, monthYear = false, yearMonth = false) {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (yearMonth) {
-                return [year, month].join('-');
-            } else if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    };
 
     const removePreviousUrgentPieChart = () => {
         const chart = document.getElementById('pieChartUrgent');
@@ -144,6 +142,7 @@ function DashboardUnitForAdmin(props) {
             }
         }
     }
+
     const removePreviousNeedToDoPieChart = () => {
         const chart = document.getElementById('pieChartTaskNeedToDo')
         if (chart) {
@@ -155,7 +154,7 @@ function DashboardUnitForAdmin(props) {
 
     const pieChartUrgent = () => {
         removePreviousUrgentPieChart();
-        let chartUrgentDataTmp = convertDataUrgentPieChart(tasks?.organizationUnitTasksChart?.urgent);
+        let chartUrgentDataTmp = convertDataUrgentPieChart(allUnitDashboard?.['urgent-task']);
 
         const chartUrgent = c3.generate({
             bindto: document.getElementById('pieChartUrgent'),
@@ -172,7 +171,9 @@ function DashboardUnitForAdmin(props) {
                     window.$('#modal-view-all-task-urgent').modal('show');
                 }.bind(this)
             },
-
+            zoom: {
+                enabled: true
+            },
             padding: {
                 top: 20,
                 bottom: 50,
@@ -195,7 +196,7 @@ function DashboardUnitForAdmin(props) {
                         position: "outer-top"
                     },
                     tick: {
-                        format: function(d) {
+                        format: function (d) {
                             if (d - parseInt(d) === 0) {
                                 return d;
                             } else {
@@ -225,7 +226,7 @@ function DashboardUnitForAdmin(props) {
 
     const pieChartNeedTodo = () => {
         removePreviousNeedToDoPieChart();
-        let chartTaskNeedToDoDataTmp = convertDataTaskNeedToDoPieChart(tasks?.organizationUnitTasksChart?.taskNeedToDo);
+        let chartTaskNeedToDoDataTmp = convertDataTaskNeedToDoPieChart(allUnitDashboard?.['need-to-do-task']);
 
         const chartTaskNeedToDo = c3.generate({
             bindto: document.getElementById('pieChartTaskNeedToDo'),
@@ -242,7 +243,9 @@ function DashboardUnitForAdmin(props) {
                     window.$('#modal-view-all-task-need-to-do').modal('show');
                 }.bind(this)
             },
-
+            zoom: {
+                enabled: true
+            },
             padding: {
                 top: 20,
                 bottom: 50,
@@ -266,7 +269,7 @@ function DashboardUnitForAdmin(props) {
                         position: "outer-top"
                     },
                     tick: {
-                        format: function(d) {
+                        format: function (d) {
                             if (d - parseInt(d) === 0) {
                                 return d;
                             } else {
@@ -295,32 +298,20 @@ function DashboardUnitForAdmin(props) {
     }
 
     const handleSelectOrganizationalUnitUrgent = (value) => {
-        setState({
-            ...state,
-            infoSearch: {
-                ...state.infoSearch,
-                organizationalUnits: value,
-            }
-        });
+        INFO_SEARCH = {
+            organizationalUnits: value
+        }
     }
 
     const convertDataUrgentPieChart = (data) => {
         let urgentPieChartDataAxis = ['x'], urgentPieChartDataData = [translate('dashboard_unit.urgent_task_amount')];
 
         // convert công việc khẩn cấp qua dạng c3js
-        if (data && data.length > 0) {
-            const result = data.reduce((total, value) => {
-                if (value?.organizationalUnit?.name) {
-                    total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
-                }
-                return total;
-            }, [])
-
-            for (let key in result) {
-                urgentPieChartDataAxis.push(key)
-                urgentPieChartDataData.push(result[key])
-            }
+        if (data?.urgentPieChartDataAxis && data?.urgentPieChartDataAxis?.length > 0) {
+            urgentPieChartDataAxis = urgentPieChartDataAxis.concat(data.urgentPieChartDataAxis);
+            urgentPieChartDataData = urgentPieChartDataData.concat(data.urgentPieChartDataData)
         }
+
         return [
             urgentPieChartDataAxis,
             urgentPieChartDataData
@@ -329,20 +320,11 @@ function DashboardUnitForAdmin(props) {
 
     const convertDataTaskNeedToDoPieChart = (data) => {
         let taskNeedToDoPieChartAxis = ['x'], taskNeedToDoPieChartData = [translate('dashboard_unit.need_to_do_task_amount')];
+
         // convert công việc cần làm qua dạng c3js
-        if (data && data.length > 0) {
-            const result2 = data.reduce((total, value) => {
-                if (value?.organizationalUnit?.name) {
-                    total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
-                }
-
-                return total;
-            }, [])
-
-            for (let key in result2) {
-                taskNeedToDoPieChartAxis.push(key)
-                taskNeedToDoPieChartData.push(result2[key])
-            }
+        if (data?.taskNeedToDoPieChartAxis && data?.taskNeedToDoPieChartAxis?.length > 0) {
+            taskNeedToDoPieChartAxis = taskNeedToDoPieChartAxis.concat(data.taskNeedToDoPieChartAxis);
+            taskNeedToDoPieChartData = taskNeedToDoPieChartData.concat(data.taskNeedToDoPieChartData)
         }
 
         return [
@@ -352,16 +334,21 @@ function DashboardUnitForAdmin(props) {
     }
 
     const handleUpdateDataUrgent = () => {
-        let partDate = currentDate.split('-');
-        let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-
         setState({
             ...state,
-            organizationalUnits: state.infoSearch?.organizationalUnits,
+            organizationalUnits: INFO_SEARCH.organizationalUnits,
         })
-        props.getTaskInOrganizationUnitByDateNow(infoSearch?.organizationalUnits, newDate);
+        props.getAllUnitDashboardData({
+            ...DEFAULT_SEARCH,
+            'common-params': {
+                organizationalUnits: INFO_SEARCH.organizationalUnits,
+                currentDate: formatDate(Date.now(), false),
+                month: formatDate(Date.now(), true, true),
+            }
+        }
+        );
     }
-    
+
     const handleClickshowTaskUrgent = () => {
         Swal.fire({
             html: `<h3 style="color: red"><div>Công việc được xem là khẩn cấp nếu: ?</div> </h3>
@@ -473,7 +460,7 @@ function DashboardUnitForAdmin(props) {
         })
         return data;
     }
-    
+
     const showUnitTask = (selectBoxUnit, idsUnit) => {
         const { translate } = props
         if (idsUnit && idsUnit.length > 0) {
@@ -482,149 +469,70 @@ function DashboardUnitForAdmin(props) {
         }
     }
 
-        
+    const isLoading = (chartName) => {
+        return allUnitDashboard?.[chartName]?.isLoading
+    }
 
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
-            employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-
-        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
-        let listEmployee = user?.employees;
-        let employeeTasks = [];
-        for (let i in listEmployee) {
-            let tasks = [];
-            let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
-            taskListByStatus && taskListByStatus.forEach(task => {
-                if (task?.accountableEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    accountableTask = [...accountableTask, task._id]
-                }
-                if (task?.consultedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    consultedTask = [...consultedTask, task._id]
-                }
-                if (task?.responsibleEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    responsibleTask = [...responsibleTask, task._id]
-                }
-                if (task?.informedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    informedTask = [...informedTask, task._id]
-                }
-            });
-            tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
-            let totalTask = tasks.filter(function (item, pos) {
-                return tasks.indexOf(item) === pos;
-            })
-            employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i]?.userId?.name, totalTask: totalTask.length }]
-        };
-        if (employeeTasks.length !== 0) {
-            employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
-
-        };
-
-        return (
-            <React.Fragment>
-                <div className="qlcv" style={{ marginBottom: "10px" }}>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                            <SelectMulti id="multiSelectOrganizationalUnitInpriority"
-                                items={listUnitSelect}
-                                options={{
-                                    nonSelectedText: translate('page.non_unit'),
-                                    allSelectedText: translate('page.all_unit'),
-                                }}
-                                onChange={handleSelectOrganizationalUnitUrgent}
-                                value={infoSearch?.organizationalUnits}
-                            >
-                            </SelectMulti>
-                        </div>
-                        <button type="button" className="btn btn-success" onClick={handleUpdateDataUrgent}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+    return (
+        <React.Fragment>
+            <div className="qlcv" style={{ marginBottom: "10px" }}>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                        <SelectMulti id="multiSelectOrganizationalUnitInpriority"
+                            items={listUnitSelect}
+                            options={{
+                                nonSelectedText: translate('page.non_unit'),
+                                allSelectedText: translate('page.all_unit'),
+                            }}
+                            onChange={handleSelectOrganizationalUnitUrgent}
+                            value={state?.organizationalUnits ? state?.organizationalUnits : []}
+                        >
+                        </SelectMulti>
                     </div>
+                    <button type="button" className="btn btn-success" onClick={handleUpdateDataUrgent}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                 </div>
+            </div>
 
-                <div className="qlcv">
-                    <ViewAllTaskUrgent data={tasks?.organizationUnitTasksChart?.urgent} clickUrgentChart={clickUrgentChart} />
-                    <ViewAllTaskNeedToDo data={tasks?.organizationUnitTasksChart?.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
-                    
-                    {/* Biểu đồ só công việc khẩn cấp /  cần làm */}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-solid">
-                                <div className="box-header with-border">
-                                    <div className="box-title" >
-                                        {translate('dashboard_unit.urgent_chart')}
-                                        {
-                                            organizationalUnits && organizationalUnits.length < 2 ?
-                                                <>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
-                                                </>
-                                                :
-                                                <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                                </span>
-                                        }
-                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskUrgent()}>
-                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
-                                        </a>
-                                    </div>
-                                </div>
+            <div className="qlcv">
+                <ViewAllTaskUrgent chartData={allUnitDashboard?.['urgent-task']?.tasks} clickUrgentChart={clickUrgentChart} />
+                <ViewAllTaskNeedToDo chartData={allUnitDashboard?.['need-to-do-task']?.tasks} clickNeedTodoChart={clickNeedTodoChart} />
 
-                                <div className="box-body" style={{ marginBottom: 15 }}>
-                                    <div className="row " >
-                                        <div className="">
-                                            <div className="col-md-12">
-                                                <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
-                                                    {
-                                                        tasks.isLoading ? <p>{translate('general.loading')}</p>
-                                                            : tasks?.organizationUnitTasksChart?.urgent?.length > 0 
-                                                                ? <div id="pieChartUrgent"></div>
-                                                                : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                {/* Biểu đồ số công việc khẩn cấp /  cần làm */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box box-solid">
+                            <div className="box-header with-border">
+                                <div className="box-title" >
+                                    {translate('dashboard_unit.urgent_chart')}
+                                    {
+                                        organizationalUnits && organizationalUnits.length < 2 ?
+                                            <>
+                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
+                                            </>
+                                            :
+                                            <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
+                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
+                                                <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                            </span>
+                                    }
+                                    <a title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskUrgent()}>
+                                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="box box-solid">
-                                <div className="box-header with-border">
-                                    <div className="box-title" >
-                                        {translate('dashboard_unit.need_to_do_chart')}
-                                        {
-                                            organizationalUnits && organizationalUnits.length < 2 ?
-                                                <>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
-                                                </>
-                                                :
-                                                <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                                </span>
-                                        }
-                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskNeedToDo()}>
-                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div className="box-body" style={{ marginBottom: 15 }}>
-                                    <div className="row " >
+                            <div className="box-body" style={{ marginBottom: 15 }}>
+                                <div className="row " >
+                                    <div className="">
                                         <div className="col-md-12">
                                             <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                                 {
-                                                    tasks.isLoading ?
-                                                        <p>{translate('general.loading')}</p>
-                                                        :
-                                                        tasks?.organizationUnitTasksChart?.taskNeedToDo?.length > 0 
-                                                            ? <div id="pieChartTaskNeedToDo"></div>
+                                                    isLoading('urgent-task') ? <p>{translate('general.loading')}</p>
+                                                        : allUnitDashboard?.['urgent-task']?.tasks?.length > 0
+                                                            ? <div id="pieChartUrgent"></div>
                                                             : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                                 }
                                             </div>
@@ -634,119 +542,159 @@ function DashboardUnitForAdmin(props) {
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <LazyLoadComponent>
-                        <AnnualLeaveChartAndTable
-                            defaultUnit={true} 
-                            organizationalUnits={organizationalUnits}
-                            childOrganizationalUnit={listUnitSelect?.map(item => {
-                                return {
-                                    id: item?.value,
-                                    name: item?.text
-                                }
-                            })}
-                        />
-                    </LazyLoadComponent>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box box-solid">
+                            <div className="box-header with-border">
+                                <div className="box-title" >
+                                    {translate('dashboard_unit.need_to_do_chart')}
+                                    {
+                                        organizationalUnits && organizationalUnits.length < 2 ?
+                                            <>
+                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
+                                            </>
+                                            :
+                                            <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
+                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
+                                                <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                            </span>
+                                    }
+                                    <a title={translate('task.task_management.explain')} onClick={() => handleClickshowTaskNeedToDo()}>
+                                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                    </a>
+                                </div>
+                            </div>
 
-                    {/*Dashboard tải công việc */}
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <LazyLoadComponent once={true}>
-                                <LoadTaskOrganizationChart
-                                    getUnitName={getUnitName}
-                                    showUnitTask={showUnitTask}
-                                    tasks={tasks?.organizationUnitTasks}
-                                    listEmployee={user && user.employees}
-                                    units={listUnitSelect}
-                                    startMonth={month}
-                                    endMonth={month}
-                                    startMonthTitle={monthTitle}
-                                    idsUnit={organizationalUnits}
-                                    employeeLoading={user?.employeeLoading}
-                                    typeChart={"followUnit"}
-                                />
-                            </LazyLoadComponent>
-                        </div>
-                    </div>
-
-                    {/* Thống kê CV */}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <LazyLoadComponent>
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">
-                                            {translate('dashboard_unit.statistics_task_unit')} {monthTitle}
+                            <div className="box-body" style={{ marginBottom: 15 }}>
+                                <div className="row " >
+                                    <div className="col-md-12">
+                                        <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 0 }}>
                                             {
-                                                organizationalUnits && organizationalUnits.length < 2 ?
-                                                    <>
-                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                        <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
-                                                    </>
+                                                isLoading('need-to-do-task') ?
+                                                    <p>{translate('general.loading')}</p>
                                                     :
-                                                    <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
-                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
-                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                                    </span>
+                                                    allUnitDashboard?.['need-to-do-task']?.tasks?.length > 0
+                                                        ? <div id="pieChartTaskNeedToDo"></div>
+                                                        : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
                                             }
-                                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showStatisticsTaskUnitDoc()}>
-                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
-                                            </a>
                                         </div>
                                     </div>
-                                    <div className="box-body">
-                                        {
-                                            organizationalUnits &&
-                                                <StatisticsTaskUnits 
-                                                    organizationalUnits={department?.list?.filter(item => organizationalUnits.includes(item?._id))} 
-                                                    monthStatistics={month} 
-                                                />
-                                        }
-                                    </div>
                                 </div>
-                            </LazyLoadComponent>
-                        </div>
-                    </div>
-
-                    {/* Thống kê KPI */}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <LazyLoadComponent>
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">Biểu đồ thống kê điểm KPI {monthTitle} giữa các đơn vị </div>
-                                    </div>
-                                    <div className="box-body">
-                                        {
-                                            organizationalUnits &&
-                                            <StatisticsKpiUnits organizationalUnitIds={organizationalUnits} month={month} type="for-admin"/>
-                                        }
-                                    </div>
-                                </div>
-                            </LazyLoadComponent>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
-        );
+                <LazyLoadComponent>
+                    <AnnualLeaveChartAndTable
+                        defaultUnit={true}
+                        organizationalUnits={organizationalUnits}
+                        childOrganizationalUnit={listUnitSelect?.map(item => {
+                            return {
+                                id: item?.value,
+                                name: item?.text
+                            }
+                        })}
+                        chartData={allUnitDashboard?.['annual-leave-chart-and-table']}
+                    />
+                </LazyLoadComponent>
+
+                {/*Dashboard tải công việc */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <LazyLoadComponent once={true}>
+                            <LoadTaskOrganizationChart
+                                getUnitName={getUnitName}
+                                showUnitTask={showUnitTask}
+                                units={listUnitSelect}
+                                startMonthTitle={monthTitle}
+                                idsUnit={organizationalUnits}
+                                typeChart={"followUnit"}
+                                chartData={allUnitDashboard}
+                            />
+                        </LazyLoadComponent>
+                    </div>
+                </div>
+
+                {/* Thống kê CV */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <LazyLoadComponent>
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">
+                                        {translate('dashboard_unit.statistics_task_unit')} {monthTitle}
+                                        {
+                                            organizationalUnits && organizationalUnits.length < 2 ?
+                                                <>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <span>{` ${getUnitName(listUnitSelect, organizationalUnits).map(o => o).join(", ")}`}</span>
+                                                </>
+                                                :
+                                                <span onClick={() => showUnitTask(listUnitSelect, organizationalUnits)} style={{ cursor: 'pointer' }}>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnits?.length}</a>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                </span>
+                                        }
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showStatisticsTaskUnitDoc()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', cursor: 'pointer', marginLeft: '5px' }} />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div className="box-body">
+                                    {
+                                        organizationalUnits &&
+                                        <StatisticsTaskUnits
+                                            organizationalUnits={department?.list?.filter(item => organizationalUnits.includes(item?._id))}
+                                            monthStatistics={month}
+                                            chartData={allUnitDashboard?.['statistics-task-units']}
+                                        />
+                                    }
+                                </div>
+                            </div>
+                        </LazyLoadComponent>
+                    </div>
+                </div>
+
+                {/* Thống kê KPI */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <LazyLoadComponent>
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">Biểu đồ thống kê điểm KPI {monthTitle} giữa các đơn vị </div>
+                                </div>
+                                <div className="box-body">
+                                    {
+                                        organizationalUnits &&
+                                        <StatisticsKpiUnits 
+                                            organizationalUnitIds={organizationalUnits} 
+                                            month={month} 
+                                            type="for-admin" 
+                                        />
+                                    }
+                                </div>
+                            </div>
+                        </LazyLoadComponent>
+                    </div>
+                </div>
+            </div>
+        </React.Fragment>
+    );
 }
 
 function mapState(state) {
-    const { department, employeesManager, tasks, user } = state;
-    return { department, employeesManager, tasks, user };
+    const { department, dashboardUnit } = state;
+    return { department, dashboardUnit };
 }
 
 const actionCreators = {
     getAllUnit: DepartmentActions.get,
-
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
-
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-
-    getTaskByUser: taskManagementActions.getTasksByUser,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
+    getAllUnitDashboardData: DashboardUnitActions.getAllUnitDashboardData,
 };
 
 export default connect(mapState, actionCreators)(withTranslate(DashboardUnitForAdmin));

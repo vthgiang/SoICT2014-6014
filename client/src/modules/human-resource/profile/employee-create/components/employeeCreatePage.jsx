@@ -9,6 +9,10 @@ import FamilyMemberTab from './familyMemberTab';
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { generateCode } from "../../../../../helpers/generateCode";
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
 
 const initMember = {
     name: '',
@@ -17,7 +21,7 @@ const initMember = {
     gender: 'male',
     isHeadHousehold: 'no',
     relationshipWithHeadHousehold: '',
-    cnss: '',
+    ccns: '',
     birth: '',
     placeOfBirthCertificate: '',
     nationality: '',
@@ -90,6 +94,7 @@ function EmployeeCreatePage(props) {
             roles: [],
             phoneNumber: "",
             experiences: [],
+            workProcess: [],
             socialInsuranceDetails: [],
             degrees: [],
             certificates: [],
@@ -138,7 +143,8 @@ function EmployeeCreatePage(props) {
         regenerateCode();
     }, [])
 
-    const { translate } = props;
+    const { translate, career, major, certificate, biddingPackagesManager } = props;
+    console.log("propsss", career, major, certificate, biddingPackagesManager)
 
     /**
      * Function upload avatar
@@ -211,7 +217,19 @@ function EmployeeCreatePage(props) {
                 }
             }
         })
-        // console.log("exp", employee);
+    }
+
+    const handleChangeWorkProcess = (data, addData) => {
+        const { employee } = state;
+        setState(state => {
+            return {
+                ...state,
+                employee: {
+                    ...employee,
+                    workProcess: [...data]
+                }
+            }
+        })
     }
 
     /**
@@ -639,16 +657,26 @@ function EmployeeCreatePage(props) {
                         id="kinhnghiem"
                         employee={employee}
                         handleChange={handleChange}
+                        major={major?.listMajor}
+                        certificate={certificate?.listMajor}
+                        careerPosition={career?.listPosition}
 
                         handleAddExperience={handleChangeExperience}
                         handleEditExperience={handleChangeExperience}
                         handleDeleteExperience={handleChangeExperience}
+
+                        handleAddWorkProcess={handleChangeWorkProcess}
+                        handleEditWorkProcess={handleChangeWorkProcess}
+                        handleDeleteWorkProcess={handleChangeWorkProcess}
                     />
                     {/* Tab bằng cấp - chứng chỉ */}
                     <CertificateTab
                         id="bangcap"
                         degrees={degrees}
                         certificates={certificates}
+                        listMajors={major?.listMajor}
+                        listCertificates={certificate?.listCertificate}
+                        listPositions={career?.listPosition}
                         handleAddDegree={handleChangeDegree}
                         handleEditDegree={handleChangeDegree}
                         handleDeleteDegree={handleChangeDegree}
@@ -755,13 +783,17 @@ function EmployeeCreatePage(props) {
 };
 
 function mapState(state) {
-    const { employeesManager, } = state;
-    return { employeesManager };
+    const { employeesManager, biddingPackagesManager, major, career, certificate } = state;
+    return { employeesManager, biddingPackagesManager, major, career, certificate };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
     getDepartment: DepartmentActions.get,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 };
 
 const createPage = connect(mapState, actionCreators)(withTranslate(EmployeeCreatePage));

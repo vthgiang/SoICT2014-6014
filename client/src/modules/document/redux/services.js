@@ -33,6 +33,7 @@ export const DocumentServices = {
     deleteDocumentArchives,
     deleteManyDocumentArchives,
     importDocumentArchive,
+    getDataChart,
 };
 
 function getDocuments(params = undefined) {
@@ -100,6 +101,22 @@ function editDocument(id, data, option = undefined) {
 }
 
 function downloadDocumentFile(id, numberVersion) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}/download-file`,
+            method: "GET",
+            responseType: "blob",
+            params: {
+                numberVersion: numberVersion,
+            },
+        },
+        false,
+        true,
+        "document"
+    );
+}
+
+function downloadEmployeeDocumentFile(id, numberVersion, path) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}/download-file`,
@@ -236,6 +253,7 @@ function createDocumentDomain(data) {
         "document"
     );
 }
+
 function importDocumentCategory(data) {
     return sendRequest(
         {
@@ -407,6 +425,19 @@ function importDocumentArchive(data) {
             data,
         },
         true,
+        true,
+        "document"
+    );
+}
+
+function getDataChart(params = {listChart:["all"]}) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/documents/chart-document`,
+            method: "GET",
+            params 
+        },
+        false,
         true,
         "document"
     );

@@ -673,7 +673,7 @@ function PurchaseOrderEditForm(props) {
                 formID={`form-edit-purchase-order`}
                 title={"Chỉnh sửa đơn mua nguyên vật liệu"}
                 msg_success={"Chỉnh sửa thành công"}
-                msg_faile={"Chỉnh sửa không thành công"}
+                msg_failure={"Chỉnh sửa không thành công"}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="75"

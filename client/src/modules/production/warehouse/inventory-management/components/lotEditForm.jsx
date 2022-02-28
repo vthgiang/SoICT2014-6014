@@ -27,7 +27,7 @@ function LotEditForm(props) {
         props.getDetailLot(id);
     }, [])
 
-    useEffect(() => {
+    if (props.id !== state.id) {
         state.binLocation.binLocation = '';
         state.binLocation.quantity = '';
         setState({
@@ -41,7 +41,7 @@ function LotEditForm(props) {
             errorQuantity: undefined,
             errorBin: undefined
         })
-    }, [props.id])
+    }
 
     const handleBinLocationChange = (value) => {
         let binLocation = value[0];
@@ -359,7 +359,7 @@ function LotEditForm(props) {
                 formID={`form-edit-lot`}
                 title={translate('manage_warehouse.inventory_management.edit_title')}
                 msg_success={translate('manage_warehouse.inventory_management.edit_success')}
-                msg_faile={translate('manage_warehouse.inventory_management.edit_faile')}
+                msg_failure={translate('manage_warehouse.inventory_management.edit_faile')}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size={75}

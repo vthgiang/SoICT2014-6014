@@ -95,7 +95,7 @@ function LinkInfoForm(props) {
             formID="form-edit-link-default"
             title={translate('manage_link.edit')}
             msg_success={translate('manage_link.edit_success')}
-            msg_faile={translate('manage_link.edit_faile')}
+            msg_failure={translate('manage_link.edit_faile')}
             disableSubmit={!isFormValidated()}
         >
             <form id="form-edit-link-default">

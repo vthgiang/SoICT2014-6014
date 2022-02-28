@@ -85,7 +85,7 @@ function ExampleCreateForm(props) {
                 formID="form-create-example-hooks"
                 title={translate('manage_example.add_title')}
                 msg_success={translate('manage_example.add_success')}
-                msg_faile={translate('manage_example.add_fail')}
+                msg_failure={translate('manage_example.add_fail')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}

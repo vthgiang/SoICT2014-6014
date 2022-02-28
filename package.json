@@ -1,7 +1,12 @@
 {
   "dependencies": {
     "dayjs": "^1.10.4",
+    "mapbox-gl": "^1.13.1",
     "react-google-maps": "^9.4.5",
+    "react-google-recaptcha": "^2.1.0",
+    "react-mapbox-gl": "^5.1.1",
+    "react-tagsinput": "^3.19.0",
+    "swagger-jsdoc": "^6.1.0",
     "uuid": "^8.3.2"
   }
 }

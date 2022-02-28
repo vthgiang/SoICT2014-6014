@@ -40,9 +40,9 @@ function SystemApiCreateModal(props) {
 
     const handleSubmit = () => {
         props.createSystemApi({
-            path: path, 
-            method: method, 
-            description: description, 
+            path: path,
+            method: method,
+            description: description,
         })
         window.$("#create-system-api-modal").modal("hide");
     }
@@ -54,7 +54,7 @@ function SystemApiCreateModal(props) {
                 formID="form-create-system-api"
                 title={translate('system_admin.system_api.modal.create_title')}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
-                msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
+                msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
             >
                 {/* Form them API */}
@@ -71,7 +71,7 @@ function SystemApiCreateModal(props) {
                         <SelectBox
                             id={`method-create-system-api`}
                             className="form-control select2"
-                            style={{width: "100%"}}
+                            style={{ width: "100%" }}
                             items={[
                                 {
                                     text: 'GET',
@@ -108,12 +108,11 @@ function SystemApiCreateModal(props) {
             </DialogModal>
         </React.Fragment>
     );
-
 }
 
 function mapState(state) {
-    const {  } = state;
-    return {  };
+    const { } = state;
+    return {};
 }
 
 const actionCreators = {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ErrorLabel, SelectMulti } from '../../../../../common-components';
+import Swal from "sweetalert2";
 
 function UnitCreateForm(props) {
     const EMPTY_UNIT = {
@@ -48,7 +49,6 @@ function UnitCreateForm(props) {
     }
 
     const validateMultiBaseUnit = (value, willUpdateState) => {
-        console.log(value);
         let msg = undefined;
 
         const { translate } = props;
@@ -139,7 +139,7 @@ function UnitCreateForm(props) {
         return packingRule;
     }
 
-    useEffect(() => {
+    if (props.id !== state.id || props.baseUnit !== state.baseUnit) {
         setState({
             ...state,
             baseUnit: props.baseUnit,
@@ -147,7 +147,7 @@ function UnitCreateForm(props) {
             packingRule: props.packingRule,
             listUnit: props.initialData
         })
-    }, [props.id, props.baseUnit])
+    }
 
     const handleUnitNameChange = (e) => {
         let value = e.target.value;
@@ -208,11 +208,11 @@ function UnitCreateForm(props) {
 
     const handleAddUnit = async (e) => {
         e.preventDefault();
-        const listUnit = [...(state.listUnit), state.unit];
-
+        let { listUnit, unit } = state;
+        listUnit.push(unit);
         await setState({
             ...state,
-            listUnit: listUnit,
+            listUnit: [...listUnit],
             unit: Object.assign({}, EMPTY_UNIT),
         })
         props.onDataChange(state.listUnit);
@@ -230,16 +230,11 @@ function UnitCreateForm(props) {
 
     const handleSaveEditUnit = async (e) => {
         e.preventDefault();
-        const { indexInfo, listUnit } = state;
-        let newListUnit;
-        if (listUnit) {
-            newListUnit = listUnit.map((item, index) => {
-                return (index === indexInfo) ? state.unit : item;
-            })
-        }
+        const { listUnit, unit, indexInfo } = state;
+        listUnit[indexInfo] = unit;
         await setState({
             ...state,
-            listUnit: newListUnit,
+            listUnit: [...listUnit],
             editInfo: false,
             unit: Object.assign({}, EMPTY_UNIT),
         })
@@ -278,13 +273,30 @@ function UnitCreateForm(props) {
         // props.onDataChange(state.listUnit, state.packingRule);
         props.onDataChange(state.listUnit);
     }
+    const showListExplainUnit = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Đơn vị tính</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Đơn vị quy đổi từ đơn vị cơ bản</p>
+            <p>Ví dụ : đơn vị tính cơ bản chiếc
+            Đơn vị quy đổi : Hộp
+            1 Hộp = 20 chiếc.</b></p>`,
+            width: "50%",
+        })
+    };
 
     const { translate, id } = props;
     let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected, packingRule } = state;
     return (
 
         <fieldset className="scheduler-border">
-            <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}</legend>
+            <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}
+                <a onClick={() => showListExplainUnit()}>
+                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                </a>
+            </legend>
 
             <div className={`form-group ${!errorOnUnitName ? "" : "has-error"}`}>
                 <label className="control-label">{translate('manage_warehouse.good_management.unit_name')}</label>
@@ -348,7 +360,7 @@ function UnitCreateForm(props) {
             </table>
             {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
-                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="attention"> * </span></label>
+                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="text-red"> * </span></label>
                         <SelectMulti
                             id={`multi-select-base-unit-${id}`}
                             items={getListUnitArray()}

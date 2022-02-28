@@ -14,7 +14,7 @@ export default {
             pick_image: "Pick Image",
             crop: "Crop",
             action: "Action",
-            name: "name",
+            name: "Name",
             description: "Description",
             search: "Search",
             add: "Add",
@@ -34,37 +34,38 @@ export default {
             no_data: "No data",
             success: "Successfully",
             error: "Error",
-            new_notification: "You have new notification!",
+            index: "No.",
+            new_notification: "You have a new notification!",
             month: "in",
             value: "Value",
             export: 'Export',
             add_tag: "Add a tag",
             auth_alert: {
-                title: "Current Session invalid. Please log in again",
-                reason: "Reasons maybe:",
+                title: "Current Session is invalid. Please log in again",
+                reason: "Reasons may be:",
                 content: [
-                    "Session to work invalid",
+                    "Session is invalid or expired",
                     "Access denied",
                     "Page access denied",
-                    "Role invalid",
-                    "Your permission changed",
-                    "Token invalid",
-                    "Company service stoped",
+                    "Role is invalid",
+                    "Your permission has changed",
+                    "Token is invalid",
+                    "Company service has stopped",
                 ],
             },
             server_disconnect: "Connection to server failed",
             check_connect_again: "Check the server connection again",
             validate: {
-                invalid_character_error: "Value invalid character error",
-                length_error: "Value should have length between {min} to {max}",
+                invalid_character_error: "Error: invalid character",
+                length_error: "Error: Value should have length between {min} to {max}",
                 minimum_length_error:
-                    "Value should have minimum length of {min}",
+                    "Error: Value should have minimum length of {min}",
                 maximum_length_error:
-                    "Value should have maximum length of {max}",
-                invalid_error: "Value invalid",
-                empty_error: "Value cannot be empty",
-                not_existing_error: "Value not existing",
-                existing_error: "Value existing",
+                    "Error: Value should have maximum length of {max}",
+                invalid_error: "Error: Value is invalid",
+                empty_error: "Error: Value cannot be empty",
+                not_existing_error: "Error: Value does not exist",
+                existing_error: "Value already exists",
                 number_input_error: "Value must be between {min} to {max}",
                 number_input_error_min: "Value must be greater than {min}",
                 number_input_error_max: "Value must be less than {max}"
@@ -84,7 +85,9 @@ export default {
             urgent_task_amount: "The number of urgent tasks",
             need_to_do_task_amount: "The number of tasks to do",
             list_employe_timing: "List of employees who are timing",
-            statistics_task_unit: "Statistics Of Task In Units Chart"
+            statistics_task_unit: "Statistics Of Task In Units Chart",
+            get_all_unit_dashboard_data_success: "Get business dashboard data success",
+            get_all_unit_dashboard_data_fail: "Get business dashboard data fail",
         },
 
         menu: {
@@ -98,6 +101,7 @@ export default {
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
             registration_api: "Manage API registration",
+            registration_api_employee: "Manage API employee registration",
             privilege_api: "Manage permissions API",
 
             manage_department: "Manage Departments",
@@ -133,6 +137,7 @@ export default {
             annual_leave_personal: "Annual Leave",
             manage_unit: "Manage Units",
             manage_work_plan: "Manage Work Plan",
+            manage_major: "Manage Major",
             add_employee: "Add New Staffs",
             list_employee: "Manage Staffs Information",
             detail_employee: "Personal Information",
@@ -153,6 +158,8 @@ export default {
             list_major: "Manage majors",
             list_career_position: "Manage career position",
             list_search_for_package: "Search employee for package",
+            list_bidding_package: "Manage bidding packages",
+            list_certificate: "Manage bidding certificates",
 
             manage_warehouse: "Manage warehouses",
             dashboard_material: "Dashboad manage materials",
@@ -179,6 +186,7 @@ export default {
 
             tasks: "Task management",
             task: "Detailed Task",
+            process_template: "Detailed Process Template",
             task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
             task_management_dashboard: "Personal task dashboard",
@@ -402,10 +410,10 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid:
-                    "Confirm password invalid! Please input again",
+                    "Confirm password is invalid! Please input again",
                 password_length_error:
-                    "Password length not less 6 or more than 30 digit",
-                confirm_password_error: "Confirm password invalid",
+                    "Password length is not less than 6 or more than 30 digit",
+                confirm_password_error: "Confirm password is invalid",
             },
             security: {
                 label: "Security",
@@ -435,12 +443,12 @@ export default {
             change_user_password_faile: "Change password faile",
             user_not_found: "User not found",
             username_empty: "Username not empty",
-            username_invalid_length: "Username invalid length",
-            email_empty: "Email not empty",
-            email_invalid: "Email invalid",
-            email_not_found: "Email not found",
-            password_invalid: "Password invalid",
-            password2_empty: "Password2 not empty",
+            username_invalid_length: "Invalid length of username",
+            email_empty: "Email should not be empty",
+            email_invalid: "Email is invalid",
+            email_not_found: "Email is not found",
+            password_invalid: "Password is invalid",
+            password2_empty: "Password2 should not be empty",
             password2_invalid: "Password2 invalid",
             email_password_invalid: "Email or Password invalid",
             acc_blocked: "Account blocked",
@@ -514,10 +522,10 @@ export default {
                 edit_import_configuration_faile:
                     "Edit import file configuration faile",
 
-                email_exist: "Email exist",
+                email_exist: "Email already exists",
                 company_not_found: "Company not found",
-                link_exist: "Link exist",
-                component_exist: "Component exist",
+                link_exist: "Link already exists",
+                component_exist: "Component already exists",
 
                 update_company_links_success:
                     "Update company link successfully",
@@ -615,7 +623,7 @@ export default {
                 edit_system_link_success: "Edit system link success",
                 delete_system_link_success: "Delete system link success",
 
-                system_link_url_exist: "Url exist",
+                system_link_url_exist: "Url already exists",
             },
 
             system_component: {
@@ -648,10 +656,12 @@ export default {
                     "Delete system component success",
 
                 system_component_name_invalid: "Component name invalid",
-                system_component_name_exist: "Component name exist",
+                system_component_name_exist: "Component name already exists",
             },
 
             system_api: {
+                update: "Update",
+
                 table: {
                     path: "Path",
                     method: "Method",
@@ -664,6 +674,7 @@ export default {
                 modal: {
                     create_title: 'Create a API',
                     edit_title: 'Edit a API',
+                    update_title: 'Update a API',
                     delete_title: 'Delete a API'
                 },
 
@@ -674,13 +685,24 @@ export default {
 
                 //Thông điệp trả về từ server
                 create_system_api_success: 'Create system API successfully',
-                create_system_api_failure: 'Create system API unsuccessfully',
+                create_system_api_failure: 'Can not create system API',
                 system_api_exist: 'System API already exists'
             },
 
+            system_page: {
+                //Thông điệp trả về từ server
+                get_system_page_apis_success: 'Get system page APIs successfully',
+                get_system_page_api_failure: 'Can not get system page APIs',
+            },
+
             privilege_system_api: {
+                cancel: "Cancel privilege system apis",
+                delete: "Delete privilege system apis",
                 table: {
-                    email: "Email"
+                    email: "Email",
+                    description: "Description",
+                    startDate: "Start date",
+                    endDate: "Expiry date"
                 },
                 placeholder: {
                     input_email: "Type email"
@@ -715,13 +737,15 @@ export default {
                 edit_department_success: "Edit organizational unit success",
                 delete_department_success: "Delete organizational unit success",
 
-                department_name_exist: "Organizational unit name exist",
+                department_name_exist: "Organizational unit name already exists",
                 department_not_found: "Organizational unit not found",
                 department_has_user:
                     "Cannot delete. Organizational unit had employee",
-                role_manager_exist: "Manager role name exist",
-                role_deputy_manager_exist: "Deputy manager role name exist",
-                role_employee_exist: "Employee role name exist",
+                role_manager_exist: "Manager role name already exists",
+                role_deputy_manager_exist: "Deputy manager role name already exists",
+                role_employee_exist: "Employee role name already exists",
+                role_name_exist: "This role name already exists",
+                role_name_duplicate: "Input role names are duplicated"
             },
             user: {
                 // Thông điệp trả về từ server
@@ -729,7 +753,7 @@ export default {
                 edit_user_success: "Edit user information successfully",
                 delete_user_success: "Delete user successfully",
 
-                email_exist: "Email exist",
+                email_exist: "Email already exists",
                 user_not_found: "User not found",
                 department_not_found: "Organizational unit of user not found",
             },
@@ -739,10 +763,10 @@ export default {
                 edit_role_success: "Edit role successfully",
                 delete_role_success: "Delete role successfully",
 
-                role_name_exist: "Role name exist",
-                role_manager_exist: "Manager role name exist",
-                role_deputy_manager_exist: "Deputy manager role name exist",
-                role_employee_exist: "Employee role name exist",
+                role_name_exist: "Role name already exists",
+                role_manager_exist: "Manager role name already exists",
+                role_deputy_manager_exist: "Deputy manager role name already exists",
+                role_employee_exist: "Employee role name already exists",
             },
             link: {
                 // Thông điệp trả về từ server
@@ -752,13 +776,13 @@ export default {
 
                 cannot_create_this_url: "Cannot create this url",
                 this_url_cannot_be_use: "This url cannot be use",
-                url_exist: "Url exist",
+                url_exist: "Url already exists",
             },
             component: {
                 // Thông điệp trả về từ server
                 edit_component_success: "Edit component successfully",
 
-                component_name_exist: "Component name exist",
+                component_name_exist: "Component name already exists",
             },
         },
 
@@ -814,6 +838,9 @@ export default {
             category: "Category",
             domain: "Domain",
             data: "Document list data",
+            downloaded: "Downloaded documents",
+            popular: "Popular documents",
+            new: "Newest documents",
             statistics_report: "Statistics report",
             history_report: "History report",
             archive: "Archive",
@@ -840,8 +867,8 @@ export default {
             download: "Download",
             preview: "Preview",
             no_version: "Not have different version",
-            no_blank_description: "Description should'n empty",
-            no_blank_name: "Name shouldn't empty",
+            no_blank_description: "Description should not empty",
+            no_blank_name: "Name should not empty",
             infomation_docs: "Document Infomation",
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
@@ -868,18 +895,18 @@ export default {
                 exp_official_number: "Example: 05062020VN",
                 exp_signer: "Example: Peter Parker",
                 exp_version: "Version 1",
-                no_blank_issuingbody: "Issuing body should'n empty",
-                no_blank_version_name: "Version name should'n empty",
-                no_blank_official_number: "Official number should'n empty",
+                no_blank_issuingbody: "Issuing body should not empty",
+                no_blank_version_name: "Version name should not empty",
+                no_blank_official_number: "Official number should not empty",
                 error_office_number:
                     "Offical must have at least one number character",
-                no_blank_issuingdate: "Issuing date shouldn't empty",
-                no_blank_effectivedate: "Effective date shouldn't empty",
-                no_blank_expired_date: "Expired date shouldn't empty",
-                no_blank_signer: "Signer shouldn't empty",
+                no_blank_issuingdate: "Issuing date should not empty",
+                no_blank_effectivedate: "Effective date should not empty",
+                no_blank_expired_date: "Expired date should not empty",
+                no_blank_signer: "Signer should not empty",
                 no_blank_file: "Not have file",
                 no_blank_file_scan: "Note have file scan",
-                no_blank_category: "Categoty shouldn't empty",
+                no_blank_category: "Categoty should not empty",
             },
             relationship: {
                 title: "Document relationship",
@@ -891,6 +918,7 @@ export default {
                 information: "Archive Place",
                 organizational_unit_manage: "Organizational Unit Management",
                 select_organizational: "Select organizational unit",
+                all: "Select all organizational units",
                 user_manage: "User management",
                 select_user: "Select user",
             },
@@ -922,7 +950,7 @@ export default {
                     delete: "Delete document archive",
                     name: "Archive name",
                     description: "Archive description",
-                    parent: "Archive parent",
+                    parent: "Parent directory",
                     select_parent: "Select archive parent",
                     select: "Select archive",
                     not_select: "Not select archive",
@@ -998,11 +1026,11 @@ export default {
             cannot_delete_category: "Cannot delete this category",
             document_domain_not_found: "Domain not found",
             document_archive_not_found: "Archive not found",
-            domain_name_exist: "Domain name exist",
-            category_name_exist: "Category name exist",
-            name_exist: "Name exist",
-            document_exist: "Document name exist",
-            document_number_exist: "Document officical number exist",
+            domain_name_exist: "Domain name already exists",
+            category_name_exist: "Category name already exists",
+            name_exist: "Name already exists",
+            document_exist: "Document name already exists",
+            document_number_exist: "Document officical number already exists",
         },
 
         crm: {
@@ -1244,7 +1272,7 @@ export default {
                 title_showless: "Click to show less"
             },
             google_driver: {
-                button : "Add files from Google Drive"
+                button: "Add files from Google Drive"
             }
         },
 
@@ -1359,6 +1387,10 @@ export default {
             category: "Category",
         },
 
+        manage_api: {
+            description: "Description of api",
+        },
+
         manage_component: {
             add: "Add",
             add_title: "Add new component",
@@ -1402,6 +1434,7 @@ export default {
             stt: "Count",
             unit: "Unit",
             position: "Position",
+            references: "References",
             month: "Month",
             status: "Status",
             staff_number: "Staff code",
@@ -1441,6 +1474,11 @@ export default {
                 "The end date must be after the start date",
             cannot_be_empty: "cannot be empty",
             value_duplicate: "be duplicated",
+            // Lấy thông tin bảng tin quản lý nhân sự
+            get_human_resources_dashboard_data: {
+                get_human_resources_dashboard_success: "Get information on successful human resource management message board",
+                get_human_resources_dashboard_failed: "Retrieving information on human resource management message board failed"
+            },
 
             // Quản lý lương nhân viên
             salary: {
@@ -1473,6 +1511,9 @@ export default {
                 employee_code_duplicated: "Staff code is duplicated",
                 employee_name_required: "Staff name required",
                 employee_number_required: "Staff code required",
+                staff_non_unit: "Staff non unit",
+                organizationalUnit_not_found: "OrganizationalUnit was not found",
+                organizationalUnit_not_empty: "OrganizationalUnit should not be empty",
                 staff_code_not_special:
                     "Staff code does not contain special characters",
                 staff_code_not_find: "Staff code does not exist",
@@ -1480,7 +1521,7 @@ export default {
                 money_other_salary_required: "Money other salary required",
                 month_salary_required: "Month salary required",
                 money_salary_required: "Money_salary required",
-                month_salary_have_exist: "Month salary have exist",
+                month_salary_have_exist: "Month salary already exists",
                 get_salary_success: "Get salary success",
                 get_salary_faile: "Get salary faile",
                 create_salary_success: "Create salary success",
@@ -1489,9 +1530,11 @@ export default {
                 delete_salary_faile: "Delete salary faile",
                 edit_salary_success: "Edit salary success",
                 edit_salary_faile: "Edit salary faile",
+
                 import_salary_success: "Import salary success",
                 import_salary_faile: "Import salary faile",
-
+                get_chart_salary_success: "Get chart salary success",
+                get_chart_salary_faile: "Get chart salary faile",
                 employee_invalid: 'The account has not registered employee information. Please check again.',
             },
 
@@ -1532,6 +1575,7 @@ export default {
                 employee_code_duplicated: "Staff code is duplicated",
                 employee_name_required: "Staff name required",
                 employee_number_required: "Staff code required",
+                staff_non_unit: "Nhân viên không thuộc đơn vị",
                 staff_code_not_special:
                     "Staff code does not contain special characters",
                 staff_code_not_find: "Staff code does not exist",
@@ -1553,6 +1597,9 @@ export default {
                     "Send application annual leave success",
                 import_annual_leave_success: "Add data from file success",
                 import_annual_leave_faile: "Add data from file faile",
+
+                request_to_change_annualeave_success: "Yêu cầu chỉnh sửa đơn nghỉ phép thành công",
+                request_to_change_annualeave_faile: "Yêu cầu chỉnh sửa đơn nghỉ phép thất bại",
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1585,7 +1632,7 @@ export default {
                         "Staff code does not contain special characters",
                     staff_code_not_find: "Staff code does not exist",
                     number_decisions_required: "Decision number required",
-                    number_decisions_have_exist: "Decision number have exist",
+                    number_decisions_have_exist: "Decision number already exists",
                     unit_decisions_required: "Decision unit required",
                     type_commendations_required: "Commendation forms required",
                     reason_commendations_required: "Reason required",
@@ -1631,7 +1678,7 @@ export default {
                         "Staff code does not contain special characters",
                     staff_code_not_find: "Staff code does not exist",
                     number_decisions_required: "Decision number required",
-                    number_decisions_have_exist: "Decision number have exist",
+                    number_decisions_have_exist: "Decision number already exists",
                     unit_decisions_required: "Decision unit required",
                     type_discipline_required: "Discipline forms required",
                     reason_discipline_required: "Reason required",
@@ -1647,15 +1694,25 @@ export default {
                     edit_discipline_faile: "Edit discipline faile",
 
                     update_major_success: "Edit major successfully",
-                    update_major_failure: "Edit major unsuccessfully",
+                    update_major_failure: "Can not edit major",
 
                     delete_major_success: "Delete major successfully",
-                    delete_major_failure: "Delete major unsuccessfully"
+                    delete_major_failure: "Can not delete major"
                 },
             },
 
             // Quản lý thông tin nhân viên
             profile: {
+
+                // Quản lý gói thầu
+                bidding_package: {
+                    get_bidding_package_success: "Get list bidding packages success",
+                    get_bidding_package_failure: "Get list bidding packages fail",
+                    create_bidding_package_success: "Create bidding package success",
+                    create_bidding_package_failure: "Create bidding package fail",
+                    delete_bidding_package_success: "Delete bidding package success",
+                    delete_bidding_package_failure: "Delete bidding package fail",
+                },
                 // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
                 tab_name: {
                     menu_basic_infor: "Basic information",
@@ -1705,7 +1762,7 @@ export default {
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
                         is_hh: 'Là chủ hộ',
-                        cnss: 'CNSS',
+                        ccns: 'Chỉ có năm sinh',
                         rwhh: 'Quan hệ với chủ hộ',
                         birth: 'Ngày sinh',
                         pob: 'Nơi cấp giấy khai sinh',
@@ -1788,14 +1845,23 @@ export default {
                 phd: "Ph.D",
                 unavailable: "Other",
                 work_experience: "Work experience",
+                working_process: "Working process",
+                job_description: 'Job description',
+                reference_information: "Reference information",
                 unit: "Unit",
                 from_month_year: "From month/year",
                 to_month_year: "To month/year",
                 edit_experience: "Edit work experience",
                 add_experience: "Add work experience",
+                edit_working_process: "Edit working process",
+                add_working_process: "Add working process",
+                position_in_task: "position",
+                customer: 'Customer',
+                project: 'Project',
 
                 diploma: "Degrees",
                 certificate: "Certificate",
+                bidding_package: "Bidding Package",
                 name_diploma: "Name of degree",
                 name_certificate: "Name of certificate",
                 diploma_issued_by: "Issued by",
@@ -1812,7 +1878,8 @@ export default {
                 good: "Good",
                 average_good: "Average good",
                 ordinary: "Ordinary",
-                unknown: 'Unknown',
+                unknown: "Unknown",
+                no_rating: "Not rating",
 
                 bank_account: "Bank account",
                 personal_income_tax: "Personal income tax",
@@ -1834,6 +1901,7 @@ export default {
 
                 labor_contract: "Labor contract",
                 training_process: "Training process",
+                number_contract: "Contract number",
                 name_contract: "Contract name",
                 type_contract: "Type of contract",
                 start_date: "Effective date",
@@ -1938,17 +2006,18 @@ export default {
                     file_export_name: "Staffs imformation",
                     export: {
                         sheet1: "1.Staffs",
-                        sheet2: "2.Staffs - Experiences",
-                        sheet3: "3.Staffs - Degrees",
-                        sheet4: "4.Staffs - Certificates",
-                        sheet5: "5.Staffs - Labor contracts",
-                        sheet6: "6.Staffs - Social insurances",
-                        sheet7: "7.Staffs - Attachments",
-                        sheet8: "8.Staffs - Family Members",
-                        sheet9: "9.Staffs - Commendations",
-                        sheet10: "10.Staffs - Disciplines",
-                        sheet11: "11.Staffs - Salaries",
-                        sheet12: "12.Staffs - Annual Leave",
+                        sheet2: "2.Staffs - Work process",
+                        sheet3: "3.Staffs - Experiences",
+                        sheet4: "4.Staffs - Degrees",
+                        sheet5: "5.Staffs - Certificates",
+                        sheet6: "6.Staffs - Labor contracts",
+                        sheet7: "7.Staffs - Social insurances",
+                        sheet8: "8.Staffs - Attachments",
+                        sheet9: "9.Staffs - Family Members",
+                        sheet10: "10.Staffs - Commendations",
+                        sheet11: "11.Staffs - Disciplines",
+                        sheet12: "12.Staffs - Salaries",
+                        sheet13: "13.Staffs - Annual Leave",
 
 
                         emergency_contact_person: "Emergency contact person",
@@ -1973,6 +2042,7 @@ export default {
                     import: {
                         import_general_infor: "Staff basic information",
                         import_experience: "Work experiences",
+                        import_work_process: "Work process",
                         import_degree: "Degree",
                         import_certificate: "Certificate",
                         import_contract: "Labor contracts",
@@ -1983,6 +2053,7 @@ export default {
                         import_general_infor_title:
                             "Import staff basic information",
                         import_experience_title: "Import work experience",
+                        import_work_process_title: "Import work process",
                         import_degree_title: "Import Degree",
                         import_certificate_title: "Import certificate",
                         import_contract_title: "Import labor contract",
@@ -2036,13 +2107,13 @@ export default {
                     import_employee_faile: "Import employee faile",
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
-                    employee_number_have_exist: "Employee number have exist",
-                    staff_code_not_find: 'Employee number does have exist',
-                    email_in_company_have_exist: "Email in company have exist",
-                    email_in_company_not_have_exist: "Email in company have not exist",
+                    employee_number_have_exist: "Employee number already exists",
+                    staff_code_not_find: 'Employee number does not exist',
+                    email_in_company_have_exist: "Email in company already exists",
+                    email_in_company_not_have_exist: "Email in company does not exist",
                     employee_timesheet_id_required: "Employee timesheet id required",
-                    employee_timesheet_id_have_exist: "Employee timesheet have exist",
-                    employee_timesheet_id_not_have_exist: "Employee timesheet have not exist",
+                    employee_timesheet_id_have_exist: "Employee timesheet already exists",
+                    employee_timesheet_id_not_have_exist: "Employee timesheet does not exist",
                     full_name_required: "Full name required",
                     birthdate_required: "Birthdate required",
                     starting_date_required: "Starting date required",
@@ -2057,7 +2128,26 @@ export default {
                     tax_representative_required: "Tax representative required",
                     tax_authority_required: "Tax authority required",
                 },
+
+                bidding_package_management: {
+                    type: {
+                        1: "Advise",
+                        2: "Non-consulation",
+                        3: "Goods",
+                        4: "Build",
+                        5: "Mixture"
+                    },
+                    status: {
+                        1: "Active",
+                        0: "Inactive",
+                        2: "Waiting",
+                        3: "Working",
+                        4: "Finish"
+                    }
+                }
             },
+
+            
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {
@@ -2204,7 +2294,7 @@ export default {
                 employee_number_required: "Staff code required",
                 month_timesheets_required: "Month timesheets required",
                 staff_code_not_find: "Staff code does not exist",
-                month_timesheets_have_exist: "Month timesheets have exist",
+                month_timesheets_have_exist: "Month timesheets already exists",
                 get_timesheets_success: "Get timesheets success",
                 get_timesheets_faile: "Get timesheets faile",
                 create_timesheets_success: "Create timesheets success",
@@ -2238,6 +2328,23 @@ export default {
 
                 // Nhóm action
                 create_annual_leave: "Apply leave",
+            },
+
+            // Chuyên ngành
+            major: {
+                add: "Add",
+                add_title: "Add new major",
+                description: "Description",
+                info: "Major information",
+                name: "Major name",
+                parents: "Extends of",
+                users: "Users has major",
+                edit: "Edit major information",
+                delete: "Delete major",
+                add_success: "Add new major successfully",
+                add_faile: "Add new major failed",
+                edit_success: "Edit major successfully",
+                edit_faile: "Edit major failed",
             },
         },
 
@@ -2352,7 +2459,7 @@ export default {
                 apply_for_positions_required: "Apply for positions required",
                 program_id_required: "Program id required",
                 name_required: "Program name required",
-                program_id_have_exist: "Program id already exist",
+                program_id_have_exist: "Program id already exists",
 
                 get_education_program_success: "Get education program success",
                 get_education_program_faile: "Get education program faile",
@@ -2411,6 +2518,8 @@ export default {
                 asset_type: "Asset type",
                 asset_group: "Asset group",
                 purchase_date: "Date of purchase",
+                purchase_date_start: "Date of purchase from",
+                purchase_date_end: "Date of purchare to",
                 manager: "Manager",
                 user: "User",
                 organization_unit: "Organizaitonal Unit",
@@ -2528,13 +2637,15 @@ export default {
                 get_asset_type_success: "Get asset type successfully",
                 get_asset_type_faile: "Get asset type fail",
                 create_asset_type_success: "Create asset type successfully",
-                create_asset_type_faile: "Create asset type fail",
+                create_asset_type_failure: "Create asset type fail",
                 delete_asset_type_success: "Delete asset type successfully",
-                delete_asset_type_faile: "Delete asset type fail",
+                delete_asset_type_failure: "Delete asset type fail",
                 edit_asset_type_success: "Edit asset type successfully",
                 edit_asset_type_faile: "Edit asset type fail",
-                asset_type_name_exist: "Asset type name exist",
-                asset_type_number_exist: "Asset type number exist",
+                asset_type_name_exist: "Asset type name already exists",
+                asset_type_number_exist: "Asset type number already exists",
+                import_asset_type_success: "Import asset type successfully from file",
+                import_asset_type_failure: "Failed to import asset type from file",
             },
 
             // Quản lý thông tin tài sản
@@ -2579,7 +2690,19 @@ export default {
                 other: "Other",
 
                 //Thông điệp trả về từ server
+                get_asset_group_success: "Get asset group successfully",
+                get_asset_group_fail: "Get asset group fail",
+                get_asset_statistic_success: "Get asset statistic successfully",
+                get_asset_statistic_fail: "Get asset statistic fail",
                 get_list_asset_success: "Get list asset successfully",
+                get_asset_purchase_success: "Get asset purchase successfully",
+                get_asset_purchase_fail: "Get asset purchase fail",
+                get_asset_disposal_success: "Get asset disposal successfully",
+                get_asset_disposal_fail: "Get asset disposal fail",
+                get_asset_incident_success: "Get asset incident successfully",
+                get_asset_incident_fail: "Get asset incident fail",
+                get_asset_maintenance_success: "Get asset maintenance successfully",
+                get_asset_maintenance_fail: "Get asset maintenance fail",
                 get_list_asset_faile: "Get list asset faile",
                 create_asset_success: "Create asset successfully",
                 create_asset_faile: "Create asset faile",
@@ -2587,7 +2710,7 @@ export default {
                 delete_asset_faile: "Delete asset faile",
                 edit_asset_success: "Edit asset successfully",
                 edit_asset_faile: "Edit asset faile",
-                asset_code_exist: "Asset code exist",
+                asset_code_exist: "Asset code already exists",
             },
 
             // Quản lý bảo trì
@@ -2616,13 +2739,13 @@ export default {
 
                 //Thông điệp trả về từ server
                 get_usage_success: "Get usage successfully",
-                get_usage_faile: "Get usage faile",
+                get_usage_faile: "Get usage failed",
                 create_usage_success: "Create usage successfully",
-                create_usage_faile: "Create usage faile",
+                create_usage_faile: "Create usage failed",
                 delete_usage_success: "Delete usage successfully",
-                delete_usage_faile: "Delete usage faile",
+                delete_usage_faile: "Delete usage failed",
                 edit_usage_success: "Edit usage successfully",
-                edit_usage_faile: "Edit usage faile",
+                edit_usage_faile: "Edit usage failed",
             },
 
             // Quản lý khấu hao
@@ -2643,11 +2766,11 @@ export default {
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: "Get depreciation successfully",
-                get_depreciation_faile: "Get depreciation faile",
+                get_depreciation_failure: "Get depreciation faile",
                 create_depreciation_success: "Create depreciation successfully",
-                create_depreciation_faile: "Create depreciation faile",
+                create_depreciation_failure: "Create depreciation faile",
                 delete_depreciation_success: "Delete depreciation successfully",
-                delete_depreciation_faile: "Delete depreciation faile",
+                delete_depreciation_failure: "Delete depreciation faile",
                 edit_depreciation_success: "Edit depreciation successfully",
                 edit_depreciation_faile: "Edit depreciation faile",
             },
@@ -2685,13 +2808,13 @@ export default {
             manage_use_request: {
                 //Thông điệp trả về từ server
                 get_use_request_success: "Get use request successfully",
-                get_use_request_faile: "Get use request faile",
+                get_use_request_failure: "Get use request faile",
                 create_use_request_success: "Edit use request successfully",
-                create_use_request_faile: "Edit use request faile",
+                create_use_request_failure: "Edit use request faile",
                 delete_use_request_success: "Delete use request successfully",
-                delete_use_request_faile: "Delete use request faile",
+                delete_use_request_failure: "Delete use request faile",
                 edit_use_request_success: "Edit use request successfully",
-                edit_use_request_faile: "Edit use request faile",
+                edit_use_request_failure: "Edit use request faile",
             },
 
             // Đăng ký mua sắm thiết bị
@@ -2699,30 +2822,30 @@ export default {
                 //Thông điệp trả về từ server
                 get_purchase_request_success:
                     "Get purchase request successfully",
-                get_purchase_request_faile: "Get purchase request faile",
+                get_purchase_request_failure: "Get purchase request faile",
                 create_purchase_request_success:
                     "Create purchase request successfully",
-                create_purchase_request_faile: "Create purchase request faile",
+                create_purchase_request_failure: "Create purchase request faile",
                 delete_purchase_request_success:
                     "Delete purchase request successfully",
-                delete_purchase_request_faile: "Delete purchase request faile",
+                delete_purchase_request_failure: "Delete purchase request faile",
                 edit_purchase_request_success:
                     "Edit purchase request successfully",
-                edit_purchase_request_faile: "Edit purchase request faile",
-                recommend_number_exist: "Recommend number exist",
+                edit_purchase_request_failure: "Edit purchase request faile",
+                recommend_number_exist: "Recommend number already exists",
             },
 
             // Đăng ký sử dụng thiết bị
             use_request: {
                 //Thông điệp trả về từ server
                 get_use_request_success: "Get use request successfully",
-                get_use_request_faile: "Get use request faile",
+                get_use_request_failure: "Get use request failed",
                 create_use_request_success: "Create use request successfully",
-                create_use_request_faile: "Create use request faile",
+                create_use_request_failure: "Create use request failed",
                 delete_use_request_success: "Delete use request successfully",
-                delete_use_request_faile: "Delete use request faile",
+                delete_use_request_failure: "Delete use request failed",
                 edit_use_request_success: "Edit use request successfully",
-                edit_use_request_faile: "Edit use request faile",
+                edit_use_request_failure: "Edit use request failed",
             },
         },
 
@@ -2800,8 +2923,10 @@ export default {
                 create_task_success: "Create new task succesfully",
                 delete_success: "Delete task successfully",
                 edit_status_of_task_success: "Edit status of task successfully",
+                edit_status_archived_of_task: "Change archived status",
                 edit_status_archived_of_task_success:
                     "Edit archived status of task successfully",
+                get_task_dashboard_data_success: "Get task dashboard data success",
 
                 get_subtask_fail: "Get sub task fail",
                 get_task_of_informed_employee_fail:
@@ -2822,6 +2947,7 @@ export default {
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail:
                     "Can't edit archived status of task",
+                get_task_dashboard_data_fail: "Get task dashboard data fail",
                 task_status_error: "Status of task doesn't allow archive",
                 confirm_delete:
                     "This task cannot be deleted because it is in progress!",
@@ -2975,6 +3101,7 @@ export default {
                 detail_link: "Task link",
                 detail_priority: "Priority",
                 detail_status: "Status",
+                detail_status_task: "Task status",
                 average_task_result: "Average task results",
                 detail_time: "Working duration",
                 detail_average_results: "Average results of task",
@@ -3127,7 +3254,7 @@ export default {
                 edit_employee_collaborated_success:
                     "Edit employees to join task successfully",
                 edit_employee_collaborated_failure:
-                    "Edit employees to join task unsuccessfully",
+                    "Can not edit employees to join task",
 
                 add_new_task: "Add new task",
                 // add_err:
@@ -3155,21 +3282,21 @@ export default {
 
                 // confirm task
                 confirm_task_success: "Confirm task successfully",
-                confirm_task_failure: "Confirm task unsuccessfully",
+                confirm_task_failure: "Can not onfirm task",
 
                 // yêu cầu kết thúc công việc
                 request_close_task_success: "Send request to close task successfully",
                 cancel_request_close_task_success: "Cancel request to close task successfully",
                 approval_close_task_success: "Approve request to close task successfully",
                 decline_close_task_success: "Decline request to close task successfully",
-                request_close_task_failure: "Send request to close task unsuccessfully",
-                cancel_request_close_task_failure: "Cancel request to close task unsuccessfully",
-                approval_close_task_failure: "Approve request to close task unsuccessfully",
-                decline_close_task_failure: "Decline request to close task unsuccessfully",
+                request_close_task_failure: "Can not send request to close task",
+                cancel_request_close_task_failure: "Can not cancel request to close task",
+                approval_close_task_failure: "Can not approve request to close task",
+                decline_close_task_failure: "Can not decline request to close task",
 
                 // Mở lại công việc
                 open_task_again_success: 'Open task again successfully',
-                open_task_again_failure: 'Open task again unsuccessfully',
+                open_task_again_failure: 'Can not open task again',
                 confirm_open_task: 'Are you sure you want to open this task again?',
 
                 // warning
@@ -3193,12 +3320,22 @@ export default {
 
                 project: 'Project name (if you have)',
 
+                //dashboard cv đơn vị
+                type_of_point: "Type of point",
+                criteria: "Criteria",
                 load_task: "Load task",
                 time: "Time",
                 load_task_chart: "Dashboard load task",
                 load_task_chart_unit: "Dashboard load task of unit",
+                timesheet_statistics: "Timesheets Statistics of",
                 explain: "Explain",
-                select_responsible: "Select responsible"
+                select_responsible: "Select responsible",
+                timer: "Timer",
+                additional_timer: "Additional Timer",
+                interval_timer: "Interval Timer",
+                start_time: "Start Time",
+                end_time: "End Time",
+                timer_type: "Type of Timer",
             },
             task_perform: {
                 actions: "Actions",
@@ -3354,9 +3491,9 @@ export default {
                 create_task_log_fail: "Create task log fail",
                 get_task_log_fail: "get_task_log_fail",
                 edit_task_information_failure:
-                    "Edit information unsuccessfully",
+                    "Can not edit information",
                 edit_document_task_comment_failure:
-                    "Edit document unsuccessfully",
+                    "Can not edit document",
                 time_overlapping: 'Start time invalid. Overlapping time with different time sheet log',
 
 
@@ -3378,7 +3515,7 @@ export default {
                 modal_approve_task: {
                     title: "Request to finish task",
                     msg_success: "Approved success",
-                    msg_faile: "Approved failure",
+                    msg_failure: "Approved failure",
 
                     task_info: "Information of task",
                     percent: "Progress of task",
@@ -3495,10 +3632,12 @@ export default {
                 delete_task_template_success: "Delete task template success !",
                 delete_task_template_fail: "Delete task template fail !",
                 error_task_template_creator_null:
-                    "Creator of this task template does not exist or has deleted",
+                    "Creator of this task template does not exist or has been deleted",
                 view_task_process_template: "View task process template",
                 import_task_template_success: "Import task template success",
-                import_task_template_faile: "Import task template faile",
+                import_task_template_failure: "Import task template failure",
+                select_task_process_template:"Select taskprocess template",
+                process_template_name:"Process template name",
             },
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
@@ -3524,7 +3663,17 @@ export default {
                 overdue: "Over",
                 task_name: "Task",
                 start_date: "Start date",
-                end_date: "End date"
+                end_date: "End date",
+                statistical_timesheet_logs: "Statistical timesheet logs",
+                statistical_timesheet_logs_unit: "Statistical timesheet logs of unit",
+                from: "from",
+                to: "to",
+                index: "Serial",
+                name: "Full name",
+                totalhours: "Total hours",
+                autotimer: "Auto timer",
+                logtimer: "Log timer",
+                manualtimer: "Manual timer"
             }
         },
 
@@ -3656,13 +3805,13 @@ export default {
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null:
-                                "Error! The approver of this KPI set is not exist or was deleted",
+                                "Error! The approver of this KPI set does not exist or was deleted",
                             error_kpi_organizational_unit_null:
-                                "Error! The organizational unit of this KPI set is not exist or was deleted",
+                                "Error! The organizational unit of this KPI set does not exist or was deleted",
                             error_kpi_parent_target_null:
-                                "Error! The parent target of this KPI set is not exist or was deleted",
+                                "Error! The parent target of this KPI set does not exist or was deleted",
                             error_kpi_targets_list_null:
-                                "Error! The list targets of this KPI set is not exist or was deleted",
+                                "Error! The list targets of this KPI set does not exist or was deleted",
                         },
                     },
 
@@ -3721,36 +3870,36 @@ export default {
                         initialize_employee_kpi_set_success:
                             "Initialize employee KPI set successfully",
                         initialize_employee_kpi_set_failure:
-                            "Initialize employee KPI set unsuccessfully",
+                            "Can not initialize employee KPI set",
 
                         create_employee_kpi_success:
                             "Add KPI target successfully",
                         create_employee_kpi_failure:
-                            "Add KPI target unsuccessfully",
+                            "Can not add KPI target",
 
                         edit_employee_kpi_set_success:
                             "Edit employee KPI set successfully",
                         edit_employee_kpi_set_failure:
-                            "Edit employee KPI set unsuccessfully",
+                            "Can not edit employee KPI set",
                         delete_employee_kpi_set_success:
                             "Delete employee KPI set successfully",
                         delete_employee_kpi_set_failure:
-                            "Delete employee KPI set unsuccessfully",
+                            "Can not delete employee KPI set",
 
                         approve_success:
                             "Confirm request approval successfully",
                         approve_failure:
-                            "Confirm request approval unsuccessfully",
+                            "Can not confirm request approval",
 
                         delete_employee_kpi_success:
-                            "Delete KPI target successfully",
+                            "KPI target has been deleted",
                         delete_employee_kpi_failure:
-                            "Delete KPI target unsuccessfully",
+                            "Can not delete KPI target",
 
                         edit_employee_kpi_success:
-                            "Edit KPI target successfully",
+                            "KPI target has been edited",
                         edit_employee_kpi_failure:
-                            "Edit KPI target unsuccessfully",
+                            "Can not edit KPI target",
                     },
                 },
             },
@@ -3914,21 +4063,21 @@ export default {
                 approve_all_kpi_target_fail: "Approve all KPI target fail",
                 edit_kpi_target_member_success:
                     "Edit KPI member target successfully",
-                edit_kpi_target_member_fail: "Edit KPI member target fail",
+                edit_kpi_target_member_fail: "Can not edit KPI member target",
                 edit_status_target_success: "Edit status target successfully",
-                edit_status_target_fail: "Edit status target fail",
+                edit_status_target_fail: "Can not edit status target",
                 get_task_by_id_success: "Get all tasks by Id successfully",
-                get_task_by_id_fail: "Get all tasks by Id fail",
+                get_task_by_id_fail: "Can not get all tasks by Id",
                 get_system_point_success: "Get system point successfully",
-                get_system_point_fail: "Get system point fail",
+                get_system_point_fail: "Can not get system point",
                 set_task_importance_level_success:
                     "Set task importance level and evalutate KPI successfully",
                 set_task_importance_level_fail:
-                    "Set task importance level and evalutate KPI fail",
+                    "Can not set task importance level and evalutate KPI",
                 set_point_kpi_success:
-                    "Evalutate all kpis successfully",
+                    "Evalutate all KPIs successfully",
                 set_point_kpi_fail:
-                    "Evalutate all kpis fail",
+                    "Can not evalutate all KPIs",
             },
             organizational_unit: {
                 // Module chính
@@ -3946,10 +4095,10 @@ export default {
                         "Are you sure you want to delete this entire KPI?",
                     time: "Time",
                     initialize_kpi_newmonth: "Initialize KPI",
-                    edit_kpi_success: "Editing KPI successful",
-                    edit_kpi_failure: "Editing KPI falied",
-                    delete_kpi_success: "Delete KPI successfully",
-                    delete_kpi_failure: "Delete KPI unsuccessfully",
+                    edit_kpi_success: "KPI has been successfully edited",
+                    edit_kpi_failure: "Can not edit KPI",
+                    delete_kpi_success: "KPI has been successfully deleted",
+                    delete_kpi_failure: "Can not delete KPI",
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
                     organizational_unit_importance: "Children organizational unit importances",
@@ -3972,27 +4121,27 @@ export default {
                     evaluation_criteria: "Evalution criteria",
                     weight: "Weight",
                     action: "Action",
-                    not_initialize: "No KPI have been initialized in ",
+                    not_initialize: "No KPI has been initialized in ",
 
                     // Nhóm dành cho các handle
                     confirm_approve_already: "KPI is approved!",
                     confirm_approve:
-                        "Are you sure you want to be approved this KPI?",
+                        "Are you sure you want to approve this KPI?",
                     confirm_not_enough_weight: "The total weight must be 100",
                     confirm_cancel_approve:
                         "Are you sure you want to cancel this KPI?",
-                    confirm_edit_status_success: "Edit status KPI successfully",
+                    confirm_edit_status_success: "KPI status has been successfully edited",
                     confirm_edit_status_failure:
-                        "Edit status KPI unsuccessfully",
+                        "Can not edit KPI status",
 
                     confirm_kpi:
                         "Are you sure you want to delete this KPI target?",
                     confirm_approving:
                         "KPI has been activated, you can not delete!",
                     confirm_delete_target_success:
-                        "Delete KPI target successful",
+                        "KPI target has been successful deleted",
                     confirm_delete_target_failure:
-                        "Delete KPI target unsuccessfully",
+                        "Can not delete KPI target",
 
                     // Nhóm các title
                     edit: "Edit",
@@ -4011,7 +4160,7 @@ export default {
                     parents: "Parents target",
                     evaluation_criteria: "Evaluation criteria",
                     weight: "Weight",
-                    create_target_success: "Add KPI target successful",
+                    create_target_success: "KPI target has been successfully added",
                     create_target_failure:
                         "You have not entered enough information",
                     organizational_unit_kpi_exist: "Organizational Unit KPI already exists",
@@ -4047,6 +4196,22 @@ export default {
                     evaluate: "Evaluate",
                 },
 
+                kpi_organizational_unit_manager: {
+                    index: "Index",
+                    time: "Date",
+                    employee_name: "Employee Name",
+                    target_number: "Target Number",
+                    kpi_status: "KPI Status",
+                    result: "Result",
+                    approve: "Approve",
+                    evaluate: "Evaluate",
+                    target_name: "Target Name",
+                    creator: "Creator",
+                    organization_unit: "Organization Unit",
+                    criteria: "Criteria",
+                    no_data: "No data",
+                },
+
                 create_organizational_unit_kpi_set_modal: {
                     // Module con
                     // Nhóm dành cho modal
@@ -4055,7 +4220,7 @@ export default {
                     month: "Month",
                     default_target: "Default target",
                     create_organizational_unit_kpi_set_success:
-                        "Initialize KPI successful",
+                        "KPI has been successfully initialized",
                     create_organizational_unit_kpi_set_failure:
                         "You have not entered enough information",
                 },
@@ -4068,10 +4233,10 @@ export default {
                     parents: "Parents target",
                     evaluation_criteria: "Evaluation criteria",
                     weight: "Weight",
-                    edit_target_success: "Edit KPI target successful",
+                    edit_target_success: "KPI target has been successfully edited",
                     edit_target_failure:
                         "You have not entered enough information",
-                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại"
+                    organizational_unit_kpi_exist: "Organizational Unit KPI Target already exists"
                 },
                 // Dashboard KPI Unit
                 dashboard: {
@@ -4189,31 +4354,585 @@ export default {
                 get_parent_by_unit_success:
                     "Get KPI by parent unit successfully",
                 get_parent_by_unit_failure:
-                    "Get KPI by parent unit unsuccessfully",
+                    "Can not get KPI by parent unit",
                 get_kpi_unit_success: "Get all KPI unit successfully",
-                get_kpi_unit_fail: "Get all KPI unit fail",
+                get_kpi_unit_fail: "Can not get all KPI unit",
                 get_kpiunit_by_role_success:
                     "Get KPI unit by role successfully",
                 get_kpiunit_by_role_fail: "Get KPI unit by role fail",
                 create_kpi_unit_success: "Create KPI unit successfully",
-                create_kpi_unit_fail: "Create KPI unit fail",
+                create_kpi_unit_fail: "Can not create KPI unit",
                 update_evaluate_kpi_unit_success:
                     "Update KPI unit evaluation successfully",
                 update_evaluate_kpi_unit_fail:
-                    "Update KPI unit evaluation fail",
+                    "Can not update KPI unit evaluation",
                 copy_kpi_unit_success: "Copy organizational unit KPI set successfully",
-                copy_kpi_unit_failure: "Copy organizational unit KPI set unsuccessfully",
+                copy_kpi_unit_failure: "Can not copy organizational unit KPI set",
                 copy_employee_kpi_success: "Copy employee KPI set successfully",
-                copy_employee_kpi_failure: "Copy employee KPI set unsuccessfully",
+                copy_employee_kpi_failure: "Can not copy employee KPI set",
                 organizatinal_unit_kpi_set_exist: "Organizational unit KPI set already exists",
                 employee_kpi_set_exist: "Employee KPI set already exists",
                 calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
-                calculate_kpi_unit_failure: "Calculate organizational unit KPI unsuccessfully"
+                calculate_kpi_unit_failure: "Can not calculate organizational unit KPI"
             },
         },
 
         manage_warehouse: {
-            dashboard_material: {},
+            dashboard_bill: {},
+            dashboard_inventory: {},
+            category_management: {
+                index: "STT",
+                add: "Add a new",
+                add_title: "Add new category",
+                info: "Information about the list of commodity",
+                edit: "Edit category information",
+                delete: "Delete category",
+                add_success: "Add successfully",
+                delete_success: "Delete successfully",
+                delete_faile: "Delete failed",
+                add_faile: "Add failed",
+                edit_success: "Edit successfully",
+                edit_faile: "Edit failed",
+                name: "Category name",
+                code: "Category code",
+                type: "Category type",
+                good: "commodity",
+                address: "Address",
+                description: "Description",
+                choose_type: "Select commodity type",
+                all_type: "Select all commodity",
+                product: "Product",
+                material: "Material",
+                equipment: "Equipment",
+                waste: "Waste",
+                search: "Search",
+                validate_code: "Category code cannot be empty",
+                validate_name: "Category name cannot be empty",
+                validate_type: "Must select category type",
+                delete_info: "Do you want to delete the category?",
+            },
+            good_management: {
+                product: "Product",
+                material: "Material",
+                equipment: "Equipment",
+                waste: "Asset",
+                index: "Index",
+                add: "Add",
+                add_title: {
+                    product: "Add new product",
+                    material: "Add new material",
+                    equipment: "Add new equipment",
+                    waste: "Add new waste",
+                },
+                info: {
+                    product: "Product information",
+                    material: "Material information",
+                    equipment: "Equipment information",
+                    waste: "Waste information",
+                },
+                edit: {
+                    product: "Edit new product",
+                    material: "Edit new material",
+                    equipment: "Edit new equipment",
+                    waste: "Edit new waste",
+                },
+                delete: "Delete commodity",
+                add_success: "Add new commodity success",
+                delete_success: "Delete commodity success",
+                delete_faile: "Delete commodity failed",
+                add_faile: "Add new commodity failed",
+                edit_success: "Edit success",
+                edit_faile: "Edit failed",
+                name: "Commodity name",
+                good_source: "Good source",
+                validate_source_product: 'Product source cannot be empty',
+                code: "Commodity code",
+                type: "Commodity type",
+                good: "Commodity",
+                address: "Address",
+                description: "Description",
+                choose_type: "Choose type of commodity",
+                all_type: "Choose all type of commodity",
+                product: "Products",
+                material: "Material",
+                importedFromSuppliers: "Imported from suppliers",
+                selfProduced: "Self-produced",
+                equipment: "Equipment",
+                waste: "Waste",
+                search: "Search",
+                validate_code: "Commodity code cannot be left blank",
+                validate_name: "Commodity name cannot be left blank",
+                validate_type: "Need to choose a category type",
+                delete_info: "Do you want to delete the commodity?",
+                category: "Category",
+                unit: "Unit",
+                baseUnit: "Basic unit",
+                materials: "Main ingredient",
+                unit_name: "Unit name",
+                conversion_rate: "Conversion rate",
+                quantity: "Quantity",
+                choose_category: "Choose category",
+                choose_source: "Choose source good",
+                choose_base_unit:
+                    "Please select the unit to create the packing rule",
+                packing_rule: "Packing rule",
+                non_choose_base_unit: "Not select",
+                choose_base_unit_all: "Select all",
+                error_packing_rule:
+                    "The selected unit cannot form a packing rule. Please choose again!",
+                info_mill: "Information about the factory",
+                productivity: "Product unit / shift",
+                person_number: "Number of people/shift",
+                mill: "factory",
+                choose_mill: "select factory",
+                error_choose_mill: "Please select factory",
+                error_productivity: "Enter value must be > 0",
+                error_person_number: "Enter value must be > 0",
+                mill_code: "Factory code",
+                mill_name: "Factory name",
+                numberExpirationDate: "Expiry date (calculate by day)",
+                day: "Date",
+                expirationDate: "Expiry date",
+                validate_number_expiration_date:
+                    "Expiration date cannot be left blank",
+                validate_number_expiration_date_input:
+                    "Expiry date must be greater than 0",
+            },
+
+            stock_management: {
+                // 1: "Sẵn sàng sử dụng",
+                // 2: "Đang sử dụng",
+                // 3: "Đang sửa chữa",
+                // 4: "Không sử dụng",
+                1: {
+                    status: "Ready to use",
+                    color: "green",
+                },
+                2: {
+                    status: "Using",
+                    color: "blue",
+                },
+                3: {
+                    status: "Is corrected",
+                    color: "violet",
+                },
+                4: {
+                    status: "Do not use",
+                    color: "red",
+                },
+                index: "Index",
+                add: "Add",
+                add_title: "Add new warehouse",
+                info: "Information about the warehouse",
+                edit: "Edit warehouse information",
+                delete: "delete warehouse",
+                add_success: "Add successfully",
+                delete_success: "Delete Successfully",
+                delete_faile: "Delete failed",
+                add_faile: "Add failed",
+                edit_success: "Edit successfully",
+                edit_faile: "Edit failed",
+                name: "Warehouse name",
+                code: "Warehouse code",
+                goods: "Commodity in warehouse",
+                good: "Commodity",
+                status: "status",
+                address: "Address",
+                description: "Description",
+                choose_status: "Select status",
+                choose_department: "--Select department--",
+                department: "Management department",
+                management_location: "Management location",
+                all_type: "Select all status",
+                search: "Search",
+                validate_code: "Warehouse code cannot be empty",
+                validate_name: "Warehouse name cannot be empty",
+                validate_status: "Must select warehouse type",
+                delete_info: "Do you want to delete the archive?",
+                max_quantity: "Max quantity",
+                min_quantity: "Min quantity",
+                choose_good: "Select commodity",
+                choose_role: "Select role",
+                validate_good: "Commodity cannot be empty",
+                detail_stock: "Warehouse detail",
+                validate_address: "Address cannot be empty",
+                validate_department: "Department cannot be empty",
+                validate_management: "Management location cannot be empty",
+                product: "Product",
+                material: "Material",
+                equipment: "Equipment",
+                waste: "waste",
+                role: "Role",
+                management_good: "Managed Commodities",
+            },
+            bin_location_management: {
+                product: "Product",
+                material: "Material",
+                equipment: "Equipment",
+                asset: "Asset",
+                bin_location: "Storage location",
+                category_tree: "Tree directory",
+                category_table:"Table list",
+                archive: "Storage category",
+                1: {
+                    status: "Ready to use",
+                    color: "green",
+                },
+                2: {
+                    status: "Using",
+                    color: "blue",
+                },
+                3: {
+                    status: "Is corrected",
+                    color: "violet",
+                },
+                4: {
+                    status: "Do not use",
+                    color: "red",
+                },
+                5: {
+                    status: "Full",
+                    color: "red",
+                },
+                index: "Index",
+                add: "Add",
+                add_title: "Add new storage location",
+                info: "Storage location information",
+                edit: "Edit storage location information",
+                delete: "Delete storage location",
+                add_success: "Add successfully",
+                delete_success: "Delete successfully",
+                delete_faile: "Delete failed",
+                add_faile: "Add failed",
+                edit_success: "Edit successfully",
+                edit_faile: "Edit failed",
+                name: "Storage location name",
+                unit: "Unit",
+                parent: "Parent storage location",
+                code: "code",
+                goods: "Commodity in storage",
+                enable_good: "commodity can be storage",
+                good: "Commodity",
+                type: "Commodity type",
+                status: "Status",
+                capacity: "capacity",
+                contained: "Contained",
+                address: "Address",
+                description: "Desctiption",
+                choose_status: "Select status",
+                choose_department: "--Select unit--",
+                department: "Management department",
+                management_location: "Management",
+                all_type: "Select all status",
+                search: "Search",
+                validate_code: "Warehouse code cannot be empty",
+                validate_name: "Warehouse name cannot be empty",
+                validate_status: "Must select warehouse type",
+                delete_info: "Do you want to delete the warehouse?",
+                max_quantity: "Max quantity",
+                min_quantity: "Min quantity",
+                stock: "Warehouse",
+                validate_capacity: "Capacity cannot be empty",
+                validate_good: "Commodity cannnot be empty",
+                validate_department: "Management department cannot be empty",
+                validate_stock: "warehouse cannot be empty",
+                choose_stock: "Select warehouse",
+                choose_good: "Select commodity",
+                detail_title: "Detail storage location",
+            },
+            bill_management: {
+                text: "Consignment have not been writen",
+                billType: {
+                    1: "Import materials",
+                    2: "Import finished product",
+                    3: "Import equipment",
+                    4: "Import waste",
+                    5: "Export materials",
+                    6: "Export finished product",
+                    7: "Export equipment",
+                    8: "Export waste",
+                    9: "Periodic inventory",
+                    10: "Regular inventory",
+                    11: "Return of self-produced goods that do not pass quality inspection",
+                    12: "Return goods imported from suppliers that do not pass quality inspection",
+                    13: "return goods that have been shipped",
+                    14: "commodity rotation",
+                },
+                1: {
+                    status: "Waiting for approval",
+                    color: "green",
+                },
+                2: {
+                    status: "Accomplished",
+                    color: "blue",
+                },
+                3: {
+                    status: "Approved",
+                    color: "violet",
+                },
+                4: {
+                    status: "Cancelled",
+                    color: "red",
+                },
+                bill_color: {
+                    1: "green",
+                    2: "blue",
+                    3: "violet",
+                    4: "red",
+                    5: "blue",
+                },
+                bill_status: {
+                    1: "Waiting for approval",
+                    2: "Accomplished",
+                    3: "Approved",
+                    4: "Cancelled",
+                    5: "Processing",
+                },
+                stock_book: "Warehouse book",
+                good_receipt: "Commodity receipt",
+                good_issue: "Commodity",
+                good_return: "Commodity return",
+                stock_take: "Commodity inventory",
+                stock_rotate: "Commodity rotation",
+                code: "Bill code",
+                type: "Bill type",
+                creator: "Creator",
+                date: "created date",
+                description: "Description",
+                stock: "Warehouse",
+                rotate_stock: "rotation warehouse",
+                from_date: "From",
+                to_date: "To",
+                search: "Search",
+                index: "Index",
+                proposal: "Proposal bill",
+                status: "Status",
+                issue_stock: "Issue warehouse",
+                receipt_stock: "Receipt warehouse",
+                customer: "Customer",
+                supplier: "Supplier",
+                mill: "Mill",
+                issued: "issued bil",
+                partner: "partner",
+                bill_detail: "Bill detail",
+                approved: "Approve person",
+                updateror: "Repairer",
+                createAt: "Repair time",
+                title: "Title",
+                view_version: "Log bill",
+                accountables: "Accountables",
+                qualityControlStaffs: "Quality Control Staffs",
+                list_saffs: "List of participants",
+                approved_time: "Approve time",
+                time: "Inspection time",
+                goods: "List of commodity",
+                good_name: "Commodity name",
+                approved_true: "Approve bill",
+                staff_true: "Checking the quality of commodity",
+                good_code: "Commodity code",
+                number: "number",
+                unit: "Unit",
+                note: "Note",
+                issued_quantity: "Issued quantity",
+                return_quantity: "Return quantity",
+                real_quantity: "Real quantity",
+                lot: "Consignment",
+                lot_number: "Consignment number",
+                difference: "Difference",
+                receiver: "Deliver",
+                choose_good: "Select commodity",
+                choose_type: "Select bill",
+                choose_approver: "Select approver",
+                choose_customer: "Select customer",
+                choose_manufacturing_mills: "Select mill",
+                choose_lot: "Select consignment",
+                choose_stock: "Select warehouse",
+                add_title: {
+                    1: "Add new receipt bill",
+                    2: "Add new issue bill",
+                    3: "Add new return bill",
+                    4: "Add new inventory bill",
+                    5: "Add new rotate bill",
+                },
+                edit_title: {
+                    1: "Edit new receipt bill",
+                    2: "Edit new issue bill",
+                    3: "Edit new return bill",
+                    4: "Edit new inventory bill",
+                    5: "Edit new rotate bill",
+                },
+                detail_title: {
+                    1: "Detail of receipt bill",
+                    2: "Detail of issue bill",
+                    3: "Detail of return bill",
+                    4: "Detail of receinventorypt bill",
+                    5: "Detail of rotate bill",
+                },
+                detail_version: {
+                    1: "Detail change of receipt bill",
+                    2: "Detail change of issue bill",
+                    3: "Detail change of return bill",
+                    4: "Detail change of receinventorypt bill",
+                    5: "Detail change of rotate bill",
+                },
+                qc_status: {
+                    1: {
+                        color: "orange",
+                        content: "Untested",
+                    },
+                    2: {
+                        color: "green",
+                        content: "Pass the test",
+                    },
+                    3: {
+                        color: "red",
+                        content: "Did not pass the test",
+                    },
+                },
+                qc_name: "Quality person 's name",
+                qc_email: "email",
+                qc_status_bill: "status",
+                quality_control_content: "Content",
+                infor: "Information",
+                name: "Name",
+                phone: "Phone number",
+                email: "Email",
+                address: "Address",
+                validate_type: "Bill type cannot be left blank",
+                validate_bill: "Bill cannot be left blank",
+                validate_stock: "Must select warehouse",
+                validate_approver: "Must select approver",
+                validate_customer: "Must select customer",
+                validate_manufacturing_mills: "Must select mill",
+                validate_lot: "Must select consignment",
+                validate_quantity: "Must enter number of consignment",
+                validate_quantity_rfid: "Must enter number of rfid",
+                validate_norm: "Out of quantity of inventory",
+                add_lot: "Add new consignment",
+                expiration_date: "Expiration date",
+                validate_norm: "Out of quantity of inventory",
+                quantity_return: "quantity of return commodity",
+                quantity_issue: "Quantity of issue commodity",
+                bill_issued: "issued bill",
+                choose_bill: "Select bill",
+                users: "Users",
+                add_success: "Add successfully",
+                add_faile: "Add failed",
+                edit_success: "Edit successfully",
+                edit_faile: "Edit failed",
+
+                // Phần liên quan lô sản xuất
+                add_issue_product: "Thêm phiếu nhập sản phẩm",
+                lot_information: "Consignment information",
+                base_unit: "base unit",
+                bill_info: "Product receipt bill information",
+                quantity_billed: "Number of commodity that have not been created bill",
+                bill_information: "Receipt bill",
+                quantity_error: "Please enter quantity",
+                quantity_error_input: "Quantity must be greater than 0",
+                quantity_error_input_1:
+                    "The quantity entered must not be greater than the quantity remaining in the lot",
+                name_receiver: "Receiver name",
+                email_receiver: "Receiver email",
+                phone_receiver: "Receiver phone",
+                address_receiver: "Receiver address",
+                choose_stock_error: "Please select warehouse",
+                choose_user: "Select user",
+                error_name_receiver: "Receiver name cannot be empty",
+                error_phone_receiver:
+                    "Receiver phone number cannot be ",
+                error_phone_receiver_input: "Phone number form invalid",
+                choose_approvers: "Please select approvers",
+                choose_accountables: "Please select accountables",
+                chooos_reponsibles: "Please select responsibles",
+                choose_all_lot:
+                    "Please enter the total number of products in the consignment to create a receipt",
+                create_product_bill_successfully:
+                    "Add successfully",
+                create_product_bill_failed: "Add failed",
+                add_product_bill: "add product receipt bill",
+
+                // Phần xuất kho nguyên vật liệu
+
+                material_name: "Material name",
+                material_code: "Material code",
+                command_info: "Material information in work order",
+                quantity_needed_bill: "The quantity has not been issued the vouchers yet",
+                add_material_bill: "Add material receipt bill",
+                create_material_bill_successfully: "Add successfully",
+                create_material_bill_failed: "Add failed",
+                bill_material_info: "Information of issue material bill",
+                materials_in_bill: "List of material in bill",
+                number_inventory: "Inventory",
+                quality_control_staffs: "quantity control staffs",
+                quality_control_staffs_error: "Please enter quantity control staff",
+                quantity: "quantity",
+                choose_material: "Select material",
+                command_code: "Command code",
+                mill_request: "Factory required",
+                quantity_needed_true: "To approve the work order, please fill the issue bill full required quantity of materials!",
+                lot_with_unit: "Lot (Lot code/ Quantity)",
+                rfid_code: "RFID code",
+                rfid_quantity: "Number products / 1 RFID",
+                create_rfid_code: "Create RFID code",
+                goods_returned_to_the_factory: "Goods returned to the factory",
+                goods_returned_to_the_supplier: "Goods returned to the supplier",
+                goods_returned_to_the_stock: "Goods returned to the stock",
+
+            },
+            inventory_management: {
+                product: "Product",
+                material: "Material",
+                equipment: "Equipment",
+                waste: "Waste",
+                name: "Commodity name",
+                stock: "Warehouse",
+                index: "index",
+                unit: "Unit",
+                quantity: "Quantity of inventory",
+                lot: "number of consignment ",
+                lots: "Consignment",
+                date: "Expiration date",
+                search: "Search",
+                good_code: "Commodity code",
+                lot_code: "Index of consigment",
+                description: "Description",
+                history: "History",
+                date_month: "Date, month",
+                receipt: "Receipt",
+                issue: "Issue",
+                inventory: "Inventory",
+                stock_card: "warehouse cart",
+                lot_detail: "Detail of consigment",
+                original_quantity: "Original quantity",
+                type: "Type",
+                number: "Number",
+                bin: "Storage location",
+                partner: "Partner",
+                from_to: "From",
+                status: "Status",
+                note: "Note",
+                bill: "Bill code",
+                archive: "Storage location",
+                bin_location: "Storage location",
+                choose_bin: "Select storage location",
+                choose_stock: "Select warehouse",
+                choose_good: "Select commodity",
+                total_stock: "Total of warehouse",
+                number_over: "Quantity has exceeded inventory",
+                validate_number: "Quantity cannot be empty",
+                validate_total: "Quantity has exceeded inventory",
+                number_over_norm: "The quantity has exceeded the storage quota",
+                bin_contained: "The storage can only contain:",
+                edit_title: "Edit consigment",
+                edit_success: "Edit successfully",
+                edit_faile: "Edit failed",
+                get_lot_failed: "Get consigment failed",
+                push_lot: "The consigment has not been placed in warehouse",
+                text: "Commodity have not been placed in warehouse",
+                add_lot: "Add consigment",
+                select_lot: "Select consigment",
+            },
         },
 
         // manage order
@@ -4346,11 +5065,122 @@ export default {
         // Quản lý sản xuất phần KHSX và LSX
         manufacturing: {
             manufacturing_works: {
-                name: "works name",
-                code: "works code",
+                name: "Factory name",
+                code: "Factory code",
                 search: "Search",
-                create_works: "Create works",
+                create_works: "Create new factory",
+                index: "Index",
+                worksManager: "Manager",
+                foreman: "Foreman",
+                mills: "Workshops",
+                phone: "Phone number",
+                address: "Address",
+                status: "Status",
+                description: "Description",
+                view_detail: "Detail",
+                edit: "Edit works",
+                1: "Active",
+                0: "Inactive",
+                choose_worksManager: "---Choose manager---",
+                worksManager_error: "Manager is required",
+                choose_foreman: "---Choose foreman---",
+                foreman_error: "Foreman is required",
+                choose_status: "---Choose status---",
+                status_error: "Status is required",
+                create_successfully: "Create factory successfully",
+                create_failed: "Create factory failed",
+                detail_works: "Factory details",
+                created_at: "Created at",
+                list_mills: "List workshops",
+                works_edit: "Edit workshop",
+                works_detail: "Workshop details",
+                edit_successfully: "Edit factory's information successfully",
+                edit_failure: "Edit factory's information failed",
+                mill_code: "Workshop code",
+                mill_name: "Workshop name",
+                organizational_unit: "Linked organization",
+                choose_organizational_unit: "---Choose organization---",
+                error_organizational_unit: "Linked organization is required",
+                list_roles: "Unit manager ",
+                manage_roles: "Add manager",
+                role_manages_another: "Another manager",
+                no_roles: "No role ",
             },
+            manufacturing_mill: {
+                name: "Workshop name",
+                code: "Workshop code",
+                search: "Search",
+                index: "Index",
+                worksName: "Factory",
+                description: "Description",
+                status: "Status",
+                create_mill: "Create new workshop",
+                create_manufacturing_mill: "Create new workshop",
+                create_mill_successfully: "Create new workshop successfully",
+                create_mill_failed: "Create new workshop failed",
+                works: "Factory",
+                choose_works: "---Choose factory---",
+                worksValue_error: "Factory is required",
+                delete_mill: "Delete workshop",
+                1: "Active",
+                0: "Inactive",
+                mill_detail: "Workshop details",
+                mill_edit: "Edit workshop",
+                choose_status: "---Choose status---",
+                status_error: "Status is required",
+                edit_mill_successfully: "Edit information successfully",
+                edit_mill_failed: "Edit information failed",
+                works_name: "Factory name",
+                created_at: "Create at",
+                team_leader: "Leader",
+                choose_team_leader: "---Choose leader---",
+                team_leader_error: "Leader is required",
+            },
+            purchasing_request: {
+                code: "Purchase requestion code",
+                createdAt: "Created at",
+                planCode: "Plan code",
+                command_code: "Command code",
+                receiveTime: "Receive time",
+                status: "Status",
+                creator: "Creator",
+                index: "Index",
+                select_all: "Select all",
+                1: { content: "Pending", color: "orange" },
+                2: { content: "Proccessed", color: "green" },
+                3: { content: "Canceled", color: "red" },
+                search: "Search",
+                select_status: "Select status",
+                add_purchasing_request_button: "Add purchase requestion",
+                add_purchasing_request: "Add purchase requestion",
+                create_successfully: "Add purchase requestion successfully",
+                create_failed: "Add purchase requestion failed",
+                description: "Description",
+                good_code: "Good code",
+                good_name: "Good nane",
+                good_base_unit: "Good base unit",
+                quantity: "Quantity",
+                delete_good: "Delete",
+                material_info: "Material's information",
+                choose_material: "---Choose material---",
+                material_code: "Material code",
+                error_good: "Material is required",
+                error_description: "Description is required",
+                error_quantity: "Quantity is required",
+                cancel_editing_good: "Cancel",
+                save_good: "Save",
+                add_good: "Add",
+                delete_good: "Delete all",
+                error_quantity_input: "Quantity is not available",
+                purchasing_request_detail: "Purchase requestion details",
+                material_detail: "Material details",
+                purchasing_request_edit: "Edit purchase requestion",
+                edit_successfully: "Edit purchase requestion successfully",
+                edit_failed: "Edit purchase requestion failed",
+                cancel_purchasing_request: "Cancel purchase requestion",
+                number_purchasing_status: "Number of purchasing requestion by status"
+            },
+
         },
 
         manage_transport: {
@@ -4416,6 +5246,32 @@ export default {
             list_tasks: 'List of tasks',
             role: 'Project role',
             creator: 'Project creator',
+
+            // Thông báo trả về từ server
+            get_task_project_success: 'Get project success',
+            get_task_project_fail: 'Get project fail',
+            show_task_project_success: 'Show project success',
+            show_task_project_fail: 'Show project fail',
+            create_task_project_success: 'Create project success',
+            create_task_project_fail: 'Create project fail',
+            edit_task_project_success: 'Edit project success',
+            edit_task_project_fail: 'Edit project fail',
+            delete_task_project_success: 'Delete project success',
+            delete_task_project_fail: 'Delete project fail',
+            get_members_with_score_success: 'Get members with score success',
+            get_members_with_score_fail: 'Get members with score fail',
+            get_list_tasks_eval_success: 'Get evaluations of tasks success',
+            get_list_tasks_eval_fail: 'Get evaluations of tasks fail',
+            get_salary_members_success: 'Get salary of members success',
+            get_salary_members_fail: 'Get salary of members fail',
+            create_project_change_request_success: 'Create change request for project success',
+            create_project_change_request_fail: 'Create change request for project fail',
+            get_list_project_change_requests_success: 'Get list of change requests success',
+            get_list_project_change_requests_fail: 'Get list of change requests fail',
+            update_status_project_change_request_success: 'Update status of change request success',
+            update_status_project_change_request_fail: 'Update status of change request fail',
+            update_list_project_change_requests_success: 'Update list of change requests success',
+            update_list_project_change_requests_fail: 'Update list of change requests fail',
 
             task_management: {
                 estimate: "Estimating",

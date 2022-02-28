@@ -28,6 +28,8 @@ export const taskManagementActions = {
     getTasksByProject,
 
     importTasks,
+
+    getOrganizationTaskDashboardChart
 };
 
 
@@ -504,10 +506,10 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
     };
 }
 
-function getTimeSheetOfUser(userId, month, year) {
+function getTimeSheetOfUser(userId, month, year, requireActions = false) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_TIME_SHEET_OF_USER_REQUEST });
-        taskManagementService.getTimeSheetOfUser(userId, month, year)
+        taskManagementService.getTimeSheetOfUser(userId, month, year, requireActions)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_TIME_SHEET_OF_USER_SUCCESS,
@@ -520,10 +522,10 @@ function getTimeSheetOfUser(userId, month, year) {
     };
 }
 
-function getAllUserTimeSheet(month, year) {
+function getAllUserTimeSheet(month, year, rowLimit, page, timeLimit) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST });
-        taskManagementService.getAllUserTimeSheet(month, year)
+        taskManagementService.getAllUserTimeSheet(month, year, rowLimit, page, timeLimit)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_SUCCESS,
@@ -612,9 +614,33 @@ function importTasks(data) {
                 })
             })
             .catch(err => {
+                console.log("error", err)
+                console.log("errordata", err?.response?.data)
                 dispatch({
                     type: taskManagementConstants.IMPORT_TASKS_FAILURE,
-                    error: err.response.data.content
+                    error: err?.response?.data?.content
+                });
+            })
+    }
+}
+function getOrganizationTaskDashboardChart(data) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST,
+            chartNameArr: Object.keys(data),
+        });
+
+        taskManagementService.getOrganizationTaskDashboardChart(data)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE,
+                    error
                 });
             })
     }

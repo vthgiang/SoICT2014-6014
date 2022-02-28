@@ -17,7 +17,7 @@ exports.getLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'get_links_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -30,7 +30,7 @@ exports.getLinks = async (req, res) => {
 exports.getLink = async (req, res) => {
     try {
         let link = await LinkService.getLink(req.params.id);
-        
+
         await Logger.info(req.user.email, 'show_link_success', req.portal);
         res.status(200).json({
             success: true,
@@ -38,7 +38,7 @@ exports.getLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'show_link_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -50,7 +50,7 @@ exports.getLink = async (req, res) => {
 
 exports.createLink = async (req, res) => {
     try {
-        let {company} = req.query;
+        let { company } = req.query;
         let createLink = await LinkService.createLink(req.body, company);
         await LinkService.relationshipLinkRole(createLink._id, req.body.roles);
         let link = await LinkService.getLink(createLink._id);
@@ -62,7 +62,7 @@ exports.createLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'create_link_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -77,7 +77,7 @@ exports.editLink = async (req, res) => {
         await LinkService.relationshipLinkRole(req.portal, req.params.id, req.body.roles);
         let link = await LinkService.editLink(req.portal, req.params.id, req.body);
         let data = await LinkService.getLink(req.portal, link._id);
-        
+
         await Logger.info(req.user.email, 'edit_link_success', req.portal);
         res.status(200).json({
             success: true,
@@ -85,7 +85,7 @@ exports.editLink = async (req, res) => {
             content: data
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'edit_link_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -97,10 +97,10 @@ exports.editLink = async (req, res) => {
 
 exports.deleteLink = async (req, res) => {
     try {
-        let {id} = req.params;
-        let {type} = req.query; 
+        let { id } = req.params;
+        let { type } = req.query;
         let link = await LinkService.deleteLink(id, type);
-        
+
         await Logger.info(req.user.email, 'delete_link_success', req.portal);
         res.status(200).json({
             success: true,
@@ -108,7 +108,7 @@ exports.deleteLink = async (req, res) => {
             content: link
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'delete_link_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -140,7 +140,7 @@ exports.deleteLink = async (req, res) => {
 
 exports.updateCompanyLinks = async (req, res) => {
     try {
-        let data = req.body; 
+        let data = req.body;
         let portal = req.query.portal !== undefined ? req.query.portal : req.portal;
         let content = await LinkService.updateCompanyLinks(portal, data);
 
@@ -160,3 +160,88 @@ exports.updateCompanyLinks = async (req, res) => {
         });
     }
 };
+
+exports.importRoles = async (req, res) => {
+    try {
+        const role = await RoleService.importRoles(req.portal, req.body);
+        if (role?.rowError !== undefined) {
+            await Logger.error(req.user.email, 'import_role_failed', req.portal);
+            res.status(400).json({
+                success: false,
+                messages: ["import_role_failed"],
+                content: role
+            });
+        } else {
+            Logger.info(req.user.email, 'import_role_success', req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ['import_role_success'],
+                content: role
+            });
+        }
+    } catch (error) {
+        console.log('error', error);
+        Logger.error(req.user.email, 'import_role_failed', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_role_failed'],
+            content: error
+        });
+    }
+};
+
+exports.importUsers = async (req, res) => {
+    try {
+        if (Array.isArray(req.body.data)) {
+            for (let i = 0; i < req.body.data.length; i++) {
+                let dataUser = req.body.data[i];
+                let user = await UserService.createUser(req.portal, dataUser, req.user.company._id);
+                await UserService.addRolesForUser(req.portal, user._id, dataUser.roles);
+            }
+        }
+        let userlist = await UserService.getUsers(req.portal, req.user.company._id, { limit: req.query.limit ? req.query.limit : 5, page: 1 });
+
+        Logger.info(req.user.email, 'import_users_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_users_success'],
+            content: userlist
+        });
+    } catch (error) {
+
+        Logger.error(req.user.email, 'import_users_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_users_faile'],
+            content: error
+        });
+    }
+}
+
+exports.importRolesForLinks = async (req, res) => {
+    try {
+        if (Array.isArray(req.body.data)) {
+            for (let i = 0; i < req.body.data.length; i++) {
+                let dataUser = req.body.data[i];
+                let user = await UserService.createUser(req.portal, dataUser, req.user.company._id);
+                await UserService.addRolesForUser(req.portal, user._id, dataUser.roles);
+            }
+        }
+        let userlist = await UserService.getUsers(req.portal, req.user.company._id, { limit: req.query.limit ? req.query.limit : 5, page: 1 });
+
+        Logger.info(req.user.email, 'import_users_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_users_success'],
+            content: userlist
+        });
+    } catch (error) {
+
+        Logger.error(req.user.email, 'import_users_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_users_faile'],
+            content: error
+        });
+    }
+}

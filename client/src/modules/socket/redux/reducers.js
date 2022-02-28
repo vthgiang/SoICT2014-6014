@@ -1,4 +1,4 @@
-import SocketIO from 'socket.io-client';
+import { io } from "socket.io-client";
 import { getStorage } from "../../../config";
 import { SocketConstants } from "./constants";
 
@@ -12,7 +12,7 @@ export function socket(state=initSocket, action) {
         case SocketConstants.CONNECT_SOCKET_IO: 
             const userId = getStorage('userId');
             if(userId){
-                state.io = SocketIO(process.env.REACT_APP_SERVER, {
+                state.io = io(process.env.REACT_APP_SERVER, {
                     query: { userId }
                 });
                 state.connected = true;

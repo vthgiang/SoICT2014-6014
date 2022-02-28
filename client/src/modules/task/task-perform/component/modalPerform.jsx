@@ -5,20 +5,15 @@ import { DialogModal } from '../../../../common-components';
 import TaskComponent from './taskComponent';
 
 function ModalPerform(props) {
-    const [state, setState] = useState({})
+    const { performtasks, units, taskName } = props;
 
-    let taskName;
-    const { performtasks, units } = props;
-
-    if (performtasks?.task)
-        taskName = performtasks.task?.name;
     return (
         <React.Fragment>
             <DialogModal
                 size="100"
                 modalID={`modelPerformTask${props.id}`}
                 formID="form-perform-task"
-                title={taskName ? taskName : ""}
+                title={performtasks?.task?.name ? performtasks.task.name : taskName}
                 bodyStyle={{ padding: "0px" }}
                 hasSaveButton={false}
             >

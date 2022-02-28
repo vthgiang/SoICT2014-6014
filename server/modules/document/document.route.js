@@ -13,6 +13,7 @@ const data = [
         path: '/files'
     }
 ];
+// Tài liệu văn vản (Phần cho nhân viên)
 router.get("/documents/:id/download-file", auth, DocumentController.downloadDocumentFile);
 router.get("/documents/:id/download-file-scan", auth, DocumentController.downloadDocumentFileScan);
 router.get("/documents/downloadFile", auth, DocumentController.downloadAllFileOfDocument);
@@ -51,5 +52,6 @@ router.post('/document-archives/delete-many', auth, DocumentController.deleteMan
 router.patch('/document-archives/:id', auth, DocumentController.editDocumentArchive);
 router.delete('/document-archives/:id', auth, DocumentController.deleteDocumentArchive);
 router.post("/document-archives/import-file", auth, DocumentController.importDocumentArchive)
+router.get("/chart-document", auth, DocumentController.chartDataDocument)
 
 module.exports = router;

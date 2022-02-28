@@ -19,7 +19,7 @@ const initMember = {
     gender: 'male',
     isHeadHousehold: 'no',
     relationshipWithHeadHousehold: '',
-    cnss: '',
+    ccns: '',
     birth: '',
     placeOfBirthCertificate: '',
     nationality: '',
@@ -73,6 +73,7 @@ const EmployeeCreateForm = (props) => {
             identityCardDate: formatDate2(Date.now()),
             birthdate: formatDate2(Date.now()),
             roles: [],
+            workProcess: [],
             experiences: [],
             socialInsuranceDetails: [],
         },
@@ -166,6 +167,19 @@ const EmployeeCreateForm = (props) => {
                 experiences: data
             }
         }))
+    }
+
+    const handleChangeWorkProcess = (data, addData) => {
+        const { employee } = state;
+        setState(state => {
+            return {
+                ...state,
+                employee: {
+                    ...employee,
+                    workProcess: [...data]
+                }
+            }
+        })
     }
 
     /**
@@ -340,7 +354,7 @@ const EmployeeCreateForm = (props) => {
 
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
-        let { employee, degrees, certificates, contracts, files, avatar,
+        let { employee, degrees, certificates, contracts, files, avatar, careerPositions,
             disciplines, commendations, annualLeaves, courses, houseHold } = state;
 
         await setState(state => ({
@@ -355,15 +369,24 @@ const EmployeeCreateForm = (props) => {
                 commendations,
                 annualLeaves,
                 courses,
+                careerPositions,
                 // career,
                 // major,
                 houseHold
             }
         }))
 
+        const degreesConvert = state?.degrees?.length ? state.degrees.map(x => {
+            const splitDate = x?.year ? x.year.split("-") : x.year;
+            return {
+                ...x,
+                year: [splitDate[2], splitDate[1], splitDate[0]].join("-")
+            }
+        }) : [];
+
         let formData = convertJsonObjectToFormData({
             ...employee,
-            degrees: [...state.degrees],
+            degrees: degreesConvert,
             certificates: [...state.certificates],
             contracts: [...state.contracts],
             files: [...state.files],
@@ -371,8 +394,7 @@ const EmployeeCreateForm = (props) => {
             commendations: [...state.commendations],
             annualLeaves: [...state.annualLeaves],
             courses: [...state.courses],
-            // career,
-            // major,
+            careerPositions:  [...state.careerPositions],
             houseHold: { ...state.houseHold },
         });
         degrees.forEach(x => {
@@ -380,6 +402,9 @@ const EmployeeCreateForm = (props) => {
         })
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
+        })
+        careerPositions.forEach(x => {
+            formData.append("fileCareerPosition", x.fileUpload);
         })
         // major.forEach(x => {
         //     formData.append("fileMajor", x.fileUpload);
@@ -608,6 +633,10 @@ const EmployeeCreateForm = (props) => {
                             handleAddExperience={handleChangeExperience}
                             handleEditExperience={handleChangeExperience}
                             handleDeleteExperience={handleChangeExperience}
+
+                            handleAddWorkProcess={handleChangeWorkProcess}
+                            handleDeleteWorkProcess={handleChangeWorkProcess}
+                            handleEditWorkProcess={handleChangeWorkProcess}
                         />
                         {/* Tab bằng cấp - chứng chỉ */}
                         <CertificateTab

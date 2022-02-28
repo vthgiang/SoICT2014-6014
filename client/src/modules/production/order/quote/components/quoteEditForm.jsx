@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
@@ -12,167 +12,167 @@ import QuoteCreateInfo from "./editQuote/quoteCreateInfo";
 import QuoteCreatePayment from "./editQuote/quoteCreatePayment";
 import SlasOfGoodDetail from "./editQuote/viewDetailOnCreate/slasOfGoodDetail";
 import DiscountOfGoodDetail from "./editQuote/viewDetailOnCreate/discountOfGoodDetail";
-class QuoteEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            goods: [],
-            discountsOfOrderValue: [],
-            discountsOfOrderValueChecked: {},
-            currentSlasOfGood: [],
-            currentDiscountsOfGood: [],
-            paymentAmount: 0,
-            code: "",
-            note: "",
-            customer: "",
-            customerName: "",
-            customerAddress: "",
-            customerPhone: "",
-            customerRepresent: "",
-            effectiveDate: "",
-            expirationDate: "",
-            shippingFee: "",
-            deliveryTime: "",
-            coin: "",
-            step: 0,
-            isUseForeignCurrency: false,
-            foreignCurrency: {
-                symbol: "", // ký hiệu viết tắt
-                ratio: "", // tỷ lệ chuyển đổi
-            },
-            standardCurrency: {
-                symbol: "vnđ", // ký hiệu viết tắt
-                ratio: "1", // tỷ lệ chuyển đổi
-            },
-            currency: {
-                type: "standard",
-                symbol: "",
-                ratio: "1",
-            },
-        };
-    }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.quoteDetail._id && nextProps.quoteDetail._id !== prevState.quoteId) {
+function QuoteEditForm(props) {
+
+    const [state, setState] = useState({
+        goods: [],
+        discountsOfOrderValue: [],
+        discountsOfOrderValueChecked: {},
+        currentSlasOfGood: [],
+        currentDiscountsOfGood: [],
+        paymentAmount: 0,
+        code: "",
+        note: "",
+        customer: "",
+        customerName: "",
+        customerAddress: "",
+        customerPhone: "",
+        customerRepresent: "",
+        effectiveDate: "",
+        expirationDate: "",
+        shippingFee: "",
+        deliveryTime: "",
+        coin: "",
+        step: 0,
+        isUseForeignCurrency: false,
+        foreignCurrency: {
+            symbol: "", // ký hiệu viết tắt
+            ratio: "", // tỷ lệ chuyển đổi
+        },
+        standardCurrency: {
+            symbol: "vnđ", // ký hiệu viết tắt
+            ratio: "1", // tỷ lệ chuyển đổi
+        },
+        currency: {
+            type: "standard",
+            symbol: "",
+            ratio: "1",
+        },
+    })
+
+
+    if (props.quoteDetail._id !== state.quoteId) {
+        setState((state) => {
             return {
-                ...prevState,
+                ...state,
                 step: 0,
-                quoteId: nextProps.quoteDetail._id,
-                code: nextProps.quoteDetail.code,
-                effectiveDate: nextProps.quoteDetail.effectiveDate ? formatDate(nextProps.quoteDetail.effectiveDate) : "",
-                expirationDate: nextProps.quoteDetail.expirationDate ? formatDate(nextProps.quoteDetail.expirationDate) : "",
-                customer: nextProps.quoteDetail.customer._id,
-                customerName: nextProps.quoteDetail.customer.name,
-                customerPhone: nextProps.quoteDetail.customerPhone,
-                customerTaxNumber: nextProps.quoteDetail.customer.taxNumber,
-                customerRepresent: nextProps.quoteDetail.customerRepresent,
-                customerAddress: nextProps.quoteDetail.customerAddress,
-                customerEmail: nextProps.quoteDetail.customerEmail,
-                deliveryTime: nextProps.quoteDetail.deliveryTime ? formatDate(nextProps.quoteDetail.deliveryTime) : "",
-                discountsOfOrderValue: nextProps.quoteDetail.discounts,
+                quoteId: props.quoteDetail._id,
+                code: props.quoteDetail.code,
+                effectiveDate: props.quoteDetail.effectiveDate ? formatDate(props.quoteDetail.effectiveDate) : "",
+                expirationDate: props.quoteDetail.expirationDate ? formatDate(props.quoteDetail.expirationDate) : "",
+                customer: props.quoteDetail.customer._id,
+                customerName: props.quoteDetail.customer.name,
+                customerPhone: props.quoteDetail.customerPhone,
+                customerTaxNumber: props.quoteDetail.customer.taxNumber,
+                customerRepresent: props.quoteDetail.customerRepresent,
+                customerAddress: props.quoteDetail.customerAddress,
+                customerEmail: props.quoteDetail.customerEmail,
+                deliveryTime: props.quoteDetail.deliveryTime ? formatDate(props.quoteDetail.deliveryTime) : "",
+                discountsOfOrderValue: props.quoteDetail.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
-                note: nextProps.quoteDetail.note,
-                paymentAmount: nextProps.quoteDetail.paymentAmount,
-                shippingFee: nextProps.quoteDetail.shippingFee,
-                coin: nextProps.quoteDetail.coin,
-                status: nextProps.quoteDetail.status,
-                goods: nextProps.quoteDetail.goods
-                    ? nextProps.quoteDetail.goods.map((item) => {
-                          return {
-                              good: item.good,
-                              pricePerBaseUnit: item.pricePerBaseUnit,
-                              pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
-                              salesPriceVariance: item.salesPriceVariance,
-                              quantity: item.quantity,
-                              slasOfGood: item.serviceLevelAgreements,
-                              taxs: item.taxs,
-                              note: item.note,
-                              amount: item.amount,
-                              amountAfterDiscount: item.amountAfterDiscount,
-                              amountAfterTax: item.amountAfterTax,
-                              discountsOfGood: item.discounts.length
-                                  ? item.discounts.map((dis) => {
-                                        return {
-                                            _id: dis._id,
-                                            code: dis.code,
-                                            type: dis.type,
-                                            formality: dis.formality,
-                                            name: dis.name,
-                                            effectiveDate: dis.effectiveDate ? formatDate(dis.effectiveDate) : undefined,
-                                            expirationDate: dis.expirationDate ? formatDate(dis.expirationDate) : undefined,
-                                            discountedCash: dis.discountedCash,
-                                            discountedPercentage: dis.discountedPercentage,
-                                            maximumFreeShippingCost: dis.maximumFreeShippingCost,
-                                            loyaltyCoin: dis.loyaltyCoin,
-                                            bonusGoods: dis.bonusGoods
-                                                ? dis.bonusGoods.map((bonus) => {
-                                                      return {
-                                                          good: bonus.good,
-                                                          expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
-                                                              ? formatDate(bonus.expirationDateOfGoodBonus)
-                                                              : undefined,
-                                                          quantityOfBonusGood: bonus.quantityOfBonusGood,
-                                                      };
-                                                  })
-                                                : undefined,
-                                            discountOnGoods: dis.discountOnGoods
-                                                ? {
-                                                      good: dis.discountOnGoods.good,
-                                                      expirationDate: dis.discountOnGoods.expirationDate
-                                                          ? formatDate(dis.discountOnGoods.expirationDate)
-                                                          : undefined,
-                                                      discountedPrice: dis.discountOnGoods.discountedPrice,
-                                                  }
-                                                : undefined,
-                                        };
-                                    })
-                                  : [],
-                          };
-                      })
+                note: props.quoteDetail.note,
+                paymentAmount: props.quoteDetail.paymentAmount,
+                shippingFee: props.quoteDetail.shippingFee,
+                coin: props.quoteDetail.coin,
+                status: props.quoteDetail.status,
+                goods: props.quoteDetail.goods
+                    ? props.quoteDetail.goods.map((item) => {
+                        return {
+                            good: item.good,
+                            pricePerBaseUnit: item.pricePerBaseUnit,
+                            pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
+                            salesPriceVariance: item.salesPriceVariance,
+                            quantity: item.quantity,
+                            slasOfGood: item.serviceLevelAgreements,
+                            taxs: item.taxs,
+                            note: item.note,
+                            amount: item.amount,
+                            amountAfterDiscount: item.amountAfterDiscount,
+                            amountAfterTax: item.amountAfterTax,
+                            discountsOfGood: item.discounts.length
+                                ? item.discounts.map((dis) => {
+                                    return {
+                                        _id: dis._id,
+                                        code: dis.code,
+                                        type: dis.type,
+                                        formality: dis.formality,
+                                        name: dis.name,
+                                        effectiveDate: dis.effectiveDate ? formatDate(dis.effectiveDate) : undefined,
+                                        expirationDate: dis.expirationDate ? formatDate(dis.expirationDate) : undefined,
+                                        discountedCash: dis.discountedCash,
+                                        discountedPercentage: dis.discountedPercentage,
+                                        maximumFreeShippingCost: dis.maximumFreeShippingCost,
+                                        loyaltyCoin: dis.loyaltyCoin,
+                                        bonusGoods: dis.bonusGoods
+                                            ? dis.bonusGoods.map((bonus) => {
+                                                return {
+                                                    good: bonus.good,
+                                                    expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
+                                                        ? formatDate(bonus.expirationDateOfGoodBonus)
+                                                        : undefined,
+                                                    quantityOfBonusGood: bonus.quantityOfBonusGood,
+                                                };
+                                            })
+                                            : undefined,
+                                        discountOnGoods: dis.discountOnGoods
+                                            ? {
+                                                good: dis.discountOnGoods.good,
+                                                expirationDate: dis.discountOnGoods.expirationDate
+                                                    ? formatDate(dis.discountOnGoods.expirationDate)
+                                                    : undefined,
+                                                discountedPrice: dis.discountOnGoods.discountedPrice,
+                                            }
+                                            : undefined,
+                                    };
+                                })
+                                : [],
+                        };
+                    })
                     : [],
             };
+        })
+    }
+
+
+    useEffect(() => {
+        if (state.code !== state.quoteCode) {
+            getDiscountOfOrderValueChecked();
+            setState({
+                ...state,
+                quoteCode: state.code,
+            })
         }
-    }
+    }, [state.code])
 
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log("nextState", nextState.code, this.state.quoteCode);
-        if (nextState.code !== this.state.quoteCode) {
-            this.getDiscountOfOrderValueChecked();
-            this.setState({
-                quoteCode: nextState.code,
-            });
-            return false;
-        }
-        return true;
-    }
+    useEffect(() => {
+        // props.getCustomers();
+        // props.getDiscountForOrderValue();
+    }, [])
 
-    componentDidMount() {
-        // this.props.getCustomers();
-        // this.props.getDiscountForOrderValue();
-    }
-
-    getDiscountOfOrderValueChecked = () => {
-        const { listDiscountsByOrderValue } = this.props.discounts;
-        let { discountsOfOrderValue, discountsOfOrderValueChecked } = this.state;
+    const getDiscountOfOrderValueChecked = () => {
+        const { listDiscountsByOrderValue } = props.discounts;
+        let { discountsOfOrderValue, discountsOfOrderValueChecked } = state;
         console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
-        let amountAfterApplyTax = this.getAmountAfterApplyTax();
+        let amountAfterApplyTax = getAmountAfterApplyTax();
         if (discountsOfOrderValue) {
             discountsOfOrderValue.forEach((element) => {
                 //checked các khuyến mãi đã có trong danh mục
                 let discount = listDiscountsByOrderValue.find((dis) => dis._id === element._id);
                 if (discount) {
-                    let checked = this.getDiscountsCheckedForEditQuote(discount, amountAfterApplyTax);
+                    let checked = getDiscountsCheckedForEditQuote(discount, amountAfterApplyTax);
                     discountsOfOrderValueChecked[`${checked.id}`] = checked.status;
                 }
             });
             console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
-            this.setState({
+            setState({
+                ...state,
                 discountsOfOrderValueChecked,
             });
         }
     };
 
-    getDiscountsCheckedForEditQuote = (item, orderValue) => {
+    const getDiscountsCheckedForEditQuote = (item, orderValue) => {
         let checked = { id: "", status: false };
         item.discounts.forEach((discount, index) => {
             let disabled = false;
@@ -194,17 +194,17 @@ class QuoteEditForm extends Component {
         return checked;
     };
 
-    getAmountAfterApplyTax = () => {
-        let { goods } = this.state;
+    const getAmountAfterApplyTax = () => {
+        let { goods } = state;
         let amountAfterApplyTax = goods.reduce((accumulator, currentValue) => {
             return accumulator + currentValue.amountAfterTax;
         }, 0);
 
-        // this.setState({ amountAfterApplyTax });
+        // setState({ amountAfterApplyTax });
         return amountAfterApplyTax;
     };
 
-    validateCustomer = (value, willUpdateState = true) => {
+    const validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -212,7 +212,7 @@ class QuoteEditForm extends Component {
             msg = "Giá trị không được để trống";
         }
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     customerError: msg,
@@ -222,11 +222,12 @@ class QuoteEditForm extends Component {
         return msg;
     };
 
-    handleCustomerChange = (value) => {
+    const handleCustomerChange = (value) => {
         if (value[0] !== "title") {
-            let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
+            let customerInfo = props.customers.list.filter((item) => item._id === value[0]);
             if (customerInfo.length) {
-                this.setState({
+                setState({
+                    ...state,
                     customer: customerInfo[0]._id,
                     customerName: customerInfo[0].name,
                     customerAddress: customerInfo[0].address,
@@ -237,7 +238,7 @@ class QuoteEditForm extends Component {
                 });
             }
         } else {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     customer: value[0],
@@ -251,54 +252,45 @@ class QuoteEditForm extends Component {
             });
         }
 
-        this.validateCustomer(value, true);
+        validateCustomer(value, true);
     };
 
-    handleCustomerEmailChange = (e) => {
+    const handleCustomerEmailChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerEmail: value,
-            };
-        });
-
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmail(translate, value);
-        this.setState({ customerEmailError: message });
-    };
-
-    handleCustomerPhoneChange = (e) => {
-        let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerPhone: value,
-            };
+        setState({
+            ...state,
+            customerEmail: value,
+            customerEmailError: message
         });
-
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ customerPhoneError: message });
     };
 
-    handleCustomerAddressChange = (e) => {
+    const handleCustomerPhoneChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                customerAddress: value,
-            };
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            customerPhone: value,
+            customerPhoneError: message
         });
-
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ customerAddressError: message });
     };
 
-    handleCustomerRepresentChange = (e) => {
+    const handleCustomerAddressChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
+        let { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            customerAddress: value,
+            customerAddressError: message
+        });
+    };
+
+    const handleCustomerRepresentChange = (e) => {
+        let { value } = e.target;
+        setState((state) => {
             return {
                 ...state,
                 customerRepresent: value,
@@ -306,9 +298,9 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleNoteChange = (e) => {
+    const handleNoteChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 note: value,
@@ -316,9 +308,9 @@ class QuoteEditForm extends Component {
         });
     };
 
-    validateDateStage = (effectiveDate, expirationDate, willUpdateState = true) => {
+    const validateDateStage = (effectiveDate, expirationDate, willUpdateState = true) => {
         let msg = undefined;
-        let {} = this.state;
+        let { } = state;
         if (effectiveDate && expirationDate) {
             let effDate = new Date(formatToTimeZoneDate(effectiveDate));
             let expDate = new Date(formatToTimeZoneDate(expirationDate));
@@ -330,7 +322,7 @@ class QuoteEditForm extends Component {
         }
 
         if (willUpdateState) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     effectiveDate: effectiveDate,
@@ -343,44 +335,50 @@ class QuoteEditForm extends Component {
         return msg;
     };
 
-    handleChangeEffectiveDate = (value) => {
-        const { expirationDate } = this.state;
+    const handleChangeEffectiveDate = (value) => {
+        const { expirationDate } = state;
         if (!value) {
             value = null;
         }
 
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ effectiveDateError: message, expirationDateError: undefined });
+        setState({
+            ...state,
+            effectiveDateError: message, expirationDateError: undefined
+        });
 
         if (value) {
-            this.validateDateStage(value, expirationDate, true);
+            validateDateStage(value, expirationDate, true);
         }
     };
 
-    handleChangeExpirationDate = (value) => {
-        const { effectiveDate } = this.state;
+    const handleChangeExpirationDate = (value) => {
+        const { effectiveDate } = state;
         if (!value) {
             value = null;
         }
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ expirationDateError: message, effectiveDateError: undefined });
+        setState({
+            ...state, expirationDateError: message, effectiveDateError: undefined
+        });
 
         if (value) {
-            this.validateDateStage(effectiveDate, value, true);
+            validateDateStage(effectiveDate, value, true);
         }
     };
 
-    setCurrentStep = (e, step) => {
+    const setCurrentStep = (e, step) => {
         e.preventDefault();
-        this.setState({
+        setState({
+            ...state,
             step,
         });
     };
 
-    setGoods = (goods) => {
-        this.setState((state) => {
+    const setGoods = (goods) => {
+        setState((state) => {
             return {
                 ...state,
                 goods,
@@ -388,16 +386,16 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleUseForeignCurrencyChange = (e) => {
+    const handleUseForeignCurrencyChange = (e) => {
         const { checked } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 isUseForeignCurrency: checked,
             };
         });
         if (!checked) {
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     foreignCurrency: {
@@ -414,10 +412,10 @@ class QuoteEditForm extends Component {
         }
     };
 
-    handleRatioOfCurrencyChange = (e) => {
-        let { foreignCurrency } = this.state;
+    const handleRatioOfCurrencyChange = (e) => {
+        let { foreignCurrency } = state;
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 foreignCurrency: {
@@ -428,10 +426,10 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleSymbolOfForreignCurrencyChange = (e) => {
-        let { foreignCurrency } = this.state;
+    const handleSymbolOfForreignCurrencyChange = (e) => {
+        let { foreignCurrency } = state;
         let { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 foreignCurrency: {
@@ -442,9 +440,9 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleChangeCurrency = (value) => {
-        let { foreignCurrency, standardCurrency } = this.state;
-        this.setState((state) => {
+    const handleChangeCurrency = (value) => {
+        let { foreignCurrency, standardCurrency } = state;
+        setState((state) => {
             return {
                 ...state,
                 currency: {
@@ -456,8 +454,8 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleDiscountsOfOrderValueChange = (data) => {
-        this.setState((state) => {
+    const handleDiscountsOfOrderValueChange = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfOrderValue: data,
@@ -465,8 +463,8 @@ class QuoteEditForm extends Component {
         });
     };
 
-    setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
-        this.setState((state) => {
+    const setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
+        setState((state) => {
             return {
                 ...state,
                 discountsOfOrderValueChecked,
@@ -474,9 +472,9 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleShippingFeeChange = (e) => {
+    const handleShippingFeeChange = (e) => {
         const { value } = e.target;
-        this.setState((state) => {
+        setState((state) => {
             return {
                 ...state,
                 shippingFee: value,
@@ -484,8 +482,8 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleDeliveryTimeChange = (value) => {
-        this.setState((state) => {
+    const handleDeliveryTimeChange = (value) => {
+        setState((state) => {
             return {
                 ...state,
                 deliveryTime: value,
@@ -493,8 +491,8 @@ class QuoteEditForm extends Component {
         });
     };
 
-    setCurrentSlasOfGood = (data) => {
-        this.setState((state) => {
+    const setCurrentSlasOfGood = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 currentSlasOfGood: data,
@@ -502,8 +500,8 @@ class QuoteEditForm extends Component {
         });
     };
 
-    setCurrentDiscountsOfGood = (data) => {
-        this.setState((state) => {
+    const setCurrentDiscountsOfGood = (data) => {
+        setState((state) => {
             return {
                 ...state,
                 currentDiscountsOfGood: data,
@@ -511,19 +509,19 @@ class QuoteEditForm extends Component {
         });
     };
 
-    handleCoinChange = (coin) => {
-        this.setState((state) => {
+    const handleCoinChange = (coin) => {
+        setState((state) => {
             return {
                 ...state,
-                coin: this.state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
+                coin: state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
             };
         });
     };
 
-    getCoinOfAll = () => {
+    const getCoinOfAll = () => {
         let coinOfAll = 0;
-        let { goods } = this.state;
-        let { discountsOfOrderValue } = this.state;
+        let { goods } = state;
+        let { discountsOfOrderValue } = state;
 
         goods.forEach((good) => {
             good.discountsOfGood.forEach((discount) => {
@@ -541,8 +539,8 @@ class QuoteEditForm extends Component {
         return coinOfAll;
     };
 
-    setPaymentAmount = (paymentAmount) => {
-        this.setState((state) => {
+    const setPaymentAmount = (paymentAmount) => {
+        setState((state) => {
             return {
                 ...state,
                 paymentAmount,
@@ -550,16 +548,16 @@ class QuoteEditForm extends Component {
         });
     };
 
-    isValidateQuoteCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate } = this.state;
-        let { translate } = this.props;
+    const isValidateQuoteCreateInfo = () => {
+        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate } = state;
+        let { translate } = props;
 
         if (
-            this.validateCustomer(customer, false) ||
+            validateCustomer(customer, false) ||
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
             !ValidationHelper.validateEmpty(translate, customerAddress).status ||
-            this.validateDateStage(effectiveDate, expirationDate, false) ||
+            validateDateStage(effectiveDate, expirationDate, false) ||
             !ValidationHelper.validateEmpty(translate, effectiveDate).status ||
             !ValidationHelper.validateEmpty(translate, expirationDate).status
         ) {
@@ -569,8 +567,8 @@ class QuoteEditForm extends Component {
         }
     };
 
-    isValidateQuoteCreateGood = () => {
-        let { goods } = this.state;
+    const isValidateQuoteCreateGood = () => {
+        let { goods } = state;
         if (goods && goods.length) {
             return true;
         } else {
@@ -578,15 +576,15 @@ class QuoteEditForm extends Component {
         }
     };
 
-    isValidateForm = () => {
-        if (this.isValidateQuoteCreateInfo() && this.isValidateQuoteCreateGood()) {
+    const isValidateForm = () => {
+        if (isValidateQuoteCreateInfo() && isValidateQuoteCreateGood()) {
             return true;
         } else {
             return false;
         }
     };
 
-    formatDiscountForSubmit = (discounts) => {
+    const formatDiscountForSubmit = (discounts) => {
         let discountsMap = discounts.map((dis) => {
             return {
                 _id: dis._id,
@@ -602,23 +600,23 @@ class QuoteEditForm extends Component {
                 loyaltyCoin: dis.loyaltyCoin,
                 bonusGoods: dis.bonusGoods
                     ? dis.bonusGoods.map((bonus) => {
-                          return {
-                              good: bonus.good._id,
-                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
-                                  ? new Date(formatToTimeZoneDate(bonus.expirationDateOfGoodBonus))
-                                  : undefined,
-                              quantityOfBonusGood: bonus.quantityOfBonusGood,
-                          };
-                      })
+                        return {
+                            good: bonus.good._id,
+                            expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
+                                ? new Date(formatToTimeZoneDate(bonus.expirationDateOfGoodBonus))
+                                : undefined,
+                            quantityOfBonusGood: bonus.quantityOfBonusGood,
+                        };
+                    })
                     : undefined,
                 discountOnGoods: dis.discountOnGoods
                     ? {
-                          good: dis.discountOnGoods.good._id,
-                          expirationDate: dis.discountOnGoods.expirationDate
-                              ? new Date(formatToTimeZoneDate(dis.discountOnGoods.expirationDate))
-                              : undefined,
-                          discountedPrice: dis.discountOnGoods.discountedPrice,
-                      }
+                        good: dis.discountOnGoods.good._id,
+                        expirationDate: dis.discountOnGoods.expirationDate
+                            ? new Date(formatToTimeZoneDate(dis.discountOnGoods.expirationDate))
+                            : undefined,
+                        discountedPrice: dis.discountOnGoods.discountedPrice,
+                    }
                     : undefined,
             };
         });
@@ -626,8 +624,8 @@ class QuoteEditForm extends Component {
         return discountsMap;
     };
 
-    formatGoodForSubmit = () => {
-        let { goods } = this.state;
+    const formatGoodForSubmit = () => {
+        let { goods } = state;
         let goodMap = goods.map((item) => {
             return {
                 good: item.good._id,
@@ -637,7 +635,7 @@ class QuoteEditForm extends Component {
                 quantity: item.quantity,
                 serviceLevelAgreements: item.slasOfGood,
                 taxs: item.taxs,
-                discounts: item.discountsOfGood.length ? this.formatDiscountForSubmit(item.discountsOfGood) : [],
+                discounts: item.discountsOfGood.length ? formatDiscountForSubmit(item.discountsOfGood) : [],
                 note: item.note,
                 amount: item.amount,
                 amountAfterDiscount: item.amountAfterDiscount,
@@ -647,8 +645,8 @@ class QuoteEditForm extends Component {
         return goodMap;
     };
 
-    save = async () => {
-        if (this.isValidateForm()) {
+    const save = async () => {
+        if (isValidateForm()) {
             let {
                 customer,
                 customerAddress,
@@ -665,9 +663,9 @@ class QuoteEditForm extends Component {
                 paymentAmount,
                 note,
                 quoteId,
-            } = this.state;
+            } = state;
 
-            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+            let allCoin = getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
 
             let data = {
                 code,
@@ -678,8 +676,8 @@ class QuoteEditForm extends Component {
                 customerAddress,
                 customerRepresent,
                 customerEmail,
-                goods: this.formatGoodForSubmit(),
-                discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
+                goods: formatGoodForSubmit(),
+                discounts: discountsOfOrderValue.length ? formatDiscountForSubmit(discountsOfOrderValue) : [],
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
@@ -688,9 +686,9 @@ class QuoteEditForm extends Component {
                 note,
             };
 
-            await this.props.editQuote(quoteId, data);
+            await props.editQuote(quoteId, data);
 
-            this.setState((state) => {
+            setState((state) => {
                 return {
                     ...state,
                     step: 0,
@@ -701,200 +699,199 @@ class QuoteEditForm extends Component {
         }
     };
 
-    render() {
-        let {
-            code,
-            note,
-            customer,
-            customerName,
-            customerAddress,
-            customerPhone,
-            customerRepresent,
-            customerTaxNumber,
-            customerEmail,
-            effectiveDate,
-            expirationDate,
-            step,
-            goods,
-            shippingFee,
-            coin,
-            deliveryTime,
-            isUseForeignCurrency,
-            foreignCurrency,
-            currency,
-            standardCurrency,
-            discountsOfOrderValue,
-            discountsOfOrderValueChecked,
-            currentSlasOfGood,
-            currentDiscountsOfGood,
-            paymentAmount,
-        } = this.state;
+    let {
+        code,
+        note,
+        customer,
+        customerName,
+        customerAddress,
+        customerPhone,
+        customerRepresent,
+        customerTaxNumber,
+        customerEmail,
+        effectiveDate,
+        expirationDate,
+        step,
+        goods,
+        shippingFee,
+        coin,
+        deliveryTime,
+        isUseForeignCurrency,
+        foreignCurrency,
+        currency,
+        standardCurrency,
+        discountsOfOrderValue,
+        discountsOfOrderValueChecked,
+        currentSlasOfGood,
+        currentDiscountsOfGood,
+        paymentAmount,
+    } = state;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, effectiveDateError, expirationDateError } = this.state;
+    let { customerError, customerEmailError, customerPhoneError, customerAddressError, effectiveDateError, expirationDateError } = state;
 
-        let enableStepOne = this.isValidateQuoteCreateInfo();
-        let enableStepTwo = this.isValidateQuoteCreateGood();
-        let enableFormSubmit = enableStepOne && enableStepTwo;
+    let enableStepOne = isValidateQuoteCreateInfo();
+    let enableStepTwo = isValidateQuoteCreateGood();
+    let enableFormSubmit = enableStepOne && enableStepTwo;
 
-        console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
+    console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-edit-quote`}
-                    isLoading={false}
-                    formID={`form-add-quote`}
-                    title={"Chỉnh sửa báo giá"}
-                    size="100"
-                    style={{ backgroundColor: "green" }}
-                    hasSaveButton={false}
-                >
-                    <div className="nav-tabs-custom">
-                        <ul className="breadcrumbs">
-                            <li key="1">
-                                <a
-                                    className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 0)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Thông tin chung</span>
-                                </a>
-                            </li>
-                            <li key="2">
-                                <a
-                                    className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-edit-quote`}
+                isLoading={false}
+                formID={`form-add-quote`}
+                title={"Chỉnh sửa báo giá"}
+                size="100"
+                style={{ backgroundColor: "green" }}
+                hasSaveButton={false}
+            >
+                <div className="nav-tabs-custom">
+                    <ul className="breadcrumbs">
+                        <li key="1">
+                            <a
+                                className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
+                                onClick={(e) => setCurrentStep(e, 0)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Thông tin chung</span>
+                            </a>
+                        </li>
+                        <li key="2">
+                            <a
+                                className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
                                     ${enableStepOne ? "" : "disable-onclick-prevent"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 1)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Chọn sản phẩm</span>
-                                </a>
-                            </li>
-                            <li key="3">
-                                <a
-                                    className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                onClick={(e) => setCurrentStep(e, 1)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Chọn sản phẩm</span>
+                            </a>
+                        </li>
+                        <li key="3">
+                            <a
+                                className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
                                     ${enableStepOne && enableStepTwo ? "" : "disable-onclick-prevent"}`}
-                                    onClick={(e) => this.setCurrentStep(e, 2)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    <span>Chốt báo giá</span>
-                                </a>
-                            </li>
-                        </ul>
-                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
-                            <div className="form-group select-currency">
-                                <SelectBox
-                                    id={`select-quote-currency-${foreignCurrency.symbol.replace(" ")}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={currency.type}
-                                    items={[
-                                        { text: "vnđ", value: "standard" },
-                                        { text: `${foreignCurrency.symbol}`, value: "foreign" },
-                                    ]}
-                                    onChange={this.handleChangeCurrency}
-                                    multiple={false}
-                                />
-                            </div>
-                        ) : (
-                            ""
+                                onClick={(e) => setCurrentStep(e, 2)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Chốt báo giá</span>
+                            </a>
+                        </li>
+                    </ul>
+                    {foreignCurrency.ratio && foreignCurrency.symbol ? (
+                        <div className="form-group select-currency">
+                            <SelectBox
+                                id={`select-quote-currency-${foreignCurrency.symbol.replace(" ")}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={currency.type}
+                                items={[
+                                    { text: "vnđ", value: "standard" },
+                                    { text: `${foreignCurrency.symbol}`, value: "foreign" },
+                                ]}
+                                onChange={handleChangeCurrency}
+                                multiple={false}
+                            />
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                </div>
+                <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
+                <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
+                <form id={`form-add-quote`}>
+                    <div className="row row-equal-height" style={{ marginTop: 0 }}>
+                        {step === 0 && (
+                            <QuoteCreateInfo
+                                //state
+                                code={code}
+                                note={note}
+                                customer={customer}
+                                customerName={customerName}
+                                customerAddress={customerAddress}
+                                customerPhone={customerPhone}
+                                customerRepresent={customerRepresent}
+                                customerTaxNumber={customerTaxNumber}
+                                customerEmail={customerEmail}
+                                effectiveDate={effectiveDate}
+                                expirationDate={expirationDate}
+                                isUseForeignCurrency={isUseForeignCurrency}
+                                foreignCurrency={foreignCurrency}
+                                //handle
+                                handleCustomerChange={handleCustomerChange}
+                                handleCustomerAddressChange={handleCustomerAddressChange}
+                                handleCustomerEmailChange={handleCustomerEmailChange}
+                                handleCustomerPhoneChange={handleCustomerPhoneChange}
+                                handleCustomerRepresentChange={handleCustomerRepresentChange}
+                                handleNoteChange={handleNoteChange}
+                                handleChangeEffectiveDate={handleChangeEffectiveDate}
+                                handleChangeExpirationDate={handleChangeExpirationDate}
+                                handleUseForeignCurrencyChange={handleUseForeignCurrencyChange}
+                                handleRatioOfCurrencyChange={handleRatioOfCurrencyChange}
+                                handleSymbolOfForreignCurrencyChange={handleSymbolOfForreignCurrencyChange}
+                                //Error Status
+                                customerError={customerError}
+                                customerEmailError={customerEmailError}
+                                customerPhoneError={customerPhoneError}
+                                customerAddressError={customerAddressError}
+                                effectiveDateError={effectiveDateError}
+                                expirationDateError={expirationDateError}
+                            />
+                        )}
+                        {step === 1 && (
+                            <QuoteCreateGood
+                                listGoods={goods}
+                                setGoods={setGoods}
+                                isUseForeignCurrency={isUseForeignCurrency}
+                                foreignCurrency={foreignCurrency}
+                                standardCurrency={standardCurrency}
+                                currency={currency}
+                                setCurrentSlasOfGood={(data) => {
+                                    setCurrentSlasOfGood(data);
+                                }}
+                                setCurrentDiscountsOfGood={(data) => {
+                                    setCurrentDiscountsOfGood(data);
+                                }}
+                            />
+                        )}
+                        {step === 2 && (
+                            <QuoteCreatePayment
+                                paymentAmount={paymentAmount}
+                                listGoods={goods}
+                                customer={customer}
+                                customerPhone={customerPhone}
+                                customerAddress={customerAddress}
+                                customerName={customerName}
+                                customerRepresent={customerRepresent}
+                                customerTaxNumber={customerTaxNumber}
+                                customerEmail={customerEmail}
+                                effectiveDate={effectiveDate}
+                                expirationDate={expirationDate}
+                                code={code}
+                                shippingFee={shippingFee}
+                                deliveryTime={deliveryTime}
+                                coin={coin}
+                                note={note}
+                                discountsOfOrderValue={discountsOfOrderValue}
+                                discountsOfOrderValueChecked={discountsOfOrderValueChecked}
+                                enableFormSubmit={enableFormSubmit}
+                                handleDiscountsOfOrderValueChange={(data) => handleDiscountsOfOrderValueChange(data)}
+                                setDiscountsOfOrderValueChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
+                                handleShippingFeeChange={handleShippingFeeChange}
+                                handleDeliveryTimeChange={handleDeliveryTimeChange}
+                                handleCoinChange={handleCoinChange}
+                                setCurrentSlasOfGood={(data) => {
+                                    setCurrentSlasOfGood(data);
+                                }}
+                                setCurrentDiscountsOfGood={(data) => {
+                                    setCurrentDiscountsOfGood(data);
+                                }}
+                                setPaymentAmount={(data) => setPaymentAmount(data)}
+                                saveQuote={save}
+                            />
                         )}
                     </div>
-                    <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
-                    <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
-                    <form id={`form-add-quote`}>
-                        <div className="row row-equal-height" style={{ marginTop: 0 }}>
-                            {step === 0 && (
-                                <QuoteCreateInfo
-                                    //state
-                                    code={code}
-                                    note={note}
-                                    customer={customer}
-                                    customerName={customerName}
-                                    customerAddress={customerAddress}
-                                    customerPhone={customerPhone}
-                                    customerRepresent={customerRepresent}
-                                    customerTaxNumber={customerTaxNumber}
-                                    customerEmail={customerEmail}
-                                    effectiveDate={effectiveDate}
-                                    expirationDate={expirationDate}
-                                    isUseForeignCurrency={isUseForeignCurrency}
-                                    foreignCurrency={foreignCurrency}
-                                    //handle
-                                    handleCustomerChange={this.handleCustomerChange}
-                                    handleCustomerAddressChange={this.handleCustomerAddressChange}
-                                    handleCustomerEmailChange={this.handleCustomerEmailChange}
-                                    handleCustomerPhoneChange={this.handleCustomerPhoneChange}
-                                    handleCustomerRepresentChange={this.handleCustomerRepresentChange}
-                                    handleNoteChange={this.handleNoteChange}
-                                    handleChangeEffectiveDate={this.handleChangeEffectiveDate}
-                                    handleChangeExpirationDate={this.handleChangeExpirationDate}
-                                    handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
-                                    handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
-                                    handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
-                                    //Error Status
-                                    customerError={customerError}
-                                    customerEmailError={customerEmailError}
-                                    customerPhoneError={customerPhoneError}
-                                    customerAddressError={customerAddressError}
-                                    effectiveDateError={effectiveDateError}
-                                    expirationDateError={expirationDateError}
-                                />
-                            )}
-                            {step === 1 && (
-                                <QuoteCreateGood
-                                    listGoods={goods}
-                                    setGoods={this.setGoods}
-                                    isUseForeignCurrency={isUseForeignCurrency}
-                                    foreignCurrency={foreignCurrency}
-                                    standardCurrency={standardCurrency}
-                                    currency={currency}
-                                    setCurrentSlasOfGood={(data) => {
-                                        this.setCurrentSlasOfGood(data);
-                                    }}
-                                    setCurrentDiscountsOfGood={(data) => {
-                                        this.setCurrentDiscountsOfGood(data);
-                                    }}
-                                />
-                            )}
-                            {step === 2 && (
-                                <QuoteCreatePayment
-                                    paymentAmount={paymentAmount}
-                                    listGoods={goods}
-                                    customer={customer}
-                                    customerPhone={customerPhone}
-                                    customerAddress={customerAddress}
-                                    customerName={customerName}
-                                    customerRepresent={customerRepresent}
-                                    customerTaxNumber={customerTaxNumber}
-                                    customerEmail={customerEmail}
-                                    effectiveDate={effectiveDate}
-                                    expirationDate={expirationDate}
-                                    code={code}
-                                    shippingFee={shippingFee}
-                                    deliveryTime={deliveryTime}
-                                    coin={coin}
-                                    note={note}
-                                    discountsOfOrderValue={discountsOfOrderValue}
-                                    discountsOfOrderValueChecked={discountsOfOrderValueChecked}
-                                    enableFormSubmit={enableFormSubmit}
-                                    handleDiscountsOfOrderValueChange={(data) => this.handleDiscountsOfOrderValueChange(data)}
-                                    setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
-                                    handleShippingFeeChange={this.handleShippingFeeChange}
-                                    handleDeliveryTimeChange={this.handleDeliveryTimeChange}
-                                    handleCoinChange={this.handleCoinChange}
-                                    setCurrentSlasOfGood={(data) => {
-                                        this.setCurrentSlasOfGood(data);
-                                    }}
-                                    setCurrentDiscountsOfGood={(data) => {
-                                        this.setCurrentDiscountsOfGood(data);
-                                    }}
-                                    setPaymentAmount={(data) => this.setPaymentAmount(data)}
-                                    saveQuote={this.save}
-                                />
-                            )}
-                        </div>
-                        {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className={"pull-right"} style={{ padding: 10 }}>
                                 <div>
                                     <div>
@@ -902,7 +899,7 @@ class QuoteEditForm extends Component {
                                     </div>
                                     <div>
                                         {step !== 0 ? (
-                                            <button className="btn" onClick={this.preStep}>
+                                            <button className="btn" onClick={preStep}>
                                                 Quay lại
                                             </button>
                                         ) : (
@@ -911,7 +908,7 @@ class QuoteEditForm extends Component {
                                         {step === 2 ? (
                                             ""
                                         ) : (
-                                            <button className="btn btn-success" onClick={this.nextStep}>
+                                            <button className="btn btn-success" onClick={nextStep}>
                                                 Tiếp
                                             </button>
                                         )}
@@ -920,11 +917,10 @@ class QuoteEditForm extends Component {
                                 </div>
                             </div>
                         </div> */}
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 function mapStateToProps(state) {

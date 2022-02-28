@@ -61,7 +61,7 @@ const getId = (data) => {
     else return data;
 }
 
-const isIdValiInArr = (id, arr) => {
+const isIdValidInArr = (id, arr) => {
     if (!arr) return false;
     let result = arr.some(n => n.id === id);
     return result;
@@ -73,16 +73,14 @@ function TaskManagement(props) {
 
     const { tasks, user, translate, project } = props;
     const { currentTaskId, currentPage, currentTab,
-        parentTask, startDate, endDate, perPage,
-        status, monthTimeSheetLog, tableId,
-        responsibleEmployees, creatorTime,
-        projectSearch, tags
+        parentTask, status, tableId, selectedData, creatorTime,
+        projectSearch, tags, data
     } = state;
 
     function initState() {
         let userId = getStorage("userId");
         const tableId = "tree-table-task-management";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "3", "4", "7", "8"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["3", "4", "5", "8", "9"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
         // lấy giá trị từ dashboard công việc cá nhân
         const stateFromTaskDashboard = JSON.parse(localStorage.getItem("stateFromTaskDashboard"));
@@ -93,7 +91,7 @@ function TaskManagement(props) {
             perPage: limit,
             currentPage: 1,
             tableId,
-
+            selectedData: [],
             currentTab: stateFromTaskDashboard && stateFromTaskDashboard.roles && stateFromTaskDashboard.roles.length > 0 ? stateFromTaskDashboard.roles : ["responsible", "accountable"],
             organizationalUnit: [],
             status: stateFromTaskDashboard && stateFromTaskDashboard.status && stateFromTaskDashboard.status.length > 0 ? stateFromTaskDashboard.status : ["inprocess", "wait_for_approval"],
@@ -160,6 +158,15 @@ function TaskManagement(props) {
         }
     }
 
+    const onSelectedRowsChange = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                selectedData: value
+            }
+        })
+    }
+
     const startTimer = async (taskId, overrideTSLog = 'no') => {
         let userId = getStorage("userId");
         let timer = {
@@ -199,12 +206,27 @@ function TaskManagement(props) {
     // Hàm xóa một công việc theo id
     const handleDelete = async (id) => {
         const { tasks, translate } = props;
-        let currentTasks = tasks.tasks.find(task => task._id === id);
-        let progress = currentTasks.progress;
-        let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+        if (!Array.isArray(id)) {
+            let currentTasks = tasks.tasks.find(task => task._id === id);
+            let progress = currentTasks.progress;
+            let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: props.translate('general.no'),
+                confirmButtonText: props.translate('general.yes'),
+            }).then((result) => {
+                if (result.value) {
+                    props.deleteTaskById(id);
+                }
+            })
+        }
 
-        Swal.fire({
-            title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+        else Swal.fire({
+            title: `Bạn có chắc chắn muốn xóa các công việc đã chọn?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -216,6 +238,7 @@ function TaskManagement(props) {
                 props.deleteTaskById(id);
             }
         })
+
     }
 
     const handleGetDataPagination = (index) => {
@@ -342,11 +365,21 @@ function TaskManagement(props) {
     }
 
     const handleShowModal = (id) => {
+        const { tasks } = props;
+        const taskLength = tasks?.tasks?.length;
+        let taskName;
+        for (let i = 0; i < taskLength; i++) {
+            if (tasks.tasks[i]._id === id) {
+                taskName = tasks.tasks[i].name;
+                break;
+            }
+        }
         setState({
             ...state,
-            currentTaskId: id
+            currentTaskId: id,
+            taskName
         })
-        window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+        window.$(`#modelPerformTask${id}`).modal('show')
     }
 
     /**
@@ -607,10 +640,26 @@ function TaskManagement(props) {
         window.$('#modal_import_tasks').modal('show');
     }
 
+    /**
+    * Function kiểm tra action tương ứng cho các dòng đã chọn
+    * @param {*} action : action cần kiểm tra
+    */
+
+    const validateAction = (action) => {
+        const { selectedData, data } = state;
+        if (selectedData.length === 0) return false;
+        else for (let i = 0; i < selectedData.length; i++) {
+            let actions = data.find(x => x._id === selectedData[i])?.action;
+            if (!actions || actions.length === 0) return false;
+            else if (!actions.flat(2).includes(action)) return false;
+        }
+        return true;
+    }
+
     let units = [];
 
     useEffect(() => {
-        if ((!props?.tasks?.isLoading && props?.tasks?.tasks?.length) || !props?.project?.isLoading) {
+        if ((!props?.tasks?.loadingPaginateTasks) || !props?.project?.isLoading) {
             const currentTasks = cloneDeep(props.tasks.tasks);
             let data = [], dataTree = [];
 
@@ -619,6 +668,7 @@ function TaskManagement(props) {
                 for (let n in currentTasks) {
                     data[n] = {
                         ...currentTasks[n],
+                        rawData: currentTasks[n],
                         name: currentTasks[n].name,
                         description: currentTasks[n].description ? parse(currentTasks[n].description) : null,
                         organization: currentTasks[n].organizationalUnit ? currentTasks[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
@@ -634,10 +684,15 @@ function TaskManagement(props) {
                         totalLoggedTime: getTotalTimeSheetLogs(currentTasks[n].timesheetLogs),
                         parent: currentTasks[n].parent ? currentTasks[n].parent._id : null
                     }
-                    let archived = "store";
-                    if (currentTasks[0].isArchived === true) {
-                        archived = "restore";
+                    let archived = null;
+
+                    if (currentTasks[n].status === "finished" || currentTasks[n].status === "delayed" || currentTasks[n].status === "canceled") {
+                        if (currentTasks[n].isArchived === true) {
+                            archived = "restore";
+                        }
+                        else archived = "store";
                     }
+
                     if (currentTasks[n].creator && currentTasks[n].creator._id === userId || currentTasks[n].informedEmployees.indexOf(userId) !== -1) {
                         let del = null;
                         if (currentTasks[n].creator._id === userId) {
@@ -694,9 +749,9 @@ function TaskManagement(props) {
                             icon: node.isTask ? 'fa fa-file-text-o' : 'glyphicon glyphicon-folder-open',
                             text: node.name,
                             state: { "opened": true },
-                            parent: isIdValiInArr(getId(node.parent), getDataTree) ?
+                            parent: isIdValidInArr(getId(node.parent), getDataTree) ?
                                 getId(node.parent) :
-                                isIdValiInArr(getId(node.taskProject), getDataTree) ?
+                                isIdValidInArr(getId(node.taskProject), getDataTree) ?
                                     getId(node.taskProject) :
                                     !node.code ? idProjectNull : '#'
                         }]
@@ -728,17 +783,24 @@ function TaskManagement(props) {
                 }
             }
 
-            if (data?.length || dataTree?.length)
-                setState({
-                    ...state,
-                    data,
-                    dataTree,
-                    currentTasks,
-                })
+            setState({
+                ...state,
+                data,
+                dataTree,
+                currentTasks,
+            })
         }
 
     }, [JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)]);
 
+    const checkHasComponent = (name) => {
+        let { auth } = props;
+        let result = false;
+        auth?.components?.length && auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+        return result;
+    }
 
     const { currentTasks } = state;
     // kiểm tra vai trò của người dùng
@@ -777,8 +839,6 @@ function TaskManagement(props) {
     let exportData;
     if (state.currentTasks)
         exportData = convertDataToExportData(translate, state.currentTasks, translate("menu.task_management"));
-
-    console.log('state', state?.data)
     return (
         <React.Fragment>
             <div className="box">
@@ -792,23 +852,41 @@ function TaskManagement(props) {
                         <div style={{ display: 'flex', marginBottom: 6 }}>
                             {
                                 currentTab !== "informed" &&
-                                <div className="dropdown">
-                                    <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
-                                    <ul className="dropdown-menu pull-right">
-                                        <li><a href="#" title="ImportForm" onClick={() => { handleAddTask("") }}>{translate('task_template.add')}</a></li>
-                                        <li><a href="#" title="Import file excell" onClick={handleOpenModalImport}>{translate('task_template.import')}</a></li>
-                                    </ul>
-                                </div>
+                                <React.Fragment>
+                                    {
+                                        checkHasComponent("button-import-task") ?
+                                            <div className="dropdown">
+                                                <button type="button" className="btn btn-success dropdown-toggler" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                                <ul className="dropdown-menu pull-right">
+                                                    <li><a href="#" title="ImportForm" onClick={() => { handleAddTask("") }}>{translate('task_template.add')}</a></li>
+                                                    <li><a href="#" title="Import file excell" onClick={handleOpenModalImport}>{translate('task_template.import')}</a></li>
+                                                </ul>
+                                            </div>
+                                            : <button type="button" onClick={() => { handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
+                                    }
+                                </React.Fragment>
                             }
 
-                            {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
-                        </div>
 
+                            {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
+
+                        </div>
 
                         <TaskManagementImportForm />
                         <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
+                    {
+                        selectedData && selectedData.length > 0 &&
+                        <div className="form-inline" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <button disabled={!validateAction("delete")} style={{ margin: "5px" }} type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDelete(selectedData)}>
+                                {translate("general.delete_option")}
+                            </button>
+                            <button disabled={!(validateAction("store") || validateAction("restore"))} style={{ margin: "5px" }} type="button" className="btn btn-info pull-right" title={translate("task.task_management.edit_status_archived_of_task")} onClick={() => handleStore(selectedData)}>
+                                {translate("task.task_management.edit_status_archived_of_task")}
+                            </button>
+                        </div>
+                    }
 
                     <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                         <div className="form-group">
@@ -985,41 +1063,24 @@ function TaskManagement(props) {
                         <ModalPerform
                             units={units}
                             id={currentTaskId}
+                            taskName={state?.taskName ? state?.taskName : ""}
                         />
                     }
-
-                    <DataTableSetting
-                        tableId={tableId}
-                        tableContainerId="tree-table-container"
-                        tableWidth="1300px"
-                        columnArr={[
-                            translate('task.task_management.col_name'),
-                            translate('task.task_management.detail_description'),
-                            translate('task.task_management.col_organization'),
-                            translate('task.task_management.col_project'),
-                            translate('task.task_management.col_priority'),
-                            translate('task.task_management.responsible'),
-                            translate('task.task_management.accountable'),
-                            translate('task.task_management.creator'),
-                            translate('task.task_management.col_start_date'),
-                            translate('task.task_management.col_end_date'),
-                            translate('task.task_management.col_status'),
-                            translate('task.task_management.col_progress'),
-                            translate('task.task_management.col_logged_time')
-                        ]}
-                        setLimit={setLimit}
-                    />
 
                     {/* Dạng bảng */}
                     <div id="tree-table-container" style={{ marginTop: '20px' }}>
                         {
-                            tasks?.isLoading ? <div className="table-info-panel">{translate('general.loading')}</div> :
+                            tasks?.loadingPaginateTasks ? <div className="table-info-panel">{translate('general.loading')}</div> :
                                 <TreeTable
                                     tableId={tableId}
+                                    tableSetting={true}
+                                    allowSelectAll={true}
                                     behaviour="show-children"
                                     column={column}
-                                    data={state?.data ? state.data : []}
-                                    openOnClickName={true}
+                                    data={data ? data : []}
+                                    onSetNumberOfRowsPerPage={setLimit}
+                                    onSelectedRowsChange={onSelectedRowsChange}
+                                    viewWhenClickName={true}
                                     titleAction={{
                                         edit: translate('task.task_management.action_edit'),
                                         delete: translate('task.task_management.action_delete'),
@@ -1049,7 +1110,7 @@ function TaskManagement(props) {
 
                     <div id="tasks-list" style={{ display: 'none', marginTop: '30px' }}>
                         {
-                            state?.isLoading ? <span>{translate('general.loading')}</span> : (!state?.loadingScreen && currentTasks?.length) ?
+                            tasks?.loadingPaginateTasks ? <span>{translate('general.loading')}</span> : (currentTasks?.length) ?
                                 <TaskListView
                                     data={state.currentTasks}
                                     project={project}
@@ -1077,8 +1138,8 @@ function TaskManagement(props) {
 }
 
 function mapState(state) {
-    const { tasks, user, department, project } = state;
-    return { tasks, user, department, project };
+    const { tasks, user, department, project, auth } = state;
+    return { tasks, user, department, project, auth };
 }
 
 const actionCreators = {

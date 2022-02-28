@@ -22,13 +22,13 @@ function ComponentCreateForm(props) {
         props.getAllGoodsByType({ type });
     }, [])
 
-    useEffect(() => {
+    if (props.id !== state.id) {
         setState({
             ...state,
             id: props.id,
             listMaterial: props.initialData
         })
-    }, [props.id])
+    }
 
     const handleQuantityChange = (e) => {
         let value = e.target.value;
@@ -101,16 +101,14 @@ function ComponentCreateForm(props) {
 
     const handleAddMaterial = async (e) => {
         e.preventDefault();
-        await setState(state => {
-            let listMaterial = [...(state.listMaterial), state.material];
-            setState({
-                ...state,
-                listMaterial: listMaterial,
-                material: Object.assign({}, EMPTY_GOOD),
-            })
+        let { listMaterial, material } = state;
+        listMaterial.push(material);
+        await setState({
+            ...state,
+            listMaterial: [...listMaterial],
+            material: Object.assign({}, EMPTY_GOOD),
         })
         props.onDataChange(state.listMaterial);
-
 
     }
 
@@ -125,16 +123,11 @@ function ComponentCreateForm(props) {
 
     const handleSaveEditMaterial = async (e) => {
         e.preventDefault();
-        const { indexInfo, listMaterial } = state;
-        let newListMaterial;
-        if (listMaterial) {
-            newListMaterial = listMaterial.map((item, index) => {
-                return (index === indexInfo) ? state.material : item;
-            })
-        }
+        const { listMaterial, material, indexInfo } = state;
+        listMaterial[indexInfo] = material;
         await setState({
             ...state,
-            listMaterial: newListMaterial,
+            listMaterial: [...listMaterial],
             editInfo: false,
             material: Object.assign({}, EMPTY_GOOD),
         })
@@ -185,7 +178,7 @@ function ComponentCreateForm(props) {
     return (
 
         <fieldset className="scheduler-border">
-            <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}<span className="attention">*</span></legend>
+            <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}<span className="text-red">*</span></legend>
 
             <div className={`form-group ${!errorOnGood ? "" : "has-error"}`}>
                 <label>{translate('manage_warehouse.good_management.material')}</label>

@@ -10,6 +10,12 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { MajorActions } from "../../../major/redux/actions";
+import { CareerReduxAction } from "../../../career/redux/actions";
+import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
 
 const EmployeeManagement = (props) => {
 
@@ -52,6 +58,10 @@ const EmployeeManagement = (props) => {
 
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
+        props.getListMajor({ name: '', page: 1, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
+        props.getListCertificate({ name: '', page: 1, limit: 1000 });
+        props.getListBiddingPackage({ name: '', page: 1, limit: 1000 });
         props.getDepartment();
     }, [])
 
@@ -109,7 +119,10 @@ const EmployeeManagement = (props) => {
                 currentRowView: value
             }
         });
-        window.$(`#modal-detail-employee${value._id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modal-detail-employee${value._id}`).modal('show');
+        }, 500);
+        
     }
 
     /**
@@ -123,7 +136,10 @@ const EmployeeManagement = (props) => {
                 currentRow: value
             }
         });
-        window.$(`#modal-edit-employee${value._id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modal-edit-employee${value._id}`).modal('show');
+        }, 500);
+        
     }
 
     /**
@@ -137,21 +153,6 @@ const EmployeeManagement = (props) => {
         setState(state => ({
             ...state,
             organizationalUnits: value
-        }))
-    }
-
-    /**
-     * Function lưu giá trị chức vụ vào state khi thay đổi
-     * @param {*} value : Array id chức vụ
-     */
-    // 
-    const handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        setState(state => ({
-            ...state,
-            position: value
         }))
     }
 
@@ -279,6 +280,7 @@ const EmployeeManagement = (props) => {
     }
 
     const handleExportExcel = async () => {
+        console.log("EXPORT EXCELL")
         const { employeesManager } = props;
         let arrEmail = employeesManager.listEmployees.map(x => x.emailInCompany);
         await setState(state => ({
@@ -360,11 +362,24 @@ const EmployeeManagement = (props) => {
             };
         })
 
-        let experiencesSheet = [], degreesSheet = [], certificatesSheet = [], contractsSheet = [], socialInsuranceDetailsSheet = [],
+        let workProcessSheet = [], experiencesSheet = [], degreesSheet = [], certificatesSheet = [], contractsSheet = [], socialInsuranceDetailsSheet = [],
             filesSheet = [], commendationsSheet = [], disciplinesSheet = [], salarysSheet = [], annualLeavesSheet = [], coursesSheet = [], familysSheet = [];
 
         data.forEach(x => {
             let employee = x.employees[0];
+            // let workProcess = employee.workProcess.map(y => {
+            //     return {
+            //         ...y,
+            //         employeeNumber: employee.employeeNumber,
+            //         fullName: employee.fullName,
+            //         startDate: formatDate(y.startDate, true),
+            //         endDate: formatDate(y.endDate, true),
+            //         company: y.company,
+            //         position: y.position,
+            //         referenceInformation: y.referenceInformation,
+            //     }
+            // })
+
             let experiences = employee.experiences.map(y => {
                 return {
                     ...y,
@@ -372,8 +387,15 @@ const EmployeeManagement = (props) => {
                     fullName: employee.fullName,
                     startDate: formatDate(y.startDate, true),
                     endDate: formatDate(y.endDate, true),
+                    company: y.company,
+                    project: y.project,
+                    position: y.position,
+                    customer: y.customer,
+                    address: y.address,
+                    jobDescription: y.jobDescription,
                 }
             });
+
             let degrees = employee.degrees.map(y => {
                 return {
                     ...y,
@@ -477,6 +499,7 @@ const EmployeeManagement = (props) => {
                 }
             });
 
+            // workProcessSheet = workProcessSheet.concat(workProcess);
             experiencesSheet = experiencesSheet.concat(experiences);
             degreesSheet = degreesSheet.concat(degrees);
             certificatesSheet = certificatesSheet.concat(certificates);
@@ -491,6 +514,9 @@ const EmployeeManagement = (props) => {
             familysSheet = familysSheet.concat(familys);
         });
 
+        // workProcessSheet = workProcessSheet.map((x, index) => {
+        //     return { STT: index + 1, ...x }
+        // });
         experiencesSheet = experiencesSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
@@ -551,7 +577,7 @@ const EmployeeManagement = (props) => {
                     })
                 };
 
-                total = total + parseInt(x.mainSalary);
+                total = total + x?.mainSalary ? parseInt(x.mainSalary) : 0;
             }
 
             return {
@@ -559,7 +585,7 @@ const EmployeeManagement = (props) => {
                 employeeNumber: x.employeeNumber,
                 fullName: x.fullName,
                 organizationalUnit: x.organizationalUnit,
-                mainSalary: parseInt(x.mainSalary),
+                mainSalary: x?.mainSalary ? parseInt(x.mainSalary) : 0,
                 total: total,
                 month: month,
                 year: year,
@@ -647,9 +673,28 @@ const EmployeeManagement = (props) => {
                         }
                     ]
                 },
+                // {
+                //     // 2.Nhân viên - Quá trình CT
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
+                //     tables: [
+                //         {
+                //             columns: [
+                //                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                //                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                //                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                //                 { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
+                //                 { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
+                //                 { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
+                //                 { key: "position", value: translate(`human_resource.position`), width: 25 },
+                //                 { key: "referenceInformation", value: translate(`human_resource.profile.reference_information`), width: 25 },
+                //             ],
+                //             data: workProcessSheet
+                //         }
+                //     ]
+                // },
                 {
-                    // 2.HS Nhân viên - Kinh nghiệm
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
+                    // 3.HS Nhân viên - Kinh nghiệm
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
                     tables: [
                         {
                             columns: [
@@ -659,15 +704,19 @@ const EmployeeManagement = (props) => {
                                 { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
                                 { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
                                 { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 }
+                                { key: "position", value: translate(`human_resource.profile.position_in_task`), width: 25 },
+                                { key: "project", value: translate(`human_resource.profile.project`), width: 25 },
+                                { key: "customer", value: translate(`human_resource.profile.customer`), width: 25 },
+                                { key: "address", value: translate(`human_resource.profile.address`), width: 25 },
+                                { key: "jobDescription", value: translate(`human_resource.profile.job_description`), width: 25 },
                             ],
                             data: experiencesSheet
                         }
                     ]
                 },
                 {
-                    // 3.HS Nhân viên - Bằng cấp
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
+                    // 4.HS Nhân viên - Bằng cấp
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
                     tables: [
                         {
                             columns: [
@@ -684,8 +733,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 4.HS Nhân viên - Chứng chỉ
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
+                    // 5.HS Nhân viên - Chứng chỉ
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
                     tables: [
                         {
                             columns: [
@@ -702,8 +751,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 5.HS Nhân viên - Hợp đồng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
+                    // 6.HS Nhân viên - Hợp đồng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
                     tables: [
                         {
                             columns: [
@@ -720,8 +769,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 6.HS Nhân viên - Bảo hiểm XH
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
+                    // 7.HS Nhân viên - Bảo hiểm XH
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
                     tables: [
                         {
                             columns: [
@@ -738,8 +787,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 7.HS Nhân viên - Tài liệu
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
+                    // 8.HS Nhân viên - Tài liệu
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
                     tables: [
                         {
                             columns: [
@@ -756,8 +805,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 8.HS Nhân viên - Thành viên hộ gia đình
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
+                    // 9.HS Nhân viên - Thành viên hộ gia đình
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                     tables: [
                         {
                             columns: [
@@ -770,7 +819,7 @@ const EmployeeManagement = (props) => {
                                 { key: "isHeadHousehold", value: translate('human_resource.profile.house_hold.members.is_hh') },
                                 { key: "relationshipWithHeadHousehold", value: translate('human_resource.profile.house_hold.members.rwhh') },
                                 { key: "birth", value: translate('human_resource.profile.house_hold.members.birth') },
-                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.cnss') },
+                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.ccns') },
                                 { key: "placeOfBirthCertificate", value: translate('human_resource.profile.house_hold.members.pob') },
                                 { key: "nationality", value: translate('human_resource.profile.house_hold.members.nationality') },
                                 { key: "nation", value: translate('human_resource.profile.house_hold.members.nation') },
@@ -782,8 +831,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 9.HS Nhân viên - Khen thưởng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
+                    // 10.HS Nhân viên - Khen thưởng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
                     tables: [
                         {
                             columns: [
@@ -801,8 +850,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 10.HS Nhân viên - Kỷ luật
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
+                    // 11.HS Nhân viên - Kỷ luật
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
                     tables: [
                         {
                             columns: [
@@ -821,8 +870,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 11.HS Nhân viên - Lương thưởng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
+                    // 12.HS Nhân viên - Lương thưởng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet12`),
                     tables: [
                         {
                             rowHeader: 2,
@@ -849,8 +898,8 @@ const EmployeeManagement = (props) => {
                     ]
                 },
                 {
-                    // 12.HS Nhân viên - Nghỉ phép
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet12`),
+                    // 13.HS Nhân viên - Nghỉ phép
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet13`),
                     tables: [
                         {
                             columns: [
@@ -882,6 +931,34 @@ const EmployeeManagement = (props) => {
 
     }, [props.employeesManager.exportData]);
 
+
+    const handleShowEmployeesExpiresContract = (data) => {
+        Swal.fire({
+            html: `<h3 style="color: red"><div>Danh sách nhân viên hết hạn hợp đồng tháng ${dayjs().format("MM-YYYY")}</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+           `+ `<ul>
+            ${data?.length && data.map(x => (
+                `<li style="margin-bottom: 5px">${x.fullName} (${x.employeeNumber})}, hết hợp đồng vào ngày: <b>${formatDate(x?.contractEndDate)}</b></li>`
+            )).join(" ")}
+            </ul>`,
+            width: "50%",
+        })
+    }
+
+    const handleShowEmployeesHaveBirthDate = (data) => {
+        Swal.fire({
+            html: `<h3 style="color: red"><div>Danh sách nhân viên có sinh nhật tháng ${dayjs().format("MM-YYYY")}</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+           `+ `<ul>
+            ${data?.length && data.map(x => (
+                `<li style="margin-bottom: 5px">${x.fullName} (${x.employeeNumber}), sinh nhật vào ngày: <b>${formatDate(x?.birthdate)}</b></li>`
+            )).join(" ")}
+            </ul>`,
+            width: "50%",
+        })
+    }
+
+
     const { employeesManager, translate, department, field } = props;
 
     const { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status } = state;
@@ -907,19 +984,21 @@ const EmployeeManagement = (props) => {
     return (
         <div className="box">
             <div className="box-body qlcv">
-                <div className="form-inline">
-                    {/* Button thêm mới nhân viên */}
-                    <div className="dropdown pull-right">
-                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
-                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={_importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
-                        </ul>
+                <div className="row">
+                    <div className="col-lg-12 col-md-12 col-sm-12">
+                        {/* Button thêm mới nhân viên */}
+                        <div className="dropdown">
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={_importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                            </ul>
+                        </div>
+                        {/* <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button> */}
                     </div>
-                    <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button>
                 </div>
 
-                <div className="form-inline">
+                <div className="form-inline" style={{ marginTop: '10px' }}>
                     {/* Đơn vị */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.unit')}</label>
@@ -934,13 +1013,13 @@ const EmployeeManagement = (props) => {
                         <label className="form-control-static">{translate('page.staff_number')}</label>
                         <input type="text" className="form-control" name="employeeNumber" onChange={handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                     </div>
-                </div>
-                <div className="form-inline">
                     {/* Tên nhân viên  */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('human_resource.staff_name')}</label>
                         <input type="text" className="form-control" name="employeeName" onChange={handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
                     </div>
+                </div>
+                <div className="form-inline">
                     {/* Trạng thái */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
@@ -958,9 +1037,7 @@ const EmployeeManagement = (props) => {
                             onChange={handleStatusChange}>
                         </SelectMulti>
                     </div>
-                </div>
 
-                <div className="form-inline">
                     {/* Giới tính */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('human_resource.profile.gender')}</label>
@@ -969,6 +1046,7 @@ const EmployeeManagement = (props) => {
                             items={[{ value: "male", text: translate('human_resource.profile.male') }, { value: "female", text: translate('human_resource.profile.female') }]} onChange={handleGenderChange}>
                         </SelectMulti>
                     </div>
+
                     {/* Tháng sinh */}
                     <div className="form-group">
                         <label title={translate('human_resource.profile.employee_management.brithday_lable_title')} className="form-control-static">{translate('human_resource.profile.employee_management.brithday_lable')}</label>
@@ -998,8 +1076,6 @@ const EmployeeManagement = (props) => {
                         />
                     </div>
 
-                </div>
-                <div className="form-inline" style={{ marginBottom: 15 }}>
                     {/* Trình độ chuyên môn */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('human_resource.profile.qualification')}</label>
@@ -1009,8 +1085,10 @@ const EmployeeManagement = (props) => {
                             onChange={handleProfessionalSkillChange}>
                         </SelectMulti>
                     </div>
+                </div>
+                <div className="form-inline">
                     {/* Trình độ chuyên ngành */}
-                    <div className="form-group">
+                    <div className="form-group" style={{ height: '45px' }}>
                         <label className="form-control-static">{translate('human_resource.profile.career_fields')}</label>
                         <SelectMulti id={`multiSelectCareerFields`} multiple="multiple"
                             options={{ nonSelectedText: 'Chọn chuyên ngành', allSelectedText: 'Chọn tất cả chuyên ngành' }}
@@ -1018,35 +1096,73 @@ const EmployeeManagement = (props) => {
                             onChange={handleCareerFieldChange}>
                         </SelectMulti>
                     </div>
-                    {/* Button tìm kiếm */}
+
+                    {/* chứng chỉ  */}
                     <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.profile.certificate')}</label>
+                        <input type="text" className="form-control" name="certificates" onChange={handleChange} placeholder={'Nhập tên chứng chỉ'} autoComplete="off" />
+                    </div>
+                    {/* Bằng cấp */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.profile.diploma')}</label>
+                        <input type="text" className="form-control" name="degrees" onChange={handleChange} placeholder={'Nhập tên bằng cấp'} autoComplete="off" />
+                    </div>
+                </div>
+
+                <div className="row" style={{ marginBottom: '15px', marginTop: '10px' }}>
+                    <div className="col-md-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <button type="button" className="btn btn-success" title={translate('general.search')} onClick={handleSunmitSearch} >{translate('general.search')}</button>
                     </div>
                 </div>
 
-                <div className="form-group col-md-12 row" >
-                    {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
-                        <span>{translate('human_resource.profile.employee_management.have')}&nbsp;</span>
-                    }
-                    {Number(employeesManager.expiresContract) > 0 &&
-                        <React.Fragment>
-                            <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} ${translate('human_resource.profile.employee_management.staff')}`}</span>
-                            <span>&nbsp;{translate('human_resource.profile.employee_management.contract_expiration')}</span>
-                        </React.Fragment>
-                    }
-                    {(Number(employeesManager.expiresContract) > 0 && Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
-                        <span>&nbsp;{translate('human_resource.profile.employee_management.and')}&nbsp;</span>
-                    }
-                    {
-                        Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
-                        <React.Fragment>
-                            <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} ${translate('human_resource.profile.employee_management.staff')}`}</span>
-                            <span>&nbsp;{translate('human_resource.profile.employee_management.have_birthday')}</span>
-                        </React.Fragment>
-                    }
-                    {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth)) > 0 &&
-                        <span>&nbsp;{`${translate('human_resource.profile.employee_management.this_month')} (${formatDate(Date.now(), true)})`}</span>
-                    }
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-6">
+                        <div>
+                            {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
+                                <span>{translate('human_resource.profile.employee_management.have')}&nbsp;</span>
+                            }
+                            {Number(employeesManager?.expiresContract?.length) > 0 &&
+                                <React.Fragment>
+                                    <span className="text-danger" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer', color: "#dd4b39" }} onClick={() => handleShowEmployeesExpiresContract(employeesManager?.expiresContract)}>{` ${employeesManager?.expiresContract?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
+                                    <span>&nbsp;{translate('human_resource.profile.employee_management.contract_expiration')}</span>
+                                </React.Fragment>
+                            }
+                            {(Number(employeesManager?.expiresContract?.length) > 0 && Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0) &&
+                                <span>&nbsp;{translate('human_resource.profile.employee_management.and')}&nbsp;</span>
+                            }
+                            {
+                                Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length) > 0 &&
+                                <React.Fragment>
+                                    <span className="text-success" style={{ fontWeight: "bold" }}><a style={{ cursor: 'pointer' }} onClick={() => handleShowEmployeesHaveBirthDate(employeesManager?.employeesHaveBirthdateInCurrentMonth)}>{` ${employeesManager?.employeesHaveBirthdateInCurrentMonth?.length} ${translate('human_resource.profile.employee_management.staff')}`}</a></span>
+                                    <span>&nbsp;{translate('human_resource.profile.employee_management.have_birthday')}</span>
+                                </React.Fragment>
+                            }
+                            {(Number(employeesManager?.expiresContract?.length) > 0 || Number(employeesManager?.employeesHaveBirthdateInCurrentMonth?.length)) > 0 &&
+                                <span>&nbsp;{`${translate('human_resource.profile.employee_management.this_month')} (${formatDate(Date.now(), true)})`}</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div className="col-md-6" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <a style={{ cursor: 'pointer', marginRight: '7px' }} title="Xuất ra file excell" onClick={handleExportExcel}>
+                            <i className="fa fa-fw fa-download"></i> Xuất báo cáo
+                        </a>
+
+                        <DataTableSetting
+                            tableId={tableId}
+                            columnArr={[
+                                'STT',
+                                translate('human_resource.staff_number'),
+                                translate('human_resource.staff_name'),
+                                translate('human_resource.profile.gender'),
+                                translate('human_resource.profile.date_birth'),
+                                translate('human_resource.profile.contract_end_date'),
+                                translate('human_resource.profile.type_contract'),
+                                translate('human_resource.status'),
+                            ]}
+                            setLimit={setLimit}
+                        />
+                    </div>
                 </div>
 
                 <table id={tableId} className="table table-striped table-bordered table-hover">
@@ -1060,22 +1176,7 @@ const EmployeeManagement = (props) => {
                             <th>{translate('human_resource.profile.contract_end_date')}</th>
                             <th>{translate('human_resource.profile.type_contract')}</th>
                             <th>{translate('human_resource.status')}</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        'STT',
-                                        translate('human_resource.staff_number'),
-                                        translate('human_resource.staff_name'),
-                                        translate('human_resource.profile.gender'),
-                                        translate('human_resource.profile.date_birth'),
-                                        translate('human_resource.profile.contract_end_date'),
-                                        translate('human_resource.profile.type_contract'),
-                                        translate('human_resource.status'),
-                                    ]}
-                                    setLimit={setLimit}
-                                />
-                            </th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1137,8 +1238,8 @@ const EmployeeManagement = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, department, field } = state;
-    return { employeesManager, department, field };
+    const { employeesManager, department, field, major, certificates, biddingPackagesManager } = state;
+    return { employeesManager, department, field, major,  certificates, biddingPackagesManager };
 }
 
 const actionCreators = {
@@ -1146,6 +1247,10 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getListBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

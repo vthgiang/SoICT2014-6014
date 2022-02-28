@@ -24,6 +24,23 @@ function DepartmentImportForm(props) {
         })
     }
 
+
+    const checkOrgName = nameOrg => {
+        const { department } = props;
+        let flag = false;
+
+        if (department?.list?.length) {
+            const check = department.list.find(x => x.name?.trim() === nameOrg?.toString()?.trim());
+            if (check)
+                flag = true;
+            else
+                flag = false
+        } else
+            flag = false;
+        return flag;
+    }
+
+
     const handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let valueShow = [];
@@ -80,14 +97,24 @@ function DepartmentImportForm(props) {
             let rowError = [];
             let checkImportData = value;
             value = value.map((x, index) => {
+                const checkOrgUnitNameDuplicateInFileExcell = value.filter(k => k?.name?.toString().trim() === x?.name?.toString().trim());
+                const checkOrgUnitNameDuplicateInSystem = x?.name ? checkOrgName(x.name) : x.name;
                 let errorAlert = [];
-                if (x.name === null || x.description === null || x.managers === null || x.deputyManagers === null || x.employees === null) {
+                if (x.name === null || x.description === null || x.managers === null || x.deputyManagers === null || x.employees === null || (x.name && checkOrgUnitNameDuplicateInFileExcell?.length > 1) || (x.name && checkOrgUnitNameDuplicateInSystem)) {
                     rowError = [...rowError, index + 1];
                     x = { ...x, error: true }
                 }
                 if (x.name === null) {
                     errorAlert = [...errorAlert, "Tên đơn vị không được để trống"];
                 }
+
+                if (x.name && checkOrgUnitNameDuplicateInFileExcell?.length > 1) {
+                    errorAlert = [...errorAlert, "Tên đơn vị trong file excell bị trùng lặp"];
+                }
+                if (x.name && checkOrgUnitNameDuplicateInSystem) {
+                    errorAlert = [...errorAlert, "Tên đơn vị trong file excell đã tồn tại trên hệ thống"];
+                }
+
                 if (x.description === null) {
                     errorAlert = [...errorAlert, "Tên mô tả đơn vị không được để trống"];
                 }
@@ -180,13 +207,12 @@ function DepartmentImportForm(props) {
         <React.Fragment>
             <DialogModal
                 modalID={`modal_import_file`} isLoading={false}
-                formID={`form_import_file`}
                 title="Thêm cơ cấu tổ chức bằng import file excel"
                 func={save}
                 disableSubmit={false}
                 size={75}
             >
-                <form className="form-group" id={`form_import_file`}>
+                <div className="form-group" id={`form_import_file`}>
                     <ConFigImportFile
                         id="import_organizationalUnit_config"
                         configData={configData}
@@ -220,7 +246,7 @@ function DepartmentImportForm(props) {
                             />
                         </div>
                     </div>
-                </form>
+                </div>
             </DialogModal>
         </React.Fragment>
     )

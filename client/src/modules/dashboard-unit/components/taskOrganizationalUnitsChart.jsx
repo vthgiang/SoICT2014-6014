@@ -3,29 +3,38 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
-import { UserActions } from '../../super-admin/user/redux/actions';
 
-import { DatePicker } from '../../../common-components';
+import { DatePicker, CustomLegendC3js } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
 import 'c3/c3.css';
+import dayjs from 'dayjs'
+import { compactString } from '../../../helpers/stringMethod';
 
 class TaskOrganizationalUnitsChart extends Component {
     constructor(props) {
         super(props);
-        const { childOrganizationalUnit } = this.props
-        let startDate = ['01', new Date().getFullYear()].join('-');
+        const { childOrganizationalUnit, month } = this.props
+        const startDate = ['01', new Date().getFullYear()].join('-');
+        this.infoSearch = {
+            startDate: startDate,
+            endDate: this.formatDate(Date.now(), true)
+        }
+        this.chart = React.createRef();
 
         this.state = {
-            timeseriesChart: childOrganizationalUnit?.length <= 1,
-            startDate: startDate,
+            singleUnit: childOrganizationalUnit?.length < 2 ? true : false,
+            month: month,
+            startDate: this.infoSearch.startDate,
             startDateShow: startDate,
-            endDate: this.formatDate(Date.now(), true),
+            endDate: this.infoSearch.endDate,
             endDateShow: this.formatDate(Date.now(), true),
             totalTask: true,
-            barChart: true
+            barChart: true,
+            advancedMode: false,
+            searchAdvanceMode: false,
         }
     }
 
@@ -64,17 +73,14 @@ class TaskOrganizationalUnitsChart extends Component {
 
 
     componentDidMount() {
-        const { childOrganizationalUnit, month } = this.props;
-        const { startDate, endDate, timeseriesChart } = this.state;
+        const { childOrganizationalUnit } = this.props;
+        const { startDate, endDate, singleUnit, month } = this.state;
         let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
-        this.props.getAllEmployeeOfUnitByIds({
-            organizationalUnitIds: childOrganizationalUnitId,
-        });
 
-        // Nếu số đơn vị > 1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
-        if (timeseriesChart) {
+        if (singleUnit) {
             this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
         } else {
+            // nhiều đơn vị thì truy vấn trong 1 tháng
             this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, month, month);
         }
     }
@@ -110,20 +116,17 @@ class TaskOrganizationalUnitsChart extends Component {
 
         if (JSON.stringify(nextProps.childOrganizationalUnit) !== JSON.stringify(this.props.childOrganizationalUnit) || nextProps.month !== this.props.month) {
             let childOrganizationalUnitId = nextProps.childOrganizationalUnit.map(x => x.id);
-            let timeseriesChart = nextProps.childOrganizationalUnit?.length <= 1
+            let singleUnit = nextProps.childOrganizationalUnit?.length <= 1
 
             this.setState(state => {
                 return {
                     ...state,
-                    timeseriesChart: timeseriesChart
+                    singleUnit: singleUnit,
                 }
             })
-            this.props.getAllEmployeeOfUnitByIds({
-                organizationalUnitIds: childOrganizationalUnitId,
-            });
 
             // Nếu số đơn vị >1, chỉ truy vấn dữ lieuẹ trong 1 tháng (dùng cho biểu đồ)
-            if (timeseriesChart) {
+            if (singleUnit) {
                 this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
             } else {
                 this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, nextProps.month, nextProps.month);
@@ -134,8 +137,10 @@ class TaskOrganizationalUnitsChart extends Component {
         return true;
     }
 
-    componentDidUpdate = () => {
-        this.renderChart()
+    componentDidUpdate = (prevProps, prevState) => {
+        // Khi bấm chọn advance(nang cao) thì chỉ hiện box search, ko render lại chart. (khi bấm nâng cao thì prevState.advancedMode = false . this.state.advancedMode = true )
+        if (prevState.advancedMode === this.state.advancedMode)
+            this.renderChart()
     }
 
     setDataLineChart = () => {
@@ -143,50 +148,35 @@ class TaskOrganizationalUnitsChart extends Component {
         let { childOrganizationalUnit } = this.props;
         const { startDate, endDate, totalTask } = this.state;
 
-        let endMonth = new Date(this.formatString(endDate)).getMonth();
-        let endYear = new Date(this.formatString(endDate)).getFullYear();
-        endMonth = endMonth + 1;
+        const period = dayjs(this.formatString(endDate)).diff(this.formatString(startDate), 'month');
+
         let arrMonth = [];
-        for (let i = 0; ; i++) {
-            let month = endMonth - i;
-            if (month > 0) {
-                if (month.toString().length === 1) {
-                    month = `${endYear}-0${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                } else {
-                    month = `${endYear}-${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                }
-                if (`${this.formatString(startDate)}-01` === month) {
-                    break;
-                }
-            } else {
-                let j = 1;
-                for (j; ; j++) {
-                    month = month + 12;
-                    if (month > 0) {
-                        break;
-                    }
-                }
-                if (month.toString().length === 1) {
-                    month = `${endYear - j}-0${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                } else {
-                    month = `${endYear - j}-${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                }
-                if (`${this.formatString(startDate)}-01` === month) {
-                    break;
-                }
-            }
-        };
+        for (let i = 0; i <= period; i++) {
+            arrMonth = [
+                ...arrMonth,
+                dayjs(this.formatString(startDate)).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+            ];
+        }
+
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
-        let employeesOfUnitsUserIsManager = user.employeesOfUnitsUserIsManager;
-        let employeeOfUnits = [];
+        let employeeOfUnits = {};
         if (!totalTask) {
-            childOrganizationalUnit && childOrganizationalUnit.forEach(x => {
-                let count = employeesOfUnitsUserIsManager && employeesOfUnitsUserIsManager.filter(e => e?.idUnit?.toString() === x?.id?.toString())
-                employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
+            childOrganizationalUnit && childOrganizationalUnit.forEach(unit => {
+                let roleInUnit = unit.managers.concat(unit.deputyManagers).concat(unit.employees);
+                employeeOfUnits[unit.id] = user?.employees?.filter(e => {
+                    if (e?.roleId?.length > 0) {
+                        let check = false
+                        e.roleId.map(item => {
+                            if (roleInUnit.includes(item?._id)) {
+                                check = true
+                            }
+                        })
+
+                        return check
+                    }
+
+                    return false
+                })
             })
         }
 
@@ -210,13 +200,12 @@ class TaskOrganizationalUnitsChart extends Component {
                     return false;
                 });
                 if (!totalTask) {
-                    return (taskOfUnistInMonth.length / employeeOfUnits[index]).toFixed(1);
+                    return (taskOfUnistInMonth.length / employeeOfUnits?.[x?.id]?.length).toFixed(1);
                 }
                 return taskOfUnistInMonth.length;
             })
             data = [...data, [x.name, ...row]]
         })
-
         return data
     }
 
@@ -225,43 +214,17 @@ class TaskOrganizationalUnitsChart extends Component {
         let { childOrganizationalUnit } = this.props;
         const { startDate, endDate } = this.state;
 
-        let endMonth = new Date(this.formatString(endDate)).getMonth();
-        let endYear = new Date(this.formatString(endDate)).getFullYear();
-        endMonth = endMonth + 1;
+        const period = dayjs(this.formatString(endDate)).diff(this.formatString(startDate), 'month');
+
         let arrMonth = [];
-        for (let i = 0; ; i++) {
-            let month = endMonth - i;
-            if (month > 0) {
-                if (month.toString().length === 1) {
-                    month = `${endYear}-0${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                } else {
-                    month = `${endYear}-${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                }
-                if (`${this.formatString(startDate)}-01` === month) {
-                    break;
-                }
-            } else {
-                let j = 1;
-                for (j; ; j++) {
-                    month = month + 12;
-                    if (month > 0) {
-                        break;
-                    }
-                }
-                if (month.toString().length === 1) {
-                    month = `${endYear - j}-0${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                } else {
-                    month = `${endYear - j}-${month}-01`;
-                    arrMonth = [...arrMonth, month];
-                }
-                if (`${this.formatString(startDate)}-01` === month) {
-                    break;
-                }
-            }
-        };
+        for (let i = 0; i <= period; i++) {
+            arrMonth = [
+                ...arrMonth,
+                dayjs(this.formatString(startDate)).add(i, 'month').format("YYYY-MM-DD"), // dayjs("YYYY-MM").add(number, 'month').format("YYYY-MM-DD")
+            ];
+        }
+
+
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
         let employees = user.employees;
         let employeeOfUnits = {};
@@ -326,6 +289,8 @@ class TaskOrganizationalUnitsChart extends Component {
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
         let employees = user.employees;
         let employeeOfUnits = {};
+
+
         childOrganizationalUnit && childOrganizationalUnit.forEach(unit => {
             let roleInUnit = unit.managers.concat(unit.deputyManagers).concat(unit.employees)
             employeeOfUnits[unit.id] = employees?.filter(e => {
@@ -344,7 +309,8 @@ class TaskOrganizationalUnitsChart extends Component {
             })
         })
 
-        let title = ["x"];
+        let title = [];
+        let shortTitle = ["x"];
         let totalTask = ["Số công việc"], taskPerEmployeeOfUnit = ["Công việc trên đầu người"];
 
 
@@ -356,15 +322,19 @@ class TaskOrganizationalUnitsChart extends Component {
             let taskPerEmployee = taskOfUnist?.length / employeeOfUnits?.[unit?.id]?.length
 
             title.push(unit?.name)
+            shortTitle.push(compactString(unit?.name, 10))
             totalTask.push(taskOfUnist?.length)
             taskPerEmployeeOfUnit.push(taskPerEmployee && !isNaN(taskPerEmployee) ? taskPerEmployee.toFixed(1) : 0)
         })
 
-        return [
-            title,
-            totalTask,
-            taskPerEmployeeOfUnit
-        ]
+        return {
+            data: [
+                shortTitle,
+                totalTask,
+                taskPerEmployeeOfUnit
+            ],
+            title
+        }
     }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -382,27 +352,35 @@ class TaskOrganizationalUnitsChart extends Component {
      * @param {*} data : Dữ liệu biểu đồ
      */
     renderChart = () => {
-        const { timeseriesChart, barChart } = this.state
+        const { singleUnit, barChart, advancedMode, searchAdvanceMode } = this.state
 
         this.removePreviousChart();
-        let dataChart;
+        let dataChart, title;
 
-        if (barChart) {
-            if (timeseriesChart) {
-                dataChart = this.setSingleDataChart()
-            } else {
-                dataChart = this.setMultiDataChart()
-            }
+        if (singleUnit) { // chế độ 1 unit
+            if (barChart || !barChart)
+                dataChart = this.setSingleDataChart();
         } else {
-            dataChart = this.setDataLineChart()
+            // dạng nhiều đơn vị và không ở chế độ nâng cao
+            if (!advancedMode || (advancedMode && !searchAdvanceMode)) {
+                if (barChart || !barChart) {
+                    const data = this.setMultiDataChart()
+                    title = data.title;
+                    dataChart = data.data;
+                }
+            }
+            // dạng nhiều đơn vị và ở chế độ nâng cao/ bấm tìm kiếm mới thay đổi chart
+            if (advancedMode && searchAdvanceMode) {
+                // linechart
+                dataChart = this.setDataLineChart();
+            }
         }
-        
-        let chart = c3.generate({
+        this.chart.current = c3.generate({
             bindto: this.refs.taskUnitsChart,
             data: {
                 x: 'x',
                 columns: dataChart,
-                type: 'bar',
+                type: singleUnit ? (barChart ? 'bar' : 'line') : (!advancedMode ? barChart ? 'bar' : 'line' : 'line'),
                 labels: true,
             },
             bar: {
@@ -412,11 +390,10 @@ class TaskOrganizationalUnitsChart extends Component {
             },
             axis: {
                 x: {
-                    type: timeseriesChart || !barChart ? 'timeseries' : 'categories',
+                    type: singleUnit ? 'timeseries' : ((advancedMode && searchAdvanceMode) ? 'timeseries' : 'categories'),
                     tick: {
                         format: '%m - %Y',
                         outer: false,
-                        rotate: -45,
                         multiline: false
                     },
                 },
@@ -426,27 +403,17 @@ class TaskOrganizationalUnitsChart extends Component {
                     },
                 }
             },
-
+            zoom: {
+                enabled: true
+            },
             tooltip: {
-                position: function () {
-                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
-                    return position;
-                },
-                contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
-                    value = value + '<table class=\'c3-tooltip\'>';
-
-                    data.forEach((val) => {
-                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                            + '<td class=\'value\'>' + val.value + '</td></tr>';
-                    });
-
-                    value = value + '</table>';
-                    value = value + '</div>';
-
-                    return value;
+                format: !singleUnit && !advancedMode && {
+                    title: function (d, index) { return title[index]; }
                 }
             },
+            legend: {
+                show: (!singleUnit && advancedMode && searchAdvanceMode) ? false : true
+            }
         });
     };
 
@@ -455,9 +422,10 @@ class TaskOrganizationalUnitsChart extends Component {
      * @param {*} value : Giá trị ngày bắt đầu
      */
     handleStartMonthChange = (value) => {
-        this.setState({
+        this.infoSearch = {
+            ...this.infoSearch,
             startDate: value
-        })
+        }
     }
 
     /**
@@ -465,9 +433,10 @@ class TaskOrganizationalUnitsChart extends Component {
      * @param {*} value : Giá trị ngày kết thúc
      */
     handleEndMonthChange = (value) => {
-        this.setState({
-            endDate: value,
-        })
+        this.infoSearch = {
+            ...this.infoSearch,
+            endDate: value
+        }
     }
 
     static isEqual = (items1, items2) => {
@@ -487,10 +456,12 @@ class TaskOrganizationalUnitsChart extends Component {
 
     /** Bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        const { startDate, endDate } = this.state;
+        const { startDate, endDate } = this.infoSearch;
+        const { searchAdvanceMode, advancedMode } = this.state;
 
-        let startDateCheck = new Date(startDate);
-        let endDateCheck = new Date(endDate);
+
+        let startDateCheck = new Date(this.formatString(startDate));
+        let endDateCheck = new Date(this.formatString(endDate));
         const { translate } = this.props;
         if (startDateCheck && endDateCheck && startDateCheck.getTime() >= endDateCheck.getTime()) {
             Swal.fire({
@@ -502,15 +473,31 @@ class TaskOrganizationalUnitsChart extends Component {
         } else {
             let { childOrganizationalUnit } = this.props;
             let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
-            this.setState({
-                startDateShow: startDate,
-                endDateShow: endDate,
-                taskOfUnists: []
-            })
+
             this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, this.formatString(startDate), this.formatString(endDate));
+            if (advancedMode && !searchAdvanceMode) {
+                this.setState({
+                    startDateShow: startDate,
+                    endDateShow: endDate,
+                    startDate: startDate,
+                    endDate: endDate,
+                    taskOfUnists: [],
+                    searchAdvanceMode: true,
+                })
+            } else {
+                this.setState({
+                    startDateShow: startDate,
+                    endDateShow: endDate,
+                    startDate: startDate,
+                    endDate: endDate,
+                    taskOfUnists: [],
+                })
+            }
+
         }
     }
 
+    // ở advance = true sau khi bấm tìm kiếm thì mới hiện chọn tổng số cv/cv trên đầu ng, title chỉnh lại. bấm search mới thay đổi
     handleChangeViewChart = (value) => {
         this.setState({
             ...this.state,
@@ -525,10 +512,43 @@ class TaskOrganizationalUnitsChart extends Component {
         })
     }
 
+    handleToggleAdvanceMode = () => {
+        const { advancedMode, startDate, endDate, searchAdvanceMode } = this.state;
+        const { childOrganizationalUnit, month } = this.props;
+        if (!advancedMode) {
+            this.setState({
+                ...this.state,
+                advancedMode: !advancedMode,
+                startDate: this.formatString(month),
+                endDate: this.formatString(month),
+            })
+        } else {
+            if (searchAdvanceMode) {
+                // tắt advance mode thì quay về mặc định chế dộ multi unit. nếu đã bấm search ở chế dộ multi thì truy vấn dữ liệu cũ
+                let childOrganizationalUnitId = childOrganizationalUnit.map(x => x.id);
+                this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnitId, month, month);
+
+                this.setState({
+                    ...this.state,
+                    advancedMode: !advancedMode,
+                    searchAdvanceMode: false,
+                })
+            } else {
+                // nếu chưa bấm tìm kiếm truy vấn ở chế độ advancedMode thì chỉ cần ẩn hiện box search
+                this.setState({
+                    ...this.state,
+                    advancedMode: !advancedMode,
+                })
+            }
+        }
+
+    }
+
+
     render() {
         const { translate, tasks } = this.props;
         let { childOrganizationalUnit } = this.props;
-        const { startDate, endDate, timeseriesChart, totalTask, barChart } = this.state;
+        const { startDate, endDate, singleUnit, totalTask, barChart, advancedMode, searchAdvanceMode } = this.state;
 
         return (
             <div className="box box-solid" >
@@ -536,29 +556,43 @@ class TaskOrganizationalUnitsChart extends Component {
                     <div className="box-title" >
                         Tình hình làm việc
                         {
-                            childOrganizationalUnit && childOrganizationalUnit.length < 2 ?
+                            singleUnit ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${childOrganizationalUnit?.[0]?.name ? childOrganizationalUnit?.[0]?.name : ""}`}</span>
+                                    <span>{` ${childOrganizationalUnit?.[0]?.name ? childOrganizationalUnit?.[0]?.name : ""} `}</span>
+                                    {startDate}<i className="fa fa-fw fa-caret-right"></i>{endDate}
                                 </>
                                 :
-                                <span onClick={() => showListInSwal(childOrganizationalUnit.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {childOrganizationalUnit?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                </span>
+                                (advancedMode && searchAdvanceMode) ?
+                                    <span onClick={() => showListInSwal(childOrganizationalUnit.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {childOrganizationalUnit?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                                        {startDate}<i className="fa fa-fw fa-caret-right"></i>{endDate}
+                                    </span>
+                                    :
+                                    <span onClick={() => showListInSwal(childOrganizationalUnit.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {childOrganizationalUnit?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
+                                        <span>{` tháng ${this.formatString(this.state?.month)}`}</span>
+                                    </span>
                         }
                     </div>
+                    {
+                        !singleUnit &&
+                        <a title={advancedMode ? "Tắt chế độ nâng cao" : "Bật chế độ nâng cao"}><i className="fa fa-gear" onClick={this.handleToggleAdvanceMode} style={{ fontSize: 19, float: 'right', cursor: 'pointer' }}></i></a>
+                    }
                 </div>
                 <div className="box-body" >
-                    <div className="box-tools pull-right" >
-                        <div className="btn-group pull-rigth">
-                            <button type="button" className={`btn btn-xs ${barChart ? "btn-danger" : "active"}`} onClick={() => this.handleChangeTypeChart(true)}>Bar Chart</button>
-                            <button type="button" className={`btn btn-xs ${barChart ? 'active' : "btn-danger"}`} onClick={() => this.handleChangeTypeChart(false)}>Line Chart</button>
+                    {
+                        !advancedMode &&
+                        <div className="box-tools pull-right" >
+                            <div className="btn-group pull-rigth">
+                                <button type="button" className={`btn btn-xs ${barChart ? "btn-danger" : "active"}`} onClick={() => this.handleChangeTypeChart(true)}>Bar Chart</button>
+                                <button type="button" className={`btn btn-xs ${barChart ? 'active' : "btn-danger"}`} onClick={() => this.handleChangeTypeChart(false)}>Line Chart</button>
+                            </div>
                         </div>
-                    </div>
-                    {(timeseriesChart || !barChart)
-                        && <div className="qlcv" style={{ marginBottom: 15 }} >
+                    }
+                    {(singleUnit || advancedMode)
+                        && <div id="box-search" className="qlcv" style={{ marginBottom: 15 }} >
                             <div className="form-inline" >
                                 <div className="form-group">
                                     <label className="form-control-static" >Từ tháng</label>
@@ -592,7 +626,7 @@ class TaskOrganizationalUnitsChart extends Component {
                         : tasks?.organizationUnitTasks?.tasks?.length > 0
                             ? <div className="" >
                                 <p className="pull-left" > < b > ĐV tính: Số công việc </b></p>
-                                {!barChart
+                                {!singleUnit && advancedMode && searchAdvanceMode
                                     && <div className="box-tools pull-right" >
                                         <div className="btn-group pull-rigth">
                                             <button type="button" className={`btn btn-xs ${totalTask ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Tổng công việc</button>
@@ -601,7 +635,15 @@ class TaskOrganizationalUnitsChart extends Component {
                                     </div>
                                 }
                                 <section id={"taskUnitsChart"} className="c3-chart-container">
-                                    <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
+                                    <div ref="taskUnitsChart" style={{ marginBottom: "25px" }}></div>
+                                    {!singleUnit && advancedMode && searchAdvanceMode && <CustomLegendC3js
+                                        chart={this.chart.current}
+                                        chartId={"taskUnitsChart"}
+                                        legendId={"taskUnitsChartLegend"}
+                                        title={this.props?.childOrganizationalUnit && `${translate('general.list_unit')} (${this.props?.childOrganizationalUnit?.length})`}
+                                        dataChartLegend={this.props?.childOrganizationalUnit?.length && this.props.childOrganizationalUnit.map(item => item.name)}
+                                    />}
+
                                 </section>
                             </div>
                             : <p>{translate('kpi.organizational_unit.dashboard.no_data')}</p>
@@ -619,7 +661,6 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 };
 
 const taskOrganizationalUnitsChart = connect(mapState, actionCreators)(withTranslate(TaskOrganizationalUnitsChart));

@@ -423,7 +423,7 @@ function ManufacturingCommandManagementTable(props) {
                             <th>{translate('manufacturing.command.code')}</th>
                             <th>{translate('manufacturing.command.plan_code')}</th>
                             <th>{translate('manufacturing.command.created_at')}</th>
-                            <th>{translate('manufacturing.command.approver_ccommand')}</th>
+                            <th>{translate('manufacturing.command.approvers')}</th>
                             <th>{translate('manufacturing.command.qualityControlStaffs')}</th>
                             <th>{translate('manufacturing.command.accountables')}</th>
                             <th>{translate('manufacturing.command.mill')}</th>
@@ -438,7 +438,7 @@ function ManufacturingCommandManagementTable(props) {
                                         translate('manufacturing.command.code'),
                                         translate('manufacturing.command.plan_code'),
                                         translate('manufacturing.command.created_at'),
-                                        translate('manufacturing.command.approver_ccommand'),
+                                        translate('manufacturing.command.approvers'),
                                         translate('manufacturing.command.qualityControlStaffs'),
                                         translate('manufacturing.command.accountables'),
                                         translate('manufacturing.command.mill'),

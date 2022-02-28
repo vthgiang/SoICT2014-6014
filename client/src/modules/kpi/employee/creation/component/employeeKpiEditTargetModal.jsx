@@ -161,7 +161,7 @@ function ModalEditEmployeeKpi(props) {
                 formID="formeditEmployeeKpi"
                 title={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.edit_employee_kpi')}
                 msg_success={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.success')}
-                msg_faile={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.failure')}
+                msg_failure={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.failure')}
                 func={handleEditTargetEmployeeKpi}
                 disableSubmit={!isFormValidated()}
             >

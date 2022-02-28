@@ -18,38 +18,18 @@ class AmountBarChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
-        const { listAssets, assetType, setAmountOfAsset, translate } = this.props;
-        let typeName = [], shortName = [], countAssetType = [], idAssetType = [];
-        for (let i in assetType) {
-            countAssetType[i] = 0;
-            idAssetType.push(assetType[i]._id)
-        }
-
-        if (listAssets) {
-            listAssets.forEach(asset => {
-                for (let k in asset.assetType) {
-                    let idx = idAssetType.indexOf(asset.assetType[k]._id);
-                    countAssetType[idx]++;
-                }
-            })
-            for (let i in assetType) {
-                let longName = assetType[i].typeName.slice(0, 20) + "...";
-                let name = assetType[i].typeName.length > 20 ? longName : assetType[i].typeName;
-                shortName.push(name);
-                typeName.push(assetType[i].typeName);
-
-            }
-        }
-
-        countAssetType.unshift(translate('asset.dashboard.amount'));
+        const {  setAmountOfAsset, translate ,listAssetsAmount } = this.props;
+        let typeName = listAssetsAmount.typeName, shortName = listAssetsAmount.shortName, countAssetType = listAssetsAmount.countAssetType, idAssetType = listAssetsAmount.idAssetType;
+        let countAssetTypeShow = [translate('asset.dashboard.amount')].concat(countAssetType);
 
         let data = {
-            count: countAssetType,
+            count: countAssetTypeShow,
             type: typeName,
             shortName: shortName
         }
 
-        if (setAmountOfAsset && assetType && listAssets) {
+        if (setAmountOfAsset && listAssetsAmount) {
+            
             setAmountOfAsset(data);
         }
         return data;

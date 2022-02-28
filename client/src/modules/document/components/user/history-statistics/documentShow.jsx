@@ -10,7 +10,7 @@ import DocumentInformation from '../documents/documentInformation';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function DocumentShow(props) {
-    const { type,typeId }= props
+    const { type, typeId } = props
     const TableId = `table-manage-document-${typeId}`;
     const defaultConfig = { limit: 5 }
     const Limit = getTableConfiguration(TableId, defaultConfig).limit;
@@ -24,11 +24,9 @@ function DocumentShow(props) {
     useEffect(() => {
         props.getAllRoles();
         props.getAllDepartments();
-        props.getAllDocuments(getStorage('currentRole'));
-        props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
-        props.getUserDocumentStatistics(getStorage('currentRole'),type, { page: state.page, limit: state.limit });
+        props.getUserDocumentStatistics(getStorage('currentRole'), type, { page: state.page, limit: state.limit });
     }, [])
-    
+
     const toggleDocumentInformation = async (data) => {
         await setState({
             ...state,
@@ -123,9 +121,11 @@ function DocumentShow(props) {
         })
     }
     function handleArchivedRecordPlaceOrganizationalUnit(value) {
-        setState({
-            ...state,
-            organizationUnit: value,
+        setState(state => {
+            return {
+                ...state,
+                organizationUnit: value,
+            }
         })
     }
     const searchWithOption = async () => {
@@ -138,9 +138,9 @@ function DocumentShow(props) {
             domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
             issuingBody: state.issuingBody ? state.issuingBody : "",
-            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
+            organizationUnit: (state.organizationUnit && state.organizationUnit[0] !== '')? state.organizationUnit : "",
         };
-        await props.getUserDocumentStatistics(type, data);
+        await props.getUserDocumentStatistics(getStorage('currentRole'), type, data);
     }
     const convertDataToExportData = (data) => {
 
@@ -350,25 +350,25 @@ function DocumentShow(props) {
             domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
         };
-        await props.getUserDocumentStatistics(type, data);
+        await props.getUserDocumentStatistics(getStorage('currentRole'), type, data);
     }
 
     function setLimit(number) {
         if (state.limit !== number) {
             setState({ limit: number });
             const data = { limit: number, page: state.page };
-            props.getUserDocumentStatistics(type, data);
+            props.getUserDocumentStatistics(getStorage('currentRole'), type, data);
         }
     }
     const { translate, department } = props;
     const { user } = props.documents;
     const { common } = user;
-    let dataShow=null
-    switch(type){
+    let dataShow = null
+    switch (type) {
         case "common":
             dataShow = user.common
             break
-            
+
         case "downloaded":
             dataShow = user.downloaded
             break
@@ -380,7 +380,7 @@ function DocumentShow(props) {
     }
     let paginate = dataShow.paginate;
     console.log(paginate);
-    
+
     const { isLoading } = props.documents;
     const { domains, categories, archives } = props.documents.administration;
     const docs = props.documents.user.data;
@@ -397,6 +397,11 @@ function DocumentShow(props) {
         dataExport = dataShow.list;
     }
     let exportData = dataExport ? convertDataToExportData(dataExport) : "";
+
+    const convertDataOrgan = (data) => {
+        data.unshift({value: "", text: translate("document.store.all")});
+        return data;
+    }
     return (
         <div className="qlcv">
             <React.Fragment>
@@ -474,13 +479,12 @@ function DocumentShow(props) {
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.store.organizational_unit_manage')}</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id="select-documents-organizational-unit-manage-table"
+                        <SelectBox
+                            id={`select-documents-organizational-unit-manage-table-${typeId}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
-                            items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                            items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                             onChange={handleArchivedRecordPlaceOrganizationalUnit}
-                            options={{ placeholder: translate('document.store.select_organizational') }}
                             multiple={false}
                         />
                     </div>
@@ -526,27 +530,27 @@ function DocumentShow(props) {
                     <tbody>
                         {
                             paginate && paginate.length > 0 &&
-                                paginate.map(doc =>
-                                    <tr key={doc._id}>
-                                        <td>{doc.name}</td>
-                                        <td>{doc.description}</td>
-                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
-                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
-                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
-                                        <td>
-                                            <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
-                                            </a>
-                                        </td>
-                                        <td style={{ width: '10px' }}>
-                                            <a className="text-green" title={translate('document.edit')} onClick={() => toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                        </td>
-                                    </tr>) 
+                            paginate.map(doc =>
+                                <tr key={doc._id}>
+                                    <td>{doc.name}</td>
+                                    <td>{doc.description}</td>
+                                    <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
+                                    <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
+                                    <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
+                                    <td>
+                                        <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                        </a>
+                                    </td>
+                                    <td style={{ width: '10px' }}>
+                                        <a className="text-green" title={translate('document.edit')} onClick={() => toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                    </td>
+                                </tr>)
                         }
                     </tbody>
                 </table>
@@ -559,7 +563,7 @@ function DocumentShow(props) {
             </React.Fragment>
         </div>
     )
-    
+
 }
 
 const mapStateToProps = state => state;

@@ -19,13 +19,13 @@ function QuantityLotStockRotateEdit(props) {
         good: ''
     })
 
-    useEffect(() => {
+    if (props.good !== state.good) {
         setState({
             ...state,
             good: props.good,
             lots: props.initialData
         })
-    }, [props.good])
+    }
 
     const handleAddLotInfo = async () => {
         setState({
@@ -204,7 +204,7 @@ function QuantityLotStockRotateEdit(props) {
                 formID={`form-edit-quantity-rotate`}
                 title="Sửa số lượng theo lô"
                 msg_success={translate('manage_warehouse.bill_management.add_success')}
-                msg_faile={translate('manage_warehouse.bill_management.add_faile')}
+                msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="50"
@@ -214,7 +214,7 @@ function QuantityLotStockRotateEdit(props) {
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
-                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
+                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`select-lot-rotate-edit-by-${group}`}
                                 className="form-control select2"

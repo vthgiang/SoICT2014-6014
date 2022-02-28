@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { DetailTaskTab } from './detailTaskTab';
-import { ActionTab } from './actionTab';
+import ActionTab from './actionTab';
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { performTaskAction } from '../redux/actions';
@@ -16,44 +16,39 @@ import { DetailProjectTaskTab } from '../../task-project/component/detailProject
 import { getCurrentProjectDetails } from '../../../project/projects/components/functionHelper';
 
 function TaskComponent(props) {
-    const { translate, project, user, performtasks } = props;
+    const { translate, project, performtasks } = props;
 
     const [state, setState] = useState({ taskId: null })
     /**
-         * Dùng khi mở task từ URL. Ban đầu flag là 1, chạy vào render trước, taskID=null
-         * Khi flag có giá trị là 2, taskID sẽ là tham số từ URL 
-         */
+     * Dùng khi mở task từ URL. Ban đầu flag là 1, chạy vào render trước, taskID=null
+     * Khi flag có giá trị là 2, taskID sẽ là tham số từ URL 
+     */
     const [flag, setFlag] = useState(1)
 
     const { role } = state
 
     useEffect(() => {
-        props.getAllUserOfCompany();
         props.getAllDepartment();
-        props.getProjectsDispatch({ calledId: "all" });
-        props.getProjectsDispatch({ calledId: "user_all", userId: getStorage('userId') });
+        props.getDepartment();
+        props.getProjectsDispatch({ calledId: "" });
     }, [])
 
     useEffect(() => {
+        // xử lý khi mở chi tiết công việc bằng link 
         if (props.location) {
             const { taskId } = qs.parse(props.location.search, { ignoreQueryPrefix: true });
-            console.log("taskId", taskId)
             if (taskId && flag === 1) {
                 setFlag(2)
                 props.getTaskById(taskId);
-                props.getDepartment();
+                props.getTimerStatusTask(taskId);
             }
         }
     }, [JSON.stringify(props.location)])
 
     useEffect(() => {
-        if (props.id) {
+        if (props.id && !props.location) {
             props.getTaskById(props.id); // props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
-            props.getDepartment();
-            setState({
-                ...state,
-                id: props.id,
-            });
+            props.getTimerStatusTask(props.id);
         }
     }, [props.id])
 
@@ -63,6 +58,7 @@ function TaskComponent(props) {
             role: role
         })
     }
+
     let taskId = props.id;
     let task;
 
@@ -71,6 +67,29 @@ function TaskComponent(props) {
             taskId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).taskId;
         }
     }
+
+    const detailTaskTab = useCallback(
+        () => (
+            performtasks.task && <DetailTaskTab
+                id={taskId}
+                onChangeTaskRole={onChangeTaskRole}
+                showToolbar={true}
+            />
+        ),
+        [JSON.stringify(performtasks.task), taskId],
+    );
+
+    const actionsTab = useCallback(
+        () => (
+            performtasks.task && <ActionTab
+                id={taskId}
+                onChangeTaskRole={onChangeTaskRole}
+                showToolbar={true}
+                role={role}
+            />
+        ),
+        [JSON.stringify(performtasks.task), taskId, role],
+    );
 
     if (performtasks.task) {
         task = performtasks.task;
@@ -82,43 +101,44 @@ function TaskComponent(props) {
             </div>
         );
     }
+    const check = props?.performtasks?.isLoadingGetTaskById;
+
     return (
-        <div className="row row-equal-height" style={{ margin: "0px", height: "100%", backgroundColor: "#fff" }}>
-            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
-                {(task?.taskProject && getCurrentProjectDetails(project, task?.taskProject)?.projectType === 2)
-                    ? <DetailProjectTaskTab
-                        id={taskId}
-                        onChangeTaskRole={onChangeTaskRole}
-                        task={task && task}
-                        showToolbar={true}
-                    />
-                    : <DetailTaskTab
-                        id={taskId}
-                        onChangeTaskRole={onChangeTaskRole}
-                        task={task && task}
-                        showToolbar={true}
-                    />
-                }
-            </div>
+        <React.Fragment>
+            {
+                flag === 1 && check ?
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>Đang tải dữ liệu ...</div>
+                    :
+                    <div className="row row-equal-height" style={{ margin: "0px", height: "100%", backgroundColor: "#fff" }}>
+                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
+                            {(task?.taskProject && getCurrentProjectDetails(project, task?.taskProject)?.projectType === 2)
+                                ? <DetailProjectTaskTab
+                                    id={taskId}
+                                    onChangeTaskRole={onChangeTaskRole}
+                                    task={task && task}
+                                    showToolbar={true}
+                                />
+                                : detailTaskTab()
+                            }
+                        </div>
 
-            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
-                <ActionTab
-                    id={taskId}
-                    role={role}
-                    task={task && task}
-                />
-            </div>
+                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
+                            {actionsTab()}
+                        </div>
 
-        </div>
+                    </div>
+            }
+        </React.Fragment>
     );
 }
 function mapState(state) {
-    const { tasks, performtasks, user, project } = state;
-    return { tasks, performtasks, user, project };
+    const { performtasks, project } = state;
+    return { performtasks, project };
 }
 
 const actionCreators = {
     getTaskById: performTaskAction.getTaskById,
+    getTimerStatusTask: performTaskAction.getTimerStatusTask,
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,

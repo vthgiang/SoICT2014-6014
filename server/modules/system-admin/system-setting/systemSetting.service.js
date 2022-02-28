@@ -1,44 +1,50 @@
-const {backup, restore} = require("../../../helpers/dbHelper");
-const {connect} = require("../../../helpers/dbHelper");
-const {time} = require('cron');
+const { backup, restore, versionName } = require("../../../helpers/dbHelper");
+const { connect } = require("../../../helpers/dbHelper");
+const { time } = require('cron');
 const fs = require('fs');
 const exec = require('child_process').exec;
-const {Configuration} = require(`../../../models`);
+const { Configuration } = require(`../../../models`);
+const {checkOS} = require("../../../helpers/osHelper");
 
-exports.getBackups = async() => {
+exports.getBackups = () => {
     if (!fs.existsSync(`${SERVER_BACKUP_DIR}/all`)) {
         fs.mkdirSync(`${SERVER_BACKUP_DIR}/all`, {
             recursive: true
         });
     };
-    const list = await fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
-    const backupedList = list.map( dir => {
-        const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/all/${dir}`);
-        const subPath = `${SERVER_BACKUP_DIR}/all/${dir}/README.txt`;
-        const description = fs.readFileSync(subPath, {encoding:'utf8', flag:'r'});
-        
-        return {
-            version: dir,
-            path: `${SERVER_BACKUP_DIR}/all/${dir}`,
-            description,
-            createdAt: folderInfo.ctime
+    const list = fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
+
+    const backupedList = [];
+    list.forEach(dir => {
+
+        // Nếu là thư mục có file README.txt -> là thư mục backup
+        if (fs.existsSync(`${SERVER_BACKUP_DIR}/all/${dir}/README.txt`)) {
+            const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/all/${dir}`);
+            const description = fs.readFileSync(`${SERVER_BACKUP_DIR}/all/${dir}/README.txt`, { encoding: 'utf8', flag: 'r' });
+
+            backupedList.push({
+                version: dir,
+                path: `${SERVER_BACKUP_DIR}/all/${dir}`,
+                description,
+                createdAt: folderInfo.ctime
+            });
         }
-    })
+    });
 
     return backupedList;
 }
 
-exports.configBackup = async(query, data) => {
-    const {auto, schedule} = query;
-    let configDB = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: 'all'});
+exports.configBackup = async (query, data) => {
+    const { auto, schedule } = query;
+    let configDB = await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({ name: 'all' });
 
-    switch(auto) {
+    switch (auto) {
         case 'on':
-            switch(schedule) {
+            switch (schedule) {
                 case 'weekly':
                     let timeWeekly = `${data.second} ${data.minute} ${data.hour} * * ${data.day}`;
 
-                    if(configDB !== null){
+                    if (configDB !== null) {
                         configDB.backup.time.second = data.second;
                         configDB.backup.time.minute = data.minute;
                         configDB.backup.time.hour = data.hour;
@@ -58,7 +64,7 @@ exports.configBackup = async(query, data) => {
                 case 'monthly':
                     let timeMonthly = `${data.second} ${data.minute} ${data.hour} ${data.date} * *`;
 
-                    if(configDB !== null){
+                    if (configDB !== null) {
                         configDB.backup.time.second = data.second;
                         configDB.backup.time.minute = data.minute;
                         configDB.backup.time.hour = data.hour;
@@ -78,7 +84,7 @@ exports.configBackup = async(query, data) => {
                 case 'yearly':
                     let timeYearly = `${data.second} ${data.minute} ${data.hour} ${data.date} ${data.month} *`;
 
-                    if(configDB !== null){
+                    if (configDB !== null) {
                         configDB.backup.time.second = data.second;
                         configDB.backup.time.minute = data.minute;
                         configDB.backup.time.hour = data.hour;
@@ -100,7 +106,7 @@ exports.configBackup = async(query, data) => {
             }
             BACKUP['all'].job.start();
             break;
-            
+
         default:
             configDB.backup.auto = false;
             await configDB.save();
@@ -109,9 +115,9 @@ exports.configBackup = async(query, data) => {
     }
 }
 
-exports.getConfigBackup = async() => {
+exports.getConfigBackup = async () => {
     console.log("get config backup system admin")
-    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({name: 'all'});
+    return await Configuration(connect(DB_CONNECTION, process.env.DB_NAME)).findOne({ name: 'all' });
 }
 
 exports.createBackup = async () => {
@@ -122,21 +128,39 @@ exports.createBackup = async () => {
 };
 
 exports.deleteBackup = async (version) => {
-    const path = `${SERVER_BACKUP_DIR}/all/${version}`;
+    const path = `${SERVER_BACKUP_DIR}\\all\\${version}`;
     if (fs.existsSync(path)) {
-        exec("rm -rf " + path, function (err) { });
+        if (checkOS() === 1) {
+            exec("rmdir /s /q " + path, function (err) { });
+        } else if (checkOS() === 2) {
+            exec("rm -rf " + path, function (err) {
+            });
+        }
         return version;
     }
     return null;
 }
 
-exports.restore = async (backupVersion) => {
-    await restore(backupVersion, {
+exports.restore = async (version) => {
+    await restore({
         host: process.env.DB_HOST,
-        dbName: process.env.DB_NAME,
-        dbPort: process.env.DB_PORT || '27017',
+        port: process.env.DB_PORT || '27017',
         store: SERVER_BACKUP_DIR,
         username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD
+        password: process.env.DB_PASSWORD,
+        version
     });
+}
+
+exports.editBackupInfo = (version, data) => {
+    let path = `${SERVER_BACKUP_DIR}/all/${version}`;
+    if (!fs.existsSync(path)) { throw ['backup_version_deleted'] };
+    fs.writeFile(path + '/README.txt', data.description, err => {
+        if (err) throw err;
+    });
+
+    return {
+        version,
+        data
+    };
 }

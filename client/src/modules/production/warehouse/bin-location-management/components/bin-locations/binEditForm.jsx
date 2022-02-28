@@ -20,25 +20,27 @@ function BinEditForm(props) {
     })
 
     useEffect(() => {
-        setState({
-            ...state,
-            binId: props.binId,
-            binParent: props.binParent,
-            binCode: props.binCode,
-            binName: props.binName,
-            binStatus: props.binStatus,
-            binUnit: props.binUnit,
-            binUsers: props.binUsers,
-            binPath: props.binPath,
-            binContained: props.binContained,
-            binCapacity: props.binCapacity,
-            binDescription: props.binDescription,
-            binDepartment: props.binDepartment,
-            binEnableGoods: props.binEnableGoods,
-            binStock: props.binStock,
-            errorName: undefined,
-            errorCode: undefined
-        })
+        if (props.binId !== state.binId) {
+            setState({
+                ...state,
+                binId: props.binId,
+                binParent: props.binParent,
+                binCode: props.binCode,
+                binName: props.binName,
+                binStatus: props.binStatus,
+                binUnit: props.binUnit,
+                binUsers: props.binUsers,
+                binPath: props.binPath,
+                binContained: props.binContained,
+                binCapacity: props.binCapacity,
+                binDescription: props.binDescription,
+                binDepartment: props.binDepartment,
+                binEnableGoods: props.binEnableGoods,
+                binStock: props.binStock,
+                errorName: undefined,
+                errorCode: undefined
+            })
+        }
     }, [props.binId])
 
     const getAllDepartment = () => {
@@ -243,7 +245,6 @@ function BinEditForm(props) {
 
     const handleCapacityTotalChange = (e) => {
         let value = e.target.value;
-        console.log(value);
         setState({
             ...state,
             binCapacity: value
@@ -330,17 +331,16 @@ function BinEditForm(props) {
     const dataDepartment = getAllDepartment();
     const dataGoods = getAllGoods();
     const listUsers = list;
-
     return (
         <div id="edit-bin-location">
             <div className="scroll-row">
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.code')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.code')}<span className="text-red"> * </span></label>
                         {/* <input type="text" className="form-control" value={binCode} disabled onChange={handleCodeChange} /> */}
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.status')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.status')}<span className="text-red"> * </span></label>
                         <SelectBox
                             id={`select-status-bin-location`}
                             className="form-control select2"
@@ -358,7 +358,7 @@ function BinEditForm(props) {
                         />
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.department')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.department')}<span className="text-red"> * </span></label>
                         <SelectBox
                             id={`select-department-bin`}
                             className="form-control select2"
@@ -370,28 +370,28 @@ function BinEditForm(props) {
                         />
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={binUnit} onChange={handleUnitChange} />
+                        <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="text-red"> * </span></label>
+                        <input type="text" className="form-control" value={binUnit ? binUnit : ''} onChange={handleUnitChange} />
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorName ? "" : "has-error"}`}>
-                        <label>{translate('manage_warehouse.bin_location_management.name')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={binName} onChange={handleNameChange} />
+                        <label>{translate('manage_warehouse.bin_location_management.name')}<span className="text-red"> * </span></label>
+                        <input type="text" className="form-control" value={binName ? binName : ''} onChange={handleNameChange} />
                         <ErrorLabel content={errorName} />
                     </div>
                     <div className="form-group">
-                        <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="text-red"> * </span></label>
                         <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={handleCapacityTotalChange} />
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
+                        <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="text-red"> * </span></label>
                         <SelectBox
                             id={`select-management-location-stock`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={binUsers ? binUsers : []}
-                            items={listUsers.map(x => { return { value: x.id, text: x.name } })}
+                            items={user.list.map(x => { return { value: x.id, text: x.name } })}
                             onChange={handleManagementLocationtChange}    
                             multiple={true}
                         />

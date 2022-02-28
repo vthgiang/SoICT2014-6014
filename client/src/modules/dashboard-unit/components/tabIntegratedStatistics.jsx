@@ -49,34 +49,23 @@ class TabIntegratedStatistics extends Component {
     }
 
     render() {
-        const { translate, timesheets, discipline, department } = this.props;
-        const { month, employeeTasks, listEmployee, listAllEmployees, organizationalUnits } = this.props;
+        const { translate, timesheets, discipline, department, employeeDashboardData } = this.props;
+        const { month, listEmployee, listAllEmployees, organizationalUnits } = this.props;
         const { viewOverTime, viewHoursOff } = this.state;
-        let maxTask = 1;
-
-        if (employeeTasks && employeeTasks.length !== 0) {
-            employeeTasks.forEach(x => {
-                if (x.totalTask > maxTask) {
-                    maxTask = x.totalTask
-                }
-            })
-        }
-
 
         let employeeOvertime = [], employeeHoursOff = [];
         /* Lấy dữ liệu tăng ca và nghỉ phép của mỗi nhân viên trong đơn vị */
-        let listTimesheets = timesheets.listTimesheets;
-        for (let i in listEmployee) {
+        let listTimesheets = employeeDashboardData.dataOvertimeUnits?.listOvertimeOfUnitsByStartDateAndEndDate;
+        for (let i in listAllEmployees) {
             let totalOvertime = 0, totalHoursOff = 0;
             listTimesheets && listTimesheets.forEach(x => {
-                if (listEmployee[i].userId.email === x.employee.emailInCompany) {
+                if (listAllEmployees[i].emailInCompany === x.employee.emailInCompany) {
                     totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
                     totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;
-
                 };
             });
-            employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
-            employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
+            employeeOvertime = [...employeeOvertime, { _id: listAllEmployees[i]._id, name: listAllEmployees[i].fullName, totalHours: totalOvertime }];
+            employeeHoursOff = [...employeeHoursOff, { _id: listAllEmployees[i]._id, name: listAllEmployees[i].fullName, totalHours: totalHoursOff }];
         };
         /* Sắp xếp theo thứ tự giảm dần */
         if (employeeOvertime.length !== 0) {
@@ -92,6 +81,85 @@ class TabIntegratedStatistics extends Component {
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         };
 
+        const taskUnits = this.props?.tasks?.organizationUnitTasks?.tasks;
+        let employeeTasks = [];
+        if (taskUnits?.length) {
+            for (let i in listEmployee) {
+                let tasks = [];
+                let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
+                taskUnits.forEach(x => {
+                    if (x?.accountableEmployees) {
+                        x.accountableEmployees.forEach(k => {
+                            if (typeof k === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    accountableTask = [...accountableTask, x._id]
+                            }
+                            if (typeof k === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    accountableTask = [...accountableTask, x._id]
+                            }
+                        })
+                    }
+
+                    if (x?.responsibleEmployees) {
+                        x.responsibleEmployees.forEach(k => {
+                            if (typeof (k) === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    responsibleTask = [...responsibleTask, x._id]
+                            }
+                            if (typeof (k) === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    responsibleTask = [...responsibleTask, x._id]
+                            }
+                        })
+                    }
+
+                    if (x?.consultedEmployees) {
+                        x.consultedEmployees.forEach(k => {
+                            if (typeof (k) === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    consultedTask = [...consultedTask, x._id]
+                            }
+                            if (typeof (k) === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    consultedTask = [...consultedTask, x._id]
+                            }
+                        })
+                    }
+
+                    if (x?.informedEmployees) {
+                        x.informedEmployees.forEach(k => {
+                            if (typeof (k) === 'object') {
+                                if (k?._id === listEmployee?.[i]?.userId?._id)
+                                    informedTask = [...informedTask, x._id]
+                            }
+                            if (typeof (k) === 'string') {
+                                if (k === listEmployee?.[i]?.userId?._id)
+                                    informedTask = [...informedTask, x._id]
+                            }
+                        })
+                    }
+                })
+                tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
+                let totalTask = tasks.filter(function (item, pos) {
+                    return tasks.indexOf(item) === pos;
+                })
+                employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i].userId?.name, totalTask: totalTask?.length }]
+            }
+        }
+        if (employeeTasks.length !== 0) {
+            employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
+        };
+
+        let maxTask = 1;
+
+        if (employeeTasks && employeeTasks.length !== 0) {
+            employeeTasks.forEach(x => {
+                if (x.totalTask > maxTask) {
+                    maxTask = x.totalTask
+                }
+            })
+        }
         return (
             <div className="qlcv">
                 <div className='row'>
@@ -144,17 +212,15 @@ class TabIntegratedStatistics extends Component {
                                         {
                                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                                 <>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                                 </>
                                                 :
                                                 <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                 </span>
                                         }
-                                        {` tháng ${month}`}
+                                        {month}
                                     </div>
                                 </div>
                                 <div className="box-body">
@@ -206,17 +272,15 @@ class TabIntegratedStatistics extends Component {
                                         {
                                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                                 <>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                                 </>
                                                 :
                                                 <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                 </span>
                                         }
-                                        {` tháng ${month}`}
+                                        {month}
                                     </div>
                                 </div>
                                 <div className="box-body">
@@ -229,8 +293,8 @@ class TabIntegratedStatistics extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {discipline.totalListCommendation.length !== 0 &&
-                                                discipline.totalListCommendation.map((x, index) => index < 5 ? (
+                                            {employeeDashboardData.commendation?.totalList?.length !== 0 &&
+                                                employeeDashboardData.commendation?.totalList?.map((x, index) => index < 5 ? (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.employee.fullName}</td>
@@ -241,7 +305,7 @@ class TabIntegratedStatistics extends Component {
                                         </tbody>
                                     </table>
                                     {
-                                        (!discipline.totalListCommendation || discipline.totalListCommendation.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        (!employeeDashboardData.commendation?.totalList || employeeDashboardData.commendation?.totalList?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                     }
                                 </div>
                                 <div className="box-footer text-center">
@@ -258,17 +322,15 @@ class TabIntegratedStatistics extends Component {
                                         {
                                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                                 <>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                                 </>
                                                 :
                                                 <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                 </span>
                                         }
-                                        {` tháng ${month}`}
+                                        {month}
                                     </div>
                                 </div>
                                 <div className="box-body">
@@ -281,8 +343,8 @@ class TabIntegratedStatistics extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {discipline.totalListDiscipline.length !== 0 &&
-                                                discipline.totalListDiscipline.map((x, index) => index < 5 ? (
+                                            {employeeDashboardData.discipline?.totalList?.length !== 0 &&
+                                                employeeDashboardData.discipline?.totalList?.map((x, index) => index < 5 ? (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.employee.fullName}</td>
@@ -293,7 +355,7 @@ class TabIntegratedStatistics extends Component {
                                         </tbody>
                                     </table>
                                     {
-                                        (!discipline.totalListDiscipline || discipline.totalListDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        (!employeeDashboardData.discipline?.totalList || employeeDashboardData.discipline?.totalList?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                     }
                                 </div>
                                 <div className="box-footer text-center">
@@ -314,17 +376,15 @@ class TabIntegratedStatistics extends Component {
                                         {
                                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                                 <>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                                 </>
                                                 :
                                                 <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                 </span>
                                         }
-                                        {` tháng ${month}`}
+                                        {month}
                                     </div>
                                 </div>
                                 <div className="box-body">
@@ -362,21 +422,19 @@ class TabIntegratedStatistics extends Component {
                             <div className="box box-solid">
                                 <div className="box-header with-border">
                                     <div className="box-title">
-                                        {`Tổng hợp tình hình tăng ca `} 
+                                        {`Tổng hợp tình hình tăng ca `}
                                         {
                                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                                 <>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                                 </>
                                                 :
                                                 <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                                 </span>
                                         }
-                                        {` tháng ${month}`}
+                                        {month}
                                     </div>
                                 </div>
                                 <div className="box-body">
@@ -411,17 +469,17 @@ class TabIntegratedStatistics extends Component {
                         </div>
                     </div>
                 </div>
-                <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc tháng ${month}`} />
+                <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} />
                 <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên`} />
-                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng tháng${month}`} />
-                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật tháng ${month}`} />
+                <ViewAllCommendation dataCommendation={employeeDashboardData.commendation?.totalList?.length > 0 ? employeeDashboardData.commendation?.totalList : []} title={`Tổng hợp khen thưởng${month}`} />
+                <ViewAllDiscipline dataDiscipline={employeeDashboardData.discipline?.totalLists?.length > 0 ? employeeDashboardData.discipline.totalLists : []} title={`Tổng hợp kỷ luật ${month}`} />
                 {
                     viewOverTime &&
-                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca tháng ${month}`} id={viewOverTime} />
+                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} />
                 }
                 {
                     viewHoursOff &&
-                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép tháng ${month}`} id={viewHoursOff} />
+                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép ${month}`} id={viewHoursOff} />
                 }
             </div >
         );
@@ -429,8 +487,8 @@ class TabIntegratedStatistics extends Component {
 }
 
 function mapState(state) {
-    const { timesheets, discipline, department } = state;
-    return { timesheets, discipline, department };
+    const { timesheets, discipline, department, tasks, employeeDashboardData } = state;
+    return { timesheets, discipline, department, tasks, employeeDashboardData };
 }
 
 const tabIntegratedStatistics = connect(mapState, null)(withTranslate(TabIntegratedStatistics));

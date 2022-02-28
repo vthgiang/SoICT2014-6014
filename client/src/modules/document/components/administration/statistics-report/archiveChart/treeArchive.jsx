@@ -19,7 +19,7 @@ function TreeArchive(props) {
             tree: value
         })
     }
-    const { documents, archives } = props;
+    const { documents, archives,chartArchive } = props;
     let { tree } = state;
     let typeName = [], countArchive = [], idArchive = [];
     let chart = [];
@@ -27,24 +27,19 @@ function TreeArchive(props) {
         countArchive[i] = 0;
         idArchive.push(archives[i]._id)
     }
-    if (documents) {
-        documents.map(doc => {
-            doc.archives.map(archive => {
-                let idx = idArchive.indexOf(archive);
-                countArchive[idx]++;
-            })
-        })
-        for (let i in archives) {
+    
+    if (chartArchive){
+        for (let i in chartArchive.dataTree.archives.list) {
 
-            let val = d3.format(",")(countArchive[i])
-            let title = `${archives[i].name} - ${val} `
+            let val = d3.format(",")(chartArchive.dataTree.countArchive[i])
+            let title = `${chartArchive.dataTree.archives.list[i].name} - ${val} `
 
-            typeName.push(archives[i].name);
+            typeName.push(chartArchive.dataTree.archives.list[i].name);
 
             chart.push({
-                id: archives[i]._id,
+                id: chartArchive.dataTree.archives.list[i]._id,
                 typeName: title,
-                parentId: archives[i].parent,
+                parentId: chartArchive.dataTree.archives.list[i].parent,
             })
         }
     }
@@ -78,6 +73,7 @@ function TreeArchive(props) {
                     <BarChartArchive
                         archives={archives}
                         docs={documents}
+                        data = {chartArchive}
                     />
             }
         </div>

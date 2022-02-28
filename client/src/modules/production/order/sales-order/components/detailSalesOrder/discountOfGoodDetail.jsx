@@ -4,23 +4,23 @@ import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../../helpers/formatDate";
 import { capitalize } from "../../../../../../helpers/stringMethod";
 
-class DiscountOfGoodDetail extends Component {
-    getBonusGoodTitle = (bonusGoods) => {
+function DiscountOfGoodDetail(props) {
+
+    const getBonusGoodTitle = (bonusGoods) => {
         let dataMap = bonusGoods.map((item) => {
             return item.quantityOfBonusGood + " " + item.good.baseUnit + " " + item.good.name;
         });
         return dataMap.join(", ");
     };
 
-    getDiscountOnGoodTitle = (discountOnGoods) => {
-        let title = `${discountOnGoods.discountedPrice ? formatCurrency(discountOnGoods.discountedPrice) : ""} (vnđ)/ ${
-            discountOnGoods.good.baseUnit
-        } ${discountOnGoods.expirationDate ? "đối với sản phẩm có hạn sử dụng trước ngày " + formatDate(discountOnGoods.expirationDate) : ""}`;
+    const getDiscountOnGoodTitle = (discountOnGoods) => {
+        let title = `${discountOnGoods.discountedPrice ? formatCurrency(discountOnGoods.discountedPrice) : ""} (vnđ)/ ${discountOnGoods.good.baseUnit
+            } ${discountOnGoods.expirationDate ? "đối với sản phẩm có hạn sử dụng trước ngày " + formatDate(discountOnGoods.expirationDate) : ""}`;
 
         return title;
     };
 
-    getNameDiscountForGood = (formality, discount) => {
+    const getNameDiscountForGood = (formality, discount) => {
         let title = "";
 
         switch (parseInt(formality)) {
@@ -36,8 +36,7 @@ class DiscountOfGoodDetail extends Component {
             case 3:
                 title =
                     title +
-                    `Miễn phí vận chuyển ${
-                        discount.maximumFreeShippingCost ? ", tối đa" + formatCurrency(discount.maximumFreeShippingCost) : ""
+                    `Miễn phí vận chuyển ${discount.maximumFreeShippingCost ? ", tối đa" + formatCurrency(discount.maximumFreeShippingCost) : ""
                     } (vnđ)`;
                 break;
             case 4:
@@ -52,47 +51,45 @@ class DiscountOfGoodDetail extends Component {
         return capitalize(title);
     };
 
-    render() {
-        const { discountOfGoodDetail } = this.props;
-        console.log("discountOfGoodDetail", discountOfGoodDetail);
-        return (
-            <DialogModal
-                modalID="modal-sales-order-detail-discounts-of-good"
-                isLoading={false}
-                formID="form-sales-order-detail-discounts-of-good"
-                title={"Chi tiết giảm giá"}
-                size="50"
-                hasSaveButton={false}
-                hasNote={false}
-            >
-                {!discountOfGoodDetail.length ? (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp; <span>Chưa có khuyến mãi nào</span>
-                    </div>
-                ) : (
-                    discountOfGoodDetail.map((item) => {
-                        return (
-                            <div>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <i className="fa fa-gift text-warning"></i> &ensp; <strong>{item.name}</strong>
-                                </div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        padding: "5px 0px 5px 20px",
-                                    }}
-                                >
-                                    <i className="fa fa-genderless text-success"></i>&ensp;
-                                    {this.getNameDiscountForGood(item.formality, item)}
-                                </div>
+    const { discountOfGoodDetail } = this.props;
+    console.log("discountOfGoodDetail", discountOfGoodDetail);
+    return (
+        <DialogModal
+            modalID="modal-sales-order-detail-discounts-of-good"
+            isLoading={false}
+            formID="form-sales-order-detail-discounts-of-good"
+            title={"Chi tiết giảm giá"}
+            size="50"
+            hasSaveButton={false}
+            hasNote={false}
+        >
+            {!discountOfGoodDetail.length ? (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp; <span>Chưa có khuyến mãi nào</span>
+                </div>
+            ) : (
+                discountOfGoodDetail.map((item) => {
+                    return (
+                        <div>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <i className="fa fa-gift text-warning"></i> &ensp; <strong>{item.name}</strong>
                             </div>
-                        );
-                    })
-                )}
-            </DialogModal>
-        );
-    }
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    padding: "5px 0px 5px 20px",
+                                }}
+                            >
+                                <i className="fa fa-genderless text-success"></i>&ensp;
+                                {this.getNameDiscountForGood(item.formality, item)}
+                            </div>
+                        </div>
+                    );
+                })
+            )}
+        </DialogModal>
+    );
 }
 
 export default DiscountOfGoodDetail;

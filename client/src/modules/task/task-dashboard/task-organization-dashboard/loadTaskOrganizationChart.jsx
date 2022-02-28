@@ -10,132 +10,69 @@ import { CustomLegendC3js } from '../../../../common-components';
 import { customAxisC3js } from '../../../../helpers/customAxisC3js';
 
 const LoadTaskOrganizationChart = (props) => {
-    const { translate, tasks } = props
-    const { startMonth, endMonth, startMonthTitle, endMonthTitle, units, idsUnit, typeChart = "followTime" } = props;
+    const { translate,chartData } = props
+    const { startMonthTitle, endMonthTitle, units, idsUnit, typeChart } = props;
 
-    const [dataChart, setDataChart] = useState();
-    const ref = useRef({
-        chart: null,
-        dataChart: null
+    const [state, setState] = useState({
+        legend: [],
+        dataChart: [],
     });
+    const refMultiLineChart = React.createRef();
+    const chart = useRef();
+    const { legend } = state
 
     useEffect(() => {
-        let dataChart = setDateBarChart()
+        let data = getData("load-task-organization-chart")
+        if (data?.legend && !data.isLoading)
+            setState({
+                ...state,
+                dataChart: data.dataChart,
+                legend: data.legend
+            })
+    }, [JSON.stringify(chartData?.["load-task-organization-chart"])])
 
+    useEffect(() => {
         if (typeChart === "followTime") {
-            barChartFollowTime(dataChart?.data, dataChart?.category);
+            lineChartFollowTime();
         } else {
-            barChartFollowUnit(dataChart?.data);
+            barChartFollowUnit();
         }
-    })
+    }, [JSON.stringify(state.dataChart)])
 
-    function setDateBarChart() {
-        let data = [], category = []
-        let taskList = typeChart === "followTime" ? tasks?.organizationUnitTasks?.tasks : tasks?.organizationUnitTasksInMonth?.tasks;
-        if (taskList?.length > 0) {
-            let selectedUnit = idsUnit;
-
-            // Lấy tất cả các công việc thay vì mỗi các công việc đang thực hiện
-            // let improcessTask = taskList?.filter(x => x.status === "inprocess");
-            let improcessTask = taskList;
-            let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
-            let endTime = new Date(endMonth.split("-")[0], endMonth.split('-')[1] ? endMonth.split('-')[1] : 1, 1);
-            let m = startMonth.slice(5, 7);
-            let y = startMonth.slice(0, 4);
-            let period = Math.round((endTime - startTime) / 2592000000);
-            let array = [];
-            for (let i = 0; i < period; i++) {
-                category.push(dayjs([y, m].join('-')).format("M-YYYY"));
-                m++;
-                array[i] = 0;
-            }
-
-            for (let i in selectedUnit) {
-                data[i] = [];
-                array.fill(0, 0);
-                let findUnit = units.find(elem => (elem.value === selectedUnit[i]) || (elem.id === selectedUnit[i]))
-                if (findUnit) {
-                    data[i].push(findUnit.text || findUnit.name);
-                }
-
-                for (let k in improcessTask) {
-                    if (improcessTask[k] && improcessTask[k].organizationalUnit && improcessTask[k].organizationalUnit._id === selectedUnit[i]) {
-                        let improcessDay = 0;
-                        let startDate = new Date(improcessTask[k].startDate);
-                        let endDate = new Date(improcessTask[k].endDate);
-
-                        if (startTime < endDate) {
-                            for (let j = 0; j < period; j++) {
-                                let tmpStartMonth = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]) - 1, 1);
-                                let tmpEndMonth = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]), 0);
-
-                                if (tmpStartMonth > startDate && tmpEndMonth < endDate) {
-                                    improcessDay = tmpEndMonth.getDate();
-                                }
-                                // thang dau
-                                else if (tmpStartMonth < startDate && tmpEndMonth > startDate) {
-                                    improcessDay = tmpEndMonth.getDate() - startDate.getDate();
-                                }
-                                else if (tmpStartMonth < endDate && endDate < tmpEndMonth) {
-                                    improcessDay = endDate.getDate();
-                                }
-                                else {
-                                    improcessDay = 0;
-                                }
-                                array[j] += Math.round(improcessDay /
-                                    (improcessTask[k].accountableEmployees.length + improcessTask[k].consultedEmployees.length + improcessTask[k].responsibleEmployees.length))
-                            }
-
-                        }
-                    }
-
-                }
-
-                data[i] = [...data[i], ...array];
-            }
-
-            if (data?.length > 0) {
-                data = data.map(item => {
-                    item = item.map(x => {
-                        if (!x || x === NaN || x === Infinity) {
-                            return 0
-                        } else {
-                            return x
-                        }
-                    });
-                    return item;
-                })
-            }
-            let check = false;
-            if (data?.length !== ref.current.dataChart?.length) {
-                check = true;
-            } else if (data?.length > 0) {
-                data.map(item => item[0]).map(item => {
-                    if (!ref.current.dataChart?.map(item => item[0])?.includes(item)) {
-                        check = true;
-                    }
-                })
-            }
-            if (check) {
-                ref.current.dataChart = data;
-                setDataChart(data)
-            }
+    function getData(chartName) {
+        let dataChart;
+        let data = chartData?.[chartName]
+        if (data) {
+            dataChart = data
         }
-
-        return {
-            data,
-            category
-        }
+        return data;
     }
 
-    const barChartFollowTime = (data, category) => {
-        ref.current.chart = c3.generate({
-            bindto: document.getElementById("weightTaskOrganization"),
+    const removePreviousChart = () => {
+        let chart = refMultiLineChart.current;
+        if (chart)
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+    }
+
+    const lineChartFollowTime = () => {
+        removePreviousChart();
+        const { dataChart } = state
+        chart.current = c3.generate({
+            bindto: refMultiLineChart.current,
 
             data: {
-                columns: data,
-                type: 'line',
+                x: 'x',
+                columns: dataChart,
 
+            },
+
+            // Căn lề biểu đồ
+            padding: {
+                top: 20,
+                right: 20,
+                bottom: 20
             },
 
             axis: {
@@ -145,8 +82,10 @@ const LoadTaskOrganizationChart = (props) => {
                         position: 'outer-right',
                     },
 
-                    type: 'category',
-                    categories: category?.length > 0 ? category : [],
+                    type: 'timeseries',
+                    tick: {
+                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                    }
                 },
                 y: {
                     label: {
@@ -157,6 +96,13 @@ const LoadTaskOrganizationChart = (props) => {
                 }
 
             },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value.toFixed(2);
+                    }
+                }
+            },
 
             legend: {
                 show: false
@@ -164,10 +110,10 @@ const LoadTaskOrganizationChart = (props) => {
         });
     }
 
-    const barChartFollowUnit = (data) => {
+    const barChartFollowUnit = () => {
         let dataChart = [translate('task.task_management.load_task')]
         let titleX = ["x"]
-
+        let data  = state.dataChart;
         if (data?.length > 0) {
             data.map(item => {
                 titleX.push(item?.[0])
@@ -175,8 +121,8 @@ const LoadTaskOrganizationChart = (props) => {
             })
         }
 
-        ref.current.chart = c3.generate({
-            bindto: document.getElementById("weightTaskOrganization"),
+        chart.current = c3.generate({
+            bindto: refMultiLineChart.current,
 
             data: {
                 x: "x",
@@ -193,7 +139,7 @@ const LoadTaskOrganizationChart = (props) => {
                 bottom: 50,
                 right: 20
             },
-            
+
             axis: {
                 x: {
                     type: 'category',
@@ -251,49 +197,47 @@ const LoadTaskOrganizationChart = (props) => {
             width: "50%",
         })
     }
-
     return (
         <React.Fragment>
             <div className="box box-primary">
                 <div className="box-header with-border">
                     <div className="box-title" >
-                        {translate('task.task_management.load_task_chart_unit')} {typeChart === "followTime" ? <>{startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</> : <>{startMonthTitle}</>}
+                        {translate('task.task_management.load_task_chart_unit')}
                         {
                             idsUnit && idsUnit.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${props.getUnitName(units, idsUnit).map(o => o).join(", ")}`}</span>
+                                    <span>{` ${props.getUnitName(units, idsUnit).map(o => o).join(", ")} `}</span>
                                 </>
                                 :
                                 <span onClick={() => props.showUnitTask(units, idsUnit)} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                 </span>
                         }
-                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showLoadTaskDoc()}>
-                            <i className="fa fa-question-circle" style={{ cursor: 'pointer', color: '#dd4b39', marginLeft: '5px' }} />
+                        {typeChart === "followTime" ? <>{startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}</> : <>{startMonthTitle}</>}
+
+                        <a onClick={() => showLoadTaskDoc()}>
+                            <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                         </a>
                     </div>
                 </div>
                 <div className="box-body">
-                    { tasks.isLoading 
-                        ? <p>{translate('general.loading')}</p>
-                        : (tasks?.organizationUnitTasks && typeChart === "followTime") || tasks?.organizationUnitTasksInMonth
-                            ? <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
-                                <div id="weightTaskOrganization"></div>
-                                { typeChart === "followTime" 
+                    {chartData?.['load-task-organization-chart']?.isLoading? <div>{translate('general.loading')}</div> :
+                        state?.dataChart?.length > 0 ?
+                            <section id={"weightTaskOrganizationChart"} className="c3-chart-container">
+                                <div ref={refMultiLineChart}></div>
+                                {typeChart === "followTime"
                                     && <CustomLegendC3js
-                                        chart={ref.current.chart}
+                                        chart={chart.current}
                                         chartId={"weightTaskOrganizationChart"}
                                         legendId={"weightTaskOrganizationChartLegend"}
-                                        title={`${translate('general.list_unit')} (${dataChart?.length > 0 ? dataChart?.length : 0})`}
-                                        dataChartLegend={dataChart && dataChart.map(item => item[0])}
+                                        title={`${translate('general.list_unit')} (${legend?.length > 0 ? legend?.length : 0})`}
+                                        dataChartLegend={legend && legend}
                                     />
                                 }
-                            </section>  
-                            : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
-                    }   
+                            </section>
+                        : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+                    }
                 </div>
             </div>
         </React.Fragment>

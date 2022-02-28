@@ -20,7 +20,6 @@ import dayjs from "dayjs";
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
     const [state, setState] = useState(() => initState())
-
     function initState() {
         return {
             newTask: {
@@ -57,8 +56,7 @@ function AddTaskForm(props) {
         // props.getAllUserOfCompany();
         props.getAllUserInAllUnitsOfCompany();
         props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
-
-        //Đặt lại thời gain mặc định khi mở modal
+        //Đặt lại thời gian mặc định khi mở modal
         window.$(`#addNewTask-${id}`).on('shown.bs.modal', regenerateTime);
         return () => {
             window.$(`#addNewTask-${id}`).unbind('shown.bs.modal', regenerateTime)
@@ -73,7 +71,7 @@ function AddTaskForm(props) {
                 ...state,
                 id: props.id,
                 newTask: {
-                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : "",//props.department?.tree[0]?.id
+                    organizationalUnit: (info && info.organizationalUnit) ? typeof (info.organizationalUnit) === 'object' ? info.organizationalUnit._id : info.organizationalUnit : "",//props.department?.tree[0]?.id
                     collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
                     name: (info && info.name) ? info.name : '',
                     responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
@@ -103,6 +101,7 @@ function AddTaskForm(props) {
         }
     }, [props.id, props.isProcess])
 
+    // chức năng copy task
     useEffect(() => {
         if (props.task) {
             setState({
@@ -122,7 +121,7 @@ function AddTaskForm(props) {
                     creator: getStorage("userId"),
                     organizationalUnit: props.task.organizationalUnit._id,
                     collaboratedWithOrganizationalUnits: props.task?.collaboratedWithOrganizationalUnits?.map(e => { return { organizationalUnit: e.organizationalUnit._id } }),
-                    parent: props.task.parent,
+                    parent: props.task.parent?._id,
                     taskProject: props.task.taskProject,
                     formula: props.task.formula,
                     taskInformations: props.task.taskInformations,
@@ -134,47 +133,51 @@ function AddTaskForm(props) {
         }
     }, [props.id, JSON.stringify(props.task)])
 
-    // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
+    // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại, newTask thì parentTask = "", subTask thì parentTask có giá trị
     useEffect(() => {
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                parent: props.parentTask,
-            }
-        });
-    }, [props.parentTask])
+        if (props?.parentTask || props?.parentTask === "") {
+            setState({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    parent: props?.parentTask
+                }
+            });
+        }
+    }, [props?.parentTask])
 
     useEffect(() => {
         props.handleChangeTaskData(state.newTask)
     }, [JSON.stringify(newTask)])
 
     useEffect(() => {
-        // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
-        if (newTask.organizationalUnit === "" && department.list.length !== 0 && department.isLoading === false) {
-            // Tìm unit mà currentRole của user đang thuộc về
-            let defaultUnit = department.list?.find(item =>
-                item.managers.find(x => x.id === state.currentRole)
-                || item.deputyManagers.find(x => x.id === state.currentRole)
-                || item.employees.find(x => x.id === state.currentRole));
-            if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = department.list[0]
-            }
-
-            if (defaultUnit) {
-                props.getChildrenOfOrganizationalUnits(defaultUnit._id);
-                props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
-            }
-            setState({
-                ...state,
-                newTask: {
-                    ...state.newTask,
-                    organizationalUnit: defaultUnit && defaultUnit._id,
+        if (props.isProcess !== true) {
+            // Khi truy vấn lấy các đơn vị của user đã có kết quả, và thuộc tính đơn vị của newTask chưa được thiết lập
+            if (newTask.organizationalUnit === "" && department.list.length !== 0 && department.isLoading === false) {
+                // Tìm unit mà currentRole của user đang thuộc về
+                let defaultUnit = department.list?.find(item =>
+                    item.managers.find(x => x.id === state.currentRole)
+                    || item.deputyManagers.find(x => x.id === state.currentRole)
+                    || item.employees.find(x => x.id === state.currentRole));
+                if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                    defaultUnit = department.list[0]
                 }
-            });
-        }
-    }, [JSON.stringify(department?.list)])
 
+                if (defaultUnit) {
+                    props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+                    props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
+                }
+                setState({
+                    ...state,
+                    newTask: {
+                        ...state.newTask,
+                        organizationalUnit: defaultUnit && defaultUnit._id,
+                    }
+                });
+            }
+        }
+
+    }, [JSON.stringify(department?.list)])
     // convert ISODate to String dd-mm-yyyy
     const formatDate = (date) => {
         var d = new Date(date),
@@ -459,29 +462,18 @@ function AddTaskForm(props) {
 
 
     const handleSelectedParent = (value) => {
-        const val = value[0];
-
         setState({
             ...state,
             newTask: {
                 ...state.newTask,
-                parent: val
+                parent: value[0]
             }
         })
 
     }
 
     const onSearch = async (txt) => {
-
         await props.getPaginateTasksByUser([], "1", "5", [], [], [], txt, null, null, null, null, false, "listSearch");
-
-        setState({
-            ...state,
-            newTask: {
-                ...state.newTask,
-                parent: ""
-            }
-        });
     }
 
     const handleChangeTaskResponsibleEmployees = (value) => {
@@ -490,7 +482,6 @@ function AddTaskForm(props) {
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateArrayLength(props.translate, value);
-
         if (willUpdateState) {
             setState({
                 ...state,
@@ -500,7 +491,7 @@ function AddTaskForm(props) {
                     errorOnResponsibleEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeResponsible(state.newTask.responsibleEmployees)
+            props.isProcess && props.handleChangeResponsible(value)
         }
         return message === undefined;
     }
@@ -522,7 +513,7 @@ function AddTaskForm(props) {
                     errorOnAccountableEmployees: message
                 }
             });
-            props.isProcess && props.handleChangeAccountable(state.newTask.accountableEmployees)
+            props.isProcess && props.handleChangeAccountable(value)
         }
         return message === undefined;
     }
@@ -565,7 +556,15 @@ function AddTaskForm(props) {
             }
         })
     }
-
+    const uniqueArray = (arr) => {
+        var result = arr.reduce((unique, o) => {
+            if (!unique.some(obj => obj.value === o.value && obj.text === o.text)) {
+                unique.push(o);
+            }
+            return unique;
+        }, []);
+        return result
+    }
     let listTaskTemplate;
     let listDepartment = department?.list;
     let taskTemplate;
@@ -595,10 +594,12 @@ function AddTaskForm(props) {
     if (tasks.listSearchTasks) {
         let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
         listParentTask = [...listParentTask, ...arr];
+        listParentTask = uniqueArray(listParentTask)
     }
 
     const checkCurrentRoleIsManager = role && role.item &&
         role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
+
     return (
         <React.Fragment>
 
@@ -610,8 +611,7 @@ function AddTaskForm(props) {
                     {/* Thông tin công việc */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
-
-
+                        
                         <div className={'row'}>
                             {/* Đơn vị quản lý công việc */}
                             <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
@@ -803,26 +803,33 @@ function AddTaskForm(props) {
                         }
 
                         {/* Công việc liên quan */}
-                        <div className="form-group">
-                            <label>{translate('task.task_management.add_parent_task')}
-                                <ToolTip
-                                    type={"icon_tooltip"}
-                                    dataTooltip={[translate('task.task_management.search_task_by_typing')]}
+                        {props.parentTask || props.task ? // modal tạo subtask và modal copytask
+                            <div className="form-group">
+                                <label>{translate('task.task_management.add_parent_task')}</label>
+                                <input className="form-control" value={listParentTask.find(x => newTask?.parent === x?.value)?.text} disabled />
+
+                            </div>
+                            :
+                            //modal tạo mới task
+                            <div className="form-group">
+                                <label>{translate('task.task_management.add_parent_task')}
+                                    <ToolTip
+                                        type={"icon_tooltip"}
+                                        dataTooltip={[translate('task.task_management.search_task_by_typing')]}
+                                    />
+                                </label>
+                                <SelectBox
+                                    id={`select-parent-new-task-${id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={listParentTask}
+                                    multiple={false}
+                                    value={""}
+                                    onChange={handleSelectedParent}
+                                    onSearch={onSearch}
                                 />
-                            </label>
-
-                            <SelectBox
-                                id={`select-parent-new-task-${id}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listParentTask}
-                                multiple={false}
-                                value={newTask.parent}
-                                onChange={handleSelectedParent}
-                                onSearch={onSearch}
-                            />
-                        </div>
-
+                            </div>
+                        }
 
                         {/* Đơn vị phối hợp thực hiện công việc */}
                         {listDepartment &&
@@ -876,7 +883,6 @@ function AddTaskForm(props) {
         </React.Fragment>
     );
 }
-
 
 function mapState(state) {
     const { tasktemplates, tasks, user, department, project, role } = state;

@@ -28,21 +28,23 @@ export function system(state = initState, action) {
         case SystemConstants.DELETE_BACKUP_REQUEST:
         case SystemConstants.EDIT_BACKUP_INFO_REQUEST:
         case SystemConstants.DOWNLOAD_BACKUP_VERSION_REQUEST:
+        case SystemConstants.UPLOAD_BACKUP_FILE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
         
-        case SystemConstants.GET_BACKUPS_FAILE:        
-        case SystemConstants.GET_CONFIG_BACKUP_FAILE:
-        case SystemConstants.CONFIG_BACKUP_FAILE:
-        case SystemConstants.CREATE_BACKUP_FAILE:
-        case SystemConstants.DELETE_BACKUP_FAILE:
+        case SystemConstants.GET_BACKUPS_FAILURE:        
+        case SystemConstants.GET_CONFIG_BACKUP_FAILURE:
+        case SystemConstants.CONFIG_BACKUP_FAILURE:
+        case SystemConstants.CREATE_BACKUP_FAILURE:
+        case SystemConstants.DELETE_BACKUP_FAILURE:
         case SystemConstants.RESTORE_SUCCESS:
-        case SystemConstants.RESTORE_FAILE:
-        case SystemConstants.EDIT_BACKUP_INFO_FAILE:
+        case SystemConstants.RESTORE_FAILURE:
+        case SystemConstants.EDIT_BACKUP_INFO_FAILURE:
         case SystemConstants.DOWNLOAD_BACKUP_VERSION_SUCCESS:
-        case SystemConstants.DOWNLOAD_BACKUP_VERSION_FAILE:
+        case SystemConstants.DOWNLOAD_BACKUP_VERSION_FAILURE:
+        case SystemConstants.UPLOAD_BACKUP_FILE_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -114,7 +116,15 @@ export function system(state = initState, action) {
                 },
                 isLoading: false
             }
-
+        case SystemConstants.UPLOAD_BACKUP_FILE_SUCCESS:
+            return {
+                ...state,
+                backup: {
+                    ...state.backup,
+                    list: action.payload
+                },
+                isLoading: false
+            }
         default:
             return state;
     }

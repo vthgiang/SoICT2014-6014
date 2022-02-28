@@ -20,33 +20,17 @@ function AdministrationStatisticsReport(props) {
     const refDocument_view_down = React.createRef()
     const refArchives = React.createRef()
     useEffect(() => {
-        props.getDocumentCategories();
-        props.getDocumentDomains();
-        pieChart();
-        barChart();
-        // barChartDocumentInDomain();
+        props.getDataChart({listChart:["documentByCategory","documentByDomain","documentByViewAndDownload","documentByArchive"]})
     }, [])
 
-
-
-    const getDataDocumentAnalys = () => {
-        const { documents } = props;
-        const categoryList = documents.administration.categories.list;
-        const docList = documents.administration.data.list;
-        const data = categoryList.map(category => {
-            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id).length;
-            return [
-                category.name,
-                docs
-            ]
-        });
-        let res = data.filter(d => d[1] > 0 || d[2] > 0)
-        return res;
-    }
+    useEffect(()=>{
+        pieChart();
+        barChart();
+    })
 
     const pieChart = () => {
         removePreviousPieChart();
-        let dataChart = getDataDocumentAnalys();
+        let dataChart = documents.administration.dataChart.chartCategory || []
         let chart = c3.generate({
             bindto: refCategory.current,
 
@@ -58,7 +42,7 @@ function AdministrationStatisticsReport(props) {
                 left: 20
             },
 
-            data: {                                 // Dữ liệu biểu đồ
+            data: { // Dữ liệu biểu đồ
                 columns: dataChart,
                 type: 'pie',
                 labels: true,
@@ -66,34 +50,11 @@ function AdministrationStatisticsReport(props) {
         })
     }
 
-    const getDataViewDownloadBarChart = () => {
-        const { documents } = props;
-        const categoryList = documents.administration.categories.list;
-        const docList = documents.administration.data.list;
-
-        const data = categoryList.map(category => {
-            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id);
-            let totalDownload = 0;
-            let totalView = 0;
-            for (let index = 0; index < docs.length; index++) {
-                const element = docs[index];
-                totalDownload = totalDownload + element.numberOfDownload;
-                totalView = totalView + element.numberOfView;
-            }
-            return [
-                category.name,
-                totalView,
-                totalDownload
-            ]
-        });
-        let res = data.filter(d => d[1] > 0 || d[2] > 0)
-        return res;
-    }
 
     const barChart = () => {
         const { translate } = props;
         removePreviousBarChart();
-        let dataChart = getDataViewDownloadBarChart();
+        let dataChart = documents.administration.dataChart.chartViewDownLoad || []
         let x = [translate('document.views'), translate('document.downloads')];
         let chart = c3.generate({
             bindto: refDocument_view_down.current,
@@ -128,7 +89,6 @@ function AdministrationStatisticsReport(props) {
     function removePreviousPieChart() {
         const chart = refCategory.current;
         if (chart) {
-            // console.log(chart,chart.hasChildNodes());
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
@@ -152,15 +112,6 @@ function AdministrationStatisticsReport(props) {
             }
         }
     }
-
-    // function removePreviousArchiveChart() {
-    //     const chart = refArchives.current;
-    //     if (chart) {
-    //         while (chart.hasChildNodes()) {
-    //             chart.removeChild(chart.lastChild);
-    //         }
-    //     }
-    // }
 
     const convertDataToExportData = (data, data2) => {
         let dataCategory = [];
@@ -394,68 +345,6 @@ function AdministrationStatisticsReport(props) {
         });
     }
 
-    // const barChartDocumentInArchive = () => {
-    //     removePreviousArchiveChart();
-    //     let dataChart = setDataArchiveBarchart();
-    //     let count = dataChart.count;
-    //     let heightCalc
-    //     if (dataChart.type) {
-    //         heightCalc = dataChart.type.length * 24.8;
-    //     }
-    //     let height = heightCalc < 320 ? 320 : heightCalc;
-    //     let chart = c3.generate({
-    //         bindto: refArchives.current,
-
-    //         data: {
-    //             columns: [count],
-    //             type: 'bar',
-    //         },
-
-    //         padding: {
-    //             top: 10,
-    //             bottom: 20,
-    //             right: 0,
-    //             left: 100
-    //         },
-
-    //         axis: {
-    //             x: {
-    //                 type: 'category',
-    //                 categories: dataChart.shortName,
-    //                 tick: {
-    //                     multiline: false
-    //                 }
-    //             },
-    //             y: {
-    //                 label: {
-    //                     text: 'Số lượng',
-    //                     position: 'outer-right'
-    //                 }
-    //             },
-    //             rotated: true
-    //         },
-
-    //         size: {
-    //             height: height
-    //         },
-
-    //         color: {
-    //             pattern: ['#1f77b4']
-    //         },
-
-    //         legend: {
-    //             show: false
-    //         },
-
-    //         tooltip: {
-    //             format: {
-    //                 title: function (index) { return dataChart.type[index] },
-
-    //             }
-    //         }
-    //     });
-    // }
-
     const setDataDomainBarchart = () => {
         const domains = props.documents.administration.domains.list;
         const docs = props.documents.administration.data.list;
@@ -489,38 +378,6 @@ function AdministrationStatisticsReport(props) {
         return data;
     }
 
-    // const setDataArchiveBarchart = () => {
-    //     const archives = props.documents.administration.archives.list;
-    //     const docs = props.documents.administration.data.list;
-    //     let typeName = [], shortName = [], countArchive = [], idArchive = [];
-    //     for (let i in archives) {
-    //         countArchive[i] = 0;
-    //         idArchive.push(archives[i].id)
-    //     }
-
-    //     if (docs) {
-    //         docs.map(doc => {
-    //             doc.archives.map(archive => {
-    //                 let idx = idArchive.indexOf(archive);
-    //                 countArchive[idx]++;
-    //             })
-    //         })
-    //         for (let i in archives) {
-    //             let length = archives[i].path.length;
-    //             let longName = "..." + archives[i].path.slice(length - 16, length - 1);
-    //             let name = archives[i].path.length > 15 ? longName : archives[i].path;
-    //             shortName.push(name);
-    //             typeName.push(archives[i].path);
-    //         }
-    //     }
-    //     let data = {
-    //         count: countArchive,
-    //         type: typeName,
-    //         shortName: shortName
-    //     }
-
-    //     return data;
-    // }
     useCallback(() => {
         if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (props.documents.administration.categories.list.length && props.documents.administration.data.list.length &&
@@ -596,6 +453,7 @@ function AdministrationStatisticsReport(props) {
                         <TreeArchive
                             archives={listArchives}
                             documents={docs}
+                            chartArchive = {documents.administration.dataChart.chartArchive}
                         />
                     </div>
                 </div>
@@ -625,6 +483,7 @@ function AdministrationStatisticsReport(props) {
                         <TreeDomain
                             domains={listDomains}
                             documents={docs}
+                            chartDomain = {documents.administration.dataChart.chartDomain}
                         />
                     </div>
                 </div>
@@ -655,6 +514,7 @@ const mapDispatchToProps = {
     getAllDocuments: DocumentActions.getDocuments,
     getDocumentCategories: DocumentActions.getDocumentCategories,
     getDocumentDomains: DocumentActions.getDocumentDomains,
+    getDataChart: DocumentActions.getDataChart
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationStatisticsReport));

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DatePicker, SelectBox, TreeSelect } from '../../../../../../common-components';
 import Swal from 'sweetalert2';
-
+import { AssetManagerActions } from '../../../asset-information/redux/actions';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -47,69 +47,47 @@ class AssetDisposalChart extends Component {
         }
     }
     // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo tháng
-    setDataColumnChartForMonth = (listAssets) => {
-        const { getDisposalData, translate } = this.props;
-        let { disposalDateAfter, disposalDateBefore } = this.state;
-
-        let startDate = new Date(disposalDateAfter);
-        let endDate = new Date(disposalDateBefore);
-        let period = Math.round((endDate - startDate) / 2592000000) + 1;
-        let listMonth = [], value = [], countAsset = [], category = [], arr = [];
-        let m = disposalDateAfter.slice(5, 7);
-        let y = disposalDateAfter.slice(0, 4);
-
-        // Lấy danh sách các tháng trong khoảng tìm kiếm
-        for (let i = 0; i <= period; i++) {
-            if (m > 12) {
-                m = 1;
-                y++;
-            }
-            if (m < 10) {
-                m = '0' + m;
-            }
-            category.push([m, y].join('-'));
-            listMonth.push([y, m].join(','));
-            m++;
-        }
-
-        if (listAssets) {
-            for (let i = 0; i < listMonth.length - 1; i++) {
-                let cnt = 0, val = 0;
-                let minDate = new Date(listMonth[i]).getTime();
-                let maxDate = new Date(listMonth[i + 1]).getTime();
-
-                for (let j in listAssets) {
-                    if (listAssets[j].status === "disposed") {
-                        let disposalDate = new Date(listAssets[j].disposalDate).getTime();
-                        if (disposalDate < maxDate && disposalDate >= minDate) {
-                            cnt++;
-                            val += listAssets[j].disposalCost / 1000000;
-                        }
-                    }
+    setDataColumnChartForMonth = (type) => {
+        const { getDisposalData, translate, disposalAsset } = this.props;
+        let category1 = ['x'], count1 = ['Số lượng'], value1 = ['Giá trị'], yValue1 = [], max = []
+        const maxVa = (a, b) => Math.max(a, b)
+        if (disposalAsset.disposalChart) {
+            disposalAsset.disposalChart.forEach(element => {
+                if (type.length !== 0) {
+                    let sumCate = 0, sumValue = 0
+                    type.forEach(value => {
+                        let index = element.idAssetTypeDisposal.indexOf(value)
+                        sumCate += element.countAssetcount[index]
+                        sumValue += element.valueAsset[index]
+                    })
+                    category1.push(element.xTypeDipsosal)
+                    count1.push(sumCate)
+                    value1.push(sumValue)
+                } else {
+                    const reducer = (a, b) => a + b
+                    category1.push(element.xTypeDipsosal)
+                    count1.push(element.countAssetcount.reduce(reducer))
+                    value1.push(element.valueAsset.reduce(reducer))
 
                 }
-                countAsset.push(cnt);
-                value.push(val);
-            }
+            })
         }
-        let maxCnt = Math.max.apply(Math, countAsset);
 
-        for (let i = 0; i <= maxCnt; i++) {
-            arr.push(i)
+        let maxCout = count1.slice(1)
+
+        let yMaxValue = count1.slice(1).reduce(maxVa, 0)
+
+        for (let i = 0; i <= yMaxValue; i++) {
+            yValue1.push(i)
         }
-        category.pop();
-        category.unshift('x');
-        countAsset.unshift(translate('asset.dashboard.amount'));
-        value.unshift(translate('asset.dashboard.value'));
-
         let dataColumnChart = {
-            category: category,
-            count: countAsset,
-            value: value,
-            yValues: arr
+            category: category1,
+            count: count1,
+            value: value1,
+            yValues: yValue1
         };
 
-        if (getDisposalData && listAssets) {
+        if (getDisposalData && disposalAsset) {
             getDisposalData(dataColumnChart);
         }
 
@@ -117,55 +95,49 @@ class AssetDisposalChart extends Component {
     }
 
     // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo năm
-    setDataColumnChartForYear = (listAssets) => {
-        const { getDisposalData, translate } = this.props;
-        let { disposalDateAfter, disposalDateBefore } = this.state;
-
-        let startDate = disposalDateAfter.slice(0, 4);
-        let endDate = disposalDateBefore.slice(0, 4);
-        let period = endDate - startDate + 1;
-        let value = [], countAsset = [], category = [], arr = [];
-
-        // Lấy danh sách các năm trong khoảng tìm kiếm
-        for (let i = 0; i < period; i++) {
-            category.push(parseInt(startDate) + i);
-        }
-
-        if (listAssets) {
-            for (let i = 0; i < category.length; i++) {
-                let cnt = 0, val = 0;
-                for (let j in listAssets) {
-                    if (listAssets[j].status === "disposed") {
-                        let disposalDate = new Date(listAssets[j].disposalDate).getFullYear();
-                        if (disposalDate == category[i]) {
-                            cnt++;
-                            val += listAssets[j].disposalCost / 1000000;
-                        }
-                    }
-
+    setDataColumnChartForYear = (type) => {
+        const { getDisposalData, translate ,disposalAsset } = this.props;
+        let category1=['x'],count1=['Số lượng'], value1 = ['Giá trị'],yValue1=[] , max = []
+        const maxVa = (a,b) =>  Math.max(a,b)
+        if (disposalAsset.disposalChartYear){
+            disposalAsset.disposalChartYear.forEach(element => {
+                if (type.length !==0){
+                    let sumCate = 0, sumValue = 0
+                    type.forEach(value=>{
+                        let index = element.idAssetTypeDisposalYear.indexOf(value)
+                        sumCate += element.countAssetcountYear[index]
+                        sumValue += element.valueAssetYear[index]
+                    })
+                    category1.push(element.xType)
+                    count1.push(sumCate)
+                    value1.push(sumValue)
+                }else{
+                    const reducer = (a,b) => a+b
+                    category1.push(element.xType)
+                    count1.push(element.countAssetcountYear.reduce(reducer))
+                    value1.push(element.valueAssetYear.reduce(reducer)) 
+                   
                 }
-                countAsset.push(cnt);
-                value.push(val);
-            }
+            })
         }
-        let maxCnt = Math.max.apply(Math, countAsset);
-
-        for (let i = 0; i <= maxCnt; i++) {
-            arr.push(i)
+        
+       let maxCout = count1.slice(1)
+        
+         let yMaxValue = count1.slice(1).reduce(maxVa,0)
+        
+        
+        for (let i = 0; i <= yMaxValue; i++) {
+            yValue1.push(i)
         }
-
-        category.unshift('x');
-        countAsset.unshift(translate('asset.dashboard.amount'));
-        value.unshift(translate('asset.dashboard.value'));
 
         let dataColumnChart = {
-            category: category,
-            count: countAsset,
-            value: value,
-            yValues: arr
+            category: category1,
+            count: count1,
+            value: value1,
+            yValues: yValue1
         };
 
-        if (getDisposalData && listAssets) {
+        if (getDisposalData && disposalAsset) {
             getDisposalData(dataColumnChart);
         }
 
@@ -193,7 +165,7 @@ class AssetDisposalChart extends Component {
             filterAsset = listAssets;
         }
 
-        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(filterAsset) : this.setDataColumnChartForMonth(filterAsset);
+        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(type) : this.setDataColumnChartForMonth(type);
         if (translate('asset.dashboard.amount') === "Số lượng") {
             let chart = c3.generate({
                 bindto: this.refs.DisposalColumnChart,
@@ -329,14 +301,8 @@ class AssetDisposalChart extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    disposalDateAfter: this.INFO_SEARCH.disposalDateAfter,
-                    disposalDateBefore: this.INFO_SEARCH.disposalDateBefore,
-                    // type: this.INFO_SEARCH.type
-                }
-            })
+            this.props.getAllAssetDisposal({ name: "disposal-date-data", endTimeDisposal: disposalDateBefore, startTimeDisposal: disposalDateAfter })
+
         }
     }
 
@@ -440,5 +406,14 @@ class AssetDisposalChart extends Component {
         )
     }
 }
+function mapState(state) {
+    const { disposalAsset } = state.assetsManager;
+    return { disposalAsset };
+}
 
-export default withTranslate(AssetDisposalChart);
+const mapDispatchToProps = {
+    getAllAssetDisposal: AssetManagerActions.getAllAssetDisposal
+}
+
+const AssetDisposalChartConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetDisposalChart));
+export { AssetDisposalChartConnect as AssetDisposalChart };

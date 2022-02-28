@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, ExportExcel, SelectMulti } from '../../../../../common-components';
+import { DataTableSetting, SmartTable, DeleteNotification, PaginateBar, ExportExcel, SelectMulti } from '../../../../../common-components';
 
 import { IncidentEditForm } from '../../../user/asset-assigned/components/incidentEditForm';
 
@@ -34,8 +34,27 @@ function IncidentManagement(props) {
         incidentType: "",
         page: 1,
         limit: limit_constructor,
-        managedBy: props.managedBy ? props.managedBy : localStorage.getItem('userId')
+        managedBy: props.managedBy ? props.managedBy : localStorage.getItem('userId'),
+        dataType: props?.dataType ? props.dataType : null
     })
+
+    const [selectedData, setSelectedData] = useState();
+
+    const onSelectedRowsChange = (value) => {
+        setSelectedData(value)
+    }
+
+    const handleDeleteOptions = () => {
+       props.deleteIncident({
+           incidentIds: selectedData
+       });
+    }
+
+    const handleDeleteAnIncident = (id) => {
+        props.deleteIncident({
+            incidentIds: [id]
+        })
+    }
 
     const { translate, assetsManager, assetType, user, isActive, incidentManager } = props;
     const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = state;
@@ -380,69 +399,61 @@ function IncidentManagement(props) {
                         <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                     </div>
                     {exportData && <ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight: 10 }} />}
+                    {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
                 </div>
 
                 {/* Bảng danh sách sự cố tài sản */}
-                <table id={tableId} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_code')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
-                            <th style={{ width: "10%" }}>{translate('general.status')}</th>
-                            <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
-                            <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
-                                <DataTableSetting
-                                    tableId={tableId}
-                                    columnArr={[
-                                        translate('asset.general_information.asset_code'),
-                                        translate('asset.general_information.asset_name'),
-                                        translate('asset.general_information.incident_code'),
-                                        translate('asset.general_information.incident_type'),
-                                        translate('general.status'),
-                                        translate('asset.general_information.reported_by'),
-                                        translate('asset.general_information.date_incident'),
-                                        translate('asset.general_information.content'),
-                                    ]}
-                                    setLimit={setLimit}
+                <SmartTable
+                    tableId={tableId}
+                    columnData={{
+                        assetCode: translate('asset.general_information.asset_code'),
+                        assetName: translate('asset.general_information.asset_name'),
+                        incidentCode: translate('asset.general_information.incident_code'),
+                        incidentType: translate('asset.general_information.incident_type'),
+                        status: translate('general.status'),
+                        reportedBy: translate('asset.general_information.reported_by'),
+                        dateOfIncident: translate('asset.general_information.date_incident'),
+                        content: translate('asset.general_information.content'),
+                    }}
+                    tableHeaderData={{
+                        assetCode: <th>{translate('asset.general_information.asset_code')}</th>,
+                        assetName: <th>{translate('asset.general_information.asset_name')}</th>,
+                        incidentCode: <th>{translate('asset.general_information.incident_code')}</th>,
+                        incidentType: <th>{translate('asset.general_information.incident_type')}</th>,
+                        status: <th>{translate('general.status')}</th>,
+                        reportedBy: <th>{translate('asset.general_information.reported_by')}</th>,
+                        dateOfIncident: <th>{translate('asset.general_information.date_incident')}</th>,
+                        content: <th>{translate('asset.general_information.content')}</th>,
+                        action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                    }}
+                    tableBodyData={lists?.length > 0 && lists.map((x, index) => {
+                        return {
+                            id: x?._id,
+                            assetCode: <td><a onClick={() => handleEditAsset(x.asset)}>{x.asset && x.asset.code}</a></td>,
+                            assetName: <td>{x.asset.assetName}</td>,
+                            incidentCode: <td>{x.incidentCode}</td>,
+                            incidentType:<td>{convertIncidentType(x.type)}</td>,
+                            status: <td>{convertIncidentStatus(x.statusIncident)}</td>,
+                            reportedBy: <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().email : ''}</td>,
+                            dateOfIncident: <td>{x.dateOfIncident ? formatDate2(x.dateOfIncident) : ''}</td>,
+                            content: <td>{x.description}</td>,
+                            action: <td style={{ textAlign: "center" }}>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(x,x.asset)}><i className="material-icons">edit</i></a>
+                                <DeleteNotification
+                                    content={translate('asset.general_information.delete_info')}
+                                    data={{
+                                        id: x._id,
+                                        info: x.asset.code + " - " + x.incidentCode
+                                    }}
+                                    func={handleDeleteAnIncident}
                                 />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(lists && lists.length !== 0) ?
-                            lists.map((x, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td><a onClick={() => handleEditAsset(x.asset)}>{x.asset && x.asset.code}</a></td>
-                                        <td>{x.asset.assetName}</td>
-                                        <td>{x.incidentCode}</td>
-                                        <td>{convertIncidentType(x.type)}</td>
-                                        <td>{convertIncidentStatus(x.statusIncident)}</td>
-                                        <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().email : ''}</td>
-                                        <td>{x.dateOfIncident ? formatDate2(x.dateOfIncident) : ''}</td>
-                                        <td>{x.description}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
-                                                className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('asset.asset_info.delete_incident_info')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.asset.code + " - " + x.incidentCode
-                                                }}
-                                                func={() => deleteIncident(x.asset._id, x._id)}
-                                            />
-                                        </td>
-                                    </tr>
-                                )
-                            }) : null
+                            </td>
                         }
-                    </tbody>
-                </table>
+                    })}
+                    dataDependency={lists}
+                    onSetNumberOfRowsPerpage={setLimit}
+                    onSelectedRowsChange={onSelectedRowsChange}
+                />
 
                 {assetsManager.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
@@ -531,7 +542,7 @@ function mapState(state) {
 
 const actionCreators = {
     getIncidents: ManageIncidentActions.getIncidents,
-    deleteIncident: IncidentActions.deleteIncident,
+    deleteIncident:  ManageIncidentActions.deleteIncident,
     getAssetTypes: AssetTypeActions.getAssetTypes,
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,

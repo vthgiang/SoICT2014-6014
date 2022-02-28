@@ -10,9 +10,9 @@ import { EmployeeViewForm } from '../../profile/employee-management/components/c
 import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import qs from 'qs';
 
-
-const AnnualLeaveManagement = (props) => {
+function AnnualLeaveManagement(props) {
 
     const _tableId = "table-annualLeave-management";
     const defaultConfig = { limit: 5 };
@@ -72,6 +72,34 @@ const AnnualLeaveManagement = (props) => {
             })
         }
     }, [props]);
+
+    useEffect(() => {
+        // xử lý khi mở chi tiết công việc bằng link;
+        if (props.location) {
+            const { annualeaveId } = qs.parse(props.location.search, { ignoreQueryPrefix: true });
+            if (annualeaveId) {
+                props.getAnnualLeave(annualeaveId);
+            }
+        }
+    }, [JSON.stringify(props.location)])
+
+    useEffect(() => {
+        const { annualLeaveById } = annualLeave;
+        if (annualLeaveById) {
+            setState(state => {
+                return {
+                    ...state,
+                    requestToChange: annualLeaveById,
+                }
+            });
+            console.log('mở modal l1')
+            window.$('#modal-edit-sabbtical').modal('show');
+        }
+    }, [props.annualLeave?.annualLeaveById])
+
+    useEffect(() => {
+        window.$('#modal-edit-sabbtical').modal('show');
+    }, [state.requestToChange])
 
     /**
      * Function chyển đổi dữ liệu nghỉ phép thành dạng dữ liệu dùng export
@@ -153,7 +181,8 @@ const AnnualLeaveManagement = (props) => {
         await setState(state => {
             return {
                 ...state,
-                currentRow: value
+                currentRow: value,
+                requestToChange: null
             }
         });
         window.$('#modal-edit-sabbtical').modal('show');
@@ -312,6 +341,7 @@ const AnnualLeaveManagement = (props) => {
         });
     }
 
+    console.log("STTE< ", state)
     return (
         <div className="box" >
             <div className="box-body qlcv">
@@ -485,18 +515,37 @@ const AnnualLeaveManagement = (props) => {
             {   /* From chỉnh sửa thông tin nghỉ phép */
                 currentRow &&
                 <AnnualLeaveEditForm
-                    _id={currentRow._id}
-                    employee={currentRow.employee}
-                    employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : ''}
-                    organizationalUnit={currentRow.organizationalUnit}
-                    endDate={formatDate(currentRow.endDate)}
-                    startDate={formatDate(currentRow.startDate)}
-                    reason={currentRow.reason}
-                    endTime={currentRow.endTime}
-                    startTime={currentRow.startTime}
-                    totalHours={currentRow.totalHours}
-                    type={currentRow.type}
-                    status={currentRow.status}
+                    _id={currentRow?._id}
+                    employee={currentRow?.employee}
+                    employeeNumber={currentRow?.employee ? `${currentRow?.employee?.employeeNumber} - ${currentRow.employee.fullName}` : ''}
+                    organizationalUnit={currentRow?.organizationalUnit}
+                    endDate={formatDate(currentRow?.endDate)}
+                    startDate={formatDate(currentRow?.startDate)}
+                    reason={currentRow?.reason}
+                    endTime={currentRow?.endTime}
+                    startTime={currentRow?.startTime}
+                    totalHours={currentRow?.totalHours}
+                    type={currentRow?.type}
+                    status={currentRow?.status}
+                />
+            }
+
+            {   /* From chỉnh sửa thông tin nghỉ phép dùng khi mở trang từ thông báo */
+                state?.requestToChange &&
+                <AnnualLeaveEditForm
+                    _id={state?.requestToChange?._id}
+                    employee={state?.requestToChange?.employee}
+                    employeeNumber={state?.requestToChange?.employee ? `${state?.requestToChange?.employee?.employeeNumber} - ${state?.requestToChange.employee.fullName}` : ''}
+                    organizationalUnit={state?.requestToChange?.organizationalUnit}
+                    endDate={formatDate(state?.requestToChange?.endDate)}
+                    startDate={formatDate(state?.requestToChange?.startDate)}
+                    reason={state?.requestToChange?.reason}
+                    endTime={state?.requestToChange?.endTime}
+                    startTime={state?.requestToChange?.startTime}
+                    totalHours={state?.requestToChange?.totalHours}
+                    type={state?.requestToChange?.type}
+                    status={state?.requestToChange?.status}
+                    requestToChange={state?.requestToChange?.requestToChange}
                 />
             }
 
@@ -517,8 +566,8 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: DepartmentActions.get,
     searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
+    getAnnualLeave: AnnualLeaveActions.getAnnualLeave,
     deleteAnnualLeave: AnnualLeaveActions.deleteAnnualLeave,
 };
-
-const connectedListSabbatical = connect(mapState, actionCreators)(withTranslate(AnnualLeaveManagement));
-export { connectedListSabbatical as AnnualLeaveManagement };
+export default connect(mapState, actionCreators)(withTranslate(AnnualLeaveManagement));
+// export { connectedListSabbatical as AnnualLeaveManagement };

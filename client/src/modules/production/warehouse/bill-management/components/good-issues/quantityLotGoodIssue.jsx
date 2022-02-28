@@ -19,13 +19,13 @@ function QuantityLotGoodIssue(props) {
         good: ''
     })
 
-    useEffect(() => {
+    if (props.good !== state.good) {
         setState({
             ...state,
             good: props.good,
             lots: props.initialData
         })
-    }, [props.good])
+    }
 
     const handleAddLotInfo = async () => {
         setState({
@@ -193,7 +193,7 @@ function QuantityLotGoodIssue(props) {
     const save = () => {
         props.onDataChange(state.lots);
     }
-    
+
     const { translate, group, good } = props;
     const { errorLot, lot, errorQuantity, lots } = state;
     const dataLots = getLotsByGood();
@@ -205,7 +205,7 @@ function QuantityLotGoodIssue(props) {
                 formID={`form-add-quantity-issue`}
                 title="Thêm số lượng theo lô"
                 msg_success={translate('manage_warehouse.bill_management.add_success')}
-                msg_faile={translate('manage_warehouse.bill_management.add_faile')}
+                msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="75"
@@ -215,7 +215,7 @@ function QuantityLotGoodIssue(props) {
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
-                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
+                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`select-lot-issue-create-by-${group}`}
                                 className="form-control select2"

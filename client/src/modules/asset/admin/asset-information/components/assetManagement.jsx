@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect } from '../../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, TreeSelect, SmartTable } from '../../../../../common-components';
 
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { AssetManagerActions } from '../redux/actions';
@@ -14,6 +14,22 @@ import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from
 import qs from 'qs';
 import { getFormatDateFromTime, getPropertyOfValue } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import Swal from 'sweetalert2';
+
+const getAssetName = (listAsset, idAsset) => {
+    let assetName;
+    if (listAsset?.length && idAsset) {
+        for (let i = 0; i < listAsset.length; i++) {
+            if (listAsset[i]?._id === idAsset) {
+                assetName = `${listAsset[i].code} - ${listAsset[i].assetName}`;
+                break;
+            }
+        }
+    }
+    return assetName;
+}
+
+
 function AssetManagement(props) {
     const tableId_constructor = "table-asset-manager";
     const defaultConfig = { limit: 5 }
@@ -23,6 +39,8 @@ function AssetManagement(props) {
         tableId: tableId_constructor,
         code: "",
         assetName: "",
+        purchaseDateStart: null,
+        purchaseDateEnd: null,
         purchaseDate: null,
         disposalDate: null,
         status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : ["ready_to_use", "in_use", "broken", "lost", "disposed"],
@@ -35,8 +53,45 @@ function AssetManagement(props) {
         managedBy: props.managedBy ? props.managedBy : ''
     })
 
+    const [advancedSearch, setAdvancedSearch] = useState(false)
+
+    const [selectedData, setSelectedData] = useState();
+
+    const onSelectedRowsChange = (value) => {
+        setSelectedData(value)
+    }
+
+    const handleDeleteOptions = () => {
+        console.log('selectedData', selectedData)
+        const shortTitle = `<h4 style="color: red"><div>${translate('asset.general_information.delete_info')} "${selectedData?.length && selectedData.length === 1 ? getAssetName(props.assetsManager?.listAssets, selectedData[0]) : ""}" ?</div></h4>`;
+        const longTitle = `<h4 style="color: red"><div>Xóa thông tin ${selectedData?.length > 1 ? selectedData.length : ""} tài sản ?</div></h4>`;
+
+        Swal.fire({
+            html: selectedData?.length === 1 ? shortTitle : longTitle,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value && selectedData.length > 0) {
+                props.deleteAsset({
+                    assetIds: selectedData
+                });
+            }
+        })
+
+    }
+
+    const handleDeleteAnAsset = (id) => {
+        props.deleteAsset({
+            assetIds: [id]
+        });
+    }
+
     const { assetsManager, assetType, translate, user, isActive, department } = props;
-    const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
+    const { page, limit, currentRowView, status, currentRow, purchaseDateStart, purchaseDateEnd, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
 
     useEffect(() => {
         props.getAllAsset(state);
@@ -123,6 +178,30 @@ function AssetManagement(props) {
         setState({
             ...state,
             [name]: value
+        });
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    const handlePurchaseMonthStartChange = async (value) => {
+        if (!value) {
+            value = null
+        }
+
+        await setState({
+            ...state,
+            purchaseDateStart: value
+        });
+    }
+
+    // Function lưu giá trị tháng vào state khi thay đổi
+    const handlePurchaseMonthEndChange = async (value) => {
+        if (!value) {
+            value = null
+        }
+
+        await setState({
+            ...state,
+            purchaseDateEnd: value
         });
     }
 
@@ -238,6 +317,10 @@ function AssetManagement(props) {
         props.getAllAsset({ page: 0, ...state });
     }
 
+    const handleAdvancedSearch = () => {
+        setAdvancedSearch(!advancedSearch);
+    }
+
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     const setLimit = async (number) => {
         await setState({
@@ -324,6 +407,8 @@ function AssetManagement(props) {
         if (!number) return '';
         else return new Intl.NumberFormat().format(number);
     }
+
+
 
     const convertDataToExportData = (data, assettypelist, userlist) => {
         const organizationalUnitList = props.department.list;
@@ -792,6 +877,8 @@ function AssetManagement(props) {
                         <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
                         <input type="text" className="form-control" name="assetName" onChange={handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                     </div>
+
+                    <a style={{ cursor: "pointer" }} title = "Tìm kiếm nâng cao"><i className="fa fa-filter fa-2x" style={{ marginLeft: 20 }}onClick={handleAdvancedSearch} /></a>
                 </div>
 
                 <div className="form-inline">
@@ -875,9 +962,35 @@ function AssetManagement(props) {
                         <input type="text" className="form-control" name="handoverUser" onChange={handleHandoverUserChange} placeholder={translate('asset.general_information.user')} autoComplete="off" />
                     </div>
                 </div>
+                 { advancedSearch &&
+                <div className="form-inline">
+                    {/* Ngày nhập từ*/}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('asset.general_information.purchase_date_start')}</label>
+                        <DatePicker
+                            id="purchase-month-start"
+                            dateFormat="day-month-year"
+                            value={purchaseDateStart}
+                            onChange={handlePurchaseMonthStartChange}
+                        />
+                    </div>
+
+                    {/* Ngày nhập đến*/}
+                    <div className="form-group">
+                        <label className="form-control-static" style={{ padding: 0 }}>{translate('asset.general_information.purchase_date_end')}</label>
+                        <DatePicker
+                            id="disposal-month-end"
+                            dateFormat="day-month-year"
+                            value={purchaseDateEnd}
+                            onChange={handlePurchaseMonthEndChange}
+                        />
+                    </div>
+                </div>
+                }
 
                 <div className="form-inline">
                     {/* Ngày nhập */}
+                    { !advancedSearch &&
                     <div className="form-group">
                         <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
                         <DatePicker
@@ -887,6 +1000,7 @@ function AssetManagement(props) {
                             onChange={handlePurchaseMonthChange}
                         />
                     </div>
+                    }
 
                     {/* Ngày Thanh lý */}
                     <div className="form-group">
@@ -925,6 +1039,7 @@ function AssetManagement(props) {
                         <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                     </div>
                     {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
+                    {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
                 </div>
 
                 {/* Báo lỗi khi thêm mới tài sản */}
@@ -939,73 +1054,68 @@ function AssetManagement(props) {
                         }
                     </div>
                 }
-                <DataTableSetting
+                <SmartTable
                     tableId={tableId}
-                    columnArr={[
-                        'STT',
-                        translate('asset.general_information.asset_code'),
-                        translate('asset.general_information.asset_name'),
-                        translate('asset.general_information.asset_group'),
-                        translate('asset.general_information.asset_type'),
-                        translate('asset.general_information.purchase_date'),
-                        translate('asset.general_information.manager'),
-                        translate('asset.general_information.user'),
-                        translate('asset.general_information.organizaiton_unit'),
-                        translate('asset.general_information.status'),
-                        translate('asset.general_information.disposal_date')
-                    ]}
-                    setLimit={setLimit}
-                />
-                {/* Bảng các tài sản */}
-                <table id={tableId} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th style={{ width: "5%" }}>STT</th>
-                            <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_group')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
-                            <th style={{ width: "10%" }}>{translate('asset.general_information.disposal_date')}</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(lists && lists.length !== 0) ?
-                            lists.map((x, index) => (
-                                <tr key={index}>
-                                    <td style={{ textAlign: 'center' }}>{index + 1}</td>
-                                    <td>{x.code}</td>
-                                    <td>{x.assetName}</td>
-                                    <td>{convertGroupAsset(x.group)}</td>
-                                    <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>
-                                    <td>{formatDate(x.purchaseDate)}</td>
-                                    <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>
-                                    <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>
-                                    <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>
-                                    <td>{formatStatus(x.status)}</td>
-                                    <td>{formatDisposalDate(x.disposalDate, x.status)}</td>
-                                    <td style={{ textAlign: "center" }}>
-                                        <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
-                                        <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content={translate('asset.general_information.delete_info')}
-                                            data={{
-                                                id: x._id,
-                                                info: x.code + " - " + x.assetName
-                                            }}
-                                            func={props.deleteAsset}
-                                        />
-                                    </td>
-                                </tr>)) : null
+                    columnData={{
+                        index: translate('manage_example.index'),
+                        assetCode: translate('asset.general_information.asset_code'),
+                        assetName: translate('asset.general_information.asset_name'),
+                        assetGroup: translate('asset.general_information.asset_group'),
+                        assetType: translate('asset.general_information.asset_type'),
+                        assetPurchaseDate: translate('asset.general_information.purchase_date'),
+                        assetManager: translate('asset.general_information.manager'),
+                        assetUser: translate('asset.general_information.user'),
+                        assetOrganizationUnit: translate('asset.general_information.organization_unit'),
+                        assetStatus: translate('asset.general_information.status'),
+                        assetDisposalDate: translate('asset.general_information.disposal_date')
+                    }}
+                    tableHeaderData={{
+                        index: <th>{translate('manage_example.index')}</th>,
+                        assetCode: <th>{translate('asset.general_information.asset_code')}</th>,
+                        assetName: <th>{translate('asset.general_information.asset_name')}</th>,
+                        assetGroup: <th>{translate('asset.general_information.asset_group')}</th>,
+                        assetType: <th>{translate('asset.general_information.asset_type')}</th>,
+                        assetPurchaseDate: <th>{translate('asset.general_information.purchase_date')}</th>,
+                        assetManager: <th>{translate('asset.general_information.manager')}</th>,
+                        assetUser: <th>{translate('asset.general_information.user')}</th>,
+                        assetOrganizationUnit: <th>{translate('asset.general_information.organization_unit')}</th>,
+                        assetStatus: <th>{translate('asset.general_information.status')}</th>,
+                        assetDisposalDate: <th>{translate('asset.general_information.disposal_date')}</th>,
+                        action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                    }}
+                    tableBodyData={lists?.length > 0 && lists.map((x, index) => {
+                        return {
+                            id: x?._id,
+                            index: <td>{index + 1}</td>,
+                            assetCode: <td>{x.code}</td>,
+                            assetName: <td>{x.assetName}</td>,
+                            assetGroup: <td>{convertGroupAsset(x.group)}</td>,
+                            assetType: <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>,
+                            assetPurchaseDate: <td>{formatDate(x.purchaseDate)}</td>,
+                            assetManager: <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>,
+                            assetUser: <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>,
+                            assetOrganizationUnit: <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>,
+                            assetStatus: <td>{formatStatus(x.status)}</td>,
+                            assetDisposalDate: <td>{formatDisposalDate(x.disposalDate, x.status)}</td>,
+                            action: <td style={{ textAlign: "center" }}>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleView(x)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(x)}><i className="material-icons">edit</i></a>
+                                <DeleteNotification
+                                    content={translate('asset.general_information.delete_info')}
+                                    data={{
+                                        id: x._id,
+                                        info: x.code + " - " + x.assetName
+                                    }}
+                                    func={handleDeleteAnAsset}
+                                />
+                            </td>
                         }
-                    </tbody>
-                </table>
+                    })}
+                    dataDependency={lists}
+                    onSetNumberOfRowsPerpage={setLimit}
+                    onSelectedRowsChange={onSelectedRowsChange}
+                />
+
                 {assetsManager.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>

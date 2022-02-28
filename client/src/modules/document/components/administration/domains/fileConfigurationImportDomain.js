@@ -42,11 +42,9 @@ export const exportDomain = {
                 },
                 name: {                                  // Khoá tương ứng của tiêu đề bảng (key)
                     vertical: 'middle',
-                    //horizontal: 'center'
                 },
                 description: {                                  // Khoá tương ứng của tiêu đề bảng (key)
                     vertical: 'middle',
-                    //  horizontal: 'center'
                 },
 
             },

@@ -1,7 +1,9 @@
+import cloneDeep from 'lodash/cloneDeep';
 export const configurationAnnualLeave = {
     configurationImport,
     templateImport,
 };
+
 
 function configurationImport(translate) {
     let config = {
@@ -23,7 +25,11 @@ function configurationImport(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate('human_resource.staff_name').toLowerCase()}`,
             value: translate('human_resource.staff_name')
         },
-
+        orgUnit: {
+            columnName: translate('human_resource.unit'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.unit').toLowerCase()}`,
+            value: translate('human_resource.unit')
+        },
         startDate: { // Họ và tên
             columnName: translate('human_resource.profile.start_day'),
             description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.start_day').toLowerCase()}`,
@@ -64,7 +70,14 @@ function configurationImport(translate) {
     return config;
 }
 
-function templateImport(translate) {
+function templateImport(translate, deparmentList) {
+    let departments = cloneDeep(deparmentList);
+
+    const list = departments?.length ? departments.map((x, index) => ({
+        STT: index + 1,
+        unit: x?.name
+    })) : [];
+
     let templateImport = {
         fileName: translate('human_resource.annual_leave.file_export_name'),
         dataSheets: [{
@@ -124,7 +137,26 @@ function templateImport(translate) {
                 }
             ]
             }, ]
-        }, ]
+        },
+            {
+            sheetName: "Đơn vị",
+            sheetTitle: "Danh sách đơn vị hợp lệ",
+            tables: [
+                {
+                    columns: [{
+                        key: "STT",
+                        value: translate('human_resource.stt'),
+                        width: 7
+                    }, {
+                        key: "unit",
+                        value: translate('human_resource.unit'),
+                        width: 30
+                    }],
+                    data: list
+                }
+            ],
+        }
+        ]
     }
 
     return templateImport;

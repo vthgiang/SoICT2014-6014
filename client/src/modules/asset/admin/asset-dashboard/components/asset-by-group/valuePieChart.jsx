@@ -12,58 +12,38 @@ class ValuePieChart extends Component {
         super(props);
     }
 
-    componentDidMount() {
-        if (this.refs.valuePieChart) this.pieChart();
-    }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { translate } = this.props;
-        const { listAssets, setValueOfAsset } = this.props;
-
-        let dataPieChart, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOther = 0;
-
-        if (listAssets) {
-            listAssets.map(asset => {
-                switch (asset.group) {
-                    case "building":
-                        valueOfBuilding += asset.cost;
-                        break;
-                    case "vehicle":
-                        valueOfVehicle += asset.cost;
-                        break;
-                    case "machine":
-                        valueOfMachine += asset.cost;
-                        break;
-                    case "other":
-                        valueOfOther += asset.cost;
-                        break;
-                }
-            });
+        const { chartAsset, setValueOfAsset } = this.props;
+        let valueOfAsset = ""
+        if (chartAsset){
+            valueOfAsset = chartAsset.map(value=>{
+                console.log(value)
+                return ([translate(value[0]),value[1]])
+            })
+            // CHuyển dữ liệu lên component cha để export
+            if (setValueOfAsset && JSON.stringify(valueOfAsset) !== JSON.stringify([])) {
+                setValueOfAsset(valueOfAsset);
+            } 
         }
-
-        dataPieChart = [
-            [translate('asset.dashboard.building'), valueOfBuilding],
-            [translate('asset.asset_info.vehicle'), valueOfVehicle],
-            [translate('asset.dashboard.machine'), valueOfMachine],
-            [translate('asset.dashboard.other'), valueOfOther],
-        ];
-
-        if (setValueOfAsset) {
-            setValueOfAsset(dataPieChart);
-        }
-        return dataPieChart;
+        /* console.log(dataPieChart) */
+        console.log("valueasset",valueOfAsset)
+        return valueOfAsset;
+        
     }
 
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
-        let dataPieChart = this.setDataPieChart();
+        if(this.setDataPieChart()){
+        let valueOfAsset = this.setDataPieChart();
         this.chart = c3.generate({
             bindto: this.refs.valuePieChart,
 
             data: {
-                columns: dataPieChart,
+                columns: valueOfAsset,
                 type: 'donut',
             },
 
@@ -104,6 +84,8 @@ class ValuePieChart extends Component {
                 show: true
             }
         });
+        }
+        
     }
 
     render() {

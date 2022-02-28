@@ -95,6 +95,7 @@ exports.getDocuments = async (
             { path: "category", select: "name id" },
             { path: "domains", select: "name id" },
             { path: "archives", select: "name id path" },
+            { path: "userCanView", select: "_id name email avatar" },
             { path: "views.viewer", select: "name id" },
             { path: "downloads.downloader", select: "name id" },
             {
@@ -793,12 +794,24 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
                 "id name archives category domains numberOfDownload numberOfView "
             );
     } else {
-        let option = {
-            $or: [
-                { roles: { $in: roleArr } },
-                { userCanView: id }
-            ]
-        };
+        let option = {};
+
+        if (query.roleId && id) {
+            option = {
+                $or: [
+                    { roles: { $in: roleArr } },
+                    { userCanView: id }
+                ]
+            }
+        }
+
+        if (!query.roleId && id) {
+            option = {
+                ...option,
+                userCanView: id
+            }
+        }
+
         if (query.category) {
             option.category = query.category;
         }
@@ -836,6 +849,7 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
             { path: "category", select: "name id" },
             { path: "domains", select: "name id" },
             { path: "archives", select: "name id path" },
+            { path: "userCanView", select: "_id name email avatar" },
             { path: "views.viewer", select: "name id" },
             { path: "downloads.downloader", select: "name id" },
             {
@@ -1294,3 +1308,25 @@ exports.importDocumentArchive = async (portal, data, company) => {
     }
     return await this.getDocumentArchives(portal, company);
 };
+
+// lấy dữ liệu cho bản đồ document - category
+exports.chartDataDocument = async (portal,company,listChart) => {
+    let document = await Document(connect(DB_CONNECTION, portal)).find({}).select("category numberOfView numberOfDownload archives domains")
+    let result = {document:document}
+    if (listChart[0]==="all" || listChart.indexOf("documentByCategory") !== -1 || listChart.indexOf("documentByViewAndDownload") !== -1){
+        let categorys = await DocumentCategory(connect(DB_CONNECTION, portal)).find({
+            company,
+        });
+        result = {...result, categorys:categorys}
+    }
+    if (listChart[0] === "all" || listChart.indexOf("documentByArchive")){
+        let archives = await this.getDocumentArchives(portal, company)
+        result = {...result, archives:archives}
+    }
+    if (listChart[0] === "all" || listChart.indexOf("documentByDomain")){
+        let domains = await this.getDocumentDomains(portal, company)
+        result = {...result, domains:domains}
+    }
+    
+    return {result}
+}

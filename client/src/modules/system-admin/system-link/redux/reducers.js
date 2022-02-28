@@ -3,7 +3,7 @@ import { SystemLinkConstants } from "./constants";
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
@@ -24,11 +24,11 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     error: null,
-    isLoading: true,
+    isLoading: false,
     item: null
 }
 
-export function systemLinks (state = initState, action) {
+export function systemLinks(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
@@ -45,17 +45,17 @@ export function systemLinks (state = initState, action) {
                 isLoading: true
             };
 
-        case SystemLinkConstants.GET_LINKS_DEFAULT_FAILE:
-            case SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILE:
-            case SystemLinkConstants.SHOW_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.CREATE_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.EDIT_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.DELETE_LINK_DEFAULT_FAILE:
-            case SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILE:
-                return {
-                    ...state,
-                    isLoading: false
-                };
+        case SystemLinkConstants.GET_LINKS_DEFAULT_FAILURE:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_PAGINATE_FAILURE:
+        case SystemLinkConstants.SHOW_LINK_DEFAULT_FAILURE:
+        case SystemLinkConstants.CREATE_LINK_DEFAULT_FAILURE:
+        case SystemLinkConstants.EDIT_LINK_DEFAULT_FAILURE:
+        case SystemLinkConstants.DELETE_LINK_DEFAULT_FAILURE:
+        case SystemLinkConstants.GET_LINKS_DEFAULT_CATEGORIES_FAILURE:
+            return {
+                ...state,
+                isLoading: false
+            };
 
         case SystemLinkConstants.GET_LINKS_DEFAULT_SUCCESS:
             return {
@@ -111,10 +111,10 @@ export function systemLinks (state = initState, action) {
         case SystemLinkConstants.EDIT_LINK_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
-            if(index !== -1){
-                state.list[index]= action.payload;
+            if (index !== -1) {
+                state.list[index] = action.payload;
             }
-            if(indexPaginate !== -1){
+            if (indexPaginate !== -1) {
                 state.listPaginate[indexPaginate] = action.payload;
             }
             return {
@@ -125,11 +125,11 @@ export function systemLinks (state = initState, action) {
         case SystemLinkConstants.DELETE_LINK_DEFAULT_SUCCESS:
             index = findIndex(state.list, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
-            if(index !== -1){
-                state.list.splice(index,1);
+            if (index !== -1) {
+                state.list.splice(index, 1);
             }
-            if(indexPaginate !== -1){
-                state.listPaginate.splice(indexPaginate,1);
+            if (indexPaginate !== -1) {
+                state.listPaginate.splice(indexPaginate, 1);
             }
             return {
                 ...state,

@@ -21,6 +21,14 @@ const data = [{
         path: '/human-resource/certificates'
     },
     {
+        name: 'fileExperience',
+        path: '/human-resource/experiences'
+    },
+    {
+        name: 'fileCareerPosition',
+        path: '/human-resource/careerPositions'
+    },
+    {
         name: 'fileContract',
         path: '/human-resource/contracts'
     },
@@ -33,6 +41,8 @@ const data = [{
         path: '/human-resource/healthInsuranceAttachment'
     }
 ]
+
+router.get('/employees/search-for-package', auth, EmployeeController.searchEmployeeForPackage);
 
 // Lấy thông tin cá nhân
 router.get('/employees/:id', auth, EmployeeController.getEmployeeProfile);

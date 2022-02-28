@@ -36,7 +36,7 @@ class MainHeaderMenu extends Component {
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
                         <li>
-                            <Link to="/user-guide">
+                            <Link to="/user-guide" style={{ maxHeight: '50px' }}>
                                 <i style={{ fontSize: '22px', color: 'rgb(76, 76, 76)' }} className="material-icons" >
                                     help_outline
                                 </i>

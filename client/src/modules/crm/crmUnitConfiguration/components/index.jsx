@@ -9,7 +9,9 @@ import { formatFunction } from '../../common';
 import CrmUnitAddForm from './crmUnitAddForm';
 import '../../customer/components/customer.css';
 
-
+/**
+ * Giao diện cho chức năng Quản lý khách hàng/ Cấu hình đơn vị chăm sóc khách hàng
+ */
 function CrmUnitConfiguration(props) {
     useEffect(() => {
         props.getCrmUnits();
@@ -18,6 +20,9 @@ function CrmUnitConfiguration(props) {
     const { crm } = props;
     const { crmUnits } = crm;
 
+    const handleDelete = (id) => {
+        props.deleteCrmUnit(id);
+    }
     return (
         <React.Fragment>
             <div className="box generalConfiguration">
@@ -53,7 +58,7 @@ function CrmUnitConfiguration(props) {
                                                             <span className="text">{o.organizationalUnit.name}</span>
                                                             <div className="tools">
                                                                 <i className="fa fa-trash-o"
-                                                                    // onClick={() => deleteStatus(o._id)} 
+                                                                    onClick={() => handleDelete(o._id)}
                                                                     title="Xóa đơn vị"></i>
                                                             </div>
                                                         </a>

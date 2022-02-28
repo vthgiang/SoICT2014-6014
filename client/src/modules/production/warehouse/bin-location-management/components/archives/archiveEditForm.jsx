@@ -21,35 +21,37 @@ function ArchiveEditForm(props) {
     })
 
     useEffect(() => {
-        setState({
-            ...state,
-            binId: props.binId,
-            binStatus: props.binStatus,
-            binCapacity: props.binCapacity,
-            binContained: props.binContained,
-            binEnableGoods: props.binEnableGoods,
-            binParent: props.binParent,
-            binUnit: props.binUnit,
-            page: props.page,
-            limit: props.limit,
-            errorGood: undefined,
-            errorCapacity: undefined
-        })
+        if (props.binId !== state.binId) {
+            setState({
+                ...state,
+                binId: props.binId,
+                binStatus: props.binStatus,
+                binCapacity: props.binCapacity,
+                binContained: props.binContained,
+                binEnableGoods: props.binEnableGoods,
+                binParent: props.binParent,
+                binUnit: props.binUnit,
+                page: props.page,
+                limit: props.limit,
+                errorGood: undefined,
+                errorCapacity: undefined
+            })
+        }
     }, [props.binId])
 
-    const getAllDepartment = () => {
-        let { translate, department } = props;
-        let manageDepartmentArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_department') }];
+    // const getAllDepartment = () => {
+    //     let { translate, department } = props;
+    //     let manageDepartmentArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_department') }];
 
-        department.list.map(item => {
-            manageDepartmentArr.push({
-                value: item._id,
-                text: item.name
-            })
-        })
+    //     department.list.map(item => {
+    //         manageDepartmentArr.push({
+    //             value: item._id,
+    //             text: item.name
+    //         })
+    //     })
 
-        return manageDepartmentArr;
-    }
+    //     return manageDepartmentArr;
+    // }
 
     const getAllGoods = () => {
         let { translate, goods } = props;
@@ -252,54 +254,54 @@ function ArchiveEditForm(props) {
     }
 
     const { translate, binLocations } = props;
-        const { binStatus, binContained, binEnableGoods, errorCapacity, errorGood, good, errorContained } = state;
-        const dataGoods = getAllGoods();
+    const { binStatus, binContained, binEnableGoods, errorCapacity, errorGood, good, errorContained } = state;
+    const dataGoods = getAllGoods();
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-edit-archive-stock`} isLoading={binLocations.isLoading}
-                    formID={`form-edit-archive-stock`}
-                    title={translate('manage_warehouse.bin_location_management.edit_title')}
-                    msg_success={translate('manage_warehouse.bin_location_management.edit_success')}
-                    msg_faile={translate('manage_warehouse.bin_location_management.edit_faile')}
-                    disableSubmit={!isFormValidated()}
-                    func={save}
-                    size={75}
-                >
-                    <form id={`form-edit-archive-stock`} >
-                        <div className="row">
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bin_location_management.status')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-status-bin-location-edit`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={binStatus}
-                                        items={[
-                                            { value: '1', text: translate('manage_warehouse.bin_location_management.1.status') },
-                                            { value: '2', text: translate('manage_warehouse.bin_location_management.2.status') },
-                                            { value: '3', text: translate('manage_warehouse.bin_location_management.3.status') },
-                                            { value: '4', text: translate('manage_warehouse.bin_location_management.4.status') },
-                                            { value: '5', text: translate('manage_warehouse.bin_location_management.5.status') },
-                                        ]}
-                                        onChange={handleStatusChange}    
-                                        multiple={false}
-                                    />
-                                </div>
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-edit-archive-stock`} isLoading={binLocations.isLoading}
+                formID={`form-edit-archive-stock`}
+                title={translate('manage_warehouse.bin_location_management.edit_title')}
+                msg_success={translate('manage_warehouse.bin_location_management.edit_success')}
+                msg_failure={translate('manage_warehouse.bin_location_management.edit_faile')}
+                disableSubmit={!isFormValidated()}
+                func={save}
+                size={75}
+            >
+                <form id={`form-edit-archive-stock`} >
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <label>{translate('manage_warehouse.bin_location_management.status')}<span className="text-red"> * </span></label>
+                                <SelectBox
+                                    id={`select-status-bin-location-edit`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={binStatus}
+                                    items={[
+                                        { value: '1', text: translate('manage_warehouse.bin_location_management.1.status') },
+                                        { value: '2', text: translate('manage_warehouse.bin_location_management.2.status') },
+                                        { value: '3', text: translate('manage_warehouse.bin_location_management.3.status') },
+                                        { value: '4', text: translate('manage_warehouse.bin_location_management.4.status') },
+                                        { value: '5', text: translate('manage_warehouse.bin_location_management.5.status') },
+                                    ]}
+                                    onChange={handleStatusChange}
+                                    multiple={false}
+                                />
                             </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorContained ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bin_location_management.contained')}<span className="attention"> * </span></label>
-                                    <input type="number" className="form-control" value={binContained ? binContained : ""} onChange={handleContainedTotalChange} />
-                                    <ErrorLabel content = { errorContained }/>
-                                </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group ${!errorContained ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.bin_location_management.contained')}<span className="text-red"> * </span></label>
+                                <input type="number" className="form-control" value={binContained ? binContained : 0} onChange={handleContainedTotalChange} />
+                                <ErrorLabel content={errorContained} />
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bin_location_management.enable_good')}</legend>
-                                
+
                                 <div className={`form-group ${!errorGood ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.good')}</label>
                                     <SelectBox
@@ -311,7 +313,7 @@ function ArchiveEditForm(props) {
                                         onChange={handleGoodChange}
                                         multiple={false}
                                     />
-                                    <ErrorLabel content = { errorGood }/>
+                                    <ErrorLabel content={errorGood} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label className="control-label">{translate('manage_warehouse.bin_location_management.contained')}</label>
@@ -324,15 +326,15 @@ function ArchiveEditForm(props) {
                                     <div>
                                         <input type="number" className="form-control" value={good.capacity} placeholder={translate('manage_warehouse.good_management.max_quantity')} onChange={handleCapacityChange} />
                                     </div>
-                                    <ErrorLabel content = { errorCapacity }/>
+                                    <ErrorLabel content={errorCapacity} />
                                 </div>
 
-                                <div className="pull-right" style={{marginBottom: "10px"}}>
+                                <div className="pull-right" style={{ marginBottom: "10px" }}>
                                     {state.editInfo ?
                                         <React.Fragment>
                                             <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
                                             <button className="btn btn-success" disabled={!isGoodsValidated()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                        </React.Fragment>:
+                                        </React.Fragment> :
                                         <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isGoodsValidated()} onClick={handleAddGood}>{translate('task_template.add')}</button>
                                     }
                                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>{translate('task_template.delete')}</button>
@@ -348,8 +350,8 @@ function ArchiveEditForm(props) {
                                         </tr>
                                     </thead>
                                     <tbody id={`good-manage-by-stock`}>
-                                        { (typeof binEnableGoods === 'undefined' || binEnableGoods.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                            binEnableGoods.map((x, index) => 
+                                        {(typeof binEnableGoods === 'undefined' || binEnableGoods.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                            binEnableGoods.map((x, index) =>
                                                 <tr key={index}>
                                                     <td>{x.good.name}</td>
                                                     <td>{x.contained}</td>
@@ -359,17 +361,17 @@ function ArchiveEditForm(props) {
                                                         <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteGood(index)}><i className="material-icons"></i></a>
                                                     </td>
                                                 </tr>
-                                            )   
+                                            )
                                         }
                                     </tbody>
                                 </table>
                             </fieldset>
-                            </div>
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;

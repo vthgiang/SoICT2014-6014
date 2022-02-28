@@ -25,7 +25,7 @@ function QualityControlForm(props) {
         });
     }
 
-    useEffect(() => {
+    if (props.billId !== state.billId) {
         setState({
             ...state,
             billId: props.billId,
@@ -33,14 +33,14 @@ function QualityControlForm(props) {
             status: props.status,
             content: props.content
         })
-    }, [props.billId])
+    }
 
     const save = () => {
         const userId = localStorage.getItem("userId");
         const data = {
             qualityControlStaffs: {
                 staff: userId,
-                status: state.status,
+                status: state.status !== "" ? state.status : 1,
                 content: state.content,
             }
         }
@@ -56,7 +56,7 @@ function QualityControlForm(props) {
                 formID="form-quality-control-bill"
                 title={translate('manage_warehouse.bill_management.quality_control_bill')}
                 msg_success={translate('manage_warehouse.bill_management.edit_successfully')}
-                msg_faile={translate('manage_warehouse.bill_management.edit_failed')}
+                msg_failure={translate('manage_warehouse.bill_management.edit_failed')}
                 func={save}
                 // disableSubmit={!this.isFormValidated()}
                 size={50}

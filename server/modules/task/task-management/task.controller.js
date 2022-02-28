@@ -9,11 +9,14 @@ const moment = require('moment')
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 
+
 /**
  * Lấy công việc theo tùy chọn
  * @param {*} req 
  * @param {*} res 
  */
+
+
 exports.getTasks = async (req, res) => {
     if (req.query.type === "all_by_user") {
         getTasksByUser(req, res);
@@ -59,16 +62,20 @@ exports.getTasks = async (req, res) => {
     }
 }
 
+
+
 /**
  * Lấy task evaluation
  * @param {*} req 
  * @param {*} res 
  */
+
+
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.portal, req.query);
 
-        await Logger.info(req.user.email, 'get_task_evaluattions', req.portal);
+        await Logger.info(req.user.email, 'get_task_evaluations', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_task_evaluation_success'],
@@ -76,7 +83,7 @@ exports.getTaskEvaluations = async (req, res) => {
         });
     } catch (error) {
 
-        await Logger.error(req.user.email, 'get_task_evaluattions', req.portal);
+        await Logger.error(req.user.email, 'get_task_evaluations', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_task_evaluation_fail'],
@@ -90,6 +97,7 @@ exports.getTaskEvaluations = async (req, res) => {
 /**
  * Lấy công việc theo vai trò người thực hiện chính
  */
+
 getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
     try {
         let task = {
@@ -120,7 +128,7 @@ getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
         await await Logger.error(req.user.email, 'paginated_task_that_user_has_responsible_role', req.portal)
         res.status(400).json({
             success: false,
-            messages: ['get_task_of_responsible_employee_faile'],
+            messages: ['get_task_of_responsible_employee_failure'],
             content: error
         })
     }
@@ -484,7 +492,7 @@ exports.createTask = async (req, res) => {
 
         await NotificationServices.createNotification(req.portal, req.user.company._id, data);
         await NotificationServices.createNotification(req.portal, req.user.company._id, collaboratedData);
-        await sendEmail(email, task.name, '', html,null,`${task._id}@gmail.com`);
+        await sendEmail(email, task.name, '', html, null, `${task._id}@gmail.com`);
         collaboratedEmail && collaboratedEmail.length !== 0
             && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
         await NewsFeed.createNewsFeed(req.portal, {
@@ -512,9 +520,10 @@ exports.createTask = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ['create_task_success'],
-            content: task
+            content: tasks?.taskPopulate
         });
     } catch (error) {
+        console.log('error', error)
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -674,11 +683,11 @@ exports.createProjectTasksFromCPM = async (req, res) => {
 }
 
 /**
- *  Xóa một công việc đã thiết lập
+ *  Xóa một hoặc nhiều công việc đã thiết lập
  */
 exports.deleteTask = async (req, res) => {
     try {
-        TaskManagementService.deleteTask(req.portal, req.params.taskId);
+        TaskManagementService.deleteTask(req.portal, req.params.taskId, req.query.userId);
 
         await Logger.info(req.user.email, 'delete_task', req.portal)
         res.status(200).json({
@@ -742,7 +751,7 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
 
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
-        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`,`${tasks._id}@gmail.com`,null);
+        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`, `${tasks._id}@gmail.com`, null);
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
@@ -781,7 +790,7 @@ exports.editTaskByAccountableEmployees = async (req, res) => {
 
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
-        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`,`${tasks._id}@gmail.com`,null);
+        sendEmail(task.email, task.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`, `${tasks._id}@gmail.com`, null);
         await Logger.info(req.user.email, 'edit_task_by_account_table_employees', req.portal);
         res.status(200).json({
             success: true,
@@ -952,12 +961,12 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     }
 }
 
-exports.getTaskAnalysOfUser = async (req, res) => {
+exports.getTaskAnalyseOfUser = async (req, res) => {
     try {
         let portal = req.portal;
         let { userId } = req.params;
         let { type, date } = req.query;
-        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type, date);
+        let taskAnalys = await TaskManagementService.getTaskAnalyseOfUser(portal, userId, type, date);
 
         await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
         res.status(200).json({
@@ -967,10 +976,10 @@ exports.getTaskAnalysOfUser = async (req, res) => {
         })
     } catch (error) {
 
-        await Logger.error(req.user.email, 'get_task_analys_of_user_faile', req.portal)
+        await Logger.error(req.user.email, 'get_task_analys_of_user_failure', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_task_analys_of_user_faile'],
+            messages: Array.isArray(error) ? error : ['get_task_analys_of_user_failure'],
             content: error
         })
     }
@@ -1002,8 +1011,8 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
 exports.getUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let { userId, month, year } = req.query;
-        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year);
+        let { userId, month, year, requireActions } = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
         res.status(200).json({
@@ -1012,10 +1021,10 @@ exports.getUserTimeSheet = async (req, res) => {
             content: timesheetlogs
         })
     } catch (error) {
-        await Logger.error(req.user.email, 'get_user_time_sheet_faile', req.portal)
+        await Logger.error(req.user.email, 'get_user_time_sheet_failure', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_user_time_sheet_faile'],
+            messages: Array.isArray(error) ? error : ['get_user_time_sheet_failure'],
             content: error
         })
     }
@@ -1024,8 +1033,8 @@ exports.getUserTimeSheet = async (req, res) => {
 exports.getAllUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let { month, year } = req.query;
-        let timesheetlogs = await TaskManagementService.getAllUserTimeSheet(portal, month, year);
+        let { month, year, rowLimit, page, timeLimit } = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, null, month, year, false, rowLimit, page, timeLimit);
 
         await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
         res.status(200).json({
@@ -1034,10 +1043,10 @@ exports.getAllUserTimeSheet = async (req, res) => {
             content: timesheetlogs
         })
     } catch (error) {
-        await Logger.error(req.user.email, 'get_all_user_time_sheet_faile', req.portal)
+        await Logger.error(req.user.email, 'get_all_user_time_sheet_failure', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_all_user_time_sheet_faile'],
+            messages: Array.isArray(error) ? error : ['get_all_user_time_sheet_failure'],
             content: error
         })
     }
@@ -1056,11 +1065,11 @@ getTasksByProject = async (req, res) => {
             content: tasksResult
         })
     } catch (error) {
-        console.log('get_tasks_by_project_faile', error)
-        await Logger.error(req.user.email, 'get_tasks_by_project_faile', req.portal)
+        console.log('get_tasks_by_project_failure', error)
+        await Logger.error(req.user.email, 'get_tasks_by_project_failure', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_tasks_by_project_faile'],
+            messages: Array.isArray(error) ? error : ['get_tasks_by_project_failure'],
             content: error
         })
     }
@@ -1069,19 +1078,99 @@ getTasksByProject = async (req, res) => {
 
 exports.importTasks = async (req, res) => {
     try {
-        const data = await TaskManagementService.importTasks(req.body,req.portal, req.user);
-        await Logger.info(req.user.email, 'import_task_success', req.portal)
+        let data = {}, dataUpdate = {};
+        const { importData, importType } = req.body;
+
+        let checkImport;
+        if (importType === "import_tasks" && importData?.valueImport?.length) {
+            checkImport = await TaskManagementService.checkImportTasks(req.body?.importData?.valueImport, req.portal, req.user);
+        }
+        let checkImportUpdate;
+        if (importType === "import_update_task_info" && importData?.valueImport?.length) {
+            checkImportUpdate = await TaskManagementService.checkImportUpdateTasks(req.body?.importData?.valueImport, req.portal, req.user);
+        }
+
+        if (importType === "import_tasks") {
+            if (checkImport?.data?.length && (!checkImport?.rowError || checkImport?.rowError?.length === 0)) {
+                await TaskManagementService.importTasks(checkImport.data, req.portal, req.user);
+
+                if (importData?.valueImportTaskActions?.length) {
+                    await TaskManagementService.importTaskActions(req.body?.importData?.valueImportTaskActions, req.portal, req.user);
+                }
+
+                if (importData?.valueImportTaskTimesheetLog?.length) {
+                    await TaskManagementService.importTimeSheetLogs(req.body?.importData?.valueImportTaskTimesheetLog, req.portal, req.user);
+                }
+
+                await Logger.info(req.user.email, 'import_task_success', req.portal);
+                res.status(200).json({
+                    success: true,
+                    messages: ['import_task_success'],
+                    content: []
+                })
+
+            } else {
+                // return lỗi về client
+                data = { generalInfo: { ...checkImport } }
+
+                await Logger.error(req.user.email, 'import_task_failure', req.portal);
+                res.status(400).json({
+                    success: false,
+                    messages: ["import_task_failure"],
+                    content: data
+                });
+            }
+        }
+
+        // trường hợp update import.
+        if (importType === "import_update_task_info") {
+            if (checkImportUpdate?.data?.length && (!checkImportUpdate?.rowError || checkImportUpdate?.rowError?.length === 0)) {
+                dataUpdate = await TaskManagementService.importUpdateTasks(checkImportUpdate.data, req.portal, req.user);
+                await Logger.info(req.user.email, 'import_task_success', req.portal);
+                res.status(200).json({
+                    success: true,
+                    messages: ['import_task_success'],
+                    content: []
+                })
+            } else {
+                // return lỗi về client
+                dataUpdate = { generalInfo: { ...checkImportUpdate } }
+
+                await Logger.error(req.user.email, 'import_update_task_failure', req.portal);
+                res.status(400).json({
+                    success: false,
+                    messages: ["import_update_task_failure"],
+                    content: dataUpdate
+                });
+            }
+        }
+    } catch (error) {
+        console.log('errror', error)
+        await Logger.error(req.user.email, 'import_task_failure', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_task_failure'],
+            content: error
+        })
+    }
+}
+
+
+exports.getOrganizationTaskDashboardChartData = async (req, res) => {
+    try {
+        const data = await TaskManagementService.getOrganizationTaskDashboardChartData(req.query, req.portal, req.user);
+        await Logger.info(req.user.email, 'get_task_dashboard_data_success', req.portal)
         res.status(200).json({
             success: true,
-            messages: ['import_task_success'],
+            messages: ['get_task_dashboard_data_success'],
             content: data
         })
     } catch (error) {
         console.log('errror', error)
-        await Logger.error(req.user.email, 'import_task_faile', req.portal)
+        await Logger.error(req.user.email, 'get_task_dashboard_data_fail', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['import_task_faile'],
+            messages: Array.isArray(error) ? error : ['get_task_dashboard_data_fail'],
             content: error
         })
     }

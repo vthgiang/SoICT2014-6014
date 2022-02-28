@@ -8,11 +8,11 @@ import { EmployeeManagerActions } from '../../../../human-resource/profile/emplo
 import { CourseActions } from '../redux/actions';
 
 const CourseRegister = (props) => {
-    const [state, setState] = useState({...props, addEmployees: []})
+    const [state, setState] = useState({...props, addEmployees: [], isRegistered: props.registeredEmployees.find(i => i.user == localStorage.getItem('userId'))?.registerType || 0})
 
     useEffect(() => {
         const { applyForOrganizationalUnits, applyForPositions } = state;
-        props.getAllEmployee({ organizationalUnits: applyForOrganizationalUnits, position: applyForPositions });
+        props.getAllEmployee({ organizationalUnits: applyForOrganizationalUnits, position: applyForPositions});
     }, [])
 
     const save = () => {
@@ -24,7 +24,7 @@ const CourseRegister = (props) => {
         let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
         const subscriber = {
-            employee: localStorage.getItem('userId'),
+            user: localStorage.getItem('userId'),
             registerType: 1
         }
         
@@ -33,7 +33,7 @@ const CourseRegister = (props) => {
 
     }
 
-    if (props._id !== state._id) {
+    if (props._id !== state._id || props.registeredEmployees.length !== state.registeredEmployees.length) {
         setState({
             ...state,
             _id: props._id,
@@ -62,14 +62,14 @@ const CourseRegister = (props) => {
             errorOnEducationProgram: undefined,
             errorOnStartDate: undefined,
             errorOnEndDate: undefined,
+            isRegistered: props.registeredEmployees.find(i => i.user == localStorage.getItem('userId'))?.registerType || 0
         })
     }
     
     const { education, translate, course, employeesManager } = props;
 
     const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
-        employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
-        errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = state;
+        employeeCommitmentTime, educationProgram, isRegistered } = state;
 
     let listEducations = education.listAll, employeeInfors = [], userlist = [];
 
@@ -86,6 +86,41 @@ const CourseRegister = (props) => {
         }
     }
 
+    const DisplayStatus = () => {
+        switch(state.isRegistered) {
+            case 0: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}}>{translate('training.course.status.is_not_registered')}</span>
+                    </div>
+                )
+            }
+            case 1: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}} className="text-yellow">{translate('training.course.status.waiting_for_approval')}</span>
+                    </div>
+                )
+            }
+            case 2: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}} className="text-green">{translate('training.course.status.success')}</span>
+                    </div>
+                )
+            }
+            case 3: {
+                return (
+                    <div>
+                        {translate('training.course.status.register')}: <span style={{fontWeight: "bold"}} className="text-green">{translate('training.course.status.reject')}</span>
+                    </div>
+                )
+            }
+            default: {
+                break
+            }
+        }
+    } 
     return (
         <React.Fragment>
             <DialogModal
@@ -93,66 +128,23 @@ const CourseRegister = (props) => {
                 formID={`form-edit-course${_id}`}
                 title={translate('training.course.register')} 
                 func={save}
-                size={75}
+                size={25}
                 maxWidth={850}
-                saveText={translate('training.course.register')}
+                saveText={isRegistered == 1 ? translate('training.course.cancel_register') : translate('training.course.register')}
+                disableSubmit={isRegistered === 2 || isRegistered === 3}
             >
-                <div className="row">
-                        {/* Mã khoá đào tạo*/}
-                        <div className="form-group col-sm-6 col-xs-12">
-                            <label>{translate('training.course.table.course_code')}: {courseId}</label>
-                        </div>
-                        {/* Tên khoá đào tạo*/}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnCourseName && "has-error"}`}>
-                            <label>{translate('training.course.table.course_name')}: {name}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Thời gian bắt đầu */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                            <label>{translate('training.course.start_date')}: {startDate}</label>
-                        </div>
-                        {/* Thời gian kết thúc */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                            <label>{translate('training.course.end_date')}: {endDate}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Địa điểm đào tạo */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnCoursePlace && "has-error"}`}>
-                            <label>{translate('training.course.table.course_place')}: {coursePlace}</label>
-                        </div>
-                        {/* Đơn vị đào tạo */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnOfferedBy && "has-error"}`}>
-                            <label>{translate('training.course.table.offered_by')}: {offeredBy}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Giảng viên */}
-                        <div className="form-group col-sm-6 col-xs-12">
-                            <label>{translate('training.course.table.lecturer')}: {lecturer}</label>
-                        </div>
-                        {/* Loại đào tạo */}
-                        <div className="form-group col-sm-6 col-xs-12">
-                            <label>{translate('training.course.table.course_type')}: {type}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Thuộc chương trình đào tạo*/}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEducationProgram && "has-error"}`}>
-                            <label>{translate('training.course.table.education_program')}: {educationProgram.name}</label>
-                        </div>
-                        {/* Chi phi đào tạo */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnCost && "has-error"}`}>
-                            <label>{translate('training.course.table.cost')}: {cost}</label>
-                        </div>
-                    </div>
-                    <div className="row">
-                        {/* Thời gian cam kêt */}
-                        <div className={`form-group col-sm-6 col-xs-12 ${errorOnEmployeeCommitmentTime && "has-error"}`}>
-                            <label>{translate('training.course.table.employee_commitment_time')}: {employeeCommitmentTime}</label>
-                        </div>
-                    </div>
+                <div>{translate('training.course.table.course_code')}: <span style={{fontWeight: "bold"}} className="text-success">{courseId}</span></div>
+                <div>{translate('training.course.table.course_name')}: <span style={{fontWeight: "bold"}} className="text-success">{name}</span></div>
+                <div>{translate('training.course.start_date')}: <span style={{fontWeight: "bold"}} className="text-success">{startDate}</span></div>
+                <div>{translate('training.course.end_date')}: <span style={{fontWeight: "bold"}} className="text-success">{endDate}</span></div>
+                <div>{translate('training.course.table.course_place')}: <span style={{fontWeight: "bold"}} className="text-success">{coursePlace}</span></div>
+                <div>{translate('training.course.table.offered_by')}: <span style={{fontWeight: "bold"}} className="text-success">{offeredBy}</span></div>
+                <div>{translate('training.course.table.lecturer')}: <span style={{fontWeight: "bold"}} className="text-success">{lecturer}</span></div>
+                <div>{translate('training.course.table.course_type')}: <span style={{fontWeight: "bold"}} className="text-success">{type}</span></div>
+                <div>{translate('training.course.table.education_program')}: <span style={{fontWeight: "bold"}} className="text-success">{educationProgram.name}</span></div>
+                <div>{translate('training.course.table.cost')}: <span style={{fontWeight: "bold"}} className="text-success">{cost}</span></div>
+                <div>{translate('training.course.table.employee_commitment_time')}: <span style={{fontWeight: "bold"}} className="text-success">{employeeCommitmentTime}</span></div>
+                <DisplayStatus />
             </DialogModal>
         </React.Fragment >
     );

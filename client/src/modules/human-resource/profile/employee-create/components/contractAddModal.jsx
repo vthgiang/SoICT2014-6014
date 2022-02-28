@@ -29,6 +29,7 @@ function ContractAddModal(props) {
     }
 
     const [state, setState] = useState({
+        contractNumber: "",
         name: "",
         contractType: "",
         startDate: formatDate(Date.now()),
@@ -42,7 +43,7 @@ function ContractAddModal(props) {
 
     const { id } = props;
 
-    const { name, contractType, startDate, endDate, errorOnNameContract,
+    const { contractNumber, name, contractType, startDate, endDate, errorOnNumberContract, errorOnNameContract,
         errorOnTypeContract, errorOnStartDate, errorOnEndDate } = state;
 
     /** Bắt sự kiện thay đổi file đính kèm */
@@ -71,45 +72,31 @@ function ContractAddModal(props) {
     /** Bắt sự kiện thay đổi tên hợp đồng lao động */
     const handleNameContract = (e) => {
         let { value } = e.target;
-        validateNameContract(value, true);
-    }
-
-    const validateNameContract = (value, willUpdateState = true) => {
         const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnNameContract: message,
-                    name: value,
-                }
-            });
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                errorOnNameContract: message,
+                name: value,
+            }
+        });
     }
 
     /** Bắt sự kiện thay đổi loại hợp đồng lao động */
     const handleTypeContract = (e) => {
         let { value } = e.target;
-        validateTypeContract(value, true);
-    }
-
-    const validateTypeContract = (value, willUpdateState = true) => {
         const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnTypeContract: message,
-                    contractType: value,
-                }
-            });
-        }
-        return message === undefined;
+        setState(state => {
+            return {
+                ...state,
+                errorOnTypeContract: message,
+                contractType: value,
+            }
+        });
     }
 
 
@@ -122,6 +109,8 @@ function ContractAddModal(props) {
         let { errorOnEndDate, endDate } = state;
 
         let errorOnStartDate;
+        if (!value)
+            errorOnStartDate = translate('general.validate.empty_error');
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
 
@@ -175,10 +164,22 @@ function ContractAddModal(props) {
         })
     }
 
+
+    const handleNumberContract = (e) => {
+        const { translate } = props;
+        const { value } = e.target;
+        const { message } = ValidationHelper.validateEmpty(translate, value);
+        setState({
+            ...state,
+            contractNumber: value,
+            errorOnNumberContract: message,
+        })
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
-        const { name, contractType, startDate, endDate } = state;
-        let result = validateNameContract(name, false) && validateTypeContract(contractType, false);
+        const { name, contractType, startDate, endDate, contractNumber } = state;
+        let result = name && contractType && contractNumber && startDate;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         if (endDate) {
@@ -219,6 +220,12 @@ function ContractAddModal(props) {
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-create-contract-${id}`}>
+                    {/* Số hợp đồng */}
+                    <div className={`form-group ${errorOnNumberContract && "has-error"}`}>
+                        <label>{translate('human_resource.profile.number_contract')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" value={contractNumber} onChange={handleNumberContract} autoComplete="off" />
+                        <ErrorLabel content={errorOnNumberContract} />
+                    </div>
                     {/* Tên hợp đồng */}
                     <div className={`form-group ${errorOnNameContract && "has-error"}`}>
                         <label>{translate('human_resource.profile.name_contract')}<span className="text-red">*</span></label>

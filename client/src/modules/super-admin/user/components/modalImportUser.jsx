@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DialogModal, ImportFileExcel, ExportExcel } from '../../../../common-components';
+import { DialogModal, ImportFileExcel, ExportExcel, ShowImportData } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
 
 const configData = {
     sheets: {
-        description: "Tên các sheet",
-        value: ["Sheet1"]
+        description: "Thông tin người dùng",
+        value: ["Thông tin người dùng"]
     },
     rowHeader: {
         description: "Số tiêu đề của bảng",
-        value: 2
+        value: 1
     },
     name: {
         columnName: "Tên",
@@ -43,7 +43,7 @@ const dataImportTemplate = (listRole) => {
         fileName: 'Thông tin người dùng',
         dataSheets: [
             {
-                sheetName: 'sheet1',
+                sheetName: 'Thông tin người dùng',
                 sheetTitle: 'Thông tin người dùng',
                 tables: [
                     {
@@ -64,7 +64,7 @@ const dataImportTemplate = (listRole) => {
             },
 
             {
-                sheetName: 'sheet2',
+                sheetName: 'Thông tin các phân quyền',
                 sheetTitle: 'Thông tin các phân quyền',
                 tables: [
                     {
@@ -81,44 +81,86 @@ const dataImportTemplate = (listRole) => {
     }
 }
 
-const ModalImportUser = ({ user, role, translate, importUsers, limit }) => {
-    const [state, setState] = useState({});
+const ModalImportUser = ({ user, role, translate, importUsers, limit = 10 }) => {
+    const [state, setState] = useState({
+        limit: 100,
+        page: 0
+    });
+
 
     const _importUser = () => {
-        let data = state.data; // mảng các user và phân quyền tương ứng
+        const { valueImport } = state;
         let params = { limit }
-        importUsers({ data }, params);
+        importUsers({ data: valueImport }, params);
     }
+
+    const _getDataImportUser = (roles) => {
+        if (roles) {
+            let userRoles = roles.split(',');
+            let listRoles = role?.list ? role.list : [];
+            let data = [];
+
+            if (userRoles) {
+                for (let k = 0; k < userRoles.length; k++) {
+                    let findRoleId = listRoles.find(e => e?.name?.trim()?.toLowerCase() === userRoles[k]?.trim()?.toLowerCase())
+                    if (findRoleId) {
+                        data = [...data, findRoleId._id];
+                    } else {
+                        data = [...data, -1];
+                    }
+                }
+            }
+            return data;
+        }
+    }
+
 
     const _handleImport = (value, checkFileImport) => {
-        let data = _getDataImportUser(value);
+        console.log('value', value);
+        let valueImport = [], showValueImport = [], rowError = [], data = [];
+        if (value?.length) {
+            value.forEach((x, index) => {
+                let errorAlert = [];
+                let userRoles = x?.roles ? _getDataImportUser(x.roles) : [];
+
+                if (x?.name === null || x?.email === null || (x.roles && (_getDataImportUser(x.roles) === -1 || _getDataImportUser(x.roles).indexOf(-1) !== -1))) {
+                    rowError = [...rowError, index + 1];
+                    x = { ...x, error: true };
+                }
+
+                if (x?.name === null) {
+                    errorAlert = [...errorAlert, 'Tên phân quyền không được để trống'];
+                }
+
+                if (x?.email === null) {
+                    errorAlert = [...errorAlert, 'Email người dùng không được để trống'];
+                }
+
+                if ((x.roles && (_getDataImportUser(x.roles) === -1 || _getDataImportUser(x.roles).indexOf(-1) !== -1))) {
+                    errorAlert = [...errorAlert, 'Tên phân quyền không hợp lệ'];
+                }
+
+                valueImport = [...valueImport, {
+                    name: x?.name,
+                    email: x?.email,
+                    roles: userRoles
+                }]
+
+                showValueImport = [
+                    ...showValueImport, x
+                ]
+            })
+        }
+
         setState({
             ...state,
-            data: data
+            showValueImport: showValueImport,
+            valueImport: valueImport,
+            rowError: rowError
         });
     }
 
-    const _convertRoleNameToId = (name) => {
-        let roles = role.list;
-        let roleFilter = roles.filter(r => r.name === name);
-
-        return roleFilter.length > 0 ? roleFilter[0]._id : null;
-    }
-
-    const _getDataImportUser = (data) => {
-        let newData = data.map(u => {
-            let userRoles = u.roles.split(',');
-            userRoles = userRoles.map(ur => _convertRoleNameToId(ur));
-            return {
-                name: u.name,
-                email: u.email,
-                roles: userRoles
-            }
-        });
-
-        return newData;
-    }
-
+    console.log("error", state)
     return (
         <DialogModal
             modalID="modal-import-user" isLoading={user.isLoading}
@@ -138,6 +180,20 @@ const ModalImportUser = ({ user, role, translate, importUsers, limit }) => {
                     <div className="form-group">
                         <ExportExcel type="link" id="downloadTemplateImport-user" buttonName={translate('human_resource.download_file')} exportData={dataImportTemplate(role)} style={{ marginLeft: '10px' }} />
                     </div>
+                </div>
+            </div>
+            <div className="row" >
+                <div className="col-md-12 col-xs-12">
+                    <ShowImportData
+                        id={`import_roles`}
+                        configData={configData}
+                        importData={state.showValueImport}
+                        rowError={state.rowError}
+                        scrollTable={true}
+                        checkFileImport={true}
+                        limit={state.limit}
+                        page={state.page}
+                    />
                 </div>
             </div>
         </DialogModal>

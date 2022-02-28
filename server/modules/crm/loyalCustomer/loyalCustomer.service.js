@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Care, User, Status } = require('../../../models');
+const { CustomerCare, User, CustomerStatus } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getAllEmployeeOfUnitByRole } = require("../../super-admin/user/user.service");
 const { getCares } = require("../care/care.service");
@@ -17,11 +17,11 @@ const { forEach } = require("lodash");
  * @param {*} currentRole 
  * @returns 
  */
-exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole) => {
+ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole) => {
     console.log(query);
     let { customerCode, page, limit } = query;
     // lay danh sach khach hang
-    const listAllCustomer = await getCustomers(portal, companyId, { customerCode }, currentRole);
+    const listAllCustomer = await getCustomers(portal, companyId, { customerCode }, userId, currentRole);
     let customers;
     if (listAllCustomer) customers = listAllCustomer.customers;
     let loyalCustomers = [];
@@ -62,4 +62,3 @@ exports.getLoyalCustomers = async (userId, portal, companyId, query, currentRole
 
     return { listDocsTotal: loyalCustomers.length, loyalCustomers }
 }
-

@@ -123,7 +123,7 @@ function BankAccountCreateForm(props) {
                 formID={`form-add-bank-account`}
                 title={"Thêm tài khoản ngân hàng"}
                 msg_success={"Thêm thành công"}
-                msg_faile={"Thêm không thành công"}
+                msg_failure={"Thêm không thành công"}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="50"

@@ -4,7 +4,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../redux/actions";
 import { CategoryActions } from "../../category-management/redux/actions";
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
-import { DataTableSetting, DeleteNotification, PaginateBar, TreeSelect } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, TreeSelect, SelectMulti } from "../../../../../common-components";
 import GoodCreateForm from "./goodCreateForm";
 import GoodEditForm from "./goodEditForm";
 import GoodDetailForm from "./goodDetailForm";
@@ -23,6 +23,7 @@ function GoodManagement(props) {
         activeP: true,
         activeM: false,
         activeE: false,
+        sourceType: "",
     })
 
     useEffect(() => {
@@ -36,7 +37,7 @@ function GoodManagement(props) {
     useEffect(() => {
         if (state.oldType !== state.type) {
             props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-            setState ({
+            setState({
                 ...state,
                 oldType: state.type,
             });
@@ -44,7 +45,7 @@ function GoodManagement(props) {
     }, [state.type])
 
     useEffect(() => {
-        if(!state.type) {
+        if (!state.type) {
             setType();
         }
     }, [state.type])
@@ -86,14 +87,15 @@ function GoodManagement(props) {
         });
     };
 
-    const handleEdit = async (goods) => {
-        await setState({
-            ...state,
-            currentRow: goods,
-        });
+    // const handleEdit = async (goods) => {
+    //     console.log("asdas", goods);
+    //     await setState({
+    //         ...state,
+    //         currentRow: goods,
+    //     });
 
-        window.$("#modal-edit-goods").modal("show");
-    };
+    //     window.$("#modal-edit-goods").modal("show");
+    // };
 
     const handleProduct = () => {
         let type = "product";
@@ -155,6 +157,13 @@ function GoodManagement(props) {
         });
     };
 
+    const handleSourceChange = async (e) => {
+        setState({
+            ...state,
+            sourceType: e
+        });
+    };
+
     const handleCategoryChange = (value) => {
         if (value.length === 0) {
             value = null;
@@ -174,17 +183,18 @@ function GoodManagement(props) {
             code: state.code,
             name: state.name,
             category: state.category,
+            sourceType: state.sourceType,
         };
         await props.getGoodsByType(data);
     };
 
-    // const handleEdit = async (goods) => {
-    //     await setState({
-    //         ...state,
-    //         currentRow: goods,
-    //     });
-    //     window.$("#modal-edit-good").modal("show");
-    // };
+    const handleEdit = async (goods) => {
+        await setState({
+            ...state,
+            currentRow: goods,
+        });
+        window.$("#modal-edit-good").modal("show");
+    };
 
     const handleShowDetailInfo = async (good) => {
         let id = good._id;
@@ -240,29 +250,29 @@ function GoodManagement(props) {
 
     const setType = () => {
         if (checkManagementGood('product') || checkManagementGood('waste')) {
-            setState({ 
+            setState({
                 ...state,
                 type: 'product',
-                 activeP: true 
-                });
+                activeP: true
+            });
         } else if (checkManagementGood('material')) {
-            setState({ 
-                ...state, 
-                type: 'material', 
-                activeM: true 
+            setState({
+                ...state,
+                type: 'material',
+                activeM: true
             });
         } else if (checkManagementGood('equipment')) {
-            setState({ 
-                ...state, 
+            setState({
+                ...state,
                 type: 'equipment',
-                activeE: true 
-                });
+                activeE: true
+            });
         } else if (checkManagementGood('waste')) {
-            setState({ 
-                ...state, 
+            setState({
+                ...state,
                 type: 'waste',
-                 activeW: true
-                 });
+                activeW: true
+            });
         }
     }
 
@@ -291,11 +301,11 @@ function GoodManagement(props) {
                         {translate("manage_warehouse.good_management.equipment")}
                     </a>
                 </li>}
-                {/* { checkManagementGood('waste') && <li className={`${state.activeW ? "active" : ''}`}>
-                        <a href="#good-wastes" data-toggle="tab" onClick={() => handleWaste()}>
-                            {translate("manage_warehouse.good_management.waste")}
-                        </a>
-                    </li>} */}
+                {checkManagementGood('waste') && <li className={`${state.activeW ? "active" : ''}`}>
+                    <a href="#good-wastes" data-toggle="tab" onClick={() => handleWaste()}>
+                        {translate("manage_warehouse.good_management.waste")}
+                    </a>
+                </li>}
             </ul>
             <div className="box-body qlcv">
                 <GoodCreateForm type={type} />
@@ -315,6 +325,7 @@ function GoodManagement(props) {
                         pricePerBaseUnit={state.currentRow.pricePerBaseUnit}
                         salesPriceVariance={state.currentRow.salesPriceVariance}
                         numberExpirationDate={state.currentRow.numberExpirationDate}
+                        sourceType={state.currentRow.sourceType}
                     />
                 )}
 
@@ -334,6 +345,7 @@ function GoodManagement(props) {
                         pricePerBaseUnit={state.currentRow.pricePerBaseUnit}
                         salesPriceVariance={state.currentRow.salesPriceVariance}
                         numberExpirationDate={state.currentRow.numberExpirationDate}
+                        sourceType={state.currentRow.sourceType}
                     />
                 )}
                 <div className="form-inline">
@@ -365,8 +377,29 @@ function GoodManagement(props) {
                         <label className="form-control-static">{translate("manage_warehouse.good_management.category")}</label>
                         <TreeSelect data={dataCategory} value={categorySearch} handleChange={handleCategoryChange} mode="hierarchical" />
                     </div>
+                    {type === "product" &&
+                        (<div className="form-group">
+                            <label className="form-control-static">{translate('manage_warehouse.good_management.choose_source')}</label>
+                            <SelectMulti
+                                id={`select-multi-partner-source-type`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn nguồn hàng hóa", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    {
+                                        value: '1',
+                                        text: translate('manage_warehouse.good_management.selfProduced'),
+                                    },
+                                    {
+                                        value: '2',
+                                        text: translate('manage_warehouse.good_management.importedFromSuppliers'),
+                                    }
+                                ]}
+                                onChange={handleSourceChange}
+                            />
+                        </div>)}
                     <div className="form-group">
-                        <label></label>
                         <button
                             type="button"
                             className="btn btn-success"
@@ -388,6 +421,7 @@ function GoodManagement(props) {
                             <th>{translate("manage_warehouse.good_management.unit")}</th>
                             {/* <th>{translate("manage_warehouse.good_management.packing_rule")}</th> */}
                             {type === "product" && <th>{translate("manage_warehouse.good_management.materials")}</th>}
+                            <th>{translate("manage_warehouse.good_management.good_source")}</th>
                             <th>{translate("manage_warehouse.good_management.description")}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>
                                 {translate("table.action")}
@@ -438,6 +472,7 @@ function GoodManagement(props) {
                                             })
                                         }</td>
                                     }
+                                    <td>{x.sourceType === "1" ? translate("manage_warehouse.good_management.selfProduced") : translate("manage_warehouse.good_management.importedFromSuppliers")}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a onClick={() => handleShowDetailInfo(x)}>

@@ -260,7 +260,7 @@ function DiscountCreateForm(props) {
                 formID={`form-create-discount`}
                 title={"Thêm khuyến mãi"}
                 msg_success={"Thêm thành công"}
-                msg_faile={"Thêm thất bại"}
+                msg_failure={"Thêm thất bại"}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="75"

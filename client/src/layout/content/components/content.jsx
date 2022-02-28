@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { Loading } from '../../../common-components';
 import moment from 'moment'
+import { filter, forEach } from 'lodash';
 
 class Content extends Component {
     constructor(props) {
@@ -40,87 +41,139 @@ class Content extends Component {
         return result;
     }
 
-    handleResizeColumn = () => {
-        window.$(function () {
-            var pressed = false;
 
-            var tableHeadings = [];
-            var originalHeadingWidths = [];
-            var resizingIndex = -1;
-            var startX = undefined;
+    createResizableColumn = (resizer, index, resizerList, table) => {
+        let x = 0, currentColWidth = 0, nextColWidth = 0;
+        let currentCol = {}, nextCol = {};
+        const MINIMUM_WIDTH = 40;
 
-            window.$("table thead tr th:not(:last-child)").on("touchstart mousedown", function (e) {
-                pressed = true;
-
-                // Touch or mouse
-                startX = (e.changedTouches === undefined) ? e.pageX : e.changedTouches[0].pageX;
-
-                let currentTH = window.$(this);
-                window.$(currentTH).addClass("resizing");
-                tableHeadings = window.$(currentTH)[0].parentNode.childNodes;
-
-                // Find the index of resizing column
-                for (let i = 0; i < tableHeadings.length; ++i) {
-                    if (tableHeadings[i] === window.$(currentTH)[0]) {
-                        resizingIndex = i;
-                        break;
-                    }
+        const updateResizerHeight = () => {
+            const tableHeight = `${table.offsetHeight}px`;
+            if (resizer.offsetHeight != table.offsetHeight) {
+                for (let resizer of resizerList) {
+                    resizer.style.height = tableHeight;
                 }
+            }
+        }
 
-                // Save the current widths of all columns
-                for (let i = 0; i < tableHeadings.length; ++i) {
-                    originalHeadingWidths[i] = window.$(tableHeadings[i]).width()
+        // Không cho select text khi đang resize column
+        const disableSelect = (event) => {
+            event.preventDefault();
+        }
+
+        const mouseOverHandler = () => {
+            updateResizerHeight();
+        }
+
+        const mouseDownHandler = (e) => {
+            x = e.pageX;
+            currentCol = resizer.parentElement;
+            nextCol = null;
+            console.log(" " + index);
+
+            for (let i = index + 1; i < resizerList.length; i++) {
+                console.log(i);
+                let col = resizerList[i].parentElement;
+                if (col.style.display !== null && col.style.display !== undefined && col.style.display !== "none") {
+                    nextCol = col; // Tìm cột chưa bị ẩn kế tiếp
+                    break;
                 }
-            });
+            }
+            if (nextCol === null || nextCol === undefined) {
+                return;
+            }
 
-            window.$("table thead tr th:not(:last-child)").on("touchmove mousemove", function (e) {
-                if (pressed) {
-                    let MINIMUM_WIDTH = 40;
 
-                    /* Kích thước cột hiện tại được mượn/cho từ kích thước cột kế tiếp
-                     * Điều kiện là cột hiện tại và cột kế tiếp luôn có kích thước tối thiểu nào đó
-                     */
-                    let additionalWidth = ((e.changedTouches === undefined) ? e.pageX : e.changedTouches[0].pageX) - startX;
+            currentColWidth = parseInt(window.getComputedStyle(currentCol).width, 10);
+            nextColWidth = parseInt(window.getComputedStyle(nextCol).width, 10);
 
-                    if (additionalWidth > originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH) {
-                        additionalWidth = originalHeadingWidths[resizingIndex + 1] - MINIMUM_WIDTH;
-                    }
-                    if (originalHeadingWidths[resizingIndex] + additionalWidth < MINIMUM_WIDTH) {
-                        additionalWidth = MINIMUM_WIDTH - originalHeadingWidths[resizingIndex];
-                    }
+            document.addEventListener('mousemove', disableSelect);
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('touchmove', mouseMoveHandler);
 
-                    // Cập nhật kích thước cột hiện tại và cột kế tiếp
-                    window.$(tableHeadings[resizingIndex]).width(originalHeadingWidths[resizingIndex] + additionalWidth);
-                    window.$(tableHeadings[resizingIndex + 1]).width(originalHeadingWidths[resizingIndex + 1] - additionalWidth);
+            document.addEventListener('mouseup', mouseUpHandler);
+            document.addEventListener('touchend', mouseUpHandler);
 
-                    // Giữ nguyên kích thước các cột còn lại (Khi bảng có nhiều cột, resize 1 cột sẽ làm kích thước các cột khác sẽ bị ảnh hưởng)
-                    for (let i = 0; i < tableHeadings.length; ++i) {
-                        if (i !== resizingIndex && i !== resizingIndex + 1)
-                            window.$(tableHeadings[i]).width(originalHeadingWidths[i]);
-                    }
-                }
-            });
+            resizer.classList.add('resizing');
+        };
 
-            window.$("table thead tr th:not(:last-child)").on("mouseup touchend", function () {
-                if (pressed) {
-                    window.$(tableHeadings[resizingIndex]).removeClass("resizing");
-                    pressed = false;
-                }
-            });
+        const mouseMoveHandler = (e) => {
+            const dx = e.pageX - x;
+            updateResizerHeight();
+            if (nextColWidth - dx > MINIMUM_WIDTH && currentColWidth + dx > MINIMUM_WIDTH) { // Độ rộng mỗi cột tối thiểu 60px
+                currentCol.style.width = `${currentColWidth + dx}px`;
+                nextCol.style.width = `${nextColWidth - dx}px`;
+            }
+        };
+
+        const mouseUpHandler = () => {
+            resizer.classList.remove('resizing');
+            document.removeEventListener('mousemove', disableSelect);
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('touchmove', mouseMoveHandler);
+
+            document.removeEventListener('mouseup', mouseUpHandler);
+            document.removeEventListener('touchend', mouseUpHandler);
+        };
+
+        resizer.addEventListener('mousedown', mouseDownHandler);
+        resizer.addEventListener('mouseover', mouseOverHandler);
+        resizer.addEventListener('touchstart', mouseDownHandler);
+    };
+
+    // Thêm resizer vào mỗi cột
+    createResizer = (table) => {
+        const cols = table.querySelectorAll("thead>tr>th");
+        const tableHeight = `${table.offsetHeight}px`;
+        let resizerList = [];
+        for (let i = 0; i < cols.length; ++i) {
+            let currentCol = cols[i];
+
+            const resizer = document.createElement("div");
+            resizer.classList.add("resizeDiv");
+            resizer.style.height = tableHeight;
+
+            currentCol.appendChild(resizer);
+
+            resizerList.push(resizer);
+        };
+
+        for (let i in resizerList) {
+            this.createResizableColumn(resizerList[i], parseInt(i, 10), resizerList, table);
+        }
+
+    }
+
+    removeAllResizer = () => {
+        const resizers = window.$("table>thead>tr>th>div.resizeDiv");
+        [].forEach.call(resizers, (resizer) => {
+            resizer.remove();
+        })
+    }
+
+    // Duyệt từng bảng, thêm resizer vào các cột của bảng đó
+    createResizableTable = () => {
+        const tables = window.$("table");
+        [].forEach.call(tables, (table) => {
+            this.createResizer(table)
         });
     }
 
     adjustSize = () => {
         let headings = window.$("table thead tr th");
         for (let i = 0; i < headings.length; ++i) {
-            if (!window.$(headings[i]).hasClass("col-fixed")) { // RIêng cột có class col-fixed sẽ không xóa thuộc tính width
+            if (!window.$(headings[i]).hasClass("col-fixed")) { // Riêng cột có class col-fixed sẽ không xóa thuộc tính width
                 window.$(headings[i]).width("");
             }
         }
     }
 
+    componentWillUpdate() {
+        this.removeAllResizer(); // Xoá resizer mỗi khi update lại để không tạo nhiều resizer
+    }
+
     componentDidUpdate() {
-        this.handleResizeColumn();
+        this.createResizableTable();
         this.handleDataTable();
     }
 
@@ -128,6 +181,16 @@ class Content extends Component {
 
     handleDataTable = async (index) => {
         let tables = window.$("table:not(.not-sort)");
+
+        let updateResizerHeight = (table) => {
+            const resizers = table.querySelectorAll("thead>tr>th>div.resizeDiv");
+            const tableHeight = `${table.offsetHeight}px`;
+            if (resizers[0].offsetHeight != table.offsetHeight) {
+                for (let i = 0; i < resizers.length; ++i) {
+                    resizers[i].style.height = tableHeight;
+                }
+            }
+        }
 
         let nonAccentVietnamese = (str) => {
             if (str === null || str === undefined) return str;
@@ -172,13 +235,18 @@ class Content extends Component {
             return str;
         }
 
+        window.$("body").mouseup(function (e) {
+            var container = window.$(".dropdown-menu-filter");
+            // if the target of the click isn't the container nor a descendant of the container
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+
+                container.hide();
+            }
+        });
         for (let i = 0; i < tables.length; i++) {
             let table = window.$(tables[i]);
-            //console.log(table)
             let tableHeadings = table.find("th:not(:last-child)").not(".not-sort");
-            //console.log(tableHeadings)
             let tableHeadingsColSort = table.find("th.col-sort").not(".not-sort");
-            //console.log(tableHeadingsColSort)
             if (tableHeadingsColSort && tableHeadingsColSort.length) {
                 for (let k = 0; k < tableHeadingsColSort.length; ++k) {
                     tableHeadings.push(tableHeadingsColSort[k])
@@ -186,8 +254,6 @@ class Content extends Component {
             }
             for (let j = 0; j < tableHeadings.length; j++) {
                 let th = window.$(tableHeadings[j]);
-                //console.log(th);
-                //console.log(th.find("div.sort"))
                 if (th.find("div.sort").length < 1) {
                     //hàm sort
                     let sort = (ascOrder) => {
@@ -247,29 +313,31 @@ class Content extends Component {
                             table.children('tbody').append(row);
                         });
                     }
-                    
+
                     // icon sort
                     let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-sort' });
                     let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-asc' });
                     let requestReturn = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-desc' });
 
                     //icon filter
-                    let filterIcon = window.$("<button>", { style: 'width: 100%; float: right; cursor: pointer; color: rgb(226 222 222); border: none; background: none', class: 'fa fa-filter', target: 'dropdown-menu-filter'});
-                    let filterDropdown = window.$("<div>", { style: 'display: none; cursor: auto; z-index: 1000; position: absolute;width: 200px;margin-top: 25px;text-align: left;border-radius: 5px;margin: 26px 0px 0px 19px;padding: 10px;background-color: rgb(232, 240, 244);box-sizing: border-box;border-top: 2px solid rgb(54, 156, 199);box-shadow: 4px 4px 15px rgba(50, 50, 50)', class: 'collapse dropdown-menu-filter'});
-                    let closeButton = window.$("<button>", { style: 'float: right; font-size: 11px;top: 7px;right: 8px;line-height: 15px;background-color: rgb(60 141 188);color: rgb(232, 240, 244);border-radius: 50%;width: 14px;height: 14px;font-weight: bold;text-align: center;margin: 0;padding: 0;border: 0', class: 'fa fa-times', target: 'dropdown-menu-filter'});
-                    //let clearButton = window.$("<button>", { style: 'float: right; font-size: 11px; width: 24px;height: 24px;font-weight: bold;background-color: blue;text-align: center;margin: 0;padding: 0;border: 0', target: 'dropdown-menu-filter'});
-                    let filterInput = window.$("<input>",{style: 'width: 100%; display: block', class: 'form-control'} )
-                    let filterTitle = window.$("<h6>",{ style: 'margin: 0px 0px 15px;padding: 0px;font-weight: bold;color: #3c8dbc; text-align: center', text:'kkk'})
-                    let filterLabel = window.$("<label>",{ style: 'margin: 0; color: #3c8dbc' , text: 'Filter' })
-                    filterDropdown.append(closeButton,filterTitle, filterLabel, filterInput)
+                    let filterIcon = window.$("<button>", { style: 'width: 100%; float: right; cursor: pointer; color: rgb(226 222 222); border: none; background: none', class: 'fa fa-filter', target: 'dropdown-menu-filter' });
+                    let filterDropdown = window.$("<div>", { style: 'display: none; cursor: auto; z-index: 1000; position: absolute;width: 200px;margin-top: 25px;text-align: left;border-radius: 5px;margin: 26px 0px 0px 19px;padding: 10px;background-color: rgb(232, 240, 244);box-sizing: border-box;border-top: 2px solid rgb(54, 156, 199);box-shadow: 4px 4px 15px rgba(50, 50, 50); ', class: 'collapse dropdown-menu-filter' });
+                    let closeButton = window.$("<button>", { style: 'float: right; font-size: 11px;top: 7px;right: 8px;line-height: 15px;background-color: rgb(60 141 188);color: rgb(232, 240, 244);border-radius: 50%;width: 14px;height: 14px;font-weight: bold;text-align: center;margin: 0;padding: 0;border: 0', class: 'fa fa-times', target: 'dropdown-menu-filter' });
+                    let clearButton = window.$("<button>", { style: 'float: right; font-size: 11px;height: 24px;font-weight: bold;color: rgb(60 141 188);background-color: transparent;margin: 0;border: 0', target: 'dropdown-menu-filter', text: "Clear" });
+
+                    let filterInput = window.$("<input>", { style: 'width: 100%; display: block', class: 'form-control' })
+                    let filterTitle = window.$("<h6>", { style: 'margin: 0px 0px 15px;padding: 0px;font-weight: bold;color: #3c8dbc; text-align: center', text: 'kkk' })
+                    let filterLabel = window.$("<label>", { style: 'margin: 0; color: #3c8dbc', text: 'Filter' })
+
+                    filterDropdown.append(closeButton, filterTitle, filterLabel, filterInput, clearButton)
 
 
                     for (let k = 0; k < tableHeadings.length; ++k) {
-                        if(k === j){
+                        if (k === j) {
                             let thChoiced = window.$(tableHeadings[k]);
                             let title = thChoiced[0].innerText;
                             filterTitle[0].innerText = title;
-                            
+
                         }
                     }
 
@@ -285,79 +353,89 @@ class Content extends Component {
                         sort("return")
                     })
 
+                    let filterFunc = () => {
+                        // tất cả input trong heading của table
+                        let inputs = table.find("th:not(:last-child) input");
+                        let rows = table.find('tbody tr');
+                        window.$(rows).show(); // ban đầu tất cả rows đều show ra
+                        window.$.each(inputs, function (index, input) {
+                            let value = input.value.toLowerCase();
+                            let iconFilter = window.$(input).parent().parent().children()[0]
+                            if (value.replace(/\s/g, "") !== "") { // value khác rỗng
+                                iconFilter.style.color = "black" // chuyển màu icon 
+                                rows.filter((a) => {
+                                    let keyData = window.$(window.$(rows[a]).find("td:eq(" + index + ")")).text(); //value trong cột mình muốn filter
+                                    let re = new RegExp(nonAccentVietnamese(value), "gi"); // bỏ dấu giá trị mình tìm kiếm
+                                    if (keyData) {
+                                        // check xem 2 giá trị khác nhau hay không
+                                        if (nonAccentVietnamese(keyData).search(re) == -1) {
+                                            window.$(rows[a]).hide();
+                                        }
+                                    }
+
+                                });
+                            } else {
+                                iconFilter.style.color = "rgb(226 222 222)"
+                            }
+
+                        });
+                    }
+                    // bắt sự kiện user nhập thông tin từ bàn phím
+                    let filterOnKeyUp = () => {
+                        table.find('.filter input').keyup(function (e) {
+                            filterFunc();
+                            updateResizerHeight(table[0]);
+                        });
+                    }
                     filterIcon.click(() => {
+                        console.log('filterDropdown :>> ', filterDropdown);
+                        console.log('window.innerWidth :>> ', window.innerWidth);
+                        console.log('filterDropdown :>> ', filterDropdown[0]);
+
                         for (let k = 0; k < tableHeadings.length; ++k) {
-                            if(k === j){
+                            if (k === j) {
                                 let thChoiced = window.$(tableHeadings[k]);
                                 let filterDiv = thChoiced.find("div.filter")
-                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
-                                if (x.style.display = "none") {
-                                    x.style.display = "block";
-                                  } 
-                            }else{
-                                let thNotChoice = window.$(tableHeadings[k]);
-                                let filterDiv = thNotChoice.find("div.filter")
-                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
-                                if (x.style.display = "block") {
-                                    x.style.display = "none";
-                                  }
+                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter");
+                                if (x[0].style.display == "none") {
+                                    x.toggle("show")
+                                    x.find("input").focus()
+                                    x[0].style.display = "block"
+                                }
                             }
                         }
+                        filterOnKeyUp()
+
                     })
 
                     closeButton.click(() => {
                         for (let k = 0; k < tableHeadings.length; ++k) {
-                            if(j === k){
+                            if (j === k) {
                                 let thNotChoice = window.$(tableHeadings[k]);
                                 let listdiv = thNotChoice.find("div.filter")
-                                
-                                let x = window.$(listdiv[0]).find(".dropdown-menu-filter")[0];
-                                if (x.style.display == "none") {
-                                    x.style.display = "block";
-                                  } else {
-                                    x.style.display = "none";
-                                  }
+
+                                let x = window.$(listdiv[0]).find(".dropdown-menu-filter");
+                                x.toggle("hide")
                             }
                         }
                     })
-
-                    
-                    // bắt sự kiện user nhập thông tin từ bàn phím
-                    table.find('.filter input').keyup(function(e) {
-                        let inputs = window.$('.filter input');
-                        let rows = table.find('tbody tr');
-                        window.$(rows).show();
-
-                        window.$.each(inputs, function(index, input) {
-                            let value = input.value.toLowerCase();
-                            if (value.replace(/\s/g,"") !== "") { // value khác rỗng
-                                //console.log(input.value)
-                                //console.log(input)
-                                rows.filter((a) => {
-                                    let keyData = window.$(window.$(rows[a]).find("td:eq("+index+")")).text();
-                                    //console.log( window.$((window.$(rows[a]))[0]).find("td:eq("+index+")")[0].innerText)
-                                    console.log(keyData)
-                                    //console.log(keyData)
-                                    let re = new RegExp(nonAccentVietnamese(value), "gi");
-                                    if (nonAccentVietnamese(keyData).search(re) == -1) {
-                                        window.$(rows[a]).hide();
-                                    }
-                                });
+                    clearButton.click(() => {
+                        for (let k = 0; k < tableHeadings.length; ++k) {
+                            if (j === k) {
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.filter")
+                                let input = thNotChoice.find("div.filter input")
+                                let x = window.$(listdiv[0]).find(".dropdown-menu-filter");
+                                input[0].value = ""
+                                x.find("input").focus()
                             }
-                            
-                        });
-                    });
-                    // if (value.replace(/\s/g,"") !== "") { // check if input có giá trị
-                    //     window.$(window.$(input))[0].offsetParent.previousSibling.style.color = "black"
-                    // }
-                    // else {
-                    //     console.log(window.$(window.$(input)))
-                    //     //window.$(window.$(input))[0].offsetParent.previousSibling.style.color = "rgb(226, 222, 222)"
-                    // }
+                        }
+                        filterFunc()
+                    })
                     let divSort = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 4px', class: 'sort' });
                     let divFilter = window.$("<div>", { style: 'float: right; margin-top: 3px; margin-right: -10px', class: 'filter' });
                     filterDropdown.hide();
-                    divSort.append(up, down, requestReturn,filterIcon);
+                    divSort.append(up, down, requestReturn, filterIcon);
                     divFilter.append(filterIcon, filterDropdown)
                     th.prepend(divSort);
                     th.append(divFilter);
@@ -375,7 +453,18 @@ class Content extends Component {
     }
 
     render() {
-        const { translate, pageName, arrPage, isLoading } = this.props;
+        let isLoading = false; // isLoading tổng
+        const { translate, pageName, arrPage } = this.props;
+        // loop qua tất cả các isLoading trong redux store, gặp isLoading nào là true thì để isLoading tổng là true
+        for (const [key, value] of Object.entries(this.props)) {
+            if (value?.isLoading === true) {
+                //ignore các isLoading của module auth, user, role
+                if (key !== 'auth' && key !== 'notifications' && key !== 'user' && key !== 'role') {
+                    isLoading = true;
+                    break;
+                }
+            }
+        }
         return (
             <React.Fragment>
                 <div className="content-wrapper">

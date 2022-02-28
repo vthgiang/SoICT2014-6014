@@ -4,7 +4,7 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
 const { freshObject } = require(`../../../helpers/functionHelper`);
 
-const { Asset, User, Role, Link, Privilege, UserRole } = Models;
+const { Asset, User, Role, Link, Privilege, UserRole, AssetType } = Models;
 
 /**
  * Gửi email khi báo cáo sự cố
@@ -67,7 +67,6 @@ exports.getAssetInforById = async (portal, id) => {
 exports.searchAssetProfiles = async (portal, company, params) => {
     let { getType } = params;
     let keySearch = {};
-
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } };
@@ -198,6 +197,50 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         };
     }
 
+    //Trường hợp chỉ có ngày bắt đầu
+    if(params.purchaseDateStart && !params.purchaseDateEnd){
+        let date = params.purchaseDateStart.split("-");
+        let start = new Date(date[2], date[1] - 1, date[0]);
+        
+        keySearch = {
+            ...keySearch,
+            purchaseDate: {
+                $gt: start,
+            },
+        };
+    }
+
+    //Trường hợp chỉ có ngày kết thúc
+    if(!params.purchaseDateStart && params.purchaseDateEnd){
+        let date = params.purchaseDateEnd.split("-");
+        let end = new Date(date[2], date[1] - 1, date[0]);
+        
+        keySearch = {
+            ...keySearch,
+            purchaseDate: {
+                $lte: end,
+            },
+        };
+    } 
+
+    //
+    if(params.purchaseDateStart && params.purchaseDateEnd){
+        let dateStart = params.purchaseDateStart.split("-");
+        let dateEnd = params.purchaseDateEnd.split("-");
+
+        let start = new Date(dateStart[2], dateStart[1] - 1, dateStart[0]);
+        let end = new Date(dateEnd[2], dateEnd[1] - 1, dateEnd[0]);
+
+        keySearch = {
+            ...keySearch,
+            purchaseDate: {
+                $gt: start,
+                $lte: end,
+            },
+        };
+    } 
+
+
     // Thêm key tìm kiếm tài sản theo ngày thanh lý tài sản
     if (params.disposalDate) {
         let date = params.disposalDate.split("-");
@@ -321,8 +364,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                {path: "assetType assignedToOrganizationalUnit" },
-                {path: "managedBy", select: "_id name email avatar"}
+                { path: "assetType assignedToOrganizationalUnit" },
+                { path: "managedBy", select: "_id name email avatar" }
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)
@@ -334,8 +377,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                {path: "assetType assignedToOrganizationalUnit" },
-                {path: "managedBy", select: "_id name email avatar"}
+                { path: "assetType assignedToOrganizationalUnit" },
+                { path: "managedBy", select: "_id name email avatar" }
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)
@@ -1076,13 +1119,14 @@ exports.updateAssetInformation = async (
  * Xoá thông tin tài sản
  * @id : Id tài sản cần xoá
  */
-exports.deleteAsset = async (portal, id) => {
-    let asset = await Asset(connect(DB_CONNECTION, portal)).findOneAndDelete({
-        _id: id,
-    });
 
-    return asset;
-};
+
+exports.deleteAsset = async (portal, assetIds) => {
+    let assets = await Asset(connect(DB_CONNECTION, portal))
+        .deleteMany({ _id: { $in: assetIds.map(item => mongoose.Types.ObjectId(item)) } });
+
+    return assets;
+}
 
 /**
  * Chỉnh sửa thông tin khấu hao tài sản
@@ -1338,10 +1382,21 @@ exports.createUsage = async (portal, id, data) => {
             data.assignedToOrganizationalUnit !== "null"
             ? data.assignedToOrganizationalUnit
             : null;
+
+    let usageLogs = [];
+    if (data?.usageLogs?.length) {
+        data.usageLogs.map((x => {
+            usageLogs = [...usageLogs, {
+                ...x,
+                usedByUser: x?.usedByUser ? x.usedByUser : null,
+                usedByOrganizationalUnit: x?.usedByOrganizationalUnit ? x.usedByOrganizationalUnit : null,
+            }]
+        }))
+    }
     await Asset(connect(DB_CONNECTION, portal)).updateOne(
         { _id: id },
         {
-            $addToSet: { usageLogs: data.usageLogs },
+            $addToSet: { usageLogs: usageLogs },
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
             status: data.status,
@@ -1423,7 +1478,7 @@ exports.deleteUsage = async (portal, assetId, usageId) => {
  */
 exports.getIncidents = async (portal, params) => {
     let incidents;
-    let { code, assetName, incidentCode, incidentType, incidentStatus, managedBy, userId } = params;
+    let { code, assetName, incidentCode, incidentType, incidentStatus, managedBy, userId, dataType } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
     let assetSearch = [];
@@ -1455,7 +1510,11 @@ exports.getIncidents = async (portal, params) => {
         ];
     }
 
-    let aggregateQuery = [{ $match: { 'managedBy': mongoose.Types.ObjectId(userId) } }];
+    let aggregateQuery = [];
+    if (dataType === "get_by_user") { // trường gợp từng người get thông tin sự cố tài sản mình quản lý
+        aggregateQuery = [...aggregateQuery, { $match: { 'managedBy': mongoose.Types.ObjectId(userId) } }]
+    }
+
     if (assetSearch && assetSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }];
     }
@@ -1492,13 +1551,15 @@ exports.getIncidents = async (portal, params) => {
         // Tìm tài sản ứng với sự cố tài sản
         for (let i = 0; i < incidents.length; i++) {
             let item = incidents[i];
-
-            let asset = await Asset(connect(DB_CONNECTION, portal)).findOne({
+            let keySearch = {
                 incidentLogs: {
                     $elemMatch: { _id: mongoose.Types.ObjectId(item._id) },
-                },
-                managedBy: managedBy,
-            });
+                }
+            }
+            if (dataType === "get_by_user")// không phải admin thì get sự cố theo người quản lý
+                keySearch = { ...keySearch, managedBy: managedBy }
+
+            let asset = await Asset(connect(DB_CONNECTION, portal)).findOne(keySearch);
 
             if (asset) {
                 incidents[i].asset = asset;
@@ -1562,9 +1623,39 @@ exports.updateIncident = async (portal, incidentId, data) => {
 /**
  * Xóa thông tin sự cố tài sản
  */
-exports.deleteIncident = async (portal, assetId, incidentId) => {
-    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        { _id: assetId },
-        { $pull: { incidentLogs: { _id: incidentId } } }
-    );
-};
+
+
+exports.deleteIncident = async (portal, incidentIds) => {
+    console.log(incidentIds);
+    incidentIds.forEach(async (incidentId) => {
+        await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { incidentLogs: { $elemMatch: { _id: mongoose.Types.ObjectId(incidentId) } } },
+            { $pull: { incidentLogs: { _id: incidentId } } }
+        )
+    })
+
+    return incidentIds;
+}
+
+
+exports.chartAssetGroupData = async (portal, company,time) => {
+    
+    let result
+    
+
+    let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation status assetName purchaseDate disposalDate disposalCost incidentLogs maintainanceLogs")
+    let listType = await AssetType(connect(DB_CONNECTION, portal)).find({}).sort({ 'createDate': 'desc' }).populate({ path: 'parent' });
+    // let listAssets = await Asset(connect(DB_CONNECTION, portal))
+    // .find(keySearch)
+    // .populate([
+    //     {path: "assetType assignedToOrganizationalUnit" },
+    //     {path: "managedBy", select: "_id name email avatar"}
+    // ])
+    // .sort({ createdAt: "desc" })
+    // .skip(params.page)
+    // .limit(params.limit);
+
+    result = { chartAssets: chartAssets, listType: listType }
+
+    return { result }
+}

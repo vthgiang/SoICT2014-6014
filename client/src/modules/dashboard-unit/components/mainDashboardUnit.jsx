@@ -8,6 +8,7 @@ import { TabHumanResource, TabSalary, TabAnualLeave } from '../../human-resource
 import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible, CustomLegendC3js } from '../../../common-components';
 import { showListInSwal } from '../../../helpers/showListInSwal';
 
+import { getEmployeeDashboardActions } from '../../human-resource/employee-dashboard/redux/actions';
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
 import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
@@ -20,7 +21,7 @@ import "./dashboardUnit.css";
 class MainDashboardUnit extends Component {
     constructor(props) {
         super(props);
-
+        this.INFO_SEARCH = {};
         this.state = {
             month: this.formatDate(Date.now(), true),
             monthSearch: this.formatDate(Date.now(), false, true),
@@ -28,12 +29,27 @@ class MainDashboardUnit extends Component {
             organizationalUnits: [this.props.childOrganizationalUnit[0].id],
             arrayUnitShow: [this.props.childOrganizationalUnit[0].id],
 
+            startDate: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+            startDateIncreaseAndDecreaseChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 3), true),
+            endDate: this.formatDate(Date.now(), true),
+
             // Biểu đồ khẩn cấp / cần làm
             currentDate: this.formatDate(Date.now(), false),
             listUnit: [],
-            urgent: [],
-            taskNeedToDo: [],
-            arrayUnitForUrgentChart: [this.props.childOrganizationalUnit[0].id],
+        }
+        this.searchData = React.createRef()
+        this.searchData.current = {
+            month: this.formatDate(Date.now(), true),
+            monthShow: this.formatDate(Date.now(), true),
+            organizationalUnits: this.props.childOrganizationalUnit.map(x => x.id),
+            arrayUnitShow: this.props.childOrganizationalUnit.map(x => x.id),
+            startDate: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+            startDateIncreaseAndDecreaseChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 3), true),
+            startDateTrendOfOvertimeChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+            startDateAnnualLeaveTrendsChart: this.formatDate((new Date()).setMonth(new Date().getMonth() - 6), true),
+            endDateIncreaseAndDecreaseChart: this.formatDate(Date.now(), true),
+            endDateTrendOfOvertimeChart: this.formatDate(Date.now(), true),
+            endDateAnnualLeaveTrendsChart: this.formatDate(Date.now(), true)
         }
     };
 
@@ -62,6 +78,10 @@ class MainDashboardUnit extends Component {
         }
         return date;
     };
+    formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1], partDate[0]].join('-')
+    }
 
     /**
      * Function bắt sự kiện thay đổi đơn vị
@@ -72,6 +92,10 @@ class MainDashboardUnit extends Component {
             arrayUnitShow: value,
         });
 
+        this.INFO_SEARCH = {
+            organizationalUnits: value
+        }
+        this.handleChangeSearchData('organizationalUnits', value)
     }
 
     /**
@@ -82,59 +106,56 @@ class MainDashboardUnit extends Component {
         this.setState({
             month: value
         })
+        this.handleChangeSearchData('month', value)
     };
 
     /** Bắt sự kiện phân tích dữ liệu */
     handleUpdateData = () => {
-        const { department, childOrganizationalUnit } = this.props;
+
         let { month, arrayUnitShow } = this.state;
+        let { childOrganizationalUnit } = this.props;
+        const { department } = this.props;
+        const { organizationalUnits } = this.INFO_SEARCH;
+
+
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        this.setState({
-            organizationalUnits: arrayUnitShow,
-            monthShow: month,
-            monthSearch: newMonth
-        });
 
-        let arrayUnit = arrayUnitShow;
-        if (arrayUnitShow.length === department.list.length) {
-            arrayUnitShow = department.list.map(x => x._id);
-            arrayUnit = undefined;
-        } else if (arrayUnitShow.length === 0) {
-            arrayUnitShow = childOrganizationalUnit.map(x => x.id);
-            arrayUnit = childOrganizationalUnit.map(x => x.id);
+
+        if (organizationalUnits.length > 0) {
+            this.setState({
+
+                organizationalUnits: organizationalUnits,
+                monthShow: month,
+                arrayUnitShow: organizationalUnits
+
+            });
+
+            let arrayUnit = arrayUnitShow;
+            if (arrayUnitShow.length === department.list.length) {
+                // arrayUnitShow = department.list.map(x => x._id);
+                arrayUnit = undefined;
+            } else if (arrayUnitShow.length === 0) {
+                // arrayUnitShow = childOrganizationalUnit.map(x => x.id);
+                arrayUnit = childOrganizationalUnit.map(x => x.id);
+            }
+            this.props.getAllSalaryChart({name: "salary-date-data",monthTime: month})
+            this.props.getEmployeeDashboardData({
+                searchChart: {
+                    employeeDashboardChart: { 
+                        organizationalUnits: this.searchData.current.organizationalUnits,
+                        month: this.formatNewDate(this.searchData.current.month), 
+                        startDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.startDateIncreaseAndDecreaseChart),
+                        endDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.endDateIncreaseAndDecreaseChart),
+                        startDateAnnualLeaveTrendsChart: this.formatNewDate(this.searchData.current.startDateAnnualLeaveTrendsChart),
+                        endDateAnnualLeaveTrendsChart: this.formatNewDate(this.searchData.current.endDateAnnualLeaveTrendsChart),
+                        startDateTrendOfOvertimeChart: this.formatNewDate(this.searchData.current.startDateTrendOfOvertimeChart),
+                        endDateTrendOfOvertimeChart: this.formatNewDate(this.searchData.current.endDateTrendOfOvertimeChart)    
+                    }
+                }
+            });
         }
-
-
-
-        /* Lấy danh sách nhân viên  */
-        this.props.getAllEmployee({ organizationalUnits: arrayUnit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-        /* Lấy danh sách nhân viên theo tháng sinh*/
-        this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
-
-        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: arrayUnitShow });
-        this.props.getTaskInOrganizationUnitByMonth(arrayUnitShow, newMonth, newMonth, "in_month");
-
-        /** Lấy dữ liệu công việc sắp hết hạn */
-        this.props.getTaskByUser({ organizationUnitId: arrayUnitShow, type: "organizationUnit", })
-
-        // this.props.searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
-        /* Lấy dánh sách khen thưởng, kỷ luật */
-        this.props.getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
-        this.props.getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
-
-        /* Lấy dữ liệu lương nhân viên*/
-        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
-        this.props.searchSalary({ callApiDashboard: true, month: newMonth });
-
-        /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({
-            organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
-            limit: 100000,
-        });
 
     }
 
@@ -148,14 +169,10 @@ class MainDashboardUnit extends Component {
 
 
     static getDerivedStateFromProps(props, state) {
-        const { tasks } = props;
-
-        if (tasks && tasks.organizationUnitTasksChart && props.childOrganizationalUnit) {
+        if (props.childOrganizationalUnit) {
             return {
                 ...state,
                 listUnit: props.childOrganizationalUnit,
-                urgent: tasks.organizationUnitTasksChart.urgent,
-                taskNeedToDo: tasks.organizationUnitTasksChart.taskNeedToDo,
             }
         } else {
             return null;
@@ -163,41 +180,28 @@ class MainDashboardUnit extends Component {
     }
 
     componentDidMount() {
-        const { organizationalUnits, month, currentDate, arrayUnitForUrgentChart } = this.state;
+        const { month, organizationalUnits, arrayUnitShow, startDate, endDate, startDateIncreaseAndDecreaseChart } = this.state;
+
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        /* Lấy danh sách nhân viên  */
-        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
+        this.INFO_SEARCH = {
+            organizationalUnits
+        }
+        this.props.getAllSalaryChart()
+        this.props.getEmployeeDashboardData({
 
-        /* Lấy danh sách nhân viên theo tháng sinh*/
-        this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
-
-        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: organizationalUnits });
-        this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth, "in_month");
-
-        /** Lấy dữ liệu công việc sắp hết hạn */
-        this.props.getTaskByUser({ organizationUnitId: organizationalUnits, type: "organizationUnit", })
-
-        /* Lấy dánh sách khen thưởng, kỷ luật */
-        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
-        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
-
-        /* Lấy dữ liệu lương nhân viên*/
-        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
-        this.props.searchSalary({ callApiDashboard: true, month: newMonth });
-
-        /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({
-            organizationalUnits: organizationalUnits, month: newMonth, page: 0,
-            limit: 100000,
+            defaultParams: {
+                organizationalUnits: this.searchData.current.organizationalUnits,
+                month: this.formatNewDate(this.searchData.current.month), 
+                startDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.startDateIncreaseAndDecreaseChart),
+                endDateIncreaseAndDecreaseChart: this.formatNewDate(this.searchData.current.endDateIncreaseAndDecreaseChart),
+                startDateAnnualLeaveTrendsChart: this.formatNewDate(this.searchData.current.startDateAnnualLeaveTrendsChart),
+                endDateAnnualLeaveTrendsChart: this.formatNewDate(this.searchData.current.endDateAnnualLeaveTrendsChart),
+                startDateTrendOfOvertimeChart: this.formatNewDate(this.searchData.current.startDateTrendOfOvertimeChart),
+                endDateTrendOfOvertimeChart: this.formatNewDate(this.searchData.current.endDateTrendOfOvertimeChart)
+            }
         });
-
-
-        let partDate = currentDate.split('-');
-        let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
     }
 
     getUnitName = (arrayUnit, arrUnitId) => {
@@ -210,7 +214,7 @@ class MainDashboardUnit extends Component {
         })
         return data;
     }
-    
+
     showUnitTask = (selectBoxUnit, idsUnit) => {
         const { translate } = this.props
         if (idsUnit && idsUnit.length > 0) {
@@ -219,51 +223,29 @@ class MainDashboardUnit extends Component {
         }
     }
 
+    handleChangeSearchData = (name, value) => {
+        this.searchData.current = {
+            ...this.searchData.current,
+            [name]: value
+        }
+    }
+
     render() {
-        const { translate, department, employeesManager, user, tasks, discipline } = this.props;
+        const { translate, department, employeesManager, user, discipline, salaryChart, employeeDashboardData } = this.props;
 
         const { childOrganizationalUnit } = this.props;
 
-        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, monthSearch } = this.state;
+        const { monthShow, month, organizationalUnits, arrayUnitShow, monthSearch } = this.state;
 
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
-            employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-
-        // Item select box chọn đơn vị
-        let listUnitSelect = listUnit.map(item => ({ value: item.id, text: item.name }));
-
-        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
+        let listAllEmployees = employeeDashboardData.listEmployeesOfOrganizationalUnits;
+        
         let listEmployee = user.employees;
-        let employeeTasks = [];
-        for (let i in listEmployee) {
-            let tasks = [];
-            let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
-            taskListByStatus && taskListByStatus.forEach(task => {
-                if (task?.accountableEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    accountableTask = [...accountableTask, task._id]
-                }
-                if (task?.consultedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    consultedTask = [...consultedTask, task._id]
-                }
-                if (task?.responsibleEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    responsibleTask = [...responsibleTask, task._id]
-                }
-                if (task?.informedEmployees?.includes(listEmployee?.[i]?.userId?._id)) {
-                    informedTask = [...informedTask, task._id]
-                }
-            });
-            tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
-            let totalTask = tasks.filter(function (item, pos) {
-                return tasks.indexOf(item) === pos;
-            })
-            employeeTasks = [...employeeTasks, { _id: listEmployee?.[i]?.userId?._id, name: listEmployee?.[i].userId?.name, totalTask: totalTask?.length }]
-        };
-        if (employeeTasks.length !== 0) {
-            employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
 
-        };
+        let searchData = this.searchData;
 
+
+        console.log(searchData)
+        const search_data_props = { searchData, handleChangeSearchData: this.handleChangeSearchData }
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -306,8 +288,8 @@ class MainDashboardUnit extends Component {
                         </ul>
                         <div className="tab-content ">
                             <div className="tab-pane active" id="task">
-                                <TabTask 
-                                    childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} 
+                                <TabTask
+                                    childOrganizationalUnit={childOrganizationalUnit?.length && childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
                                     organizationalUnits={organizationalUnits}
                                     getUnitName={this.getUnitName}
                                     showUnitTask={this.showUnitTask}
@@ -317,11 +299,12 @@ class MainDashboardUnit extends Component {
                             {/* Tab năng lực nhân viên*/}
                             <div className="tab-pane" id="employee-capacity">
                                 <LazyLoadComponent>
-                                    <TabEmployeeCapacity 
+                                    <TabEmployeeCapacity
                                         organizationalUnits={organizationalUnits}
-                                        month={monthShow} 
-                                        allOrganizationalUnits={organizationalUnits} 
-                                        childOrganizationalUnit={childOrganizationalUnit}
+                                        month={monthShow}
+                                        monthSearch={monthSearch}
+                                        allOrganizationalUnits={organizationalUnits}
+                                        childOrganizationalUnit={childOrganizationalUnit?.length && childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
                                     />
                                 </LazyLoadComponent>
                             </div>
@@ -377,28 +360,50 @@ class MainDashboardUnit extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <TabHumanResource childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                    <TabHumanResource
+                                        childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                        defaultUnit={true}
+                                        organizationalUnits={organizationalUnits}
+                                        monthShow={monthShow}
+                                        search_data_props={search_data_props}
+                                    />
                                 </LazyLoadComponent>
                             </div>
 
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
                                 <LazyLoadComponent>
-                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} defaultUnit={true} organizationalUnits={organizationalUnits}/>
+                                    <TabAnualLeave
+                                        idUnits={childOrganizationalUnit.length ? childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id)) : []}
+                                        defaultUnit={true}
+                                        monthShow={monthShow}
+                                        childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                        search_data_props={search_data_props}
+                                    />
                                 </LazyLoadComponent>
                             </div>
 
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
                                 <LazyLoadComponent>
-                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                    <TabSalary childOrganizationalUnit={childOrganizationalUnit.filter(item => organizationalUnits.includes(item?.id))}
+                                        organizationalUnits={organizationalUnits}
+                                        monthShow={monthShow}
+                                        salaryChart={salaryChart}
+                                        search_data_props={search_data_props}
+                                    />
                                 </LazyLoadComponent>
                             </div>
 
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
                                 <LazyLoadComponent>
-                                    <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} organizationalUnits={organizationalUnits}/>
+                                    <TabIntegratedStatistics 
+                                        listAllEmployees={listAllEmployees} 
+                                        month={monthShow} 
+                                        listEmployee={listEmployee} 
+                                        organizationalUnits={organizationalUnits} 
+                                    />
                                 </LazyLoadComponent>
                             </div>
                         </div>
@@ -410,8 +415,9 @@ class MainDashboardUnit extends Component {
 }
 
 function mapState(state) {
-    const { department, employeesManager, tasks, user, discipline } = state;
-    return { department, employeesManager, tasks, user, discipline };
+    const { department, employeesManager, tasks, user, discipline, employeeDashboardData } = state;
+    const { salaryChart } = state.salary
+    return { department, employeesManager, tasks, user, discipline, salaryChart, employeeDashboardData };
 }
 
 const actionCreators = {
@@ -420,11 +426,9 @@ const actionCreators = {
     getListDiscipline: DisciplineActions.getListDiscipline,
     searchSalary: SalaryActions.searchSalary,
     getTimesheets: TimesheetsActions.searchTimesheets,
-
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getTaskByUser: taskManagementActions.getTasksByUser,
-    getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
+    getAllSalaryChart: SalaryActions.getAllSalaryChart,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 
 const mainDashboardUnit = connect(mapState, actionCreators)(withTranslate(MainDashboardUnit));

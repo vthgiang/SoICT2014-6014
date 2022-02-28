@@ -5,7 +5,11 @@ export const CrmGroupServices = {
     createGroup,
     getGroup,
     editGroup,
-    deleteGroup
+    deleteGroup,
+    addPromotion,
+    editPromotion,
+    deletePromotion,
+    getMembersGroup
 };
 
 function getGroups(params) {
@@ -44,4 +48,35 @@ function deleteGroup(id) {
         url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}`,
         method: 'DELETE'
     }, false, true, 'crm.group');
+}
+
+function addPromotion(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}/promotion`,
+        method: 'POST',
+        data
+    }, true, true, 'crm.group');
+}
+
+function editPromotion(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}/promotion`,
+        method: 'PATCH',
+        data
+    }, true, true, 'crm.group');
+}
+
+function deletePromotion(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}/promotion`,
+        method: 'DELETE',
+        data
+    }, false, true, 'crm.group');
+}
+
+function getMembersGroup(id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/groups/${id}/members`,
+        method: 'GET'
+    }, false, true, 'group');
 }

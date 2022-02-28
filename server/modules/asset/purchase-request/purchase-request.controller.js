@@ -18,7 +18,7 @@ exports.searchPurchaseRequests = async (req, res) => {
         await Logger.error(req.user.email, 'GET_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_purchase_request_faile"],
+            messages: ["get_purchase_request_failure"],
             content: {
                 error: error
             }
@@ -85,7 +85,7 @@ exports.createPurchaseRequest = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: "create_purchase_request_faile",
+            messages: "create_purchase_request_failure",
             content: {
                 inputData: req.body
             }
@@ -154,7 +154,7 @@ exports.updatePurchaseRequest = async (req, res) => {
         await Logger.error(req.user.email, 'EDIT_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_purchase_request_faile'],
+            messages: ['edit_purchase_request_failure'],
             content: {
                 error: error
             }

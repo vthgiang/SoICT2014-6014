@@ -20,13 +20,13 @@ function QuantityLotGoodReturnEdit(props) {
         good: ''
     })
 
-    useEffect(() => {
+    if (props.good !== state.good) {
         setState({
             ...state,
             good: props.good,
             lots: props.initialData
         })
-    }, [props.good])
+    }
 
     const handleAddLotInfo = async () => {
         setState({
@@ -182,7 +182,7 @@ function QuantityLotGoodReturnEdit(props) {
     const save = () => {
         props.onDataChange(state.lots);
     }
-    
+
     const { translate, group, good } = props;
     const { errorLot, lot, errorQuantity, lots } = state;
     const dataLots = getLotsByGood();
@@ -194,7 +194,7 @@ function QuantityLotGoodReturnEdit(props) {
                 formID={`form-edit-quantity-return`}
                 title="Sửa số lượng trả hàng theo lô"
                 msg_success={translate('manage_warehouse.bill_management.add_success')}
-                msg_faile={translate('manage_warehouse.bill_management.add_faile')}
+                msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="75"
@@ -206,7 +206,7 @@ function QuantityLotGoodReturnEdit(props) {
                         {state.editInfo &&
                             <div>
                                 <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
+                                    <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="text-red">*</span></label>
                                     <SelectBox
                                         id={`select-lot-return-by-${group}`}
                                         className="form-control select2"

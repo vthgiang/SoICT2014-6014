@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -214,53 +214,53 @@ const CourseEditForm = (props) => {
      * Bắt sự kiện thêm nhân viên tham gia
      * @param {*} value : Array id nhân viên tham gia
      */
-    const handleEmployeeChange = (value) => {
-        setState({
-            ...state,
-            addEmployees: value.map(x => { return { _id: x, employresult: 'failed' } })
-        })
-    }
+    // const handleEmployeeChange = (value) => {
+    //     setState({
+    //         ...state,
+    //         addEmployees: value.map(x => { return { _id: x, employresult: 'failed' } })
+    //     })
+    // }
 
     /**
      * Bắt sự kiện xoá nhân viên tham gia
      * @param {*} id : Id nhân viên muốn xoá
      */
-    const handleDelete = (id) => {
-        setState({
-            ...state,
-            listEmployees: state.listEmployees.filter(x => x._id !== id)
-        })
-    }
+    // const handleDelete = (id) => {
+    //     setState({
+    //         ...state,
+    //         listEmployees: state.listEmployees.filter(x => x._id !== id)
+    //     })
+    // }
 
     /** Bắt sự kiện click buttom thêm nhân viên tham gia */
-    const handleAdd = (e) => {
-        e.preventDefault();
-        setState({
-            ...state,
-            listEmployees: state.listEmployees.concat(state.addEmployees),
-            addEmployees: [],
-        })
-    }
+    // const handleAdd = (e) => {
+    //     e.preventDefault();
+    //     setState({
+    //         ...state,
+    //         listEmployees: state.listEmployees.concat(state.addEmployees),
+    //         addEmployees: [],
+    //     })
+    // }
 
     /**
-     * Bắt sự kiện thay đổi kết quả khoá học của nhân viên
+     * Bắt sự kiện thay đổi chấp nhận hoặc từ chối đăng ký khóa học
      * @param {*} id : Id nhân viên
      * @param {*} value : Kết quả khoá học
      */
     const handleResultChange = async (id, value) => {
-        let listEmployees = state.listEmployees;
-        for (let n in listEmployees) {
-            if (listEmployees[n]._id === id) {
-                if (value === 'pass') {
-                    listEmployees[n].result = 'failed'
-                } else if (value === 'failed') {
-                    listEmployees[n].result = 'pass'
+        let registeredEmployees = state.registeredEmployees;
+        for (let n in registeredEmployees) {
+            if (registeredEmployees[n]._id === id) {
+                if (value === 2) {
+                    registeredEmployees[n].registerType = 2
+                } else if (value === 3) {
+                    registeredEmployees[n].registerType = 3
                 }
             }
         }
         await setState({
             ...state,
-            listEmployees: listEmployees
+            registeredEmployees: registeredEmployees
         })
     }
 
@@ -334,7 +334,7 @@ const CourseEditForm = (props) => {
 
     const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
         employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
-        errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = state;
+        errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate, registeredEmployees } = state;
 
     let listEducations = education.listAll, employeeInfors = [], userlist = [];
 
@@ -350,7 +350,7 @@ const CourseEditForm = (props) => {
             employeeInfors = employeeInfor.concat(employeeInfors);
         }
     }
-    
+
     return (
         <React.Fragment>
             <DialogModal
@@ -465,7 +465,7 @@ const CourseEditForm = (props) => {
                             <ErrorLabel content={errorOnEmployeeCommitmentTime} />
                         </div>
                     </div>
-                    <div className="form-group" style={{ marginBottom: 0, marginTop: 20 }}>
+                    {/* <div className="form-group" style={{ marginBottom: 0, marginTop: 20 }}>
                         <label>{translate('training.course.employee_attend')}</label>
                         <div>
                             <div className="employeeBox2">
@@ -480,7 +480,7 @@ const CourseEditForm = (props) => {
                             </div>
                             <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={handleAdd}>{translate('human_resource.profile.add_staff')}</button>
                         </div>
-                    </div>
+                    </div> */}
                     <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                         <thead>
                             <tr>
@@ -492,28 +492,28 @@ const CourseEditForm = (props) => {
                         </thead>
                         <tbody>
                             {
-                                listEmployees.length > 0 &&
-                                listEmployees.map((x, index) => (
+                                registeredEmployees.length > 0 &&
+                                registeredEmployees.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee?.employeeNumber}</td>
                                         <td>{x.employee?.fullName}</td>
                                         <td>
                                             <div>
                                                 <div className="radio-inline">
-                                                    <input type="radio" name={`result${x._id}`} value="pass" checked={x.result === 'pass'}
-                                                        onChange={() => handleResultChange(x._id, x.result)} />
-                                                    <label>{translate('training.course.result.pass')}</label>
+                                                    <input type="radio" name={`accept${x._id}`} value={2} checked={x.registerType === 2}
+                                                        onChange={() => handleResultChange(x._id, 2)} />
+                                                    <label>{translate('training.course.admin.accept')}</label>
                                                 </div>
                                                 <div className="radio-inline">
-                                                    <input type="radio" name={`result${x._id}`} value="failed" checked={x.result === "failed"}
-                                                        onChange={() => handleResultChange(x._id, x.result)} />
-                                                    <label>{translate('training.course.result.failed')}</label>
+                                                    <input type="radio" name={`reject${x._id}`} value={3} checked={x.registerType === 3}
+                                                        onChange={() => handleResultChange(x._id, 3)} />
+                                                    <label>{translate('training.course.admin.reject')}</label>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             <a className="delete" title="Delete" onClick={() => handleDelete(x._id)}><i className="material-icons"></i></a>
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 ))
                             }

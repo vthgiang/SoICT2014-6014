@@ -7,6 +7,7 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
 import 'c3/c3.css';
+import Swal from 'sweetalert2';
 
 const SalaryOfOrganizationalUnitsChart = (props) => {
 
@@ -45,7 +46,7 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 
     /** Render chart */
     const renderChart = (data) => {
-        data.data1.shift();
+        //data.data1.shift();
         let setHeightChart = (data.ratioX.length * 40) < 320 ? 320 : (data.ratioX.length * 40);
         removePreviousChart();
         let chart = c3.generate({
@@ -78,64 +79,78 @@ const SalaryOfOrganizationalUnitsChart = (props) => {
 
     const { translate, salary, department } = props;
 
-    const { monthShow, organizationalUnits } = props;
+    const { monthShow, organizationalUnits, salaryChartData } = props;
     const { unit } = state;
+    
+    let dataChart = {}
+    let filterSalary = {
+        nameOfUnit: [],
+        salaryOfMonth: [],
+    }
+    if (salaryChartData?.length!=0) {
+        if (organizationalUnits?.length) {
+            organizationalUnits.map((i) => {
+                
+                let index = salaryChartData?.idSalaryTypePurchase?.indexOf(i);
+                
+                filterSalary.nameOfUnit.push(salaryChartData?.nameOfUnit[index])
+                filterSalary.salaryOfMonth.push(salaryChartData?.salaryOfMonth[index])
 
-    let organizationalUnitsName = department?.list?.filter(item => organizationalUnits?.includes(item?._id))?.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
-    let data = salary.listSalaryByMonth;
-    if (data.length !== 0) {
-        data = data.map(x => {
-            let total = parseInt(x.mainSalary);
-            if (x.bonus.length !== 0) {
-                for (let count in x.bonus) {
-                    total = total + parseInt(x.bonus[count].number)
-                }
-            };
-            return { ...x, total: unit ? total / 1000000000 : total / 1000000 }
-        })
-    };
+            })
+        }
 
-    organizationalUnitsName = organizationalUnitsName.map(x => {
-        data.forEach(y => {
-            if (x._id === y.organizationalUnit) {
-                x.salary = x.salary + y.total
+    }
+    console.log("filterSalary", filterSalary)
+    if (filterSalary) {
+        console.log("filterSalary", filterSalary)
+        let dataNew = [];
+        if(filterSalary?.salaryOfMonth.length>0){
+        filterSalary.salaryOfMonth.map(i=>{
+            if(state?.unit)
+            {
+                dataNew.push(i/1000000000)
+            } else{
+                dataNew.push(i/1000000)
             }
         })
-        return x;
-    })
-
-    let ratioX = organizationalUnitsName.map(x => x.name);
-    let data1 = organizationalUnitsName.map(x => x.salary);
-    let dataChart = {
-        nameData: 'Thu nhập',
-        ratioX: ratioX,
-        data1: ['data1', ...data1],
     }
+        dataChart = {
+            nameData: 'Thu nhập',
+            ratioX: filterSalary.nameOfUnit,
+            data1: dataNew
+        }
+        
 
+    }
+   
 
-    renderChart(dataChart);
+    const showDetailSalary = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Biểu đồ thu nhập được tính như sau:</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <ul>
+                <li>Lương chính (Lương cơ bản)</b></li>
+                <li>Các khoản lương thưởng, phụ cấp,...vv</li>
+            </ul>`,
+            width: "50%",
+        })
+    }
+    useEffect(() => {
+        if (dataChart) {
+            renderChart(dataChart);
+        }
+    }, [dataChart])
+
 
     return (
         <React.Fragment>
             <div className="box box-solid" style={{ paddingBottom: 20 }}>
                 <div className="box-header with-border">
-                    <div className="box-title">
-                        {`Biểu đồ thu nhập `}
-                        {
-                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
-                                <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${organizationalUnitsName?.[0]?.name ? organizationalUnitsName?.[0]?.name : ""}`}</span>
-                                </>
-                                :
-                                <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                </span>
-                        }
-                        {` tháng ${monthShow}`}
-                    </div>
+
+                    <a title={'Giải thích'} onClick={showDetailSalary}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                    </a>
                 </div>
                 {salary.isLoading
                     ? <div style={{ marginLeft: "5px" }}>{translate('general.loading')}</div>

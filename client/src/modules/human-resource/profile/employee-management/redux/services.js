@@ -8,6 +8,7 @@ export const EmployeeService = {
     updateInformationEmployee,
     deleteEmployee,
     importEmployees,
+    searchForPackage
 }
 /**
  * Lấy danh sách nhân viên
@@ -33,6 +34,8 @@ function getAll(data) {
             endDateOfContract: data ? data.endDateOfContract : data,
             birthdate: data ? data.birthdate : data,
             typeOfContract: data ? data.typeOfContract : data,
+            certificates: data ? data.certificates: null,
+            degrees: data ? data.degrees: null,
             page: data ? data.page : data,
             limit: data ? data.limit : data
         }
@@ -45,7 +48,7 @@ function getAll(data) {
  */
 function searchForPackage(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/employee/employees`,
+        url: `${ process.env.REACT_APP_SERVER }/employee/employees/search-for-package`,
         method: 'GET',
         params: data,
     }, false, true, 'human_resource.profile.employee_management');

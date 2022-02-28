@@ -3,7 +3,7 @@ import { RoleConstants } from "./constants";
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
@@ -23,7 +23,7 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     error: null,
-    isLoading: true,
+    isLoading: false,
     item: null
 }
 
@@ -37,6 +37,7 @@ export function role(state = initState, action) {
         case RoleConstants.EDIT_ROLE_REQUEST:
         case RoleConstants.GET_ROLES_PAGINATE_REQUEST:
         case RoleConstants.DELETE_ROLE_REQUEST:
+        case RoleConstants.IMPORT_ROLE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -96,7 +97,7 @@ export function role(state = initState, action) {
                 ],
                 isLoading: false
             };
-        
+
         case RoleConstants.EDIT_ROLE_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
@@ -122,22 +123,37 @@ export function role(state = initState, action) {
             if (index !== -1) {
                 state.list.splice(index, 1);
             }
-                
+
             if (indexPaginate !== -1) {
                 state.listPaginate.splice(indexPaginate, 1);
             }
-                
+
 
             return {
                 ...state,
                 isLoading: false
             };
-        
+
         case RoleConstants.SET_FILTER:
             return {
                 ...state,
                 filter: action.payload
             };
+
+        case RoleConstants.IMPORT_ROLE_SUCCESS:
+            return {
+                ...state,
+                listPaginate: [...action.payload, ...state.listPaginate],
+                totalDocs: state.totalDocs + action.payload.length,
+                isLoading: false,
+            }
+
+        case RoleConstants.IMPORT_ROLE_FAILE:
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false,
+            }
 
         default:
             return state;

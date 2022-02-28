@@ -129,16 +129,19 @@ function updateIncident(id, data,managedBy ='') {
     };
 }
 
-function deleteIncident(assetId, incidentId) {
+
+
+function deleteIncident(data) {
     return async dispatch => {
         try {
             dispatch({
                 type: IncidentConstants.DELETE_INCIDENT_REQUEST
             });
-            const response = await IncidentService.deleteIncident(assetId, incidentId);
+            const response = await IncidentService.deleteIncident(data);
             dispatch({
                 type: IncidentConstants.DELETE_INCIDENT_SUCCESS,
-                payload: response.data.content
+                payload: response.data.content,
+                incidentIds: data.incidentIds
             });
             return {
                 response

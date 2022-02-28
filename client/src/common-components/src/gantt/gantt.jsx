@@ -14,18 +14,6 @@ function Gantt(props) {
     const [dataProcessor, setDataProcessor] = useState(null);
     const [lang, setLang] = useState(getStorage('lang'))
     const [gantt, setGantt] = useState(window.initializationGantt());
-    const [showscroll, setShowScroll] = useState(false)
-    const [ab, setAb] = useState(0)
-    //useEffect(() =>{
-    //if(showscroll){
-    //activeSlimScroll()
-    //}
-
-    //},[showscroll])
-    const [dimensions, setDimensions] = useState({
-        height: window.innerHeight,
-        width: window.innerWidth
-    })
     useEffect(() => {
         initZoom(gantt);
 
@@ -81,34 +69,14 @@ function Gantt(props) {
     }, [])
 
     useEffect(() => {
-        if (showscroll) {
-            let outer = window.$(`#gantt-${ganttId}`);
-            // console.log(outer.css("height"), window.innerHeight / 2);
-            let lenghHeight = outer.css("height")
-
-            lenghHeight = lenghHeight.slice(0, lenghHeight.length - 2)
-            lenghHeight = parseInt(lenghHeight)
-            if (lenghHeight !== window.innerHeight / 2) {
-                outer.css({ "max-height": `${window.innerHeight / 2}px` });
-                setAb(window.innerHeight / 2)
-            }
-            console.log('when showscroll == true', outer[0]);
-        } else {
-            let outer = window.$(`#gantt-${ganttId}`);
-            let lenghHeight = outer.css("height")
-
-            //console.log('when showscroll == true', outer[0],lenghHeight);
-            outer.css({ "max-height": `${window.innerHeight}px` });
-
-        }
-    }, [dimensions, showscroll])
-    // console.log(window.innerHeight);
-    useEffect(() => {
-        //   console.log('showscroll', showscroll);
+        ;
         if (gantt) {
             gantt.clearAll();
             gantt.init(`gantt-${ganttId}`);
-            gantt.parse(ganttData);
+            if (ganttData) {
+                gantt.parse(ganttData);
+            }
+
 
             // Thêm marker thời gian hiện tại
             const dateToStr = gantt.date.date_to_str(gantt.config.task_date);
@@ -121,6 +89,15 @@ function Gantt(props) {
             gantt.getMarker(markerId);
         }
 
+        let outer = window.$(`#gantt-${ganttId}`);
+        //console.log(outer.css("height"), window.innerHeight / 2);
+        let lenghHeight = outer.css("height")
+        lenghHeight = lenghHeight.slice(0, lenghHeight.length - 2)
+        lenghHeight = parseInt(lenghHeight)
+        if (lenghHeight > window.innerHeight / 2) {
+            outer.css({ "max-height": `${window.innerHeight / 2}px` });
+        }
+        //console.log(outer[0]);
         // Focus vào ngày hiện tại
         let date = new Date();
         let date_x = gantt.posFromDate(date);
@@ -128,22 +105,8 @@ function Gantt(props) {
         gantt.scrollTo(scroll_to);
 
         setZoom(gantt, zoom);
-        const handleResize = () => {
-            if (window.innerHeight !== dimensions.height) {
-                setDimensions({
-                    height: window.innerHeight,
-                    width: window.innerWidth
-                })
-            }
-        }
-
-        window.addEventListener('resize', handleResize)
     })
 
-
-    const handleShowScroll = () => {
-        setShowScroll(!showscroll);
-    }
 
 
     const activeSlimScroll = () => {
@@ -208,9 +171,10 @@ function Gantt(props) {
     }
 
     let heightCalc = parseFloat(line) ? (parseFloat(line) * 35 + 80) : 80;
+
     return (
         <React.Fragment>
-            <button type="button" onClick={handleShowScroll}>Bật/Tắt scroll</button>
+
             <ToolbarGantt
                 zoom={zoom}
                 onZoomChange={onZoomChange}

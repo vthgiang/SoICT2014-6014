@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {connect} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
@@ -67,11 +67,12 @@ function EmployeeKpiEvaluationDashboard(props) {
         editing: false,
         IDS: null,
 
-        organizationalUnitIds: null
+        organizationalUnitIds: null,
+        dashboardPage: 'KPI'
     });
 
-    const {user, kpimembers, dashboardEvaluationEmployeeKpiSet} = props;
-    const {translate} = props;
+    const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = props;
+    const { translate } = props;
 
     const {
         unitMembers, dateOfExcellentEmployees, userId,
@@ -224,7 +225,7 @@ function EmployeeKpiEvaluationDashboard(props) {
 
             if (IDS.length > 0) {
                 props.getAllEmployeeKpiSetOfUnitByIds(IDS);
-                props.getAllEmployeeOfUnitByIds({organizationalUnitIds: IDS});
+                props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: IDS });
                 props.getAllUserOfDepartment(IDS);
             }
         }
@@ -264,7 +265,7 @@ function EmployeeKpiEvaluationDashboard(props) {
         let endMonthIso = new Date(state.endMonth);
 
         if (startMonthIso.getTime() > endMonthIso.getTime()) {
-            const {translate} = props;
+            const { translate } = props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',
@@ -315,7 +316,7 @@ function EmployeeKpiEvaluationDashboard(props) {
     }
 
     if (unitMembers && infosearch) {
-        for (let i=0; i < unitMembers.length; i++) {
+        for (let i = 0; i < unitMembers.length; i++) {
             for (let j = 0; j < unitMembers[i].value.length; j++) {
                 let arr = unitMembers[i].value;
                 if (arr[j].value === infosearch.userId) {
@@ -378,44 +379,49 @@ function EmployeeKpiEvaluationDashboard(props) {
         kpiApproved = listkpi && listkpi.filter(item => item.status === 3);
 
         let automaticPoint = kpiApproved && kpiApproved.map(item => {
-            return {label: formatDate(item.date), y: item.automaticPoint}
+            return { label: formatDate(item.date), y: item.automaticPoint }
         }).reverse();
 
         let employeePoint = kpiApproved.map(item => {
-            return {label: formatDate(item.date), y: item.employeePoint}
+            return { label: formatDate(item.date), y: item.employeePoint }
         }).reverse();
 
         let approvedPoint = kpiApproved.map(item => {
-            return {label: formatDate(item.date), y: item.approvedPoint}
+            return { label: formatDate(item.date), y: item.approvedPoint }
         }).reverse();
+    }
+    let organizationalUnitsName = [];
+    if (childrenOrganizationalUnit && ids) {
+        organizationalUnitsName = childrenOrganizationalUnit.filter(x => ids.includes(x.id));
+        organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
     return (
         <React.Fragment>
             {currentUnit
                 ? <React.Fragment>
-                    <div className="qlcv" style={{textAlign: "right", marginBottom: 15}}>
+                    <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
                         <div className="form-inline">
                             <div className="form-group">
                                 <label
                                     className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                 {ids &&
-                                <SelectMulti
-                                     id="multiSelectOrganizationalUnit"
-                                    items={childrenOrganizationalUnit.map(item => {
-                                        return {value: item.id, text: item.name}
-                                    })}
-                                    options={{
-                                        nonSelectedText: translate('kpi.evaluation.dashboard.select_units'),
-                                        allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
-                                    }}
-                                    onChange={handleSelectOrganizationalUnit}
-                                    value={ids}
-                                >
-                                </SelectMulti>
+                                    <SelectMulti
+                                        id="multiSelectOrganizationalUnit"
+                                        items={childrenOrganizationalUnit.map(item => {
+                                            return { value: item.id, text: item.name }
+                                        })}
+                                        options={{
+                                            nonSelectedText: translate('kpi.evaluation.dashboard.select_units'),
+                                            allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
+                                        }}
+                                        onChange={handleSelectOrganizationalUnit}
+                                        value={ids}
+                                    >
+                                    </SelectMulti>
                                 }
                                 <button type="button" className="btn btn-success"
-                                        onClick={handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
+                                    onClick={handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                             </div>
                         </div>
                     </div>
@@ -424,10 +430,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                         {/* Số nhân viên */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-yellow"><i className="fa fa-users"/></span>
+                                <span className="info-box-icon bg-yellow"><i className="fa fa-users" /></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
-                                    <a className="info-box-number" onClick={() => showListInSwal(allEmployeesUnit?.map(item => item?.userId?.name), translate('general.list_employee'))} style={{ cursor: 'pointer', fontSize: '20px'}}>{numberOfEmployee ? numberOfEmployee : 0}</a>
+                                    <a className="info-box-number" onClick={() => showListInSwal(allEmployeesUnit?.map(item => item?.userId?.name), translate('general.list_employee'))} style={{ cursor: 'pointer', fontSize: '20px' }}>{numberOfEmployee ? numberOfEmployee : 0}</a>
                                 </div>
                             </div>
                         </div>
@@ -435,11 +441,11 @@ function EmployeeKpiEvaluationDashboard(props) {
                         {/* Đã kích hoạt */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-green"><i className="fa fa-check-circle"/></span>
+                                <span className="info-box-icon bg-green"><i className="fa fa-check-circle" /></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.activated')}`}</span>
-                                    
-                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard', 
+
+                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard',
                                         JSON.stringify({
                                             organizationalUnit: organizationalUnitIds,
                                             status: ["2"],
@@ -447,10 +453,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                                             endDate: state.endMonth,
                                             startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
                                             endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
-                                        }))} 
+                                        }))}
                                         target="_blank" rel="noopener noreferrer"
                                     >
-                                        <span className="info-box-number" style={{fontSize: '20px'}}>{`${activatedKpi ? activatedKpi : 0}`}</span>
+                                        <span className="info-box-number" style={{ fontSize: '20px' }}>{`${activatedKpi ? activatedKpi : 0}`}</span>
                                     </Link>
                                 </div>
                             </div>
@@ -459,10 +465,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                         {/* Chờ phê duyệt */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-red"><i className="fa fa-hourglass-half"/></span>
+                                <span className="info-box-icon bg-red"><i className="fa fa-hourglass-half" /></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
-                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard', 
+                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard',
                                         JSON.stringify({
                                             organizationalUnit: organizationalUnitIds,
                                             status: ["1"],
@@ -470,10 +476,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                                             endDate: state.endMonth,
                                             startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
                                             endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
-                                        }))} 
+                                        }))}
                                         target="_blank" rel="noopener noreferrer"
                                     >
-                                        <span className="info-box-number" style={{fontSize: '20px'}}>{`${awaitingApprovalKpi ? awaitingApprovalKpi : 0}`}</span>
+                                        <span className="info-box-number" style={{ fontSize: '20px' }}>{`${awaitingApprovalKpi ? awaitingApprovalKpi : 0}`}</span>
                                     </Link>
                                 </div>
                             </div>
@@ -482,10 +488,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                         {/* Đng thiết lập */}
                         <div className="col-md-3 col-sm-6 form-inline">
                             <div className="info-box">
-                                <span className="info-box-icon bg-aqua"><i className="fa fa-cogs"/></span>
+                                <span className="info-box-icon bg-aqua"><i className="fa fa-cogs" /></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
-                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard', 
+                                    <Link to="/kpi-member/manager" onClick={() => localStorage.setItem('stateFromEmployeeKpiEvaluationDashboard',
                                         JSON.stringify({
                                             organizationalUnit: organizationalUnitIds,
                                             status: ["0"],
@@ -493,10 +499,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                                             endDate: state.endMonth,
                                             startDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-'),
                                             endDateDefault: [state?.endMonth?.slice(5), state?.endMonth?.slice(0, 4)].join('-')
-                                        }))} 
+                                        }))}
                                         target="_blank" rel="noopener noreferrer"
                                     >
-                                        <span className="info-box-number"  style={{fontSize: '20px'}}>{`${settingUpKpi ? settingUpKpi : 0}`}</span>
+                                        <span className="info-box-number" style={{ fontSize: '20px' }}>{`${settingUpKpi ? settingUpKpi : 0}`}</span>
                                     </Link>
                                 </div>
                             </div>
@@ -509,19 +515,19 @@ function EmployeeKpiEvaluationDashboard(props) {
                                     <h3 className="box-title">{`${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')}`}</h3>
                                     <div className="box-tools pull-right">
                                         <button type="button" data-toggle="collapse"
-                                                data-target="#setting-excellent-employee" className="pull-right"
-                                                style={{border: "none", background: "none", padding: "0px"}}>
-                                            <i className="fa fa-gear" style={{fontSize: "19px"}}></i>
+                                            data-target="#setting-excellent-employee" className="pull-right"
+                                            style={{ border: "none", background: "none", padding: "0px" }}>
+                                            <i className="fa fa-gear" style={{ fontSize: "19px" }}></i>
                                         </button>
                                         <div className="box box-primary box-solid collapse setting-table"
-                                             id={"setting-excellent-employee"}>
+                                            id={"setting-excellent-employee"}>
                                             <div className="box-header with-border">
                                                 <h3 className="box-title">{translate('kpi.evaluation.dashboard.option')}</h3>
                                                 <div className="box-tools pull-right">
                                                     <button type="button" className="btn btn-box-tool"
-                                                            data-toggle="collapse"
-                                                            data-target="#setting-excellent-employee"><i
-                                                        className="fa fa-times"></i></button>
+                                                        data-toggle="collapse"
+                                                        data-target="#setting-excellent-employee"><i
+                                                            className="fa fa-times"></i></button>
                                                 </div>
                                             </div>
                                             <div className="box-body">
@@ -540,9 +546,9 @@ function EmployeeKpiEvaluationDashboard(props) {
                                                     <label
                                                         className="form-control-static">{translate('kpi.evaluation.dashboard.number_of_employee')}</label>
                                                     <input name="numberOfExcellentEmployees" className="form-control"
-                                                           type="Number"
-                                                           onChange={(event) => handleNumberOfEmployeesChange(event)}
-                                                           defaultValue={numberOfExcellentEmployees}/>
+                                                        type="Number"
+                                                        onChange={(event) => handleNumberOfEmployeesChange(event)}
+                                                        defaultValue={numberOfExcellentEmployees} />
                                                 </div>
                                             </div>
                                         </div>
@@ -554,12 +560,12 @@ function EmployeeKpiEvaluationDashboard(props) {
                                         {
                                             (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
                                                 lastMonthEmployeeKpiSets.map((item, index) =>
-                                                    <li key={index} style={{maxWidth: 200}}>
+                                                    <li key={index} style={{ maxWidth: 200 }}>
                                                         <img
-                                                            src={(process.env.REACT_APP_SERVER + item.creator.avatar)}/>
+                                                            src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
                                                         <a className="users-list-name" href="#detailKpiMember2"
-                                                           data-toggle="modal"
-                                                           data-target="#memberKPIApprove2">{item.creator.name}</a>
+                                                            data-toggle="modal"
+                                                            data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                         <span className="users-list-date">{item.approvedPoint}</span>
                                                     </li>
                                                 )
@@ -579,9 +585,9 @@ function EmployeeKpiEvaluationDashboard(props) {
                             <div className="box">
                                 <div className="box-header with-border">
                                     <h3 className="box-title">{translate('kpi.evaluation.dashboard.statistics_chart_title')}</h3>
-                                    { statisticsOfEmployeeKpiSetChartData &&
-                                        <ExportExcel 
-                                            type="link" 
+                                    {statisticsOfEmployeeKpiSetChartData &&
+                                        <ExportExcel
+                                            type="link"
                                             id="export-statistic-employee-kpi-set-chart"
                                             exportData={statisticsOfEmployeeKpiSetChartData}
                                         />
@@ -613,23 +619,23 @@ function EmployeeKpiEvaluationDashboard(props) {
                                     </div>
                                     <div className="form-inline">
                                         {unitMembers &&
-                                        <div className="col-sm-6 col-xs-12 form-group">
-                                            <label>{translate('kpi.evaluation.employee_evaluation.employee')}</label>
-                                            <SelectBox
-                                                id={`createEmployeeKpiSet`}
-                                                className="form-control select2"
-                                                style={{width: "100%"}}
-                                                items={unitMembers}
-                                                multiple={false}
-                                                onChange={handleSelectEmployee}
-                                                value={state.userId}
-                                            />
-                                        </div>
+                                            <div className="col-sm-6 col-xs-12 form-group">
+                                                <label>{translate('kpi.evaluation.employee_evaluation.employee')}</label>
+                                                <SelectBox
+                                                    id={`createEmployeeKpiSet`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={unitMembers}
+                                                    multiple={false}
+                                                    onChange={handleSelectEmployee}
+                                                    value={state.userId}
+                                                />
+                                            </div>
                                         }
                                         <div className="col-sm-6 col-xs-12 form-group">
                                             <label></label>
                                             <button type="button" className="btn btn-success"
-                                                    onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                                onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                                         </div>
                                     </div>
 
@@ -659,25 +665,12 @@ function EmployeeKpiEvaluationDashboard(props) {
                     {/* Kết quả Kpi tất cả nhân viên */}
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
-                                    {resultsOfAllEmployeeKpiSetChartData &&
-                                        <ExportExcel 
-                                            type="link" id="export-all-employee-kpi-evaluate-result-dashboard"
-                                            exportData={resultsOfAllEmployeeKpiSetChartData}
-                                            style={{marginTop: 5}}
-                                        />
-                                    }
-                                </div>
-
-                                <div className="box-body qlcv">
-                                    <ResultsOfAllEmployeeKpiSetChart
-                                        organizationalUnitIds={organizationalUnitIds}
-                                        onDataAvailable={handleResultsOfAllEmployeeKpiSetChartDataAvailable}
-                                    />
-                                </div>
-                            </div>
+                            <ResultsOfAllEmployeeKpiSetChart
+                                organizationalUnitIds={organizationalUnitIds}
+                                onDataAvailable={handleResultsOfAllEmployeeKpiSetChartDataAvailable}
+                                dashboardPage={state.dashboardPage}
+                                organizationalUnitsName={organizationalUnitsName}
+                            />
                         </div>
                     </div>
                 </React.Fragment>
@@ -693,8 +686,8 @@ function EmployeeKpiEvaluationDashboard(props) {
 }
 
 function mapState(state) {
-    const {user, kpimembers, dashboardEvaluationEmployeeKpiSet, department} = state;
-    return {user, kpimembers, dashboardEvaluationEmployeeKpiSet, department};
+    const { user, kpimembers, dashboardEvaluationEmployeeKpiSet, department } = state;
+    return { user, kpimembers, dashboardEvaluationEmployeeKpiSet, department };
 }
 
 const actionCreators = {

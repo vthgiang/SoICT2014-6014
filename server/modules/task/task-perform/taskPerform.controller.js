@@ -24,7 +24,7 @@ exports.getTaskById = async (req, res) => {
         await Logger.error(req.user.email, ` get task by id `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['get_task_by_id_fail'],
+            messages: ['get_task_by_id_failure'],
             content: error
         });
     };
@@ -46,7 +46,7 @@ exports.getTaskTimesheetLogs = async (req, res) => {
         await Logger.error(req.user.email, ` get log timer  `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['get_log_timer_fail'],
+            messages: ['get_log_timer_failure'],
             content: error
         })
     }
@@ -76,7 +76,7 @@ getActiveTimesheetLog = async (req, res) => {
         await Logger.error(req.user.email, `get timer status`, req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_timer_status_fail'],
+            messages: Array.isArray(error) ? error : ['get_timer_status_failure'],
             content: error
         })
     }
@@ -86,7 +86,7 @@ getActiveTimesheetLog = async (req, res) => {
 getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (req, res) => {
     try {
         let timesheetLog = await PerformTaskService.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(req.portal, req.query);
-        
+
         await Logger.info(req.user.email, ` get current timesheet log `, req.portal)
         res.status(200).json({
             success: true,
@@ -97,7 +97,7 @@ getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (req, res) => {
         await Logger.error(req.user.email, ` get current timesheet log `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['get_current_timesheet_log_failure'],
+            messages: ['get_current_timesheet_log_failureure'],
             content: error
         })
     }
@@ -116,10 +116,10 @@ exports.startTimesheetLog = async (req, res) => {
             content: timerStatus
         })
     } catch (error) {
-        await Logger.error(req.user.email, 'start_timer_faile', req.portal)
+        await Logger.error(req.user.email, 'start_timer_failureure', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['start_timer_fail'],
+            messages: Array.isArray(error) ? error : ['start_timer_failure'],
             content: error
         })
     }
@@ -138,10 +138,11 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
-        await Logger.error(req.user.email, 'stop_timer_faile', req.portal)
+        console.log('err', error)
+        await Logger.error(req.user.email, 'stop_timer_failureure', req.portal)
         res.status(400).json({
             success: false,
-            messages: ['stop_timer_fail'],
+            messages: ['stop_timer_failure'],
             content: error
         })
     }
@@ -153,7 +154,7 @@ exports.stopTimesheetLog = async (req, res) => {
  */
 exports.editTimeSheetLog = async (req, res) => {
     try {
-        let {taskId, timesheetlogId} = req.params;
+        let { taskId, timesheetlogId } = req.params;
         let timer = await PerformTaskService.editTimeSheetLog(req.portal, taskId, timesheetlogId, req.body);
         await Logger.info(req.user.email, 'edit_time_sheet_log_success', req.portal)
         res.status(200).json({
@@ -162,10 +163,10 @@ exports.editTimeSheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
-        await Logger.error(req.user.email, 'edit_time_sheet_log_faile', req.portal)
+        await Logger.error(req.user.email, 'edit_time_sheet_log_failureure', req.portal)
         res.status(400).json({
             success: false,
-            messages: ['edit_time_sheet_log_fail'],
+            messages: ['edit_time_sheet_log_failure'],
             content: error
         })
     }
@@ -197,7 +198,7 @@ exports.createTaskAction = async (req, res) => {
         }
         let accountableFilter = tasks.accountableEmployees.filter(obj => obj._id.toString() !== req.user._id.toString());
         accountableFilter = accountableFilter.map(o => o._id);
-        
+
         const associatedDataforAccountable = {
             "organizationalUnits": tasks.organizationalUnit && tasks.organizationalUnit._id,
             "title": "Phê duyệt hoạt động",
@@ -212,8 +213,8 @@ exports.createTaskAction = async (req, res) => {
             }
         };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable);
-       
-        // message gửi cho người thực hiện
+
+        // Message gửi cho người thực hiện
         // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
         let userReceive = tasks.responsibleEmployees.filter(obj => obj._id.toString() !== req.user._id.toString());
         userReceive = userReceive.map(user => user._id.toString());
@@ -237,8 +238,8 @@ exports.createTaskAction = async (req, res) => {
         };
 
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible);
-        sendEmail(task.email, tasks.name, '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`,`${tasks.id}@gmail.com`,null);
-        
+        sendEmail(task.email, tasks.name, '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, `${tasks.id}@gmail.com`, null);
+
         await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({
             success: true,
@@ -249,7 +250,7 @@ exports.createTaskAction = async (req, res) => {
         await Logger.error(req.user.email, ` create task action  `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['create_task_action_fail'],
+            messages: ['create_task_action_failure'],
             content: error
         })
     }
@@ -284,7 +285,7 @@ exports.editTaskAction = async (req, res) => {
             await Logger.error(req.user.email, ` edit task action  `, req.portal)
             res.status(400).json({
                 success: false,
-                messages: ['edit_task_action_fail'],
+                messages: ['edit_task_action_failure'],
                 content: error
             })
         }
@@ -305,7 +306,7 @@ exports.deleteTaskAction = async (req, res) => {
         await Logger.error(req.user.email, ` delete task action  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_task_action_fail'],
+            messages: ['delete_task_action_failure'],
             content: error
         })
     }
@@ -334,7 +335,7 @@ exports.createCommentOfTaskAction = async (req, res) => {
         await Logger.error(req.user.email, ` create  action comment  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['create_action_comment_fail'],
+            messages: ['create_action_comment_failure'],
             content: error
         })
     }
@@ -363,7 +364,7 @@ exports.editCommentOfTaskAction = async (req, res) => {
         await Logger.error(req.user.email, ` edit action comment  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_action_comment_fail'],
+            messages: ['edit_action_comment_failure'],
             content: error
         })
     }
@@ -385,7 +386,7 @@ exports.deleteCommentOfTaskAction = async (req, res) => {
         await Logger.error(req.user.email, ` delete action comment  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_action_comment_fail'],
+            messages: ['delete_action_comment_failure'],
             content: error
         })
     }
@@ -416,7 +417,7 @@ exports.createTaskComment = async (req, res) => {
         await Logger.error(req.user.email, ` create task comment  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_task_comment_fail"],
+            messages: ["create_task_comment_failure"],
             content: error
         })
     }
@@ -445,7 +446,7 @@ exports.editTaskComment = async (req, res) => {
         await Logger.error(req.user.email, ` edit task comments  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_task_comment_fail'],
+            messages: ['edit_task_comment_failure'],
             content: error
         })
     }
@@ -466,7 +467,7 @@ exports.deleteTaskComment = async (req, res) => {
         await Logger.error(req.user.email, ` delete task comments  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_task_comment_fail'],
+            messages: ['delete_task_comment_failure'],
             content: error
         })
     }
@@ -487,7 +488,7 @@ exports.deleteFileChildTaskComment = async (req, res) => {
         await Logger.error(req.user.email, ` delete task comments  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_file_child_task_comment_fail'],
+            messages: ['delete_file_child_task_comment_failure'],
             content: error
         })
     }
@@ -516,7 +517,7 @@ exports.createCommentOfTaskComment = async (req, res) => {
         await Logger.error(req.user.email, ` create comment of task comment  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['create_comment_of_task_comment_fail'],
+            messages: ['create_comment_of_task_comment_failure'],
             content: error
         })
     }
@@ -545,7 +546,7 @@ exports.editCommentOfTaskComment = async (req, res) => {
         await Logger.error(req.user.email, ` edit comment of task comment  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_comment_of_task_comment_fail'],
+            messages: ['edit_comment_of_task_comment_failure'],
             content: error
         })
     }
@@ -566,7 +567,7 @@ exports.deleteCommentOfTaskComment = async (req, res) => {
         await Logger.error(req.user.email, ` delete comment of task comment  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_comment_of_task_comment_fail'],
+            messages: ['delete_comment_of_task_comment_failure'],
             content: error
         })
     }
@@ -591,7 +592,7 @@ evaluationAction = async (req, res) => {
         await Logger.error(req.user.email, ` evaluation action  `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['evaluation_action_fail'],
+            messages: ['evaluation_action_failure'],
             content: error
         })
     }
@@ -607,14 +608,37 @@ exports.evaluationAllAction = async (req, res) => {
             content: action
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` evaluation all action fail `, req.portal)
+        await Logger.error(req.user.email, ` evaluation all action failure `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['evaluation_all_action_fail'],
+            messages: ['evaluation_all_action_failure'],
             content: error
         })
     }
 }
+
+/**
+ * Xoá đánh giá hoạt động
+ */
+exports.deleteActionEvaluation = async (req, res) => {
+    try {
+        let taskAction = await PerformTaskService.deleteActionEvaluation(req.portal, req.params);
+        await Logger.info(req.user.email, `delete action evaluation `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_action_evaluation_action_success'],
+            content: taskAction
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` delete action evaluation  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['delete_action_evaluation_action_failure'],
+            content: error
+        })
+    }
+}
+
 /**
  * Xác nhận hành động
  */
@@ -631,7 +655,7 @@ exports.confirmAction = async (req, res) => {
         await Logger.error(req.user.email, ` confirm action  `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['confirm_action_fail'],
+            messages: ['confirm_action_failure'],
             content: error
         })
     }
@@ -660,7 +684,7 @@ exports.uploadFile = async (req, res) => {
         await Logger.error(req.user.email, `upload file of task  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['upload_file_fail'],
+            messages: ['upload_file_failure'],
             content: error
         })
     }
@@ -681,7 +705,7 @@ exports.deleteFileTask = async (req, res) => {
         await Logger.error(req.user.email, `delete file of task  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_file_fail'],
+            messages: ['delete_file_failure'],
             content: error
         })
     }
@@ -702,7 +726,7 @@ exports.deleteFileOfAction = async (req, res) => {
         await Logger.error(req.user.email, `delete file of task action  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_file_fail'],
+            messages: ['delete_file_failure'],
             content: error
         })
     }
@@ -723,7 +747,7 @@ exports.deleteFileCommentOfAction = async (req, res) => {
         await Logger.error(req.user.email, `delete file of task  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_file_comment_of_action_fail'],
+            messages: ['delete_file_comment_of_action_failure'],
             content: error
         })
     }
@@ -744,7 +768,7 @@ exports.deleteFileTaskComment = async (req, res) => {
         await Logger.error(req.user.email, `delete file of task  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_file_task_comment_fail'],
+            messages: ['delete_file_task_comment_failure'],
             content: error
         })
     }
@@ -766,7 +790,7 @@ exports.addTaskLog = async (req, res) => {
         await Logger.error(req.user.email, ` CREATE_TASK_LOG  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['create_task_log_fail'],
+            messages: ['create_task_log_failure'],
             content: error
         });
     }
@@ -788,7 +812,7 @@ exports.getTaskLog = async (req, res) => {
         await Logger.error(req.user.email, ` GET_TASK_LOG  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['get_task_log_fail'],
+            messages: ['get_task_log_failure'],
             content: error
         });
     }
@@ -882,7 +906,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
 
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, tasks.name, '', `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`,`${task.tasks._id}@gmail.com`,null);
+        sendEmail(task.email, tasks.name, '', `<p><strong>${user?.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người thực hiện</p>`, `${task.tasks._id}@gmail.com`, null);
 
         // Thêm nhật ký hoạt động
         let description = await PerformTaskService.createDescriptionEditTaskLogs(req.portal, req.user._id, task.newTask, oldTask);
@@ -893,13 +917,13 @@ editTaskByResponsibleEmployees = async (req, res) => {
             description: description
         }
         let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
-        
+
         // Tạo newsfeed
         await NewsFeed.createNewsFeed(req.portal, {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: tasks?._id
             },
@@ -919,7 +943,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_task_fail'],
+            messages: ['edit_task_failure'],
             content: error
         });
     }
@@ -958,8 +982,9 @@ editTaskByAccountableEmployees = async (req, res) => {
         };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, tasks.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`,`${task.tasks._id}@gmail.com`,null);
-        
+        sendEmail(task.email, tasks.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`
+        +`<p>Mô tả công việc : ${tasks.description}  </p>`, `${task.tasks._id}@gmail.com`, null);
+
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
         let deletedCollabEmail = task.deletedCollabEmail;
@@ -980,7 +1005,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, deletedCollabData);
         deletedCollabEmail && deletedCollabEmail.length !== 0
             && await sendEmail(deletedCollabEmail, "Đơn vị bạn bị xóa khỏi các đơn vị phối hợp thực hiện công việc mới", '', deletedCollabHtml);
-        
+
         let additionalCollabEmail = task.additionalCollabEmail;
         let additionalCollabHtml = task.additionalCollabHtml;
         let additionalCollabData = {
@@ -999,7 +1024,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, additionalCollabData);
         additionalCollabEmail && additionalCollabEmail.length !== 0
             && await sendEmail(additionalCollabEmail, "Đơn vị bạn được mời phối hợp thực hiện công việc mới", '', additionalCollabHtml);
-        
+
         let description = await PerformTaskService.createDescriptionEditTaskLogs(req.portal, req.user._id, task.newTask, oldTask);
         let log = {
             createdAt: Date.now(),
@@ -1014,7 +1039,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: tasks?._id
             },
@@ -1025,7 +1050,7 @@ editTaskByAccountableEmployees = async (req, res) => {
                 title: deletedCollabData?.title,
                 description: deletedCollabData?.content,
                 creator: req.user._id,
-                associatedDataObject: { 
+                associatedDataObject: {
                     dataType: 1,
                     value: tasks?._id
                 },
@@ -1036,7 +1061,7 @@ editTaskByAccountableEmployees = async (req, res) => {
                 title: additionalCollabData?.title,
                 description: additionalCollabData?.content,
                 creator: req.user._id,
-                associatedDataObject: { 
+                associatedDataObject: {
                     dataType: 1,
                     value: tasks?._id
                 },
@@ -1056,7 +1081,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_task_fail'],
+            messages: ['edit_task_failure'],
             content: error
         });
     }
@@ -1066,7 +1091,7 @@ editTaskByAccountableEmployees = async (req, res) => {
 editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
     try {
         let data = await PerformTaskService.editEmployeeCollaboratedWithOrganizationalUnits(req.portal, req.params.taskId, req.body);
-        
+
         // Thêm nhật ký hoạt động
         let log = {
             createdAt: Date.now(),
@@ -1098,7 +1123,7 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: data?.lengthtask?._id
             },
@@ -1115,7 +1140,7 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
         await Logger.error(req.user.email, ` edit collaborate with organizational unit `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_employee_collaborated_failure'],
+            messages: ['edit_employee_collaborated_failureure'],
             content: error
         });
     }
@@ -1136,7 +1161,7 @@ exports.editTaskInformation = async (req, res) => {
         await Logger.error(req.user.email, ` edit task information `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_task_information_failure'],
+            messages: ['edit_task_information_failureure'],
             content: error
         });
     }
@@ -1151,7 +1176,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
         const data = req.body.data;
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
         let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.portal, data, req.params.taskId);
-        
+
         // Thêm nhật ký hoạt động
         let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
         let log = {
@@ -1167,7 +1192,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -1187,7 +1212,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['evaluate_task_fail'],
+            messages: ['evaluate_task_failure'],
             content: error
         });
     }
@@ -1210,13 +1235,13 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
             description: description
         }
         let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
-        
+
         // Tạo newsfeed
         await NewsFeed.createNewsFeed(req.portal, {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -1236,7 +1261,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['evaluate_task_fail'],
+            messages: ['evaluate_task_failure'],
             content: error
         });
     }
@@ -1250,7 +1275,7 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
         const data = req.body.data;
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
         let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.portal, data, req.params.taskId);
-        
+
         // Thêm nhật ký hoạt động
         let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
         let log = {
@@ -1266,7 +1291,7 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -1287,7 +1312,7 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['evaluate_task_fail'],
+            messages: ['evaluate_task_failure'],
             content: error
         });
     }
@@ -1310,7 +1335,7 @@ editHoursSpentInEvaluate = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_hours_spent_in_evaluate_fail'],
+            messages: ['edit_hours_spent_in_evaluate_failure'],
             content: error
         });
     }
@@ -1333,7 +1358,7 @@ exports.deleteEvaluation = async (req, res) => {
         await Logger.error(req.user.email, ` delete evaluation `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_evaluation_fail'],
+            messages: ['delete_evaluation_failure'],
             content: error
         });
     }
@@ -1356,7 +1381,7 @@ editArchivedOfTask = async (req, res) => {
         await Logger.error(req.user.email, ` edit status of task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error)? error: ['edit_status_archived_of_task_fail'],
+            messages: Array.isArray(error) ? error : ['edit_status_archived_of_task_failure'],
             content: error
         });
     }
@@ -1401,7 +1426,7 @@ editActivateOfTask = async (req, res) => {
         await Logger.error(req.user.email, ` edit activate of task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_status_of_task_fail'],
+            messages: ['edit_status_of_task_failure'],
             content: error
         });
     }
@@ -1422,7 +1447,7 @@ confirmTask = async (req, res) => {
         await Logger.error(req.user.email, ` confirm task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['confirm_task_failure'],
+            messages: ['confirm_task_failureure'],
             content: error
         })
     }
@@ -1446,7 +1471,7 @@ requestAndApprovalCloseTask = async (req, res) => {
                 dataType: 1
             }
         };
-        
+
         if (data.type === 'request') {
             dataNotification = {
                 ...dataNotification,
@@ -1461,7 +1486,7 @@ requestAndApprovalCloseTask = async (req, res) => {
             };
 
             email = task?.accountableEmployees.map(item => item.email);
-        } 
+        }
         else if (data.type === 'cancel_request') {
             dataNotification = null;
         }
@@ -1505,7 +1530,7 @@ requestAndApprovalCloseTask = async (req, res) => {
             title: dataNotification?.title,
             description: dataNotification?.content,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -1520,7 +1545,7 @@ requestAndApprovalCloseTask = async (req, res) => {
             content: task
         })
     } catch (error) {
-        let message = data?.type + '_close_task_failure';
+        let message = data?.type + '_close_task_failureure';
         await Logger.error(req.user.email, ` request close task `, req.portal);
         res.status(400).json({
             success: false,
@@ -1597,7 +1622,7 @@ openTaskAgain = async (req, res) => {
         await Logger.error(req.user.email, ` open task again `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['open_task_again_failure'],
+            messages: ['open_task_again_failureure'],
             content: error
         })
     }
@@ -1619,7 +1644,7 @@ exports.deleteDocument = async (req, res) => {
         await Logger.error(req.user.email, `delete document of task  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_document_task_comment_fail'],
+            messages: ['delete_document_task_comment_failure'],
             content: error
         })
     }
@@ -1649,7 +1674,7 @@ exports.editDocument = async (req, res) => {
         await Logger.error(req.user.email, `delete document of task  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_document_task_comment_failure'],
+            messages: ['edit_document_task_comment_failureure'],
             content: error
         })
     }
@@ -1680,7 +1705,7 @@ exports.createComment = async (req, res) => {
         await Logger.error(req.user.email, ` create comment kpi `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['create_comment_fail'],
+            messages: ['create_comment_failure'],
             content: error
         });
     }
@@ -1712,7 +1737,7 @@ exports.editComment = async (req, res) => {
         await Logger.error(req.user.email, ` edit comment kpi `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['edit_comment_fail'],
+            messages: ['edit_comment_failure'],
             content: error
         });
     }
@@ -1732,9 +1757,9 @@ exports.deleteComment = async (req, res) => {
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete comment kpi `, req.portal)
-        res.status(200).json({
+        res.status(400).json({
             success: false,
-            messages: ['delete_comment_fail'],
+            messages: ['delete_comment_failure'],
             content: error
         })
     }
@@ -1764,7 +1789,7 @@ exports.createChildComment = async (req, res) => {
         await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['create_child_comment_fail'],
+            messages: ['create_child_comment_failure'],
             content: error
         });
     }
@@ -1795,7 +1820,7 @@ exports.editChildComment = async (req, res) => {
         await Logger.error(req.user.email, ` edit comment of comment kpi `, req.portal)
         res.status(400).json({
             success: true,
-            messages: ['edit_comment_of_comment_fail'],
+            messages: ['edit_comment_of_comment_failure'],
             content: error
         })
     }
@@ -1817,7 +1842,7 @@ exports.deleteChildComment = async (req, res) => {
         await Logger.error(req.user.email, ` delete child comment kpi `, req.portal)
         res.status(400).json({
             success: true,
-            messages: ['delete_child_comment_fail'],
+            messages: ['delete_child_comment_failure'],
             content: error
         })
     }
@@ -1838,7 +1863,7 @@ exports.deleteFileComment = async (req, res) => {
         await Logger.error(req.user.email, ` delete file comment `, req.portal)
         res.status(400).json({
             success: true,
-            messages: ['delete_file_comment_fail'],
+            messages: ['delete_file_comment_failure'],
             content: error
         })
     }
@@ -1859,7 +1884,7 @@ exports.deleteFileChildComment = async (req, res) => {
         await Logger.error(req.user.email, ` delete file child comment `, req.portal)
         res.status(400).json({
             success: true,
-            messages: ['delete_file_comment_fail'],
+            messages: ['delete_file_comment_failure'],
             content: error
         })
     }
@@ -1881,7 +1906,7 @@ exports.getAllPreceedingTasks = async (req, res) => {
         await Logger.error(req.user.email, `get all preceeding tasks  `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['get_all_preceeding_tasks_fail'],
+            messages: ['get_all_preceeding_tasks_failure'],
             content: error
         })
     }
@@ -1900,7 +1925,7 @@ exports.sortActions = async (req, res) => {
         await Logger.error(req.user.email, ` sort actions  `, req.portal)
         res.status(400).json({
             success: true,
-            messages: ['sort_actions_fail'],
+            messages: ['sort_actions_failure'],
             content: error
         })
     }
@@ -1922,7 +1947,7 @@ exports.evaluateTaskProject = async (req, res) => {
 /**
  * evaluate task by responsible employee PROJECT
  */
- evaluateTaskByResponsibleEmployeesProject = async (req, res) => {
+evaluateTaskByResponsibleEmployeesProject = async (req, res) => {
     try {
         const data = req.body.data;
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
@@ -1937,13 +1962,13 @@ exports.evaluateTaskProject = async (req, res) => {
             description: description
         }
         let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
-        
+
         // Tạo newsfeed
         await NewsFeed.createNewsFeed(req.portal, {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -1963,7 +1988,7 @@ exports.evaluateTaskProject = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['evaluate_task_fail'],
+            messages: ['evaluate_task_failure'],
             content: error
         });
     }
@@ -1977,7 +2002,7 @@ evaluateTaskByAccountableEmployeesProject = async (req, res) => {
         const data = req.body.data;
         let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
         let task = await PerformTaskService.evaluateTaskByAccountableEmployeesProject(req.portal, data, req.params.taskId);
-        
+
         // Thêm nhật ký hoạt động
         let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
         let log = {
@@ -1993,7 +2018,7 @@ evaluateTaskByAccountableEmployeesProject = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            associatedDataObject: { 
+            associatedDataObject: {
                 dataType: 1,
                 value: task?._id
             },
@@ -2014,7 +2039,7 @@ evaluateTaskByAccountableEmployeesProject = async (req, res) => {
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['evaluate_task_fail'],
+            messages: ['evaluate_task_failure'],
             content: error
         });
     }

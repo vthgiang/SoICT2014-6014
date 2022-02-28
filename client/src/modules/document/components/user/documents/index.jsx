@@ -44,7 +44,6 @@ function UserDocumentsData(props) {
     useEffect(() => {
         props.getAllRoles();
         props.getAllDepartments();
-        props.getAllDocuments(getStorage('currentRole'));
         props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
         props.getDocumentDomains();
         props.getDocumentArchive();
@@ -66,37 +65,6 @@ function UserDocumentsData(props) {
     function requestDownloadDocumentFileScan(id, fileName, numberVersion) {
         props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-
-    // useEffect(() => {
-    //     const { data } = props.documents.user;
-    //     if (currentRow) {
-    //         const index = getIndex(data.paginate, currentRow._id);
-    //         if (data.paginate[index].versions.length !== currentRow.versions.length) {
-    //             return {
-    //                 ...state,
-    //                 currentRow: data.paginate[index]
-    //             }
-    //         }
-    //         else return null;
-    //     } else {
-    //         return null;
-    //     }
-    // }, [props.documents.user])
-    //     static getDerivedStateFromProps(nextProps, prevState) {
-    //     const { data } = nextProps.documents.user;
-    //     if (prevState.currentRow) {
-    //         const index = getIndex(data.paginate, prevState.currentRow._id);
-    //         if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
-    //             return {
-    //                 ...prevState,
-    //                 currentRow: data.paginate[index]
-    //             }
-    //         }
-    //         else return null;
-    //     } else {
-    //         return null;
-    //     }
-    // }
 
     const formatDate = (date, monthYear = false) => {
         if (date) {
@@ -415,6 +383,7 @@ function UserDocumentsData(props) {
         })
     }
     function handleArchivedRecordPlaceOrganizationalUnit(value) {
+        console.log('value unit in 1: ', value);
         setState(state => {
             return {
                 ...state,
@@ -423,7 +392,7 @@ function UserDocumentsData(props) {
         })
     }
 
-    const searchWithOption = async () => {
+    const searchWithOption = () => {
         let path = state.archive ? findPath(state.archive) : "";
         const data = {
             limit: state.limit,
@@ -433,9 +402,9 @@ function UserDocumentsData(props) {
             domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
             issuingBody: state.issuingBody ? state.issuingBody : "",
-            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
+            organizationUnit: (state.organizationUnit && state.organizationUnit[0] !== '') ? state.organizationUnit : "",
         };
-        await props.getAllDocuments(getStorage('currentRole'), data);
+        props.getAllDocuments(getStorage('currentRole'), data);
     }
 
     const { translate, department } = props;
@@ -453,6 +422,10 @@ function UserDocumentsData(props) {
     }
 
     let exportData = convertDataToExportData(list);
+    const convertDataOrgan = (data) => {
+        data.unshift({value: "", text: translate("document.store.all")});
+        return data;
+    }
     return (
         <div className="qlcv">
             <React.Fragment>
@@ -491,6 +464,7 @@ function UserDocumentsData(props) {
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                         documentLogs={currentRow.logs}
+                        documentUserCanView={currentRow.userCanView}
                     />
                 }
                 {<ExportExcel id="export-document" exportData={exportData} style={{ marginLeft: 5 }} />}
@@ -545,9 +519,8 @@ function UserDocumentsData(props) {
                             id="select-documents-organizational-unit-manage-table"
                             className="form-control select2"
                             style={{ width: "100%" }}
-                            items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                            items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                             onChange={handleArchivedRecordPlaceOrganizationalUnit}
-                            options={{ placeholder: translate('document.store.select_organizational') }}
                             multiple={false}
                         />
                     </div>

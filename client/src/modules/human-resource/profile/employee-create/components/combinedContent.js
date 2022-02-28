@@ -31,3 +31,6 @@ export * from './commendationAddModal';
 export * from './annualLeaveAddModal';
 export * from './courseAddModal';
 export * from './courseEditModal';
+
+export * from './careerPositionAddModal';
+export * from './careerPositionEditModal';

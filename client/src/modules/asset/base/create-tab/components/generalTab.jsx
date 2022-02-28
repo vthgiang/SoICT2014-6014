@@ -526,11 +526,9 @@ function GeneralTab(props) {
         }
     };
 
-    console.log("7777", prevProps.assignedToUser !== props.assignedToUser, props.assignedToUser === null)
     if (prevProps.id !== props.id
         || prevProps.assignedToUser !== props.assignedToUser
         || prevProps.assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit){
-            console.log("6666", props.assignedToUser)
             setState(state => {
                 return{
                     ...state,
@@ -573,7 +571,6 @@ function GeneralTab(props) {
             setPrevProps(props)
         }
     
-        console.log("555", state.assignedToUser)
         const { id, translate, user, assetsManager, role, department, assetType } = props;
         const {
             img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
@@ -789,7 +786,6 @@ function GeneralTab(props) {
                                 {/* Người sử dụng */}
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.user')}</label>
-                                    {console.log("assignedToUser", assignedToUser)}
                                     <SelectBox
                                         id={`assignedToUserBox${id}`}
                                         className="form-control select2"
@@ -849,9 +845,9 @@ function GeneralTab(props) {
                         <div className="col-md-12">
                             <label>{translate('asset.general_information.asset_properties')}:
                                 <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
-                                onClick={handleAddDetailInfo} /></a>
-                                <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_default_properties')}><i className="fa fa-plus-square" style={{ color: "red", marginLeft: 5 }}
-                                onClick={handleAddDefaultInfo} /></a>
+                                onClick={handleAddDetailInfo} /><span onClick={handleAddDetailInfo}>Thêm thuộc tính tài sản</span></a>
+                                <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_default_properties')}><i className="fa fa-plus-square" style={{ color: "red", marginLeft: 20 }}
+                                onClick={handleAddDefaultInfo} /><span onClick={handleAddDefaultInfo}>Thêm thuộc tính mặc định của tài sản</span></a>
                             </label>
                             
 

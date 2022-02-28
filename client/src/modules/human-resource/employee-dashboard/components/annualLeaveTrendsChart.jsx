@@ -3,99 +3,72 @@ import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
-import { TimesheetsActions } from '../../timesheets/redux/actions';
+
 import { SelectMulti, DatePicker } from '../../../../common-components';
+import { getEmployeeDashboardActions } from "../redux/actions"
 
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
-import 'c3/c3.css';
+import 'c3/c3.css'
+import Swal from 'sweetalert2';
 
 const AnnualLeaveTrendsChart = (props) => {
-    const { department, annualLeave, translate, timesheets, childOrganizationalUnit } = props;
-
-    /**
-     * Function format dữ liệu Date thành string
-     * @param {*} date : Ngày muốn format
-     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
-     */
-    const formatDate = (date, monthYear = false) => {
-        if (date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        }
-        return date;
-    }
-
-    let date = new Date()
-    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 6), true);
+    const { translate, childOrganizationalUnit, idUnits, unitName, employeeDashboardData, search_data_props } = props;
 
     const [state, setState] = useState({
-        lineChart: true,
-        startDate: _startDate,
-        startDateShow: _startDate,
-        endDate: formatDate(Date.now(), true),
-        endDateShow: formatDate(Date.now(), true),
-        organizationalUnitsSearch: props.defaultUnit ? props.organizationalUnits : [],
-        organizationalUnits: props.defaultUnit ? props.organizationalUnits : [],
+        countAnnuaLeave: true,
+        startDate: search_data_props.searchData.current.startDateAnnualLeaveTrendsChart,
+        startDateShow: search_data_props.searchData.current.startDateAnnualLeaveTrendsChart,
+        endDate: search_data_props.searchData.current.endDateAnnualLeaveTrendsChart,
+        endDateShow: search_data_props.searchData.current.endDateAnnualLeaveTrendsChart,
+        organizationalUnits: idUnits ? idUnits : [],
+        data1: employeeDashboardData.annualLeaveTrendChartData.data1 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1.data } : {ratioX: [], data: []},
+        data2: employeeDashboardData.annualLeaveTrendChartData.data2 ? { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2.data } : {ratioX: [], data: []},
     })
-    const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = state;
+    const { countAnnuaLeave, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow } = state;
 
     const barChart = useRef(null);
 
+    const formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1],partDate[0]].join('-');
+    }
+
+    if ( props.nameChart !== state.nameChart
+        || props.nameData1 !== state.nameData1
+        || props.nameData2 !== state.nameData2
+    ) {
+        setState({
+            ...state,
+            nameChart: props.nameChart,
+            nameData1: props.nameData1,
+            nameData2: props.nameData2
+        });
+    }
     useEffect(() => {
-        const { organizationalUnits, startDate, endDate } = state;
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
+        setState({
+            ...state,
+            data1: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data1?.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data1?.data },
+            data2: { ratioX: employeeDashboardData.annualLeaveTrendChartData.data2?.ratioX, data: employeeDashboardData.annualLeaveTrendChartData.data2?.data }
+        })
+    }, [employeeDashboardData.annualLeaveTrendChartData?.data1?.data, employeeDashboardData.annualLeaveTrendChartData?.data2?.data])
 
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew })
-        props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
-    }, []);
-
+    const { data1, data2 } = state
     useEffect(() => {
-        if (annualLeave?.arrMonth?.length > 0) {
-            let ratioX = ['x', ...annualLeave.arrMonth];
-            let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
-            let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
-            let data1 = ['data1'], data2 = ['data2'];
-            annualLeave.arrMonth.forEach(x => {
-                let total = 0;
-                let date = new Date(x);
-                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-                listAnnualLeaveOfNumberMonth.forEach(y => {
-                    if (firstDay.getTime() < new Date(y.startDate).getTime() && new Date(y.startDate).getTime() <= lastDay.getTime()) {
-                        total += 1;
-                    }
-                })
-                data1 = [...data1, total]
-                let hoursOff = 0;
-                listHoursOffOfUnitsByStartDateAndEndDate.forEach(y => {
-                    if (new Date(y.month).getTime() === new Date(x).getTime()) {
-                        hoursOff = hoursOff + y.totalHoursOff ? y.totalHoursOff : 0
-                    };
-                })
-                data2 = [...data2, hoursOff]
-            })
-            renderChart({ nameData1, ratioX, data1, lineChart, nameData2, data2 });
+        let nameData
+        let data = [], ratioX = [];
+        if (countAnnuaLeave) {
+            nameData = nameData1
+            data = [...data1.data]
+            ratioX = [...data1.ratioX]
+        } else {
+            nameData = nameData2
+            data = [...data2.data]
+            ratioX = [...data2.data]
         }
-    }, [JSON.stringify(annualLeave)])
-
+        renderChart({nameData, ratioX, data})
+    }, [countAnnuaLeave, data1, data2])
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -119,6 +92,7 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             startDate: value
         })
+        search_data_props.handleChangeSearchData('startDateAnnualLeaveTrendsChart', value)
     }
 
     /**
@@ -130,52 +104,18 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             endDate: value,
         })
+        search_data_props.handleChangeSearchData('endDateAnnualLeaveTrendsChart', value)
     }
 
     /**
      * Bắt sự kiện thay đổi chế đọ xem biểu đồ
      * @param {*} value : chế độ xem biểu đồ (true or false)
      */
-    const handleChangeViewChart = (value) => {
+    const handleChangeDataChart = (value) => {
         setState({
             ...state,
-            lineChart: value
+            countAnnuaLeave: value
         })
-    }
-
-    const isEqual = (items1, items2) => {
-        if (!items1 || !items2) {
-            return false;
-        }
-        if (items1.length !== items2.length) {
-            return false;
-        }
-
-        for (let i = 0; i < items1.length; ++i) {
-            if (items1[i].startDate !== items2[i].startDate || items1[i]._id !== items2[i]._id) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    if (!state.arrMonth
-        || props.annualLeave.arrMonth?.length !== state.arrMonth?.length
-        || !isEqual(props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth)
-        || !isEqual(props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate)
-        || props.nameChart !== state.nameChart
-        || props.nameData1 !== state.nameData1
-        || props.nameData2 !== state.nameData2
-    ) {
-        setState({
-            ...state,
-            nameChart: props.nameChart,
-            nameData1: props.nameData1,
-            nameData2: props.nameData2,
-            arrMonth: props.annualLeave.arrMonth,
-            listAnnualLeaveOfNumberMonth: props.annualLeave.listAnnualLeaveOfNumberMonth,
-            listHoursOffOfUnitsByStartDateAndEndDate: props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate,
-        });
     }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -193,34 +133,25 @@ const AnnualLeaveTrendsChart = (props) => {
      * @param {*} data : Dữ liệu biểu đồ
      */
     function renderChart(data) {
-        data.data1.shift();
-        data.data2.shift();
         removePreviousChart();
+        data.data.shift();
+
         let chart = c3.generate({
             bindto: barChart.current,
             data: {
-                x: 'x',
-                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2]],
-                type: data.lineChart === true ? '' : 'bar',
-                labels: data.lineChart === true ? false : true,
-                names: {
-                    data1: data.nameData1,
-                    data2: data.nameData2,
-                },
+                columns: [[data.nameData, ...data.data]],
+                labels: true,
             },
             axis: {
                 x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%m - %Y',
-                        outer: false,
-                        rotate: -45,
-                        multiline: false
-                    },
+                    type: 'category',
+                    categories: data.ratioX,
+
                 },
                 y: {
-                    tick: { outer: false },
-                }
+                    show: true,
+                    label: countAnnuaLeave ? 'Số lượt' : 'Số giờ'
+                },
             },
         });
     }
@@ -232,47 +163,54 @@ const AnnualLeaveTrendsChart = (props) => {
             ...state,
             startDateShow: startDate,
             endDateShow: endDate,
-            organizationalUnitsSearch: organizationalUnits,
         })
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
+       
         if (organizationalUnits?.length > 0) {
-            props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, })
-            props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
+            props.getEmployeeDashboardData({
+                searchChart: {
+                    annualLeaveTrendChart: { organizationalUnits: props.organizationalUnits, startDate: formatNewDate(startDate), endDate: formatNewDate(endDate) }
+                }
+            })
         }
     }
 
-    let organizationalUnitsName = [];
-    if (organizationalUnitsSearch) {
-        organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
-        organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+
+    const showDetailAnnualLeaveTrenCharts = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Biểu đồ thống kê nghỉ phép các đơn vị:</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Có 2 đường thống kê như sau</p>
+            <ul>
+                <li><b>Số lượt nghỉ:</b> được tính bằng cách thống kê tổng số đơn xin nghỉ phép đã được chấp nhận của từng nhân viên thuộc các đơn vị theo tháng</li>
+                <li><b>Số giờ nghỉ phép: </b>được tính dựa bằng cách thống kê số giờ nghỉ phép của từng nhân viên dựa vào phần chấm công</li>
+            </ul>`,
+            width: "50%",
+        })
     }
 
     return (
         <React.Fragment>
             <div className="box box-solid">
                 <div className="box-header with-border">
-                    <div className="box-title">
+                    <div className="box-title" style={{ marginRight: '5px' }}>
                         {`${nameChart} `}
                         {
-                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                            unitName && unitName.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    <span>{` ${unitName?.[0]} `}</span>
                                 </>
                                 :
-                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                <span onClick={() => showListInSwal(unitName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitName?.length}</a>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                 </span>
                         }
                         {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}
                     </div>
+                    <a title={'Giải thích'} onClick={showDetailAnnualLeaveTrenCharts}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', }} />
+                    </a>
                 </div>
                 <div className="box-body">
                     <div className="qlcv" style={{ marginBottom: 15 }}>
@@ -320,15 +258,15 @@ const AnnualLeaveTrendsChart = (props) => {
                             </div>
                         </div>
                     </div>
-                    {annualLeave.isLoading
+                    {employeeDashboardData.isLoading
                         ? <div>{translate('general.loading')}</div>
-                        : annualLeave?.arrMonth?.length > 0
+                        : employeeDashboardData.annualLeaveTrendChartData?.arrMonth?.length > 0
                             ? <div className="dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p>
-                                <div className="box-tools pull-right">
+                                {/* <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p> */}
+                                <div className="box-tools pull-right" style={{ marginBottom: '10px' }}>
                                     <div className="btn-group pull-rigth">
-                                        <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
-                                        <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
+                                        <button type="button" className={`btn btn-xs ${countAnnuaLeave ? 'btn-danger' : "active"}`} onClick={() => handleChangeDataChart(true)}>{nameData1}</button>
+                                        <button type="button" className={`btn btn-xs ${countAnnuaLeave ? "active" : "btn-danger"}`} onClick={() => handleChangeDataChart(false)}>{nameData2}</button>
                                     </div>
                                 </div>
                                 <div ref={barChart}></div>
@@ -342,13 +280,12 @@ const AnnualLeaveTrendsChart = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, annualLeave, timesheets, department } = state;
-    return { employeesManager, annualLeave, timesheets, department };
+    const { employeeDashboardData } = state;
+    return { employeeDashboardData };
 }
 
 const actionCreators = {
-    getAnnualLeave: AnnualLeaveActions.searchAnnualLeaves,
-    getTimesheets: TimesheetsActions.searchTimesheets,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
 };
 
 const barChart = connect(mapState, actionCreators)(withTranslate(AnnualLeaveTrendsChart));

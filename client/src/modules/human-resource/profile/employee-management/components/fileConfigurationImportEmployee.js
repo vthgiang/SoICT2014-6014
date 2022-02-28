@@ -1,6 +1,7 @@
 export const configurationEmployee = {
     configurationEmployeeInfo,
     configurationExperience,
+    configurationWorkProcess,
     configurationDegree,
     configurationCertificate,
     configurationContract,
@@ -312,6 +313,72 @@ function configurationExperience(translate) {
         },
         sheets: {
             description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet3`)]
+        },
+        employeeNumber: {
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
+        },
+        fullName: {
+            columnName: translate(`human_resource.profile.full_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.full_name`)
+        },
+        startDate: { // Từ tháng/năm
+            columnName: translate(`human_resource.profile.from_month_year`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.from_month_year`).toLowerCase()}`,
+            value: translate(`human_resource.profile.from_month_year`)
+        },
+        endDate: { // Đến tháng/năm
+            columnName: translate(`human_resource.profile.to_month_year`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.to_month_year`).toLowerCase()}`,
+            value: translate(`human_resource.profile.to_month_year`)
+        },
+        company: { // Đơn vị công tác
+            columnName: translate(`human_resource.profile.unit`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.unit`).toLowerCase()}`,
+            value: translate(`human_resource.profile.unit`)
+        },
+        position: { // Chức vụ
+            columnName: translate(`human_resource.profile.position_in_task`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.position_in_task`).toLowerCase()}`,
+            value: translate(`human_resource.profile.position_in_task`)
+        },
+        project: { // dự án
+            columnName: translate(`human_resource.profile.project`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.project`).toLowerCase()}`,
+            value: translate(`human_resource.profile.project`)
+        },
+        customer: { // Khách hàng
+            columnName: translate(`human_resource.profile.customer`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.customer`).toLowerCase()}`,
+            value: translate(`human_resource.profile.customer`)
+        },
+        address: { // địa chỉ
+            columnName: translate(`human_resource.profile.address`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.address`).toLowerCase()}`,
+            value: translate(`human_resource.profile.address`)
+        },
+        jobDescription: { // địa chỉ
+            columnName: translate(`human_resource.profile.job_description`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.job_description`).toLowerCase()}`,
+            value: translate(`human_resource.profile.job_description`)
+        },
+
+    };
+    return config;
+}
+
+// Cấu hình file import kinh nghiệm làm việc của nhân viên
+function configurationWorkProcess(translate) {
+    let config = {
+        rowHeader: {
+            description: translate('human_resource.rowHeader'),
+            value: 1
+        },
+        sheets: {
+            description: translate('human_resource.sheets_name'),
             value: [translate(`human_resource.profile.employee_management.export.sheet2`)]
         },
         employeeNumber: {
@@ -344,6 +411,11 @@ function configurationExperience(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.position`).toLowerCase()}`,
             value: translate(`human_resource.position`)
         },
+        references: {
+            columnName: translate(`human_resource.references`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.references`).toLowerCase()}`,
+            value: translate(`human_resource.references`)
+        }
     };
     return config;
 }
@@ -357,7 +429,7 @@ function configurationDegree(translate) {
         },
         sheets: {
             description: translate('human_resource.sheets_name'),
-            value: [translate(`human_resource.profile.employee_management.export.sheet3`)]
+            value: [translate(`human_resource.profile.employee_management.export.sheet4`)]
         },
         employeeNumber: {
             columnName: translate(`human_resource.profile.staff_number`),
@@ -373,11 +445,6 @@ function configurationDegree(translate) {
             columnName: translate(`human_resource.profile.name_diploma`),
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.name_diploma`).toLowerCase()}`,
             value: translate(`human_resource.profile.name_diploma`)
-        },
-        issuedBy: { // Nơi đào tạo
-            columnName: translate(`human_resource.profile.diploma_issued_by`),
-            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
-            value: translate(`human_resource.profile.diploma_issued_by`)
         },
         issuedBy: { // Nơi đào tạo
             columnName: translate(`human_resource.profile.diploma_issued_by`),
@@ -413,7 +480,7 @@ function configurationCertificate(translate) {
         },
         sheets: {
             description: translate('human_resource.sheets_name'),
-            value: [translate(`human_resource.profile.employee_management.export.sheet4`)]
+            value: [translate(`human_resource.profile.employee_management.export.sheet5`)]
         },
         employeeNumber: {
             columnName: translate(`human_resource.profile.staff_number`),
@@ -458,7 +525,7 @@ function configurationContract(translate) {
         },
         sheets: {
             description: translate('human_resource.sheets_name'),
-            value: [translate(`human_resource.profile.employee_management.export.sheet5`)]
+            value: [translate(`human_resource.profile.employee_management.export.sheet6`)]
         },
         employeeNumber: {
             columnName: translate(`human_resource.profile.staff_number`),
@@ -469,6 +536,11 @@ function configurationContract(translate) {
             columnName: translate(`human_resource.profile.full_name`),
             description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.full_name').toLowerCase()}`,
             value: translate(`human_resource.profile.full_name`)
+        },
+        contractNumber: {
+            columnName: translate(`human_resource.profile.number_contract`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.number_contract').toLowerCase()}`,
+            value: translate(`human_resource.profile.number_contract`)
         },
         name: { // Tên hợp đồng
             columnName: translate(`human_resource.profile.name_contract`),
@@ -503,7 +575,7 @@ function configurationSocialInsuranceDetails(translate) {
         },
         sheets: {
             description: translate('human_resource.sheets_name'),
-            value: [translate(`human_resource.profile.employee_management.export.sheet6`),]
+            value: [translate(`human_resource.profile.employee_management.export.sheet7`),]
         },
         employeeNumber: {
             columnName: translate(`human_resource.profile.staff_number`),
@@ -535,6 +607,11 @@ function configurationSocialInsuranceDetails(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.position`).toLowerCase()}`,
             value: translate(`human_resource.position`)
         },
+        money: { // Chức danh
+            columnName: translate(`human_resource.profile.money`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.money`).toLowerCase()}`,
+            value: translate(`human_resource.profile.money`)
+        },
     };
     return config;
 }
@@ -548,7 +625,7 @@ function configurationFile(translate) {
         },
         sheets: {
             description: translate('human_resource.sheets_name'),
-            value: [translate(`human_resource.profile.employee_management.export.sheet7`)]
+            value: [translate(`human_resource.profile.employee_management.export.sheet8`)]
         },
         employeeNumber: {
             columnName: translate(`human_resource.profile.staff_number`),
@@ -593,7 +670,7 @@ function configurationFamilyMembers(translate) {
         },
         sheets: {
             description: translate('human_resource.sheets_name'),
-            value: [translate(`human_resource.profile.employee_management.export.sheet8`)]
+            value: [translate(`human_resource.profile.employee_management.export.sheet9`)]
         },
         employeeNumber: {
             columnName: translate(`human_resource.profile.staff_number`),
@@ -636,9 +713,9 @@ function configurationFamilyMembers(translate) {
             value: translate(`human_resource.profile.house_hold.members.birth`)
         },
         ccns: {
-            columnName: translate(`human_resource.profile.house_hold.members.cnss`),
-            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.cnss').toLowerCase()}`,
-            value: translate(`human_resource.profile.house_hold.members.cnss`)
+            columnName: translate(`human_resource.profile.house_hold.members.ccns`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.ccns').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.ccns`)
         },
         placeOfBirthCertificate: {
             columnName: translate(`human_resource.profile.house_hold.members.pob`),
@@ -867,7 +944,7 @@ function templateImport(translate) {
                     ]
                 },
                 {
-                    // 2.HS Nhân viên - Kinh nghiệm
+                    // 2.HS Nhân viên - Quá trình CT
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
                     tables: [
                         {
@@ -878,7 +955,8 @@ function templateImport(translate) {
                                 { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
                                 { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
                                 { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 }
+                                { key: "position", value: translate(`human_resource.position`), width: 25 },
+                                { key: "referenceInformation", value: translate(`human_resource.profile.reference_information`), width: 25 },
                             ],
                             data: [{
                                 STT: 1,
@@ -888,6 +966,7 @@ function templateImport(translate) {
                                 fullName: "Nguyễn Văn An",
                                 position: "Nhân viên",
                                 startDate: "06-2019",
+                                referenceInformation: "Phạm Thị Nhung - 09xxxxxxx",
                             },{
                                 STT: 2,
                                 company: "Vnist",
@@ -901,8 +980,54 @@ function templateImport(translate) {
                     ]
                 },
                 {
-                    // 3.HS Nhân viên - Bằng cấp
+                    // 2.HS Nhân viên - Kinh nghiệm
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
+                                { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
+                                { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
+                                { key: "position", value: translate(`human_resource.profile.position_in_task`), width: 25 },
+                                { key: "project", value: translate(`human_resource.profile.project`), width: 25 },
+                                { key: "customer", value: translate(`human_resource.profile.customer`), width: 25 },
+                                { key: "address", value: translate(`human_resource.profile.address`), width: 25 },
+                                { key: "jobDescription", value: translate(`human_resource.profile.job_description`), width: 25 },
+                            ],
+                            data: [{
+                                STT: 1,
+                                company: "Vnist",
+                                employeeNumber: "MS2015123",
+                                endDate: "02-2020",
+                                fullName: "Nguyễn Văn An",
+                                position: "Nhân viên Kỹ thuật",
+                                startDate: "06-2019",
+                                project: "Dự án bảo việt",
+                                customer: "Công ty Bảo việt",
+                                address: "Hà Nội",
+                                jobDescription: "Quét mã độc hệ thống",
+                            },{
+                                STT: 2,
+                                company: "Vnist",
+                                employeeNumber: "MS2015124",
+                                endDate: "02-2020",
+                                fullName: "Trần Văn Bình",
+                                position: "Nhân viên",
+                                startDate: "06-2019",
+                                project: "Dự án bảo việt",
+                                customer: "Công ty Bảo việt",
+                                address: "Hà Nội",
+                                jobDescription: "Quét mã độc hệ thống",
+                            }]
+                        }
+                    ]
+                },
+                {
+                    // 3.HS Nhân viên - Bằng cấp
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
                     tables: [
                         {
                             columns: [
@@ -939,7 +1064,7 @@ function templateImport(translate) {
                 },
                 {
                     // 4.HS Nhân viên - Chứng chỉ
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet4`),
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
                     tables: [
                         {
                             columns: [
@@ -973,13 +1098,14 @@ function templateImport(translate) {
                 },
                 {
                     // 5.HS Nhân viên - Hợp đồng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet5`),
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
                     tables: [
                         {
                             columns: [
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                                { key: "contractNumber", value: translate(`human_resource.profile.number_contract`), width: 35 },
                                 { key: "name", value: translate(`human_resource.profile.name_contract`), width: 35 },
                                 { key: "contractType", value: translate(`human_resource.profile.type_contract`), width: 25 },
                                 { key: "startDate", value: translate(`human_resource.profile.start_date`) },
@@ -999,6 +1125,7 @@ function templateImport(translate) {
                                 employeeNumber: "MS2015124",
                                 endDate: "26-12-2020",
                                 fullName: "Trần Văn Bình",
+                                contractNumber: "2019.06.02-06/HĐKV-VNIST",
                                 name: "Hợp đồng làm việc",
                                 startDate: "26-06-2019",
                             }]
@@ -1007,7 +1134,7 @@ function templateImport(translate) {
                 },
                 {
                     // 6.HS Nhân viên - Bảo hiểm XH
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet6`),
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
                     tables: [
                         {
                             columns: [
@@ -1017,7 +1144,8 @@ function templateImport(translate) {
                                 { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
                                 { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
                                 { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 }
+                                { key: "position", value: translate(`human_resource.position`), width: 25 },
+                                { key: "money", value: translate(`human_resource.profile.money`), width: 30 },
                             ],
                             data: [{
                                 STT: 1,
@@ -1026,7 +1154,8 @@ function templateImport(translate) {
                                 endDate: "05-2020",
                                 fullName: "Nguyễn Văn An",
                                 position: "Nhân viên",
-                                startDate: "01-2020"
+                                startDate: "01-2020",
+                                money: 400000
                             },{
                                 STT: 2,
                                 company: "Vnist",
@@ -1034,14 +1163,15 @@ function templateImport(translate) {
                                 endDate: "05-2020",
                                 fullName: "Trần Văn Bình",
                                 position: "Nhân viên",
-                                startDate: "01-2020"
+                                startDate: "01-2020",
+                                money: 24000000
                             }]
                         }
                     ]
                 },
                 {
                     // 7.HS Nhân viên - Tài liệu
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet7`),
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
                     tables: [
                         {
                             columns: [
@@ -1076,7 +1206,7 @@ function templateImport(translate) {
                 
                 {
                     // 8.HS Nhân viên - Thành viên hộ gia đình
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                     tables: [
                         {
                             columns: [
@@ -1089,7 +1219,7 @@ function templateImport(translate) {
                                 { key: "isHeadHousehold", value: translate('human_resource.profile.house_hold.members.is_hh') },
                                 { key: "relationshipWithHeadHousehold", value: translate('human_resource.profile.house_hold.members.rwhh') },
                                 { key: "birth", value: translate('human_resource.profile.house_hold.members.birth')},
-                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.cnss')},
+                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.ccns')},
                                 { key: "placeOfBirthCertificate", value: translate('human_resource.profile.house_hold.members.pob')},
                                 { key: "nationality", value: translate('human_resource.profile.house_hold.members.nationality')},
                                 { key: "nation", value: translate('human_resource.profile.house_hold.members.nation')},

@@ -9,9 +9,12 @@ import { SystemApiActions } from '../redux/actions'
 
 import { SystemApiCreateModal } from './systemApiCreateModal'
 import { SystemApiEditModal } from './systemApiEditModal'
+import { SystemApiUpdateModal } from './systemApiUpdateModal';
 
-function SystemApiManagement (props) {
+const SystemApiManagement = (props) => {
     const { translate, systemApis } = props
+    const [listPaginateApi, setListPaginateApi] = useState();
+    const [updateApiLog, setUpdateApiLog] = useState(null);
 
     const tableId = "table-management-system-api";
     const defaultConfig = { limit: 20 }
@@ -25,15 +28,23 @@ function SystemApiManagement (props) {
         perPage: limit
     })
     const [systemApiEdit, setSystemApiEdit] = useState({})
-    
+
     const { path, method, description, page, perPage } = state;
 
-    useEffect(() => {
+    const systemApiManageGetSystemApis = () => {
         props.getSystemApis({
             page: page,
             perPage: perPage
         })
+    };
+
+    useEffect(() => {
+        systemApiManageGetSystemApis();
     }, [])
+
+    useEffect(() => {
+        if (systemApis) setListPaginateApi(systemApis.listPaginateApi)
+    }, [systemApis]);
 
     const handleChangePath = (e) => {
         setState({
@@ -84,7 +95,6 @@ function SystemApiManagement (props) {
     }
 
     const handleGetDataPagination = (value) => {
-        console.log(value)
         setState({
             ...state,
             page: value
@@ -108,15 +118,65 @@ function SystemApiManagement (props) {
         window.$("#edit-system-api-modal").modal("show");
     }
 
-    const updateSystemApiAuto = () => {
-        props.updateSystemApiAutomatic()
+    const handleUpdateSystemApi = async () => {
+        const updateLog = await props.updateSystemApi();
+        setUpdateApiLog(updateLog);
+        window.$("#update-system-api-modal").modal("show");
     }
 
-    let listPaginateApi = systemApis?.listPaginateApi
-    console.log("listPaginateApi", listPaginateApi)
+    const renderSystemApiTable = () => (
+        <table id={tableId} className="table table-hover table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                    <th>{translate('system_admin.system_api.table.path')}</th>
+                    <th>{translate('system_admin.system_api.table.method')}</th>
+                    <th>{translate('system_admin.system_api.table.description')}</th>
+                    <th style={{ width: "120px" }}>
+                        {translate('table.action')}
+                        <DataTableSetting
+                            tableId={tableId}
+                            hideColumn={false}
+                            setLimit={setLimit}
+                        />
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {listPaginateApi?.length > 0
+                    && listPaginateApi.map((api, index) =>
+                        <tr key={api?._id}>
+                            <td>{index + 1}</td>
+                            <td>{api?.path}</td>
+                            <td>{api?.method}</td>
+                            <td>{api?.description}</td>
+                            <td style={{ textAlign: 'center' }}>
+                                <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_api.modal.edit_title')}><i className="material-icons">edit</i></a>
+                                <DeleteNotification
+                                    content={translate('system_admin.system_api.modal.delete_title')}
+                                    data={{
+                                        id: api?._id,
+                                        info: api?.path
+                                    }}
+                                    func={props.deleteSystemApi}
+                                />
+                            </td>
+                        </tr>
+                    )
+                }
+            </tbody>
+        </table>
+    )
+
     return (
         <React.Fragment>
-            <SystemApiCreateModal/>
+            <SystemApiCreateModal />
+            {updateApiLog &&
+                <SystemApiUpdateModal
+                    updateApiLog={updateApiLog}
+                    systemApiManageGetSystemApis={systemApiManageGetSystemApis}
+                />
+            }
             <SystemApiEditModal
                 _id={systemApiEdit?._id}
                 systemApi={systemApiEdit}
@@ -136,8 +196,23 @@ function SystemApiManagement (props) {
                             <input className="form-control" type="text" placeholder={translate('system_admin.system_api.placeholder.input_description')} name="name" onChange={(e) => handleChangeDescription(e)} />
                         </div>
 
-                        <button type="button" onClick={() => updateSystemApiAuto()} className="btn btn-success pull-right" title={translate('system_admin.system_api.modal.create_title')}>Update</button>
-                        <button type="button" onClick={() => handleAddApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
+                        <button
+                            type="button"
+                            onClick={handleUpdateSystemApi}
+                            className="btn btn-success pull-right"
+                            title={translate('system_admin.system_api.modal.create_title')}
+                        >
+                            {translate('system_admin.system_api.update')}
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => handleAddApi()}
+                            className="btn btn-success pull-right"
+                            title={translate('task.task_management.add_title')}
+                        >
+                            {translate('task.task_management.add_task')}
+                        </button>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -183,47 +258,7 @@ function SystemApiManagement (props) {
                         </div>
                     </div>
 
-                    <table id={tableId} className="table table-hover table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
-                                <th>{translate('system_admin.system_api.table.path')}</th>
-                                <th>{translate('system_admin.system_api.table.method')}</th>
-                                <th>{translate('system_admin.system_api.table.description')}</th>
-                                <th style={{ width: "120px" }}>
-                                    {translate('table.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        hideColumn={false}
-                                        setLimit={setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { listPaginateApi?.length > 0
-                                && listPaginateApi.map((api, index) => 
-                                    <tr key={api?._id}>
-                                        <td>{index + 1}</td>
-                                        <td>{api?.path}</td>
-                                        <td>{api?.method}</td>
-                                        <td>{api?.description}</td>
-                                        <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleEdit(api)} className="edit" title={translate('system_admin.system_api.modal.edit_title')}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('system_admin.system_api.modal.delete_title')}
-                                                data={{
-                                                    id: api?._id,
-                                                    info: api?.path
-                                                }}
-                                                func={props.deleteSystemApi}
-                                            />
-                                        </td>
-                                    </tr>    
-                                )
-                            }
-                        </tbody>
-                    </table>
+                    {renderSystemApiTable()}
 
                     <PaginateBar
                         display={systemApis?.listPaginateApi?.length}
@@ -244,7 +279,7 @@ function mapState(state) {
 }
 const actions = {
     getSystemApis: SystemApiActions.getSystemApis,
-    updateSystemApiAutomatic: SystemApiActions.updateSystemApiAutomatic,
+    updateSystemApi: SystemApiActions.updateSystemApi,
     deleteSystemApi: SystemApiActions.deleteSystemApi
 }
 

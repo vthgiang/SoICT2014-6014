@@ -305,7 +305,7 @@ export const templateImportProcessTemplate = {
                         {
                             taskName: "Liên kết sản xuất thuốc bột",
                             taskDescription: "LIÊN KẾT SX",
-                            code: "Gateway_0fivnpb",
+                            code: "Activity_0gy49ud",
                             organizationalUnit: "Nhà máy sản xuất thuốc bột",
                             collaboratedWithOrganizationalUnits: "Nhà máy sản xuất thuốc nước, Nhà máy sản xuất thực phẩm chức năng",
                             priority: 1,

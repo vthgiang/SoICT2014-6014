@@ -1,4 +1,4 @@
-const { Customer, User } = require('../../../models');
+const { Customer, User, CustomerGroup } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { createTaskAction } = require('../../task/task-perform/taskPerform.service');
 const { getCrmUnitByRole } = require('../crmUnit/crmUnit.service');
@@ -35,6 +35,25 @@ const createCustomerCode = async (portal) => {
         if (customerNumber < 10) code = 'KH00' + customerNumber;
         else if (customerNumber < 100) code = 'KH0' + customerNumber;
         else code = 'KH' + customerNumber;
+    }
+    return code;
+}
+
+const createCustomerCareCode = async (portal, id) => {
+
+    // Tạo mã khuyến mãi
+    const customer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
+
+    const lastCustomerCare = customer.promotions[customer.promotions.length - 1];
+    let code;
+    if (lastCustomerCare == null) code = 'KM001';
+    else {
+        let customerCareNumber = await lastCustomerCare.code;
+        customerCareNumber = customerCareNumber.slice(2);
+        customerCareNumber = parseInt(customerCareNumber) + 1;
+        if (customerCareNumber < 10) code = 'KM00' + customerCareNumber;
+        else if (customerCareNumber < 100) code = 'KM0' + customerCareNumber;
+        else code = 'KM' + customerCareNumber;
     }
     return code;
 }
@@ -85,14 +104,23 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
 
     const crmUnit = await getCrmUnitByRole(portal, companyId, role);
 
-    if (!crmUnit) return {};
-    data = { ...data, crmUnit: crmUnit._id };
+    //if (!crmUnit) return {};
+    if (!crmUnit){
+        data = { ...data, creator: userId };
+    }
+    data = { ...data, customerCareUnit: crmUnit._id };
     const newCus = await Customer(connect(DB_CONNECTION, portal)).create(data)
+    // Phần dưới đây thêm vào vì chưa xử lí được lỗi props ở phía client
     const newCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCus._id)
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
+    if (!crmUnit){
+        return newCustomer;
+    }
+    // Phần trên thêm vào vì chưa xử lí được lỗi props ở phía client
+
     // them vao hoạt động tìm kiếm khách hàng
     //lấy công việc thêm khách hàng của nhân viên
     const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
@@ -105,8 +133,8 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
         <p>Thêm mới khách hàng : <strong> ${newCustomer.name}</strong></p>
         <p>Mã khách hàng : <strong> ${newCustomer.code}</strong></p>
         <p>email khách hàng : <strong> ${newCustomer.email}</strong></p>
-        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.status[0].name}</strong></p>
-        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.group.name}</strong></p>
+        <p>Trạng thái khách hàng : <strong style="color:green"> ${newCustomer.customerStatus[0].name}</strong></p>
+        <p>Khách hàng thuộc nhóm : <strong> ${newCustomer.customerGroup.name}</strong></p>
         `,
         index: '1'
     }
@@ -114,8 +142,8 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
     await updateSearchingCustomerTaskInfo(portal, companyId, userId, role);
 
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
     return getNewCustomer;
@@ -177,8 +205,8 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
 
 
         const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: newCustomer._id })
-            .populate({ path: 'group', select: '_id name' })
-            .populate({ path: 'status', select: '_id name' })
+            .populate({ path: 'customerGroup', select: '_id name' })
+            .populate({ path: 'customerStatus', select: '_id name' })
             .populate({ path: 'owner', select: '_id name email' });
         if (getCustomer) {
             getResult.push(getCustomer);
@@ -198,15 +226,18 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
  * @param {*} companyId 
  * @param {*} query 
  */
-exports.getCustomers = async (portal, companyId, query, role) => {
+ exports.getCustomers = async (portal, companyId, query, userId, role) => {
     const { page, limit, customerCode, customerStatus, customerGroup, customerOwner, isNewCustomer, month, year, getAll } = query;
 
     let keySearch = {}
     if (!getAll) {
         // lấy đơn vị CSKH từ role
         const crmUnit = await getCrmUnitByRole(portal, companyId, role);
-        if (!crmUnit) return { listDocsTotal: 0, customers: [] };
-        keySearch = { crmUnit: crmUnit._id }
+        //if (!crmUnit) return { listDocsTotal: 0, customers: [] };
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
     }
     if (customerCode) {
         keySearch = {
@@ -217,12 +248,12 @@ exports.getCustomers = async (portal, companyId, query, role) => {
     if (customerStatus)
         keySearch = {
             ...keySearch,
-            status: { $in: customerStatus }
+            customerStatus: { $in: customerStatus }
         };
     if (customerGroup)
         keySearch = {
             ...keySearch,
-            group: { $in: customerGroup }
+            customerGroup: { $in: customerGroup }
         }
     if (customerOwner && customerOwner != 0) {
         keySearch = {
@@ -252,12 +283,12 @@ exports.getCustomers = async (portal, companyId, query, role) => {
     let customers;
     if (page && limit) customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
         .skip(parseInt(page)).limit(parseInt(limit))
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
     else customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
     return { listDocsTotal, customers };
 }
@@ -270,8 +301,8 @@ exports.getCustomers = async (portal, companyId, query, role) => {
  */
 exports.getCustomerById = async (portal, companyId, id) => {
     const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id)
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({ path: 'files.creator', select: '_id name ' })
@@ -326,7 +357,7 @@ exports.editCustomer = async (portal, companyId, id, data, userId, fileInfo) => 
 
     // check nếu ko có group (group ='') thì gán group = null. vì group ref tới schema group
     if (!group) {
-        data = { ...data, group: null };
+        data = { ...data, customerGroup: null };
     }
 
     // Cập nhật avatar cho khách hàng
@@ -358,8 +389,8 @@ exports.editCustomer = async (portal, companyId, id, data, userId, fileInfo) => 
     }, { new: true });
 
     return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
@@ -371,31 +402,67 @@ exports.editCustomerPoint = async (portal, companyId, id, data, userId) => {
     }, { new: true });
 }
 
-exports.addPromotion = async (portal, companyId, id, data, userId) => {
+exports.addPromotion = async (portal, companyId, id, data, userId, careCode) => {
     let { value, description, minimumOrderValue, promotionalValueMax, expirationDate } = data;
 
+    if (!careCode) { 
+        careCode = await createCustomerCareCode(portal, id);
+    }
 
     let promotions = [];
+    const code = careCode;
     let getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id);
     if (getCustomer.promotions) promotions = getCustomer.promotions;
-    promotions = await [...promotions, { value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), status: 1 }]
+    promotions = await [...promotions, { code, value, description, minimumOrderValue, promotionalValueMax, expirationDate: this.formatDate(expirationDate), status: 1 }]
     getCustomer = await { getCustomer, promotions };
     await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: getCustomer
     }, { new: true });
+    
     return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
 }
 
+// Lấy tất cả danh sách khuyến mãi của 1 khách hàng ( Lấy từ bảng customer và khuyến mãi từ bảng customerGroup)
 exports.getCustomerPromotions = async (portal, companyId, customerId) => {
     console.log('vao get promotion');
+    
+    let promotions = [];
     const customer = await this.getCustomerById(portal, companyId, customerId);
-    if (!customer || customer.promotions) return [];
-    return customer.promotions;
+    
+    if (customer && customer.promotions) promotions = [...promotions, customer.promotions]
+    console.log("sau khi lay khuyen mai tu bang khach hang");
+    console.log(promotions);
+
+    let group;
+    if (customer.customerGroup) {
+        group = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(customer.customerGroup);
+    }
+    console.log("promotion cua nhom");
+    console.log(group.promotions);
+    
+    
+    if (group.promotions) {
+        const groupPromotions = group.promotions;
+        groupPromotions.forEach(x => {
+            if (!x.exceptCustomer ) {                    
+                promotions = [...promotions, x];
+            } else {
+                let check = true;
+                x.exceptCustomer.map((o) => {
+                    if (o._id == customer._id) check = false;                    
+                })
+                if (check) promotions = [...promotions, x];             
+            }
+        })
+    }
+    console.log("ket qua tra ve");
+    console.log(promotions);
+    return promotions;
 
 }
 
@@ -426,17 +493,20 @@ exports.deleteCustomer = async (portal, companyId, id) => {
     return delCustomer;
 }
 
+// Xóa khuyến mãi của khách hàng 
 exports.deletePromotion = async (portal, companyId, customerId, data, userId) => {
-    console.log('vao day');
-    console.log(data);
-    let { promoIndex } = data;
+    let { code } = data;
     let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
     let promotions = [];
     if (customer.promotions) {
-        promotions = customer.promotions;
-        promotions = promotions.splice(promoIndex, 1);
+        const listPromotions = customer.promotions;
+        listPromotions.forEach(x => {
+            if (x.code !== code ) { 
+                promotions = [...promotions, x];
+            }
+        })
     }
-    customer = { ...customer, promotions };
+    customer.promotions = promotions;
     return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
         $set: customer
     }, { new: true });
@@ -465,20 +535,24 @@ exports.usePromotion = async (portal, companyId, customerId, data, userId) => {
 
 }
 
+// Chỉnh sửa khuyến mãi của khách hàng
 exports.editPromotion = async (portal, companyId, customerId, data, userId) => {
-    console.log(1);
     let { promotion } = data;
     let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
     let promotions = [];
     if (customer.promotions) {
-        promotions = customer.promotions;
+        const listPromotions = customer.promotions;
+        listPromotions.forEach(x => {
+            if (x.code == promotion.code) { 
+                promotions = [...promotions, promotion]
+            } else promotions =  [...promotions, x ];
+        })
     }
-    console.log(1);
-    promotions[promotion.index] = promotion;
-    customer = { ...customer, promotions };
-    console.log(1);
+    customer.promotions = promotions; 
     return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
         $set: customer
     }, { new: true });
 
 }
+
+/* Thêm từ 42 -> 60 , 408-> 411, 414, Sửa 405, 417 */ 

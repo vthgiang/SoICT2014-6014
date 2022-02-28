@@ -29,15 +29,15 @@ const initState = {
         prevPage: 0,
         nextPage: 0,
     },
-    associatedData:{},
-    
-    isLoading: true
+    associatedData: {},
+
+    isLoading: false
 }
 
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
@@ -77,7 +77,7 @@ export function notifications(state = initState, action) {
                 ...state,
                 isLoading: true
             }
-        
+
         case NotificationConstants.GET_MANUAL_NOTIFICATIONS_FAILE:
         case NotificationConstants.PAGINATE_MANUAL_NOTIFICATIONS_FAILE:
         case NotificationConstants.GET_NOTIFICATIONS_FAILE:
@@ -129,7 +129,7 @@ export function notifications(state = initState, action) {
                 },
                 isLoading: false
             };
-        
+
         case NotificationConstants.PAGINATE_NOTIFICATIONS_SUCCESS:
             return {
                 ...state,
@@ -150,7 +150,7 @@ export function notifications(state = initState, action) {
             };
 
         case NotificationConstants.CREATE_NOTIFICATION_SUCCESS:
-            
+
             return {
                 ...state,
                 sent: {
@@ -164,9 +164,9 @@ export function notifications(state = initState, action) {
         case NotificationConstants.READED_NOTIFICATION_SUCCESS:
             if (!action.payload.readAll) {
                 index = findIndex(state.receivered.list, action.payload.notification._id);
-                if(index !== -1) state.receivered.list[index] = action.payload.notification;
+                if (index !== -1) state.receivered.list[index] = action.payload.notification;
                 indexP = findIndex(state.receivered.paginate, action.payload.notification._id);
-                if(indexP !== -1) state.receivered.paginate[indexP] = action.payload.notification;
+                if (indexP !== -1) state.receivered.paginate[indexP] = action.payload.notification;
                 return {
                     ...state,
                     isLoading: false
@@ -179,12 +179,12 @@ export function notifications(state = initState, action) {
                     isLoading: false
                 };
             }
-            
+
         case NotificationConstants.DELETE_MANUAL_NOTIFICATION_SUCCESS:
             index = findIndex(state.sent.list, action.payload);
-            if(index !== -1) state.sent.list.splice(index, 1);
+            if (index !== -1) state.sent.list.splice(index, 1);
             indexP = findIndex(state.sent.paginate, action.payload);
-            if(indexP !== -1) state.sent.paginate.splice(indexP, 1);
+            if (indexP !== -1) state.sent.paginate.splice(indexP, 1);
             return {
                 ...state,
                 isLoading: false
@@ -192,14 +192,14 @@ export function notifications(state = initState, action) {
 
         case NotificationConstants.DELETE_NOTIFICATION_SUCCESS:
             index = findIndex(state.receivered.list, action.payload);
-            if(index !== -1) state.receivered.list.splice(index, 1);
+            if (index !== -1) state.receivered.list.splice(index, 1);
             indexP = findIndex(state.receivered.paginate, action.payload);
-            if(indexP !== -1) state.receivered.paginate.splice(indexP, 1);
+            if (indexP !== -1) state.receivered.paginate.splice(indexP, 1);
             return {
                 ...state,
                 isLoading: false
             };
-        
+
         case NotificationConstants.RECEIVE_NOTIFICATION_SUCCESS:
             console.log("New notification: ", action.payload)
             return {

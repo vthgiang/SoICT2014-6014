@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { PaginateBar, DataTableSetting, SelectMulti, DeleteNotification } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import { formatDate } from '../../../../../helpers/formatDate';
 
 import { CreateApiRegistrationModal } from './createApiRegistrationModal'
 
-import { ApiRegistrationActions } from '../redux/actions'
 import { PrivilegeApiActions } from '../../../../system-admin/system-api/system-api-privilege/redux/actions'
+import TooltipCopy from '../../../../../common-components/src/tooltip-copy/TooltipCopy';
 
-function ApiRegistration (props) {
+function ApiRegistration(props) {
     const { translate, privilegeApis, company } = props
 
     const tableId = "table-api-registration";
@@ -67,9 +69,39 @@ function ApiRegistration (props) {
     }
 
     const handleCancelApiRegistration = (api) => {
-        props.updateStatusPrivilegeApi({
-            privilegeApiIds: [api?._id],
-            status: 0
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('system_admin.privilege_system_api.cancel')}</div></h4>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.updateStatusPrivilegeApi({
+                    privilegeApiIds: [api?._id],
+                    status: 0
+                })
+            }
+        })
+    }
+
+    const handleDeleteApiRegistration = (api) => {
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('system_admin.privilege_system_api.delete')}</div></h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                props.deletePrivilegeApi({
+                    privilegeApiIds: [api?._id],
+                })
+            }
         })
     }
 
@@ -105,7 +137,16 @@ function ApiRegistration (props) {
     }
 
     const formatStatus = (status) => {
-        return status
+        if (status === 0) {
+            return <span style={{ color: '#858585' }}>Vô hiệu hóa</span>
+        } else if (status === 1) {
+            return <span style={{ color: '#F57F0C' }}>Yêu cầu sử dụng</span>
+        } else if (status === 2) {
+            return <span style={{ color: '#E34724' }}>Từ chối</span>
+        } else if (status === 3) {
+            return <span style={{ color: '#28A745' }}>Đang sử dụng</span>
+
+        }
     }
 
     const handleAddPrivilegeApi = () => {
@@ -116,8 +157,8 @@ function ApiRegistration (props) {
 
     return (
         <React.Fragment>
-            <CreateApiRegistrationModal/>
-            
+            <CreateApiRegistrationModal role="admin" privilegeApisStatus={3} />
+
             <div className="box" >
                 <div className="box-body qlcv">
                     <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -131,11 +172,20 @@ function ApiRegistration (props) {
                         <button type="button" onClick={() => handleAddPrivilegeApi()} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                     </div>
 
-                    <table id={tableId} className="table table-hover table-striped table-bordered">
-                        <thead>
+                    <table id={tableId} className='table table-hover table-striped table-bordered'>
+                        <thead style={{
+                            tableLayout: 'fixed'
+                        }}>
                             <tr>
-                                <th style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                                <th style={{
+                                    textAlign: 'center',
+                                }}>
+                                    {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}
+                                </th>
                                 <th>{translate('system_admin.privilege_system_api.table.email')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.description')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.startDate')}</th>
+                                <th>{translate('system_admin.privilege_system_api.table.endDate')}</th>
                                 <th>{translate('task.task_management.col_status')}</th>
                                 <th>Token</th>
                                 <th style={{ width: "120px" }}>
@@ -149,28 +199,53 @@ function ApiRegistration (props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { listPaginateApiRegistration?.length > 0
-                                && listPaginateApiRegistration.map((apiRegistration, index) => 
+                            {listPaginateApiRegistration?.length > 0
+                                && listPaginateApiRegistration.map((apiRegistration, index) =>
                                     <tr key={apiRegistration._id}>
                                         <td>{index + 1}</td>
                                         <td>{apiRegistration.email}</td>
+                                        <td style={{
+                                            textAlign: 'justify',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            maxWidth: '20vw'
+                                        }}>
+                                            {apiRegistration.description ? apiRegistration.description : 'NaN'}
+                                        </td>
+                                        <td>{apiRegistration.startDate ? formatDate(apiRegistration.startDate) : 'Unlimited'}</td>
+                                        <td>{apiRegistration.endDate ? formatDate(apiRegistration.endDate) : 'Unlimited'}</td>
                                         <td>{formatStatus(apiRegistration.status)}</td>
                                         <td style={{ position: "relative" }}>
-                                            <button className="pull-right" style={{ position: "absolute", right: 0 }}>Copy</button>
-                                            {apiRegistration?.token?.slice(0, 60)}...
+                                            {apiRegistration?.token &&
+                                                <TooltipCopy className="pull-right" copyText={apiRegistration?.token} copySuccessNoti={'Copied'} />}
+
+                                            <div style={{ marginRight: 40 }}>
+                                                {apiRegistration?.token ? `${apiRegistration?.token?.slice(0, 60)}...` : 'Waiting for being accepted...'}
+                                            </div>
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745"}}>
-                                                <i className="material-icons">check_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724"}}>
-                                                <i className="material-icons">remove_circle_outline</i>
-                                            </a>
-                                            <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585"}}>
-                                                <i className="material-icons">highlight_off</i>
-                                            </a>
+                                            {![2, 3].includes(apiRegistration.status) ? (
+                                                <>
+                                                    <a onClick={() => handleAcceptApiRegistration(apiRegistration)} style={{ color: "#28A745" }}>
+                                                        <i className="material-icons">check_circle_outline</i>
+                                                    </a>
+
+                                                    <a onClick={() => handleDeclineApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">remove_circle_outline</i>
+                                                    </a>
+
+                                                    <a onClick={() => handleDeleteApiRegistration(apiRegistration)} style={{ color: "#E34724" }}>
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                </>
+                                            ) : (
+                                                <a onClick={() => handleCancelApiRegistration(apiRegistration)} style={{ color: "#858585" }}>
+                                                    <i className="material-icons">highlight_off</i>
+                                                </a>
+                                            )}
                                         </td>
-                                    </tr>    
+                                    </tr>
                                 )
                             }
                         </tbody>
@@ -195,7 +270,8 @@ function mapState(state) {
 }
 const actions = {
     getPrivilegeApis: PrivilegeApiActions.getPrivilegeApis,
-    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi
+    updateStatusPrivilegeApi: PrivilegeApiActions.updateStatusPrivilegeApi,
+    deletePrivilegeApi: PrivilegeApiActions.deletePrivilegeApis
 }
 
 export default connect(mapState, actions)(withTranslate(ApiRegistration))

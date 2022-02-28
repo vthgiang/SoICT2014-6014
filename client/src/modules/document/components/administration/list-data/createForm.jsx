@@ -9,6 +9,7 @@ import { DocumentImportForm } from './documentImportForm';
 import { AddVersion } from './addVerson';
 import EditVersionForm from './editVersionForm';
 import { getStorage } from '../../../../../config';
+import Swal from 'sweetalert2';
 
 function CreateForm(props) {
     const [state, setState] = useState({
@@ -500,7 +501,7 @@ function CreateForm(props) {
     }
 
     const editVersion = async (data) => {
-        let {  documentFile, documentFileScan, versionName, documentIssuingDate,
+        let { documentFile, documentFileScan, versionName, documentIssuingDate,
             documentEffectiveDate, documentExpiredDate, } = state;
         const file = {
             fileName: data.file,
@@ -521,7 +522,7 @@ function CreateForm(props) {
             documentFile: data.documentFile,
             documentFileScan: data.documentFileScan,
         }
-        let documentVersions=[...state.documentVersions]
+        let documentVersions = [...state.documentVersions]
         documentVersions[data.index] = version;
         documentFile[data.index] = data.documentFile[0];
         documentFileScan[data.index] = data.documentFile[0];
@@ -542,7 +543,7 @@ function CreateForm(props) {
         })
 
     }
-    const formatDate=(date, monthYear = false)=> {
+    const formatDate = (date, monthYear = false) => {
         if (!date) return null;
         if (date) {
             let d = new Date(date),
@@ -566,7 +567,7 @@ function CreateForm(props) {
      * @param {*vai tro ng dang dang nhap} currentRole 
      * Ham tim ra những phòng ban mà người dùng đang đăng nhập là manager
      */
-    const findDepartment=() =>{
+    const findDepartment = () => {
         const { department } = props;
         let res = [];
         let currentRole = getStorage('currentRole');
@@ -580,6 +581,27 @@ function CreateForm(props) {
             }
         }
         return res.map(elem => elem._id);
+    }
+
+    const showDetail = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Những vị trí có quyền xem tài liệu này</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <ul>
+                <li>Nếu người dùng không chọn role cụ thể thì tài liệu sau khi tạo sẽ chỉ có người quản lý tài liệu công ty mới xem được</li>
+                <li>Nếu người dùng chọn 1 role cụ thể thì chỉ những người có role đấy và role kế thừa role đã chọn mới xem được (ví dụ chọn nhân viên hành chính, thì người dùng có nhân viên hành chính và người dùng có role trưởng, phó phòng hành chính cũng sẽ xem được) </li>
+                
+            </ul>
+            `,
+            width: "50%",
+        })
+    }
+
+    const convertDataOrgan = (data) => {
+        data.unshift({value: "", text: translate("document.store.select_organizational")});
+        return data;
     }
 
     const { translate, role, documents, department, user } = props;
@@ -758,14 +780,16 @@ function CreateForm(props) {
                                                 id="select-documents-organizational-unit-manage"
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                                                items={convertDataOrgan(department.list.map(organ => { return { value: organ._id, text: organ.name } }))}
                                                 onChange={handleArchivedRecordPlaceOrganizationalUnit}
-                                                options={{ placeholder: translate('document.store.select_organizational') }}
                                                 multiple={false}
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>{translate('document.roles')}</label>
+                                            <label style={{marginRight: 5}}>{translate('document.roles')}</label>
+                                            <a onClick={showDetail}>
+                                                <i className="fa fa-question-circle" style={{ cursor: 'pointer' }} />
+                                            </a>
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                 id="select-document-users-see-permission"
                                                 className="form-control select2"

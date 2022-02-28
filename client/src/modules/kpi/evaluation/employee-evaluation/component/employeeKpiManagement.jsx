@@ -800,8 +800,8 @@ function EmployeeKpiManagement(props) {
     let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
 
     // Khởi tạo select box chọn nhân viên
-    if (user?.employees?.length > 0) {
-        unitMembers = user.employees.map(item => { 
+    if (user?.error?.employees?.length > 0) {
+        unitMembers = user.error.employees.map(item => { 
             return {
                 text: item?.userId?.name, 
                 value: item?.userId?._id
@@ -811,8 +811,8 @@ function EmployeeKpiManagement(props) {
     }
 
     // Khởi tạo select box chọn người phê duyệt
-    if (user?.employees?.length > 0) {
-        approverSelectBox = user.employees.filter(employee => { 
+    if (user?.error?.employees?.length > 0) {
+        approverSelectBox = user.error.employees.filter(employee => { 
             let checkManager = false
 
             if (employee?.roleId?.length > 0) {

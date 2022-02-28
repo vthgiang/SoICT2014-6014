@@ -1,7 +1,9 @@
 import {
     getStorage
 } from '../../../../config';
-import { sendRequest } from '../../../../helpers/requestHelper';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
 
 export const performTaskService = {
     getTimesheetLogs,
@@ -26,7 +28,7 @@ export const performTaskService = {
     createCommentOfTaskComment,
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
-    
+
     getTaskLog,
 
     deleteFileAction,
@@ -45,6 +47,7 @@ export const performTaskService = {
     deleteDocument,
 
     evaluationAction,
+    deleteActionEvaluation,
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
@@ -107,7 +110,10 @@ function getTimerStatusTask(taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/task-timesheet-logs`,
         method: 'GET',
-        params: {taskId: taskId , userId: userId}
+        params: {
+            taskId: taskId,
+            userId: userId
+        }
     }, false, false, 'task.task_perform');
 };
 
@@ -255,7 +261,9 @@ function confirmTask(taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        params: { type: 'confirm_task' }
+        params: {
+            type: 'confirm_task'
+        }
     }, true, true, 'task.task_management');
 }
 
@@ -287,7 +295,9 @@ function editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollabo
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        params: { type: 'edit_employee_collaborated_with_unit' },
+        params: {
+            type: 'edit_employee_collaborated_with_unit'
+        },
         data: employeeCollaboratedWithUnit
     }, true, true, 'task.task_management');
 }
@@ -388,6 +398,19 @@ function evaluationAllAction(taskId, evaluation) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/evaluation/all`,
         method: 'PATCH',
         data: evaluation,
+    }, false, true, 'task.task_perform')
+}
+
+/**
+ * Xoá đánh giá hoạt động
+ * @param {*} actionId id của action
+ * @param {*} taskId id của công việc
+ * @param {*} evaluationId id của đánh giá
+ */
+function deleteActionEvaluation(actionId, taskId, evaluationId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/evaluation/${evaluationId}`,
+        method: 'DELETE',
     }, false, true, 'task.task_perform')
 }
 
@@ -497,16 +520,16 @@ function editArchivedOfTask(taskId) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
-            type: 'edit_archived'
+            type: 'edit_archived',
         }
     }, true, true, 'task.task_management');
 }
 
 /**
-* edit status of task
-* @param {*} taskId id cua task
-* @param {*} status trang thai muon cap nhat
-*/
+ * edit status of task
+ * @param {*} taskId id cua task
+ * @param {*} status trang thai muon cap nhat
+ */
 function editActivateOfTask(taskId, typeOfTask, listSelected) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
@@ -534,7 +557,7 @@ function editTaskByResponsibleEmployees(data, taskId) {
     data.imageDescriptions && data.imageDescriptions.forEach(x => {
         formData.append("files", x);
     })
-    
+
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
@@ -557,7 +580,7 @@ function editTaskByAccountableEmployees(data, taskId) {
     data.imageDescriptions && data.imageDescriptions.forEach(x => {
         formData.append("files", x);
     })
-    
+
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
@@ -665,7 +688,9 @@ function deleteDocument(documentId, taskId) {
 function editDocument(documentId, taskId, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/documents`,
-        params: { documentId: documentId },
+        params: {
+            documentId: documentId
+        },
         data: data,
         method: 'PATCH',
     }, true, true, 'task.task_perform');
@@ -758,7 +783,9 @@ function getAllPreceedingTasks(taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}`,
         method: 'GET',
-        params: { preceedingTasks: true }
+        params: {
+            preceedingTasks: true
+        }
     }, false, false)
 }
 /**
@@ -793,7 +820,7 @@ function evaluateTaskByResponsibleEmployeesProject(data, taskId) {
  * @param {*} data du lieu cap nhat
  * @param {*} taskId id cua task muon cap nhat
  */
- function evaluateTaskByAccountableEmployeesProject(data, taskId) {
+function evaluateTaskByAccountableEmployeesProject(data, taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluate-project`,
         method: 'POST',

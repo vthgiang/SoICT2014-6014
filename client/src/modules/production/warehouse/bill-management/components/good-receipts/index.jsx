@@ -26,7 +26,6 @@ function ReceiptManagement(props) {
 
     const { translate, bills, stocks, user } = props;
     const { listPaginate, totalPages, page } = bills;
-    console.log("listPaginate", listPaginate);
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow } = state;
     const dataPartner = props.getPartner();
@@ -204,6 +203,7 @@ function ReceiptManagement(props) {
                         description={currentRow.description}
                         listGood={currentRow.goods}
                         creator={currentRow.creator ? currentRow.creator._id : ''}
+                        sourceType={currentRow.sourceType}
                     />
                 }
 
@@ -252,8 +252,8 @@ function ReceiptManagement(props) {
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                    { x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
-                                    { x.type === '2' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
+                                    {x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
+                                    {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
@@ -271,14 +271,7 @@ function ReceiptManagement(props) {
                                         }
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.staff_true')}
-                                                content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => handleFinishedQualityControlStaff(x)}
-                                            />
+                                            <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
                                         }
                                     </td>
                                 </tr>

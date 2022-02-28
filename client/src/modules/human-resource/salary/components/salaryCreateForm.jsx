@@ -111,23 +111,13 @@ const SalaryCreateForm = (props) => {
     }
 
 
-    /** Function bắt sự kiện thay đổi tiền lương chính */
-    const validateMainSalary = (value, willUpdateState = true) => {
-        let { translate } = props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-
-        if (willUpdateState) {
-            setState(state => ({
-                ...state,
-                errorOnMainSalary: message,
-                mainSalary: value
-            }))
-        }
-        return message === undefined;
-    }
     const handleMainSalaryChange = (e) => {
         let value = e.target.value;
-        validateMainSalary(value, true);
+
+        setState(state => ({
+            ...state,
+            mainSalary: value
+        }))
     }
 
 
@@ -243,9 +233,9 @@ const SalaryCreateForm = (props) => {
             }
         }
 
-        let result = validateEmployeeNumber(employee, false) &&
-            validateMainSalary(mainSalary, false) && validateOrganizationalUnit(organizationalUnit, false) &&
+        let result = validateEmployeeNumber(employee, false) && validateOrganizationalUnit(organizationalUnit, false) &&
             validateMonthSalary(month, false);
+        console.log('result ', result)
 
         if (result === true) {
             if (bonus !== []) {
@@ -272,12 +262,13 @@ const SalaryCreateForm = (props) => {
             }
         }
         let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee);
-        employeeID = employeeID._id;
+        employeeID = employeeID?._id;
 
         let partMonth = month.split('-');
         let monthNew = [partMonth[1], partMonth[0]].join('-');
+
         if (isFormValidated()) {
-            createSalary({ ...state, employee: employeeID, organizationalUnit: organizationalUnit, month: monthNew });
+            createSalary({ ...state, employee: employeeID, organizationalUnit: organizationalUnit, month: monthNew, mainSalary });
         }
     }
 
@@ -348,8 +339,8 @@ const SalaryCreateForm = (props) => {
                         <ErrorLabel content={errorOnMonthSalary} />
                     </div>
                     {/* Tiền lương chính */}
-                    <div className={`form-group ${errorOnMainSalary && "has-error"}`}>
-                        <label >{translate('human_resource.salary.table.main_salary')}<span className="text-red">*</span></label>
+                    <div className={`form-group`}>
+                        <label >{translate('human_resource.salary.table.main_salary')}</label>
                         <div>
                             <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={handleMainSalaryChange}
                                 style={{ display: "inline", width: "85%" }} autoComplete="off" placeholder={translate('human_resource.salary.table.main_salary')} autoComplete="off" />
@@ -358,7 +349,6 @@ const SalaryCreateForm = (props) => {
                                 <option value="USD">USD</option>
                             </select>
                         </div>
-                        <ErrorLabel content={errorOnMainSalary} />
                     </div>
                     {/* Các loại lương thưởng khác */}
                     <div className={`form-group ${(errorOnNameSalary || errorOnMoreMoneySalary) && "has-error"}`}>

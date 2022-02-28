@@ -155,7 +155,7 @@ function getListPraise(data) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.GET_PRAISE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -180,7 +180,7 @@ function createNewPraise(data) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.CREATE_PRAISE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -205,7 +205,7 @@ function deletePraise(id) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.DELETE_PRAISE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }
@@ -231,7 +231,7 @@ function updatePraise(id, data) {
             .catch(err => {
                 dispatch({
                     type: DisciplineConstants.UPDATE_PRAISE_FAILURE,
-                    error: err.response.data
+                    error: err
                 });
             })
     }

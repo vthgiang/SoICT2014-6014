@@ -1,8 +1,7 @@
 const { Role } = require('../models');
 const { connect } = require('../helpers/dbHelper');
 
-exports.links = [
-    {
+exports.links = [{
         url: '/system/companies-management',
         apis: [
             // Authentication
@@ -48,6 +47,8 @@ exports.links = [
             { path: '/system-admin/system-link/system-links-categories', method: 'GET' },
             { path: '/system-admin/system-link/system-links', method: 'GET' },
             { path: '/system-admin/system-link/system-links', method: 'POST' },
+
+            { path: '/system-admin/system-page/apis', method: 'GET' },
 
             { path: '/links-default-management/paginate', method: 'POST' },
             { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'GET' },
@@ -127,6 +128,9 @@ exports.links = [
             { path: '/educationProgram/educationPrograms/:id', method: 'DELETE' },
             { path: '/educationProgram/educationPrograms/:id', method: 'PATCH' },
 
+            // Dashboard unit
+            { path: '/dashboard-unit/all-unit-dashboard-data', method: 'GET' },
+
             { path: '/course/courses', method: 'GET' },
             { path: '/course/courses', method: 'POST' },
             { path: '/course/courses/:id', method: 'DELETE' },
@@ -141,6 +145,7 @@ exports.links = [
             { path: '/employee/employees/import', method: 'POST' },
 
             { path: '/salary/salaries', method: 'GET' },
+            { path: '/salary/salaries-chart', method: 'GET' },
             { path: '/salary/salaries', method: 'POST' },
             { path: '/salary/salaries/:id', method: 'PATCH' },
             { path: '/salary/salaries/:id', method: 'DELETE' },
@@ -249,6 +254,7 @@ exports.links = [
             { path: '/documents/document-archives/:id', method: 'GET' },
             { path: '/documents/document-archives/delete-many', method: 'POST' },
             { path: '/documents/document-archives/import-file', method: 'POST' },
+            { path: '/documents/chart-document', method: 'GET' },
 
             { path: '/component/components', method: 'GET' },
             { path: '/component/components', method: 'POST' },
@@ -315,7 +321,7 @@ exports.links = [
             { path: '/task/tasks/:taskId', method: 'DELETE' },
             { path: '/task/tasks/:taskId/sub-tasks', method: 'GET' },
             { path: '/task/task-evaluations', method: 'GET' },
-            { path: '/task/analys/user/:userId', method: 'GET' },
+            { path: '/task/analyse/user/:userId', method: 'GET' },
             { path: '/task/time-sheet', method: 'GET' },
             { path: '/task/time-sheet/all', method: 'GET' },
 
@@ -338,6 +344,7 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-actions', method: 'POST' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'PATCH' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'DELETE' },
+            { path: '/performtask/tasks/:taskId/task-actions/:actionId/evaluation/:evaluationId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-actions/:actionId/files/:fileId', method: 'PATCH' },
 
 
@@ -430,6 +437,12 @@ exports.links = [
 
             // Asset
             { path: '/asset/assets', method: 'GET' },
+            { path: '/asset/assets-group', method: 'GET' },
+            { path: '/asset/assets-statistic', method: 'GET' },
+            { path: '/asset/assets-purchase', method: 'GET' },
+            { path: '/asset/assets-disposal', method: 'GET' },
+            { path: '/asset/assets-incident', method: 'GET' },
+            { path: '/asset/assets-maintenance', method: 'GET' },
             { path: '/asset/assets', method: 'POST' },
             { path: '/asset/assets/:id', method: 'PATCH' },
             { path: '/asset/assets/:id', method: 'DELETE' },
@@ -645,6 +658,9 @@ exports.links = [
         url: '/apis-registration',
         apis: ['@all']
     }, {
+        url: '/apis-registration-employee',
+        apis: ['@all']
+    }, {
         url: '/components-management',
         apis: ['@all']
     }, {
@@ -720,16 +736,25 @@ exports.links = [
         url: '/hr-list-education',
         apis: ['@all']
     },
-    // {
-    //     url: '/hr-list-major',
-    //     apis: ['@all']
-    // }, {
-    //     url: '/hr-list-career-position',
-    //     apis: ['@all']
-    // }, {
-    //     url: '/hr-search-for-package',
-    //     apis: ['@all']
-    // },
+    {
+        url: '/hr-list-major',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-bidding-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-certificate',
+        apis: ['@all']
+    }, {
+        url: '/hr-list-career-position',
+        apis: ['@all']
+    }, {
+        url: '/hr-search-for-package',
+        apis: ['@all']
+    }, {
+        url: '/hr-management-package',
+        apis: ['@all']
+    },
     {
         url: '/kpi-units/create-for-admin',
         apis: ['@all']
@@ -774,6 +799,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/task-process-template',
+        apis: ['@all']
+    },  {
+        url: '/process-template',
         apis: ['@all']
     }, {
         url: '/task-management-dashboard',
@@ -893,13 +921,11 @@ exports.links = [
     {
         url: '/crm/dashboard',
         apis: ['@all']
-    }
-    ,
+    },
     {
         url: '/crm/dashboardUnit',
         apis: ['@all']
-    }
-    , {
+    }, {
         url: '/crm/customer',
         apis: ['@all']
     }, {
@@ -1038,21 +1064,24 @@ exports.links = [
     {
         url: '/carrier-all-times-transport-mission',
         apis: ['@all']
-    },
-
-    {
+    }, {
         url: '/projects-management',
         apis: ['@all']
-    },
-    {
+    }, {
         url: '/user-guide',
         apis: ['@all']
     }, {
         url: '/time-sheet-log/all',
         apis: ['@all']
+    }, {
+        url: '/personal-time-sheet-log',
+        apis: ['@all']
+    }, {
+        url: '/employees-infomation',
+        apis: ['@all']
     },
     {
-        url: '/employees-infomation',
+        url: '/majors',
         apis: ['@all']
     }
 ];

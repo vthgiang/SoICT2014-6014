@@ -1,6 +1,7 @@
 import { taskManagementConstants } from "./constants";
 
 export function tasks(state = {
+    isLoading: false,
     allTimeSheetLogs: [],
     userTimeSheetLogs: [],
     totalCount: 0,
@@ -53,6 +54,7 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingResponsible: true,
+                isLoading: true,
             };
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS:
             return {
@@ -60,7 +62,8 @@ export function tasks(state = {
                 responsibleTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
-                loadingResponsible: false
+                loadingResponsible: false,
+                isLoading: false
             };
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_FAILURE:
             return {
@@ -75,6 +78,7 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingAccountable: true,
+                isLoading: true
             };
         case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS:
             return {
@@ -83,6 +87,7 @@ export function tasks(state = {
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 loadingAccountable: false,
+                isLoading: false
             };
         case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_FAILURE:
             return {
@@ -97,6 +102,7 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingConsulted: true,
+                isLoading: true
             };
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS:
             return {
@@ -104,7 +110,8 @@ export function tasks(state = {
                 consultedTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
-                loadingConsulted: false
+                loadingConsulted: false,
+                isLoading: false
             };
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_FAILURE:
             return {
@@ -119,6 +126,7 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingInformed: true,
+                isLoading: true
             };
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS:
             return {
@@ -126,13 +134,15 @@ export function tasks(state = {
                 informedTasks: action.payload.tasks,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
-                loadingInformed: false
+                loadingInformed: false,
+                isLoading: false
             };
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                loadingInformed: false
+                loadingInformed: false,
+                isLoading: false
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_REQUEST:
             return {
@@ -141,6 +151,7 @@ export function tasks(state = {
                 tasks: null,
                 pages: null,
                 loadingCreator: true,
+                isLoading: true,
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS:
             return {
@@ -149,18 +160,20 @@ export function tasks(state = {
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 loadingCreator: false,
+                isLoading: false
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                loadingCreator: false
+                loadingCreator: false,
+                isLoading: false
             };
         case taskManagementConstants.ADDNEW_TASK_REQUEST:
             return {
                 ...state,
                 adding: true,
-                isLoading: false
+                isLoading: true
             };
         case taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST:
             if (action.calledId) {
@@ -201,7 +214,8 @@ export function tasks(state = {
                 ...state,
                 tasks: null,
                 pages: null,
-                isLoading: true
+                isLoading: true,
+                loadingPaginateTasks: true,
             }
 
         case taskManagementConstants.GET_PAGINATE_TASK_SUCCESS:
@@ -210,13 +224,15 @@ export function tasks(state = {
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
                 totalCount: action.payload.totalCount,
-                isLoading: false
+                isLoading: false,
+                loadingPaginateTasks: false,
             };
         case taskManagementConstants.GET_PAGINATE_TASK_FAILURE:
             return {
                 ...state,
                 error: action.error,
-                isLoading: false
+                isLoading: false,
+                loadingPaginateTasks: false,
             };
         case taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_REQUEST:
             return {
@@ -246,12 +262,18 @@ export function tasks(state = {
                 isLoading: false
             };
         case taskManagementConstants.ADDNEW_TASK_SUCCESS:
+            console.log('action.payload', action.payload);
+            console.log('kkkkk', [
+                action.payload,
+                ...state.tasks,
+            ]);
             return {
                 ...state,
                 tasks: [
+                    action.payload,
                     ...state.tasks,
-                    action.payload
                 ],
+                totalCount: state?.totalCount + 1,
                 isLoading: false
             };
         case taskManagementConstants.ADDNEW_TASK_FAILURE:
@@ -314,7 +336,7 @@ export function tasks(state = {
             return {
                 ...state,
                 isLoading: false,
-                tasks: state.tasks.filter(task => task._id !== action.payload._id),
+                tasks: state.tasks.filter(task => !(action.payload._id.includes(task._id))),
             };
 
         case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE:
@@ -328,7 +350,7 @@ export function tasks(state = {
             return {
                 ...state,
                 tasks: state.tasks.map(task =>
-                    task._id === action.id
+                    task._id === action.id || (Array.isArray(action.id) && action.id.includes(task._id))
                         ? { ...task, deleting: true }
                         : task
                 ),
@@ -337,7 +359,7 @@ export function tasks(state = {
         case taskManagementConstants.DELETE_TASK_SUCCESS:
             return {
                 ...state,
-                tasks: state.tasks.filter(task => task._id !== action.id),
+                tasks: state.tasks.filter(task => task._id !== action.id && (!Array.isArray(action.id) || !action.id.includes(task._id))),
                 isLoading: false
             };
         case taskManagementConstants.DELETE_TASK_FAILURE:
@@ -564,6 +586,25 @@ export function tasks(state = {
                 isLoading: false
             };
 
+        case taskManagementConstants.GET_USER_TIME_SHEET_LOG_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case taskManagementConstants.GET_USER_TIME_SHEET_LOG_FAILURE:
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case taskManagementConstants.GET_USER_TIME_SHEET_LOG__SUCCESS:
+            return {
+                ...state,
+                userTimeSheetLogs: action.payload,
+                isLoading: false
+            };
+
 
         case taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST:
             return {
@@ -630,25 +671,99 @@ export function tasks(state = {
             }
 
         case taskManagementConstants.IMPORT_TASKS_REQUEST:
-             return {
+            return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                isLoadingImport: true,
             };
-        
+
         case taskManagementConstants.IMPORT_TASKS_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
+                isLoadingImport: false,
                 importTask: action.payload.content,
             }
-        
+
         case taskManagementConstants.IMPORT_TASKS_FAILURE:
-             return {
+            console.log('action.error', action.error)
+            return {
+                ...state,
+                error: action.error,
+                isLoading: false,
+                isLoadingImport: false
+            }
+        case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_REQUEST:
+            if (action.chartNameArr) {
+                if (action.chartNameArr.length === 2) {
+                    let charts = state?.taskDashboardCharts
+                    for (const i of action.chartNameArr) {
+                        if (i !== "common-params") {
+                            for (const j of Object.keys(charts)) {
+                                if (i === j) {
+                                    charts = { ...charts, [i]: { ...state.taskDashboardCharts?.[i], isLoading: true } }
+                                }
+                            }
+
+                            return {
+                                ...state,
+                                taskDashboardCharts: charts,
+                                isLoading: true
+                            }
+                        }
+                    }
+                }
+                else {
+                    let charts = {}
+                    for (const i of action?.chartNameArr) {
+                        charts = { ...charts, [i]: { isLoading: true } }
+                    }
+
+                    return {
+                        ...state,
+                        taskDashboardCharts: charts,
+                        isLoading: true
+                    }
+
+                }
+            }
+
+
+
+        case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_SUCCESS:
+            let result = action.payload;
+            if (Object.keys(result).length === 1) {
+                const data = Object.values(result)[0];
+                let charts = state.taskDashboardCharts
+                for (const i of Object.keys(charts)) {
+                    if (i === Object.keys(result)[0]) {
+                        charts = { ...charts, [i]: { ...data, isLoading: false } }
+                    }
+                }
+                return {
+                    ...state,
+                    taskDashboardCharts: charts,
+                    isLoading: false
+                }
+            }
+            else {
+                for (const i of Object.keys(result)) {
+                    result = { ...result, [i]: { ...result[i], isLoading: false } }
+                }
+                return {
+                    ...state,
+                    taskDashboardCharts: result,
+                    isLoading: false
+                }
+            }
+
+        case taskManagementConstants.GET_ORGANIZATION_TASK_DASHBOARD_CHART_FAILURE:
+            return {
                 ...state,
                 error: action.error,
                 isLoading: false
             }
-        
+
         default:
             return state
     }

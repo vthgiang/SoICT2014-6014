@@ -7,6 +7,12 @@ export const AssetManagerActions = {
     updateInformationAsset,
     deleteAsset,
     getListBuildingAsTree,
+    getAllAssetGroup,
+    getAllAssetStatistic,
+    getAllAssetPurchase,
+    getAllAssetDisposal,
+    getAllAssetIncident,
+    getAllAssetMaintenance
 };
 
 /**
@@ -115,25 +121,162 @@ function updateInformationAsset(id, data, isImport = undefined) {
 
 /**
  * Xóa tài sản
- * @param {*} id
- * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
+ * @param {*} data
  */
-function deleteAsset(id, managedBy = "", page) {
+
+
+function deleteAsset(data) {
     return (dispatch) => {
         dispatch({
-            type: AssetConstants.DELETE_ASSET_REQUEST,
+            type: AssetConstants.DELETE_ASSET_REQUEST
         });
 
-        AssetService.deleteAsset(id)
+        AssetService
+            .deleteAsset(data)
             .then((res) => {
                 dispatch({
                     type: AssetConstants.DELETE_ASSET_SUCCESS,
                     payload: res.data.content,
+                    assetIds: data.assetIds
                 });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: AssetConstants.DELETE_ASSET_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getAllAssetGroup(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_GROUP_REQUEST,
+        });
+        AssetService.getAllAssetGroup(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_GROUP_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res",res.data) */
             })
             .catch((err) => {
                 dispatch({
-                    type: AssetConstants.DELETE_ASSET_FAILURE,
+                    type: AssetConstants.GET_ASSET_GROUP_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetStatistic(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_STATISTIC_REQUEST,
+        });
+        AssetService.getAllAssetStatistic(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_STATISTIC_SUCCESS,
+                    payload: res.data.content,
+                    
+                });
+                console.log("res.res.data.content",res.data.content)
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_STATISTIC_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetPurchase(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_PURCHASE_REQUEST,
+        });
+        AssetService.getAllAssetPurchase(data)
+            .then((res) => {
+                console.log(res.data.content)
+                dispatch({
+                    type: AssetConstants.GET_ASSET_PURCHASE_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_PURCHASE_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetDisposal(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_DISPOSAL_REQUEST,
+        });
+        AssetService.getAllAssetDisposal(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_DISPOSAL_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_DISPOSAL_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetIncident(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_INCIDENT_REQUEST,
+        });
+        AssetService.getAllAssetIncident(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_INCIDENT_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_INCIDENT_FAILURE,
+                    error: err,
+                });
+            });
+    };
+}
+
+function getAllAssetMaintenance(data) {
+    return (dispatch) => {
+        dispatch({
+            type: AssetConstants.GET_ASSET_MAINTENANCE_REQUEST,
+        });
+        AssetService.getAllAssetMaintenance(data)
+            .then((res) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_MAINTENANCE_SUCCESS,
+                    payload: res.data.content,
+                });
+                /* console.log("res.data",res.data) */
+            })
+            .catch((err) => {
+                dispatch({
+                    type: AssetConstants.GET_ASSET_MAINTENANCE_FAILURE,
                     error: err,
                 });
             });

@@ -1387,7 +1387,7 @@ const initSampleCompanyDB = async () => {
     manager = await User(vnistDB).findOne({ name: "Nguyễn Văn Danh" });
     deputyManager = await User(vnistDB).findOne({ name: "Trần Thị Én" });
     employee = await User(vnistDB).findOne({ name: "Phạm Đình Phúc" });
-    var organizationalUnit_2 = await OrganizationalUnit(vnistDB).findOne({ name: "Phòng kinh doanh" });
+    var organizationalUnit_2 = await OrganizationalUnit(vnistDB).findOne({ name: "Bộ phận kinh doanh" });
     now = new Date();
     currentYear = now.getFullYear();
     currentMonth = now.getMonth();

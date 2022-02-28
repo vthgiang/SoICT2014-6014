@@ -10,12 +10,12 @@ export const getRoleInTask = (userId, currentTask, translate) => {
         currentTask.responsibleEmployees.forEach(obj => {
             // Trường hợp nếu responsibleEmployess được populate
             if (typeof (obj) === 'object') {
-                if(obj._id === userId)
-                    roleInTask=[...roleInTask, translate('task.task_management.responsible')]
+                if (obj._id === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.responsible')]
             }
-            if(typeof(obj) === 'string'){
-                if(obj === userId)
-                roleInTask = [...roleInTask, translate('task.task_management.responsible')]
+            if (typeof (obj) === 'string') {
+                if (obj === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.responsible')]
             }
         })
     }
@@ -24,12 +24,12 @@ export const getRoleInTask = (userId, currentTask, translate) => {
         currentTask.accountableEmployees.forEach(obj => {
             // Trường hợp nếu accountableEmployees được populate
             if (typeof (obj) === 'object') {
-                if(obj._id === userId)
-                    roleInTask=[...roleInTask, translate('task.task_management.accountable')]
+                if (obj._id === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.accountable')]
             }
-            if(typeof(obj) === 'string'){
-                if(obj === userId)
-                roleInTask = [...roleInTask, translate('task.task_management.accountable')]
+            if (typeof (obj) === 'string') {
+                if (obj === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.accountable')]
             }
         })
     }
@@ -38,12 +38,12 @@ export const getRoleInTask = (userId, currentTask, translate) => {
         currentTask.consultedEmployees.forEach(obj => {
             // Trường hợp nếu consultedEmployees được populate
             if (typeof (obj) === 'object') {
-                if(obj._id === userId)
-                    roleInTask=[...roleInTask, translate('task.task_management.consulted')]
+                if (obj._id === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.consulted')]
             }
-            if(typeof(obj) === 'string'){
-                if(obj === userId)
-                roleInTask = [...roleInTask, translate('task.task_management.consulted')]
+            if (typeof (obj) === 'string') {
+                if (obj === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.consulted')]
             }
         })
     }
@@ -51,12 +51,12 @@ export const getRoleInTask = (userId, currentTask, translate) => {
         currentTask.informedEmployees.forEach(obj => {
             // Trường hợp nếu informedEmployees được populate
             if (typeof (obj) === 'object') {
-                if(obj._id === userId)
-                    roleInTask=[...roleInTask, translate('task.task_management.informed')]
+                if (obj._id === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.informed')]
             }
-            if(typeof(obj) === 'string'){
-                if(obj === userId)
-                roleInTask = [...roleInTask, translate('task.task_management.informed')]
+            if (typeof (obj) === 'string') {
+                if (obj === userId)
+                    roleInTask = [...roleInTask, translate('task.task_management.informed')]
             }
         })
     }
@@ -98,11 +98,10 @@ export const formatPriority = (priority, translate) => {
  * @param {*} listProject 
  */
 export const getProjectName = (id, listProject) => {
-    console.log('listProject', listProject)
-      if (id && listProject && listProject.length > 0) {
+    if (id && listProject && listProject.length > 0) {
         const projectLength = listProject.length;
-        for (let i = 0; i < projectLength; i++){
-            if (listProject[i]._id === id) 
+        for (let i = 0; i < projectLength; i++) {
+            if (listProject[i]._id === id)
                 return listProject[i].name
         }
     }
@@ -117,8 +116,8 @@ export const filterDifference = (arr) => {
         return [];
     const seen = new Set();
     return arr.filter((el) => {
-        const duplicate = seen.has(el._id);
-        seen.add(el._id);
+        const duplicate = seen.has(el?._id);
+        seen.add(el?._id);
         return !duplicate;
     });
-    }
+}

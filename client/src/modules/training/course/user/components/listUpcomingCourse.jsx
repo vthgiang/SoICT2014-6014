@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -172,14 +172,15 @@ const ListUpcomingCourse = (props) => {
                     <table id="course-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>{translate('training.course.table.course_code')}</th>
-                                <th>{translate('training.course.table.course_name')}</th>
-                                <th title={translate('training.course.start_date')}>{translate('training.course.table.start_date')}</th>
-                                <th title={translate('training.course.end_date')}>{translate('training.course.table.end_date')}</th>
-                                <th title="Địa điểm đào tạo">{translate('training.course.table.course_place')}</th>
-                                <th>{translate('training.course.table.offered_by')}</th>
-                                <th>{translate('training.course.table.course_type')}</th>
-                                <th style={{ width: "120px" }}>{translate('general.action')}
+                                <th style={{textAlign: 'center'}}>{translate('training.course.table.course_code')}</th>
+                                <th style={{textAlign: 'center'}}>{translate('training.course.table.course_name')}</th>
+                                <th style={{textAlign: 'center'}} title={translate('training.course.start_date')}>{translate('training.course.table.start_date')}</th>
+                                <th style={{textAlign: 'center'}} title={translate('training.course.end_date')}>{translate('training.course.table.end_date')}</th>
+                                <th style={{textAlign: 'center'}}>{translate('training.course.table.education_program')}</th>
+                                <th style={{textAlign: 'center'}} title="Địa điểm đào tạo">{translate('training.course.table.course_place')}</th>
+                                <th style={{textAlign: 'center'}}>{translate('training.course.table.offered_by')}</th>
+                                <th style={{textAlign: 'center'}}>{translate('training.course.table.course_type')}</th>
+                                <th style={{ width: "120px", textAlign: "center" }}>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="course-table"
                                         columnArr={[
@@ -187,6 +188,7 @@ const ListUpcomingCourse = (props) => {
                                             translate('training.course.table.course_name'),
                                             translate('training.course.table.start_date'),
                                             translate('training.course.table.end_date'),
+                                            translate('training.course.table.education_program'),
                                             translate('training.course.table.course_place'),
                                             translate('training.course.table.offered_by'),
                                             translate('training.course.table.course_type')
@@ -203,16 +205,17 @@ const ListUpcomingCourse = (props) => {
                                 (listCourses.length !== 0 && listCourses) &&
                                 listCourses.map((x, index) => (
                                     <tr key={index}>
-                                        <td>{x.courseId}</td>
-                                        <td>{x.name}</td>
-                                        <td>{formatDate(x.startDate)}</td>
-                                        <td>{formatDate(x.endDate)}</td>
-                                        <td>{x.coursePlace}</td>
-                                        <td>{x.offeredBy}</td>
-                                        <td>{translate(`training.course.type.${x.type}`)}</td>
-                                        <td>
+                                        <td style={{textAlign: 'center'}}>{x.courseId}</td>
+                                        <td style={{textAlign: 'center'}}>{x.name}</td>
+                                        <td style={{textAlign: 'center'}}>{formatDate(x.startDate)}</td>
+                                        <td style={{textAlign: 'center'}}>{formatDate(x.endDate)}</td>
+                                        <td style={{textAlign: 'center'}}>{x.educationProgram.name}</td>
+                                        <td style={{textAlign: 'center'}}>{x.coursePlace}</td>
+                                        <td style={{textAlign: 'center'}}>{x.offeredBy}</td>
+                                        <td style={{textAlign: 'center'}}>{translate(`training.course.type.${x.type}`)}</td>
+                                        <td style={{textAlign: 'center'}}>
                                             <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('training.course.view_course')}><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('training.course.register')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('training.course.register')}><i className="material-icons">check</i></a>
                                         </td>
                                     </tr>
                                 ))

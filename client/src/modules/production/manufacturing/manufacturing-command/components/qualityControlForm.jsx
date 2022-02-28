@@ -61,7 +61,7 @@ class QualityControlForm extends Component {
                     formID="form-quality-control"
                     title={translate('manufacturing.command.quality_control_command')}
                     msg_success={translate('manufacturing.command.edit_successfully')}
-                    msg_faile={translate('manufacturing.command.edit_failed')}
+                    msg_failure={translate('manufacturing.command.edit_failed')}
                     func={this.save}
                     // disableSubmit={!this.isFormValidated()}
                     size={50}

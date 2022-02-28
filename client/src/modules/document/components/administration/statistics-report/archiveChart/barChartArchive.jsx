@@ -8,8 +8,7 @@ import 'c3/c3.css';
 function BarChartArchive(props){
     useEffect(()=>{
         barChartDocumentInArchive();
-
-    },[])
+    })
     const refArchives = React.createRef()
     function removePreviousArchiveChart() {
         const chart = refArchives.current;
@@ -21,7 +20,11 @@ function BarChartArchive(props){
     }
     const barChartDocumentInArchive = () => {
         removePreviousArchiveChart();
-        let dataChart = setDataArchiveBarchart();
+        let dataChart = {count:0,shortName:[],type:[]}
+        if (props.data){
+            dataChart = props.data.dataChart
+        }
+        
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -81,43 +84,6 @@ function BarChartArchive(props){
             }
         });
     }
-    const setDataArchiveBarchart = () => {
-        const archives = props.archives;
-        const docs = props.docs;
-        let typeName = [], shortName = [], countArchive = [], idArchive = [];
-        for (let i in archives) {
-            countArchive[i] = 0;
-            idArchive.push(archives[i].id)
-        }
-
-        if (docs) {
-            docs.map(doc => {
-                doc.archives.map(archive => {
-                    let idx = idArchive.indexOf(archive);
-                    countArchive[idx]++;
-                })
-            })
-            for (let i in archives) {
-                let length = archives[i].path.length;
-                let longName = "..." + archives[i].path.slice(length - 18 > 0 ? length - 18 : 0, length);
-                let name = archives[i].path.length > 15 ? longName : archives[i].path;
-                shortName.push(name);
-                typeName.push(archives[i].path);
-
-            }
-        }
-        countArchive.unshift(' ');
-        let data = {
-            count: countArchive,
-            type: typeName,
-            shortName: shortName
-        }
-        return data;
-    }
-
-        const archives = props.archives;
-        const docs = props.documents;
-        // barChartDocumentInArchive();
         return (
             <React.Fragment>
                 <div ref={refArchives}></div>

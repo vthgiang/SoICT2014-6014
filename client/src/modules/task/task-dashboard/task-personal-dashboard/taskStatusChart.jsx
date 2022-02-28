@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 import { SelectMulti } from '../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
+import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
 function TaskStatusChart(props) {
     // Khai báo props
-    const { translate, TaskOrganizationUnitDashboard, tasks } = props;
-
+    const { translate, TaskOrganizationUnitDashboard, tasks, } = props;
+    const { taskDashboardCharts } = props.tasks
     const ROLE = { RESPONSIBLE: 1, ACCOUNTABLE: 2, CONSULTED: 3, INFORMED: 4, CREATOR: 5 };
     const ROLE_SELECTBOX = [
         {
@@ -35,113 +36,125 @@ function TaskStatusChart(props) {
             value: ROLE.CREATOR
         }
     ]
+    const LABEL = {
+        INPROCESS: translate('task.task_management.inprocess'),
+        WAIT_FOR_APPROVAL: translate('task.task_management.wait_for_approval'),
+        FINISHED: translate('task.task_management.finished'),
+        DELAYED: translate('task.task_management.delayed'),
+        CANCELED: translate('task.task_management.canceled')
+    }
 
     const [state, setState] = useState({
         role: [ROLE.RESPONSIBLE]
     });
-
+    const CHART = React.createRef();
     // Khai báo state
     const { role } = state;
 
     useEffect(() => {
-        if ((tasks.responsibleTasks
-            && tasks.accountableTasks
-            && tasks.consultedTasks
-            && tasks.informedTasks
-            && tasks.creatorTasks) || (tasks.organizationUnitTasks)
-        ) {
-            pieChart();
-        }
-    })
-
-    const handleSelectRole = (value) => {
-        let role = value.map(item => Number(item));
-        setState(state => {
-            return {
-                ...state,
-                role: role
-            }
-        })
-    }
-
-    // Lọc công việc trùng lặp
-    const filterDuplicateTask = (listTask) => {
-        let idArray = listTask.map(item => item && item._id);
-        idArray = idArray.map((item, index, array) => {
-            if (array.indexOf(item) === index) {
-                return index;
-            } else {
-                return false
-            }
-        })
-        idArray = idArray.filter(item => listTask[item]);
-        let listTaskNotDuplicate = idArray.map(item => {
-            return listTask[item]
-        })
-
-        return listTaskNotDuplicate;
-    }
-
-    // Thiết lập dữ liệu biểu đồ
-    const setDataPieChart = () => {
-        let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
-        let listTask = [], listTaskByRole = [];
         if (TaskOrganizationUnitDashboard) {
-            listTask = tasks && tasks.organizationUnitTasks;
-        }
-        else if (tasks && tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
-            listTaskByRole[ROLE.RESPONSIBLE] = tasks.responsibleTasks;
-            listTaskByRole[ROLE.ACCOUNTABLE] = tasks.accountableTasks;
-            listTaskByRole[ROLE.CONSULTED] = tasks.consultedTasks;
-            listTaskByRole[ROLE.INFORMED] = tasks.informedTasks;
-            listTaskByRole[ROLE.CREATOR] = tasks.creatorTasks;
-
-            if (role && role.length !== 0) {
-                role.map(role => {
-                    listTask = listTask.concat(listTaskByRole[role]);
-                })
+            let dataChart = getDataChart("task-status-chart")
+            if (dataChart) {
+                dataChart[0][0] = (LABEL.INPROCESS)
+                dataChart[1][0] = (LABEL.WAIT_FOR_APPROVAL)
+                dataChart[2][0] = (LABEL.FINISHED)
+                dataChart[3][0] = (LABEL.DELAYED)
+                dataChart[4][0] = (LABEL.CANCELED)
             }
 
-            listTask = filterDuplicateTask(listTask);
-        };
+            setState({
+                ...state,
+                dataChart: dataChart
+            })
+        }
+        else {
+            let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
+            let listTask = [], listTaskByRole = [];
 
-        if (listTask) {
-            listTask = TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
+            if (tasks) {
+                if (tasks.responsibleTasks)
+                    listTaskByRole[ROLE.RESPONSIBLE] = tasks.responsibleTasks;
+                if (tasks.accountableTasks)
+                    listTaskByRole[ROLE.ACCOUNTABLE] = tasks.accountableTasks;
+                if (tasks.consultedTasks)
+                    listTaskByRole[ROLE.CONSULTED] = tasks.consultedTasks;
+                if (tasks.informedTasks)
+                    listTaskByRole[ROLE.INFORMED] = tasks.informedTasks;
+                if (tasks.creatorTasks)
+                    listTaskByRole[ROLE.CREATOR] = tasks.creatorTasks;
 
-            listTask.map(task => {
-                switch (task.status) {
-                    case "inprocess":
-                        numberOfInprocess++;
-                        break;
-                    case "wait_for_approval":
-                        numberOfWaitForApproval++;
-                        break;
-                    case "finished":
-                        numberOfFinished++;
-                        break;
-                    case "delayed":
-                        numberOfDelayed++;
-                        break;
-                    case "canceled":
-                        numberOfCanceled++;
-                        break;
+                if (role && role.length !== 0) {
+                    role.map(role => {
+                        listTask = listTask.concat(listTaskByRole[role]);
+                    })
                 }
+
+                listTask = filterDifference(listTask);
+            };
+            if (listTask) {
+                listTask.map(task => {
+                    switch (task?.status) {
+                        case "inprocess":
+                            numberOfInprocess++;
+                            break;
+                        case "wait_for_approval":
+                            numberOfWaitForApproval++;
+                            break;
+                        case "finished":
+                            numberOfFinished++;
+                            break;
+                        case "delayed":
+                            numberOfDelayed++;
+                            break;
+                        case "canceled":
+                            numberOfCanceled++;
+                            break;
+                    }
+                });
+            }
+
+            dataPieChart = [
+                [LABEL.INPROCESS, numberOfInprocess],
+                [LABEL.WAIT_FOR_APPROVAL, numberOfWaitForApproval],
+                [LABEL.FINISHED, numberOfFinished],
+                [LABEL.DELAYED, numberOfDelayed],
+                [LABEL.CANCELED, numberOfCanceled],
+            ];
+            setState({
+                ...state,
+                dataChart: dataPieChart
             });
         }
 
-        dataPieChart = [
-            [translate('task.task_management.inprocess'), numberOfInprocess],
-            [translate('task.task_management.wait_for_approval'), numberOfWaitForApproval],
-            [translate('task.task_management.finished'), numberOfFinished],
-            [translate('task.task_management.delayed'), numberOfDelayed],
-            [translate('task.task_management.canceled'), numberOfCanceled],
-        ];
-        return dataPieChart;
+    }, [JSON.stringify(taskDashboardCharts?.["task-status-chart"]),
+    JSON.stringify(tasks?.responsibleTasks), JSON.stringify(tasks?.accountableTasks), JSON.stringify(tasks?.consultedTasks), state.role])
+
+    useEffect(() => {
+        if (state?.dataChart) {
+            pieChart();
+        }
+    }, [JSON.stringify(state?.dataChart)])
+
+    const handleSelectRole = (value) => {
+        let role = value.map(item => Number(item));
+        setState({
+            ...state,
+            role: role
+        })
+    }
+
+    function getDataChart(chartName) {
+        let dataChart;
+        let data = taskDashboardCharts?.[chartName]
+        if (data) {
+            dataChart = data.dataChart
+        }
+        return dataChart;
     }
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
-    const removePreviosChart = () => {
-        const chart = document.getElementById('pie-chart-status');
+    const removePreviousChart = () => {
+        const chart = CHART.current;
         while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
@@ -149,15 +162,13 @@ function TaskStatusChart(props) {
 
     // Khởi tạo PieChart bằng C3
     const pieChart = () => {
-        removePreviosChart();
-
-        let dataPieChart = setDataPieChart();
-        // console.log('dataPieChart', dataPieChart)
-        let chart = c3.generate({
-            bindto: document.getElementById('pie-chart-status'),
+        removePreviousChart();
+        const { dataChart } = state;
+        c3.generate({
+            bindto: CHART.current,
 
             data: {                                 // Dữ liệu biểu đồ
-                columns: dataPieChart,
+                columns: dataChart,
                 type: 'pie',
             },
 
@@ -179,7 +190,6 @@ function TaskStatusChart(props) {
             }
         });
     }
-
     return (
         <React.Fragment>
             {!TaskOrganizationUnitDashboard &&
@@ -199,7 +209,7 @@ function TaskStatusChart(props) {
                 </div>
             }
 
-            <section id="pie-chart-status"></section>
+            <div ref={CHART}></div>
         </React.Fragment>
     )
 }

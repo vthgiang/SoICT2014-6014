@@ -6,84 +6,40 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components';
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 
-import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
-import { formatDate } from '../../../../helpers/formatDate';
+import { getEmployeeDashboardActions } from "../redux/actions"
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
 const HumanResourceIncreaseAndDecreaseChart = (props) => {
-    const { department, employeesManager, translate } = props;
+    const { employeesManager, translate, employeeDashboardData, organizationalUnits, search_data_props } = props;
     const { childOrganizationalUnit } = props;
-
-    let date = new Date()
-    let _startDate = formatDate(date.setMonth(new Date().getMonth() - 3), true);
-
     const [state, setState] = useState({
         lineChart: false,
-        startDate: _startDate,
-        startDateShow: _startDate,
-        endDate: formatDate(Date.now(), true),
-        endDateShow: formatDate(Date.now(), true),
+        startDate: search_data_props.searchData.current.startDateIncreaseAndDecreaseChart,
+        startDateShow: search_data_props.searchData.current.startDateIncreaseAndDecreaseChart,
+        endDate: search_data_props.searchData.current.endDateIncreaseAndDecreaseChart,
+        endDateShow: search_data_props.searchData.current.endDateIncreaseAndDecreaseChart,
         organizationalUnits: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
         organizationalUnitsSearch: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
+        organizationalUnitsName: []
     })
-    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = state;
+    const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow } = state;
 
     useEffect(() => {
-        const { organizationalUnits, startDate, endDate } = state;
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
-    }, [])
-
-    useEffect(() => {
-        let organizationalUnitsTemp = props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : []
-        setState({
-            ...state,
-            organizationalUnits: organizationalUnitsTemp,
-            organizationalUnitsSearch: organizationalUnitsTemp,
-        })
-
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-        props.getAllEmployee({ organizationalUnits: organizationalUnitsTemp, startDate: startDateNew, endDate: endDateNew });
-    }, [JSON.stringify(props.childOrganizationalUnit)])
-
-    useEffect(() => {
-        if (employeesManager?.arrMonth?.length > 0) {
-            let ratioX = ['x', ...employeesManager?.arrMonth];
-            let listEmployeesHaveStartingDateOfNumberMonth = employeesManager?.listEmployeesHaveStartingDateOfNumberMonth;
-            let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager?.listEmployeesHaveLeavingDateOfNumberMonth;
-            let data1 = ['data1'], data2 = ['data2'], data3 = ["data3", ...employeesManager?.totalEmployees];
-            employeesManager.arrMonth.forEach(x => {
-                let date = new Date(x);
-                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-                let total1 = 0, total2 = 0;
-                listEmployeesHaveStartingDateOfNumberMonth.forEach(y => {
-                    if (y.startingDate && firstDay.getTime() < new Date(y.startingDate).getTime() && new Date(y.startingDate).getTime() <= lastDay.getTime()) {
-                        total1 += 1;
-                    }
-                })
-                listEmployeesHaveLeavingDateOfNumberMonth.forEach(y => {
-                    if (y.leavingDate && firstDay.getTime() < new Date(y.leavingDate).getTime() && new Date(y.leavingDate).getTime() <= lastDay.getTime()) {
-                        total2 += 1;
-                    }
-                })
-                data1 = [...data1, total1];
-                data2 = [...data2, total2];
-            })
-            renderChart({ nameData1, nameData2, nameData3, ratioX, data1, data2, data3, lineChart });
+        if (employeeDashboardData.humanResourceIncreaseAndDecreaseChartData?.data1) {
+            let data1 = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.data1]
+            let data2 = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.data2]
+            let data3 = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.data3]
+            let ratioX = [...employeeDashboardData.humanResourceIncreaseAndDecreaseChartData.ratioX]
+            renderChart({ nameData1, nameData2, nameData3, lineChart, data1: data1, data2: data2, data3: data3, ratioX: ratioX });
         }
-    }, [JSON.stringify(employeesManager), lineChart])
+    }, [employeeDashboardData.humanResourceIncreaseAndDecreaseChartData, lineChart, employeeDashboardData.isLoading]);
 
+    const formatNewDate = (date) => {
+        let partDate = date.split('-');
+        return [partDate[1],partDate[0]].join('-');
+    }
     /**
      * Function bắt sự kiện thay đổi unit
      * @param {*} value : Array id đơn vị
@@ -106,7 +62,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         setState({
             ...state,
             startDate: value
-        })
+        });
+        search_data_props.handleChangeSearchData('startDateIncreaseAndDecreaseChart', value)
     }
 
     /**
@@ -117,7 +74,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         setState({
             ...state,
             endDate: value,
-        })
+        });
+        search_data_props.handleChangeSearchData('endDateIncreaseAndDecreaseChart', value)
     }
 
     /**
@@ -128,7 +86,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         setState({
             ...state,
             lineChart: value
-        })
+        });
     }
 
     const isEqual = (items1, items2) => {
@@ -160,7 +118,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
             arrMonth: props.employeesManager.arrMonth,
             listEmployeesHaveStartingDateOfNumberMonth: props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth,
             listEmployeesHaveLeavingDateOfNumberMonth: props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth
-        })
+        });
     }
 
     const _chart = useRef(null);
@@ -230,8 +188,8 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
 
     /** Bắt sự kiện tìm kiếm */
     const handleSunmitSearch = async () => {
-        const { organizationalUnits, startDate, endDate } = state;
-        if (organizationalUnits?.length > 0) {
+        const { startDate, endDate } = state;
+        if (props?.organizationalUnits?.length > 0) {
             await setState({
                 ...state,
                 startDateShow: startDate,
@@ -239,21 +197,20 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                 organizationalUnitsSearch: organizationalUnits,
             });
 
-            let arrStart = startDate.split('-');
-            let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-            let arrEnd = endDate.split('-');
-            let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-            props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
+            props.getEmployeeDashboardData({
+                searchChart: {
+                    increaseAndDecreaseChart: { organizationalUnits: organizationalUnits, startDate: formatNewDate(startDate),endDate: formatNewDate(endDate) }
+                }
+            })
         }
     }
 
     let organizationalUnitsName = [];
-    if (organizationalUnitsSearch) {
-        organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
+    if (organizationalUnits) {
+        organizationalUnitsName = childOrganizationalUnit.filter(x => organizationalUnits.includes(x.id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
+
 
     return (
         <div className="box box-solid" >
@@ -263,14 +220,12 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                     {
                         organizationalUnitsName && organizationalUnitsName.length < 2 ?
                             <>
-                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                             </>
                             :
                             <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                 <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                             </span>
                     }
                     {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{`${endDateShow}`}
@@ -322,7 +277,7 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
                         </div>
                     </div>
                 </div>
-                {employeesManager.isLoading
+                {employeeDashboardData.isLoading
                     ? <p>{translate('general.loading')}</p>
                     : <div className="dashboard_box_body" >
                         <p className="pull-left" style={{ marginBottom: 0 }} > < b > ĐV tính: Người </b></p >
@@ -341,12 +296,13 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, department } = state;
-    return { employeesManager, department };
+    const { employeesManager, department, employeeDashboardData } = state;
+    return { employeesManager, department, employeeDashboardData };
 }
 
 const actionCreators = {
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
+    getEmployeeDashboardData: getEmployeeDashboardActions.getEmployeeDashboardData,
+
 };
 
 const increaseAndDecreaseChart = connect(mapState, actionCreators)(withTranslate(HumanResourceIncreaseAndDecreaseChart));

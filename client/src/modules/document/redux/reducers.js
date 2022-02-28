@@ -64,6 +64,8 @@ const initState = {
 
             user_manage: []
         },
+        dataChart:{}
+        ,
     },
     user: {
         data: {
@@ -90,6 +92,7 @@ export function documents(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
     switch (action.type) {
+        case DocumentConstants.GET_DATA_CHART_REQUEST:  
         case DocumentConstants.GET_DOCUMENTS_REQUEST:
         case DocumentConstants.PAGINATE_DOCUMENTS_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_REQUEST:
@@ -123,6 +126,7 @@ export function documents(state = initState, action) {
                 isLoading: true,
             }
 
+        case DocumentConstants.GET_DATA_CHART_FAILE:
         case DocumentConstants.GET_DOCUMENTS_FAILE:
         case DocumentConstants.PAGINATE_DOCUMENTS_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_FAILE:
@@ -159,12 +163,20 @@ export function documents(state = initState, action) {
             }
 
         case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SUCCESS:
-        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCANSUCCESS:
+        case DocumentConstants.DOWNLOAD_DOCUMENT_FILE_SCAN_SUCCESS:
             return {
                 ...state,
                 isLoading: false
             };
-
+        case DocumentConstants.GET_DATA_CHART_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    dataChart: action.payload
+                }
+            };
         case DocumentConstants.GET_DOCUMENT_STATISTICS_DOWNLOADED_SUCCESS:
             return {
                 ...state,
@@ -561,15 +573,6 @@ export function documents(state = initState, action) {
                 }
             };
 
-
-        // index = findIndex(state.administration.archives.list, action.payload._id);
-        // if (index !== -1) state.administration.archives.list[index] = action.payload;
-        // indexPaginate = findIndex(state.administration.archives.paginate, action.payload._id);
-        // if (indexPaginate !== -1) state.administration.archives.paginate[indexPaginate] = action.payload;
-        // return {
-        //     ...state,
-        //     isLoading: false
-        // };
         case DocumentConstants.DELETE_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,

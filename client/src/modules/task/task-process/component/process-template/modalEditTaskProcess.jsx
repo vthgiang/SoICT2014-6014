@@ -18,6 +18,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { AddProcessTemplate } from "./addProcessTemplateChild";
 
 
 //Xóa element khỏi pallette theo data-action
@@ -38,7 +39,9 @@ ElementFactory.prototype._getDefaultSize = function (semantic) {
     if (is(semantic, 'bpmn:Task')) {
         return { width: 160, height: 130 };
     }
-
+    if (is(semantic, 'bpmn:SubProcess')) {
+		return { width: 260, height: 180 };
+	}
     if (is(semantic, 'bpmn:Gateway')) {
         return { width: 50, height: 50 };
     }
@@ -62,10 +65,11 @@ function ModalEditTaskProcess(props) {
         userId: getStorage("userId"),
         currentRole: getStorage('currentRole'),
         showInfo: false,
-        info: data.tasks,
-        xmlDiagram: data.xmlDiagram,
+        info: "",
+        xmlDiagram: "",
         selectedEdit: 'info',
         zlevel: 1,
+        showInfoProcess:false
     })
     const [modeler, setModeler] = useState(new BpmnModeler({
         additionalModules: [
@@ -89,24 +93,33 @@ function ModalEditTaskProcess(props) {
             }
             info[`${infoTask1[i].code}`] = infoTask1[i];
         }
+
+        
         let { infoTask } = props
-        for (const x in infoTask) {
-            if (x !== undefined) {
-                const modeling = modeler.get('modeling');
-                let element1 = modeler.get('elementRegistry').get(x);
-                if (element1) {
-                    modeling.updateProperties(element1, {
-                        info: infoTask[x],
-                    });
-                }
+        // for (const x in infoTask) {
+        //     if (x !== undefined) {
+        //         const modeling = modeler.get('modeling');
+        //         let element1 = modeler.get('elementRegistry').get(x);
+        //         if (element1) {
+        //             modeling.updateProperties(element1, {
+        //                 info: infoTask[x],
+        //             });
+        //         }
+        //     }
+        // }
+
+        let infoTemplate = {};
+            let infoProcessTemplates = props.data.processTemplates; // TODO task list
+            for (let i in infoProcessTemplates) {
+                infoTemplate[`${infoProcessTemplates[i].code}`] = infoProcessTemplates[i];
             }
-        }
         modeler.importXML(props.data.xmlDiagram, function (err) { });
         setState({
             ...state,
             idProcess: props.idProcess,
             showInfo: false,
             info: info,
+            infoTemplate: infoTemplate,
             processDescription: props.data.processDescription ? props.data.processDescription : '',
             processName: props.data.processName ? props.data.processName : '',
             viewer: props.data.viewer ? props.data.viewer.map(x => x._id) : [],
@@ -150,6 +163,9 @@ function ModalEditTaskProcess(props) {
             var element = event.element;
     
             if (isAny(element, ['bpmn:Task'])) {
+                return false;
+            }
+            if (isAny(element, ['bpmn:SubProcess'])) {
                 return false;
             }
         });
@@ -308,14 +324,32 @@ function ModalEditTaskProcess(props) {
                 return {
                     ...state,
                     showInfo: true,
+                    showInfoProcess: false,
                     type: element.type,
                     name: nameStr[1],
                     taskName: element.businessObject.name,
                     id: `${element.businessObject.id}`,
                 }
-            }
+            } else if (element.type === "bpmn:SubProcess") {
+				
+				if (!state.infoTemplate[`${element.businessObject.id}`] || (state.infoTemplate[`${element.businessObject.id}`] && !state.infoTemplate[`${element.businessObject.id}`].organizationalUnit)) {
+					state.infoTemplate[`${element.businessObject.id}`] = {
+						...state.infoTemplate[`${element.businessObject.id}`],
+					}
+					// console.log('props.listOrganizationalUnit[0]?._id', props.listOrganizationalUnit[0]?._id);
+				}
+				return {
+					...state,
+					showInfo: false,
+					showInfoProcess:true,
+					type: element.type,
+					name: nameStr[1],
+					taskName: element.businessObject.name,
+					id: `${element.businessObject.id}`,
+				}
+			}
             else {
-                return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
+                return { ...state, showInfo: false, showInfoProcess: false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
         })
@@ -383,6 +417,7 @@ function ModalEditTaskProcess(props) {
 
     // Các hàm cho nút export, import, download BPMN
     const downloadAsSVG = () => {
+        // console.log(modeler);
         modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
@@ -441,21 +476,21 @@ function ModalEditTaskProcess(props) {
             var DOMURL = window.URL || window.webkitURL || window;
 
             var img = new Image();
+            img.crossOrigin = "anonymous";
             var svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
             var url = DOMURL.createObjectURL(svgBlob);
-
+            img.src = url;
+            // console.log(canvas);
+            // console.log(canvas.toDataURL());
+            ctx.drawImage(img, 0, 0);
             img.onload = function () {
-
                 DOMURL.revokeObjectURL(url);
-                ctx.drawImage(img, 0, 0);
-                var imgURI = canvas
-                    .toDataURL('image/png')
-                    .replace('image/png', 'image/octet-stream');
+                // console.log(canvas);
+                // console.log(canvas.toDataURL());
+                var imgURI = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
 
                 triggerDownload(imgURI);
             };
-
-            img.src = url;
         });
     }
 
@@ -530,12 +565,43 @@ function ModalEditTaskProcess(props) {
         const infos = state.info
         infos[`${state.id}`] = info ;
         
-        state.info[`${state.id}`] = info
+        // state.info[`${state.id}`] = info
         setState({
                 ...state,
                 info: infos
             })
     }
+
+    const setBpmnProcess = (data) =>{
+		const modeling = modeler.get('modeling');
+		let element1 = modeler.get('elementRegistry').get(state.id);
+		let manager = []
+		data.manager.forEach(x => {
+			manager.push(x.name)
+		})
+		let viewer = []
+		data.viewer.forEach(x => {
+			viewer.push(x.name)
+		})
+		if (element1) {
+			modeling.updateProperties(element1, {
+				shapeName: data.processName,
+				managerName:manager,
+				viewerName:viewer
+			});
+		}
+		let infoTemplate = {
+			...data,
+			code: state.id
+		}
+		const infoTemplates = state.infoTemplate
+        infoTemplates[`${state.id}`] = infoTemplate ;
+        state.infoTemplate[`${state.id}`] = infoTemplate
+        setState({
+                ...state,
+                infoTemplate: infoTemplates
+            })
+	}
 
     // validate quy trình
     const isFormValidate = () => {
@@ -594,6 +660,7 @@ function ModalEditTaskProcess(props) {
         modeler.saveXML({ format: true }, function (err, xml) {
             xmlStr = xml;
         });
+        console.log(xmlStr);
         await setState(state => {
             for (let j in info) {
                 if (Object.keys(info[j]).length !== 0) {
@@ -625,13 +692,66 @@ function ModalEditTaskProcess(props) {
                     }
                 }
             }
+            let { infoTemplate } = state;
+            for (let j in infoTemplate) {
+                if (Object.keys(infoTemplate[j]).length !== 0) {
+                    infoTemplate[j].followingTasks = [];
+                    infoTemplate[j].preceedingTasks = [];
+
+                    for (let i in elementList) {
+                        let elem = elementList[i].element;
+                        if (infoTemplate[j].code === elem.id) {
+                            if (elem.businessObject.incoming) {
+                                let incoming = elem.businessObject.incoming;
+                                for (let x in incoming) {
+                                    let types = incoming[x].sourceRef.$type.split(":")
+                                    // console.log(incoming[x].sourceRef.$type,types);
+                                    if (types[1] === 'Process'){
+                                        infoTemplate[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                            process: incoming[x].sourceRef.id,
+                                            link: incoming[x].name,
+                                            // TODO: activated: false
+                                        })
+                                    } else {
+                                        infoTemplate[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                            task: incoming[x].sourceRef.id,
+                                            link: incoming[x].name,
+                                            // TODO: activated: false
+                                        })
+                                    }
+                                }
+                            }
+                            if (elem.businessObject.outgoing) {
+                                let outgoing = elem.businessObject.outgoing;
+                                for (let y in outgoing) {
+                                    let types = outgoing[y].sourceRef.$type.split(":")
+                                    if (types[1] === 'Process'){
+                                        infoTemplate[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                            process: outgoing[y].targetRef.id,
+                                            link: outgoing[y].name,
+                                        })
+                                    } else {
+                                        infoTemplate[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                            task: outgoing[y].targetRef.id,
+                                            link: outgoing[y].name,
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return {
                 ...state,
                 xmlDiagram: xmlStr,
             }
         })
+
+        
         let data = {
             info: info,
+            infoTemplate: infoTemplate,
             xmlDiagram: xmlStr,
             processName: state.processName,
             processDescription: state.processDescription,
@@ -648,9 +768,8 @@ function ModalEditTaskProcess(props) {
     }
 
     const { translate, role } = props;
-    const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = state;
+    const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit, showInfoProcess, infoTemplate } = state;
     const { listOrganizationalUnit } = props
-
     let listRole = [];
     if (role && role.list.length !== 0) listRole = role.list;
     let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
@@ -745,7 +864,7 @@ function ModalEditTaskProcess(props) {
                             <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
                                 <div className="row">
                                     {/* Quy trình công việc */}
-                                    <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                    <div className={`contain-border ${showInfo || showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
                                         {/* nút export, import, download diagram,... */}
                                         <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                             <button onClick={exportDiagram}>Export XML</button>
@@ -782,7 +901,7 @@ function ModalEditTaskProcess(props) {
                                     </div>
 
                                     {/* Thông tin công việc trong quy trình */}
-                                    <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                                    <div className={`right-content ${showInfo || showInfoProcess? 'col-md-4' : undefined}`}>
                                         {
                                             (showInfo) &&
                                             <div>
@@ -800,6 +919,24 @@ function ModalEditTaskProcess(props) {
                                                     handleChangeAccountable={handleChangeAccountable} // cập nhật hiển thị diagram
                                                 />
                                             </div>
+                                        }
+
+                                        {showInfoProcess&&
+                                            <div>
+                                            {/* <div>
+                                                    <h1>Option {name}</h1>
+                                                </div> */}
+
+                                            <AddProcessTemplate
+                                                id={id}
+                                                infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`].process}
+                                                // handleDataProcessTempalte={handleDataProcessTempalte}
+                                                setBpmnProcess={setBpmnProcess}
+                                                // handleChangeName={handleChangeName} // cập nhật tên vào diagram
+                                                // handleChangeViewerBpmn={handleChangeViewerBpmn} // cập nhật hiển thi diagram
+                                                // handleChangeManagerBpmn={handleChangeManagerBpmn} // cập nhật hiển thị diagram
+                                            />
+                                        </div>
                                         }
                                     </div>
                                 </div>

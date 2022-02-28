@@ -31,7 +31,9 @@ ElementFactory.prototype._getDefaultSize = function (semantic) {
     if (is(semantic, 'bpmn:Task')) {
         return { width: 160, height: 130 };
     }
-
+    if (is(semantic, 'bpmn:SubProcess')) {
+		return { width: 260, height: 180 };
+	}
     if (is(semantic, 'bpmn:Gateway')) {
         return { width: 50, height: 50 };
     }
@@ -261,17 +263,20 @@ function ModalCreateTaskByProcess(props) {
             });
         })
     }
-
     // Các hàm sự kiện của BPMN element
     const interactPopup = async (event) => {
         let element = event.element;
         let nameStr = element.type.split(':');
+        let organizationalUnit
+        if (props.department && props.department?.tree && props.department?.tree.length !==0){
+            organizationalUnit = props.department?.tree[0]?.id
+        }
         setState(state => {
             if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
                 if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
                         ...state.info[`${element.businessObject.id}`],
-                        organizationalUnit: props.department?.tree[0]?.id,
+                        organizationalUnit: organizationalUnit,
                     }
                 }
                 return {
@@ -291,8 +296,8 @@ function ModalCreateTaskByProcess(props) {
     }
     const deleteElements = (event) => {
         var element = event.element;
+        delete state.info[`${state.id}`];
         setState(state => {
-            delete state.info[`${state.id}`];
             return {
                 ...state,
                 showInfo: false,
@@ -647,16 +652,29 @@ function ModalCreateTaskByProcess(props) {
             template: false
         }
         props.createTaskByProcess(data, state.idProcess);
-    }
 
+        setState({
+            userId: getStorage("userId"),
+            currentRole: getStorage('currentRole'),
+            showInfo: false,
+            selectedCreate: 'info',
+            info: {},
+            save: true,
+            manager: [],
+            viewer: [],
+            processName: '',
+            processDescription: '',
+            indexRenderer: 0,
+        })
+    }
     let idProcess = ""
     const { translate, department, role, user } = props;
     const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
         selected, errorOnProcessName, errorOnProcessDescription, startDate, endDate } = state;
     const { listOrganizationalUnit } = props;
-    if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
-        window.$(`.task-process-gate-way-title`).css("background-color", "white")
-    }
+    // if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
+    //     window.$(`.task-process-gate-way-title`).css("background-color", "white")
+    // }
     let listRole = [];
     if (role && role.list.length !== 0) listRole = role.list;
     let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)

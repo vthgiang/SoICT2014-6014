@@ -1,8 +1,9 @@
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, UploadFile, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, UploadFile, SelectBox, DatePicker } from '../../../../../common-components';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -27,7 +28,9 @@ function DegreeEditModal(props) {
                 name: props.name,
                 issuedBy: props.issuedBy,
                 field: props.fieldId,
-                year: props.year,
+                major: props.major,
+                degreeQualification: props.degreeQualification,
+                year: props?.year ? props?.year?.length > 10 ? dayjs(props.year).format("DD-MM-YYYY") : props?.year : "",
                 degreeType: props.degreeType,
                 file: props.file,
                 urlFile: props.urlFile,
@@ -37,6 +40,7 @@ function DegreeEditModal(props) {
                 errorOnYear: undefined,
             }
         })
+        
         if (props._id) {
             setState(state => {
                 return {
@@ -45,13 +49,14 @@ function DegreeEditModal(props) {
                 }
             })
         }
+
     }, [props.id])
 
-    const { translate } = props;
+    const { translate, listMajors, listCertificates } = props;
 
     const { id } = props;
 
-    const { index, name, issuedBy, year, degreeType, file, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
+    const { index, name, issuedBy, year, degreeType, file, major, degreeQualification, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
 
     let files;
     let listFields = props.field.listFields;
@@ -124,8 +129,7 @@ function DegreeEditModal(props) {
     }
 
     /** Bắt sự kiện thay đổi năm tốt nghiệp */
-    const handleYearChange = (e) => {
-        let { value } = e.target;
+    const handleYearChange = (value) => {
         validateYear(value, true);
     }
 
@@ -165,6 +169,22 @@ function DegreeEditModal(props) {
         });
     }
 
+    const handleMajorChnage = (value) => {
+        setState({
+            ...state,
+            major: value[0]
+        });
+    }
+
+    const handlerDegreeQualificationChange = (value) => {
+        setState({
+            ...state,
+            degreeQualification: Number(value[0])
+        });
+
+       
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { name, issuedBy, year } = state;
@@ -176,15 +196,29 @@ function DegreeEditModal(props) {
 
     /** Bắt sự kiện submit form */
     const save = () => {
-        let { field } = state;
+        let { field, degreeQualification } = state;
         let valueField = props.field;
+        degreeQualification = Number(degreeQualification);
         if (isFormValidated()) {
             if (!field && valueField && valueField.listFields && valueField.listFields[0]) {
                 field = props.field.listFields[0]._id
             }
-            return props.handleChange({ ...state, field: field });
+            return props.handleChange({ ...state, field: field, degreeQualification: degreeQualification });
         }
     }
+
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
 
     return (
         <React.Fragment>
@@ -208,7 +242,7 @@ function DegreeEditModal(props) {
                         <input type="text" className="form-control" name="issuedBy" value={issuedBy} onChange={handleIssuedByChange} autoComplete="off" />
                         <ErrorLabel content={errorOnIssuedBy} />
                     </div>
-                    {/* Ngành nghề/ lĩnh vực */}
+                    {/* lĩnh vực */}
                     <div className="form-group">
                         <label>{translate('human_resource.profile.career_fields')}</label>
                         <SelectBox
@@ -220,11 +254,38 @@ function DegreeEditModal(props) {
                             onChange={handleFieldChange}
                         />
                     </div>
+                    {/* chuyên ngành */}
+                    <div className="form-group">
+                        <label>Chọn chuyên ngành</label>
+                        <SelectBox
+                            id={`edit-major${index}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={major}
+                            items={[...listMajors.map(y => { return { value: y._id, text: y.name } }), { value: '', text: 'Chọn chuyên ngành' }]}
+                            onChange={handleMajorChnage}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Chọn trình độ chuyên môn</label>
+                        <SelectBox
+                            id={`create-professional${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={degreeQualification}
+                            items={professionalSkillArr}
+                            onChange={handlerDegreeQualificationChange}
+                        />
+                    </div>
                     <div className="row">
                         {/* Năm tốt nghiệp */}
                         <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
                             <label>{translate('human_resource.profile.graduation_year')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="year" value={year} onChange={handleYearChange} autoComplete="off" />
+                            <DatePicker
+                                id={`year${index}`}
+                                value={year}
+                                onChange={handleYearChange}
+                            />
                             <ErrorLabel content={errorOnYear} />
                         </div>
                         {/* Loại bằng cấp */}
@@ -236,6 +297,7 @@ function DegreeEditModal(props) {
                                 <option value="good">{translate('human_resource.profile.good')}</option>
                                 <option value="average_good">{translate('human_resource.profile.average_good')}</option>
                                 <option value="ordinary">{translate('human_resource.profile.ordinary')}</option>
+                                <option value="no_rating">{translate('human_resource.profile.no_rating')}</option>
                                 <option value="unknown">{translate('human_resource.profile.unknown')}</option>
                             </select>
                         </div>

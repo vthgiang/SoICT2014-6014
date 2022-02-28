@@ -3,32 +3,36 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
+import { AuthActions } from '../../../../auth/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
 
-import { ModalAddExperience, ModalEditExperience } from './combinedContent';
+import { ModalAddExperience, ModalEditExperience, ModalAddCareerPosition, ModalEditCareerPosition, ModalAddWorkProcess, ModalEditWorkProcess } from './combinedContent';
 
 function ExperienceTab(props) {
     const [state, setState] = useState({
 
     })
 
-    const { translate } = props;
+    const { translate, major, listPosition } = props;
 
     const { id } = props;
 
-    const { educationalLevel, foreignLanguage, professionalSkill, experiences, currentRow } = state;
+    const { educationalLevel, foreignLanguage, professionalSkill, experiences, careerPositions, currentRowEditCareerPosition, currentRowEditWorkProcess, career, currentRow } = state;
 
     useEffect(() => {
         setState(state => {
             return {
                 ...state,
                 id: props.id,
+                careerPositions: props?.employee?.careerPositions ? props.employee.careerPositions : [],
+                workProcess: props?.employee?.workProcess ? props.employee.workProcess : [],
                 experiences: props.employee?.experiences ? props.employee.experiences : [],
-                professionalSkill: props.employee?.professionalSkill ? props.employee.professionalSkill : "",
+                professionalSkill: props.employee?.degrees ? props.employee.degrees : [],
                 foreignLanguage: props.employee?.foreignLanguage ? props.employee.foreignLanguage : "",
                 educationalLevel: props.employee?.educationalLevel ? props.employee.educationalLevel : "",
             }
         })
-    }, [props.id, props.employee?.experiences])
+    }, [props.id, props.employee?.experiences, props?.employee?.careerPositions])
 
     /**
      * Function format dữ liệu Date thành string
@@ -106,29 +110,14 @@ function ExperienceTab(props) {
      * Function thêm mới kinh nghiệm làm việc
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      */
-    const handleAddExperience = async (data) => {
-        const { translate } = props;
+    const handleAddExperience = (data) => {
         let { experiences } = state;
+        props.handleAddExperience([...experiences, data], data);
 
-        let checkData = checkForDuplicate(data, experiences);
-        if (checkData) {
-            await setState({
-                ...state,
-                experiences: [...experiences, {
-                    ...data
-                }]
-            })
-            props.handleAddExperience([...experiences, data], data);
-        } else {
-            toast.error(
-                <ServerResponseAlert
-                    type='error'
-                    title={'general.error'}
-                    content={[translate('human_resource.profile.time_experience_duplicate')]}
-                />,
-                { containerId: 'toast-notification' }
-            );
-        }
+        setState({
+            ...state,
+            experiences: [...experiences, data]
+        })
     }
 
     /**
@@ -136,28 +125,15 @@ function ExperienceTab(props) {
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      */
     const handleEditExperience = async (data) => {
-        const { translate } = props;
         let { experiences } = state;
+        experiences[data.index] = data;
 
-        let experiencesNew = [...experiences];
-        let checkData = checkForDuplicate(data, experiencesNew.filter((x, index) => index !== data.index));
-        if (checkData) {
-            experiences[data.index] = data;
-            await setState({
-                ...state,
-                experiences: experiences
-            });
-            props.handleEditExperience(experiences, data);
-        } else {
-            toast.error(
-                <ServerResponseAlert
-                    type='error'
-                    title={'general.error'}
-                    content={[translate('human_resource.profile.time_experience_duplicate')]}
-                />,
-                { containerId: 'toast-notification' }
-            );
-        }
+        props.handleEditExperience(experiences, data);
+
+        setState({
+            ...state,
+            experiences: experiences
+        });
     }
 
     /**
@@ -174,6 +150,107 @@ function ExperienceTab(props) {
             experiences: [...experiences]
         })
         props.handleDeleteExperience([...experiences], data);
+    }
+
+
+
+    const handleAddCareerPosition = (data) => {
+        const { translate } = props;
+        let { careerPositions } = state;
+
+        let checkData = checkForDuplicate(data, careerPositions);
+        if (checkData) {
+            props.handleAddCareerPosition([...careerPositions, data], data);
+            setState({
+                ...state,
+                careerPositions: [...careerPositions, {
+                    ...data
+                }]
+            })
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={[translate('human_resource.profile.time_experience_duplicate')]}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
+    }
+
+    const _deleteCareerPosition = (index) => {
+        let { careerPositions } = state;
+
+        let data = careerPositions[index];
+        careerPositions.splice(index, 1);
+        setState({
+            ...state,
+            careerPositions: [...careerPositions]
+        })
+        props.handleDeleteCareerPosition([...careerPositions], data);
+    }
+
+    const handleEditCareerPosition = async (value, index) => {
+        await setState(state => {
+            return {
+                ...state,
+                currentRowEditCareerPosition: { ...value, index: index }
+            }
+        });
+        window.$(`#modal-edit-career-position-editCareer${index}`).modal('show');
+    }
+
+
+    const handleChangleEditCareerPosition = async (data) => {
+        const { translate } = props;
+        let { careerPositions } = state;
+
+        let careerPositionsNew = [...careerPositions];
+        let checkData = checkForDuplicate(data, careerPositionsNew.filter((x, index) => index !== data.index));
+        if (checkData) {
+            careerPositions[data.index] = data;
+            await setState({
+                ...state,
+                careerPositions: careerPositions
+            });
+            props.handleEditCareerPosition(careerPositions, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={[translate('human_resource.profile.time_experience_duplicate')]}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
+    }
+
+    let professionalSkills= '';
+
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
+
+    if (professionalSkill) {
+        professionalSkill.map(item => {
+            professionalSkills = professionalSkills + professionalSkillArr.find(x => x.value == item.degreeQualification).text + " (" + major.find(y => item.major == y._id)?.name + ", " + item.issuedBy + ", " + new Date(item.year).getFullYear() + ")" + `; `
+        })
+    }
+
+    const requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        props.downloadFile(path, fileName)
     }
 
     return (
@@ -205,20 +282,12 @@ function ExperienceTab(props) {
                     </div>
 
                     {/* Trình độ chuyên môn */}
-                    <div className="form-group">
-                        <label>{translate('human_resource.profile.qualification')}</label>
-                        <select className="form-control" name="professionalSkill" value={professionalSkill} onChange={handleChange}>
-                            <option value="intermediate_degree">{translate('human_resource.profile.intermediate_degree')}</option>
-                            <option value="colleges">{translate('human_resource.profile.colleges')}</option>
-                            <option value="university">{translate('human_resource.profile.university')}</option>
-                            <option value="bachelor">{translate('human_resource.profile.bachelor')}</option>
-                            <option value="engineer">{translate('human_resource.profile.engineer')}</option>
-                            <option value="master_degree">{translate('human_resource.profile.master_degree')}</option>
-                            <option value="phd">{translate('human_resource.profile.phd')}</option>
-                            <option value="unavailable">{translate('human_resource.profile.unavailable')}</option>
-                        </select>
-                    </div>
+                    {professionalSkills && <div className="form-group">
+                        <strong>{translate('human_resource.profile.qualification')}&emsp; </strong>
+                        {professionalSkills}
+                    </div>}
                 </fieldset>
+
                 {/* Kinh nghiệm làm việc */}
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.work_experience')}</h4></legend>
@@ -229,7 +298,9 @@ function ExperienceTab(props) {
                                 <th>{translate('human_resource.profile.from_month_year')}</th>
                                 <th>{translate('human_resource.profile.to_month_year')}</th>
                                 <th>{translate('human_resource.profile.unit')}</th>
-                                <th>{translate('table.position')}</th>
+                                <th>{translate('human_resource.profile.position_in_task')}</th>
+                                <th>{translate('human_resource.profile.job_description')}</th>
+                                <th>{translate('human_resource.profile.attached_files')}</th>
                                 <th style={{ width: '120px' }}>{translate('general.action')}</th>
                             </tr>
                         </thead>
@@ -239,8 +310,16 @@ function ExperienceTab(props) {
                                     <tr key={index}>
                                         <td>{formatDate(x.startDate, true)}</td>
                                         <td>{formatDate(x.endDate, true)}</td>
-                                        <td>{x.company}</td>
-                                        <td>{x.position}</td>
+                                        <td>{x?.company}</td>
+                                        <td>{x?.position}</td>
+                                        <td>{x?.jobDescription}</td>
+                                        <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
+                                            <a className='intable'
+                                                style={{ cursor: "pointer" }}
+                                                onClick={(e) => requestDownloadFile(e, `.${x.urlFile}`, x.company)}>
+                                                <i className="fa fa-download"> &nbsp;Download!</i>
+                                            </a>
+                                        }</td>
                                         <td>
                                             <a onClick={() => handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_experience')}><i className="material-icons">edit</i></a>
                                             <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => _delete(index)}><i className="material-icons"></i></a>
@@ -251,6 +330,66 @@ function ExperienceTab(props) {
                     </table>
                     {
                         (!experiences || experiences.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+
+                </fieldset>
+                
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border" ><h4 className="box-title">Dự án từng tham gia</h4></legend>
+                    <ModalAddCareerPosition 
+                        handleChange={handleAddCareerPosition} 
+                        id={`addCareerPosition${id}`} 
+                    />
+                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
+                        <thead>
+                            <tr>
+                                <th>{translate('human_resource.profile.from_month_year')}</th>
+                                <th>{translate('human_resource.profile.to_month_year')}</th>
+                                <th>{translate('human_resource.profile.unit')}</th>
+                                <th>{translate('human_resource.profile.project')}</th>
+                                <th>Vị trí công việc</th>
+                                <th>Kinh nghiệm chuyên môn và quản lý có liên quan</th>
+                                <th>{translate('human_resource.profile.attached_files')}</th>
+                                <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {careerPositions && careerPositions.length !== 0 &&
+                                careerPositions.map((x, index) => {
+                                    let position = ''
+                                    if (x.careerPosition) {
+                                        position = listPosition?.find(y => y._id.toString() === x.careerPosition.toString())
+                                        if (position) {
+                                            position = position.name
+                                        } else {
+                                            position = 'DELETED'
+                                        }
+                                    }
+                                    return (
+                                    <tr key={index}>
+                                        <td>{formatDate(x.startDate, true)}</td>
+                                        <td>{formatDate(x.endDate, true)}</td>
+                                        <td>{x.company}</td>
+                                        <td>{x?.project}</td>
+                                        <td>{position}</td>
+                                        <td>{x?.professionalExperience}</td>
+                                        <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
+                                            <a className='intable'
+                                                style={{ cursor: "pointer" }}
+                                                onClick={(e) => requestDownloadFile(e, `.${x.urlFile}`, x.project)}>
+                                                <i className="fa fa-download"> &nbsp;Download!</i>
+                                            </a>
+                                        }</td>
+                                        <td>
+                                            <a onClick={() => handleEditCareerPosition(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_working_process')}><i className="material-icons">edit</i></a>
+                                            {!x.biddingPackage && <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => _deleteCareerPosition(index)}><i className="material-icons"></i></a>}
+                                        </td>
+                                    </tr>
+                                )})}
+                        </tbody>
+                    </table>
+                    {
+                        (!careerPositions || careerPositions.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
                 </fieldset>
@@ -265,12 +404,47 @@ function ExperienceTab(props) {
                     startDate={formatDate(currentRow.startDate, true)}
                     endDate={formatDate(currentRow.endDate, true)}
                     position={currentRow.position}
+                    file={currentRow.file}
+                    urlFile={currentRow.urlFile}
+                    fileUpload={currentRow.fileUpload}
+                    jobDescription={currentRow.jobDescription}
                     handleChange={handleEditExperience}
+                />
+            }
+
+            {
+                // Form chỉnh sửa quá trình công tác
+                currentRowEditCareerPosition &&
+                <ModalEditCareerPosition
+                    id={`editCareer${currentRowEditCareerPosition.index}`}
+                    _id={currentRowEditCareerPosition._id}
+                    index={currentRowEditCareerPosition.index}
+                    company={currentRowEditCareerPosition.company}
+                    listPosition={listPosition}
+                    startDate={formatDate(currentRowEditCareerPosition.startDate, true)}
+                    endDate={formatDate(currentRowEditCareerPosition.endDate, true)}
+                    project={currentRowEditCareerPosition.project}
+                    careerPosition={currentRowEditCareerPosition.careerPosition}
+                    file={currentRowEditCareerPosition.file}
+                    urlFile={currentRowEditCareerPosition.urlFile}
+                    fileUpload={currentRowEditCareerPosition.fileUpload}
+                    professionalExperience={currentRowEditCareerPosition.professionalExperience}
+                    handleChange={handleChangleEditCareerPosition}
                 />
             }
         </div>
     );
 };
 
-const experienceTab = connect(null, null)(withTranslate(ExperienceTab));
+function mapState(state) {
+    const { career } = state;
+    return { career };
+};
+
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+};
+
+const experienceTab = connect(mapState, actionCreators)(withTranslate(ExperienceTab));
 export { experienceTab as ExperienceTab };

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'; import { connect } from 'rea
 import { CompanyActions } from '../redux/actions';
 import { PaginateBar, DataTableSetting, SearchBar } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-function CompanyManageLinks(props) {
 
+function CompanyManageLinks(props) {
     const [state, setState] = useState({
         limit: 5,
         page: 1,

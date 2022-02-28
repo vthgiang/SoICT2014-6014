@@ -6,10 +6,12 @@ import {
 } from "./services";
 export const AnnualLeaveActions = {
     searchAnnualLeaves,
+    getAnnualLeave,
     createAnnualLeave,
     deleteAnnualLeave,
     updateAnnualLeave,
-    importAnnualLeave
+    importAnnualLeave,
+    requestToChangeAnnuaLeave,
 };
 
 /**
@@ -33,6 +35,28 @@ function searchAnnualLeaves(data) {
             .catch(err => {
                 dispatch({
                     type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+
+function getAnnualLeave(id) {
+    return dispatch => {
+        dispatch({
+            type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_BY_ID_REQUEST,
+        });
+        AnnualLeaveService.getAnnualLeave(id)
+            .then(res => {
+                dispatch({
+                    type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_BY_ID_SUCCESS,
+                    payload: res.data.content,
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_BY_ID_FAILURE,
                     error: err
                 });
             })
@@ -135,6 +159,28 @@ function importAnnualLeave(data) {
                 dispatch({
                     type: AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_FAILURE,
                     error: err.response.data.content
+                });
+            })
+    };
+}
+
+
+function requestToChangeAnnuaLeave(id, data) {
+    return dispatch => {
+        dispatch({
+            type: AnnualLeaveConstants.REQUEST_TO_CHANGE_ANNUALEAVE_REQUEST
+        });
+        AnnualLeaveService.requestToChangeAnnuaLeave(id, data)
+            .then(res => {
+                dispatch({
+                    type: AnnualLeaveConstants.REQUEST_TO_CHANGE_ANNUALEAVE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AnnualLeaveConstants.REQUEST_TO_CHANGE_ANNUALEAVE_FAILURE,
+                    error: err
                 });
             })
     };

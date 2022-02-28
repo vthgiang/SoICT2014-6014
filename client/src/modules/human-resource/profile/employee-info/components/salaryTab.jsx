@@ -69,7 +69,7 @@ function SalaryTab(props) {
                             <tbody>
                                 {salaries && salaries.length !== 0 &&
                                     salaries.map((x, index) => {
-                                        let total = parseInt(x.mainSalary);
+                                        let total = x?.mainSalary ? parseInt(x.mainSalary) : 0;
                                         if (x.bonus && x.bonus.length !== 0) {
 
                                             for (let count in x.bonus) {

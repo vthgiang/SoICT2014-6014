@@ -7,6 +7,7 @@ import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions
 
 import c3 from 'c3';
 import 'c3/c3.css';
+import dayjs from 'dayjs';
 
 class TrendWorkChart extends Component {
     constructor(props) {
@@ -113,7 +114,7 @@ class TrendWorkChart extends Component {
             data: {
                 x: 'x',
                 columns: [
-                    data.ratioX, 
+                    data.ratioX,
                     ['data1', ...data.data1],
                     ['data2', ...data.data2]
                 ],
@@ -176,9 +177,8 @@ class TrendWorkChart extends Component {
         if (listTimesheetsByEmployeeIdAndTime.length !== 0) {
             let ratioX = ['x', ...timesheets.arrMonthById];
             let data1 = ['data1'], data2 = ['data2'];
-            timesheets.arrMonthById.forEach(x => {
-                let month = `${new Date(x).getFullYear()}-${new Date(x).getMonth()}`;
-                let data = listTimesheetsByEmployeeIdAndTime.find(x => `${new Date(x.month).getFullYear()}-${new Date(x.month).getMonth()}` === month);
+            timesheets.arrMonthById.forEach(k => {
+                let data = listTimesheetsByEmployeeIdAndTime.find(x => dayjs(x.month).format("MM-YYYY") === dayjs(k).format("MM-YYYY"));
                 if (data) {
                     data1 = [...data1, data.totalHours];
                     data2 = [...data2, data.totalOvertime ? data.totalOvertime : 0];

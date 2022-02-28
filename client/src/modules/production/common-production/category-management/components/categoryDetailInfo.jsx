@@ -12,21 +12,23 @@ function CategoryDetailForm(props) {
     })
 
     useEffect(() => {
-        setState({
-            ...state,
-            categoryId: props.categoryId,
-            code: props.code,
-            name: props.name,
-            type: props.type,
-            goods: props.goods,
-            description: props.description,
-            errorOnCode: undefined,
-            errorOnName: undefined
-        })
+        if(props.categoryId !== state.categoryId){
+            setState({
+                ...state,
+                categoryId: props.categoryId,
+                code: props.code,
+                name: props.name,
+                type: props.type,
+                goods: props.goods,
+                description: props.description,
+                errorOnCode: undefined,
+                errorOnName: undefined
+            })
+        }
     }, [props.categoryId])
 
-    const { translate, categories, goods } = this.props;
-    const { code, name, type, description } = this.state;
+    const { translate, categories, goods } = props;
+    const { code, name, type, description } = state;
     const { listGoodsByCategory } = goods;
     return (
         <React.Fragment>
@@ -36,7 +38,7 @@ function CategoryDetailForm(props) {
                 formID="form-detail-category"
                 title={translate('manage_warehouse.category_management.detail')}
                 msg_success={translate('manage_warehouse.category_management.detail_success')}
-                msg_faile={translate('manage_warehouse.category_management.detail_faile')}
+                msg_failure={translate('manage_warehouse.category_management.detail_faile')}
                 size={50}
                 maxWidth={500}
                 hasSaveButton={false}

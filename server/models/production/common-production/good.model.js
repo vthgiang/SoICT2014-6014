@@ -30,6 +30,14 @@ const GoodSchema = new Schema({
         required: true
     },
 
+    // sourceType = 1 when the goods are self-produced
+    // sourceType = 2 when goods are imported from suppliers
+    sourceType: {
+        type: String,
+        default: '1',
+        required: true
+    },
+
     baseUnit: {
         type: String,
         required: true

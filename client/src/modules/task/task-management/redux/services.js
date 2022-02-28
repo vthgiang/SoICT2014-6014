@@ -30,6 +30,8 @@ export const taskManagementService = {
     addNewProjectTask,
     getTasksByProject,
     importTasks,
+
+    getOrganizationTaskDashboardChart,
 };
 
 
@@ -46,8 +48,8 @@ export const taskManagementService = {
  * @param {*} endDate kết thúc công việc
  */
 
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
 
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
@@ -85,8 +87,8 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -123,8 +125,8 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -161,8 +163,8 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
  * @param {*} endDate kết thúc công việc
  */
 
-function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -199,8 +201,8 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
  * @param {*} endDate kết thúc công việc
  */
 
-function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,user) {
-    var user = user||getStorage("userId");
+function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, user) {
+    var user = user || getStorage("userId");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -282,7 +284,7 @@ function getPaginatedTasksByOrganizationalUnit(data) {
         params: {
             type: 'paginated_task_by_unit',
             unit: data?.unit,
-            number: data?.page,
+            page: data?.page,
             perPage: data?.perPage,
             status: data?.status,
             priority: data?.priority,
@@ -376,13 +378,17 @@ function editTask(taskId, newTask) {
 
 /**
  * xóa công việc theo id
- * @param {*} id id công việc 
+ * @param {*} taskId id công việc 
  */
 
 function deleteTaskById(taskId) {
+    let id = getStorage("userId")
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}`,
         method: 'DELETE',
+        params: {
+            userId: id,
+        }
     }, true, true, 'task.task_management');
 }
 
@@ -438,7 +444,7 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
 
 function getTaskAnalysOfUser(userId, type) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/analys/user/${userId}`,
+        url: `${process.env.REACT_APP_SERVER}/task/analyse/user/${userId}`,
         method: 'GET',
         params: { type }
     }, false, true, 'task.task_management');
@@ -456,20 +462,20 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
     }, false, true, 'task.task_management');
 }
 
-function getTimeSheetOfUser(userId, month, year) {
+function getTimeSheetOfUser(userId, month, year, requireActions) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/time-sheet`,
         method: 'GET',
-        params: { userId, month, year }
+        params: { userId, month, year, requireActions }
     }, false, true, 'task.task_management');
 }
 
 
-function getAllUserTimeSheet(month, year) {
+function getAllUserTimeSheet(month, year, rowLimit, page, timeLimit) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/time-sheet/all`,
         method: 'GET',
-        params: { month, year }
+        params: { month, year, rowLimit, page, timeLimit }
     }, false, true, 'task.task_management');
 }
 
@@ -495,9 +501,19 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
 }
 
 function importTasks(data) {
+    console.log('data', data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/import`,
         method: 'POST',
         data: data
     }, true, true, 'task.task_management');
+}
+
+function getOrganizationTaskDashboardChart(data) {
+
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/organization-task-dashboard-chart-data`,
+        method: 'GET',
+        params: data
+    }, false, true, 'task.task_management');
 }

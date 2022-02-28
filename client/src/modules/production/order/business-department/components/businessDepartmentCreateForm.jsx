@@ -115,7 +115,7 @@ function BusinessDepartmentCreateForm(props) {
                 formID="form-create-business-department"
                 title={"Phân vai trò đơn vị kinh doanh"}
                 msg_success={"Phân vai trò đơn vị kinh doanh thành công"}
-                msg_faile={"Phân vai trò đơn vị kinh doanh không thành công"}
+                msg_failure={"Phân vai trò đơn vị kinh doanh không thành công"}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}

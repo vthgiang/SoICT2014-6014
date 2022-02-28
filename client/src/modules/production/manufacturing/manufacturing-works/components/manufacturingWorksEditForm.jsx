@@ -139,6 +139,19 @@ class ManufacturingWorksEditForm extends Component {
         this.setState({ addressError: message })
     }
 
+    handleTurnChange = (e) => {
+        const { value } = e.target;
+        this.setState({ turn: value })
+        if(value <= 0 || value > 12){
+            let message = "Số ca làm việc phải nằm trong khoảng từ 1 đến 12"
+            this.setState({ turnError: message })
+            return;
+        } else {
+            this.setState({ turnError: "" })
+        }
+       
+    }
+
     handleStatusChange = (value) => {
         let status = value[0];
         this.validateStatus(status, true);
@@ -179,6 +192,8 @@ class ManufacturingWorksEditForm extends Component {
             || !ValidationHelper.validateEmpty(translate, phoneNumber).status
             || this.validateOrganizationalUnitValue(organizationalUnitValue, false)
             || this.validateStatus(status, false)
+            || this.state.turn <= 0
+            || this.state.turn >12
         ) {
             return false;
         }
@@ -195,7 +210,8 @@ class ManufacturingWorksEditForm extends Component {
                 phoneNumber: this.state.phoneNumber,
                 status: this.state.status,
                 description: this.state.description,
-                manageRoles: this.state.manageRoles
+                manageRoles: this.state.manageRoles,
+                turn: this.state.turn
             }
             this.props.editManufacturingWorks(this.state.worksId, data);
         }
@@ -219,7 +235,8 @@ class ManufacturingWorksEditForm extends Component {
                 organizationalUnitError: undefined,
                 addressError: undefined,
                 phoneNumberError: undefined,
-                statusError: undefined
+                statusError: undefined,
+                turn: nextProps.turn,
             }
         }
         return null;
@@ -230,7 +247,7 @@ class ManufacturingWorksEditForm extends Component {
         const { translate, manufacturingWorks, worksId } = this.props;
         const { name, nameError, organizationalUnitValue, organizationalUnitError, currentDepartment,
             phoneNumber, phoneNumberError, address, addressError, status, statusError, description, code
-            , manageRoles } = this.state;
+            , manageRoles, turn, turnError } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -238,7 +255,7 @@ class ManufacturingWorksEditForm extends Component {
                     formID="form-edit-works"
                     title={translate('manufacturing.manufacturing_works.create_works')}
                     msg_success={translate('manufacturing.manufacturing_works.create_successfully')}
-                    msg_faile={translate('manufacturing.manufacturing_works.create_failed')}
+                    msg_failure={translate('manufacturing.manufacturing_works.create_failed')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}
@@ -292,6 +309,7 @@ class ManufacturingWorksEditForm extends Component {
                                 </fieldset>
                                 <div className="form-group">
                                     <label>{translate('manufacturing.manufacturing_works.manage_roles')}</label>
+                                    <a style={{ cursor: "pointer" }} title = {translate('manufacturing.manufacturing_works.manage_roles_description')}><i class="fa fa-question-circle" aria-hidden="true" style = {{marginLeft: "10px" }}></i></a>
                                     <div>
                                         <SelectBox
                                             id={`select-manage-roles-works-${worksId}`}
@@ -315,6 +333,11 @@ class ManufacturingWorksEditForm extends Component {
                             <label>{translate('manufacturing.manufacturing_works.address')}<span className="text-red">*</span></label>
                             <input type="text" value={address} className="form-control" onChange={this.handleAddressChange}></input>
                             <ErrorLabel content={addressError} />
+                        </div>
+                        <div className={`form-group ${!turnError ? "" : "has-error"}`}>
+                            <label>{translate('manufacturing.manufacturing_works.turn')}<span className="text-red">*</span></label>
+                            <input type="number" value={turn} className="form-control" onChange={this.handleTurnChange}></input>
+                            <ErrorLabel content={turnError} />
                         </div>
                         <div className={`form-group ${!statusError ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.manufacturing_works.status')}<span className="text-red">*</span></label>

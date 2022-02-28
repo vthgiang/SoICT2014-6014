@@ -33,6 +33,7 @@ export const DocumentActions = {
     editDocumentArchive,
     deleteDocumentArchive,
     importDocumentArchive,
+    getDataChart,
 };
 
 function getDocuments(data) {
@@ -191,6 +192,7 @@ function importDocument(data) {
             });
     };
 }
+
 function downloadDocumentFile(id, fileName, numberVersion) {
     return (dispatch) => {
         dispatch({ type: DocumentConstants.DOWNLOAD_DOCUMENT_FILE_REQUEST });
@@ -230,7 +232,6 @@ function downloadDocumentFileScan(id, fileName, numberVersion) {
             });
     };
 }
-
 
 function downloadAllFileOfDocument(data) {
     console.log('data',data)
@@ -346,6 +347,7 @@ function deleteDocumentCategory(id) {
             });
     };
 }
+
 function importDocumentCategory(data) {
     return (dispatch) => {
         dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_CATEGORY_REQUEST });
@@ -692,6 +694,24 @@ function importDocumentArchive(data) {
                 dispatch({
                     type: DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_FAILE,
                 });
+            });
+    };
+}
+
+function getDataChart(data){
+    return (dispatch) => {
+        dispatch({
+            type: DocumentConstants.GET_DATA_CHART_REQUEST
+        });
+        DocumentServices.getDataChart(data)
+            .then((res) => {
+                dispatch({
+                    type: DocumentConstants.GET_DATA_CHART_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({ type: DocumentConstants.GET_DATA_CHART_FAILE });
             });
     };
 }

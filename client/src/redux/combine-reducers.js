@@ -6,6 +6,7 @@ import { systemSetting } from '../modules/system-admin/system-setting/redux/redu
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
+import {systemPage} from '../modules/system-admin/system-page/redux/reducers';
 import { systemApis } from '../modules/system-admin/system-api/system-api-management/redux/reducers';
 import { privilegeApis } from '../modules/system-admin/system-api/system-api-privilege/redux/reducers'
 
@@ -30,8 +31,19 @@ import { annualLeave } from '../modules/human-resource/annual-leave/redux/reduce
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
+import { career } from '../modules/human-resource/career/redux/reducers';
+import { major } from '../modules/human-resource/major/redux/reducers';
+import { certificate } from '../modules/human-resource/certificate/redux/reducers';
+import { biddingPackageInfo } from '../modules/human-resource/bidding-package/redux/reducers';
+import { biddingPackagesManager } from '../modules/human-resource/bidding-package/biddingPackageManagement/redux/reducers';
+
+import { employeeDashboardData } from '../modules/human-resource/employee-dashboard/redux/reducers'
+
 import { notifications } from '../modules/notification/redux/reducers';
 import { documents } from '../modules/document/redux/reducers';
+
+// dashboard-unit
+import { dashboardUnit } from '../modules/dashboard-unit/redux/reducers';
 
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
 import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
@@ -134,6 +146,7 @@ const appReducer = combineReducers({
     systemSetting,
     company,
     systemLinks,
+    systemPage,
     systemApis,
     rootRoles,
     systemComponents,
@@ -155,6 +168,9 @@ const appReducer = combineReducers({
     notifications,
     auth,
 
+    // dashboard-unit
+    dashboardUnit,
+
     // hr-employee
     employeesInfo,
     employeesManager,
@@ -164,6 +180,14 @@ const appReducer = combineReducers({
     workPlan,
     timesheets,
     field,
+    employeeDashboardData,
+
+    // gói thầu
+    career,
+    major,
+    certificate,
+    // biddingPackageInfo,
+    biddingPackagesManager,
 
     // hr-tranning
     education,

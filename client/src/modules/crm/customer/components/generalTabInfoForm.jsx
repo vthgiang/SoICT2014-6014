@@ -11,7 +11,7 @@ function GeneralTabInfoForm(props) {
     console.log(customerInfomation);
     let listStatus = [...status.list]; // Sao chép giá trị của list(Trạng thai chung của khách hàng)
     if (customerInfomation && listStatus) {
-        const statusActive = customerInfomation.status.map(o => ({ _id: o._id, name: o.name, active: true })); // Danh sách trạng thái khách hàng có
+        const statusActive = customerInfomation.customerStatus.map(o => ({ _id: o._id, name: o.name, active: true })); // Danh sách trạng thái khách hàng có
         //reset ds trang thai
         listStatus.forEach(x => {
             x.active = false;
@@ -99,7 +99,7 @@ function GeneralTabInfoForm(props) {
                                 <div className="form-group">
                                     <strong className="col-sm-4">{translate('crm.customer.group')}</strong>
                                     <div className="col-sm-8">
-                                        <span>{customerInfomation.group ? customerInfomation.group.name : ''}</span>
+                                        <span>{customerInfomation.customerGroup ? customerInfomation.customerGroup.name : ''}</span>
                                     </div>
                                 </div>
                             </div>

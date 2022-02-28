@@ -110,3 +110,33 @@ exports.deleteRole = async (req, res) => {
         });
     }
 };
+
+
+exports.importRoles = async (req, res) => {
+    try {
+        const role = await RoleService.importRoles(req.portal, req.body);
+        if (role?.rowError !== undefined) {
+            await Logger.error(req.user.email, 'import_role_failed', req.portal);
+            res.status(400).json({
+                success: false,
+                messages: ["import_role_failed"],
+                content: role
+            });
+        } else {
+            Logger.info(req.user.email, 'import_role_success', req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ['import_role_success'],
+                content: role
+            });
+        }
+    } catch (error) {
+        console.log('error', error);
+        Logger.error(req.user.email, 'import_role_failed', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_role_failed'],
+            content: error
+        });
+    }
+};

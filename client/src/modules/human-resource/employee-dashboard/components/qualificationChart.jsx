@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { FieldsActions } from '../../field/redux/actions';
-
 import { showListInSwal } from '../../../../helpers/showListInSwal';
 import { CustomLegendC3js } from '../../../../common-components/index';
 
@@ -39,7 +37,6 @@ class QualificationChart extends Component {
      * @param {*} value : chế độ xem biểu đồ (true or false)
      */
     handleChangeViewChart = (value) => {
-        this.props.getListFields();
         this.setState({
             ...this.state,
             typeChart: value
@@ -90,12 +87,12 @@ class QualificationChart extends Component {
         await this.props.searchSalary({ callApiDashboard: true, month: month });
     }
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.organizationalUnits !== prevState.organizationalUnits || !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
-            !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
+        if (nextProps.organizationalUnits !== prevState.organizationalUnits || !QualificationChart.isEqual(nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits, prevState.listAllEmployees) ||
+            !QualificationChart.isEqual(nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
             return {
                 organizationalUnits: nextProps.organizationalUnits,
-                listAllEmployees: nextProps.employeesManager.listAllEmployees,
-                listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
+                listAllEmployees: nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits,
+                listEmployeesOfOrganizationalUnits: nextProps.employeeDashboardData.listEmployeesOfOrganizationalUnits
             }
         }
         return null;
@@ -110,22 +107,14 @@ class QualificationChart extends Component {
      * intermediate_degree - Trung cấp, colleges - Cao đẳng, university-Đại học, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có 
      */
     convertData = (data) => {
-        const { translate, field } = this.props;
+        const { translate, employeeDashboardData } = this.props;
         const { typeChart } = this.state;
-        let listFields = field.listFields;
-        let intermediate_degree = 0, colleges = 0, university = 0, master_degree = 0, phd = 0, unavailable = 0;
+        let intermediate_degree = 0, colleges = 0, university = 0, master_degree = 0, phd = 0, unavailable = 0, bachelor = 0, engineer = 0;
 
         if (typeChart) {
-            let degrees = [];
-            data.forEach(x => {
-                degrees = degrees.concat(x.degrees)
-            });
-
-            listFields = listFields.map(x => {
-                let total = degrees.filter(y => y.field && y.field.toString() === x._id.toString())
-                return [x.name, total.length]
-            })
-            return listFields
+            if (employeeDashboardData.qualificationChartData.listFields) {
+                return employeeDashboardData.qualificationChartData.listFields
+            }
         } else {
             data.forEach(x => {
                 switch (x.professionalSkill) {
@@ -137,6 +126,12 @@ class QualificationChart extends Component {
                         break;
                     case 'university':
                         university = university + 1;
+                        break;
+                    case 'bachelor':
+                        bachelor = bachelor + 1;
+                        break;
+                    case 'engineer':
+                        engineer = engineer + 1;
                         break;
                     case 'master_degree':
                         master_degree = master_degree + 1;
@@ -152,6 +147,8 @@ class QualificationChart extends Component {
                 [translate(`human_resource.profile.intermediate_degree`), intermediate_degree],
                 [translate(`human_resource.profile.colleges`), colleges],
                 [translate(`human_resource.profile.university`), university],
+                [translate(`human_resource.profile.bachelor`), bachelor],
+                [translate(`human_resource.profile.engineer`), engineer],
                 [translate(`human_resource.profile.master_degree`), master_degree],
                 [translate(`human_resource.profile.phd`), phd],
                 [translate(`human_resource.profile.unavailable`), unavailable]
@@ -164,10 +161,9 @@ class QualificationChart extends Component {
     }
 
     componentDidUpdate() {
-        const { employeesManager, department } = this.props;
-        const { organizationalUnits } = this.state;
+        const { employeeDashboardData } = this.props;
 
-        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
+        let listAllEmployees = employeeDashboardData.listEmployeesOfOrganizationalUnits;
 
 
         if (listAllEmployees.length !== 0) {
@@ -178,7 +174,7 @@ class QualificationChart extends Component {
     }
 
     render() {
-        const { employeesManager, department, translate } = this.props;
+        const { department, translate, employeeDashboardData } = this.props;
         const { organizationalUnits, typeChart } = this.state;
 
         let organizationalUnitsName;
@@ -192,25 +188,23 @@ class QualificationChart extends Component {
                 <div className="box box-solid">
                     <div className="box-header with-border">
                         <div className="box-title">
-                            {`Trình độ chuyên môn của nhân sự `}
+                            {`Trình độ chuyên môn nhân sự `}
                             {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                        <span>{` ${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""}`}</span>
+                                        <span>{`${organizationalUnitsName?.[0] ? organizationalUnitsName?.[0] : ""} `}</span>
                                     </>
                                     :
                                     <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                         <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')} `}</span>
                                     </span>
                             }
                         </div>
                     </div>
-                    {employeesManager.isLoading
+                    {employeeDashboardData.isLoading
                         ? <p>{translate('general.loading')}</p>
-                        : <div className="box-body">
+                        : employeeDashboardData.listEmployeesOfOrganizationalUnits?.length ? <div className="box-body">
                             <div className="box-tools pull-left" >
                                 <div className="btn-group pull-left">
                                     <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
@@ -229,7 +223,7 @@ class QualificationChart extends Component {
                                     />
                                 </div>
                             </section>
-                        </div>
+                        </div> : <p style={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}>Không có dữ liệu</p>
                     }
                 </div>
             </React.Fragment>
@@ -238,14 +232,12 @@ class QualificationChart extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, field, department } = state;
-    return { employeesManager, field, department };
+    const { department, employeeDashboardData } = state;
+    return { department, employeeDashboardData };
 }
 
 
-const actionCreators = {
-    getListFields: FieldsActions.getListFields,
-};
+const actionCreators = {};
 
 const qualificationChart = connect(mapState, actionCreators)(withTranslate(QualificationChart));
 export { qualificationChart as QualificationChart };

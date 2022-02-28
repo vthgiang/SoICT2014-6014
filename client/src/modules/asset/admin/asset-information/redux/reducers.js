@@ -4,11 +4,15 @@ const initState = {
     isLoading: false,
     totalList: '',
     totalAllAsset: '',
-
+    chartAsset: [],
+    statisticAsset: [],
     listAssets: [],
     listAllAssets: [],
     buildingAsset: [],
-
+    purchaseAsset: [],
+    disposalAsset: [],
+    incidentAsset: [],
+    maintenanceAsset: [],
     error: '',
 }
 
@@ -19,6 +23,7 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.ADDASSET_REQUEST:
         case AssetConstants.UPDATE_INFOR_ASSET_REQUEST:
         case AssetConstants.CREATE_USAGE_REQUEST:
+        case AssetConstants.DELETE_ASSET_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -80,7 +85,7 @@ export function assetsManager(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listAssets: [action.payload.assets[0],...state.listAssets]
+                listAssets: [action.payload.assets[0], ...state.listAssets]
             };
 
         case AssetConstants.UPDATE_INFOR_ASSET_SUCCESS:
@@ -98,24 +103,79 @@ export function assetsManager(state = initState, action) {
             };
 
 
-        case AssetConstants.DELETE_ASSET_REQUEST:
-            return {
-                ...state,
-                listAssets: state.listAssets.map(asset =>
-                    asset._id === action.id
-                        ? { ...asset, deleting: true }
-                        : asset
-                ),
-                isLoading: false
-            };
-
         case AssetConstants.DELETE_ASSET_SUCCESS:
             return {
                 ...state,
-                listAssets: state.listAssets.filter(x => (x._id !== action.payload._id)),
-                isLoading: false,
+                listAssets: state.listAssets.filter(asset => !action.assetIds.includes(asset?._id)),
+                isLoading: false
             };
+        case AssetConstants.GET_ASSET_GROUP_FAILURE:
+        case AssetConstants.GET_ASSET_GROUP_SUCCESS:
+        case AssetConstants.GET_ASSET_GROUP_SUCCESS:
 
+            return {
+                ...state,
+                chartAsset: action.payload,
+
+                isLoading: false
+            }
+        case AssetConstants.GET_ASSET_STATISTIC_FAILURE:
+
+        case AssetConstants.GET_ASSET_STATISTIC_SUCCESS:
+
+            return {
+                ...state,
+                statisticAsset: action.payload,
+
+                isLoading: false
+            }
+        case AssetConstants.GET_ASSET_PURCHASE_FAILURE:
+
+        case AssetConstants.GET_ASSET_PURCHASE_SUCCESS:
+
+            return {
+                ...state,
+                purchaseAsset: action.payload,
+
+                isLoading: false
+            }
+        case AssetConstants.GET_ASSET_DISPOSAL_FAILURE:
+
+        case AssetConstants.GET_ASSET_DISPOSAL_SUCCESS:
+
+            return {
+                ...state,
+                disposalAsset: action.payload,
+
+                isLoading: false
+            }
+        case AssetConstants.GET_ASSET_INCIDENT_FAILURE:
+
+        case AssetConstants.GET_ASSET_INCIDENT_SUCCESS:
+
+            return {
+                ...state,
+                incidentAsset: action.payload,
+
+                isLoading: false
+            }
+
+        case AssetConstants.GET_ASSET_MAINTENANCE_FAILURE:
+
+        case AssetConstants.GET_ASSET_MAINTENANCE_SUCCESS:
+
+            return {
+                ...state,
+                maintenanceAsset: action.payload,
+
+                isLoading: false
+            }
+        case AssetConstants.GET_ASSET_GROUP_REQUEST:
+        case AssetConstants.GET_ASSET_STATISTIC_REQUEST:
+        case AssetConstants.GET_ASSET_PURCHASE_REQUEST:
+        case AssetConstants.GET_ASSET_DISPOSAL_REQUEST:
+        case AssetConstants.GET_ASSET_INCIDENT_REQUEST:
+        case AssetConstants.GET_ASSET_MAINTENANCE_REQUEST:
         case AssetConstants.GETALL_FAILURE:
         case AssetConstants.GET_LIST_BUILDING_AS_TREE_FAILURE:
         case AssetConstants.UPDATE_INFOR_ASSET_FAILURE:

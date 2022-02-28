@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -34,7 +34,19 @@ function ModalEditExperience(props) {
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
         position: "",
+        urlFile: "",
+        fileUpload: "",
+        file: "",
     })
+
+    
+    const { translate } = props;
+
+    const { id } = props;
+
+    const { company, position, file, urlFile, fileUpload, jobDescription, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
+
+    console.log("aaaaaaaaaaaa", position)
 
     useEffect(() => {
         setState(state => {
@@ -43,9 +55,13 @@ function ModalEditExperience(props) {
                 id: props.id,
                 index: props.index,
                 company: props.company,
+                file: props.file,
+                urlFile: props.urlFile,
+                fileUpload: props.fileUpload,
                 startDate: props.startDate,
                 endDate: props.endDate,
                 position: props.position,
+                jobDescription: props.jobDescription,
                 errorOnPosition: undefined,
                 errorOnUnit: undefined,
                 errorOnStartDate: undefined,
@@ -62,16 +78,36 @@ function ModalEditExperience(props) {
         }
     }, [props.id])
 
-    const { translate } = props;
 
-    const { id } = props;
-
-    const { company, position, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
         let { value } = e.target;
         validateExperienceUnit(value, true)
+    }
+
+    
+    /** Bắt sự kiện thay đổi file đính kèm */
+    const handleChangeFile = (value) => {
+        if (value.length !== 0) {
+            setState(state => {
+                return {
+                    ...state,
+                    file: value[0].fileName,
+                    urlFile: value[0].urlFile,
+                    fileUpload: value[0].fileUpload
+                }
+            })
+        } else {
+            setState(state => {
+                return {
+                    ...state,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }
+            })
+        }
     }
 
     const validateExperienceUnit = (value, willUpdateState = true) => {
@@ -170,6 +206,15 @@ function ModalEditExperience(props) {
         })
     }
 
+    const handleJobDescription = (e) => {
+        const { value } = e.target;
+
+        setState({
+            ...state,
+            jobDescription: value,
+        })
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { company, position, startDate, endDate } = state;
@@ -193,6 +238,12 @@ function ModalEditExperience(props) {
         if (isFormValidated()) {
             return props.handleChange({ ...state, startDate: startDateNew, endDate: endDateNew });
         }
+    }
+
+    let files;
+    console.log("file", file)
+    if (file) {
+        files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
     }
 
     return (
@@ -242,6 +293,18 @@ function ModalEditExperience(props) {
                         <label>{translate('table.position')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
                         <ErrorLabel content={errorOnPosition} />
+                    </div>
+
+                    {/* Các công việc đã làm */}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.job_description')}</label>
+                        <textarea style={{ minHeight: '100px' }} type="text" value={jobDescription} className="form-control" onChange={handleJobDescription} />
+                    </div>
+
+                    {/* File đính kèm */}
+                    <div className="form-group">
+                        <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
+                        <UploadFile files={files} onChange={handleChangeFile} />
                     </div>
                 </form>
             </DialogModal>

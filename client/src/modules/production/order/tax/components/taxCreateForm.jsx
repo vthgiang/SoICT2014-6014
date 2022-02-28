@@ -494,7 +494,7 @@ function TaxCreateForm(props) {
                 formID={`form-add-tax`}
                 title={translate("manage_order.tax.add_new_tax")}
                 msg_success={translate("manage_order.tax.add_successfully")}
-                msg_faile={translate("manage_order.tax.add_failed")}
+                msg_failure={translate("manage_order.tax.add_failed")}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size="50"

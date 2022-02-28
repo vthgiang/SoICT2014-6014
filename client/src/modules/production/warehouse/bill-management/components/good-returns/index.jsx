@@ -219,6 +219,7 @@ function ReturnManagement(props) {
                             <th>{translate('manage_warehouse.bill_management.date')}</th>
                             <th>{translate('manage_warehouse.bill_management.stock')}</th>
                             <th>{translate('manage_warehouse.bill_management.customer')}</th>
+                            <th>{translate('manage_warehouse.bill_management.mill')}</th>
                             <th>{translate('manage_warehouse.bill_management.description')}</th>
                             <th style={{ width: '120px' }}>{translate('table.action')}
                                 <DataTableSetting
@@ -234,6 +235,7 @@ function ReturnManagement(props) {
                                         translate('manage_warehouse.bill_management.date'),
                                         translate('manage_warehouse.bill_management.stock'),
                                         translate('manage_warehouse.bill_management.customer'),
+                                        translate('manage_warehouse.bill_management.mill'),
                                         translate('manage_warehouse.bill_management.description')
                                     ]}
                                     setLimit={props.setLimit}
@@ -254,7 +256,8 @@ function ReturnManagement(props) {
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                    <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>
+                                    <td>{x.customer ? x.customer.name : translate(`manage_warehouse.bill_management.goods_returned_to_the_factory`)}</td>
+                                    <td>{x.manufacturingMill ? x.manufacturingMill.name : (x.type === "12" ? translate(`manage_warehouse.bill_management.goods_returned_to_the_supplier`) : translate(`manage_warehouse.bill_management.goods_returned_to_the_stock`))}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
@@ -272,14 +275,7 @@ function ReturnManagement(props) {
                                         }
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.staff_true')}
-                                                content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => handleFinishedQualityControlStaff(x)}
-                                            />
+                                            <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
                                         }
                                     </td>
                                 </tr>

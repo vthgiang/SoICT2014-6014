@@ -26,6 +26,7 @@ const initState = {
     hasNextPage: false,
     prevPage: 0,
     nextPage: 0,
+    listPaginate: [],
     
 }
 
@@ -36,6 +37,7 @@ export function categories(state = initState, action){
     switch(action.type) {
         case CategoryConstants.GETALL_CATEGORY_TREE_REQUEST:
         case CategoryConstants.GETALL_CATEGORY_BY_TYPE_REQUEST:
+        case CategoryConstants.GETALL_CATEGORY_REQUEST:
         case CategoryConstants.CREATE_CATEGORY_REQUEST:
         case CategoryConstants.UPDATE_CATEGORY_REQUEST:
         case CategoryConstants.DELETE_CATEGORY_REQUEST:
@@ -57,6 +59,12 @@ export function categories(state = initState, action){
                 listCategoriesByType: action.payload ? action.payload : [],
                 isLoading: false
             };
+        case CategoryConstants.GETALL_CATEGORY_SUCCESS:
+            return {
+                ...state,
+                listPaginate: action.payload,
+                isLoading: false
+            }
         
         case CategoryConstants.CREATE_CATEGORY_SUCCESS:
             return {
@@ -85,6 +93,7 @@ export function categories(state = initState, action){
 
         case CategoryConstants.GETALL_CATEGORY_TREE_FAILURE:
         case CategoryConstants.GETALL_CATEGORY_BY_TYPE_FAILURE:
+        case CategoryConstants.GETALL_CATEGORY_FAILURE:
         case CategoryConstants.CREATE_CATEGORY_FAILURE:
         case CategoryConstants.UPDATE_CATEGORY_FAILURE:
         case CategoryConstants.DELETE_CATEGORY_FAILURE:

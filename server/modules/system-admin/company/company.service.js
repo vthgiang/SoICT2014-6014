@@ -10,7 +10,7 @@ const {
     RoleType,
     User,
     UserRole,
-    ImportConfiguraion,
+    ImportConfiguration,
     Configuration,
 } = require(`../../../models`);
 
@@ -20,9 +20,13 @@ const Terms = require('../../../helpers/config');
 const { connect } = require('../../../helpers/dbHelper');
 const { sendEmail } = require("../../../helpers/emailHelper");
 
+
+
 /**
  * Lấy danh sách tất cả các công ty
  */
+
+
 exports.getAllCompanies = async (query) => {
     let page = query.page;
     let limit = query.limit;
@@ -67,10 +71,14 @@ exports.getAllCompanies = async (query) => {
     }
 };
 
+
+
 /**
  * Lấy thông tin về 1 công ty theo id
  * @id id của công ty
  */
+
+
 exports.getCompany = async (id) => {
     let company = await Company(
         connect(DB_CONNECTION, process.env.DB_NAME)
@@ -84,10 +92,14 @@ exports.getCompany = async (id) => {
     return company;
 };
 
+
+
 /**
  * Tạo dữ liệu mới về 1 công ty
  * @data dữ liệu để tạo thông tin về công ty (tên, mô tả, tên ngắn)
  */
+
+
 exports.createCompany = async (data) => {
     if (data.shortName) {
         let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -405,11 +417,15 @@ exports.createCompanyLinks = async (company, linkArr, roleArr, companyId) => {
         .populate({ path: "roles", populate: { path: "roleId" } });
 };
 
+
+
 /**
  * Tạo các component cho công ty
  * @companyId id của công ty
  * @linkArr mảng các system link được kích hoạt để làm chuẩn cho các link của công ty
  */
+
+
 exports.createCompanyComponents = async (company, linkArr, companyId) => {
     let systemLinks = await SystemLink(
         connect(DB_CONNECTION, process.env.DB_NAME)
@@ -438,6 +454,7 @@ exports.createCompanyComponents = async (company, linkArr, companyId) => {
         let links = await Link(connect(DB_CONNECTION, company)).find({
             url: sysLinks.map((link) => link.url),
         });
+
         // Tạo component
         let component = await Component(connect(DB_CONNECTION, company)).create(
             {
@@ -455,6 +472,7 @@ exports.createCompanyComponents = async (company, linkArr, companyId) => {
             updateLink.components.push(component._id);
             await updateLink.save();
         }
+
         // Tạo phân quyền cho components
         let roles = await Role(connect(DB_CONNECTION, company)).find({
             name: { $in: systemComponents[i].roles.map((role) => role.name) },
@@ -474,11 +492,15 @@ exports.createCompanyComponents = async (company, linkArr, companyId) => {
     return await Component(connect(DB_CONNECTION, company)).find();
 };
 
+
+
 /**
  * Chỉnh sửa email của tài khoản super admin của công ty
  * @companyId id của công ty
  * @superAdminEmail email dùng để thay thế làm email mới của super admin
  */
+
+
 exports.editCompanySuperAdmin = async (company, superAdminEmail) => {
     let com = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
         .findOne({ shortName: company })
@@ -525,46 +547,58 @@ exports.editCompanySuperAdmin = async (company, superAdminEmail) => {
     }
 };
 
+
+
 /**
  * Lấy thông tin cấu hình file import
  * @type Thể loại file cấu hình(salary, taskTemplate);
  * @company id công ty
  */
-exports.getImportConfiguraion = async (type, company) => {
-    return await ImportConfiguraion.findOne({
+
+
+exports.getImportConfiguration = async (type, company) => {
+    return await ImportConfiguration.findOne({
         type: type,
         company: company,
     });
 };
+
+
 
 /**
  * Tạo thông tin cấu hình file import
  * @data Thông tin cấu hình file import
  * @company id công ty
  */
-exports.createImportConfiguraion = async (data, company) => {
-    return await ImportConfiguraion.create({
+
+
+exports.createImportConfiguration = async (data, company) => {
+    return await ImportConfiguration.create({
         company: company,
         configuration: data.configuration,
         type: data.type,
     });
 };
 
+
+
 /**
  * Chỉnh sửa thông tin cấu hình file import
  * @id id thông tin cấu hình file import cần sửa
  * @data Dữ liệu chinhe sửa file cấu hình
  */
-exports.editImportConfiguraion = async (id, data) => {
-    let oldImportConfiguraion = await ImportConfiguraion.findById(id);
 
-    oldImportConfiguraion.configuration = {
+
+exports.editImportConfiguration = async (id, data) => {
+    let oldImportConfiguration = await ImportConfiguration.findById(id);
+
+    oldImportConfiguration.configuration = {
         ...data.configuration,
     };
 
-    await oldImportConfiguraion.save();
+    await oldImportConfiguration.save();
 
-    return await ImportConfiguraion.findById(id);
+    return await ImportConfiguration.findById(id);
 };
 
 exports.editCompanyOrgInformation = async (shortName, organizationalUnitImage) => {

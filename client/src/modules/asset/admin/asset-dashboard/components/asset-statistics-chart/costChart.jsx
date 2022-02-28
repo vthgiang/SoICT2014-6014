@@ -17,59 +17,77 @@ class CostChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { listAssets, getAssetCostData } = this.props;
+        const { listAssets, getAssetCostData, chartAsset ,statisticAsset} = this.props;
         const { type } = this.state;
-
-        let filterAsset = [], dataPieChart, lessThanOneHundred = 0, oneHundred = 0, twoHundred = 0, fiveHundred = 0, oneBillion = 0, twoBillion = 0, fiveBillion = 0, tenBillion = 0;
-
-        if (type && type.length) {
-            listAssets.map(x => {
-                if (x.assetType.length) {
-                    for (let i in x.assetType) {
-                        for (let j in type) {
-                            type[j] === x.assetType[i]._id && filterAsset.push(x);
-                        }
-                    }
-                }
-            })
-        }
-        else {
-            filterAsset = listAssets;
-        }
-
-        if (filterAsset) {
-            for (let i in filterAsset) {
-                let cost = filterAsset[i].cost;
-
-                if (cost < 100000000) {
-                    lessThanOneHundred++;
-                } else if (cost >= 100000000 && cost < 200000000) {
-                    oneHundred++;
-                } else if (cost >= 200000000 && cost < 500000000) {
-                    twoHundred++;
-                } else if (cost >= 500000000 && cost < 1000000000) {
-                    fiveHundred++;
-                } else if (cost >= 100000000 && cost < 2000000000) {
-                    oneBillion++;
-                } else if (cost >= 200000000 && cost < 5000000000) {
-                    twoBillion++;
-                } else if (cost >= 500000000 && cost < 10000000000) {
-                    fiveBillion++;
-                } else if (cost >= 10000000000) {
-                    tenBillion++;
-                }
+        
+        let filterAsset = {
+            typeName: [],
+            lessThanOneHundred: [],
+            oneHundred: [],
+            twoHundred: [],
+            fiveHundred: [],
+            oneBillion: [],
+            twoBillion: [],
+            fiveBillion: [],
+            tenBillion: [],
+            idAssetTypes: [],
+        },
+            dataPieChart, lessThanOneHundreds = 0, oneHundreds = 0, twoHundreds = 0, fiveHundreds = 0, oneBillions = 0, twoBillions = 0, fiveBillions = 0, tenBillions = 0;
+        if (statisticAsset){
+            let assetList = statisticAsset.costOfAssets
+            console.log("assetList",assetList)
+            if (type && type.length) {
+                type.map((i) => {
+                    let index = assetList.idAssetTypes?.indexOf(i);
+                    filterAsset.lessThanOneHundred.push(assetList.lessThanOneHundred[index]);
+                    filterAsset.oneHundred.push(assetList.oneHundred[index]);
+                    filterAsset.twoHundred.push(assetList.twoHundred[index]);
+                    filterAsset.fiveHundred.push(assetList.fiveHundred[index]);
+                    filterAsset.oneBillion.push(assetList.oneBillion[index]);
+                    filterAsset.twoBillion.push(assetList.twoBillion[index]);
+                    filterAsset.fiveBillion.push(assetList.fiveBillion[index]);
+                    filterAsset.tenBillion.push(assetList.tenBillion[index]);
+                })
+            } else {
+                filterAsset = assetList;
             }
+    
+            for (let i in filterAsset.lessThanOneHundred) {
+                lessThanOneHundreds += filterAsset.lessThanOneHundred[i]
+            }
+            for (let i in filterAsset.oneHundred) {
+                oneHundreds += filterAsset.oneHundred[i]
+            }
+            for (let i in filterAsset.twoHundred) {
+                twoHundreds += filterAsset.twoHundred[i]
+            }
+            for (let i in filterAsset.fiveHundred) {
+                fiveHundreds += filterAsset.fiveHundred[i]
+            }
+            for (let i in filterAsset.oneBillion) {
+                oneBillions += filterAsset.oneBillion[i]
+            }
+            for (let i in filterAsset.twoBillion) {
+                twoBillions += filterAsset.twoBillion[i]
+            }
+            for (let i in filterAsset.fiveBillion) {
+                fiveBillions += filterAsset.fiveBillion[i]
+            }
+            for (let i in filterAsset.tenBillion) {
+                tenBillions += filterAsset.tenBillion[i]
+            }
+    
         }
-
+        
         dataPieChart = [
-            ["< 100M", lessThanOneHundred],
-            ["100M - 200M", oneHundred],
-            ["200M - 500M", twoHundred],
-            ["500M - 1B", fiveHundred],
-            ["1B - 2B", oneBillion],
-            ["2B - 5B", twoBillion],
-            ["5B - 10B", fiveBillion],
-            ["> 10B", tenBillion],
+            ["< 100M", lessThanOneHundreds],
+            ["100M - 200M", oneHundreds],
+            ["200M - 500M", twoHundreds],
+            ["500M - 1B", fiveHundreds],
+            ["1B - 2B", oneBillions],
+            ["2B - 5B", twoBillions],
+            ["5B - 10B", fiveBillions],
+            ["> 10B", tenBillions],
         ];
 
         if (getAssetCostData && listAssets) {

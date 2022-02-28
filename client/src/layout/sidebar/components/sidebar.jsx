@@ -192,6 +192,11 @@ class SideBar extends Component {
                                             path: "/apis-registration",
                                         },
                                         {
+                                            name: "menu.registration_api_employee",
+                                            icon: "fa fa-link",
+                                            path: "/apis-registration-employee",
+                                        },
+                                        {
                                             name: "menu.manage_component",
                                             icon: "fa fa-object-group",
                                             path: "/components-management",
@@ -253,9 +258,9 @@ class SideBar extends Component {
                                             path: "/task-process-management",
                                         },
                                         {
-                                            name: "menu.all_time_sheet_log",
+                                            name: "menu.personal_time_sheet_log",
                                             icon: "fa fa-circle-o",
-                                            path: "/time-sheet-log/all",
+                                            path: "/personal-time-sheet-log",
                                         },
                                     ],
                                 }}
@@ -373,6 +378,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
+                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all"},
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
@@ -383,9 +389,11 @@ class SideBar extends Component {
                                         { name: "menu.manage_work_plan", icon: "fa fa-calendar", path: "/hr-manage-work-plan" },
                                         { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
                                         // nhân sự gói thầu
-                                        // { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
-                                        // { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
-                                        // { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
+                                        { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/hr-search-for-package" },
+                                        { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/hr-list-bidding-package" },
+                                        { name: "menu.list_certificate", icon: "fa fa-certificate", path: "/hr-list-certificate" },
+                                        { name: "menu.list_major", icon: "fa fa-briefcase", path: "/hr-list-major" },
+                                        { name: "menu.list_career_position", icon: "fa fa-handshake-o", path: "/hr-list-career-position" },
                                     ],
                                 }}
                             />
@@ -787,7 +795,7 @@ class SideBar extends Component {
                                             name: "menu.manage_transport_schedule",
                                             icon: "fa fa-calendar-o",
                                             path: "/manage-transport-schedule",
-                                        },                                        
+                                        },
                                         {
                                             name: "menu.manage_transport_route",
                                             icon: "fa fa-calendar-o",
@@ -806,7 +814,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.carrier_today_transport_mission",
                                             icon: "fa fa-calendar-o",
-                                            path: "/carrier-today-transport-mission", 
+                                            path: "/carrier-today-transport-mission",
                                         },
                                         // {
                                         //     name: "menu.carrier_all_times_transport_mission",

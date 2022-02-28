@@ -22,7 +22,7 @@ function RoleInfoForm(props) {
                 roleNameError: undefined,
             })
         }
-    },[props.roleId])
+    }, [props.roleId])
 
     const handleRoleName = (e) => {
         let { value } = e.target;
@@ -80,6 +80,8 @@ function RoleInfoForm(props) {
     const { role, user, translate } = props;
     const { roleId, roleType, roleName, roleParents, roleUsers, roleNameError } = state;
 
+    console.log('roleParents', roleParents);
+
     return (
         <React.Fragment>
             <DialogModal
@@ -115,6 +117,7 @@ function RoleInfoForm(props) {
                                     .map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
                             }
                             onChange={handleParents}
+                            disabled={roleName === ROOT_ROLE.SUPER_ADMIN ? true : false}
                             value={roleParents}
                             multiple={true}
                         />
@@ -132,6 +135,7 @@ function RoleInfoForm(props) {
                             }
                             onChange={handleUsers}
                             value={roleUsers}
+                            disabled={roleName === ROOT_ROLE.SUPER_ADMIN ? true : false}
                             multiple={roleName !== ROOT_ROLE.SUPER_ADMIN ? true : false}
                         />
                     </div>

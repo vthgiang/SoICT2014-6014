@@ -10,8 +10,16 @@ function GoodDetailForm(props) {
     const [state, setState] = useState({
 
     })
-
-    useEffect(() => {
+    if (
+        props.goodId !== state.goodId ||
+        props.baseUnit !== state.baseUnit ||
+        props.units !== state.units ||
+        props.materials !== state.materials ||
+        props.code !== state.code ||
+        props.name !== state.name ||
+        props.category !== state.category ||
+        props.description !== state.description
+    ) {
         setState({
             ...state,
             goodId: props.goodId,
@@ -29,16 +37,9 @@ function GoodDetailForm(props) {
             salesPriceVariance: props.salesPriceVariance,
             numberExpirationDate: props.numberExpirationDate
         });
-    }, [props.goodId,
-    props.baseUnit,
-    props.units,
-    props.materials,
-    props.code,
-    props.name,
-    props.category,
-    props.description])
+    }
 
-    const { translate, goods, type, categories } = props;
+    const { translate, goods, type, categories, sourceType } = props;
     const {
         goodId,
         code,
@@ -52,7 +53,7 @@ function GoodDetailForm(props) {
         manufacturingMills,
         pricePerBaseUnit,
         salesPriceVariance,
-        numberExpirationDate
+        numberExpirationDate,
     } = state;
     return (
         <React.Fragment >
@@ -60,9 +61,9 @@ function GoodDetailForm(props) {
                 modalID={`modal-detail-good`}
                 isLoading={goods.isLoading}
                 formID={`form-detail-good`}
-                title={translate("manage_warehouse.good_management.add_title")}
+                title={translate(`manage_warehouse.good_management.info.${type}`)}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
-                msg_faile={translate("manage_warehouse.good_management.add_faile")}
+                msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 size={50}
                 hasSaveButton={false}
                 hasNote={false}
@@ -72,22 +73,26 @@ function GoodDetailForm(props) {
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.code")}:&emsp;</strong>
-                                {code}
+                                {code ? code : ''}
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.name")}:&emsp;</strong>
-                                {name}
+                                {name ? name : ''}
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.baseUnit")}:&emsp;</strong>
-                                {baseUnit}
+                                {baseUnit ? baseUnit : ''}
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.expirationDate")}:&emsp;</strong>
-                                {numberExpirationDate}{" " + translate("manage_warehouse.good_management.day")}
+                                {numberExpirationDate ? numberExpirationDate : ''}{" " + translate("manage_warehouse.good_management.day")}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="form-group">
+                                <strong>{translate("manage_warehouse.good_management.good_source")}:&emsp;</strong>
+                                {sourceType ? (sourceType === "1" ? translate("manage_warehouse.good_management.selfProduced") : translate("manage_warehouse.good_management.importedFromSuppliers")) : ''}
+                            </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.category")}:&emsp;</strong>
                                 {category &&
@@ -106,7 +111,7 @@ function GoodDetailForm(props) {
                             </div>
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.description")}:&emsp;</strong>
-                                {description}
+                                {description ? description : ''}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -145,8 +150,8 @@ function GoodDetailForm(props) {
                                     </tbody>
                                 </table>
                             </fieldset>
-                            {type === "product" ? (
-                                <React.Fragment>
+                            <React.Fragment>
+                                {(type === "product" && sourceType === "1") ? (
                                     <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">{translate("manage_warehouse.good_management.materials")}</legend>
                                         <table className="table table-bordered">
@@ -177,7 +182,8 @@ function GoodDetailForm(props) {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </fieldset>
+                                    </fieldset>) : ("")}
+                                {(sourceType === "1") ? (
                                     <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">{translate("manage_warehouse.good_management.info_mill")}</legend>
                                         <table className="table table-bordered">
@@ -210,11 +216,9 @@ function GoodDetailForm(props) {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </fieldset>
-                                </React.Fragment>
-                            ) : (
-                                ""
-                            )}
+                                    </fieldset>) : ("")}
+                            </React.Fragment>
+
                         </div>
                     </div>
                 </form>

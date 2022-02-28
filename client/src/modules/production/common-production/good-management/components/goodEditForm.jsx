@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from "react-redux";
-import { DialogModal, TreeSelect, ErrorLabel, ButtonModal } from "../../../../../common-components";
+import { DialogModal, TreeSelect, ErrorLabel, SelectBox } from "../../../../../common-components";
 import { GoodActions } from "../redux/actions";
 import { CategoryActions } from "../../category-management/redux/actions";
 import UnitCreateForm from "./unitCreateForm";
@@ -10,35 +10,65 @@ import InfoMillCreateForm from "./infoMillCreateForm";
 
 function GoodEditForm(props) {
     const [state, setState] = useState({
-
+        code: "",
+        name: "",
+        baseUnit: "",
+        units: [],
+        materials: [],
+        quantity: 0,
+        description: "",
+        type: props.type,
+        category: "",
+        pricePerBaseUnit: "",
+        salesPriceVariance: "",
+        numberExpirationDate: "",
+        sourceType: "",
+        isSeflProduced: props.sourceType === "1" ? true : false,
     })
 
     useEffect(() => {
-        setState({
-            ...state,
-            goodId: props.goodId,
-            type: props.type,
-            baseUnit: props.baseUnit,
-            // packingRule: props.packingRule,
-            units: props.units,
-            materials: props.materials,
-            manufacturingMills: props.manufacturingMills,
-            description: props.description,
-            code: props.code,
-            name: props.name,
-            category: props.category,
-            pricePerBaseUnit: props.pricePerBaseUnit ? props.pricePerBaseUnit : "",
-            salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
-            numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : "",
-            errorOnName: undefined,
-            errorOnCode: undefined,
-            errorOnBaseUnit: undefined,
-            errorOnCategory: undefined,
-            pricePerBaseUnitError: undefined,
-            salesPriceVarianceError: undefined,
-            errorOnNumberExpirationDate: undefined
-        });
-    }, [props.goodId])
+        if (props.goodId !== state.goodId) {
+            setState({
+                ...state,
+                goodId: props.goodId,
+                type: props.type,
+                baseUnit: props.baseUnit,
+                // packingRule: props.packingRule,
+                units: props.units,
+                materials: props.materials,
+                manufacturingMills: props.manufacturingMills,
+                description: props.description,
+                code: props.code,
+                name: props.name,
+                category: props.category,
+                pricePerBaseUnit: props.pricePerBaseUnit ? props.pricePerBaseUnit : "",
+                salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
+                numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : "",
+                errorOnName: undefined,
+                errorOnCode: undefined,
+                errorOnBaseUnit: undefined,
+                errorOnCategory: undefined,
+                pricePerBaseUnitError: undefined,
+                salesPriceVarianceError: undefined,
+                errorOnNumberExpirationDate: undefined
+            });
+        }
+    }, [props.goodId]);
+
+    let dataSource = [
+        {
+            value: '0',
+            text: 'Chọn nguồn hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Hàng hóa tự sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Hàng hóa nhập từ nhà cung cấp',
+        }
+    ];
 
     const validatePrice = (value) => {
         let msg = undefined;
@@ -176,6 +206,29 @@ function GoodEditForm(props) {
         });
     };
 
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
+
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                materials: value === "2" ? [] : state.materials,
+                manufacturingMills: value === "2" ? [] : state.manufacturingMills,
+                isSeflProduced: value === "1" ? true : false,
+            });
+        }
+        return msg === undefined;
+    }
+
     const handleListUnitChange = (data) => {
         setState({
             ...state,
@@ -195,7 +248,6 @@ function GoodEditForm(props) {
             ...state,
             manufacturingMills: data,
         });
-        console.log(state.manufacturingMills);
     };
 
 
@@ -214,7 +266,6 @@ function GoodEditForm(props) {
             msg = translate("manage_warehouse.good_management.validate_number_expiration_date_input");
         }
         if (willUpdateState) {
-            console.log(msg)
             setState({
                 ...state,
                 errorOnNumberExpirationDate: msg,
@@ -227,10 +278,11 @@ function GoodEditForm(props) {
     const isFormValidated = () => {
         let result =
             validateName(state.name, false) &&
-            validateCode(state.code, false) &&
-            validateBaseUnit(state.baseUnit, false) &&
-            validateCategory(state.category, false) &&
-            state.materials.length > 0 &&
+                validateCode(state.code, false) &&
+                validateBaseUnit(state.baseUnit, false) &&
+                validateCategory(state.category, false) &&
+                validateSourceProduct(state.sourceType, false) &&
+                ((state.type && state.type === "product") && state.isSeflProduced === true) ? state.materials.length > 0 : true &&
             validateNumberExpirationDate(state.numberExpirationDate, false)
         return result;
     };
@@ -244,12 +296,13 @@ function GoodEditForm(props) {
     let listUnit = [];
     let listMaterial = [];
     let listManfaucturingMills = [];
-    const { translate, goods, categories, type } = props;
+    const { translate, goods, categories, type, sourceType } = props;
     const {
         errorOnName,
         errorOnCode,
         errorOnBaseUnit,
         errorOnCategory,
+        errorOnSourceProduct,
         code,
         name,
         category,
@@ -265,7 +318,8 @@ function GoodEditForm(props) {
         salesPriceVariance,
         salesPriceVarianceError,
         numberExpirationDate,
-        errorOnNumberExpirationDate
+        errorOnNumberExpirationDate,
+        isSeflProduced,
     } = state;
     const dataSelectBox = getAllCategory();
 
@@ -278,9 +332,9 @@ function GoodEditForm(props) {
                 modalID={`modal-edit-good`}
                 isLoading={goods.isLoading}
                 formID={`form-edit-good`}
-                title={translate("manage_warehouse.good_management.add_title")}
+                title={translate(`manage_warehouse.good_management.edit.${type}`)}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
-                msg_faile={translate("manage_warehouse.good_management.add_faile")}
+                msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size={50}
@@ -291,73 +345,87 @@ function GoodEditForm(props) {
                             <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.code")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
-                                <input type="text" className="form-control" value={code} onChange={handleCodeChange} />
+                                <input type="text" className="form-control" value={code ? code : ''} onChange={handleCodeChange} />
                                 <ErrorLabel content={errorOnCode} />
                             </div>
-                            <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
                                 <label>
-                                    {translate("manage_warehouse.good_management.baseUnit")}
-                                    <span className="attention"> * </span>
+                                    {translate("manage_warehouse.good_management.name")}
+                                    <span className="text-red"> * </span>
                                 </label>
-                                <input type="text" className="form-control" value={baseUnit} onChange={handleBaseUnitChange} />
-                                <ErrorLabel content={errorOnBaseUnit} />
+                                <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
+                                <ErrorLabel content={errorOnName} />
                             </div>
                         </div>
 
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("manage_warehouse.good_management.name")}
-                                    <span className="attention"> * </span>
-                                </label>
-                                <input type="text" className="form-control" value={name} onChange={handleNameChange} />
-                                <ErrorLabel content={errorOnName} />
+                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                                <span className="text-red"> * </span>
+                                <SelectBox
+                                    id={`edit-source-type-${dataSource.value}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={sourceType ? sourceType : ""}
+                                    items={dataSource}
+                                    onChange={handleSourceChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorOnSourceProduct} />
                             </div>
                             <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.category")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
-                                <TreeSelect data={dataSelectBox} value={category} handleChange={handleCategoryChange} mode="hierarchical" />
+                                <TreeSelect data={dataSelectBox ? dataSelectBox : ''} value={category} handleChange={handleCategoryChange} mode="hierarchical" />
                                 <ErrorLabel content={errorOnCategory} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("manage_warehouse.good_management.baseUnit")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <input type="text" className="form-control" value={baseUnit ? baseUnit : ''} onChange={handleBaseUnitChange} />
+                                <ErrorLabel content={errorOnBaseUnit} />
+                            </div>
+                            <div className={`form-group ${!errorOnNumberExpirationDate ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("manage_warehouse.good_management.numberExpirationDate")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <input type="number" className="form-control" value={numberExpirationDate ? numberExpirationDate : ''} onChange={handleNumberExpirationDateChange} />
+                                <ErrorLabel content={errorOnNumberExpirationDate} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>
                                 <label>
                                     {"Giá một đơn vị tính cơ bản"}
-                                    <span className="attention"> </span>
+                                    <span className="text-red"> </span>
                                 </label>
                                 <input
                                     type="number"
                                     className="form-control"
-                                    value={pricePerBaseUnit}
+                                    value={pricePerBaseUnit ? pricePerBaseUnit : ''}
                                     onChange={handlePricePerBaseUnitChange}
                                     placeholder="Ví dụ: 1000000"
                                 />
                                 <ErrorLabel content={pricePerBaseUnitError} />
                             </div>
-                            <div className={`form-group ${!errorOnNumberExpirationDate ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("manage_warehouse.good_management.numberExpirationDate")}
-                                    <span className="attention"> * </span>
-                                </label>
-                                <input type="number" className="form-control" value={numberExpirationDate} onChange={handleNumberExpirationDateChange} />
-                                <ErrorLabel content={errorOnNumberExpirationDate} />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
                                 <label>
                                     {"Phương sai giá bán"}
-                                    <span className="attention"> </span>
+                                    <span className="text-red"> </span>
                                 </label>
                                 <input
                                     type="number"
                                     className="form-control"
-                                    value={salesPriceVariance}
+                                    value={salesPriceVariance ? salesPriceVariance : ''}
                                     onChange={handleSalesPriceVarianceChange}
                                     placeholder="Ví dụ: 50000"
                                 />
@@ -367,7 +435,7 @@ function GoodEditForm(props) {
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="form-group">
                                 <label>{translate("manage_warehouse.good_management.description")}</label>
-                                <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
+                                <textarea type="text" className="form-control" value={description ? description : ''} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm
                                 // packingRule={packingRule}
@@ -377,18 +445,16 @@ function GoodEditForm(props) {
                                 initialData={listUnit}
                                 onDataChange={handleListUnitChange}
                             />
-                            {type === "product" ? (
-                                <React.Fragment>
-                                    <ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />
-                                    <InfoMillCreateForm
-                                        id={goodId}
-                                        onDataChange={handleListMillsChange}
-                                        initialData={listManfaucturingMills}
-                                    />
-                                </React.Fragment>
-                            ) : (
-                                ""
-                            )}
+                            <React.Fragment>
+                                {(type === "product" && isSeflProduced === true) ? (<ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ""}
+
+                                {(isSeflProduced === true) ? (<InfoMillCreateForm
+                                    id={goodId}
+                                    onDataChange={handleListMillsChange}
+                                    initialData={listManfaucturingMills}
+                                />) : ""}
+                            </React.Fragment>
+
                         </div>
                     </div>
                 </form>

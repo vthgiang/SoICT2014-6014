@@ -84,7 +84,7 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
             <ServerResponseAlert
                 type='success'
                 title={successTitle}
-                content={messages.map(message => `${module}.${message}`)}
+                content={messages.map(message =>`${module}.${message}`)}
             />,
             { containerId: 'toast-notification' }
         );

@@ -9,6 +9,7 @@ import Layout from "../layout/layout";
 import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
+import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -21,11 +22,12 @@ const ManageRole = lazy(() => import("../modules/super-admin/role/components"))
 const ManageLink = lazy(() => import("../modules/super-admin/link/components"))
 const ManageApi = lazy(() => import("../modules/super-admin/api/api-management/components/apiManagement"))
 const ApiRegistration = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistration"))
+const ApiRegistrationEmployee = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistrationEmployee"))
 const ManageDepartment = lazy(() => import("../modules/super-admin/organizational-unit/components"))
 const ManageComponent = lazy(() => import("../modules/super-admin/component/components"))
 const ConfigurationManager = lazy(() => import("../modules/super-admin/module-configuration/components"))
 
-const AnnualLeaveManager = lazy(() => import("../modules/human-resource/annual-leave/components"))
+const AnnualLeaveManager = lazy(() => import("../modules/human-resource/annual-leave/components/annualLeaveManagement"))
 const ManagerPraiseDiscipline = lazy(() => import("../modules/human-resource/commendation-discipline/components"))
 const EmployeeDashBoard = lazy(() => import("../modules/human-resource/employee-dashboard/components"))
 const DepartmentManage = lazy(() => import("../modules/human-resource/employee-in-organizational-unit/components/employeeInOrganizationalUnit"))
@@ -54,6 +56,15 @@ const OrganizationalUnitKpiDashboard = lazy(() => import("../modules/kpi/organiz
 const KPIUnitManager = lazy(() => import("../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview"))
 const KPIUnitEvaluate = lazy(() => import("../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation"))
 const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi"))
+
+const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
+const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
+// const BiddingPackage = lazy(() => import("../modules/human-resource/biddingPackage/component"))
+const SearchKeyEmployee =  lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
+const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
+const Major = lazy(() => import("../modules/human-resource/major/component"))
+// const Major = lazy(() => import("../modules/human-resource/major/component"))
+const BiddingPackagesManagement = lazy(() => import("../modules/human-resource/bidding-package/biddingPackageManagement/components"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
@@ -166,7 +177,8 @@ const ProjectDetailPage = lazy(() => import("../modules/project/projects/compone
 const ProjectReport = lazy(() => import("../modules/project/reports/components/index"))
 const ProjectStatistic = lazy(() => import("../modules/project/statistic/components/index"))
 const UserGuide = lazy(() => import("../modules/user-guide/components"))
-const AllTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/allTimeSheetLog"))
+const PersonalTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/personalTimeSheetLog"))
+const EmployeeTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/employeeTimeSheetLog"))
 
 const Notifications = lazy(() => import("../modules/notification/components/index"))
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
@@ -202,7 +214,7 @@ class Routes extends Component {
                         component={Introduction}
                     />
                     <AuthRoute
-                        exact
+                        exact={false}
                         auth={auth}
                         path="/login"
                         component={Login}
@@ -521,6 +533,29 @@ class Routes extends Component {
                         pageName={"registration_api"}
                         layout={Layout}
                         component={ApiRegistration}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.api?.isLoading}
+                        key={"apis-registration-employee"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/apis-registration-employee",
+                                name: "registration_api_employee",
+                                icon: "fa fa-link",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/apis-registration-employee"}
+                        path={"/apis-registration-employee"}
+                        pageName={"registration_api_employee"}
+                        layout={Layout}
+                        component={ApiRegistrationEmployee}
                     />
                     <PrivateRoute
                         isLoading={this.props.department.isLoading}
@@ -1038,6 +1073,129 @@ class Routes extends Component {
                         component={TrainingPlan}
                     />
 
+                    {/* Quản lý gói thầu */}
+                    {/* <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-search-for-package"}
+                        path={"/hr-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchEmployeeForPackage}
+                    /> */}
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa-regular fa-file-magnifying-glass",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-search-for-package"}
+                        path={"/hr-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchKeyEmployee}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_major"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-major",
+                                name: "list_major",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-major"}
+                        path={"/hr-list-major"}
+                        pageName={"list_major"}
+                        layout={Layout}
+                        component={Major}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_career_position"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-career-position",
+                                name: "list_career_position",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-career-position"}
+                        path={"/hr-list-career-position"}
+                        pageName={"list_career_position"}
+                        layout={Layout}
+                        component={CareerPosition}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_bidding_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-bidding-package",
+                                name: "list_bidding_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-bidding-package"}
+                        path={"/hr-list-bidding-package"}
+                        pageName={"list_bidding_package"}
+                        layout={Layout}
+                        component={BiddingPackagesManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_certificate"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-certificate",
+                                name: "list_certificate",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-certificate"}
+                        path={"/hr-list-certificate"}
+                        pageName={"list_certificate"}
+                        layout={Layout}
+                        component={Certificate}
+                    />
+
                     <PrivateRoute
                         isLoading={false}
                         key={"training_plan_employee"}
@@ -1387,6 +1545,21 @@ class Routes extends Component {
                         pageName={"task"}
                         layout={Layout}
                         component={TaskComponent}
+                    />
+                    <PrivateRoute // Trang chi tiết quy trinhf  (không có trên menu)
+                        isLoading={this.props.tasks.isLoading}
+                        key={"task"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            { link: "/process-template", name: "process-template", icon: "" },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/process-template"}
+                        path={"/process-template"}
+                        pageName={"process_template"}
+                        layout={Layout}
+                        component={ModalViewTaskProcessById}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}
@@ -2916,12 +3089,32 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={false}
-                        key={"all-time-sheet-log"}
+                        key={"personal-time-sheet-log"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/personal-time-sheet-log",
+                                name: "personal_time_sheet_log",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/personal-time-sheet-log"}
+                        path={"/personal-time-sheet-log"}
+                        pageName={"personal_time_sheet_log"}
+                        layout={Layout}
+                        component={PersonalTimeSheetLog}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/time-sheet-log/all"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
                                 link: "/time-sheet-log/all",
-                                name: "all_time_sheet_log",
+                                name: "employee_time_sheet_log",
                                 icon: "fa fa-newspaper-o",
                             },
                         ]}
@@ -2929,9 +3122,9 @@ class Routes extends Component {
                         exact={true}
                         link={"/time-sheet-log/all"}
                         path={"/time-sheet-log/all"}
-                        pageName={"all_time_sheet_log"}
+                        pageName={"employee_time_sheet_log"}
                         layout={Layout}
-                        component={AllTimeSheetLog}
+                        component={EmployeeTimeSheetLog}
                     />
 
 

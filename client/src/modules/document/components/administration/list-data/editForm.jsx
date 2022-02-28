@@ -9,7 +9,7 @@ import { getStorage } from "../../../../../config";
 import EditVersion from "./editVersion";
 
 function areEqual(prevProps, nextProps) {
-    if (prevProps.documentId === nextProps.documentId && prevProps.documentVersions.length === nextProps.documentVersions.length ){
+    if (prevProps.documentId === nextProps.documentId && prevProps.documentVersions.length === nextProps.documentVersions.length) {
         return true
     } else {
         return false
@@ -21,13 +21,13 @@ function EditForm(props) {
         validateName(value, true)
     }
 
-    function handleCategory(value){
+    function handleCategory(value) {
         validateCategory(value[0], true);
     }
 
     const handleDomains = (value) => {
-        state.documentDomains=[].concat(value)
-         setState({
+        state.documentDomains = [].concat(value)
+        setState({
             ...state,
         });
     }
@@ -158,7 +158,7 @@ function EditForm(props) {
                 fileUpload: x.fileUpload
             }
         })
-        
+
         if (JSON.stringify(state.documentFile) !== JSON.stringify(file)) {
             setState({
                 ...state,
@@ -201,7 +201,7 @@ function EditForm(props) {
     }
 
 
-    const validateCategory=(value, willUpdateState)=>{
+    const validateCategory = (value, willUpdateState) => {
         let msg = undefined;
         if (!value) {
             msg = translate('document.doc_version.no_blank_category');
@@ -272,7 +272,7 @@ function EditForm(props) {
         }
     }
 
-    function save(){
+    function save() {
         const {
             documentId,
             documentName,
@@ -405,7 +405,7 @@ function EditForm(props) {
                 description += nameRole[0].text + " ";
             }
         }
-        if (!compareArray(documentUserCanView, props.documentUserCanView)) {
+        if (!compareArray(documentUserCanView, props.documentUserCanView.map(x => x._id))) {
             if (!title.includes("Chỉnh sửa phân quyền người xem")) {
                 title += "Chỉnh sửa phân quyền người xem. "
             }
@@ -493,7 +493,7 @@ function EditForm(props) {
 
     }
     useEffect(() => {
-        if (props.documentId!==state.documentId){
+        if (props.documentId !== state.documentId) {
             setState({
                 ...state,
                 documentId: props.documentId,
@@ -509,21 +509,21 @@ function EditForm(props) {
                 documentRelationshipDescription: props.documentRelationshipDescription,
                 relatedDocuments: props.documentRelationshipDocuments,
                 documentRoles: props.documentRoles,
-                documentUserCanView: props.documentUserCanView,
+                documentUserCanView: props.documentUserCanView.map(x => x._id),
                 documentArchivedRecordPlaceInfo: props.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: props.documentArchivedRecordPlaceOrganizationalUnit,
                 documentArchivedRecordPlaceManager: props.documentArchivedRecordPlaceManager,
                 errorName: undefined,
             })
         } else {
-            if (props.documentVersions.length!==state.documentVersions.length){
+            if (props.documentVersions.length !== state.documentVersions.length) {
                 setState({
                     ...state,
                     documentVersions: props.documentVersions
                 })
             }
         }
-    }, [props.documentId,props.documentVersions.length])
+    }, [props.documentId, props.documentVersions.length])
 
     function requestDownloadDocumentFile(id, fileName, numberVersion) {
         props.downloadDocumentFile(id, fileName, numberVersion);
@@ -568,22 +568,22 @@ function EditForm(props) {
     }
 
     const updateDocumentVersions = async (version) => {
-        let index= state.documentVersions.findIndex(value=>value._id=== version._id)
+        let index = state.documentVersions.findIndex(value => value._id === version._id)
         let documentVersionsCurrent = state.documentVersions[index]
-        
-            if (version.file){
-                documentVersionsCurrent.file=version.file
-            }
-        
-            if (version.scannedFileOfSignedDocument){
-                documentVersionsCurrent.scannedFileOfSignedDocument=version.scannedFileOfSignedDocument
-            }
-            documentVersionsCurrent.effectiveDate= version.effectiveDate
-            documentVersionsCurrent.expiredDate=version.expiredDate
-            documentVersionsCurrent.issuingDate=version.issuingDate
-            documentVersionsCurrent.versionName=version.versionName
-            state.documentVersions[index]=documentVersionsCurrent
-        
+
+        if (version.file) {
+            documentVersionsCurrent.file = version.file
+        }
+
+        if (version.scannedFileOfSignedDocument) {
+            documentVersionsCurrent.scannedFileOfSignedDocument = version.scannedFileOfSignedDocument
+        }
+        documentVersionsCurrent.effectiveDate = version.effectiveDate
+        documentVersionsCurrent.expiredDate = version.expiredDate
+        documentVersionsCurrent.issuingDate = version.issuingDate
+        documentVersionsCurrent.versionName = version.versionName
+        state.documentVersions[index] = documentVersionsCurrent
+
         setState({
             ...state,
         });
@@ -609,7 +609,7 @@ function EditForm(props) {
         documentVersionName: "",
         page: 1,
         limit: 5,
-        documentCategory:""
+        documentCategory: ""
     })
     const {
         documentId, documentName, documentDescription, documentCategory, documentDomains,
@@ -637,6 +637,8 @@ function EditForm(props) {
     });
     const archives = documents.administration.archives.list;
     let path = documentArchives ? findPath(archives, documentArchives) : "";
+
+    console.log('state')
     return (
         <React.Fragment>
             <DialogModal
@@ -881,11 +883,11 @@ function EditForm(props) {
                                         <div className="form-group">
                                             <label>{translate('document.store.information')}</label>
                                             <TreeSelect
-                                                    data={archives}
-                                                    value={documentArchives}
-                                                    handleChange={handleArchives}
-                                                    mode="hierarchical"
-                                                />
+                                                data={archives}
+                                                value={documentArchives}
+                                                handleChange={handleArchives}
+                                                mode="hierarchical"
+                                            />
                                             {path && path.length ? path.map((y, index) =>
                                                 <div key={index}>{y}</div>
                                             ) : null}
@@ -910,4 +912,4 @@ const mapDispatchToProps = {
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(React.memo(EditForm,areEqual)));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(React.memo(EditForm, areEqual)));
