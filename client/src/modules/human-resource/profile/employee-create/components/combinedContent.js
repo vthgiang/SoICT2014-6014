@@ -34,5 +34,3 @@ export * from './courseEditModal';
 
 export * from './careerPositionAddModal';
 export * from './careerPositionEditModal';
-export * from './workingProcessAddModal'
-export * from './workingProcessEditModal'

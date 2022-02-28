@@ -164,7 +164,7 @@ function BiddingPackageTable(props) {
                 </thead>
                 <tbody>
                     {   career &&
-                        career?.listPosition?.listPosition?.map(careerPosition =>
+                        career?.listPosition?.map(careerPosition =>
                             <tr key={`careerPositionList${careerPosition._id}`} style={careerPositionDuplicateName && careerPositionDuplicateName.includes(careerPosition.name.trim().toLowerCase().replaceAll(" ", "")) ? { color: "orangered", fontWeight: "bold" } : { color: "" }}>
                                 <td> {careerPosition.name} </td>
                                 <td> {careerPosition.code} </td>

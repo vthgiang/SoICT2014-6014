@@ -231,7 +231,7 @@ class SearchEmployeeForCareerPosition extends Component {
             parseInt((employeesManager.totalList / limit) + 1);
         let currentPage = parseInt((page / limit) + 1);
 
-        let listPosition = career?.listPosition?.listPosition;
+        let listPosition = career?.listPosition;
                 
         const listMajor = major.listMajor;
         const listCertificate = certificate.listCertificate;

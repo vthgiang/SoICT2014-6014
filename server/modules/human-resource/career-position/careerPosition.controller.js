@@ -91,22 +91,22 @@ exports.editCareerPosition = async (req, res) => {
 
 /** Xóa vị trí công việc */
 exports.deleteCareerPosition = async (req, res) => {
-    // try {
-        data = await careerPositionService.deleteCareerPosition(req.portal, req.body, req.params);
-        // await Log.info(req.user.email, 'DELETE_FIELD', req.portal);
+    try {
+        data = await careerPositionService.deleteCareerPosition(req.portal, req.body, req.params.id);
+        await Log.info(req.user.email, 'DELETE_FIELD', req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_field_success"],
             content: data
         });
-    // } catch (error) {
-    //     // await Log.error(req.user.email, 'DELETE_FIELD', req.portal);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ["delete_field_failure"],
-    //         content: {
-    //             error: error
-    //         }
-    //     });
-    // }
+    } catch (error) {
+        await Log.error(req.user.email, 'DELETE_FIELD', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["delete_field_failure"],
+            content: {
+                error: error
+            }
+        });
+    }
 }

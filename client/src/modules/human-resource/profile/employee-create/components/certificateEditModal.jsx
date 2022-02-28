@@ -247,6 +247,7 @@ function CertificateEditModal(props) {
     if (file) {
         files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
     }
+    console.log(file)
 
     return (
         <React.Fragment>

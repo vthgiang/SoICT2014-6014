@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, UploadFile, SelectBox } from '../../../../../common-components';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -33,7 +33,12 @@ function ModalEditCareerPosition(props) {
         company: "",
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
-        position: "",
+        careerPosition: "",
+        project: "",
+        professionalExperience: "",
+        urlFile: "",
+        fileUpload: "",
+        file: "",
     })
 
     useEffect(() => {
@@ -45,12 +50,17 @@ function ModalEditCareerPosition(props) {
                 company: props.company,
                 startDate: props.startDate,
                 endDate: props.endDate,
-                position: props.position,
-                referenceInformation: props.referenceInformation,
+                careerPosition: props.careerPosition,
+                project: props.project ? props.project : '',
+                professionalExperience: props.professionalExperience ? props.professionalExperience : '',
+                file: props.file,
+                urlFile: props.urlFile,
+                fileUpload: props.fileUpload,
                 errorOnPosition: undefined,
                 errorOnUnit: undefined,
                 errorOnStartDate: undefined,
-                errorOnEndDate: undefined
+                errorOnEndDate: undefined,
+                errorOnProject: undefined
             }
         })
         if (props._id) {
@@ -63,11 +73,14 @@ function ModalEditCareerPosition(props) {
         }
     }, [props.id])
 
-    const { translate } = props;
+       
+    const { translate, listPosition } = props;
 
     const { id } = props;
-
-    const { company, position, referenceInformation, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
+    
+    const { company, file, urlFile, fileUpload, careerPosition, project, professionalExperience, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition, errorOnProject } = state;
+    
+    console.log("aaaaaaaaâ", careerPosition)
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -91,10 +104,9 @@ function ModalEditCareerPosition(props) {
         return message === undefined;
     }
 
-    /** Bắt sự kiện thay đổi chức vụ */
-    const handlePositionChange = (e) => {
-        let { value } = e.target;
-        validatePosition(value, true)
+    /** Bắt sự kiện thay đổi vị trí công việc */
+    const handlePositionChange = (value) => {
+        validatePosition(value[0], true)
     }
 
     const validatePosition = (value, willUpdateState = true) => {
@@ -105,13 +117,35 @@ function ModalEditCareerPosition(props) {
             setState(state => {
                 return {
                     ...state,
+                    careerPosition: value,
                     errorOnPosition: message,
-                    position: value,
                 }
             });
         }
         return message === undefined;
     }
+
+    const handleProjectChange = (e) => {
+        const { value } = e.target;
+        validateProject(value, true)
+    }
+
+    const validateProject = (value, willUpdateState = true) => {
+        const { translate } = props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
+        if (willUpdateState) {
+            setState(state => {
+                return {
+                    ...state,
+                    project: value,
+                    errorOnProject: message,
+                }
+            });
+        }
+        return message === undefined;
+    }
+
 
 
     /**
@@ -143,6 +177,30 @@ function ModalEditCareerPosition(props) {
         })
     }
 
+    
+    /** Bắt sự kiện thay đổi file đính kèm */
+    const handleChangeFile = (value) => {
+        if (value.length !== 0) {
+            setState(state => {
+                return {
+                    ...state,
+                    file: value[0].fileName,
+                    urlFile: value[0].urlFile,
+                    fileUpload: value[0].fileUpload
+                }
+            })
+        } else {
+            setState(state => {
+                return {
+                    ...state,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }
+            })
+        }
+    }
+
     /**
      *  Function lưu thay đổi "đến tháng/năm" vào state
      * @param {*} value : Đến tháng
@@ -172,19 +230,19 @@ function ModalEditCareerPosition(props) {
         })
     }
 
-    const handleReferenceInformation = (e) => {
+    const handleProfessionalExperience = (e) => {
         const { value } = e.target;
 
         setState({
             ...state,
-            referenceInformation: value,
+            professionalExperience: value,
         })
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
-        const { company, position, startDate, endDate } = state;
-        let result = validateUnit(company, false) && validatePosition(position, false);
+        const { company, careerPosition, project, startDate, endDate } = state;
+        let result = validateUnit(company, false) && validatePosition(careerPosition, false) && validateProject(project, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
@@ -206,16 +264,33 @@ function ModalEditCareerPosition(props) {
         }
     }
 
+    let files;
+    console.log("file", props.file)
+    if (file) {
+        files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
+    }
+
     return (
         <React.Fragment>
             <DialogModal
-                size='50' modalID={`modal-edit-work-process-${id}`} isLoading={false}
-                formID={`modal-edit-work-process-${id}`}
-                title={translate('human_resource.profile.edit_working_process')}
+                size='50' modalID={`modal-edit-career-position-${id}`} isLoading={false}
+                formID={`form-edit-career-position-${id}`}
+                title={"Chỉnh sửa thông tin kinh nghiệm chuyên ngành"}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{
+                    setState(state => ({
+                        ...state,
+                        careerPosition: "",
+                        file: "",
+                        urlFile: "",
+                        fileUpload: ""
+                    }))
+                }}
                 disableSubmit={!isFormValidated()}
             >
-                <form className="form-group" id={`modal-edit-work-process-${id}`}>
+                <form className="form-group" id={`form-edit-career-position-${id}`}>
                     {/* Đơn vị */}
                     <div className={`form-group ${errorOnUnit && "has-error"}`}>
                         <label>{translate('human_resource.profile.unit')}<span className="text-red">*</span></label>
@@ -248,18 +323,41 @@ function ModalEditCareerPosition(props) {
                             <ErrorLabel content={errorOnEndDate} />
                         </div>
                     </div>
-                    {/* Chức danh */}
+
+                    {/* Vị trí công việc */}
                     <div className={`form-group ${errorOnPosition && "has-error"}`}>
-                        <label>{translate('table.position')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
+                        <label>Vị trí công việc<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`career-position-${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={listPosition?.map(x => {
+                                return { text: x.name, value: x._id }
+                            })}
+                            options={{ placeholder: "Chọn vị trí công việc" }}
+                            value={state.careerPosition}
+                            onChange={handlePositionChange}
+                        />
                         <ErrorLabel content={errorOnPosition} />
                     </div>
 
-
-                    {/* Thông tin tham chiếu */}
+                    {/* Dự án */}
                     <div className="form-group">
-                        <label>{translate('human_resource.profile.reference_information')}</label>
-                        <textarea style={{ minHeight: '100px' }} type="text" value={referenceInformation} className="form-control" onChange={handleReferenceInformation} />
+                        <label>{translate('human_resource.profile.project')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name="position" value={project} onChange={handleProjectChange} autoComplete="off" />
+                        <ErrorLabel content={errorOnProject} />
+                    </div>
+
+                    {/* Kinh nghiệm chuyên môn và quản lý có liên quan */}
+                    <div className="form-group">
+                        <label>Kinh nghiệm chuyên môn và quản lý có liên quan</label>
+                        <textarea style={{ minHeight: '100px' }} type="text" name="professionalExperience" value={professionalExperience} className="form-control" onChange={handleProfessionalExperience} />
+                    </div>
+
+                    {/* File đính kèm */}
+                    <div className="form-group">
+                        <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
+                        <UploadFile files={files} onChange={handleChangeFile} />
                     </div>
                 </form>
             </DialogModal>

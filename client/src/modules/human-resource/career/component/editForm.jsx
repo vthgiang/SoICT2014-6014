@@ -31,14 +31,14 @@ class EditForm extends Component {
         });
     }
 
-    handleOtherName = (e) => {
-        const { value } = e.target;
-        let msg;
-        this.setState({
-            otherNames: value,
-            codeError: msg,
-        });
-    }
+    // handleOtherName = (e) => {
+    //     const { value } = e.target;
+    //     let msg;
+    //     this.setState({
+    //         otherNames: value,
+    //         codeError: msg,
+    //     });
+    // }
 
     handleDescription = (e) => {
         const { value } = e.target;
@@ -136,11 +136,6 @@ class EditForm extends Component {
                         <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                             <label>Nhãn dán<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} value={code} />
-                            <ErrorLabel content={codeError} />
-                        </div>
-                        <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
-                            <label>Tên khác</label>
-                            <input type="text" className="form-control" onChange={this.handleOtherName} value={otherNames} />
                             <ErrorLabel content={codeError} />
                         </div>
                         <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>

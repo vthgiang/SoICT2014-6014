@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
 
 import {
-    GeneralTab, KeyPeopleRequireTab, TaxTab
+    GeneralTab, KeyPeopleRequireTab, KeyPeople
 } from '../../biddingPackageInfo/components/combinedContent';
 
 import { BiddingPackageManagerActions } from '../redux/actions';
@@ -31,7 +31,7 @@ const BiddingPackageDetailForm = (props) => {
                     ...state,
                     _id: props._id,
                     dataStatus: DATA_STATUS.QUERYING,
-                    biddingPackageDetail: [],
+                    biddingPackageDetail: null,
                 })
             };
             if (state.dataStatus === DATA_STATUS.QUERYING && !props.biddingPackagesManager.isLoading) {
@@ -52,8 +52,7 @@ const BiddingPackageDetailForm = (props) => {
     const { biddingPackagesManager, translate, career, major, certificate } = props;
 
     let { _id, biddingPackageDetail } = state;
-
-    console.log("detail", biddingPackagesManager.isLoading)
+    console.log("biddingPackageDetail", biddingPackageDetail)
 
     return (
         <React.Fragment>
@@ -65,36 +64,40 @@ const BiddingPackageDetailForm = (props) => {
                 hasNote={false}
             >
                 <form className="form-group" id={`form-detail-biddingPackage${_id}`} style={{ marginTop: "-15px" }}>
-                    {biddingPackageDetail && biddingPackageDetail.length !== 0 &&
-                        biddingPackageDetail.map((x, index) => (
-                            <div className="nav-tabs-custom row" key={index}>
+                    {biddingPackageDetail && (
+                            <div className="nav-tabs-custom row">
                                 <ul className="nav nav-tabs">
                                     <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#view_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                                     <li><a title="Yêu cầu nhân sự chủ chốt" data-toggle="tab" href={`#view_contact${_id}`}>Yêu cầu nhân sự chủ chốt</a></li>
-                                    <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#view_experience${_id}`}>Danh sách nhân sự chủ chốt</a></li>
+                                    <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#view_key_people_bidding_package${_id}`}>Danh sách nhân sự chủ chốt</a></li>
                                 </ul>
                                 <div className="tab-content">
                                     {/* Thông tin chung */}
                                     <GeneralTab
                                         id={`view_general${_id}`}
-                                        biddingPackage={x}
+                                        biddingPackage={biddingPackageDetail}
                                     />
-                                    {/* Thông tin liên hệ */}
+                                    {/* Yêu cầu nhân sự chủ chốt */}
                                     <KeyPeopleRequireTab
                                         id={`view_contact${_id}`}
-                                        biddingPackage={x}
-                                        listCareer={career?.listPosition?.listPosition}
+                                        biddingPackage={biddingPackageDetail}
+                                        listCareer={career?.listPosition}
                                         listMajor={major?.listMajor}
                                         listCertificate={certificate?.listCertificate}
                                     />
-                                    {/* Thuế thu nhập cá nhân */}
-                                    {/* <TaxTab
-                                        id={`view_account${_id}`}
-                                        biddingPackage={x}
-                                    /> */}
+                                    {/* Danh sách nhân sự chủ chốt */}
+                                    <KeyPeople
+                                        id={`view_key_people_bidding_package${_id}`}
+                                        listCareer={career?.listPosition}
+                                        listMajor={major?.listMajor}
+                                        listCertificate={certificate?.listCertificate}
+                                        keyPersonnelRequires={biddingPackageDetail.keyPersonnelRequires}
+                                        keyPeople={biddingPackageDetail.keyPeople}
+                                        biddingPackage={biddingPackageDetail}
+                                    />
                                 </div>
                             </div>
-                        ))}
+                        )}
                 </form>
             </DialogModal>
         </React.Fragment>

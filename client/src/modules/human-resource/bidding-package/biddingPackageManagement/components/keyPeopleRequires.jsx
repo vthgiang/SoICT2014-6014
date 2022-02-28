@@ -2,31 +2,19 @@ import { random } from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, SelectBox } from '../../../../../common-components';
+import { DatePicker, SelectBox, SelectMulti } from '../../../../../common-components';
 
 function KeyPeopleRequire(props) {
     const [state, setState] = useState({
         keyPersonnelRequires: []
     });
 
-    const [list, setList] = useState([{
-        careerPosition: '',
-        majors: [],
-        count: 0,
-        numberYearsOfExperience: 0,
-        experienceWorkInCarreer: 0,
-        numblePackageWorkInCarreer: 0,
-        certificateRequirements: {
-            certificates: [],
-            count: 0,
-            certificatesEndDate: ''
-        }
-    }])
+    const [list, setList] = useState(props.biddingPackage.keyPersonnelRequires)
     
-    const { translate, listMajor, listCareer, listCertificate } = props;
-    const { id,  biddingPackage, keyPersonnelRequires } = state;
+    const { translate, listMajor, listCareer, listCertificate, biddingPackage } = props;
+    const { id } = state;
 
-    // console.log("keyPersonnelRequires", keyPersonnelRequires)
+    console.log("keyPersonnelRequires", list )
         
     useEffect(() => {
         setState(state => {
@@ -38,6 +26,8 @@ function KeyPeopleRequire(props) {
     }, [list])
 
     useEffect(() => {
+
+        setList(props.biddingPackage.keyPersonnelRequires)
         
         if (props.biddingPackage) {
             setState(state => {
@@ -220,13 +210,13 @@ function KeyPeopleRequire(props) {
     }
 
     /** Function bắt sự kiện thay đổi điện thoại đi động 1 */
-    const handleChangeProfessionalSkill = (value, listIndex) => {
-
+    const handleChangeProfessionalSkill = (e, listIndex) => {
+        let { value } = e.target;
         let newList = list.map((item, index) => {
             if (index === listIndex) {
                 return {
                     ...item,
-                    professionalSkill: Number(value[0])
+                    professionalSkill: Number(value)
                 }
             }
             return item;
@@ -310,6 +300,8 @@ function KeyPeopleRequire(props) {
         { value: 0, text: "Không có" },
     ];
 
+    let sameCareerPosition = listCareer? listCareer.map(item => {return { value: item._id, text: item.name } }) : []
+
     return (
         <div id={id} className="tab-pane">
             {
@@ -334,23 +326,12 @@ function KeyPeopleRequire(props) {
                                         }
                                     </select>
                                 </div>
-                                
-                                {/* Vị trí công việc tương tự  */}
+
                                 <div className="form-group col-md-6">
-                                    <label className="form-control-static">Vị trí công việc tương đương</label>
-                                    <SelectBox
-                                        id={`same-careerPosition-${id}-${listIndex}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={listCareer?.map(x => {
-                                            return { text: x.name, value: x._id }
-                                        })}
-                                        options={{ placeholder: "Chọn vị trí công việc tương đương" }}
-                                        onChange={(value) => handleSameCareer(value, listIndex)}
-                                        value={item?.sameCareerPosition}
-                                        multiple={true}
-                                    />
+                                    <label className="form-control-static">Số lượng</label>
+                                    <input type="number" className="form-control" name={`count-${listIndex}`} onChange={(value) => handleCount(value, listIndex)} value={item.count} placeholder="Số lượng nhân viên" autoComplete="off" />
                                 </div>
+        
                             </div>
 
                             
@@ -360,7 +341,6 @@ function KeyPeopleRequire(props) {
                                     <label >Chuyên ngành</label>
                                     <SelectBox
                                         id={`major-${id}-${listIndex}`}
-                                        key={`major-${id}-${listIndex}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listMajor?.map(x => {
@@ -374,41 +354,65 @@ function KeyPeopleRequire(props) {
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label >Trình độ chuyên môn</label>
-                                    <SelectBox
+                                    <select key={`professionalSkill-${id}-${listIndex}`} name={`professionalSkill-${listIndex}`} style={{ border: '1px solid #aaa', borderRadius: "4px" }} className="form-control select2" value={Number(item?.professionalSkill)} onChange={value => handleChangeProfessionalSkill(value, listIndex)}>
+                                        <option key={`id-professionalSkill-${listIndex}`} value="0">Chọn vị trí công việc</option>
+                                        {
+                                            professionalSkillArr.map(x => {
+                                                return (<option key={x.value} value={x.value}>{x.text}</option>)
+                                            })
+                                        }
+                                    </select>
+                                    {/* <SelectBox
                                         id={`professionalSkill-${id}-${listIndex}`}
-                                        key={`professionalSkill-${id}-${listIndex}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={professionalSkillArr}
                                         options={{ placeholder: "Chọn trình độ chuyên môn" }}
                                         onChange={(value) => handleChangeProfessionalSkill(value, listIndex)}
-                                        value={item?.majors}
-                                        multiple={true}
-                                    />
+                                        value={Number(item?.professionalSkill)}
+                                    /> */}
                                 </div>
                             </div>
                             <div className="row" style={{ marginTop: '15px' }}>
                                 <div className="form-group col-md-6">
-                                    <label >Số lượng</label>
-                                    <input type="number" className="form-control" name={`count-${listIndex}`} onChange={(value) => handleCount(value, listIndex)} value={item.count} placeholder="Số lượng nhân viên" autoComplete="off" />
+                                    <label >Thời gian làm việc trong các dự án, gói thầu</label>
+                                    <input type="number" className="form-control" name={`experiment-time-${listIndex}`} onChange={(value) => handleExperimentWorkInCareer(value, listIndex)} value={item.experienceWorkInCarreer} placeholder="Thời gian làm việc ở vị trí tương đương" autoComplete="off" />
                                 </div>
-                                
+                                <div className="form-group col-md-6">
+                                    <label >Số dự án, gói thầu đã tham gia</label>
+                                    <input type="number" className="form-control" name={`numble-package-${listIndex}`} onChange={(value) => handleNumberBiddingPackageInCareer(value, listIndex)} value={item.numblePackageWorkInCarreer} placeholder="Số dự án ở vị trí tương đương" autoComplete="off" />
+                                </div>
+                            </div>
+                            <div className="row" style={{ marginTop: '15px' }}>
+                                {/* Vị trí công việc tương tự  */}
+                                <div className="form-group col-md-6">
+                                    <label>Vị trí công việc trong các dự án, gói thầu</label>
+                                    <SelectMulti id={`same-careerPosition-${id}-${listIndex}`} multiple="multiple"
+                                        options={{ nonSelectedText: 'Chọn vị trí công việc tương đương', allSelectedText: 'Chọn tất cả' }}
+                                        items={sameCareerPosition}
+                                        value={item?.sameCareerPosition ? item.sameCareerPosition : []}
+                                        onChange={value => handleSameCareer(value, listIndex)}>
+                                    </SelectMulti>
+                                    {/* <SelectBox
+                                        id={`same-careerPosition-${id}-${listIndex}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listCareer?.map(x => {
+                                            return { text: x.name, value: x._id }
+                                        })}
+                                        options={{ placeholder: "Chọn vị trí công việc tương đương" }}
+                                        onChange={(value) => handleSameCareer(value, listIndex)}
+                                        value={item?.sameCareerPosition}
+                                        multiple={true}
+                                    /> */}
+                                </div>
                                 <div className="form-group col-md-6">
                                     <label >Năm kinh nghiệm</label>
                                     <input type="number" className="form-control" step={0.5} name={`year-experiment-${listIndex}`} onChange={(value) => handleYearOfExperiment(value, listIndex)} value={item.numberYearsOfExperience} placeholder="Số năm kinh nghiệm" autoComplete="off" />
                                 </div>
                             </div>
 
-                            <div className="row" style={{ marginTop: '15px' }}>
-                                <div className="form-group col-md-6">
-                                    <label >Thời gian làm việc ở vị trí tương đương (Tháng)</label>
-                                    <input type="number" className="form-control" name={`experiment-time-${listIndex}`} onChange={(value) => handleExperimentWorkInCareer(value, listIndex)} value={item.experienceWorkInCarreer} placeholder="Thời gian làm việc ở vị trí tương đương" autoComplete="off" />
-                                </div>
-                                <div className="form-group col-md-6">
-                                    <label >Số dự án ở vị trí tương đương</label>
-                                    <input type="number" className="form-control" name={`numble-package-${listIndex}`} onChange={(value) => handleNumberBiddingPackageInCareer(value, listIndex)} value={item.numblePackageWorkInCarreer} placeholder="Số dự án ở vị trí tương đương" autoComplete="off" />
-                                </div>
-                            </div>
+                            
 
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">
@@ -453,7 +457,7 @@ function KeyPeopleRequire(props) {
             }
             
             <button className='btn btn-success' onClick={() => {
-                const newList = [...list, {
+                let newList = [...list, {
                     careerPosition: '',
                     sameCareerPosition: [],
                     majors: [],

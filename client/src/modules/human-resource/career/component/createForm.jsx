@@ -40,14 +40,14 @@ class CreateForm extends Component {
         });
     }
 
-    handleOtherName = (e) => {
-        const { value } = e.target;
-        let msg;
-        this.setState({
-            otherNames: value,
-            codeError: msg,
-        });
-    };
+    // handleOtherName = (e) => {
+    //     const { value } = e.target;
+    //     let msg;
+    //     this.setState({
+    //         otherNames: value,
+    //         codeError: msg,
+    //     });
+    // };
 
     isValidateForm = () => {
         let { name } = this.state;
@@ -92,13 +92,6 @@ class CreateForm extends Component {
                             <input type="text" className="form-control" onChange={this.handleCode} />
                             <ErrorLabel content={nameError} />
                         </div>
-
-                        <div className={`form-group ${!codeError ? "" : "has-error"}`}>
-                            <label>Tên gọi khác<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleOtherName} />
-                            <ErrorLabel content={nameError} />
-                        </div>
-
 
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>Mô tả<span className="text-red">*</span></label>

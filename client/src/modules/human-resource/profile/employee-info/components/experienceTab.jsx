@@ -163,7 +163,7 @@ function ExperiencTab(props) {
                                 careerPositions.map((x, index) => {
                                     let position = ''
                                     if (x.careerPosition) {
-                                        position = listPosition.listPosition?.find(y => y._id.toString() === x.careerPosition.toString())
+                                        position = listPosition?.find(y => y._id.toString() === x.careerPosition.toString())
                                         if (position) {
                                             position = position.name
                                         } else {

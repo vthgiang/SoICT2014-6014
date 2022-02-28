@@ -354,7 +354,7 @@ const EmployeeCreateForm = (props) => {
 
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
-        let { employee, degrees, certificates, contracts, files, avatar,
+        let { employee, degrees, certificates, contracts, files, avatar, careerPositions,
             disciplines, commendations, annualLeaves, courses, houseHold } = state;
 
         await setState(state => ({
@@ -369,6 +369,7 @@ const EmployeeCreateForm = (props) => {
                 commendations,
                 annualLeaves,
                 courses,
+                careerPositions,
                 // career,
                 // major,
                 houseHold
@@ -393,8 +394,7 @@ const EmployeeCreateForm = (props) => {
             commendations: [...state.commendations],
             annualLeaves: [...state.annualLeaves],
             courses: [...state.courses],
-            // career,
-            // major,
+            careerPositions:  [...state.careerPositions],
             houseHold: { ...state.houseHold },
         });
         degrees.forEach(x => {
@@ -402,6 +402,9 @@ const EmployeeCreateForm = (props) => {
         })
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
+        })
+        careerPositions.forEach(x => {
+            formData.append("fileCareerPosition", x.fileUpload);
         })
         // major.forEach(x => {
         //     formData.append("fileMajor", x.fileUpload);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectBox } from '../../../../../common-components';
+import { SelectBox, SelectMulti } from '../../../../../common-components';
 
 function KeyPeopleRequireTab(props) {
     const [state, setState] = useState({
@@ -22,14 +22,36 @@ function KeyPeopleRequireTab(props) {
 
     const { id, biddingPackage, keyPersonnelRequires } = state;
 
+    let professionalSkillArr = [
+        { value: null, text: "Chọn trình độ" },
+        { value: 1, text: "Trình độ phổ thông" },
+        { value: 2, text: "Trung cấp" },
+        { value: 3, text: "Cao đẳng" },
+        { value: 4, text: "Đại học / Cử nhân" },
+        { value: 5, text: "Kỹ sư" },
+        { value: 6, text: "Thạc sĩ" },
+        { value: 7, text: "Tiến sĩ" },
+        { value: 8, text: "Giáo sư" },
+        { value: 0, text: "Không có" },
+    ];
+
+    let sameCareerPosition = listCareer? listCareer.map(item => {return { value: item._id, text: item.name } }) : []
+
     return (
         <div id={id} className="tab-pane">
             {
                 keyPersonnelRequires?.map((item, listIndex) => {
-                    // let certificate = item?.
-                    console.log("object, item", item);
+                    let majors = '';
+
+                    if (item.majors) {
+                        item.majors.map((y, index) => {
+                            majors = majors + `${listMajor.find(x => x._id == y).name}`
+                            if (index != item.majors.length -1 ) majors = majors + ', '
+                        })
+                    }
+
                     return (
-                        <div className="box-body" style={{ border: '1px solid #ccc', marginBottom: '10px' }}>
+                        <div key={`require-${listIndex}`} className="box-body" style={{ border: '1px solid #ccc', marginBottom: '10px' }}>
                             <div className="row" style={{ marginTop: '15px' }}>
                                 <div className="form-group col-md-6">
                                     <strong>Vị trí công việc&emsp; </strong>
@@ -37,18 +59,44 @@ function KeyPeopleRequireTab(props) {
                                 </div>
                                 <div className="form-group col-md-6">
                                     <strong>Số lượng&emsp; </strong>
-                                    {listMajor.filter(x => x._id == item.majors).map(y => y.name)}
+                                    {item.count}
                                 </div>
                             </div>
 
                             <div className="row" style={{ marginTop: '15px' }}>
                                 <div className="form-group col-md-6">
                                     <strong>Chuyên ngành&emsp; </strong>
-                                    {listMajor.filter(x => x._id == item.majors).map(y => y.name)}
+                                    {majors}
                                 </div>
                                 <div className="form-group col-md-6">
                                     <strong>Trình độ chuyên môn&emsp; </strong>
-                                    {listCareer.filter(x => x._id == item.careerPosition).map(y => y.name)}
+                                    {professionalSkillArr.find(x => x.value == item.professionalSkill).text}
+                                </div>
+                            </div>
+
+                            <div className="row" style={{ marginTop: '15px' }}>
+                                <div className="form-group col-md-6">
+                                    <strong >Thời gian làm việc trong các dự án, gói thầu&emsp;</strong>
+                                    {item.experienceWorkInCarreer}
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <strong >Số dự án, gói thầu đã tham gia&emsp;</strong>
+                                    {item.numblePackageWorkInCarreer}
+                                </div>
+                            </div>
+                            <div className="row" style={{ marginTop: '15px' }}>
+                                {/* Vị trí công việc tương tự  */}
+                                <div className="form-group col-md-6">
+                                    <label>Vị trí công việc trong các dự án, gói thầu</label>
+                                    <SelectMulti id={`same-careerPosition-${id}-${listIndex}`} multiple="multiple"
+                                        options={{ nonSelectedText: 'Chọn vị trí công việc tương đương', allSelectedText: 'Chọn tất cả' }}
+                                        items={sameCareerPosition}
+                                        value={item?.sameCareerPosition ? item.sameCareerPosition : []}>
+                                    </SelectMulti>
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <strong >Năm kinh nghiệm&emsp;</strong>
+                                    {item.numberYearsOfExperience}
                                 </div>
                             </div>
 

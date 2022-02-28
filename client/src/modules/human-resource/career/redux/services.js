@@ -74,7 +74,7 @@ function deleteCareerField(data) {
  */
 function deleteCareerPosition(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-positions`,
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-positions/${data}`,
         method: 'DELETE',
         data: data
     }, true, true, 'human_resource.career-position');

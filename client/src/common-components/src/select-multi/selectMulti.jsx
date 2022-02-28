@@ -97,7 +97,7 @@ class SelectMulti extends Component {
         return (
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>
-                    <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={value} onChange={() => { }}>
+                     <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={value} onChange={() => { }}>
                         {items.map(item => {
                             return <option key={item.value} value={item.value} disabled={item.disabled ? true : false}>{item.text}</option>
                         })}

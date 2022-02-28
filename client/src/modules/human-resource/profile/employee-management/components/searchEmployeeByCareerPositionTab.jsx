@@ -21,7 +21,7 @@ function SearchEmployeeByCareerPositionTab(props) {
     });
 
     const { translate, employeesManager, keySearch, listPeople, career, major, certificate } = props;
-    const listPosition = career?.listPosition?.listPosition;
+    const listPosition = career?.listPosition;
                 
     const listMajor = major?.listMajor;
     const listCertificate = certificate?.listCertificate;

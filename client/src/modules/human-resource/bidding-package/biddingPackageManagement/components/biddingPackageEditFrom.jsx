@@ -68,7 +68,7 @@ const BiddingPackageEditFrom = (props) => {
                 setState({
                     ...state,
                     dataStatus: DATA_STATUS.AVAILABLE,
-                    biddingPackage: props.biddingPackagesManager?.biddingPackageDetail?.[0],
+                    biddingPackage: props.biddingPackagesManager?.biddingPackageDetail,
                 });
             };
         }
@@ -211,20 +211,20 @@ const BiddingPackageEditFrom = (props) => {
                                     biddingPackage={biddingPackage}
                                 />
                             }
-                            {/* Tab thông tin liên hệ */}
+                            {/* Điều kiện nhân sự chủ chốt */}
                             <KeyPeopleRequire
                                 id={`edit_contact_bidding_package${_id}`}
                                 handleChange={handleChange}
-                                listCareer={career?.listPosition?.listPosition}
+                                listCareer={career?.listPosition}
                                 listMajor={major?.listMajor}
                                 listCertificate={certificate?.listCertificate}
                                 biddingPackage={biddingPackage}
                             />
-                            {/* Tab học vấn - kinh nghiệm */}
+                            {/* Danh sách nhân sự chủ chốt */}
                             <KeyPeople
                                 id={`edit_key_people_bidding_package${_id}`}
                                     handleChange={handleChange}
-                                    listCareer={career?.listPosition?.listPosition}
+                                    listCareer={career?.listPosition}
                                     listMajor={major?.listMajor}
                                     listCertificate={certificate?.listCertificate}
                                     keyPersonnelRequires={state.biddingPackage.keyPersonnelRequires}

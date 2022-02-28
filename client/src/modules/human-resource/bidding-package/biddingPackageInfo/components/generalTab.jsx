@@ -53,6 +53,23 @@ function GeneralTab(props) {
 
     const { id, name, code, startDate, endDate, type, status, description } = state;
 
+    const typeArr = [
+        { value: 1, text: 'Gói thầu tư vấn' },
+        { value: 2, text: 'Gói thầu phi tư vấn' },
+        { value: 3, text: 'Gói thầu hàng hóa' },
+        { value: 4, text: 'Gói thầu xây lắp' },
+        { value: 5, text: 'Gói thầu hỗn hợp' },
+    ]
+    const statusArr = [
+        { value: '0', text: 'Đã đóng thầu' },
+        { value: '1', text: 'Hoạt động' },
+        { value: '2', text: 'Chờ kết quả dự thầu' },
+        { value: '3', text: 'Đang thực hiện' },
+        { value: '4', text: 'Hoàn thành' },
+    ]
+
+    
+
     return (
         <div id={id} className="tab-pane active">
             <div className=" row box-body">
@@ -85,12 +102,12 @@ function GeneralTab(props) {
                         {/* Loại gói thầu */}
                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                             <strong>Loại gói thầu&emsp; </strong>
-                            {type}
+                            {typeArr.find(x => x.value === type)?.text}
                         </div>
                         {/* Trạng thái */}
                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                             <strong>Trạng thái&emsp; </strong>
-                            {status}
+                            {statusArr.find(x => x.value == status)?.text}
                         </div>
                     </div>
                     <div className="row">

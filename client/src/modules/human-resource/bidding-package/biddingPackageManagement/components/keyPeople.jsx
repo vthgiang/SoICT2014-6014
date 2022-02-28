@@ -23,7 +23,7 @@ function KeyPeople(props) {
     }])
     
     const { translate, listMajor, listCareer, listCertificate, keyPersonnelRequires } = props;
-    console.log("keyPersonnelRequires", keyPersonnelRequires)
+    // console.log("keyPersonnelRequires", keyPersonnelRequires)
     const { id,  biddingPackage, keyPeople } = state;
 
     useEffect(() => {
@@ -286,7 +286,7 @@ function KeyPeople(props) {
         window.$(`#modal-detail-employee${value._id}`).modal('show');
     }
 
-    console.log("listCareer", listCareer)
+    // console.log("listCareer", listCareer)
     // console.log("biddingPackage", props.biddingPackage)
 
     return (

@@ -175,14 +175,9 @@ const SearchEmployeeForPackage = (props) => {
         props.searchForPackage({ status: state.status, package: state.package });
     }
 
-    const handleFindEmployeeCareer = async (item, id) => {
-
-    }
-
     /** Function bắt sự kiện tìm kiếm */
     const handleSunmit = async () => {
         let keyPeople = state.keyPeople.map(item => ({ "careerPosition": item?.careerPosition, "employees": item?.employees.map(x => x._id)}))
-        // console.log('asaaaaaaaaaaaas', keyPeople ,state.keyPeople.map(item => ({ "careerPosition": item?.careerPosition, "employees": item?.employees})))
         props.updateBiddingPackage(state.package, { addEmployeeForPackage: 1, keyPeople: keyPeople });
 
     }
@@ -223,7 +218,7 @@ const SearchEmployeeForPackage = (props) => {
     parseInt((employeesManager.totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
     
-    let listPosition = career?.listPosition?.listPosition;
+    let listPosition = career?.listPosition;
     
     const listMajor = major.listMajor;
     const listCertificate = certificate.listCertificate;
@@ -241,39 +236,33 @@ const SearchEmployeeForPackage = (props) => {
         { value: 0, text: "Không có" },
     ];
 
-    // Filter danh sách
-    let filterPosition = listPosition;
-
-    let posCodeArr = [];
-    let dataTreePosition = [];
-
-    // console.log('listEmployees', listEmployees);
-    // console.log('listEmployeesPackage', employeesManager.listEmployeesPackage);
-    // console.log('careerPosition', career);
-    // console.log('major', major);
-    // console.log('certificate', certificate);
     let listEmployeesPackage = employeesManager.listEmployeesPackage;
 
-    // console.log("item222222", props)
-    // console.log("item222222", state)
+    console.log("item222222", props)
+    console.log("item222222", state)
 
 
     
     const convertDataExport = () => {
         let datas = [];
-        let curriculumVitae = [];
         let experiencesSheet = [];
+        let professionalExperienceSheet = [];
+        let contactName = props.auth?.user?.name;
+        let contactNumber = props.auth?.user?.phoneNumber;
+        let contactEmail = props.auth?.user?.email;
 
         let { keyPeople } = state;
             console.log('state', state);
         if (keyPeople) {
-            let stt = 0;
+            let stt1 = 0;
+            let stt2 = 0;
+            let stt3 = 0;
             keyPeople.map((o, index) => {
                 return o.employees?.map(item => {
-                    let position = career?.listPosition?.listPosition?.filter(x => x._id == o.careerPosition)[0].name
-                    stt = stt + 1;
+                    let position = career?.listPosition?.filter(x => x._id == o.careerPosition)[0].name
+                    stt1 = stt1 + 1;
                     datas.push( {
-                        STT: stt, 
+                        STT: stt1, 
                         name: item.fullName,
                         position: position,
                     })
@@ -282,7 +271,7 @@ const SearchEmployeeForPackage = (props) => {
 
             keyPeople.map((o, index) => {
                 return o.employees?.map(item => {
-                    let position = career?.listPosition?.listPosition?.filter(x => x._id == o.careerPosition)[0].name;
+                    let position = career?.listPosition?.filter(x => x._id == o.careerPosition)[0].name;
                     let roles = ''
                     for  (let i of item.roles) {
                         if (roles != '') {
@@ -302,17 +291,49 @@ const SearchEmployeeForPackage = (props) => {
                         }
                     }
 
+                    let currentDate = new Date();
+                    let timeWorking = 0;
+                    timeWorking = Math.round((Math.abs(new Date(item.startingDate) - currentDate)/(1000 * 60 * 60 * 24 * 365)) * 2 ) / 2
+
                     professionalSkill = professionalSkillArr.find(item => item.value == professionalSkill).text ? professionalSkillArr.find(item => item.value == professionalSkill).text : "Không có"
-                    stt = stt + 1;
+                    stt2 = stt2 + 1;
                     experiencesSheet.push( {
-                        STT: stt, 
+                        STT: stt2, 
                         name: item.fullName,
                         identityCardNumber: item.identityCardNumber,
                         position: position,
                         roles: roles,
                         birthdate: formatDate(item.birthdate),
-                        professionalSkill: professionalSkill
+                        professionalSkill: professionalSkill,
+                        type: "Nhân sự công ty",
+                        workingYear: timeWorking,
+                        status: item.status == 'active' ? "Còn hiệu lực" : "Hết hiệu lực",
+                        directorName: "Vũ Thị Hương Giang",
+                        directorAdress: "30 Tạ Quang Bửu, Bách Khoa, Hai Bà Trưng, Hà Nội, Việt Nam",
+                        directorRole: "Giám đốc",
+                        contactName: contactName,
+                        contactNumber: contactNumber,
+                        contactEmail: contactEmail,
+                        contactFax: ''
                     })
+                })
+            })
+            keyPeople.map((o, index) => {
+                return o.employees?.map(item => {
+                    return item.careerPositions?.map(x => {
+                        let professionalExperience  = 'Công ty ' + `${x.company ? x.company : 'vnist'}` + '; Dự án ' + `${x.project ? x.project : ''}` + '; Vị trí công việc ' + `${x.careerPosition.name}` + '; Kinh nghiệm ' + `${x.professionalExperience ? x.professionalExperience : ''}`;
+
+                        stt3 = stt3 + 1
+                        professionalExperienceSheet.push( {
+                            STT: stt3,
+                            name: item.fullName,
+                            identityCardNumber: item.identityCardNumber,
+                            startDate: formatDate(x.startDate),
+                            endDate: formatDate(x.endDate),
+                            professionalExperience: professionalExperience
+                        })
+                    })
+                    
                 })
             })
         }
@@ -338,18 +359,121 @@ const SearchEmployeeForPackage = (props) => {
                     
                     sheetName: "Sơ yếu lí lịch nhân sự chủ chốt",
                     tables: [{
-                        rowHeader: 1,
-                        merges: [],
+                        merges: [
+                            {
+                                key: "position",
+                                columnName: "Thông tin nhân sự",
+                                keyMerge: "identityCardNumber",
+                                colspan: 7
+                            },
+                            {
+                                key: "director",
+                                columnName: "Thông tin người sử dụng lao động",
+                                keyMerge: "directorName",
+                                colspan: 7
+                            },
+                        ],
+                        rowHeader: 2,
+                        styleColumn: {                                  
+                            STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                vertical: 'middle',
+                                horizontal: 'center'   
+                            },
+                            name: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            identityCardNumber: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            roles: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            birthdate: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            professionalSkill: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            type: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            workingYear: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            status: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                        },
                         columns: [
-                            { key: "STT", value: "STT" },
+                            { key: "STT", value: "STT", width: 7 },
                             { key: "name", value: "Tên" },
                             { key: "identityCardNumber", value: "Số định danh/CMTND" },
-                            { key: "position", value: "Vị trí công việc" },
-                            { key: "roles", value: "Chức danh" },
+                            { key: "roles", value: "Vị trí/ Chức danh nhân sự" },
                             { key: "birthdate", value: "Ngày, tháng, năm sinh" },
-                            { key: "professionalSkill", value: "Trình độ chuyên môn"}
+                            { key: "professionalSkill", value: "Trình độ chuyên môn"},
+                            { key: "type", value: "Loại nhân sự"},
+                            { key: "workingYear", value: "Số năm làm việc cho người sử dụng lao động hiện tại"},
+                            { key: "status", value: "Trạng thái nhân sự"},
+                            { key: "directorName", value: "Tên người sử dụng lao động"},
+                            { key: "directorAdress", value: "Địa chỉ của người sử dụng lao động", width: 32},
+                            { key: "directorRole", value: "Chức danh người sử dụng lao động"},
+                            { key: "contactName", value: "Người liên lạc"},
+                            { key: "contactNumber", value: "Điện thoại"},
+                            { key: "contactEmail", value: "Email"},
+                            { key: "contactFax", value: "Fax"},
                         ],
                         data: experiencesSheet
+                    }]
+                },
+                {
+                    
+                    sheetName: "Bảng kinh nghiệm chuyên môn của nhân sự",
+                    tables: [{
+                        tableName: "Bảng Kinh nghiệm chuyên môn của nhân sự",
+                        rowHeader: 1,
+                        styleColumn: {                                  
+                            STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                vertical: 'middle',
+                                horizontal: 'center'   
+                            },
+                            name: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            identityCardNumber: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            startDate: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            endDate: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                            professionalExperience: {
+                                vertical: 'middle',
+                                horizontal: 'center'
+                            },
+                        },
+                        columns: [
+                            { key: "STT", value: "STT", width: 7 },
+                            { key: "name", value: "Tên nhân sự" },
+                            { key: "identityCardNumber", value: "Số định danh/CMTND" },
+                            { key: "startDate", value: "Từ ngày" },
+                            { key: "endDate", value: "Đến ngày" },
+                            { key: "professionalExperience", value: "Công ty/Dự án/Vị trí công việc/Kinh nghiệm chuyên môn và quản lý có liên quan", width: 56},
+                        ],
+                        data: professionalExperienceSheet
                     }]
                 }
             ],
@@ -386,7 +510,7 @@ const SearchEmployeeForPackage = (props) => {
                     </div>
                     <div className="form-group pull-right" style={{padding: '6px 12px', margin: '5px'}}>
                         <ExportExcel id="download_template_search_package" type='link' exportData={convertDataExport()}
-                                            buttonName='Lưu hồ sơ nhân sự' />
+                        buttonName='Lưu hồ sơ nhân sự' />
                     </div>
                 </div>
 
@@ -405,7 +529,7 @@ const SearchEmployeeForPackage = (props) => {
                                     <span id={`arrow-down-${index}`} className="material-icons" style={{ display: 'none', fontWeight: "bold", marginRight: '10px' }}>
                                         {`keyboard_arrow_down`}
                                     </span>
-                                    Vị trí công việc: { `${career?.listPosition?.listPosition?.filter(x => x._id == item.careerPosition)[0]?.name}` }</p>
+                                    Vị trí công việc: { `${career?.listPosition?.filter(x => x._id == item.careerPosition)[0]?.name}` }</p>
                                 </div>
                                 <div className="box-body collapse" data-toggle="collapse" id={`employee-table-${index}`}>
                                     <div className="box-header with-border">
@@ -425,7 +549,7 @@ const SearchEmployeeForPackage = (props) => {
                                         <div className="row" style={{ marginTop: '15px' }}>
                                             <div className="form-group col-md-6">
                                                 <strong>Vị trí công việc&emsp; </strong>
-                                                {career?.listPosition?.listPosition?.filter(x => x._id == state.keyPeopleRequires?.[index]?.careerPosition).map(y => y.name)}
+                                                {career?.listPosition?.filter(x => x._id == state.keyPeopleRequires?.[index]?.careerPosition).map(y => y.name)}
                                             </div>
                                             <div className="form-group col-md-6">
                                                 <strong>Số lượng&emsp; </strong>
@@ -623,8 +747,8 @@ const SearchEmployeeForPackage = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, department, career, major, certificate, biddingPackagesManager, role } = state;
-    return { employeesManager, department, career, major, certificate, biddingPackagesManager, role };
+    const { employeesManager, department, career, major, certificate, biddingPackagesManager, role, company, auth } = state;
+    return { employeesManager, department, career, major, certificate, biddingPackagesManager, role, company, auth };
 }
 
 const actionCreators = {

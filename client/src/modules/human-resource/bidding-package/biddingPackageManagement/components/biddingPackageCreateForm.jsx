@@ -61,7 +61,6 @@ const BiddingPackageCreateForm = (props) => {
         editBiddingPackge: initBiddingPackage
     })
 
-
     /**
      * Function upload avatar 
      * @param {*} img 
@@ -163,8 +162,6 @@ const BiddingPackageCreateForm = (props) => {
     const { translate, biddingPackagesManager, career, major, certificate } = props;
     const { img, biddingPackage } = state;
 
-    console.log("createForm", biddingPackagesManager.isLoading)
-
     return (
         <React.Fragment>
             <DialogModal
@@ -172,6 +169,22 @@ const BiddingPackageCreateForm = (props) => {
                 formID="form-create-bidding-package"
                 title="Thêm gói thầu"
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    biddingPackage: {
+                        name: "",
+                        code: "",
+                        type: "",
+                        status: "",
+                        startDate: "",
+                        endDate: "",
+                        description: "",
+                        keyPersonnelRequires: [],
+                        errorOnName: undefined,
+                    },
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-create-bidding-package"> */}
@@ -191,7 +204,7 @@ const BiddingPackageCreateForm = (props) => {
                         <KeyPeopleRequire
                             id="key-people-require-create"
                             handleChange={handleChange}
-                            listCareer={career?.listPosition?.listPosition}
+                            listCareer={career?.listPosition}
                             listMajor={major?.listMajor}
                             listCertificate={certificate?.listCertificate}
                             biddingPackage={biddingPackage}

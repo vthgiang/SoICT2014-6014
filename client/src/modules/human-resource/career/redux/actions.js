@@ -29,7 +29,7 @@ function getListCareerPosition(data) {
             .then(res => {
                 dispatch({
                     type: CareerConstant.GET_CAREER_POSITION_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content.listPosition
                 })
             })
             .catch(err => {
@@ -56,7 +56,7 @@ function createCareerPosition(data) {
             .then(res => {
                 dispatch({
                     type: CareerConstant.CREATE_CAREER_POSITION_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content.listPosition
                 })
             })
             .catch(err => {
@@ -84,7 +84,7 @@ function editCareerPosition(data) {
             .then(res => {
                 dispatch({
                     type: CareerConstant.UPDATE_CAREER_POSITION_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content.listPosition
                 })
             })
             .catch(err => {
@@ -109,7 +109,7 @@ function deleteCareerPosition(data) {
             .then(res => {
                 dispatch({
                     type: CareerConstant.DELETE_CAREER_POSITION_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content.listPosition
                 })
             })
             .catch(err => {

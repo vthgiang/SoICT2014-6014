@@ -252,8 +252,6 @@ const BiddingPackageManagement = (props) => {
         parseInt((biddingPackagesManager.totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
 
-    console.log("biddingPackageManager", biddingPackagesManager)
-
     return (
         <div className="box">
             <div className="box-body qlcv">

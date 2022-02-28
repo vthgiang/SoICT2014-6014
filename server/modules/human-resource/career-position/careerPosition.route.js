@@ -11,6 +11,6 @@ router.post('/career-positions', auth, careerPositionController.createNewCareerP
 
 router.patch('/career-positions/:id', auth, careerPositionController.editCareerPosition);
 
-router.delete('/career-positions', auth, careerPositionController.deleteCareerPosition);
+router.delete('/career-positions/:id', auth, careerPositionController.deleteCareerPosition);
 
 module.exports = router;

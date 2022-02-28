@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip, ConfirmNotification } from '../../../../common-components';
 
 import { CareerReduxAction } from '../redux/actions';
 import EditForm from './editForm';
@@ -144,7 +144,6 @@ function CareerPositionTable(props) {
                     <tr>
                         <th>Tên</th>
                         <th>Code</th>
-                        <th>Các tên khác tương đương</th>
                         <th>Mô tả</th>
                         <th style={{ width: '120px', textAlign: 'center' }}>
                             {translate('table.action')}
@@ -164,22 +163,23 @@ function CareerPositionTable(props) {
                 </thead>
                 <tbody>
                     {   career &&
-                        career?.listPosition?.listPosition?.map(careerPosition =>
+                        career?.listPosition?.map(careerPosition =>
                             <tr key={`careerPositionList${careerPosition._id}`} style={careerPositionDuplicateName && careerPositionDuplicateName.includes(careerPosition.name.trim().toLowerCase().replaceAll(" ", "")) ? { color: "orangered", fontWeight: "bold" } : { color: "" }}>
                                 <td> {careerPosition.name} </td>
                                 <td> {careerPosition.code} </td>
-                                <td> {careerPosition.otherNames} </td>
                                 <td> {careerPosition.description} </td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" href={`#${careerPosition._id}`} onClick={() => handleEdit(careerPosition)}><i className="material-icons">edit</i></a>
-                                    <a className="delete" href={`#${careerPosition._id}`} onClick={() => handleDelete(careerPosition)}><i className="material-icons">delete</i></a>
-                                    {/* {
-                                        <DeleteNotification
-                                            content={translate('human_resource.careerPosition.delete')}
-                                            data={{ id: careerPosition._id, info: careerPosition.name }}
-                                            func={props.destroy}
+                                    {
+                                        <ConfirmNotification
+                                            icon="question"
+                                            title="Xóa vị trí công việc"
+                                            name="delete"
+                                            className="text-red"
+                                            content={`<h4>Delete ${careerPosition.name + " - " + careerPosition.code}</h4>`}
+                                            func={() => props.deleteCareerPosition(careerPosition._id)}
                                         />
-                                    } */}
+                                    }
                                 </td>
                             </tr>
                         )
@@ -194,7 +194,6 @@ function CareerPositionTable(props) {
                     careerPositionId={currentRow._id}
                     careerPositionName={currentRow.name}
                     careerPositionCode={currentRow.code}
-                    careerPositionOtherName={currentRow.otherNames}
                     careerPositionDescription={currentRow.description}
                 />  
             }
@@ -216,6 +215,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     get: CareerReduxAction.getListCareerPosition,
+    deleteCareerPosition: CareerReduxAction.deleteCareerPosition
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CareerPositionTable));

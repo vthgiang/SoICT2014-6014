@@ -4,10 +4,8 @@ import {
 
 const initState = {
     isLoading: false,
-
     totalList: 0,
     listPosition: [],
-
     error: '',
 }
 
@@ -34,21 +32,21 @@ export function career(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listPosition: action.payload,
+                listPosition: action.payload !== undefined ? action.payload : [],
             };
         
         case CareerConstant.UPDATE_CAREER_POSITION_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listPosition: action.payload,
+                listPosition: action.payload !== undefined ? action.payload : [],
             };
         
         case CareerConstant.DELETE_CAREER_POSITION_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listPosition: action.payload,
+                listPosition: action.payload !== undefined ? action.payload : [],
             };
 
 

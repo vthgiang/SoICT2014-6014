@@ -31,10 +31,10 @@ const BiddingPackageSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "CareerPosition"
         },
-        sameCareerPosition: {
+        sameCareerPosition: [{
             type: Schema.Types.ObjectId,
             ref: "CareerPosition"
-        },
+        }],
         majors: [{
             type: Schema.Types.ObjectId,
             ref: "Major"

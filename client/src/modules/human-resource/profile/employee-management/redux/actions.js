@@ -92,6 +92,7 @@ function addNewEmployee(employee) {
  * @param {*} data 
  */
 function updateInformationEmployee(id, data) {
+    console.log("formdata", data)
     return dispatch => {
         dispatch({
             type: EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST
