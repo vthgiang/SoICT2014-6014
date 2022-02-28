@@ -41,7 +41,6 @@ class SearchEmployeeForCareerPosition extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllEmployee(this.state);
         this.props.getDepartment();
         this.props.getListMajor({ name: '', page: 1, limit: 1000 });
         this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });

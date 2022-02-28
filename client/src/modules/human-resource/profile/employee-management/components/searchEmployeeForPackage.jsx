@@ -58,7 +58,6 @@ const SearchEmployeeForPackage = (props) => {
 
     useEffect(() => {
         let a = props.biddingPackagesManager?.listBiddingPackages?.filter(x => x._id == state.package)
-        console.log("biddingPackagesManager", a[0]?.keyPersonnelRequires)
         setState({
             ...state,
             page: 0,

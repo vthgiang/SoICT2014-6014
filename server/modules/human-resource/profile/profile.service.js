@@ -3166,6 +3166,11 @@ exports.getEmployeeInforByListId = async (
             { path: "degrees.major" },
             { path: "certificates.certificate" },
         ])
+        .sort({
+            createdAt: 1,
+        })
+        .skip(params.page * params.limit)
+        .limit(params.limit);
 
     totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
         _id: {
@@ -3207,7 +3212,7 @@ exports.getEmployeeInforByListId = async (
     }
 
     return {
-        listEmployees: arrEmployee,
+        listEmployees,
         totalList,
     };
 };
