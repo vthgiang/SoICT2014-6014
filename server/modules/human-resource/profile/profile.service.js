@@ -252,8 +252,9 @@ exports.updatePersonalInformation = async (portal, userId, data, avatar) => {
         temporaryResidenceCountry: data.temporaryResidenceCountry,
         temporaryResidenceCity: data.temporaryResidenceCity,
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
-        temporaryResidenceWard: data.temporaryResidenceWard,
+        temporaryResidenceWard: data.temporaryResidenceWard
     };
+
     // Cập nhật thông tin cơ bản vào database
     await Employee(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         {
@@ -1286,8 +1287,6 @@ exports.updateEmployeeInformation = async (
         editSocialInsuranceDetails,
         createSocialInsuranceDetails
     );
-    console.log("careerPositions", deleteCareerPosition);
-    console.log("careerPositions", editCareerPosition);
 
     oldEmployee.careerPositions = deleteEditCreateObjectInArrayObject(
         oldEmployee.careerPositions,
@@ -1405,6 +1404,8 @@ exports.updateEmployeeInformation = async (
         ? employee.contractEndDate
         : null;
     oldEmployee.contractType = employee.contractType;
+    oldEmployee.biddingPackageEndDate = employee.biddingPackageEndDate;
+    oldEmployee.biddingPackagePersonalStatus = employee.biddingPackagePersonalStatus;
     oldEmployee.houseHold = houseHold;
 
     // Edit  thông tin nhân viên

@@ -389,7 +389,11 @@ const EmployeeSchema = new Schema(
                 },
             ],
         },
-        packageEndDate: {
+        currentBiddingPackage: {
+            type: Schema.Types.ObjectId,
+            ref: "BiddingPackage",
+        },
+        biddingPackageEndDate: {
             type: Date,
         },
         biddingPackagePersonalStatus: {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { toast } from 'react-toastify';
+import { DatePicker, SelectBox } from '../../../../../common-components';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { CareerReduxAction } from '../../../career/redux/actions';
@@ -17,7 +18,7 @@ function ExperienceTab(props) {
 
     const { id } = props;
 
-    const { educationalLevel, foreignLanguage, professionalSkill, experiences, careerPositions, currentRowEditCareerPosition, currentRowEditWorkProcess, career, currentRow } = state;
+    const { educationalLevel, foreignLanguage, professionalSkill, experiences, careerPositions, currentRowEditCareerPosition, biddingPackagePersonalStatus, biddingPackageEndDate, career, currentRow } = state;
 
     useEffect(() => {
         setState(state => {
@@ -30,9 +31,13 @@ function ExperienceTab(props) {
                 professionalSkill: props.employee?.degrees ? props.employee.degrees : [],
                 foreignLanguage: props.employee?.foreignLanguage ? props.employee.foreignLanguage : "",
                 educationalLevel: props.employee?.educationalLevel ? props.employee.educationalLevel : "",
+                biddingPackagePersonalStatus: props.employee?.biddingPackagePersonalStatus ? Number(props.employee?.biddingPackagePersonalStatus) : 3,
+                biddingPackageEndDate: formatDate(props.employee?.biddingPackageEndDate ? props.employee?.biddingPackageEndDate : '')
             }
         })
     }, [props.id, props.employee?.experiences, props?.employee?.careerPositions])
+
+    console.log("aaaaaaaaaa", state)
 
     /**
      * Function format dữ liệu Date thành string
@@ -83,7 +88,34 @@ function ExperienceTab(props) {
         props.handleChange(name, value);
     }
 
-    /**  */
+    
+    /**
+     * Funtion bắt sự kiện thay đổi trạng thái làm việc
+     * @param {*} value : Trạng thái làm việc
+     */
+    const handleChangeStatus = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                biddingPackagePersonalStatus: Number(value[0])
+            }
+        })
+        props.handleChange('biddingPackagePersonalStatus', Number(value[0]))
+    }
+    /**
+     * Funtion bắt sự kiện thay đổi trạng thái làm việc
+     * @param {*} value : Trạng thái làm việc
+     */
+    const handleBiddingPackageEndDate = (value) => {
+
+        setState(state => {
+            return {
+                ...state,
+                biddingPackageEndDate: value
+            }
+        })
+        props.handleChange('biddingPackageEndDate', value)
+    }
 
     /**
      * Function kiểm tra trùng lặp thời gian làm Việc
@@ -242,6 +274,12 @@ function ExperienceTab(props) {
         { value: 0, text: "Không có" },
     ];
 
+    let biddingStatus = {
+        1: "Chưa tham gia gói thầu",
+        2: "Chờ kết quả dự thầu",
+        3: "Đang tham gia gói thầu"
+    }
+
     if (professionalSkill) {
         professionalSkill.map(item => {
             professionalSkills = professionalSkills + professionalSkillArr.find(x => x.value == item.degreeQualification).text + " (" + major.find(y => item.major == y._id)?.name + ", " + item.issuedBy + ", " + new Date(item.year).getFullYear() + ")" + `; `
@@ -336,6 +374,32 @@ function ExperienceTab(props) {
                 
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border" ><h4 className="box-title">Dự án từng tham gia</h4></legend>
+                    <div className="row">
+                        <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
+                            <label >Trạng thái tham gia dự án/gói thầu</label>
+                            <SelectBox
+                                id={`status${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={biddingPackagePersonalStatus}
+                                items={[
+                                    { value: 1, text: "Chưa tham gia" },
+                                    { value: 2, text: "Chờ kết quả" },
+                                    { value: 3, text: "Đã tham gia" },
+                                ]}
+                                onChange={handleChangeStatus}
+                            />
+                        </div>
+                        {/* Ngày kết thúc gói thầu */}
+                        { biddingPackagePersonalStatus === 3 && <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
+                            <label >Ngày kết thúc gói thầu</label>
+                            <DatePicker
+                                id={`endBiddingPackage${id}`}
+                                value={biddingPackageEndDate}
+                                onChange={handleBiddingPackageEndDate}
+                            />
+                        </div>}
+                    </div>
                     <ModalAddCareerPosition 
                         handleChange={handleAddCareerPosition} 
                         id={`addCareerPosition${id}`} 

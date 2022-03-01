@@ -209,7 +209,7 @@ const EmployeeEditFrom = (props) => {
     const handleChange = (name, value) => {
         const { employee } = state;
         if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate'
-            || name === 'contractEndDate') {
+            || name === 'contractEndDate' || name === 'biddingPackageEndDate') {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -1072,6 +1072,8 @@ const EmployeeEditFrom = (props) => {
             }
         })
     }
+
+    console.log("bbbbbbbbbbbbbb", state)
 
     return (
         <React.Fragment>
