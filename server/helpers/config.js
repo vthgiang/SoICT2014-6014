@@ -674,7 +674,6 @@ const LINKS = [{
         ],
         components: getComponentsInLink('/hr-list-major')
     },
-
     {
         url: '/hr-list-career-position',
         description: 'Danh sách vị trí công việc',
@@ -684,7 +683,6 @@ const LINKS = [{
         ],
         components: getComponentsInLink('/hr-list-career-position')
     },
-
     {
         url: '/hr-list-bidding-package',
         description: 'Danh sách gói thầu',
@@ -698,7 +696,6 @@ const LINKS = [{
         ],
         components: getComponentsInLink('/hr-list-bidding-package')
     },
-
     {
         url: '/hr-list-certificate',
         description: 'Danh sách bằng cấp - chứng chỉ',
@@ -712,7 +709,6 @@ const LINKS = [{
         ],
         components: getComponentsInLink('/hr-list-certificate')
     },
-
     {
         url: '/hr-search-for-package',
         description: 'Tìm kiếm nhân sự gói thầu',
@@ -726,7 +722,6 @@ const LINKS = [{
         ],
         components: getComponentsInLink('/hr-search-for-package')
     },
-
     {
         url: '/hr-management-package',
         description: 'Quản lí thông tin gói thầu',

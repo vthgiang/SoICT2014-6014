@@ -1,11 +1,6 @@
-const {
-    Certificate,
-} = require(`${SERVER_MODELS_DIR}`);
+const { Certificate } = require(`${SERVER_MODELS_DIR}`);
 
-const {
-    connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**
  * Lấy danh sách chứng chỉ
@@ -14,83 +9,77 @@ const {
  */
 exports.searchCertificate = async (portal, params) => {
     let keySearch = {};
-    
+
     if (params.certificateName) {
         keySearch = {
             ...keySearch,
-            "name": {
+            name: {
                 $regex: params.certificateName,
                 $options: "i",
-            }
+            },
         };
     }
-    console.log('key', params, keySearch, portal);
+    console.log("key", params, keySearch, portal);
 
-    let listCertificate = await Certificate(connect(DB_CONNECTION, portal)).find({}).populate([{
-        path: 'majors',
-    }]);
-    let totalList = await Certificate(connect(DB_CONNECTION, portal)).countDocuments({});
+    let listCertificate = await Certificate(connect(DB_CONNECTION, portal))
+        .find({})
+    let totalList = await Certificate(
+        connect(DB_CONNECTION, portal)
+    ).countDocuments({});
 
     return {
         totalList,
-        listCertificate
-    }
-}
+        listCertificate,
+    };
+};
 
 /**
- * Thêm mới chứng chỉ 
+ * Thêm mới chứng chỉ
  * @data : dữ liệu chứng chỉ mới
- * 
+ *
  */
 exports.crateNewCertificate = async (portal, data) => {
     let certificate;
     certificate = await Certificate(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         abbreviation: data.abbreviation,
-        code: data.code,
-        majors: data.majors,
-    })
+        description: data.description,
+    });
 
-
-    return await Certificate(connect(DB_CONNECTION, portal)).find({}).populate([{
-        path: 'majors',
-    }]);
-}
-
-
-
-
-
-
-
+    return await this.searchCertificate(portal, {});
+};
 
 /**
  * Xoá chứng chỉ
  * @id : Id chứng chỉ muốn xoá
  */
 exports.deleteCertificate = async (portal, id) => {
-    return await Certificate(connect(DB_CONNECTION, portal)).findOneAndDelete({
-        _id: id
+    console.log("ddddddddddddddd", id)
+    await Certificate(connect(DB_CONNECTION, portal)).deleteOne({
+        _id: id,
     });
-}
+
+    return await this.searchCertificate(portal, {});
+};
 
 /**
  * Cập nhật chứng chỉ
  * @id : Id chứng chỉ muốn chỉnh sửa
  * @data : Dữ liệu thay đổi
  */
-exports.updateCertificate = async (portal, id, data) => {
-    let certificate = await Certificate(connect(DB_CONNECTION, portal)).findById(id);
+exports.updateCertificate = async (portal, data, id) => {
+    console.log("aaaaaaaaaaa", data, id)
+    await Certificate(connect(DB_CONNECTION, portal)).updateOne(
+        { _id: id },
+        {
+            $set: {
+                name: data.name,
+                abbreviation: data.abbreviation,
+                description: data.description,
+            },
+        },
+        { $new: true }
+    );
 
-    certificate.name = data.name;
-    certificate.abbreviations = data.abbreviations;
-    certificate.code = data.code;
-    certificate.majors = data.majors;
-    await certificate.save();
-
-    return await Certificate(connect(DB_CONNECTION, portal)).findOne({
-        _id: id
-    }).populate([{
-        path: 'majors',
-    }]);
-}
+    return this.searchCertificate(portal, {});
+};

@@ -14,8 +14,6 @@ function KeyPeopleRequire(props) {
     const { translate, listMajor, listCareer, listCertificate, biddingPackage } = props;
     const { id } = state;
 
-    console.log("keyPersonnelRequires", list )
-        
     useEffect(() => {
         setState(state => {
                 return {

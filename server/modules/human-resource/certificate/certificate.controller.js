@@ -64,7 +64,11 @@ exports.createNewCertificate = async (req, res) => {
 /** Chỉnh sửa chuyên ngành */
 exports.editCertificate = async (req, res) => {
     try {
-        data = await CertificateService.editCertificate(req.portal, req.body, req.params);
+        data = await CertificateService.updateCertificate(
+            req.portal,
+            req.body,
+            req.params.id
+        );
         await Log.info(req.user.email, 'EDIT_CERTIFICATE', req.portal);
         res.status(200).json({
             success: true,
@@ -88,7 +92,7 @@ exports.editCertificate = async (req, res) => {
 /** Xóa chuyên ngành */
 exports.deleteCertificate = async (req, res) => {
     try {
-        data = await CertificateService.deleteCertificate(req.portal, req.body, req.params.id);
+        data = await CertificateService.deleteCertificate(req.portal, req.params.id);
         await Log.info(req.user.email, 'DELETE_CERTIFICATE', req.portal);
         res.status(200).json({
             success: true,

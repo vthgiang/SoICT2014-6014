@@ -23,7 +23,6 @@ function MajorTable(props) {
         limit: limit,
         page: 1,
         name: '', // Mặc định tìm kiếm theo tên
-        page: ''
     })
 
     let { majorDuplicate, majorDuplicateName } = state;
@@ -41,22 +40,6 @@ function MajorTable(props) {
             currentRow: major
         });
         window.$('#edit-major').modal('show')
-    }
-
-    const handleDelete = (major) => {
-        const { translate } = props;
-        Swal.fire({
-            html: `<h4 style="color: red"><div>Xóa lưu trữ</div>?</h4>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: translate('general.no'),
-            confirmButtonText: translate('general.yes'),
-        }).then(result => {
-            console.log('Confirm delete');
-            props.deleteMajor(major._id);            
-        })
     }
 
     const setPage = (page) => {
@@ -170,7 +153,6 @@ function MajorTable(props) {
                     <tr>
                         <th>Tên</th>
                         <th>Code</th>
-                        {/* <th>Chuyên ngành cha</th> */}
                         <th>Mô tả</th>
                         <th style={{ width: '120px', textAlign: 'center' }}>
                             {translate('table.action')}
@@ -193,7 +175,6 @@ function MajorTable(props) {
                             <tr key={`majorList${major._id}`} style={majorDuplicateName && majorDuplicateName.includes(major.name.trim().toLowerCase().replaceAll(" ", "")) ? { color: "orangered", fontWeight: "bold" } : { color: "" }}>
                                 <td> {major.name} </td>
                                 <td> {major.code} </td>
-                                {/* <td><ToolTip dataTooltip={major?.parents?.length ? major.parents.map(parent => parent ? parent.name : "") : []} /></td> */}
                                 <td> {major.description} </td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" href={`#${major._id}`} onClick={() => handleEdit(major)}><i className="material-icons">edit</i></a>
@@ -222,8 +203,8 @@ function MajorTable(props) {
                     majorId={currentRow._id}
                     majorName={currentRow.name}
                     majorCode={currentRow.code}
+                    majorDescription={currentRow.description}
                     listData={major?.listMajor}
-                    majorParent={currentRow.parents.map(parent => parent ? parent._id : null)}
                 />  
             }
             {

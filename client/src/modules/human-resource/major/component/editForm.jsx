@@ -31,9 +31,12 @@ class EditForm extends Component {
         });
     }
 
-    handleParent = (value) => {
-        this.setState({ parents: value });
-    };
+    handleDescription = (e) => {
+        const { value } = e.target;
+        this.setState({
+            description: value,
+        });
+    }
 
     isValidateForm = () => {
         let { name } = this.state;
@@ -91,12 +94,12 @@ class EditForm extends Component {
                     majorId: nextProps.majorId,
                     name: nextProps.majorName,
                     code: nextProps.majorCode,
-                    parents: nextProps.majorParent,
+                    description: nextProps.majorDescription,
                 },
                 majorId: nextProps.majorId,
                 name: nextProps.majorName,
                 code: nextProps.majorCode,
-                parents: nextProps.majorParent,
+                description: nextProps.majorDescription,
 
                 nameError: undefined,
                 codeError: undefined
@@ -109,11 +112,9 @@ class EditForm extends Component {
     render() {
         const { translate } = this.props;
         const { listData } = this.props;
-        let { name, code, parents, codeError, nameError } = this.state;
+        let { name, code, description, codeError, nameError } = this.state;
         console.log('listData', listData)
-        console.log('parents', parents)
 
-        const disabled = !this.isValidateForm();
         return (
             <React.Fragment>
                 <DialogModal
@@ -135,19 +136,8 @@ class EditForm extends Component {
                         <ErrorLabel content={codeError} />
                     </div>
                     <div className="form-group">
-                        <label>{translate('document.administration.archives.parent')}</label>
-                        <SelectBox
-                            id={`field-major-edit`}
-                            lassName="form-control select2"
-                            style={{ width: "100%" }}
-                            items={listData.filter(item => item.parents.length == 0).map(x => {
-                                return { text: x.name, value: x._id }
-                            })}
-                            options={{ placeholder: "Chọn thông tin cha" }}
-                            onChange={this.handleParent}
-                            value={parents}
-                            multiple={true}
-                        />
+                        <label>Mô tả</label>
+                        <input type="text" className="form-control" onChange={this.handleDescription} value={description} />
                     </div>
                     {/* <div className="form-group">
                         <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>

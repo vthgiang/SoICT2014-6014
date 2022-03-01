@@ -33,10 +33,8 @@ class CreateForm extends Component {
 
     handleDescription = (e) => {
         const {value} = e.target;
-        let msg;
         this.setState({
-            code: value,
-            codeError: msg,
+            description: value,
         });
     }
 
@@ -56,7 +54,7 @@ class CreateForm extends Component {
         const data = {
             name: this.state.name,
             code: this.state.code,
-            parents: this.state.parents,
+            description: this.state.description,
         }
         console.log('data', data);
         this.props.createMajor(data);

@@ -40,12 +40,11 @@ exports.searchMajor = async (portal, params) => {
  * @data : dữ liệu chuyên ngành tương đương mới
  *
  */
-exports.crateNewMajor = async (portal, data) => {
-    // console.log(data);
+exports.createNewMajor = async (portal, data) => {
     await Major(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         code: data.code,
-        parents: data.parents,
+        description: data.description,
     });
 
     return await this.searchMajor(portal, {});
@@ -63,7 +62,7 @@ exports.editMajor = async (portal, data, params) => {
             $set: {
                 name: data.name,
                 code: data.code,
-                parents: data.parents,
+                description: data.description,
             },
         },
         { $new: true }

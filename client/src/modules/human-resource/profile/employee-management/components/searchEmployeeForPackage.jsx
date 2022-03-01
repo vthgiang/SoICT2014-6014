@@ -106,7 +106,6 @@ const SearchEmployeeForPackage = (props) => {
     }
 
     const handleChangeEmployee = async (value, index) => {
-        console.log("adsdfasdf", state.keyPeopleRequires[index])
         await setState(state => {
             return {
                 ...state,
@@ -148,7 +147,6 @@ const SearchEmployeeForPackage = (props) => {
         };
 
         let a = props.biddingPackagesManager?.listBiddingPackages?.filter(x => x._id == value[0])
-        // console.log("value", value[0])
 
         setState({
             ...state,
@@ -170,7 +168,6 @@ const SearchEmployeeForPackage = (props) => {
 
     /** Function bắt sự kiện tìm kiếm */
     const handleSunmitSearch = async () => {
-        console.log("state", state)
         props.searchForPackage({ status: state.status, package: state.package });
     }
 
@@ -182,7 +179,6 @@ const SearchEmployeeForPackage = (props) => {
     }
 
     const handleDeleteEmployeeInPackage =  (id, ind) => {
-        console.log("id-ind", id, ind)
         let key = state.keyPeople?.map((value, index) => {
             if (index == ind) return {
                 careerPosition: value.careerPosition,
@@ -191,7 +187,6 @@ const SearchEmployeeForPackage = (props) => {
 
             return value
         });
-        console.log("key", key)
         setState({
             ...state,
             keyPeople: key
@@ -211,13 +206,6 @@ const SearchEmployeeForPackage = (props) => {
     if (employeesManager.listEmployees) {
         listEmployees = employeesManager.listEmployees;
     }
-
-    let pageTotal = ((employeesManager.totalList % limit) === 0) ?
-    parseInt(employeesManager.totalList / limit) :
-    parseInt((employeesManager.totalList / limit) + 1);
-    let currentPage = parseInt((page / limit) + 1);
-    
-    let listPosition = career?.listPosition;
     
     const listMajor = major.listMajor;
     const listCertificate = certificate.listCertificate;
@@ -234,13 +222,6 @@ const SearchEmployeeForPackage = (props) => {
         { value: 8, text: "Giáo sư" },
         { value: 0, text: "Không có" },
     ];
-
-    let listEmployeesPackage = employeesManager.listEmployeesPackage;
-
-    console.log("item222222", props)
-    console.log("item222222", state)
-
-
     
     const convertDataExport = () => {
         let datas = [];
@@ -251,7 +232,6 @@ const SearchEmployeeForPackage = (props) => {
         let contactEmail = props.auth?.user?.email;
 
         let { keyPeople } = state;
-            console.log('state', state);
         if (keyPeople) {
             let stt1 = 0;
             let stt2 = 0;

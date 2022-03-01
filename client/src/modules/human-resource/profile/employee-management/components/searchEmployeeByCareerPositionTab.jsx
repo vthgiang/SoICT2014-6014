@@ -118,9 +118,6 @@ function SearchEmployeeByCareerPositionTab(props) {
     }
 
     const save = (value) => {
-        console.log('state data',  state);
-        console.log('props data',  props);
-
         props.handleChange(props._id, value);
         handleCloseModal(props?._id)
     }
@@ -137,7 +134,6 @@ function SearchEmployeeByCareerPositionTab(props) {
     }
 
     const listEmployees = employeesManager.listEmployees;
-    // console.log('aaaaa', employeesManager)
 
     return (
         <React.Fragment>

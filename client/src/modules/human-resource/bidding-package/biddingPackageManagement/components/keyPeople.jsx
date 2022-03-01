@@ -23,7 +23,6 @@ function KeyPeople(props) {
     }])
     
     const { translate, listMajor, listCareer, listCertificate, keyPersonnelRequires } = props;
-    // console.log("keyPersonnelRequires", keyPersonnelRequires)
     const { id,  biddingPackage, keyPeople } = state;
 
     useEffect(() => {
@@ -286,8 +285,8 @@ function KeyPeople(props) {
         window.$(`#modal-detail-employee${value._id}`).modal('show');
     }
 
-    // console.log("listCareer", listCareer)
-    // console.log("biddingPackage", props.biddingPackage)
+    console.log("biddingPackage", biddingPackage)
+    console.log("state", state)
 
     return (
         <div id = {id} className="tab-pane">
@@ -385,7 +384,7 @@ function KeyPeople(props) {
                                                                             let degreeMajor = ''
                                                                             if (e.major) {
 
-                                                                                degreeMajor = listMajor.find(item => item._id == e.major).name
+                                                                                degreeMajor = listMajor?.find(item => item._id == e.major)?.name
                                                                             } else {
                                                                                 degreeMajor = "Không có"
                                                                             }

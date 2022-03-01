@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip, ConfirmNotification } from '../../../../common-components';
 
 import { CertificateActions } from '../redux/actions';
 import EditForm from './editForm';
@@ -43,22 +43,6 @@ function CertificateTable(props) {
         window.$('#edit-certificate').modal('show')
     }
 
-    const handleDelete = (certificate) => {
-        const { translate } = props;
-        Swal.fire({
-            html: `<h4 style="color: red"><div>Xóa lưu trữ</div>?</h4>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: translate('general.no'),
-            confirmButtonText: translate('general.yes'),
-        }).then(result => {
-            console.log('Confirm delete');
-            props.deleteCertificate(certificate._id);            
-        })
-    }
-
     const setPage = (page) => {
         setState({
             ...state,
@@ -93,9 +77,8 @@ function CertificateTable(props) {
     }, [])
 
     const { certificate, major, translate } = props;
-    console.log("certificate", certificate);
-    console.log("major", major);
     const { currentRow, option, tableId } = state;
+    console.log("currentRow", currentRow);
 
     return (
         <React.Fragment>
@@ -175,14 +158,17 @@ function CertificateTable(props) {
                                 <td> {certificate.description}</td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" href={`#${certificate._id}`} onClick={() => handleEdit(certificate)}><i className="material-icons">edit</i></a>
-                                    <a className="delete" href={`#${certificate._id}`} onClick={() => handleDelete(certificate)}><i className="material-icons">delete</i></a>
-                                    {/* {
-                                        <DeleteNotification
-                                            content={translate('human_resource.certificate.delete')}
-                                            data={{ id: certificate._id, info: certificate.name }}
-                                            func={props.destroy}
+                                    {/* <a className="delete" href={`#${certificate._id}`} onClick={() => handleDelete(certificate)}><i className="material-icons">delete</i></a> */}
+                                    {
+                                        <ConfirmNotification
+                                            icon="question"
+                                            title="Xóa chứng chỉ"
+                                            name="delete"
+                                            className="text-red"
+                                            content={`<h4>Delete ${certificate.name}</h4>`}
+                                            func={() => props.deleteCertificate(certificate._id)}
                                         />
-                                    } */}
+                                    }
                                 </td>
                             </tr>
                         )
@@ -197,8 +183,8 @@ function CertificateTable(props) {
                     certificateId={currentRow._id}
                     certificateName={currentRow.name}
                     certificateAbbreviation={currentRow.abbreviation}
+                    certificateDescription={currentRow.description}
                     listData={major?.listMajor}
-                    certificateMajor={currentRow.majors.map(major => major ? major._id : null)}
                 />
             }
             {

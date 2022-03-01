@@ -82,8 +82,6 @@ const BiddingPackageEditFrom = (props) => {
 
     let { _id, biddingPackage } = state;
 
-    // console.log("biddingPackage", biddingPackage)
-
     /**
      * Function upload avatar 
      * @param {*} img 
@@ -184,7 +182,6 @@ const BiddingPackageEditFrom = (props) => {
         })
     }
     
-    console.log("state", state)
     return (
         <React.Fragment>
             <DialogModal
