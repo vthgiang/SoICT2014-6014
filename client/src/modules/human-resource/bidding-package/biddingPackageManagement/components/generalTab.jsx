@@ -204,7 +204,6 @@ function GeneralTab(props) {
             let partValue = value.split('-');
             startDate = [partValue[2], partValue[1], partValue[0]].join('-');
             let date = new Date(startDate);
-            console.log("endDate, endDate", endDate)
             if (endDate) {
                 endDate = endDate.toString().split('-');
                 endDate = [endDate[2], endDate[1], endDate[0]].join('-');

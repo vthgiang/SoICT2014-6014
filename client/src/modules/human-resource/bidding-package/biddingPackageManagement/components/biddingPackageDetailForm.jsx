@@ -53,7 +53,6 @@ const BiddingPackageDetailForm = (props) => {
     const { biddingPackagesManager, translate, career, major, certificate } = props;
 
     let { _id, biddingPackageDetail } = state;
-    console.log("biddingPackageDetail", biddingPackageDetail)
 
     const handleDownLoadDocument = (id) => {
         props.downLoadDocument(id)

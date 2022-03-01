@@ -31,9 +31,12 @@ class EditForm extends Component {
         });
     }
 
-    handleMajor = (value) => {
-        this.setState({ parents: value });
-    };
+    handleDescription = (e) => {
+        const { value } = e.target;
+        this.setState({
+            description: value,
+        });
+    }
 
     isValidateForm = () => {
         let { name } = this.state;
@@ -74,8 +77,6 @@ class EditForm extends Component {
 
     save = () => {
         const { documents } = this.props;
-        const { certificateId, name, code, certificateMajor } = this.state;
-        const { list } = documents.administration.archives;
 
         console.log('state data', this.state);
         console.log('props data', this.props);
@@ -91,12 +92,12 @@ class EditForm extends Component {
                     certificateId: nextProps.certificateId,
                     name: nextProps.certificateName,
                     abbreviation: nextProps.certificateAbbreviation,
-                    majors: nextProps.certificateMajor,
+                    description: nextProps.certificateDescription,
                 },
                 certificateId: nextProps.certificateId,
                 name: nextProps.certificateName,
                 abbreviation: nextProps.certificateAbbreviation,
-                majors: nextProps.certificateMajor,
+                description: nextProps.certificateDescription,
 
                 nameError: undefined,
                 codeError: undefined
@@ -109,8 +110,8 @@ class EditForm extends Component {
     render() {
         const { translate } = this.props;
         const { listData } = this.props;
-        let { name, abbreviation, majors, codeError, nameError } = this.state;
-        console.log('listData', listData)
+        let { name, abbreviation, description, codeError, nameError } = this.state;
+        console.log('listData', this.state)
 
         const disabled = !this.isValidateForm();
         return (
@@ -134,19 +135,8 @@ class EditForm extends Component {
                         <ErrorLabel content={codeError} />
                     </div>
                     <div className="form-group">
-                        <label>{translate('document.administration.archives.parent')}</label>
-                        <SelectBox
-                            id={`field-certificate-edit`}
-                            lassName="form-control select2"
-                            style={{ width: "100%" }}
-                            items={listData.filter(item => item.parents.length == 0).map(x => {
-                                return { text: x.name, value: x._id }
-                            })}
-                            options={{ placeholder: "Chọn chuyên ngành" }}
-                            onChange={this.handleMajor}
-                            value={majors}
-                            multiple={true}
-                        />
+                        <label>Mô tả</label>
+                        <input type="text" className="form-control" onChange={this.handleDescription} value={description} />
                     </div>
                     {/* <div className="form-group">
                         <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>

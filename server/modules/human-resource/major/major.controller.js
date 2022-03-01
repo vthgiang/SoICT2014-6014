@@ -38,9 +38,9 @@ exports.searchMajor = async (req, res) => {
 };
 
 /** Tạo mới chuyên ngành */
-exports.crateNewMajor = async (req, res) => {
+exports.createNewMajor = async (req, res) => {
     try {
-        data = await MajorService.crateNewMajor(req.portal, req.body);
+        data = await MajorService.createNewMajor(req.portal, req.body);
         await Log.info(req.user.email, "CREATE_MAJOR", req.portal);
         res.status(200).json({
             success: true,

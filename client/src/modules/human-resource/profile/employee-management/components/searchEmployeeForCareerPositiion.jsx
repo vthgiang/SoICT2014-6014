@@ -254,8 +254,6 @@ class SearchEmployeeForCareerPosition extends Component {
         let posCodeArr = [];
         let dataTreePosition = [];
 
-        console.log('listEmployees', listEmployees);
-
         return (
             <div className="box">
                 <div className="box-body qlcv">

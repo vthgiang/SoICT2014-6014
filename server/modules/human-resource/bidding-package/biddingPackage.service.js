@@ -75,7 +75,6 @@ exports.getDetailBiddingPackage = async (portal, params) => {
             });
         }
     }
-    console.log("aaaaaaaaaaaa", keyPeopleArr);
     return {
         listBiddingPackages: keyPeopleArr,
     };

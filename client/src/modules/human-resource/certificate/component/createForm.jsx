@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -33,7 +33,6 @@ class CreateForm extends Component {
 
     handleDescription = (e) => {
         const {value} = e.target;
-        const { translate } = this.props;
         this.setState({
             description: value
         });
@@ -55,7 +54,7 @@ class CreateForm extends Component {
         const data = {
             name: this.state.name,
             abbreviation: this.state.abbreviation,
-            majors: this.state.majors,
+            description: this.state.description,
         }
         console.log('data', data);
         this.props.createCertificate(data);

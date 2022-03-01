@@ -85,8 +85,7 @@ function KeyPeople(props) {
         let contactEmail = props.auth?.user?.email;
 
         let { keyPeople } = state;
-            console.log('state', state);
-            console.log('props', props);
+
         if (keyPeople) {
             let stt1 = 0;
             let stt2 = 0;

@@ -9,10 +9,9 @@ const MajorSchema = new Schema({
     code: {
         type: String, // mã code
     },
-    parents: [{
-        type: Schema.Types.ObjectId,
-        replies: this
-    }],
+    description: {
+        type: String, // mã code
+    }, // mã code 
     company: {
         type: Schema.Types.ObjectId,
         ref: "Company"
