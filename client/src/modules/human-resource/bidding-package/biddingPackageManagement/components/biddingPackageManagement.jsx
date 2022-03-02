@@ -42,8 +42,8 @@ const BiddingPackageManagement = (props) => {
         tableId,
         position: null,
         gender: null,
-        status: 1,
-        type: 1,
+        status: [1],
+        type: [1],
         professionalSkills: null,
         careerFields: null,
         page: 0,
@@ -54,9 +54,9 @@ const BiddingPackageManagement = (props) => {
 
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
-        props.getListMajor({ name: '', page: 1, limit: 1000 });
-        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
-        props.getListCertificate({ name: '', page: 1, limit: 1000 });
+        props.getListMajor({ name: '', page: 0, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
+        props.getListCertificate({ name: '', page: 0, limit: 1000 });
     }, [])
 
     useEffect(() => {
@@ -138,11 +138,25 @@ const BiddingPackageManagement = (props) => {
      */
     const handleStatusChange = (value) => {
         if (value.length === 0) {
-            value = 0
+            value = []
         };
         setState(state => ({
             ...state,
             status: value
+        }))
+    }
+
+    /**
+     * Function lưu giá trị trạng thái vào state khi thay đổi
+     * @param {*} value : Giá trị trạng thái
+     */
+    const handleTypeChange = (value) => {
+        if (value.length === 0) {
+            value = []
+        };
+        setState(state => ({
+            ...state,
+            type: value
         }))
     }
 
@@ -152,8 +166,8 @@ const BiddingPackageManagement = (props) => {
      */
     const handlestartDateSearchChange = (value) => {
         if (value) {
-            let partMonth = value.split('-');
-            value = [partMonth[1], partMonth[0]].join('-');
+            let partValue = value.split('-');
+            value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
         setState(state => ({
             ...state,
@@ -167,8 +181,8 @@ const BiddingPackageManagement = (props) => {
      */
     const handleendDateSearchChange = (value) => {
         if (value) {
-            let partMonth = value.split('-');
-            value = [partMonth[1], partMonth[0]].join('-');
+            let partValue = value.split('-');
+            value = [partValue[2], partValue[1], partValue[0]].join('-');
         }
         setState(state => ({
             ...state,
@@ -279,19 +293,17 @@ const BiddingPackageManagement = (props) => {
                     {/* Trạng thái */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
-                        <SelectBox 
-                            id={`multiSelectStatus`} 
-                            style={{ width: "100%" }}
-                            items={[
-                                { value: '0', text: 'Đã đóng thầu' },
-                                { value: '1', text: 'Hoạt động' },
-                                { value: '2', text: 'Chờ kết quả dự thầu' },
-                                { value: '3', text: 'Đang thực hiện' },
-                                { value: '4', text: 'Hoàn thành' },
-                            ]}
+                        <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                            options={{ nonSelectedText: 'Chọn trạng thái', allSelectedText: "Chọn tất cả" }}
                             value={status}
-                            onChange={handleStatusChange}>
-                        </SelectBox>
+                            items={[
+                                { value: 0, text: 'Đã đóng thầu' },
+                                { value: 1, text: 'Hoạt động' },
+                                { value: 2, text: 'Chờ kết quả dự thầu' },
+                                { value: 3, text: 'Đang thực hiện' },
+                                { value: 4, text: 'Hoàn thành' },
+                            ]} onChange={handleStatusChange}>
+                        </SelectMulti>
                     </div>
                 </div>
 
@@ -299,26 +311,23 @@ const BiddingPackageManagement = (props) => {
                     {/* Loại gói thầu */}
                     <div className="form-group">
                         <label className="form-control-static">Loại gói thầu</label>
-                        <SelectBox 
-                            id={`multiSelectType`} 
-                            style={{ width: "100%" }}
-                            items={[
-                                { value: '1', text: 'Tư vấn' },
-                                { value: '2', text: 'Phi tư vấn' },
-                                { value: '3', text: 'Hàng hóa' },
-                                { value: '4', text: 'Xây dựng' },
-                                { value: '5', text: 'Hỗn hợp' },
-                            ]}
+                        <SelectMulti id={`multiSelectType`} multiple="multiple"
+                            options={{ nonSelectedText: 'Chọn loại gói thầu', allSelectedText: "Chọn tất cả" }}
                             value={type}
-                            onChange={handleStatusChange}>
-                        </SelectBox>
+                            items={[
+                                { value: 1, text: 'Tư vấn' },
+                                { value: 2, text: 'Phi tư vấn' },
+                                { value: 3, text: 'Hàng hóa' },
+                                { value: 4, text: 'Xây dựng' },
+                                { value: 5, text: 'Hỗn hợp' },
+                            ]} onChange={handleTypeChange}>
+                        </SelectMulti>
                     </div>
                     {/* Thời gian bắt đầu */}
                     <div className="form-group">
                         <label title="Thời gian bắt đầu" className="form-control-static">Start Date</label>
                         <DatePicker
                             id="month-startDate-contract"
-                            dateFormat="month-year"
                             value={startDateSearch}
                             onChange={handlestartDateSearchChange}
                         />
@@ -328,7 +337,6 @@ const BiddingPackageManagement = (props) => {
                         <label title="Thời gian kết thúc" className="form-control-static">End Date</label>
                         <DatePicker
                             id="month-endDate-contract"
-                            dateFormat="month-year"
                             value={endDateSearch}
                             onChange={handleendDateSearchChange}
                         />

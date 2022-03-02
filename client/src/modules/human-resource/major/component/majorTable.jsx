@@ -15,13 +15,13 @@ function MajorTable(props) {
     console.log("prob ------", props);
 
     const tableId_constructor = "table-manage-major";
-    const defaultConfig = { name: '', page: 1, limit: 100 }
+    const defaultConfig = { name: '', page: 0, limit: 100 }
     const limit = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
         tableId: tableId_constructor,
         limit: limit,
-        page: 1,
+        page: 0,
         name: '', // Mặc định tìm kiếm theo tên
     })
 
@@ -62,13 +62,6 @@ function MajorTable(props) {
             ...state,
             name: value
         });
-        let { name, page, limit } = state;
-        const data = {
-            limit: limit,
-            page: page,
-            name: name,
-        };
-        props.get(data);
     }
 
     const setLimit = (number) => {
@@ -95,7 +88,7 @@ function MajorTable(props) {
     }
 
     useEffect(() => {
-        props.get({ name: '', page: 1, limit: 1000 });
+        props.get({ name: '', page: 0, limit: 1000 });
         props.get({ name: state.name, page: state.page, limit: state.limit });
     }, [])
 

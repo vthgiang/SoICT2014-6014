@@ -23,31 +23,20 @@ class CreateForm extends Component {
 
     handleDescription = (e) => {
         const { value } = e.target;
-        const { translate } = this.props;
-        const { message } = ValidationHelper.validateName(translate, value, 1, 1000);
         this.setState({
             description: value,
-            nameError: message
         });
     }
 
     handleCode = (e) => {
         const { value } = e.target;
-        let msg;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateCode(translate, value, 1, 255);
         this.setState({
             code: value,
-            codeError: msg,
+            codeError: message,
         });
     }
-
-    // handleOtherName = (e) => {
-    //     const { value } = e.target;
-    //     let msg;
-    //     this.setState({
-    //         otherNames: value,
-    //         codeError: msg,
-    //     });
-    // };
 
     isValidateForm = () => {
         let { name } = this.state;
@@ -63,7 +52,6 @@ class CreateForm extends Component {
             otherNames: this.state.otherNames,
             description: this.state.description
         }
-        console.log('data', data);
         this.props.createCareerPosition(data);
     }
 
@@ -90,13 +78,12 @@ class CreateForm extends Component {
                         <div className={`form-group ${!codeError ? "" : "has-error"}`}>
                             <label>Nhãn<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} />
-                            <ErrorLabel content={nameError} />
+                            <ErrorLabel content={codeError} />
                         </div>
 
-                        <div className={`form-group ${!nameError ? "" : "has-error"}`}>
-                            <label>Mô tả<span className="text-red">*</span></label>
+                        <div className={`form-group`}>
+                            <label>Mô tả</label>
                             <input type="text" className="form-control" onChange={this.handleDescription} />
-                            <ErrorLabel content={nameError} />
                         </div>
                     </form>
                 </DialogModal>

@@ -17,7 +17,11 @@ exports.searchMajor = async (req, res) => {
             page: Number(req.query.page),
             limit: Number(req.query.limit),
         };
-        data = await MajorService.searchMajor(req.portal, params);
+        data = await MajorService.searchMajor(
+            req.portal,
+            params,
+            req.user.company._id
+        );
 
         await Log.info(req.user.email, "GET_MAJOR", req.portal);
         res.status(200).json({
@@ -40,7 +44,11 @@ exports.searchMajor = async (req, res) => {
 /** Tạo mới chuyên ngành */
 exports.createNewMajor = async (req, res) => {
     try {
-        data = await MajorService.createNewMajor(req.portal, req.body);
+        data = await MajorService.createNewMajor(
+            req.portal,
+            req.body,
+            req.user.company._id
+        );
         await Log.info(req.user.email, "CREATE_MAJOR", req.portal);
         res.status(200).json({
             success: true,
@@ -62,7 +70,12 @@ exports.createNewMajor = async (req, res) => {
 /** Chỉnh sửa chuyên ngành */
 exports.editMajor = async (req, res) => {
     try {
-        data = await MajorService.editMajor(req.portal, req.body, req.params);
+        data = await MajorService.editMajor(
+            req.portal,
+            req.body,
+            req.params,
+            req.user.company._id
+        );
         await Log.info(req.user.email, "EDIT_MAJOR", req.portal);
         res.status(200).json({
             success: true,
@@ -89,7 +102,8 @@ exports.deleteMajor = async (req, res) => {
         data = await MajorService.deleteMajor(
             req.portal,
             req.body,
-            req.params.id
+            req.params.id,
+            req.user.company._id
         );
         await Log.info(req.user.email, "DELETE_MAJOR", req.portal);
         res.status(200).json({

@@ -13,15 +13,14 @@ import Swal from 'sweetalert2';
 function CareerPositionTable(props) { 
 
     const tableId_constructor = "table-manage-career-position";
-    const defaultConfig = { name: '', page: 1, limit: 100 }
+    const defaultConfig = { name: '', page: 0, limit: 100 }
     const limit = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
         tableId: tableId_constructor,
         limit: limit,
-        page: 1,
+        page: 0,
         name: '', // Mặc định tìm kiếm theo tên
-        page: ''
     })
 
     let { careerPositionDuplicate, careerPositionDuplicateName } = state;
@@ -57,6 +56,14 @@ function CareerPositionTable(props) {
         })
     }
 
+    const setName = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            name: value
+        });
+    }
+
     const setPage = (page) => {
         setState({
             ...state,
@@ -85,8 +92,17 @@ function CareerPositionTable(props) {
         props.get(data);
     }
 
+    const searchWithOption = async () => {
+        const data = {
+            limit: state.limit,
+            page: state.page,
+            name: state.name
+        };
+        await props.get(data);
+    }
+
     useEffect(() => {
-        props.get({ name: '', page: 1, limit: 1000 });
+        props.get({ name: '', page: 0, limit: 1000 });
         // props.get({ name: state.name, page: state.page, limit: state.limit });
     }, [])
 
@@ -98,45 +114,26 @@ function CareerPositionTable(props) {
     return (
         <React.Fragment>
 
-            {/* Button kiểm tra tất cả vị trí công việc hợp lệ không*/}
-            <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
+            {/* Button thêm vị trí công việc mới */}
+            <div style={{ display: 'flex', marginBottom: 6, marginTop: 20, float: 'right' }}>
                 <a className="btn btn-success pull-right" href="#modal-create-career-position" title="Add careerPosition" onClick={handleAddCareerPosition}>Thêm</a>
             </div>
 
-            {/* Button thêm vị trí công việc mới */}
             {
                 <CreateForm />
             }
 
             {/* Thanh tìm kiếm */}
-            {/* <div className="form-inline">
-                Mã tài sản
-                <div className="form-group">
-                    <label className="form-control-static">Chuyên ngành</label>
+            <div className="form-inline" style={{ marginBottom: '20px', marginTop: '20px' }}>
+                <div className="form-group" style={{ marginRight: '20px' }}>
+                    <label className="form-control-static"style={{ marginRight: '20px' }}>Vị trí công việc</label>
                     <input type="text" className="form-control" name="name" onChange={setName} placeholder={"Nhập tên vị trí công việc"} autoComplete="off" />
                 </div>
                 <div className="form-group">  
                     <label></label>
                     <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={searchWithOption}>{translate('asset.general_information.search')}</button>
                 </div>
-            </div> */}
-
-            {/* Kết quả kiểm tra trùng lặp */}
-            {/* {careerPositionDuplicate && careerPositionDuplicate.length !== 0 && (
-                <React.Fragment>
-                    <br />
-                    <p style={{ fontWeight: "bold", color: "orangered" }}>Các vị trí công việc sau bị trùng: {careerPositionDuplicate.join(', ')}</p>
-
-                </React.Fragment>
-            )}
-            {careerPositionDuplicate && careerPositionDuplicate.length == 0 && (
-                <React.Fragment>
-                    <br />
-                    <p style={{ fontWeight: "bold", color: "green" }}>Tất cả vị trí công việc đều hợp lệ</p>
-
-                </React.Fragment>
-            )} */}
-
+            </div>
 
             {/* Bảng dữ liệu vị trí công việc */}
             <table className="table table-hover table-striped table-bordered" id={tableId}>

@@ -12,12 +12,18 @@ exports.searchBiddingPackage = async (req, res) => {
 
         let params = {
             name: req.query.name,
-            page: Number(req.query.page) ? Number(req.query.page) : 1,
+            code: req.query.code,
+            page: Number(req.query.page) ? Number(req.query.page) : 0,
             limit: Number(req.query.limit),
+            status: req.query.status,
+            type: req.query.type,
+            startDate: req.query.startDateSearch,
+            endDate: req.query.endDateSearch,
         };
         data = await biddingPackageService.searchBiddingPackage(
             req.portal,
-            params
+            params,
+            req.user.company._id
         );
         await Log.info(req.user.email, "GET_BIDDING_PACKAGE", req.portal);
         res.status(200).json({
@@ -42,7 +48,8 @@ exports.getDetailBiddingPackage = async (req, res) => {
     try {
         data = await biddingPackageService.getDetailBiddingPackage(
             req.portal,
-            req.params
+            req.params,
+            req.user.company._id
         );
         await Log.info(
             req.user.email,
@@ -77,7 +84,8 @@ exports.createNewBiddingPackage = async (req, res) => {
     try {
         data = await biddingPackageService.createNewBiddingPackage(
             req.portal,
-            req.body
+            req.body,
+            req.user.company._id
         );
         await Log.info(req.user.email, "CREATE_BIDDING_PACKAGE", req.portal);
         res.status(200).json({
@@ -105,7 +113,8 @@ exports.editBiddingPackage = async (req, res) => {
         data = await biddingPackageService.editBiddingPackage(
             req.portal,
             req.body,
-            req.params
+            req.params,
+            req.user.company._id
         );
         await Log.info(req.user.email, "EDIT_BIDDING_PACKAGE", req.portal);
         res.status(200).json({
@@ -132,7 +141,8 @@ exports.deleteBiddingPackage = async (req, res) => {
     try {
         data = await biddingPackageService.deleteBiddingPackage(
             req.portal,
-            req.params.id
+            req.params.id,
+            req.user.company._id
         );
         await Log.info(req.user.email, "DELETE_BIDDING_PACKGAGE", req.portal);
         res.status(200).json({
