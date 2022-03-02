@@ -2,6 +2,7 @@ const { BiddingPackage, Employee } = require("../../../models");
 const fs = require("fs");
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getEmployeeInforByListId } = require("../profile/profile.service");
+const moment = require("moment");
 
 /**
  * Lấy danh sách thông tin nghỉ phép
@@ -325,7 +326,7 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
 
         people = biddingPackage.keyPeople.map((item) => item.employees);
     }
-    let rootPath = `${SERVER_BACKUP_DIR}/${portal}/document`;
+    let rootPath = `${SERVER_BACKUP_DIR}/${portal}`;
     people = Array.prototype.concat.apply([], people);
     people.map((x) => {
         if (
@@ -365,10 +366,13 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
             );
         }
         x.experiences.map((y) => {
+            const startDate = y.startDate
+                ? moment(new Date(y.startDate)).format("DD-MM-YYYY")
+                : moment(new Date()).format("DD-MM-YYYY");
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/experiences/${startDate}-${y.file}`,
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
@@ -377,10 +381,13 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
                 );
         });
         x.careerPositions.map((y) => {
+            const startDate = y.startDate
+                ? moment(new Date(y.startDate)).format("DD-MM-YYYY")
+                : moment(new Date()).format("DD-MM-YYYY");
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/professional-experiences/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/professional-experiences/${startDate}-${y.file}`,
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
@@ -389,10 +396,13 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
                 );
         });
         x.degrees.map((y) => {
+            const year = y.year
+                ? moment(new Date(y.year)).format("DD-MM-YYYY")
+                : moment(new Date()).format("DD-MM-YYYY");
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/degrees/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/degrees/${year}-${y.file}`,
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
@@ -401,10 +411,13 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
                 );
         });
         x.certificates.map((y) => {
+            const startDate = y.startDate
+                ? moment(new Date(y.startDate)).format("DD-MM-YYYY")
+                : moment(new Date()).format("DD-MM-YYYY");
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/certificates/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/certificates/${startDate}-${y.file}`,
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
