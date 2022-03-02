@@ -376,6 +376,42 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
                     }
                 );
         });
+        x.careerPositions.map((y) => {
+            if (y.urlFile)
+                fs.copyFile(
+                    `${SERVER_DIR}/${y.urlFile}`,
+                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    (err) => {
+                        if (err) {
+                            console.log("Error Found:", err);
+                        }
+                    }
+                );
+        });
+        x.degrees.map((y) => {
+            if (y.urlFile)
+                fs.copyFile(
+                    `${SERVER_DIR}/${y.urlFile}`,
+                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    (err) => {
+                        if (err) {
+                            console.log("Error Found:", err);
+                        }
+                    }
+                );
+        });
+        x.certificates.map((y) => {
+            if (y.urlFile)
+                fs.copyFile(
+                    `${SERVER_DIR}/${y.urlFile}`,
+                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    (err) => {
+                        if (err) {
+                            console.log("Error Found:", err);
+                        }
+                    }
+                );
+        });
     });
     if (fs.existsSync(rootPath)) return rootPath;
 };
