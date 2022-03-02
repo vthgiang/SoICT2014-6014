@@ -325,7 +325,7 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
 
         people = biddingPackage.keyPeople.map((item) => item.employees);
     }
-    let rootPath = `${SERVER_UPLOAD_DIR}/${portal}`;
+    let rootPath = `${SERVER_UPLOAD_DIR}/${portal}/document`;
     people = Array.prototype.concat.apply([], people);
     people.map((x) => {
         if (

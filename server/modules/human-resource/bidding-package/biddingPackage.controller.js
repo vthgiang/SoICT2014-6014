@@ -208,7 +208,7 @@ exports.getBiddingPackageDocument = async (req, res) => {
                             }
                         );
                     }
-                }, 2000);
+                }, 3000);
             });
             archive.finalize("close");
         }
