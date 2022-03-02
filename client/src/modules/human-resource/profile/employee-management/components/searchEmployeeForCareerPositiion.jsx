@@ -35,6 +35,7 @@ class SearchEmployeeForCareerPosition extends Component {
             searchForPackage: true,
             organizationalUnits: organizationalUnits,
             status: 'active',
+            careerPosition: [],
             page: 0,
             limit: 5,
         }
@@ -136,8 +137,13 @@ class SearchEmployeeForCareerPosition extends Component {
      */
 
     handlePosition = (value) => {
-        
-        this.setState({ careerPosition: value[0] });
+        if (value.length === 0) {
+            value = []
+        };
+        this.setState(state => ({
+            ...state,
+            careerPosition: value
+        }))
     };
 
     
@@ -195,24 +201,6 @@ class SearchEmployeeForCareerPosition extends Component {
         });
         this.props.getAllEmployee(this.state);
     }
-
-    updateSearchData = async (data) => {
-        let { careerPosition, professionalSkill, majorSearch,
-            certificatesCount, certificates, certificatesEndDate,
-            exp, sameExp, field, action } = data;
-        this.setState({
-            careerPosition: careerPosition,
-            professionalSkill: professionalSkill,
-            majors: majorSearch,
-            certificates: certificates,
-            certificatesCount: certificatesCount,
-            certificatesEndDate: certificatesEndDate,
-            exp: exp,
-            sameExp: sameExp,
-            package: data.package,
-        });
-
-    }
     
     render() {
         console.log('oppend', this.state);
@@ -261,7 +249,15 @@ class SearchEmployeeForCareerPosition extends Component {
                         {/* Vị trí công việc  */}
                         <div className="form-group col-md-4">
                             <label className="form-control-static">Vị trí công việc</label>
-                            <SelectBox
+                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                options={{ nonSelectedText: 'Chọn vị trí công việc', allSelectedText: "Chọn tất cả" }}
+                                value={careerPosition}
+                                items={ listPosition ? listPosition?.map(x => {
+                                    return { text: x.name, value: x._id }
+                                }) : []} 
+                                onChange={this.handlePosition}>
+                            </SelectMulti>
+                            {/* <SelectBox
                                 id={`careerPosition`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
@@ -272,7 +268,7 @@ class SearchEmployeeForCareerPosition extends Component {
                                 onChange={this.handlePosition}
                                 value={careerPosition}
                                 multiple={false}
-                            />
+                            /> */}
                         </div>
                         {/* Trình độ chuyên môn  */}
                         <div className="form-group col-md-4">
@@ -458,9 +454,6 @@ class SearchEmployeeForCareerPosition extends Component {
                     <EmployeeEditFrom
                         _id={currentRow ? currentRow._id : ""}
                     />
-                }
-                {/** modal import - export */
-                    this.state.importSearch && <SearchDataImportForm updateSearchData={this.updateSearchData} />
                 }
             </div>
         );

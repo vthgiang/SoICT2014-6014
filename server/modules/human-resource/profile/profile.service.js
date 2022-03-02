@@ -252,7 +252,7 @@ exports.updatePersonalInformation = async (portal, userId, data, avatar) => {
         temporaryResidenceCountry: data.temporaryResidenceCountry,
         temporaryResidenceCity: data.temporaryResidenceCity,
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
-        temporaryResidenceWard: data.temporaryResidenceWard
+        temporaryResidenceWard: data.temporaryResidenceWard,
     };
 
     // Cập nhật thông tin cơ bản vào database
@@ -973,7 +973,10 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     certificates = this.mergeUrlFileToObject(fileCertificate, certificates);
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     experiences = this.mergeUrlFileToObject(fileExperience, experiences);
-    careerPositions = this.mergeUrlFileToObject(fileCareerPosition, careerPositions);
+    careerPositions = this.mergeUrlFileToObject(
+        fileCareerPosition,
+        careerPositions
+    );
     files = this.mergeUrlFileToObject(file, files);
 
     // file đính kèm bảo hiểm y tế
@@ -1293,7 +1296,7 @@ exports.updateEmployeeInformation = async (
         deleteCareerPosition,
         editCareerPosition,
         createCareerPosition,
-        fileCareerPosition  
+        fileCareerPosition
     );
     // oldEmployee.major = deleteEditCreateObjectInArrayObject(oldEmployee.major, deleteMajor, editMajor, createMajor, fileMajor);
     oldEmployee.degrees = deleteEditCreateObjectInArrayObject(
@@ -1405,7 +1408,8 @@ exports.updateEmployeeInformation = async (
         : null;
     oldEmployee.contractType = employee.contractType;
     oldEmployee.biddingPackageEndDate = employee.biddingPackageEndDate;
-    oldEmployee.biddingPackagePersonalStatus = employee.biddingPackagePersonalStatus;
+    oldEmployee.biddingPackagePersonalStatus =
+        employee.biddingPackagePersonalStatus;
     oldEmployee.houseHold = houseHold;
 
     // Edit  thông tin nhân viên
@@ -1630,7 +1634,6 @@ exports.deleteEmployee = async (portal, id) => {
     await Timesheet(connect(DB_CONNECTION, portal)).deleteMany({
         employee: id,
     });
-    // console.log('employee', employee)
     if (employee?.avatar) {
         let deleteAvatar = `.${employee.avatar}`;
         if (
@@ -2139,7 +2142,6 @@ exports.importUpdateEmployeeInfor = async (portal, company, data) => {
                 data[i]
             );
         }
-        // console.log('dataPoss', data[i].positionId);
 
         const checkEmployeeNumber = employeeInfo.filter(
             (y) =>
@@ -2688,23 +2690,39 @@ const checkEmployeePackageValid = async (employees, require, otherEmployee) => {
 };
 
 exports.searchEmployeeForPackage = async (portal, params, companyId) => {
-    console.log("params", params);
+    // console.log("params", params);
     let noResultsPerPage = parseInt(params.limit);
     let pageNumber = parseInt(params.page);
     let keySearch = [{ $match: { status: "active" } }];
 
-    // Bắt sựu kiện theo trình độ chuyên môn
-    // if (params.professionalSkill && params.professionalSkill !== "") {
-    //   keySearch = [
-    //     ...keySearch,
-    //     { $match: { professionalSkill: params.professionalSkill } },
-    //   ];
+    // if (
+    //     params.biddingPackagePersonalStatus &&
+    //     params.biddingPackagePersonalStatus.length
+    // ) {
+    //     keySearch = [
+    //         ...keySearch,
+    //         {
+    //             $match: {
+    //                 biddingPackagePersonalStatus: {
+    //                     $in: params.biddingPackagePersonalStatus,
+    //                 },
+    //             },
+    //         },
+    //     ];
+    // } else {
+    //     keySearch = [
+    //         ...keySearch,
+    //         {
+    //             $match: {
+    //                 biddingPackagePersonalStatus: 1,
+    //             },
+    //         },
+    //     ];
     // }
 
-    // Bắt sựu kiện theo chuyên ngành
     if (params.majors) {
+        // Bắt sựu kiện theo chuyên ngành
         if (params.professionalSkill) {
-            console.log("professionalSkill", params.professionalSkill);
             keySearch = [
                 ...keySearch,
                 {
@@ -2757,8 +2775,6 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
                 },
             },
         ];
-
-        console.log("yearOf", year);
     }
 
     // Bắt sựu kiện theo tên chứng chỉ
@@ -2803,9 +2819,7 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
             ...keySearch,
             {
                 $group: {
-                    _id: {
-                        employee: "$_id",
-                    },
+                    _id: "$_id",
                     careerPositions: { $first: "$careerPositions" },
                     count: { $sum: 1 },
                 },
@@ -2817,7 +2831,11 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
     }
 
     // Bắt sựu kiện tìm kiếm vị trí cv
-    if (params.careerPosition && params.sameExp) {
+    if (
+        params.careerPosition &&
+        params.careerPosition?.length &&
+        params.sameExp
+    ) {
         keySearch = [
             ...keySearch,
             {
@@ -2825,15 +2843,17 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
             },
             {
                 $match: {
-                    "careerPositions.careerPosition": mongoose.Types.ObjectId(
-                        params.careerPosition
-                    ),
+                    "careerPositions.careerPosition": {
+                        $in: params.careerPosition.map((item) =>
+                            mongoose.Types.ObjectId(item)
+                        ),
+                    },
                 },
             },
         ];
     }
 
-    if (params.sameExp) {
+    if (params.sameExp || params.numblePackageWorkInCarreer) {
         let expInMiliseconds = params.sameExp * 86400000 * 365;
 
         keySearch = [
@@ -2843,7 +2863,7 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
             },
             {
                 $addFields: {
-                    "careerPositions.empId": "$_id",
+                    "careerPositions._id": "$_id",
                 },
             },
             {
@@ -2867,53 +2887,66 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
         ];
 
         // kiểm tra thêm điều kiện để dùng group
-        let groupCondition = {
-            employee: "$empId",
-        };
-        if (params.position) {
-            groupCondition = { ...groupCondition, position: "$position" };
-        }
 
         keySearch = [
             ...keySearch,
             {
                 $group: {
-                    _id: groupCondition,
+                    _id: "$_id",
                     totalExp: {
                         $sum: "$dateDifference",
                     },
-                    countPackage: {
+                    count: {
                         $sum: 1,
                     },
                 },
             },
-            {
-                $match: {
-                    totalExp: {
-                        $gte: expInMiliseconds,
+        ];
+
+        if (params.sameExp) {
+            keySearch = [
+                ...keySearch,
+                {
+                    $match: {
+                        totalExp: {
+                            $gte: expInMiliseconds,
+                        },
                     },
                 },
-            },
-        ];
+            ];
+        }
+
+        if (params.numblePackageWorkInCarreer) {
+            keySearch = [
+                ...keySearch,
+                {
+                    $match: {
+                        count: {
+                            $gte: params.numblePackageWorkInCarreer,
+                        },
+                    },
+                },
+            ];
+        }
     }
+
+    // console.log("xxxxxxxxxxxxxx", keySearch);
 
     // Lấy danh sách nhân viên
     let listData = [];
     let listEmployees = [];
     let totalList = 1000;
 
-    console.log("keySearch", keySearch);
-
     listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(
         keySearch
     );
 
-    let listEmpId = [];
-    if (params.sameExp || params.certificates) {
-        listEmpId = listData.map((e) => e._id.employee.toString());
-    } else {
-        listEmpId = listData.map((e) => e._id.toString());
-    }
+    let listEmpId = listData.map((e) => e._id.toString());
+    // if (params.sameExp || params.certificates) {
+    //     listEmpId = listData.map((e) => e._id.employee.toString());
+    // } else {
+    //     listEmpId = listData.map((e) => e._id.toString());
+    // }
 
     return listEmpId;
 };
@@ -2938,11 +2971,18 @@ exports.getEmployeeByPackageId = async (
     );
 
     for (const require of biddingPackage[0]?.keyPersonnelRequires) {
+        let careerPosition = require?.careerPosition
+            ? [String(require?.careerPosition)]
+            : [];
+        let sameCareerPositions = require?.sameCareerPosition
+            ? require?.sameCareerPosition.map((item) => String(item))
+            : [];
+        let careerPositions = Array.from(
+            new Set(careerPosition.concat(sameCareerPositions))
+        );
         if (require) {
             let params = {
-                careerPosition: require?.careerPosition
-                    ? String(require?.careerPosition)
-                    : NaN,
+                careerPosition: careerPositions ? careerPositions : NaN,
                 professionalSkill: require?.professionalSkill
                     ? String(require?.professionalSkill)
                     : NaN,
@@ -2957,6 +2997,9 @@ exports.getEmployeeByPackageId = async (
                 certificatesCount: require?.certificateRequirements?.count
                     ? require?.certificateRequirements?.count
                     : 0,
+                certificatesEndDate: require?.certificatesEndDate?.count
+                    ? require?.certificatesEndDate?.count
+                    : 0,
                 exp: require?.numberYearsOfExperience
                     ? require?.numberYearsOfExperience
                     : NaN,
@@ -2969,7 +3012,6 @@ exports.getEmployeeByPackageId = async (
                 page: 0,
                 limit: 500,
             };
-            // console.log("params", params)
             let employee = await this.searchEmployeeForPackage(
                 portal,
                 params,
@@ -2979,7 +3021,6 @@ exports.getEmployeeByPackageId = async (
             employees.push(employee);
         }
     }
-
     console.log("employees", employees);
 
     let [valid] = await Promise.all([
@@ -2996,18 +3037,11 @@ exports.getEmployeeByPackageId = async (
 
     let listEmployees = [];
     if (data.isComplete == 1) {
-        // console.log("data", data.result[0]);
-        // console.log("data", data.result[1]);
-
         for (const [index, item] of data.result.entries()) {
-            let a = await this.getEmployeeInforByListId(
-                portal,
-                item,
-                {
-                    page: 0,
-                    limit: 100,
-                }
-            );
+            let a = await this.getEmployeeInforByListId(portal, item, {
+                page: 0,
+                limit: 100,
+            });
             listEmployees.push({
                 careerPosition:
                     biddingPackage[0]?.keyPersonnelRequires[index]
@@ -3150,11 +3184,7 @@ const findEmployee = async (
     }
 };
 
-exports.getEmployeeInforByListId = async (
-    portal,
-    listId,
-    params
-) => {
+exports.getEmployeeInforByListId = async (portal, listId, params) => {
     listEmployees = await Employee(connect(DB_CONNECTION, portal))
         .find({
             _id: {
@@ -3179,8 +3209,6 @@ exports.getEmployeeInforByListId = async (
         },
     });
 
-    
-
     let arrEmployee = [];
     for (let i = 0; i < listEmployees.length; i++) {
         let idCompany = listEmployees[i].company;
@@ -3200,7 +3228,6 @@ exports.getEmployeeInforByListId = async (
 
         listEmployees[i].company = company;
 
-
         let newItem = Object.assign(listEmployees[i]._doc, value);
         arrEmployee.push(newItem);
 
@@ -3209,7 +3236,6 @@ exports.getEmployeeInforByListId = async (
             ...value,
             company,
         };
-
     }
 
     return {
