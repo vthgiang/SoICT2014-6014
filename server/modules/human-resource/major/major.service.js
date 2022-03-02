@@ -7,10 +7,12 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người dùng
  */
-exports.searchMajor = async (portal, params) => {
-    let keySearch = {};
+exports.searchMajor = async (portal, params, company) => {
+    let keySearch = {
+        company: company,
+    };
 
-    if (params?.majorName) {
+    if (params?.majorName && params.majorName != "") {
         keySearch = {
             ...keySearch,
             name: {
@@ -19,20 +21,30 @@ exports.searchMajor = async (portal, params) => {
             },
         };
     }
-    let task = await Task(connect(DB_CONNECTION, portal)).find({});
-    // console.log('key', params, keySearch, portal, task.length);
+    if (params.limit === undefined && params.page === undefined) {
+        console.log("DDDDDDDDDDDDDDDDDDDDDDDDDD", params);
+    }
 
-    let listMajor = await Major(connect(DB_CONNECTION, portal))
-        .find(keySearch)
-        .populate([{ path: "parents" }]);
-    let totalList = await Major(connect(DB_CONNECTION, portal)).countDocuments(
-        keySearch
-    );
-
-    return {
-        totalList,
-        listMajor,
-    };
+    if (params.limit === undefined && params.page === undefined) {
+        let data = await Major(connect(DB_CONNECTION, portal)).find(keySearch);
+        return {
+            listMajor: data,
+            totalList: data.length,
+        };
+    } else {
+        let data = await Major(connect(DB_CONNECTION, portal)).find(keySearch);
+        listMajor = await Major(connect(DB_CONNECTION, portal))
+            .find(keySearch)
+            .sort({
+                name: 1,
+            })
+            .skip(params.page)
+            .limit(params.limit);
+        return {
+            listMajor: listMajor,
+            totalList: data.length,
+        };
+    }
 };
 
 /**
@@ -40,14 +52,15 @@ exports.searchMajor = async (portal, params) => {
  * @data : dữ liệu chuyên ngành tương đương mới
  *
  */
-exports.createNewMajor = async (portal, data) => {
+exports.createNewMajor = async (portal, data, company) => {
     await Major(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         code: data.code,
         description: data.description,
+        company: company,
     });
 
-    return await this.searchMajor(portal, {});
+    return await this.searchMajor(portal, {}, company);
 };
 
 /**
@@ -55,7 +68,7 @@ exports.createNewMajor = async (portal, data) => {
  * @id : Id chuyên ngành muốn chỉnh sửa
  * @data : Dữ liệu thay đổi
  */
-exports.editMajor = async (portal, data, params) => {
+exports.editMajor = async (portal, data, params, company) => {
     await Major(connect(DB_CONNECTION, portal)).updateOne(
         { _id: params.id },
         {
@@ -63,12 +76,13 @@ exports.editMajor = async (portal, data, params) => {
                 name: data.name,
                 code: data.code,
                 description: data.description,
+                company: company,
             },
         },
         { $new: true }
     );
 
-    return await this.searchMajor(portal, {});
+    return await this.searchMajor(portal, {}, company);
 };
 
 // =================DELETE=====================
@@ -77,7 +91,7 @@ exports.editMajor = async (portal, data, params) => {
  * Xoá chuyên ngành
  * @data : list id xóa
  */
-exports.deleteMajor = async (portal, data, id) => {
+exports.deleteMajor = async (portal, data, id, company) => {
     await Major(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
     const majors = await Major(connect(DB_CONNECTION, portal)).find({
         parents: id,
@@ -89,5 +103,5 @@ exports.deleteMajor = async (portal, data, id) => {
         major.parents.splice(major.parents.indexOf(majors[i]._id), 1);
         await major.save();
     }
-    return await this.searchMajor(portal, {});
+    return await this.searchMajor(portal, {}, company);
 };

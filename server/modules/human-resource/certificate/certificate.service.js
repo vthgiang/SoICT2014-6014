@@ -19,18 +19,31 @@ exports.searchCertificate = async (portal, params) => {
             },
         };
     }
-    console.log("key", params, keySearch, portal);
 
-    let listCertificate = await Certificate(connect(DB_CONNECTION, portal))
-        .find({})
-    let totalList = await Certificate(
-        connect(DB_CONNECTION, portal)
-    ).countDocuments({});
-
-    return {
-        totalList,
-        listCertificate,
-    };
+    if (params.limit === undefined && params.page === undefined) {
+        let data = await Certificate(connect(DB_CONNECTION, portal)).find(
+            keySearch
+        );
+        return {
+            listCertificate: data,
+            totalList: data.length,
+        };
+    } else {
+        let data = await Certificate(connect(DB_CONNECTION, portal)).find(
+            keySearch
+        );
+        listCertificate = await Certificate(connect(DB_CONNECTION, portal))
+            .find(keySearch)
+            .sort({
+                name: 1,
+            })
+            .skip(params.page)
+            .limit(params.limit);
+        return {
+            listCertificate: listCertificate,
+            totalList: data.length,
+        };
+    }
 };
 
 /**
@@ -38,12 +51,13 @@ exports.searchCertificate = async (portal, params) => {
  * @data : dữ liệu chứng chỉ mới
  *
  */
-exports.crateNewCertificate = async (portal, data) => {
+exports.createNewCertificate = async (portal, data, company) => {
     let certificate;
     certificate = await Certificate(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         abbreviation: data.abbreviation,
         description: data.description,
+        company: company,
     });
 
     return await this.searchCertificate(portal, {});
@@ -54,7 +68,6 @@ exports.crateNewCertificate = async (portal, data) => {
  * @id : Id chứng chỉ muốn xoá
  */
 exports.deleteCertificate = async (portal, id) => {
-    console.log("ddddddddddddddd", id)
     await Certificate(connect(DB_CONNECTION, portal)).deleteOne({
         _id: id,
     });
@@ -67,8 +80,7 @@ exports.deleteCertificate = async (portal, id) => {
  * @id : Id chứng chỉ muốn chỉnh sửa
  * @data : Dữ liệu thay đổi
  */
-exports.updateCertificate = async (portal, data, id) => {
-    console.log("aaaaaaaaaaa", data, id)
+exports.updateCertificate = async (portal, data, id, company) => {
     await Certificate(connect(DB_CONNECTION, portal)).updateOne(
         { _id: id },
         {
@@ -76,6 +88,7 @@ exports.updateCertificate = async (portal, data, id) => {
                 name: data.name,
                 abbreviation: data.abbreviation,
                 description: data.description,
+                company: company,
             },
         },
         { $new: true }

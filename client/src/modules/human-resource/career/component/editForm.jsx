@@ -24,28 +24,18 @@ class EditForm extends Component {
 
     handleCode = (e) => {
         const { value } = e.target;
-        let msg;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateCode(translate, value, 1, 255);
         this.setState({
             code: value,
-            codeError: msg,
+            codeError: message,
         });
     }
 
-    // handleOtherName = (e) => {
-    //     const { value } = e.target;
-    //     let msg;
-    //     this.setState({
-    //         otherNames: value,
-    //         codeError: msg,
-    //     });
-    // }
-
     handleDescription = (e) => {
         const { value } = e.target;
-        let msg;
         this.setState({
             description: value,
-            codeError: msg,
         });
     }
 
@@ -133,15 +123,14 @@ class EditForm extends Component {
                             <input type="text" className="form-control" onChange={this.handleName} value={name} />
                             <ErrorLabel content={nameError} />
                         </div>
-                        <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${codeError === undefined ? "" : "has-error"}`}>
                             <label>Nhãn dán<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} value={code} />
                             <ErrorLabel content={codeError} />
                         </div>
-                        <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group`}>
                             <label>Mô tả</label>
                             <input type="text" className="form-control" onChange={this.handleDescription} value={description} />
-                            <ErrorLabel content={codeError} />
                         </div>
                         {/* <div className="form-group">
                             <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>

@@ -8,7 +8,10 @@ const { getEmployeeInforByListId } = require("../profile/profile.service");
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người dùng
  */
-exports.searchBiddingPackage = async (portal, params) => {
+exports.searchBiddingPackage = async (portal, params, company) => {
+    // let keySearch = {
+    //     company: company,
+    // };
     let keySearch = {};
 
     if (params?.name) {
@@ -21,27 +24,85 @@ exports.searchBiddingPackage = async (portal, params) => {
         };
     }
 
-    let listBiddingPackages = await BiddingPackage(
-        connect(DB_CONNECTION, portal)
-    )
-        .find()
-        .populate([
-            {
-                path: "keyPeople.employees",
-                populate: { path: "employees" },
+    if (params?.code) {
+        keySearch = {
+            ...keySearch,
+            code: {
+                $regex: params.code,
+                $options: "i",
             },
-        ]);
-    // .sort({
-    //     'createdAt': 'desc'
-    // }).skip(params.limit * (params.page - 1)).limit(params.limit);
-    let totalList = await BiddingPackage(
-        connect(DB_CONNECTION, portal)
-    ).countDocuments();
+        };
+    }
 
-    return {
-        totalList,
-        listBiddingPackages,
-    };
+    if (params.status && params.status.length) {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: params.status,
+            },
+        };
+    }
+
+    if (params.type && params.type.length) {
+        keySearch = {
+            ...keySearch,
+            type: {
+                $in: params.type,
+            },
+        };
+    }
+
+    if (params.endDate) {
+        let date = new Date(params.endDate);
+        console.log("aaaaaaâ", date);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $lte: date,
+            },
+        };
+    }
+
+    if (params.startDate) {
+        let date = new Date(params.startDate);
+        console.log("start", params.startDate);
+        console.log("start", date);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gte: date,
+            },
+        };
+    }
+
+    if (params.limit === undefined && params.page === undefined) {
+        let data = await BiddingPackage(connect(DB_CONNECTION, portal)).find(
+            keySearch
+        );
+        return {
+            listBiddingPackages: data,
+            totalList: data.length,
+        };
+    } else {
+        let data = await BiddingPackage(connect(DB_CONNECTION, portal)).find(
+            keySearch
+        );
+        listBiddingPackages = await BiddingPackage(
+            connect(DB_CONNECTION, portal)
+        )
+            .find(keySearch)
+            .sort({
+                endDate: -1,
+            })
+            .skip(params.page)
+            .limit(params.limit);
+        return {
+            listBiddingPackages: listBiddingPackages,
+            totalList: data.length,
+        };
+    }
 };
 
 /**
@@ -85,7 +146,7 @@ exports.getDetailBiddingPackage = async (portal, params) => {
  * @data : dữ liệu chuyên ngành tương đương mới
  *
  */
-exports.createNewBiddingPackage = async (portal, data) => {
+exports.createNewBiddingPackage = async (portal, data, company) => {
     position = await BiddingPackage(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         code: data.code,
@@ -95,6 +156,7 @@ exports.createNewBiddingPackage = async (portal, data) => {
         type: data.type ? data.type : 1,
         description: data.description,
         keyPersonnelRequires: data.keyPersonnelRequires,
+        company: company,
     });
 
     return await this.searchBiddingPackage(portal, {});
@@ -104,7 +166,7 @@ exports.createNewBiddingPackage = async (portal, data) => {
  * Chỉnh sửa vị trí công việc
  * @data dữ liệu chỉnh sửa
  */
-exports.editBiddingPackage = async (portal, data, params) => {
+exports.editBiddingPackage = async (portal, data, params, company) => {
     console.log(data);
 
     if (data?.addEmployeeForPackage) {
@@ -150,6 +212,7 @@ exports.editBiddingPackage = async (portal, data, params) => {
             { _id: params.id },
             {
                 $set: {
+                    company: company,
                     name: data.name,
                     code: data.code,
                     startDate: data.startDate,
@@ -216,9 +279,6 @@ exports.deleteBiddingPackage = async (portal, id) => {
     let listBiddingPackages = await BiddingPackage(
         connect(DB_CONNECTION, portal)
     ).find();
-    // .sort({
-    //     'createdAt': 'desc'
-    // }).skip(params.limit * (params.page - 1)).limit(params.limit);
     let totalList = await BiddingPackage(
         connect(DB_CONNECTION, portal)
     ).countDocuments();

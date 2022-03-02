@@ -16,7 +16,7 @@ exports.searchCareerPosition = async (req, res) => {
 
         let params = {
             name: req.query.name,
-            page: Number(req.query.page) ? Number(req.query.page) : 1,
+            page: Number(req.query.page) ? Number(req.query.page) : 0,
             limit: Number(req.query.limit),
         }
         data = await careerPositionService.searchCareerPosition(req.portal, params);

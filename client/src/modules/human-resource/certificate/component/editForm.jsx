@@ -24,10 +24,11 @@ class EditForm extends Component {
 
     handleAbbreviation = (e) => {
         const { value } = e.target;
-        let msg;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateCode(translate, value, 1, 255);
         this.setState({
             abbreviation: value,
-            codeError: msg,
+            codeError: message,
         });
     }
 
@@ -129,7 +130,7 @@ class EditForm extends Component {
                         <input type="text" className="form-control" onChange={this.handleName} value={name} />
                         <ErrorLabel content={nameError} />
                     </div>
-                    <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                    <div className={`form-group ${codeError === undefined ? "" : "has-error"}`}>
                         <label>Tên viết tắt<span className="text-red">*</span></label>
                         <input type="text" className="form-control" onChange={this.handleAbbreviation} value={abbreviation} />
                         <ErrorLabel content={codeError} />

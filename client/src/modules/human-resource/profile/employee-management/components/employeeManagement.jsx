@@ -58,10 +58,10 @@ const EmployeeManagement = (props) => {
 
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
-        props.getListMajor({ name: '', page: 1, limit: 1000 });
-        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
-        props.getListCertificate({ name: '', page: 1, limit: 1000 });
-        props.getListBiddingPackage({ name: '', page: 1, limit: 1000 });
+        props.getListMajor({ name: '', page: 0, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
+        props.getListCertificate({ name: '', page: 0, limit: 1000 });
+        props.getListBiddingPackage({ name: '', page: 0, limit: 1000 });
         props.getDepartment();
     }, [])
 

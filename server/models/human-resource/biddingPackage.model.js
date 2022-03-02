@@ -81,6 +81,10 @@ const BiddingPackageSchema = new Schema(
                 ],
             },
         ],
+        company: {
+            type: Schema.Types.ObjectId,
+            ref: "Company",
+        },
     },
     {
         timestamps: true,

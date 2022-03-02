@@ -18,7 +18,16 @@ function getAll(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages`,
         method: 'GET',
-        params: data
+        params: {
+            status: data ? data.status : data,
+            type: data ? data.type : data,
+            page: data ? data.page : data,
+            limit: data ? data.limit : data,
+            startDateSearch: data ? data.startDateSearch : data,
+            endDateSearch: data ? data.endDateSearch : data,
+            name: data ? data.nameSearch : data,
+            code: data ? data.codeSearch : data,
+        }
     }, false, true, 'human_resource.profile.bidding_package');
 }
 

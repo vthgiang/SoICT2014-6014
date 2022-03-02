@@ -16,13 +16,13 @@ function CertificateTable(props) {
     console.log("prob ------", props);
 
     const tableId_constructor = "table-manage-certificate";
-    const defaultConfig = { name: '', page: 1, limit: 100 }
+    const defaultConfig = { name: '', page: 0, limit: 100 }
     const limit = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
         tableId: tableId_constructor,
         limit: limit,
-        page: 1,
+        page: 0,
         name: '', // Mặc định tìm kiếm theo tên
     })
 
@@ -33,6 +33,14 @@ function CertificateTable(props) {
             ...state,
         });
         window.$('#modal-create-certificate').modal('show');
+    }
+
+    const setName = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            name: value
+        });
     }
 
     const handleEdit = async (certificate) => {
@@ -71,9 +79,18 @@ function CertificateTable(props) {
         props.get(data);
     }
 
+    const searchWithOption = async () => {
+        const data = {
+            limit: state.limit,
+            page: state.page,
+            name: state.name
+        };
+        await props.get(data);
+    }
+
     useEffect(() => {
         props.get({ name: state.name, page: state.page, limit: state.limit });
-        props.getListMajor({ name: '', page: 1, limit: 1000 });
+        props.getListMajor({ name: '', page: 0, limit: 1000 });
     }, [])
 
     const { certificate, major, translate } = props;
@@ -83,12 +100,11 @@ function CertificateTable(props) {
     return (
         <React.Fragment>
 
-            {/* Button kiểm tra tất cả bằng cấp - chứng chỉ hợp lệ không*/}
-            <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
+            {/* Button thêm bằng cấp - chứng chỉ mới */}
+            <div style={{ display: 'flex', marginBottom: 20, marginTop: 20, float: 'right' }}>
                 <a className="btn btn-success pull-right" href="#modal-create-certificate" title="Add certificate" onClick={handleAddCertificate}>Thêm</a>
             </div>
 
-            {/* Button thêm bằng cấp - chứng chỉ mới */}
             {
                 <CreateForm
                     list={major?.listMajor}
@@ -96,34 +112,16 @@ function CertificateTable(props) {
             }
 
             {/* Thanh tìm kiếm */}
-            {/* <div className="form-inline">
-                Mã tài sản
-                <div className="form-group">
-                    <label className="form-control-static">Chuyên ngành</label>
+            <div className="form-inline" style={{ marginBottom: '20px', marginTop: '20px' }}>
+                <div className="form-group" style={{ marginRight: '20px' }}>
+                    <label className="form-control-static" style={{ marginRight: '20px' }}>Tên chứng chỉ</label>
                     <input type="text" className="form-control" name="name" onChange={setName} placeholder={"Nhập tên bằng cấp - chứng chỉ"} autoComplete="off" />
                 </div>
                 <div className="form-group">
                     <label></label>
                     <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={searchWithOption}>{translate('asset.general_information.search')}</button>
                 </div>
-            </div> */}
-
-            {/* Kết quả kiểm tra trùng lặp */}
-            {/* {certificateDuplicate && certificateDuplicate.length !== 0 && (
-                <React.Fragment>
-                    <br />
-                    <p style={{ fontWeight: "bold", color: "orangered" }}>Các bằng cấp - chứng chỉ sau bị trùng: {certificateDuplicate.join(', ')}</p>
-
-                </React.Fragment>
-            )}
-            {certificateDuplicate && certificateDuplicate.length == 0 && (
-                <React.Fragment>
-                    <br />
-                    <p style={{ fontWeight: "bold", color: "green" }}>Tất cả bằng cấp - chứng chỉ đều hợp lệ</p>
-
-                </React.Fragment>
-            )} */}
-
+            </div>
 
             {/* Bảng dữ liệu bằng cấp - chứng chỉ */}
             <table className="table table-hover table-striped table-bordered" id={tableId}>

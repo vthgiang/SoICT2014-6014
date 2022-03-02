@@ -32,10 +32,10 @@ const SearchEmployeeForPackage = (props) => {
 
     useEffect(() => {
         let listRoles = role?.list.filter(x => x.type.name !== "Root");
-        props.getListMajor({ name: '', page: 1, limit: 1000 });
-        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
-        props.getListCertificate({ name: '', page: 1, limit: 1000 });
-        props.getAllBiddingPackage({ name: '', page: 1, limit: 1000 });
+        props.getListMajor({ name: '', page: 0, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
+        props.getListCertificate({ name: '', page: 0, limit: 1000 });
+        props.getAllBiddingPackage({ name: '', page: 0, limit: 1000 });
     }, [])
 
     useEffect(() => {
