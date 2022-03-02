@@ -199,19 +199,19 @@ exports.getBiddingPackageDocument = async (req, res) => {
                     res.download(rootPath + "/document.zip");
                 }, 3000);
                 // xong rồi xóa thư mục đi
-                setTimeout(() => {
-                    console.log("xóa file");
-                    if (
-                        fs.existsSync(`${SERVER_BACKUP_DIR}/${req.portal}/document`)
-                    ) {
-                        exec(
-                            `rm -rf ${SERVER_BACKUP_DIR}/${req.portal}/document`,
-                            function (err) {
-                                console.log("er", err);
-                            }
-                        );
-                    }
-                }, 3000);
+                // setTimeout(() => {
+                //     console.log("xóa file");
+                //     if (
+                //         fs.existsSync(`${SERVER_BACKUP_DIR}/${req.portal}/document`)
+                //     ) {
+                //         exec(
+                //             `rm -rf ${SERVER_BACKUP_DIR}/${req.portal}/document`,
+                //             function (err) {
+                //                 console.log("er", err);
+                //             }
+                //         );
+                //     }
+                // }, 3000);
             });
             archive.finalize("close");
         }
