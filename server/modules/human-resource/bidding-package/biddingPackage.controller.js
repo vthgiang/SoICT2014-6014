@@ -197,8 +197,13 @@ exports.getBiddingPackageDocument = async (req, res) => {
                 setTimeout(() => {
                     console.log("gửi file");
                     res.download(rootPath + "/document.zip");
-                    // xong rồi xóa thư mục đi
-                    if (fs.existsSync(`${SERVER_BACKUP_DIR}/${req.portal}/document`)) {
+                }, 3000);
+                // xong rồi xóa thư mục đi
+                setTimeout(() => {
+                    console.log("xóa file");
+                    if (
+                        fs.existsSync(`${SERVER_BACKUP_DIR}/${req.portal}/document`)
+                    ) {
                         exec(
                             `rm -rf ${SERVER_BACKUP_DIR}/${req.portal}/document`,
                             function (err) {
