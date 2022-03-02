@@ -17,8 +17,8 @@ function CertificateTab(props) {
 
     useEffect(() => {
         props.getListFields();
-        props.getListMajor({ name: '', page: 1, limit: 1000 });
-        props.getListCertificate({ name: '', page: 1, limit: 1000 });
+        props.getListMajor({ name: '', page: 0, limit: 1000 });
+        props.getListCertificate({ name: '', page: 0, limit: 1000 });
     }, [])
 
     useEffect(() => {
