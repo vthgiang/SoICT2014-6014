@@ -317,48 +317,48 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
     let people = [];
     let documentList = [];
     if (biddingPackage.keyPeople.length) {
-        if (!fs.existsSync(`${SERVER_UPLOAD_DIR}/${portal}/document`)) {
-            fs.mkdirSync(`${SERVER_UPLOAD_DIR}/${portal}/document`, {
+        if (!fs.existsSync(`${SERVER_BACKUP_DIR}/${portal}/document`)) {
+            fs.mkdirSync(`${SERVER_BACKUP_DIR}/${portal}/document`, {
                 recursive: true,
             });
         }
 
         people = biddingPackage.keyPeople.map((item) => item.employees);
     }
-    let rootPath = `${SERVER_UPLOAD_DIR}/${portal}/document`;
+    let rootPath = `${SERVER_BACKUP_DIR}/${portal}/document`;
     people = Array.prototype.concat.apply([], people);
     people.map((x) => {
         if (
             !fs.existsSync(
-                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}`
+                `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}`
             )
         ) {
             fs.mkdirSync(
-                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}`,
+                `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}`,
                 {
                     recursive: true,
                 }
             );
             fs.mkdirSync(
-                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences`,
+                `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/experiences`,
                 {
                     recursive: true,
                 }
             );
             fs.mkdirSync(
-                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/professional-experiences`,
+                `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/professional-experiences`,
                 {
                     recursive: true,
                 }
             );
             fs.mkdirSync(
-                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/degrees`,
+                `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/degrees`,
                 {
                     recursive: true,
                 }
             );
             fs.mkdirSync(
-                `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/certificates`,
+                `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/certificates`,
                 {
                     recursive: true,
                 }
@@ -368,7 +368,7 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
@@ -380,7 +380,7 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,    
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
@@ -392,7 +392,7 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
@@ -404,7 +404,7 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
             if (y.urlFile)
                 fs.copyFile(
                     `${SERVER_DIR}/${y.urlFile}`,
-                    `${SERVER_UPLOAD_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
+                    `${SERVER_BACKUP_DIR}/${portal}/document/${x.emailInCompany}/experiences/${y.file}`,
                     (err) => {
                         if (err) {
                             console.log("Error Found:", err);
