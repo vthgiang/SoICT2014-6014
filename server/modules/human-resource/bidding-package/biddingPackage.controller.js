@@ -196,7 +196,7 @@ exports.getBiddingPackageDocument = async (req, res) => {
             archive.on("end", function () {
                 setTimeout(() => {
                     console.log("gửi file");
-                    res.download(rootPath + "/document.zip", 'document.zip');
+                    res.download(rootPath + "/document.zip");
                     // xong rồi xóa thư mục đi
                     if (
                         fs.existsSync(`${SERVER_UPLOAD_DIR}/${req.portal}`)
