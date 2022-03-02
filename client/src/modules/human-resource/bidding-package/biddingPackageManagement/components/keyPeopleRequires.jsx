@@ -353,7 +353,7 @@ function KeyPeopleRequire(props) {
                                 <div className="form-group col-md-6">
                                     <label >Trình độ chuyên môn</label>
                                     <select key={`professionalSkill-${id}-${listIndex}`} name={`professionalSkill-${listIndex}`} style={{ border: '1px solid #aaa', borderRadius: "4px" }} className="form-control select2" value={Number(item?.professionalSkill)} onChange={value => handleChangeProfessionalSkill(value, listIndex)}>
-                                        <option key={`id-professionalSkill-${listIndex}`} value="0">Chọn vị trí công việc</option>
+                                        <option key={`id-professionalSkill-${listIndex}`} value="0">Chọn trình độ chuyên môn</option>
                                         {
                                             professionalSkillArr.map(x => {
                                                 return (<option key={x.value} value={x.value}>{x.text}</option>)

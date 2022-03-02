@@ -8,9 +8,7 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * @company : Id công ty người dùng
  */
 exports.searchMajor = async (portal, params, company) => {
-    let keySearch = {
-        company: company,
-    };
+    let keySearch = {};
 
     if (params?.majorName && params.majorName != "") {
         keySearch = {
@@ -20,9 +18,6 @@ exports.searchMajor = async (portal, params, company) => {
                 $options: "i",
             },
         };
-    }
-    if (params.limit === undefined && params.page === undefined) {
-        console.log("DDDDDDDDDDDDDDDDDDDDDDDDDD", params);
     }
 
     if (params.limit === undefined && params.page === undefined) {

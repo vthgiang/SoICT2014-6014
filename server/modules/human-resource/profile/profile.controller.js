@@ -679,6 +679,7 @@ exports.searchEmployeeForPackage = async (req, res) => {
             content: data,
         });
     } catch (error) {
+        console.log(error)
         await Log.error(
             req.user.email,
             "GET_EMPLOYEES_FOR_BIDDING_PACKAGE",
