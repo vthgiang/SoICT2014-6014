@@ -85,10 +85,10 @@ function AllocationAddModal(props) {
     const handleUnitChange = (e) => {
         // console.log("hang e",e);
         let value = e[0] !== 'null' ? e[0] : null;
-        // setState({
-        //     ...state,
-        //     allocationToOrganizationalUnit: value,
-        // });
+        setState({
+            ...state,
+            allocationToOrganizationalUnit: value,
+        });
     }
     const validateUnit = (value, willUpdateState = true) => {
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
@@ -166,7 +166,7 @@ function AllocationAddModal(props) {
                         <div className="form-group">
                             <label>{translate('supplies.allocation_management.date')}<span className="text-red">*</span></label>
                             <DatePicker
-                                id="create_date"
+                                id="create_date_add_allocation"
                                 value={date}
                                 onChange={handleDateChange}
                             />
@@ -185,9 +185,9 @@ function AllocationAddModal(props) {
                         <div className="form-group">
                             <label>{translate('supplies.allocation_management.allocationToOrganizationalUnit')}</label>
                             <div>
-                                <div id={`unitEditBox-${id}`}>
+                                <div id={`unitAddAllocationDivBox-${id}`}>
                                     <SelectBox
-                                        id={`unitEditSelectBox-${id}`}
+                                        id={`unitAddAllocationBox-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={[{ value: 'null', text: 'Chọn đơn vị sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
@@ -203,9 +203,9 @@ function AllocationAddModal(props) {
                         <div className="form-group">
                             <label>{translate('supplies.allocation_management.allocationToUser')}</label>
                             <div>
-                                <div id={`userEditBox-${id}`}>
+                                <div id={`userAddAllocationDivBox-${id}`}>
                                     <SelectBox
-                                        id={`userEditSelectBox-${id}`}
+                                        id={`userAddAllocationBox-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={[{ value: 'null', text: 'Chọn người được cấp phát' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}

@@ -191,7 +191,7 @@ exports.createDescriptionEditInvoiceLogs = async (portal, userId, updateInvoice,
     }
 
     if(price && price !== oldInvoice?.price){
-        descriptionLog = descriptionLog + '<span>Giá mua mới: ' + supplier + '(VND)'+".</span></br>";
+        descriptionLog = descriptionLog + '<span>Giá mua mới: ' + price + '(VND)'+".</span></br>";
     }
 
     return descriptionLog;

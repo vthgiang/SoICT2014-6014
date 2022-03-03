@@ -247,11 +247,11 @@ function AllocationManagement(props) {
             <div className="box-body qlcv">
                 {/* Thêm lich su cap phat mới */}
                 <div className="dropdown pull-right">
-                    <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_lot_title')}>
+                    <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_allocation')}>
                         {translate('menu.add_allocation')}
                     </button>
                     <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-allocation').modal('show')}>{translate('menu.add_purchase_invoice')}</a></li>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-allocation').modal('show')}>{translate('menu.add_allocation')}</a></li>
                     </ul>
                 </div>
                 <AllocationCreateForm />
