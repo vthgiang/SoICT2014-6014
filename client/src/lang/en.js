@@ -1701,15 +1701,39 @@ export default {
                 },
             },
 
+            certificate: {
+                get_certificate_success: "Get list certificates success",
+                get_certificate_failure: "Get list certificates fail",
+                create_certificate_success: "Create certificate success",
+                create_certificate_failure: "Create certificate fail",
+                edit_certificate_success: "Update certificate success",
+                edit_certificate_failure: "Update certificate fail",
+                delete_certificate_success: "Delete certificate success",
+                delete_certificate_failure: "Delete certificate fail",
+            },
+
+            career_position: {
+                get_career_position_success: "Get list career positions success",
+                get_career_position_failure: "Get list career positions fail",
+                create_career_position_success: "Create career positions success",
+                create_career_position_failure: "Create career positions fail",
+                update_career_position_success: "Update career positions success",
+                update_career_position_failure: "Update career positions fail",
+                delete_career_position_success: "Delete career positions success",
+                delete_career_position_failure: "Delete career positions fail",
+            },
+
             // Quản lý thông tin nhân viên
             profile: {
 
                 // Quản lý gói thầu
-                bidding_package: {
+                certificate: {
                     get_bidding_package_success: "Get list bidding packages success",
                     get_bidding_package_failure: "Get list bidding packages fail",
                     create_bidding_package_success: "Create bidding package success",
                     create_bidding_package_failure: "Create bidding package fail",
+                    update_bidding_package_success: "Update bidding package success",
+                    update_bidding_package_failure: "Update bidding package fail",
                     delete_bidding_package_success: "Delete bidding package success",
                     delete_bidding_package_failure: "Delete bidding package fail",
                 },

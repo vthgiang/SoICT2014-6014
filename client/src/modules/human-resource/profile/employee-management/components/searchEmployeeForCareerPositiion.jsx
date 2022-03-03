@@ -48,6 +48,8 @@ class SearchEmployeeForCareerPosition extends Component {
         this.props.getListCertificate({ name: '', page: 0, limit: 1000 });
     }
 
+
+
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
@@ -204,6 +206,8 @@ class SearchEmployeeForCareerPosition extends Component {
     
     render() {
         console.log('oppend', this.state);
+        console.log("department", this.props.department)
+
         const { employeesManager, translate, career, major, certificate } = this.props;
 
         const {  importEmployee, limit, page, currentRow, currentRowView, certificatesEndDate, certificatesCount, professionalSkill, majors, exp, sameExp, biddingPackgaeStartDate, careerPosition, certificates, action } = this.state; // filterField, filterPosition, filterAction, 

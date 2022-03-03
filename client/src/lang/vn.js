@@ -1820,6 +1820,28 @@ export default {
                 },
             },
 
+            certificate: {
+                get_certificate_success: "Lấy danh sách chứng chỉ thành công",
+                get_certificate_failure: "Lấy danh sách chứng chỉ thất bại",
+                create_certificate_success: "Tạo chứng chỉ thành công",
+                create_certificate_failure: "Tạo chứng chỉ thất bại",
+                edit_certificate_success: "Cập nhật chứng chỉ thành công",
+                edit_certificate_failure: "Cập nhật chứng chỉ thất bại",
+                delete_certificate_success: "Xóa chứng chỉ thành công",
+                delete_certificate_failure: "Xóa chứng chỉ thất bại",
+            },
+
+            career_position: {
+                get_career_position_success: "Lấy danh sách vị trí công việc thành công",
+                get_career_position_failure: "Lấy danh sách vị trí công việc thất bại",
+                create_career_position_success: "Tạo vị trí công việc thành công",
+                create_career_position_failure: "Tạo vị trí công việc thất bại",
+                update_career_position_success: "Cập nhật vị trí công việc thành công",
+                update_career_position_failure: "Cập nhật vị trí công việc thất bại",
+                delete_career_position_success: "Xóa vị trí công việc thành công",
+                delete_career_position_failure: "Xóa vị trí công việc thất bại",
+            },
+
             // Quản lý thông tin nhân viên
             profile: {
                 // Quản lý gói thầu
@@ -1828,6 +1850,8 @@ export default {
                     get_bidding_package_failure: "Lấy danh sách gói thầu thất bại",
                     create_bidding_package_success: "Tạo gói thầu thành công",
                     create_bidding_package_failure: "Tạo gói thầu thất bại",
+                    update_bidding_package_success: "Cập nhật gói thầu thành công",
+                    update_bidding_package_failure: "Cập nhật gói thầu thất bại",
                     delete_bidding_package_success: "Xóa gói thầu thành công",
                     delete_bidding_package_failure: "Xóa gói thầu thất bại",
                 },
