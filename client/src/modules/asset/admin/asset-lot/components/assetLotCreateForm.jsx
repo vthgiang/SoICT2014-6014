@@ -335,7 +335,7 @@ function AssetLotCreateForm(props) {
         });
         formData.append("fileAvatar", avatar);
         props.createAssetLot(formData);
-        props.saveListAssetsAction([], false);
+        dispatch(saveListAssetsAction([], false));
     }
 
     return (
