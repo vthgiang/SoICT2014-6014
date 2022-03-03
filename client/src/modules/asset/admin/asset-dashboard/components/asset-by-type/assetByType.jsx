@@ -274,8 +274,8 @@ class AssetByType extends Component {
         if (chartAsset.dataChartType.listType){
             dataSelect = this.getAssetTypes(chartAsset.dataChartType.listType)
         }
-        console.log("hang",amountOfAsset);
-        console.log("hang depreciation",depreciation);
+        // console.log("hang",amountOfAsset);
+        // console.log("hang depreciation",depreciation);
 
         return (
             <React.Fragment>

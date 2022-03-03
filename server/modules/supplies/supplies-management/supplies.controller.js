@@ -207,7 +207,7 @@ exports.getDashboardSupplies = async (req, res) => {
                     if (invoice.supplies.toString() === listSupplies[i]._id.toString()
                         && new Date(invoice.date).getTime() < maxDate && new Date(invoice.date).getTime() >= minDate) {
                         countInvoice[i] += parseInt(invoice.quantity);
-                        valueInvoice[i] += parseInt(invoice.price);
+                        valueInvoice[i] += parseInt(invoice.price)*parseInt(invoice.quantity);
                     }
                 });
             }

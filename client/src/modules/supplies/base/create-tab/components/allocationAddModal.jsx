@@ -83,7 +83,7 @@ function AllocationAddModal(props) {
 
     // Bắt sự kiện thay đổi "đơn vị đc cấp"
     const handleUnitChange = (e) => {
-        console.log("hang e",e);
+        // console.log("hang e",e);
         let value = e[0] !== 'null' ? e[0] : null;
         // setState({
         //     ...state,

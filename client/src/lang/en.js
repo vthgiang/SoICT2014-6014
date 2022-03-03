@@ -2972,6 +2972,12 @@ export default {
                 edit_purchase_request_failure: "Edit purchase request faile",
                 recommend_number_exist: "Recommend number already exists",
             },
+
+            dashboard: {
+                valueInvoice: "Value purchase",
+                countInvoice: "Amount purchase",
+                countAllocation: "Amount allocation",
+            }
         },
 
         // Task template

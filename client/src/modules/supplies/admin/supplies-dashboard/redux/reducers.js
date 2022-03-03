@@ -14,7 +14,6 @@ export function suppliesDashboardReducer(state = initState, action) {
     switch (action.type) {
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_REQUEST:
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_SUCCESS:
-
             if (action.payload !== undefined) {
                 return {
                     ...state,
@@ -24,11 +23,9 @@ export function suppliesDashboardReducer(state = initState, action) {
                     valueInvoice: action.payload.valueInvoice,
                     isLoading: false
                 };
-
             } else {
                 return { ...state }
             }
-
         case SuppliesDashboardConstants.GET_SUPPLIES_DASHBOARD_FAILURE:
 
         default:

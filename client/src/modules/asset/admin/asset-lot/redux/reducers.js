@@ -125,6 +125,7 @@ export function assetLotManager(state = initState, action) {
                 return {
                     ...state,
                     listAssets: action.listAssets,
+                    //isLoading: false,
                 }
             } else {
                 return {

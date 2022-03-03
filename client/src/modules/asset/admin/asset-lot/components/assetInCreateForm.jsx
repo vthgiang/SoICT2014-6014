@@ -36,8 +36,7 @@ function AssetInCreateForm(props) {
         handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs,
         incidentLogs, disposalDate, disposalType, disposalCost, disposalDesc,
         files, readByRoles, listAssets } = state;
-    console.log("hang prev", prevProps.code);
-    console.log("hang props", props.code);
+ 
     if (prevProps.code !== props.code) {
         setState({
             ...state,

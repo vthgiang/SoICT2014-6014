@@ -3188,6 +3188,11 @@ export default {
                 recommend_number_exist: "Mã phiếu đăng ký đã tồn tại",
             },
 
+            dashboard: {
+                valueInvoice: "Số tiền mua",
+                countInvoice: "Số lượng mua",
+                countAllocation: "Số lượng cung cấp",
+            }
         },
 
         // Task template
