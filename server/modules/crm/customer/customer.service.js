@@ -126,7 +126,7 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
     const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
     //thêm mới hoạt động váo công việc
     const params = { taskId: crmTask.task }
-    console.log('newCustomer',newCustomer);
+    // console.log('newCustomer',newCustomer);
     const body = {
         creator: userId,
         description: `
