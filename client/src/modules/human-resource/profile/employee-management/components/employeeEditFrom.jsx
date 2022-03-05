@@ -1131,8 +1131,8 @@ const EmployeeEditFrom = (props) => {
                                 handleDeleteExperience={handleDeleteExperiences}
 
                                 handleAddCareerPosition={handleCreateCareerPosition}
-                                handleDeleteCareerPosition={handleDeleteCareerPosition}
                                 handleEditCareerPosition={handleEditCareerPosition}
+                                handleDeleteCareerPosition={handleDeleteCareerPosition}
                             />
                             {/* Tab bằng cấp - chứng chỉ */}
                             <CertificateTab

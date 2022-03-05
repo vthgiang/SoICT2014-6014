@@ -63,23 +63,24 @@ function ModalEditCareerPosition(props) {
                 errorOnEndDate: undefined,
                 errorOnProject: undefined
             }
-            console.log("stateeeeeee",newState)
-
             return newState
         })
+        if (props._id) {
+            setState(state => {
+                return {
+                    ...state,
+                    _id: props._id
+                }
+            })
+        }
     }, [props.id])
 
-    console.log("new stateeeeeee", state)
-
-       
     const { translate, listPosition } = props;
 
     const { id } = props;
     
     const { company, files, file, urlFile, fileUpload, careerPosition, project, professionalExperience, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition, errorOnProject } = state;
     
-    // console.log("aaaaaaaaâ", careerPosition)
-
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
         let { value } = e.target;

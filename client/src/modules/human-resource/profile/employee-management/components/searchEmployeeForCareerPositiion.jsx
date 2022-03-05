@@ -278,7 +278,22 @@ class SearchEmployeeForCareerPosition extends Component {
                                 onChange={this.handlePosition}>
                             </SelectMulti>
                         </div>
+                        {/* Số năm kinh nghiệm */}
+                        <div className="form-group col-md-4">
+                            <label className="form-control-static">Số năm kinh nghiệm</label>
+                            <input type="number" className="form-control" value={exp} name="exp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
+                        </div>
+                        {/* Số năm kinh nghiệm công việc tương đương */}
+                        <div className="form-group col-md-4">
+                            <label className="form-control-static">Số năm kinh nghiệm công việc tương đương</label>
+                            <input type="number" className="form-control" value={sameExp} step={0.1} name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
+                        </div>
+                        
+                    </div>
+
+                                        <div className="row">
                         {/* Trình độ chuyên môn  */}
+
                         <div className="form-group col-md-4">
                             <label className="form-control-static">Trình độ chuyên môn</label>
                             <SelectBox id={`professionalSkillArr-selectbox`}
@@ -305,65 +320,6 @@ class SearchEmployeeForCareerPosition extends Component {
                                 multiple={true}
                             />
                         </div>
-                    </div>
-
-                    <div className="row">
-                        {/* Loại chứng chỉ */}
-                        <div className="form-group col-md-4">
-                            <label className="form-control-static">Loại chứng chỉ</label>
-                            <SelectBox
-                                id={`certificate`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listCertificate?.map(x => {
-                                    return { text: x.name, value: x._id }
-                                })}
-                                options={{ placeholder: "Chọn chứng chỉ" }}
-                                onChange={this.handleCertificate}
-                                value={certificates}
-                                multiple={true}
-                            />
-                        </div>
-                        {/* Số lượng chứng chỉ */}
-                        <div className="form-group col-md-4">
-                            <label className="form-control-static">Số lượng chứng chỉ</label>
-                            <input type="number" className="form-control" value={certificatesCount} name="certificatesCount" onChange={this.handleChange} />
-                        </div>
-                        {/* Tháng hết hạn chứng chỉ */}
-                        <div className="form-group col-md-4">
-                            <label className="form-control-static">Hiệu lực chứng chỉ</label>
-                            <DatePicker
-                                id="month-endDate-certificate"
-                                // dateFormat="month-year"
-                                value={certificatesEndDate}
-                                onChange={this.handleEndDateOfCertificateChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        {/* Số năm kinh nghiệm */}
-                        <div className="form-group col-md-4">
-                            <label className="form-control-static">Số năm kinh nghiệm</label>
-                            <input type="number" className="form-control" value={exp} name="exp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
-                        </div>
-                        {/* Số năm kinh nghiệm công việc tương đương */}
-                        <div className="form-group col-md-4">
-                            <label className="form-control-static">Số năm kinh nghiệm công việc tương đương</label>
-                            <input type="number" className="form-control" value={sameExp} step={0.1} name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
-                        </div>
-                        {/* Thời gian bắt đầu gói thầu */}
-                        <div className="form-group col-md-4">
-                            <label className="form-control-static">Thời gian bắt đầu</label>
-                            <DatePicker
-                                id="month-endDate-start-date"
-                                value={biddingPackgaeStartDate}
-                                onChange={this.handleStartDateOfBiddingPackage}
-                            />
-                        </div>
-                    </div>
-                    
-                    <div className="row">
                         {/* Trạng thái tham gia thầu */}
                         <div className="form-group col-md-4">
                             <label className="form-control-static">Trạng thái tham gia gói thầu</label>
@@ -394,6 +350,54 @@ class SearchEmployeeForCareerPosition extends Component {
                             />
                         </div> */}
                     </div>
+
+                    <div className="row">
+                        {/* Loại chứng chỉ */}
+                        <div className="form-group col-md-4">
+                            <label className="form-control-static">Loại chứng chỉ</label>
+                            <SelectBox
+                                id={`certificate`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listCertificate?.map(x => {
+                                    return { text: x.name, value: x._id }
+                                })}
+                                options={{ placeholder: "Chọn chứng chỉ" }}
+                                onChange={this.handleCertificate}
+                                value={certificates}
+                                multiple={true}
+                            />
+                        </div>
+                        {/* Số lượng chứng chỉ */}
+                        <div className="form-group col-md-4">
+                            <label className="form-control-static">Số lượng chứng chỉ</label>
+                            <input type="number" className="form-control" value={certificatesCount} name="certificatesCount" onChange={this.handleChange} />
+                        </div>
+                        {/* Thời gian bắt đầu gói thầu */}
+                        <div className="form-group col-md-4">
+                            <label className="form-control-static">Thời gian bắt đầu gói thầu</label>
+                            <DatePicker
+                                id="month-endDate-start-date"
+                                value={biddingPackgaeStartDate}
+                                onChange={this.handleStartDateOfBiddingPackage}
+                            />
+                        </div>
+                        {/* Tháng hết hạn chứng chỉ */}
+                        {/* <div className="form-group col-md-4">
+                            <label className="form-control-static">Hiệu lực chứng chỉ</label>
+                            <DatePicker
+                                id="month-endDate-certificate"
+                                // dateFormat="month-year"
+                                value={certificatesEndDate}
+                                onChange={this.handleEndDateOfCertificateChange}
+                            />
+                        </div> */}
+                    </div>
+
+                    {/* <div className="row">
+                        
+
+                    </div> */}
                     
                     <div className="form-inline" style={{ marginBottom: 15 }}>
                         {/* Button tìm kiếm */}

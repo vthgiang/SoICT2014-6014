@@ -253,8 +253,6 @@ class SelectBox extends Component {
 
         const { searching, value } = this.state;
 
-        console.log("sellllllllllllllllect" ,this.state)
-
         return (
             <React.Fragment>
                 <div className="select2">
