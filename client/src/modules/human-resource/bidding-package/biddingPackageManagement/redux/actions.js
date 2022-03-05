@@ -13,12 +13,13 @@ export const BiddingPackageManagerActions = {
     updateBiddingPackage,
     deleteBiddingPackage,
     getDetailBiddingPackage,
+    getDetailEditBiddingPackage,
     downloadPackageDocument
     // importBiddingPackages
 };
 
 /**
- * Lấy danh sách nhân viên
+ * Lấy danh sách gói thầu
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAllBiddingPackage(data) {
@@ -44,7 +45,7 @@ function getAllBiddingPackage(data) {
 }
 
 /**
- * Lấy danh sách nhân viên
+ * Lấy danh sách gói thầu
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getDetailBiddingPackage(id, data) {
@@ -70,8 +71,34 @@ function getDetailBiddingPackage(id, data) {
 }
 
 /**
- * Thêm mới thông tin nhân viên
- * @param {*} data : dữ liệu thông tin nhân viên cần tạo
+ * Lấy danh sách gói thầu
+ * @param {*} data : dữ liệu key tìm kiếm
+ */
+function getDetailEditBiddingPackage(id, data) {
+    return dispatch => {
+        dispatch({
+            type: BiddingPackageConstants.GET_DETAIL_REQUEST
+        });
+        BiddingPackageService.getDetailEditBiddingPackage(id, data)
+            .then(res => {
+                dispatch({
+                    type: BiddingPackageConstants.GET_DETAIL_SUCCESS,
+                    payload: res.data.content,
+                    exportData: data ? data.exportData : data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: BiddingPackageConstants.GET_DETAIL_FAILURE,
+                    error: err
+                });
+            })
+    };
+}
+
+/**
+ * Thêm mới thông tin gói thầu
+ * @param {*} data : dữ liệu thông tin gói thầu cần tạo
  */
 function addNewBiddingPackage(biddingPackage) {
     return dispatch => {
@@ -96,7 +123,7 @@ function addNewBiddingPackage(biddingPackage) {
 }
 
 /**
- * Cập nhật thông tin nhân viên theo id
+ * Cập nhật thông tin gói thầu theo id
  * @param {*} id 
  * @param {*} data 
  */
@@ -123,8 +150,8 @@ function updateBiddingPackage(id, data) {
 }
 
 /**
- * Xoá thông tin nhân viên
- * @id : id thông tin nhân viên cần xoá
+ * Xoá thông tin gói thầu
+ * @id : id thông tin gói thầu cần xoá
  */
 function deleteBiddingPackage(id, email) {
     return dispatch => {
@@ -177,8 +204,8 @@ function downloadPackageDocument(id) {
 }
 
 /**
- * Import thông tin nhân viên
- * @data : dữ liệu thông tin nhân viên cần import
+ * Import thông tin gói thầu
+ * @data : dữ liệu thông tin gói thầu cần import
  */
 // function importBiddingPackages(data) {
 //     return dispatch => {

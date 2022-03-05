@@ -1073,7 +1073,7 @@ const EmployeeEditFrom = (props) => {
         })
     }
 
-    console.log("bbbbbbbbbbbbbb", state)
+    // console.log("bbbbbbbbbbbbbb", state)
 
     return (
         <React.Fragment>

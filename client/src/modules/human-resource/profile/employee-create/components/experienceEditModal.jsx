@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -44,9 +45,7 @@ function ModalEditExperience(props) {
 
     const { id } = props;
 
-    const { company, position, file, urlFile, fileUpload, jobDescription, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
-
-    console.log("aaaaaaaaaaaa", position)
+    const { company, position, files, file, urlFile, fileUpload, jobDescription, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition } = state;
 
     useEffect(() => {
         setState(state => {
@@ -58,6 +57,7 @@ function ModalEditExperience(props) {
                 file: props.file,
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
+                files: props.file ? [{ fileName: props.file, urlFile: props.urlFile, fileUpload: props.fileUpload }] : null,
                 startDate: props.startDate,
                 endDate: props.endDate,
                 position: props.position,
@@ -77,8 +77,6 @@ function ModalEditExperience(props) {
             })
         }
     }, [props.id])
-
-
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -240,11 +238,6 @@ function ModalEditExperience(props) {
         }
     }
 
-    let files;
-    console.log("file", file)
-    if (file) {
-        files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
-    }
 
     return (
         <React.Fragment>
@@ -253,6 +246,8 @@ function ModalEditExperience(props) {
                 formID={`form-edit-experience-${id}`}
                 title={translate('human_resource.profile.edit_experience')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-edit-experience-${id}`}>
@@ -304,7 +299,7 @@ function ModalEditExperience(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile files={files} onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
                     </div>
                 </form>
             </DialogModal>

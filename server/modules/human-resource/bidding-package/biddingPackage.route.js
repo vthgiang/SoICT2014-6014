@@ -16,6 +16,12 @@ router.get(
     biddingPackageController.getDetailBiddingPackage
 );
 
+router.get(
+    "/bidding-packages/:id/edit",
+    auth,
+    biddingPackageController.getDetailBiddingPackageToEdit
+);
+
 router.post(
     "/bidding-packages",
     auth,

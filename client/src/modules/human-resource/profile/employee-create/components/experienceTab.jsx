@@ -37,7 +37,6 @@ function ExperienceTab(props) {
         })
     }, [props.id, props.employee?.experiences, props?.employee?.careerPositions])
 
-    console.log("aaaaaaaaaa", state)
 
     /**
      * Function format dữ liệu Date thành string

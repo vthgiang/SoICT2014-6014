@@ -42,8 +42,9 @@ const data = [{
     }
 ]
 
-router.get('/employees/search-for-package', auth, EmployeeController.searchEmployeeForPackage);
 
+router.get('/employees/search-for-package', auth, EmployeeController.searchEmployeeForPackage);
+router.get('/employees/all', auth, EmployeeController.searchEmployeeForPackage);
 // Lấy thông tin cá nhân
 router.get('/employees/:id', auth, EmployeeController.getEmployeeProfile);
 

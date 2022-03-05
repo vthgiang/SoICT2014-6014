@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, TreeSelect } from '../../../../common-components';
-import { BiddingPackageReduxAction } from '../redux/actions';
-import ValidationHelper from '../../../../helpers/validationHelper';
+import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../../common-components';
+import { BiddingPackageReduxAction } from '../../../redux/actions';
+import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 class EditForm extends Component {
     constructor(props) {

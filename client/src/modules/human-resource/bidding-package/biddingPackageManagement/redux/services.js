@@ -8,7 +8,8 @@ export const BiddingPackageService = {
     updateBiddingPackage,
     deleteBiddingPackage,
     importBiddingPackages,
-    getDetailBiddingPackage
+    getDetailBiddingPackage,
+    getDetailEditBiddingPackage
 }
 /**
  * Lấy danh sách nhân viên
@@ -34,6 +35,14 @@ function getAll(data) {
 function getDetailBiddingPackage(id, data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages/${id}`,
+        method: 'GET',
+        params: data
+    }, false, true, 'human_resource.profile.bidding_package');
+}
+
+function getDetailEditBiddingPackage(id, data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages/${id}/edit`,
         method: 'GET',
         params: data
     }, false, true, 'human_resource.profile.bidding_package');

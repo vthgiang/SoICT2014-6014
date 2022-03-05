@@ -11,16 +11,7 @@ import { MajorActions } from '../../../major/redux/actions';
 import { CareerReduxAction } from '../../../career/redux/actions';
 import { CertificateActions } from '../../../certificate/redux/actions';
 import { KeyPeople } from './keyPeople';
-
-const initMember = {
-    name: '',
-    code: '',
-    startDate: '',
-    endDate: '',
-    type: '',
-    status: '',
-    description: '',
-}
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 const BiddingPackageEditFrom = (props) => {
 
@@ -118,6 +109,16 @@ const BiddingPackageEditFrom = (props) => {
         });
     }
 
+    const handleChangeCareerKeyEmployee = (value, index) => {
+        setState({
+            ...state,
+            biddingPackage: {
+                ...biddingPackage,
+                keyPeople: [state.biddingPackage.keyPeople.map()]
+            }
+        })
+    }
+
     /**
      * Function kiểm tra các trường bắt buộc phải nhập
      * @param {*} value : Giá trị của trường cần kiểm tra
@@ -159,20 +160,20 @@ const BiddingPackageEditFrom = (props) => {
         let { _id, biddingPackage, keyPersonnelRequires, code, startDate, endDate, status, type,
             description, name } = state;
 
-        setState(state => ({
-            ...state,
-            biddingPackage: {
-                ...biddingPackage,
-                name,
-                code,
-                startDate,
-                endDate,
-                status, 
-                type,
-                description,
-                keyPersonnelRequires: keyPersonnelRequires
-            }
-        }))
+        // setState(state => ({
+        //     ...state,
+        //     biddingPackage: {
+        //         ...biddingPackage,
+        //         name,
+        //         code,
+        //         startDate,
+        //         endDate,
+        //         status, 
+        //         type,
+        //         description,
+        //         keyPersonnelRequires: keyPersonnelRequires
+        //     }
+        // }))
 
         await props.updateBiddingPackage(_id, biddingPackage);
         await props.getDetailBiddingPackage( props._id, {} );
@@ -181,7 +182,7 @@ const BiddingPackageEditFrom = (props) => {
             dataStatus: DATA_STATUS.QUERYING,
         })
     }
-    
+
     return (
         <React.Fragment>
             <DialogModal
@@ -220,12 +221,12 @@ const BiddingPackageEditFrom = (props) => {
                             {/* Danh sách nhân sự chủ chốt */}
                             <KeyPeople
                                 id={`edit_key_people_bidding_package${_id}`}
-                                    handleChange={handleChange}
-                                    listCareer={career?.listPosition}
-                                    listMajor={major?.listMajor}
-                                    listCertificate={certificate?.listCertificate}
-                                    keyPersonnelRequires={state.biddingPackage.keyPersonnelRequires}
-                                    biddingPackage={biddingPackage}
+                                handleChange={handleChange}
+                                listCareer={career?.listPosition}
+                                listMajor={major?.listMajor}
+                                listCertificate={certificate?.listCertificate}
+                                keyPersonnelRequires={state.biddingPackage.keyPersonnelRequires}
+                                biddingPackage={biddingPackage}
                             />
                         </div>
                     </div>}
@@ -236,16 +237,19 @@ const BiddingPackageEditFrom = (props) => {
 };
 
 function mapState(state) {
-    const { biddingPackagesManager, major, career, certificate } = state;
-    return { biddingPackagesManager, major, career, certificate };
+    const { biddingPackagesManager, user, major, career, certificate } = state;
+    return { biddingPackagesManager, user, major, career, certificate };
 };
 
 const actionCreators = {
-    getDetailBiddingPackage: BiddingPackageManagerActions.getDetailBiddingPackage,
+    getDetailBiddingPackage: BiddingPackageManagerActions.getDetailEditBiddingPackage,
     updateBiddingPackage: BiddingPackageManagerActions.updateBiddingPackage,
     getListMajor: MajorActions.getListMajor,
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
     getListCertificate: CertificateActions.getListCertificate,
+    getAllUserOfCompany: UserActions.getAllUserOfCompany,
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getDepartment: UserActions.getDepartmentOfUser,
 };
 
 const editFrom = connect(mapState, actionCreators)(withTranslate(BiddingPackageEditFrom));

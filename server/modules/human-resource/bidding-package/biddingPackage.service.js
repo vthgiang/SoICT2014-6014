@@ -107,7 +107,7 @@ exports.searchBiddingPackage = async (portal, params, company) => {
 };
 
 /**
- * Lấy danh sách thông tin nghỉ phép
+ * Lấy chi tiết thông tin gói thầu
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người dùng
  */
@@ -143,6 +143,21 @@ exports.getDetailBiddingPackage = async (portal, params) => {
 };
 
 /**
+ * Lấy chi tiết thông tin gói thầu
+ * @params : Dữ liệu key tìm kiếm
+ * @company : Id công ty người dùng
+ */
+exports.getDetailBiddingPackageToEdit = async (portal, params) => {
+    let listBiddingPackages = await BiddingPackage(
+        connect(DB_CONNECTION, portal)
+    ).findOne({ _id: params.id });
+
+    return {
+        listBiddingPackages,
+    };
+};
+
+/**
  * Thêm mới chuyên ngành
  * @data : dữ liệu chuyên ngành tương đương mới
  *
@@ -156,6 +171,7 @@ exports.createNewBiddingPackage = async (portal, data, company) => {
         status: data.status ? data.status : 1,
         type: data.type ? data.type : 1,
         description: data.description,
+        keyPeople: data.keyPeople,
         keyPersonnelRequires: data.keyPersonnelRequires,
         company: company,
     });
@@ -291,6 +307,7 @@ exports.deleteBiddingPackage = async (portal, id) => {
 };
 
 exports.autoUpdateEmployeeBiddingStatus = async (portal) => {
+    console.log("autoUpdateEmployeeBiddingStatus", portal);
     await await Employee(connect(DB_CONNECTION, portal)).updateMany(
         { packageEndDate: { $lt: new Date() } },
         {

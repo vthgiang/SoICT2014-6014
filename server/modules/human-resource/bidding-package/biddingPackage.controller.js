@@ -5,7 +5,7 @@ const Log = require(`../../../logs`);
 const archiver = require("archiver");
 const exec = require("child_process").exec;
 
-/** Lấy danh sách vị trí công việc */
+/** Lấy danh sách gói thầu */
 exports.searchBiddingPackage = async (req, res) => {
     try {
         let data = {};
@@ -43,7 +43,7 @@ exports.searchBiddingPackage = async (req, res) => {
     }
 };
 
-/** Lấy danh sách vị trí công việc */
+/** Lấy danh sách gói thầu */
 exports.getDetailBiddingPackage = async (req, res) => {
     try {
         data = await biddingPackageService.getDetailBiddingPackage(
@@ -77,9 +77,43 @@ exports.getDetailBiddingPackage = async (req, res) => {
     }
 };
 
+/** Lấy danh sách gói thầu */
+exports.getDetailBiddingPackageToEdit = async (req, res) => {
+    try {
+        data = await biddingPackageService.getDetailBiddingPackageToEdit(
+            req.portal,
+            req.params,
+            req.user.company._id
+        );
+        await Log.info(
+            req.user.email,
+            "GET_DETAIL_BIDDING_PACKAGE",
+            req.portal
+        );
+        res.status(200).json({
+            success: true,
+            messages: ["get_detail_success"],
+            content: data,
+        });
+    } catch (error) {
+        await Log.error(
+            req.user.email,
+            "GET_DETAIL_BIDDING_PACKAGE",
+            req.portal
+        );
+        res.status(400).json({
+            success: false,
+            messages: ["get_detail_failure"],
+            content: {
+                error: error,
+            },
+        });
+    }
+};
+
 // =================CREATE====================
 
-/** Tạo mới vị trí công việc */
+/** Tạo mới gói thầu */
 exports.createNewBiddingPackage = async (req, res) => {
     try {
         data = await biddingPackageService.createNewBiddingPackage(
@@ -107,7 +141,7 @@ exports.createNewBiddingPackage = async (req, res) => {
 
 // ================EDIT===================
 
-/** Chỉnh sửa vị trí công việc */
+/** Chỉnh sửa gói thầu */
 exports.editBiddingPackage = async (req, res) => {
     try {
         data = await biddingPackageService.editBiddingPackage(
@@ -136,7 +170,7 @@ exports.editBiddingPackage = async (req, res) => {
 
 // ====================DELETE=======================
 
-/** Xóa vị trí công việc */
+/** Xóa gói thầu */
 exports.deleteBiddingPackage = async (req, res) => {
     try {
         data = await biddingPackageService.deleteBiddingPackage(
@@ -169,7 +203,9 @@ exports.autoUpdateEmployeeBiddingStatus = async () => {
     });
     companys = companys.map((x) => x.shortName);
     for (let n in companys) {
-        await EmployeeService.autoUpdateEmployeeBiddingStatus(companys[n]);
+        await biddingPackageService.autoUpdateEmployeeBiddingStatus(
+            companys[n]
+        );
     }
 };
 

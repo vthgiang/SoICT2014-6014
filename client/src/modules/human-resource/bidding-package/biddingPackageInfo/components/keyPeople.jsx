@@ -324,7 +324,7 @@ function KeyPeople(props) {
             </div>
             <div className="box-body qlcv">
                 {
-                    state.keyPeople && state.keyPeopleRequires && state.keyPeopleRequires.map((x, index) => 
+                    state.keyPeople && state.keyPeopleRequires && state.keyPeopleRequires.map((y, index) => 
                         {
                             let item = state.keyPeople?.[index] ? state.keyPeople?.[index] : [];
                             return (
@@ -343,7 +343,7 @@ function KeyPeople(props) {
                                             <span id={`arrow-down-${index}`} className="material-icons" style={{ display: 'none', fontWeight: "bold", marginRight: '10px' }}>
                                                 {`keyboard_arrow_down`}
                                             </span>
-                                            Vị trí công việc: { `${listCareer?.filter(x => x._id == item.careerPosition)[0]?.name}` }</p>
+                                            Vị trí công việc: { `${listCareer?.find(x => x._id == y.careerPosition)?.name}` }</p>
                                         </div>
                                         <div className="box-body collapse" data-toggle="collapse" id={`employee-table-${index}`}>
                                             <table key={`table-${index}`} className="table table-striped table-bordered table-hover">

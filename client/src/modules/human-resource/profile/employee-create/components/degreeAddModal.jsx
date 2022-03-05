@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, UploadFile, SelectBox, DatePicker } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -23,7 +24,7 @@ function DegreeAddModal(props) {
 
     const { id } = props;
 
-    const { name, issuedBy, major, degreeQualification, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
+    const { name, files, issuedBy, major, degreeQualification, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
     let listFields = props.field.listFields;
     let listMajor = props.major.listMajor;
 
@@ -33,6 +34,7 @@ function DegreeAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: value,
                     file: value[0].fileName,
                     urlFile: value[0].urlFile,
                     fileUpload: value[0].fileUpload
@@ -42,6 +44,7 @@ function DegreeAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: undefined,
                     file: "",
                     urlFile: "",
                     fileUpload: ""
@@ -194,6 +197,20 @@ function DegreeAddModal(props) {
                 formID={`form-create-certificate-${id}`}
                 title={translate('human_resource.profile.add_diploma')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    name: "",
+                    issuedBy: "",
+                    year: "",
+                    field: "",
+                    degreeType: "excellent",
+                    files: undefined,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-create-certificate-${id}`}>
@@ -272,7 +289,7 @@ function DegreeAddModal(props) {
                     {/* File đính kèm*/}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
                     </div>
                 </form>
             </DialogModal>

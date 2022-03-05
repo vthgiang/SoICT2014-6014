@@ -36,6 +36,7 @@ class SearchEmployeeForCareerPosition extends Component {
             organizationalUnits: organizationalUnits,
             status: 'active',
             careerPosition: [],
+            biddingPackagePersonalStatus: [1,2,3],
             page: 0,
             limit: 5,
         }
@@ -148,6 +149,21 @@ class SearchEmployeeForCareerPosition extends Component {
         }))
     };
 
+    /**
+     * Function lưu giá trị unit vào state khi thay đổi
+     * @param {*} value : Array id Vị trí công việc
+     */
+
+    handleBiddingPackagePersonalStatus = (value) => {
+        if (value.length === 0) {
+            value = []
+        };
+        this.setState(state => ({
+            ...state,
+            biddingPackagePersonalStatus: value
+        }))
+    };
+
     
     /**
      * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
@@ -165,7 +181,7 @@ class SearchEmployeeForCareerPosition extends Component {
         
         this.setState({
             ...this.state,
-            biddingPackgaeStartDate: value
+            startDate: value
         });
     }
 
@@ -210,7 +226,7 @@ class SearchEmployeeForCareerPosition extends Component {
 
         const { employeesManager, translate, career, major, certificate } = this.props;
 
-        const {  importEmployee, limit, page, currentRow, currentRowView, certificatesEndDate, certificatesCount, professionalSkill, majors, exp, sameExp, biddingPackgaeStartDate, careerPosition, certificates, action } = this.state; // filterField, filterPosition, filterAction, 
+        const {  importEmployee, limit, page, currentRow, currentRowView, certificatesEndDate, certificatesCount, professionalSkill, majors, exp, sameExp, biddingPackgaeStartDate, biddingPackagePersonalStatus, careerPosition, certificates, action } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -248,12 +264,12 @@ class SearchEmployeeForCareerPosition extends Component {
 
         return (
             <div className="box">
-                <div className="box-body qlcv">
+                <div className="box-body">
                     <div className="row">
                         {/* Vị trí công việc  */}
                         <div className="form-group col-md-4">
                             <label className="form-control-static">Vị trí công việc</label>
-                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                            <SelectMulti id={`multiSelectStatus`} style={{margin: 0}} multiple="multiple"
                                 options={{ nonSelectedText: 'Chọn vị trí công việc', allSelectedText: "Chọn tất cả" }}
                                 value={careerPosition}
                                 items={ listPosition ? listPosition?.map(x => {
@@ -261,18 +277,6 @@ class SearchEmployeeForCareerPosition extends Component {
                                 }) : []} 
                                 onChange={this.handlePosition}>
                             </SelectMulti>
-                            {/* <SelectBox
-                                id={`careerPosition`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listPosition?.map(x => {
-                                    return { text: x.name, value: x._id }
-                                })}
-                                options={{ placeholder: "Chọn vị trí công việc" }}
-                                onChange={this.handlePosition}
-                                value={careerPosition}
-                                multiple={false}
-                            /> */}
                         </div>
                         {/* Trình độ chuyên môn  */}
                         <div className="form-group col-md-4">
@@ -280,7 +284,7 @@ class SearchEmployeeForCareerPosition extends Component {
                             <SelectBox id={`professionalSkillArr-selectbox`}
                                 multiple={false}
                                 className="form-control select2"
-                                style={{ width: "100%" }}
+                                style={{ width: "100%", padding : "5px 0 5px 0" }}
                                 value={professionalSkill}
                                 items={professionalSkillArr} onChange={this.handleChangeProfessionalSkill}>
                             </SelectBox>
@@ -340,24 +344,55 @@ class SearchEmployeeForCareerPosition extends Component {
                     <div className="row">
                         {/* Số năm kinh nghiệm */}
                         <div className="form-group col-md-4">
-                            <label className="form-control-static">Số năm KN</label>
+                            <label className="form-control-static">Số năm kinh nghiệm</label>
                             <input type="number" className="form-control" value={exp} name="exp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
                         </div>
                         {/* Số năm kinh nghiệm công việc tương đương */}
                         <div className="form-group col-md-4">
-                            <label className="form-control-static">Số năm KN công việc tương đương</label>
+                            <label className="form-control-static">Số năm kinh nghiệm công việc tương đương</label>
                             <input type="number" className="form-control" value={sameExp} step={0.1} name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
                         </div>
                         {/* Thời gian bắt đầu gói thầu */}
                         <div className="form-group col-md-4">
-                            <label className="form-control-static">Thới gian bắt đầu gói thầu</label>
+                            <label className="form-control-static">Thời gian bắt đầu</label>
                             <DatePicker
-                                id="month-endDate-certificate"
-                                // dateFormat="month-year"
+                                id="month-endDate-start-date"
                                 value={biddingPackgaeStartDate}
                                 onChange={this.handleStartDateOfBiddingPackage}
                             />
                         </div>
+                    </div>
+                    
+                    <div className="row">
+                        {/* Trạng thái tham gia thầu */}
+                        <div className="form-group col-md-4">
+                            <label className="form-control-static">Trạng thái tham gia gói thầu</label>
+                            <SelectMulti id={`multiSelectBiddingPackageStatus`} style={{margin: 0}} multiple="multiple"
+                                options={{ nonSelectedText: 'Chọn trạng thái tham gia gói thầu', allSelectedText: "Chọn tất cả" }}
+                                value={biddingPackagePersonalStatus}
+                                items={[
+                                    {value: 1, text: "Chưa tham gia"}, 
+                                    {value: 2, text: "Chờ kết quả dự thầu"}, 
+                                    {value: 3, text: "Đã tham gia gói thầu"} 
+                                ]}
+                                onChange={this.handleBiddingPackagePersonalStatus}>
+                            </SelectMulti>
+                        </div>
+                        {/* Số năm kinh nghiệm công việc tương đương */}
+                        {/* <div className="form-group col-md-4">
+                            <label className="form-control-static">Số năm kinh nghiệm công việc tương đương</label>
+                            <input type="number" className="form-control" value={sameExp} step={0.1} name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
+                        </div> */}
+                        {/* Thời gian bắt đầu gói thầu */}
+                        {/* <div className="form-group col-md-4">
+                            <label className="form-control-static">Thới gian bắt đầu gói thầu</label>
+                            <DatePicker
+                                id="month-endDate-start-date"
+                                // dateFormat="month-year"
+                                value={biddingPackgaeStartDate}
+                                onChange={this.handleStartDateOfBiddingPackage}
+                            />
+                        </div> */}
                     </div>
                     
                     <div className="form-inline" style={{ marginBottom: 15 }}>

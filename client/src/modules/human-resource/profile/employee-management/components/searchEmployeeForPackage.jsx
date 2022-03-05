@@ -710,7 +710,7 @@ const SearchEmployeeForPackage = (props) => {
                     _id={currentRowView ? currentRowView._id : ""}
                 />
             }
-            {/* From chinh sửa thông tin nhân viên */
+            {/* From tìm kiếm các nhân viên tương tự */
                 <SearchEmployeeByCareerPositionTab
                     _id={currentRowView ? currentRowView._id : ""}
                     listPeople={state.listPeople}

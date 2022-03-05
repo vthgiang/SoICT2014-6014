@@ -4,22 +4,18 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, UploadFile, SelectBox, DatePicker } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 function DegreeEditModal(props) {
     const [state, setState] = useState({
-        name: "",
-        issuedBy: "",
-        year: "",
-        field: "",
         degreeType: "excellent",
-        file: "",
-        urlFile: "",
-        fileUpload: "",
     })
 
+
     useEffect(() => {
+        
         setState(state => {
             return {
                 ...state,
@@ -32,6 +28,7 @@ function DegreeEditModal(props) {
                 degreeQualification: props.degreeQualification,
                 year: props?.year ? props?.year?.length > 10 ? dayjs(props.year).format("DD-MM-YYYY") : props?.year : "",
                 degreeType: props.degreeType,
+                files: props.file ? [{ fileName: props.file, urlFile: props.urlFile, fileUpload: props.fileUpload }] : [],
                 file: props.file,
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
@@ -56,13 +53,9 @@ function DegreeEditModal(props) {
 
     const { id } = props;
 
-    const { index, name, issuedBy, year, degreeType, file, major, degreeQualification, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
+    const { index, files, name, issuedBy, year, degreeType, file, major, degreeQualification, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear, field } = state;
 
-    let files;
     let listFields = props.field.listFields;
-    if (file) {
-        files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
-    }
 
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
@@ -305,7 +298,7 @@ function DegreeEditModal(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile files={files} onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} />
                     </div>
                 </form>
             </DialogModal>

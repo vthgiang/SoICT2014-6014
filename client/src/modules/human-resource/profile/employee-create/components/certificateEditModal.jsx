@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, UploadFile, SelectBox } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -43,7 +44,7 @@ function CertificateEditModal(props) {
 
     const { id } = props;
 
-    const { certificate, issuedBy, endDate, startDate, file, urlFile, fileUpload, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
+    const { certificate, issuedBy, endDate, startDate, files, file, urlFile, fileUpload, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
 
     useEffect(() => {
         setState(state => {
@@ -55,6 +56,7 @@ function CertificateEditModal(props) {
                 startDate: props.startDate,
                 endDate: props.endDate,
                 certificate: props.certificate,
+                files: props.file ? [{ fileName: props.file, urlFile: props.urlFile, fileUpload: props.fileUpload }] : [],
                 file: props.file,
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
@@ -243,12 +245,6 @@ function CertificateEditModal(props) {
         // console.log(props.id);
     }
 
-    let files;
-    if (file) {
-        files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
-    }
-    console.log(file)
-
     return (
         <React.Fragment>
             <DialogModal
@@ -304,7 +300,7 @@ function CertificateEditModal(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile files={files} onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} />
                     </div>
                 </form>
             </DialogModal>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { BiddingPackageReduxAction } from '../redux/actions';
+import { BiddingPackageReduxAction } from '../../../redux/actions';
 import "./biddingPackage.css";
 import BiddingPackageTable from './biddingPackageTable';
 

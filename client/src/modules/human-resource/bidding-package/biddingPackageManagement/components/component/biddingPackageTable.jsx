@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
+import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../../../common-components';
 
-import { BiddingPackageReduxAction } from '../redux/actions';
+import { BiddingPackageReduxAction } from '../../../redux/actions';
 import EditForm from './editForm';
 import CreateForm from './createForm';
 
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 import Swal from 'sweetalert2';
 function BiddingPackageTable(props) { 
 

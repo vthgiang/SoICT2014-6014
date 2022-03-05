@@ -5,7 +5,7 @@ import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectTo
 
 import { DialogModal } from '../../../../../common-components';
 
-import { KeyPeopleRequire, ExperienceTab, GeneralTab } from './combinedContent';
+import { KeyPeopleRequire, ExperienceTab, GeneralTab, KeyPeople } from './combinedContent';
 import { BiddingPackageManagerActions } from '../redux/actions';
 import { MajorActions } from '../../../major/redux/actions';
 import { CareerReduxAction } from '../../../career/redux/actions';
@@ -138,7 +138,7 @@ const BiddingPackageCreateForm = (props) => {
 
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
-        let { biddingPackage, keyPersonnelRequires, code, startDate, endDate, status, type,
+        let { keyPeople, biddingPackage, keyPersonnelRequires, code, startDate, endDate, status, type,
             description, name } = state;
 
         await setState(state => ({
@@ -152,6 +152,7 @@ const BiddingPackageCreateForm = (props) => {
                 status, 
                 type,
                 description,
+                KeyPeople: keyPeople,
                 keyPersonnelRequires: keyPersonnelRequires
             }
         }))
@@ -181,6 +182,7 @@ const BiddingPackageCreateForm = (props) => {
                         startDate: "",
                         endDate: "",
                         description: "",
+                        KeyPeople: [],
                         keyPersonnelRequires: [],
                         errorOnName: undefined,
                     },
@@ -192,6 +194,8 @@ const BiddingPackageCreateForm = (props) => {
                     <ul className="nav nav-tabs">
                         <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href="#general-create">{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                         <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href="#key-people-require-create">Yêu cầu nhân sự chủ chốt</a></li>
+                        <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#key_people_create`}>Nhân sự chủ chốt</a></li>
+
                     </ul>
                     < div className="tab-content">
                         {/* Tab thông tin chung */}
@@ -207,6 +211,16 @@ const BiddingPackageCreateForm = (props) => {
                             listCareer={career?.listPosition}
                             listMajor={major?.listMajor}
                             listCertificate={certificate?.listCertificate}
+                            biddingPackage={biddingPackage}
+                        />
+                        {/* Danh sách nhân sự chủ chốt */}
+                            <KeyPeople
+                            id={`key_people_create`}
+                            handleChange={handleChange}
+                            listCareer={career?.listPosition}
+                            listMajor={major?.listMajor}
+                            listCertificate={certificate?.listCertificate}
+                            keyPersonnelRequires={state.biddingPackage.keyPersonnelRequires}
                             biddingPackage={biddingPackage}
                         />
                     </div>

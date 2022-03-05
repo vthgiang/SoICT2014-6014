@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox, UploadFile } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -29,20 +30,15 @@ function ModalAddCareerPosition(props) {
     }
 
     const [state, setState] = useState({
-        company: "",
         startDate: formatDate(Date.now()),
         endDate: formatDate(Date.now()),
-        careerPosition: "",
-        file: "",
-        project: '',
-        professionalExperience: "",
     })
 
     const { translate } = props;
     
     const { id } = props;
     
-    const { company, startDate, endDate, careerPosition, project, professionalExperience, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = state;
+    const { company, files, startDate, endDate, careerPosition, project, professionalExperience, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = state;
     
     let listPosition = props.career.listPosition;
     let listFields = props.field.listFields;
@@ -54,6 +50,7 @@ function ModalAddCareerPosition(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: value,
                     file: value[0].fileName,
                     urlFile: value[0].urlFile,
                     fileUpload: value[0].fileUpload
@@ -63,6 +60,7 @@ function ModalAddCareerPosition(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: undefined,
                     file: "",
                     urlFile: "",
                     fileUpload: ""
@@ -95,14 +93,13 @@ function ModalAddCareerPosition(props) {
 
     /** Bắt sự kiện thay đổi chức vụ */
     const handlePositionChange = (value) => {
-        // console.log("value", value)
-        // validatePosition(value[0], true)
-        setState(state => {
-            return {
-                ...state,
-                careerPosition: value[0]
-            }
-        })
+        validatePosition(value[0])
+        // setState(state => {
+        //     return {
+        //         ...state,
+        //         careerPosition: value[0]
+        //     }
+        // })
     }
 
     const handleProjectChange = (e) => {
@@ -113,21 +110,23 @@ function ModalAddCareerPosition(props) {
         })
     }
 
-    // const validatePosition = (value, willUpdateState = true) => {
-    //     const { translate } = props;
-    //     let { message } = ValidationHelper.validateEmpty(translate, value);
+    const validatePosition = (value, willUpdateState = true) => {
+        const { translate } = props;
+        let message = undefined;
+        if (!value || value?.toString()?.replace(/\s/g,"") === "0")
+            message = translate('general.validate.empty_error')
 
-    //     if (willUpdateState) {
-    //         setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnPosition: message,
-    //                 careerPosition: value,
-    //             }
-    //         });
-    //     }
-    //     return message === undefined;
-    // }
+        if (willUpdateState) {
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnPosition: message,
+                    careerPosition: value,
+                }
+            });
+        }
+        return message === undefined;
+    }
 
     /**
      * Function lưu thay đổi "từ tháng/năm" vào state
@@ -230,6 +229,21 @@ function ModalAddCareerPosition(props) {
                 formID={`modal-create-career-position-${id}`}
                 title={translate('human_resource.profile.add_experience')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    company: "",
+                    startDate: formatDate(Date.now()),
+                    endDate: formatDate(Date.now()),
+                    careerPosition: '0',
+                    project: '',
+                    professionalExperience: '',
+                    files: undefined,
+                    file: '',
+                    urlFile: '',
+                    fileUpload: ''
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`modal-create-career-position-${id}`}>
@@ -272,10 +286,11 @@ function ModalAddCareerPosition(props) {
                         <label>Vị trí công việc<span className="text-red">*</span></label>
                         <SelectBox
                             id={`career-position${id}`}
+                            key={id}
                             className="form-control select2"
                             style={{ width: "100%" }}
-                            value={careerPosition}
-                            items={[...listPosition.map(y => { return { value: y._id, text: y.name } }), { value: '', text: 'Chọn vị trí công việc' }]}
+                            value={state.careerPosition}
+                            items={[{value: '0', text: "Chọn vị trí công việc"}, ...listPosition.map(y => { return { value: y._id, text: y.name } }), { value: '', text: 'Chọn vị trí công việc' }]}
                             options={{ placeholder: "Chọn vị trí công việc" }}
                             onChange={handlePositionChange}
                             multiple={false}
@@ -298,7 +313,7 @@ function ModalAddCareerPosition(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
                     </div>
                 </form>
             </DialogModal>

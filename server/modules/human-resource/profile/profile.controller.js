@@ -126,6 +126,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 certificatesEndDate: req.query.certificatesEndDate,
                 package: req.query.package,
                 careerPosition: req.query.careerPosition,
+                biddingPackagePersonalStatus: req.query.biddingPackagePersonalStatus ? req.query.biddingPackagePersonalStatus.map(item => Number(item)) : [],
                 exp: Number(req.query.exp),
                 sameExp: Number(req.query.sameExp),
                 page: Number(req.query.page),

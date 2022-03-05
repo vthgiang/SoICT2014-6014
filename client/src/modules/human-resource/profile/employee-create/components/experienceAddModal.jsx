@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -38,13 +39,17 @@ function ModalAddExperience(props) {
         customer: "",
         address: "",
         jobDescription: "",
+        files: undefined,
+        file: "",
+        urlFile: "",
+        fileUpload: ""
     })
 
     const { translate } = props;
 
     const { id } = props;
 
-    const { company, position, project, address, customer, startDate, endDate, jobDescription, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition, career, careerPosition } = state;
+    const { company, position, files, project, address, customer, startDate, endDate, jobDescription, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition, career, careerPosition } = state;
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -179,13 +184,17 @@ function ModalAddExperience(props) {
         })
     }
 
+    // console.log("aaaaaaaaaaaa", state)
+
     
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
+        console.log(value)
         if (value.length !== 0) {
             setState(state => {
                 return {
                     ...state,
+                    files: value,
                     file: value[0].fileName,
                     urlFile: value[0].urlFile,
                     fileUpload: value[0].fileUpload
@@ -195,6 +204,7 @@ function ModalAddExperience(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: [],
                     file: "",
                     urlFile: "",
                     fileUpload: ""
@@ -230,12 +240,29 @@ function ModalAddExperience(props) {
 
     return (
         <React.Fragment>
-            <ButtonModal modalID={`modal-create-experience-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_experience')} />
+            <ButtonModal modalID={`modal-create-experience-${id}-${new Date().getMilliseconds()}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_experience')} />
             <DialogModal
-                size='50' modalID={`modal-create-experience-${id}`} isLoading={false}
+                size='50' modalID={`modal-create-experience-${id}-${new Date().getMilliseconds()}`} isLoading={false}
                 formID={`form-create-experience-${id}`}
                 title={translate('human_resource.profile.add_experience')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    company: "",
+                    startDate: formatDate(Date.now()),
+                    endDate: formatDate(Date.now()),
+                    position: "",
+                    project: "",
+                    customer: "",
+                    address: "",
+                    jobDescription: "",
+                    files: undefined,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-create-experience-${id}`}>
@@ -287,7 +314,7 @@ function ModalAddExperience(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
                     </div>
                 </form>
             </DialogModal>

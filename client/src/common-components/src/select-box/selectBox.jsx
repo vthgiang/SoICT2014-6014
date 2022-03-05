@@ -217,6 +217,7 @@ class SelectBox extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
+
         if (nextState.searching) {
             if (SelectBox.isEqual(nextProps.items, nextState.items)) {
                 return false;
@@ -251,6 +252,8 @@ class SelectBox extends Component {
         const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
 
         const { searching, value } = this.state;
+
+        console.log("sellllllllllllllllect" ,this.state)
 
         return (
             <React.Fragment>

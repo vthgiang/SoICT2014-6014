@@ -9,10 +9,10 @@ function KeyPeopleRequire(props) {
         keyPersonnelRequires: []
     });
 
-    const [list, setList] = useState(props.biddingPackage.keyPersonnelRequires)
+    const [list, setList] = useState(props.biddingPackage.keyPersonnelRequires ? props.biddingPackage.keyPersonnelRequires : [])
     
     const { translate, listMajor, listCareer, listCertificate, biddingPackage } = props;
-    const { id } = state;
+    const { id, keyPeople, keyPersonnelRequires } = state;
 
     useEffect(() => {
         setState(state => {
@@ -25,20 +25,22 @@ function KeyPeopleRequire(props) {
 
     useEffect(() => {
 
-        setList(props.biddingPackage.keyPersonnelRequires)
-        
         if (props.biddingPackage) {
             setState(state => {
                 return {
                     ...state,
                     id: props.id,
-                    keyPersonnelRequires: props.biddingPackage ? props.biddingPackage.keyPersonnelRequires : []
+                    keyPeople: props.biddingPackage.keyPeople && props.biddingPackage.keyPeople?.length ?  props.biddingPackage.keyPeople : props.biddingPackage.keyPersonnelRequires ? props.biddingPackage.keyPersonnelRequires?.map(x => {
+                        return {
+                            careerPosition: x.careerPosition,
+                            employees: []
+                        }
+                    }) : []
                 }
             })
 
-            setList(props.biddingPackage ? props.biddingPackage.keyPersonnelRequires : [])
         }
-    }, [])
+    }, [props.id, props.biddingPackage.keyPeople])
 
     useEffect(() => {
         
@@ -47,14 +49,13 @@ function KeyPeopleRequire(props) {
                 return {
                     ...state,
                     id: props.id,
-                    keyPersonnelRequires: props.biddingPackage ? props.biddingPackage.keyPersonnelRequires : []
+                    keyPersonnelRequires: props.biddingPackage ? props.biddingPackage.keyPersonnelRequires : [],
                 }
             })
 
-            setList(props.biddingPackage ? props.biddingPackage.keyPersonnelRequires : [])
+            setList(props.biddingPackage.keyPersonnelRequires ? props.biddingPackage.keyPersonnelRequires : [])
         }
-    }, [props.id, props.biddingPackage])
-
+    }, [props.id, props.biddingPackage.keyPersonnelRequires])
     
     /**
      * Function format dữ liệu Date thành string
@@ -81,22 +82,10 @@ function KeyPeopleRequire(props) {
         }
     }
 
-    /** Function lưu các trường thông tin vào state */
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setState(state => {
-            return {
-                ...state,
-                [name]: value,
-            }
-        })
-        props.handleChange(name, value);
-    }
-
-
     /** Function bắt sự kiện thay đổi vị trí công việc */
     const handleCareer = (e, listIndex) => {
         let { value } = e.target;
+
         let newList = list.map((item, index) => {
             if (index === listIndex) {
                 return {
@@ -106,7 +95,12 @@ function KeyPeopleRequire(props) {
             }
             return item;
         })
+
+        let newListEmployee = state.keyPeople
+        newListEmployee[listIndex]['careerPosition'] = value
+        
         setList(newList);
+        props.handleChange("keyPeople", newListEmployee);
         props.handleChange("keyPersonnelRequires", newList);
     }
 
@@ -150,7 +144,7 @@ function KeyPeopleRequire(props) {
             if (index === listIndex) {
                 return {
                     ...item,
-                    count: value
+                    count: Number(value)
                 }
             }
             return item;
@@ -285,6 +279,46 @@ function KeyPeopleRequire(props) {
         }
     }
 
+    const handleDeletePositionKeyRequire = (listIndex) => {
+        let newList = list
+        newList.splice(listIndex, 1)
+        let newListEmployee = state.keyPeople.splice(listIndex, 1)
+
+        setList(newList);
+        props.handleChange("keyPeople", newListEmployee);
+        props.handleChange("keyPersonnelRequires", newList);
+    }
+
+    const handleAddPositionKeyRequire = () => {
+        let newList = list
+
+        newList.push({
+            careerPosition: '',
+            sameCareerPosition: [],
+            majors: [],
+            count: 0,
+            numberYearsOfExperience: 0,
+            experienceWorkInCarreer: 0,
+            numblePackageWorkInCarreer: 0,
+            certificateRequirements: {
+                certificates: [],
+                count: 0,
+                certificatesEndDate: null,
+            }
+        })
+
+        let newListEmployee = state.keyPeople
+        newListEmployee.push(
+            {
+                careerPosition: '',
+                employees: []
+            }
+        ) 
+        setList(newList);
+        props.handleChange("keyPeople", newListEmployee);
+        props.handleChange("keyPersonnelRequires", newList);
+    }
+
     let professionalSkillArr = [
         { value: null, text: "Chọn trình độ" },
         { value: 1, text: "Trình độ phổ thông" },
@@ -307,10 +341,7 @@ function KeyPeopleRequire(props) {
                     return (
                         <div key={listIndex} className="box-body" style={{ border: '1px solid #ccc', marginBottom: '10px' }}>
                             <div className="row" style={{ marginRight: '5px' }}>
-                                <button className='pull-right btn btn-danger' style={{fontWeight: 700}} onClick={() => {
-                                    const newList = list.splice(listIndex, 1)
-                                    setList(list.filter(item => item != newList[0]))
-                                }}>–</button>
+                                <button className='pull-right btn btn-danger' style={{fontWeight: 700}} onClick={() => handleDeletePositionKeyRequire(listIndex)}>–</button>
                             </div>
                             <div className="row" style={{ paddingTop: '10px' }}>
                                 <div className="form-group col-md-6">
@@ -454,23 +485,7 @@ function KeyPeopleRequire(props) {
                 })
             }
             
-            <button className='btn btn-success' onClick={() => {
-                let newList = [...list, {
-                    careerPosition: '',
-                    sameCareerPosition: [],
-                    majors: [],
-                    count: 0,
-                    numberYearsOfExperience: 0,
-                    experienceWorkInCarreer: 0,
-                    numblePackageWorkInCarreer: 0,
-                    certificateRequirements: {
-                        certificates: [],
-                        count: 0,
-                        certificatesEndDate: null,
-                    }
-                }]
-                setList(newList)
-            }}>Thêm</button>
+            <button className='btn btn-success' onClick={() => {handleAddPositionKeyRequire()}}>Thêm</button>
         </div >
     );
 };

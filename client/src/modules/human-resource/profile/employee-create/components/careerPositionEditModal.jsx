@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, UploadFile, SelectBox } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -43,7 +44,7 @@ function ModalEditCareerPosition(props) {
 
     useEffect(() => {
         setState(state => {
-            return {
+            const newState = {
                 ...state,
                 id: props.id,
                 index: props.index,
@@ -53,7 +54,7 @@ function ModalEditCareerPosition(props) {
                 careerPosition: props.careerPosition,
                 project: props.project ? props.project : '',
                 professionalExperience: props.professionalExperience ? props.professionalExperience : '',
-                file: props.file,
+                files: props.file ? [{ fileName: props.file, urlFile: props.urlFile, fileUpload: props.fileUpload }] : [],
                 urlFile: props.urlFile,
                 fileUpload: props.fileUpload,
                 errorOnPosition: undefined,
@@ -62,25 +63,22 @@ function ModalEditCareerPosition(props) {
                 errorOnEndDate: undefined,
                 errorOnProject: undefined
             }
+            console.log("stateeeeeee",newState)
+
+            return newState
         })
-        if (props._id) {
-            setState(state => {
-                return {
-                    ...state,
-                    _id: props._id
-                }
-            })
-        }
     }, [props.id])
+
+    console.log("new stateeeeeee", state)
 
        
     const { translate, listPosition } = props;
 
     const { id } = props;
     
-    const { company, file, urlFile, fileUpload, careerPosition, project, professionalExperience, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition, errorOnProject } = state;
+    const { company, files, file, urlFile, fileUpload, careerPosition, project, professionalExperience, startDate, endDate, errorOnUnit, errorOnStartDate, errorOnEndDate, errorOnPosition, errorOnProject } = state;
     
-    console.log("aaaaaaaaâ", careerPosition)
+    // console.log("aaaaaaaaâ", careerPosition)
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -145,8 +143,6 @@ function ModalEditCareerPosition(props) {
         }
         return message === undefined;
     }
-
-
 
     /**
      * Function lưu thay đổi "từ tháng/năm" vào state
@@ -264,12 +260,6 @@ function ModalEditCareerPosition(props) {
         }
     }
 
-    let files;
-    console.log("file", props.file)
-    if (file) {
-        files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
-    }
-
     return (
         <React.Fragment>
             <DialogModal
@@ -279,15 +269,10 @@ function ModalEditCareerPosition(props) {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={()=>{
-                    setState(state => ({
-                        ...state,
-                        careerPosition: "",
-                        file: "",
-                        urlFile: "",
-                        fileUpload: ""
-                    }))
-                }}
+                // afterClose={()=>{setState(state => ({
+                //     ...state,
+                //     careerPosition: ''
+                // }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-edit-career-position-${id}`}>
@@ -335,7 +320,7 @@ function ModalEditCareerPosition(props) {
                                 return { text: x.name, value: x._id }
                             })}
                             options={{ placeholder: "Chọn vị trí công việc" }}
-                            value={state.careerPosition}
+                            value={careerPosition}
                             onChange={handlePositionChange}
                         />
                         <ErrorLabel content={errorOnPosition} />
@@ -357,7 +342,7 @@ function ModalEditCareerPosition(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile files={files} onChange={handleChangeFile} />
+                        <UploadFileHook id={`file-${id}`} value={files} onChange={handleChangeFile} />
                     </div>
                 </form>
             </DialogModal>

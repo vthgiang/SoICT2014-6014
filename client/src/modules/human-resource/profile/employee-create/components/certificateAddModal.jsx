@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile, SelectBox } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -30,6 +31,7 @@ function CertificateAddModal(props) {
     }
 
     const [state, setState] = useState({
+        certificate: "",
         startDate: formatDate(Date.now()),
         endDate: "",
         name: "",
@@ -43,7 +45,7 @@ function CertificateAddModal(props) {
 
     const { id } = props;
 
-    const { issuedBy, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate, certificate } = state;
+    const { issuedBy, endDate, startDate, files, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate, certificate } = state;
     let listFields = props.field.listFields;
     let listMajor = props.major.listMajor;
     let listCertificates = props.certificate.listCertificate;
@@ -55,6 +57,7 @@ function CertificateAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: value,
                     file: value[0].fileName,
                     urlFile: value[0].urlFile,
                     fileUpload: value[0].fileUpload
@@ -64,6 +67,7 @@ function CertificateAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: undefined,
                     file: "",
                     urlFile: "",
                     fileUpload: ""
@@ -220,6 +224,20 @@ function CertificateAddModal(props) {
                 formID={`form-create-certificateShort-${id}`}
                 title={translate('human_resource.profile.add_certificate')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    certificate: '',
+                    startDate: formatDate(Date.now()),
+                    endDate: "",
+                    name: "",
+                    issuedBy: "",
+                    files: undefined,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-create-certificateShort-${id}`}>
@@ -268,7 +286,7 @@ function CertificateAddModal(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
                     </div>
                 </form>
             </DialogModal>

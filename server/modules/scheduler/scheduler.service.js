@@ -19,6 +19,6 @@ exports.sendEmailTaskAutomatic = new CronJob('0 0 8 * * 0', function () {
 }, null, false, 'Asia/Ho_Chi_Minh');
 
 
-exports.updateStatusPackagePersonStatus = new CronJob('0 0 0 * * *', async function () {
+exports.updateStatusPackagePersonStatus = new CronJob('0 8 8 * * *', async function () {
     biddingPackageController.autoUpdateEmployeeBiddingStatus();
 }, null, false, 'Asia/Ho_Chi_Minh');

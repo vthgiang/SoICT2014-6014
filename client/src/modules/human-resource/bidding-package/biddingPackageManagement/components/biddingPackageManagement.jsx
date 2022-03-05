@@ -226,32 +226,6 @@ const BiddingPackageManagement = (props) => {
         }))
     }
 
-    // const handleExportExcel = async () => {
-    //     console.log("EXPORT EXCELL")
-    //     const { biddingPackagesManager } = props;
-    //     let arrEmail = biddingPackagesManager.listBiddingPackages.map(x => x.emailInCompany);
-    //     await setState(state => ({
-    //         ...state,
-    //         exportDataStatus: 0
-    //     }))
-    //     await props.getAllBiddingPackage({ exportData: true, arrEmail: arrEmail });
-    // }
-
-    /**
-     * Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
-     * @param {*} data : Thông tin nhân viên
-     */
-
-    // useLayoutEffect(() => {
-    //     const { exportDataStatus } = state;
-    //     const { biddingPackagesManager } = props;
-    //     if (exportDataStatus === 0 && !biddingPackagesManager.isLoading && biddingPackagesManager.exportData.length !== 0) {
-    //         let exportData = convertDataToExportData(biddingPackagesManager.exportData);
-    //         ExportExcel.export(exportData);
-    //     };
-
-    // }, [props.biddingPackagesManager.exportData]);
-
     const { biddingPackagesManager, translate } = props;
 
     const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, status, type, isLoading } = state;

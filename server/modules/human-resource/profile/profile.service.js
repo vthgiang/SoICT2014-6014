@@ -2690,35 +2690,35 @@ const checkEmployeePackageValid = async (employees, require, otherEmployee) => {
 };
 
 exports.searchEmployeeForPackage = async (portal, params, companyId) => {
-    // console.log("params", params);
+    console.log("params", params);
     let noResultsPerPage = parseInt(params.limit);
     let pageNumber = parseInt(params.page);
     let keySearch = [{ $match: { status: "active" } }];
 
-    // if (
-    //     params.biddingPackagePersonalStatus &&
-    //     params.biddingPackagePersonalStatus.length
-    // ) {
-    //     keySearch = [
-    //         ...keySearch,
-    //         {
-    //             $match: {
-    //                 biddingPackagePersonalStatus: {
-    //                     $in: params.biddingPackagePersonalStatus,
-    //                 },
-    //             },
-    //         },
-    //     ];
-    // } else {
-    //     keySearch = [
-    //         ...keySearch,
-    //         {
-    //             $match: {
-    //                 biddingPackagePersonalStatus: 1,
-    //             },
-    //         },
-    //     ];
-    // }
+    if (
+        params.biddingPackagePersonalStatus &&
+        params.biddingPackagePersonalStatus.length
+    ) {
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    biddingPackagePersonalStatus: {
+                        $in: params.biddingPackagePersonalStatus,
+                    },
+                },
+            },
+        ];
+    } else {
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    biddingPackagePersonalStatus: 1,
+                },
+            },
+        ];
+    }
 
     if (params.majors) {
         // Bắt sựu kiện theo chuyên ngành
@@ -2753,6 +2753,19 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
                             $in: params.majors.map((item) =>
                                 mongoose.Types.ObjectId(item)
                             ),
+                        },
+                    },
+                },
+            ];
+        }
+    } else {
+        if (params.professionalSkill) {
+            keySearch = [
+                ...keySearch,
+                {
+                    $match: {
+                        "degrees.degreeQualification": {
+                            $gte: Number(params.professionalSkill),
                         },
                     },
                 },
