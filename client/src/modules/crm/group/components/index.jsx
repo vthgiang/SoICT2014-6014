@@ -9,9 +9,11 @@ import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import CreateCareCommonForm from '../../common/createCareCommonForm';
 import GroupInfoForm from './groupInfoForm';
 import { getStorage } from '../../../../config';
-import PromotionInfoForm from './promotionInfoForm';
+import GroupPromotionInfoForm from './promotionInfoForm';
 
 function CrmGroup(props) {
+
+    console.log("CrmGroup rendered");
 
     const tableIdDefault = "table-manage-crm-group";
     const defaultConfig = { limit: 5 }
@@ -19,7 +21,8 @@ function CrmGroup(props) {
     const [groupEditId, setGroupEditId] = useState();
     const [groupCreateCareACtionId, setGroupCreateCareACtionId] = useState();
     const [groupInfoId, setGroupInfoId] = useState();
-    const [groupPromotionId, setGroupPromotionId] = useState(undefined);
+    const [groupPromotionId, setGroupPromotionId] = useState();
+    
     const [searchState, setSearchState] = useState({
         limit: limitInit,
         page: 0,
@@ -81,8 +84,9 @@ function CrmGroup(props) {
     }
 
     const handleGetPromotion = (id) => {
+        console.log("Id ở index " + id);
         setGroupPromotionId(id);
-        window.$(`#modal-group-promotion-info`).modal('show');
+        window.$(`#modal-group-promotion-info-1`).modal('show');
     }
 
 
@@ -105,7 +109,7 @@ function CrmGroup(props) {
                 {groupInfoId && <GroupInfoForm groupInfoId={groupInfoId} />}
                 {groupCreateCareACtionId && <CreateCareCommonForm type={2} />}
                 {groupEditId && <EditGroupForm groupIdEdit={groupEditId} />}
-                {groupPromotionId && <PromotionInfoForm groupPromotionId={groupPromotionId}/> }
+                {<GroupPromotionInfoForm groupPromotionId={groupPromotionId}/> }
                 {/*  tim kiem theo ma nhom */}
                 <div className="form-inline" style={{marginLeft:'10px'}}>
                     <div className="form-group">
@@ -196,3 +200,16 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmGroup));
+
+
+
+/*const [state, setState] = useState({
+        groupPromotionId: null
+    })
+    const { groupPromotionId } = state;
+    */
+   /*setState({
+            ...state,
+            groupPromotionId: id 
+        })
+    */

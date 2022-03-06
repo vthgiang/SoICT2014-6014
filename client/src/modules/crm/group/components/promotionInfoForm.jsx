@@ -6,24 +6,28 @@ import { formatFunction } from '../../common';
 import PromotionAddForm from './promotionAddForm';
 import PromotionEditForm from './promotionEditForm';
 import { CrmGroupActions } from '../redux/actions';
+import {useSelector} from 'react-redux'
 
 function GroupPromotionInfoForm (props) {
+    console.log("GroupPromotionInfoForm rendered");
+
     const { groupPromotionId, crm } = props;
     const [groupPromotionEdit, setGroupPromotionEdit] = useState();
     
     useEffect(()=> {
-        props.getGroupById(groupPromotionId);
-    },[groupPromotionId]);
-
+        console.log("Id ở Info " + groupPromotionId);
+        groupPromotionId && props.getGroupById(groupPromotionId);
+    },[props.groupPromotionId]);
     useEffect(() => {
-        props.getMembersGroup(groupPromotionId);
+        groupPromotionId && props.getMembersGroup(groupPromotionId);
     },[groupPromotionId]);
 
     let group;
-    if (crm && crm.groups && crm.groups.groupById) group = crm.groups.groupById.groupById;
-    if (group && group._id != groupPromotionId) {
-        group._id = groupPromotionId;
-        props.getGroupById(groupPromotionId);
+    //const [group,setGroup]=useState()
+    if (crm && crm.groups && crm.groups.groupById) {
+        group = crm.groups.groupById.groupById;
+        //setGroup(crm.groups.groupById.groupById)
+        console.log(group);
     }
 
     if (group && group.promotions) {
@@ -43,21 +47,22 @@ function GroupPromotionInfoForm (props) {
 
     const deletePromotion = (groupId, promoDelete) => {
         props.deletePromotion(groupId, promoDelete);
+        //props.getGroupById(groupId);
     }
 
     const getRefreshData = () => {
         props.getGroupById(groupPromotionId);
     }
 
-    return (
+    return ( 
         <DialogModal
-            modalID="modal-group-promotion-info" isLoading={crm.groups.isLoading}
+            modalID="modal-group-promotion-info-1" isLoading={crm.groups.isLoading}
             formID="form-group-promotion-info"
             title={`Danh sách khuyến mãi của nhóm khách hàng`}
             size={75}
             disableSubmit={true}
         >    
-        {/*<a>{console.log("chay modal")}</a>*/}
+        <a>{console.log("chay modal")}</a>
         {group && <PromotionAddForm groupId={group._id} getRefreshData={() => getRefreshData()}/>}
         {group && groupPromotionEdit && <PromotionEditForm groupId={group._id} groupPromotionEdit={groupPromotionEdit} getRefreshData={() => getRefreshData()}/>}
         {/** Bảng hiển thị khuyến mãi nhóm */} 
@@ -137,8 +142,14 @@ const mapDispatchToProps = {
     getMembersGroup: CrmGroupActions.getMembersGroup
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GroupPromotionInfoForm));
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(withTranslate(GroupPromotionInfoForm)));
 
 
 /* add 1-> 51 */
 
+/*if (group && group._id != groupPromotionId) {
+        group._id = groupPromotionId;
+        props.getGroupById(groupPromotionId);
+    }*/
+
+    
