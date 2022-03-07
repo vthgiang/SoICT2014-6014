@@ -288,8 +288,8 @@ function GoodCreateForm(props) {
 
             html: `<h3 style="color: red"><div>Phương sai</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được.</p>
-            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán được trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
+            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được dựa trên 1 đơn vị tính cơ bản.</p>
+            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán 1 đơn vị trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
             width: "50%",
         })
     };
@@ -428,7 +428,7 @@ function GoodCreateForm(props) {
                             </div>
                             <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
                                 <label>
-                                    {"Phương sai giá bán"}
+                                    {"Phương sai giá bán / 1 đơn vị tính cơ bản"}
                                     <span className="text-red"> </span>
                                 </label>
                                 <a onClick={() => showListExplainVariance()}>
