@@ -165,7 +165,7 @@ function GoodReceiptCreateForm(props) {
 
     const getSupplier = () => {
         const { crm, translate } = props;
-        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_customer") }];
+        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_supplier") }];
 
         crm.customers.list.map((item) => {
             supplierArr.push({
@@ -896,14 +896,12 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.name")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.phone")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
@@ -912,14 +910,12 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.email")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.address")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>

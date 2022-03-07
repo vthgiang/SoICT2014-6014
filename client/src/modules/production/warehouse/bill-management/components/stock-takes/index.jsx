@@ -8,6 +8,8 @@ import StockTakeEditForm from './stockTakeEditForm';
 import StockTakeCreateForm from './stockTakeCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
+import Swal from "sweetalert2";
+import { UserGuideCreateBillTake } from '../config.js';
 function TakeManagement(props) {
     const tableId = "take-management-table";
     const defaultConfig = { limit: 5 }
@@ -43,6 +45,25 @@ function TakeManagement(props) {
             }
         });
         return result;
+    }
+
+    const showFilePreview = (data) => {
+        const link = process.env.REACT_APP_SERVER + data[0].url;
+        Swal.fire({
+            html: ` 
+            <h4>${data[0].pageName}</h4>
+            <div style="margin:0px;padding:0px;overflow:hidden">
+               <iframe  frameborder="0" style="overflow:hidden;height:90vh;width:100%" height="100vh" width="100%"
+                        src= ${link}
+                    />
+            </div>`,
+            width: "100%",
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: true,
+            focusConfirm: false,
+
+        })
     }
 
     const handleFinishedQualityControlStaff = async (bill) => {
@@ -97,6 +118,9 @@ function TakeManagement(props) {
                             onChange={props.handleCreatorChange}
                         />
                     </div>
+                    <a href="#show-detail" onClick={() => showFilePreview(UserGuideCreateBillTake)}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px', fontSize: '20px' }} />
+                    </a>
                 </div>
                 <div className="form-inline">
                     <div className="form-group">

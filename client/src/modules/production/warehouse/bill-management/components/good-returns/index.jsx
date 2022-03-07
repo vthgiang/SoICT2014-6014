@@ -10,6 +10,9 @@ import QualityControlForm from '../genaral/quatityControlForm';
 
 import { BillActions } from '../../redux/actions';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
+import Swal from "sweetalert2";
+import { UserGuideCreateBillReturn } from '../config.js';
+
 function ReturnManagement(props) {
     const tableId = "return-management-table";
     const defaultConfig = { limit: 5 }
@@ -58,6 +61,25 @@ function ReturnManagement(props) {
         window.$('#modal-quality-control-bill').modal('show');
     }
 
+    const showFilePreview = (data) => {
+        const link = process.env.REACT_APP_SERVER + data[0].url;
+        Swal.fire({
+            html: ` 
+            <h4>${data[0].pageName}</h4>
+            <div style="margin:0px;padding:0px;overflow:hidden">
+               <iframe  frameborder="0" style="overflow:hidden;height:90vh;width:100%" height="100vh" width="100%"
+                        src= ${link}
+                    />
+            </div>`,
+            width: "100%",
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: true,
+            focusConfirm: false,
+
+        })
+    }
+
     const { translate, bills, stocks, user } = props;
     const { listPaginate, totalPages, page } = bills;
     const { listStocks } = stocks;
@@ -101,6 +123,9 @@ function ReturnManagement(props) {
                             onChange={props.handleCreatorChange}
                         />
                     </div>
+                    <a href="#show-detail" onClick={() => showFilePreview(UserGuideCreateBillReturn)}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px', fontSize: '20px' }} />
+                    </a>
                 </div>
                 <div className="form-inline">
                     <div className="form-group">

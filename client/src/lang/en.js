@@ -4589,6 +4589,7 @@ export default {
                 choose_stock: "Select warehouse",
                 choose_good: "Select commodity",
                 detail_title: "Detail storage location",
+                empty_stock: "Kho trống",
             },
             bill_management: {
                 text: "Consignment have not been writen",
@@ -4694,6 +4695,7 @@ export default {
                 choose_type: "Select bill",
                 choose_approver: "Select approver",
                 choose_customer: "Select customer",
+                choose_supplier: "Select supplier",
                 choose_manufacturing_mills: "Select mill",
                 choose_lot: "Select consignment",
                 choose_stock: "Select warehouse",
