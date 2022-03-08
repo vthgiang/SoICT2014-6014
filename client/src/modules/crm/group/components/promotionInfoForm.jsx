@@ -9,27 +9,30 @@ import { CrmGroupActions } from '../redux/actions';
 import {useSelector} from 'react-redux'
 
 function GroupPromotionInfoForm (props) {
-    console.log("GroupPromotionInfoForm rendered");
-
     const { groupPromotionId, crm } = props;
     const [groupPromotionEdit, setGroupPromotionEdit] = useState();
     
+    // Gọi API lấy thông tin group, trong đó có promotion của group đó
     useEffect(()=> {
-        console.log("Id ở Info " + groupPromotionId);
         groupPromotionId && props.getGroupById(groupPromotionId);
     },[props.groupPromotionId]);
+
+    // Gọi Api lấy danh sách các thành viên trong group đó
     useEffect(() => {
         groupPromotionId && props.getMembersGroup(groupPromotionId);
     },[groupPromotionId]);
 
     let group;
-    //const [group,setGroup]=useState()
+    // Lấy thông tin group từ Store sau khi api trả về bỏ vào store
     if (crm && crm.groups && crm.groups.groupById) {
-        group = crm.groups.groupById.groupById;
-        //setGroup(crm.groups.groupById.groupById)
-        console.log(group);
+        if (crm.groups.groupById.groupById) {
+            group = crm.groups.groupById.groupById;
+        } else {
+            group = crm.groups.groupById;
+        }
     }
 
+    // Đối với từng khuyến mãi của nhóm -> Tạo danh sách các khách hàng ko được hưởng khuyến mãi
     if (group && group.promotions) {
         group.promotions = group.promotions.map((o) => {
             let listExceptCustomer = "";                    
@@ -47,7 +50,6 @@ function GroupPromotionInfoForm (props) {
 
     const deletePromotion = (groupId, promoDelete) => {
         props.deletePromotion(groupId, promoDelete);
-        //props.getGroupById(groupId);
     }
 
     const getRefreshData = () => {
@@ -62,7 +64,6 @@ function GroupPromotionInfoForm (props) {
             size={75}
             disableSubmit={true}
         >    
-        <a>{console.log("chay modal")}</a>
         {group && <PromotionAddForm groupId={group._id} getRefreshData={() => getRefreshData()}/>}
         {group && groupPromotionEdit && <PromotionEditForm groupId={group._id} groupPromotionEdit={groupPromotionEdit} getRefreshData={() => getRefreshData()}/>}
         {/** Bảng hiển thị khuyến mãi nhóm */} 
@@ -151,5 +152,7 @@ export default React.memo(connect(mapStateToProps, mapDispatchToProps)(withTrans
         group._id = groupPromotionId;
         props.getGroupById(groupPromotionId);
     }*/
+
+    
 
     

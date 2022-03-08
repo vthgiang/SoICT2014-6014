@@ -70,7 +70,7 @@ function EditGroupForm(props) {
     }
     const { groups } = crm;
     const { groupCodeEditFormError, groupNameEditFormError } = validateState;
-    if(!crm.groups.isLoading && groups.groupById && (editingGroup._id != groups.groupById.groupById._id))  setEdittingGroup(groups.groupById.groupById)
+    if(!crm.groups.isLoading && groups.groupById && groups.groupById.groupById && groups.groupById.groupById._id && (editingGroup._id != groups.groupById.groupById._id))  setEdittingGroup(groups.groupById.groupById)
     
     return (
         <React.Fragment>
