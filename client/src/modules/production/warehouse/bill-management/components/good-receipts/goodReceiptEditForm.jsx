@@ -29,14 +29,38 @@ function GoodReceiptEditForm(props) {
         users: [],
         status: '1',
         fromStock: '',
-        approver: []
+        approver: [],
+        sourceType: "",
+        isSeflProduced: props.sourceType === "1" ? true : false,
     })
+
+    let dataSource = [
+        {
+            value: '0',
+            text: 'Chọn nguồn hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Hàng hóa tự sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Hàng hóa nhập từ nhà cung cấp',
+        }
+    ];
 
     const getAllGoods = () => {
         let { translate } = props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
+        let listGoodsCheckBySourceType = [];
+        let goods = props.goods.listGoods;
+        for (let i = 0; i < goods.length; i++) {
+            if (goods[i].sourceType === state.sourceType) {
+                listGoodsCheckBySourceType.push(goods[i]);
+            }
+        }
 
-        props.goods.listGoods.map(item => {
+        listGoodsCheckBySourceType.map(item => {
             goodArr.push({
                 value: item._id,
                 text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
@@ -85,7 +109,7 @@ function GoodReceiptEditForm(props) {
 
     const getCustomer = () => {
         const { crm, translate } = props;
-        let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
+        let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_supplier') }];
 
         crm.customers.list.map(item => {
             CustomerArr.push({
@@ -99,7 +123,7 @@ function GoodReceiptEditForm(props) {
 
     const getMills = () => {
         const { manufacturingMill, translate } = props;
-        let MillArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
+        let MillArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_manufacturing_mills') }];
 
         manufacturingMill.listMills.map(item => {
             MillArr.push({
@@ -132,6 +156,8 @@ function GoodReceiptEditForm(props) {
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
             { value: '1', text: translate('manage_warehouse.bill_management.billType.1') },
             { value: '2', text: translate('manage_warehouse.bill_management.billType.2') },
+            { value: "3", text: translate("manage_warehouse.bill_management.billType.3") },
+            { value: "4", text: translate("manage_warehouse.bill_management.billType.4") },
         ]
         return typeArr;
     }
@@ -152,6 +178,7 @@ function GoodReceiptEditForm(props) {
                 ...state,
                 type: value,
                 errorType: msg,
+                listGood: [],
             })
         }
         return msg === undefined;
@@ -174,6 +201,29 @@ function GoodReceiptEditForm(props) {
                 fromStock: value,
                 errorStock: msg,
             })
+        }
+        return msg === undefined;
+    }
+
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
+
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                listGood: [],
+                supplier: '',
+                isSeflProduced: value === "1" ? true : false,
+            });
         }
         return msg === undefined;
     }
@@ -499,6 +549,7 @@ function GoodReceiptEditForm(props) {
                     code: item.lot.code,
                     quantity: item.quantity,
                     note: item.note,
+                    rfidCode: item.lot.rfid ? item.lot.rfid[0].rfidCode : '',
                 })
             })
         } else {
@@ -509,6 +560,7 @@ function GoodReceiptEditForm(props) {
                     code: item.code,
                     quantity: item.quantity,
                     note: item.note,
+                    // rfidCode: item.rfid[0].rfidCode,
                 })
             })
         }
@@ -605,86 +657,88 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
-        let approver = [];
-        let qualityControlStaffs = [];
-        let responsibles = [];
-        let accountables = [];
-        if (props.approvers && props.approvers.length > 0) {
-            for (let i = 0; i < props.approvers.length; i++) {
-                approver = [...approver, props.approvers[i].approver._id];
+    useEffect(() => {
+        if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
+            let approver = [];
+            let qualityControlStaffs = [];
+            let responsibles = [];
+            let accountables = [];
+            if (props.approvers && props.approvers.length > 0) {
+                for (let i = 0; i < props.approvers.length; i++) {
+                    approver = [...approver, props.approvers[i].approver._id];
+                }
+
             }
 
-        }
+            if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
+                for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
+                    qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
+                }
 
-        if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
-            for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
-                qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
             }
 
-        }
+            if (props.responsibles && props.responsibles.length > 0) {
+                for (let i = 0; i < props.responsibles.length; i++) {
+                    responsibles = [...responsibles, props.responsibles[i]._id];
+                }
 
-        if (props.responsibles && props.responsibles.length > 0) {
-            for (let i = 0; i < props.responsibles.length; i++) {
-                responsibles = [...responsibles, props.responsibles[i]._id];
             }
 
-        }
+            if (props.accountables && props.accountables.length > 0) {
+                for (let i = 0; i < props.accountables.length; i++) {
+                    accountables = [...accountables, props.accountables[i]._id];
+                }
 
-        if (props.accountables && props.accountables.length > 0) {
-            for (let i = 0; i < props.accountables.length; i++) {
-                accountables = [...accountables, props.accountables[i]._id];
+            }
+            state.good.quantity = 0;
+            state.good.good = '';
+            state.good.description = '';
+            state.good.lots = [];
+
+            if (props.type === "1") {
+                props.getGoodsByType({ type: "material" });
+            } else if (props.type === "2") {
+                props.getGoodsByType({ type: "product" });
             }
 
+            setState({
+                ...state,
+                billId: props.billId,
+                code: props.code,
+                fromStock: props.fromStock,
+                status: props.status,
+                oldStatus: props.oldStatus,
+                group: props.group,
+                type: props.type,
+                users: props.users,
+                creator: props.creator,
+                approvers: props.approvers,
+                approver: approver,
+                qualityControlStaffs: qualityControlStaffs,
+                listQualityControlStaffs: props.listQualityControlStaffs,
+                responsibles: responsibles,
+                accountables: accountables,
+                description: props.description,
+                supplier: props.supplier,
+                manufacturingMill: props.manufacturingMillId,
+                name: props.name,
+                phone: props.phone,
+                email: props.email,
+                address: props.address,
+                listGood: props.listGood,
+                oldGoods: props.listGood,
+                editInfo: false,
+                errorStock: undefined,
+                errorType: undefined,
+                errorApprover: undefined,
+                errorCustomer: undefined,
+                errorQualityControlStaffs: undefined,
+                errorAccountables: undefined,
+                errorResponsibles: undefined
+
+            })
         }
-        state.good.quantity = 0;
-        state.good.good = '';
-        state.good.description = '';
-        state.good.lots = [];
-
-        if (props.type === "1") {
-            props.getGoodsByType({ type: "material" });
-        } else if (props.type === "2") {
-            props.getGoodsByType({ type: "product" });
-        }
-
-        setState({
-            ...state,
-            billId: props.billId,
-            code: props.code,
-            fromStock: props.fromStock,
-            status: props.status,
-            oldStatus: props.oldStatus,
-            group: props.group,
-            type: props.type,
-            users: props.users,
-            creator: props.creator,
-            approvers: props.approvers,
-            approver: approver,
-            qualityControlStaffs: qualityControlStaffs,
-            listQualityControlStaffs: props.listQualityControlStaffs,
-            responsibles: responsibles,
-            accountables: accountables,
-            description: props.description,
-            supplier: props.supplier,
-            manufacturingMill: props.manufacturingMillId,
-            name: props.name,
-            phone: props.phone,
-            email: props.email,
-            address: props.address,
-            listGood: props.listGood,
-            oldGoods: props.listGood,
-            editInfo: false,
-            errorStock: undefined,
-            errorType: undefined,
-            errorApprover: undefined,
-            errorCustomer: undefined,
-            errorQualityControlStaffs: undefined,
-            errorAccountables: undefined,
-            errorResponsibles: undefined
-
-        })
-    }
+    }, [props.billId, props.oldStatus])
 
     const save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier, manufacturingMill,
@@ -771,10 +825,10 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    const { translate, group } = props;
+    const { translate, group, sourceType } = props;
     const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
-        qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, manufacturingMill,
-        errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
+        qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
+        errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
     const listGoods = getAllGoods();
     const dataApprover = getApprover();
     const dataCustomer = getCustomer();
@@ -782,7 +836,7 @@ function GoodReceiptEditForm(props) {
     const dataStock = getStock();
     const dataType = getType();
     const dataStatus = getStatus();
-    // const checkApproved = checkApproved(approvers, listQualityControlStaffs);
+    // const checkApprove = checkApproved(approvers, listQualityControlStaffs);
 
     return (
         <React.Fragment>
@@ -797,7 +851,7 @@ function GoodReceiptEditForm(props) {
                 func={save}
                 size={75}
             >
-                <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} />
+                <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-receipt`}>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
@@ -805,10 +859,10 @@ function GoodReceiptEditForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code} disabled />
+                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-type-receipt-edit-${billId}`}
                                         className="form-control select2"
@@ -817,7 +871,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -831,13 +885,13 @@ function GoodReceiptEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        // disabled={checkApproved}
+                                    // disabled={checkApprove}
                                     />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-stock-bill-receipt-edit-${billId}`}
                                         className="form-control select2"
@@ -846,12 +900,27 @@ function GoodReceiptEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
-                                {type === '1' && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.supplier')}<span className="attention"> * </span></label>
+                                <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                                    <span className="text-red"> * </span>
+                                    <SelectBox
+                                        id={`select-source-type-${dataSource.value}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={sourceType}
+                                        items={dataSource}
+                                        onChange={handleSourceChange}
+                                        multiple={false}
+                                        disabled={status === "1" ? false : true}
+                                    />
+                                    <ErrorLabel content={errorOnSourceProduct} />
+                                </div>
+                                {isSeflProduced === false ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.bill_management.supplier')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-supplier-receipt-edit-${billId}`}
                                         className="form-control select2"
@@ -860,12 +929,12 @@ function GoodReceiptEditForm(props) {
                                         items={dataCustomer}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
-                                </div>}
-                                {type === '2' && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.mill')}<span className="attention"> * </span></label>
+                                </div>) : null}
+                                {isSeflProduced === true ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.bill_management.mill')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-mill-receipt-edit-${billId}`}
                                         className="form-control select2"
@@ -874,10 +943,10 @@ function GoodReceiptEditForm(props) {
                                         items={dataMills}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
-                                </div>}
+                                </div>) : null}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
@@ -893,7 +962,7 @@ function GoodReceiptEditForm(props) {
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-approver-bill-receipt-edit-${billId}`}
                                             className="form-control select2"
@@ -906,7 +975,7 @@ function GoodReceiptEditForm(props) {
                                         <ErrorLabel content={errorApprover} />
                                     </div>
                                     <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-accountables-bill-receipt-edit-${billId}`}
                                             className="form-control select2"
@@ -920,8 +989,8 @@ function GoodReceiptEditForm(props) {
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    {type === '1' && <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                    <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-qualityControlStaffs-bill-receipt-edit-${billId}`}
                                             className="form-control select2"
@@ -932,9 +1001,9 @@ function GoodReceiptEditForm(props) {
                                             multiple={true}
                                         />
                                         <ErrorLabel content={errorQualityControlStaffs} />
-                                    </div>}
+                                    </div>
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-responsibles-bill-receipt-edit-${billId}`}
                                             className="form-control select2"
@@ -955,21 +1024,21 @@ function GoodReceiptEditForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -998,7 +1067,7 @@ function GoodReceiptEditForm(props) {
                                     <label>{translate('manage_warehouse.bill_management.number')}</label>
                                     <div style={{ display: "flex" }}>
                                         <input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />
-                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -1008,7 +1077,7 @@ function GoodReceiptEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {good.good && status === '2' && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.add_lot')}</button>)}
+                                {good.good && status === '2' && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.add_lot')}</p>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -1028,7 +1097,8 @@ function GoodReceiptEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
                                         </tr>
                                     </thead>
@@ -1046,6 +1116,14 @@ function GoodReceiptEditForm(props) {
                                                                 <span style={{ color: "red" }}>{x.quantity}</span>
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.bill_management.text')}</p></span>
                                                             </td>}
+                                                        {(checkLots(x.lots, x.quantity)) ?
+                                                            <td>{x.lots.map((lot, index) =>
+                                                                <div key={index}>
+                                                                    <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                </div>)}
+                                                            </td> :
+                                                            <td>{''}</td>
+                                                        }
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

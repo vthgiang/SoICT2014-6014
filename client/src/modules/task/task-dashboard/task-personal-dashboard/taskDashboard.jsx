@@ -266,11 +266,10 @@ function TaskDashboard(props) {
             html: `<h3 style="color: red"><div>Thống kê bấm giờ cá nhân</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
             <p>Thống kê lịch sử bấm giờ của bạn trong tháng được chọn.</p>
-            <p>Bảng chỉ liệt kê các hoạt động được thực hiện trọn vẹn trong tháng đó. Ví dụ, bạn chọn tháng 12/2021:</p>
+            <p>Bảng chỉ liệt kê các hoạt động được bắt đầu bấm giờ trong tháng đó. Ví dụ, bạn chọn tháng 12/2021:</p>
             <ul>
-                <li>Bấm giờ từ 20:30:00 ngày 31/12/2021 đến 01:30:00 ngày 1/1/2022: <span style="color: red">không hiển thị</span>.</li>
+                <li>Bấm giờ từ 20:30:00 ngày 31/12/2021 đến 01:30:00 ngày 1/1/2022: <span style="color: green">hiển thị</span>.</li>
                 <li>Bấm giờ từ 21:00:00 ngày 30/11/2021 đến 02:00:00 ngày 1/12/2021: <span style="color: red">không hiển thị</span>.</li>
-                <li>Bấm giờ từ 20:30:00 ngày 8/12/2021 đến 01:30:00 ngày 9/12/2021: <span style="color: green">hiển thị</span>.</li>
             </ul>
             </div>`,
             width: "50%",
@@ -380,7 +379,7 @@ function TaskDashboard(props) {
                             {key: 'startedAt', value: 'Thời gian bắt đầu', width: 25},
                             {key: 'stoppedAt', value: 'Thời gian kết thúc', width: 25},
                             {key: 'type', value: 'Loại bấm giờ', width: 15},
-                            {key: 'duration', value: 'Bấm giờ', width: 10},
+                            {key: 'duration', value: 'Thời gian bấm', width: 10},
                         ],
                         data: userTimeSheetLogs.map((tsl, index) => ({
                             STT: index + 1,
@@ -760,7 +759,7 @@ function TaskDashboard(props) {
                                         <th>Thời gian bắt đầu</th>
                                         <th>Thời gian kết thúc</th>
                                         <th>Loại bấm giờ</th>
-                                        <th className="col-sort">Bấm giờ</th>
+                                        <th className="col-sort">Thời gian bấm</th>
                                     </tr>
                                 </thead>
                                 <tbody>

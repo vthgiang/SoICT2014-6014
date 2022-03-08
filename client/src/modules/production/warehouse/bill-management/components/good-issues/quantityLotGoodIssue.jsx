@@ -193,7 +193,7 @@ function QuantityLotGoodIssue(props) {
     const save = () => {
         props.onDataChange(state.lots);
     }
-    
+
     const { translate, group, good } = props;
     const { errorLot, lot, errorQuantity, lots } = state;
     const dataLots = getLotsByGood();
@@ -215,7 +215,7 @@ function QuantityLotGoodIssue(props) {
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
-                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
+                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`select-lot-issue-create-by-${group}`}
                                 className="form-control select2"

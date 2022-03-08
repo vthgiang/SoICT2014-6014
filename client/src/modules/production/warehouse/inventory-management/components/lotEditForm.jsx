@@ -27,7 +27,7 @@ function LotEditForm(props) {
         props.getDetailLot(id);
     }, [])
 
-    if(props.id !== state.id) {
+    if (props.id !== state.id) {
         state.binLocation.binLocation = '';
         state.binLocation.quantity = '';
         setState({

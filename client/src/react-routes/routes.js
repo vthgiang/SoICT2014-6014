@@ -9,6 +9,7 @@ import Layout from "../layout/layout";
 import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
+import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -168,6 +169,7 @@ const ProjectReport = lazy(() => import("../modules/project/reports/components/i
 const ProjectStatistic = lazy(() => import("../modules/project/statistic/components/index"))
 const UserGuide = lazy(() => import("../modules/user-guide/components"))
 const PersonalTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/personalTimeSheetLog"))
+const EmployeeTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/statistic/employeeTimeSheetLog"))
 
 const Notifications = lazy(() => import("../modules/notification/components/index"))
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
@@ -1411,6 +1413,21 @@ class Routes extends Component {
                         pageName={"task"}
                         layout={Layout}
                         component={TaskComponent}
+                    />
+                    <PrivateRoute // Trang chi tiết quy trinhf  (không có trên menu)
+                        isLoading={this.props.tasks.isLoading}
+                        key={"task"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            { link: "/process-template", name: "process-template", icon: "" },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/process-template"}
+                        path={"/process-template"}
+                        pageName={"process_template"}
+                        layout={Layout}
+                        component={ModalViewTaskProcessById}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}
@@ -2956,6 +2973,26 @@ class Routes extends Component {
                         pageName={"personal_time_sheet_log"}
                         layout={Layout}
                         component={PersonalTimeSheetLog}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/time-sheet-log/all"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/time-sheet-log/all",
+                                name: "employee_time_sheet_log",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/time-sheet-log/all"}
+                        path={"/time-sheet-log/all"}
+                        pageName={"employee_time_sheet_log"}
+                        layout={Layout}
+                        component={EmployeeTimeSheetLog}
                     />
 
 

@@ -660,6 +660,16 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ],
     component: getComponentsInLink('/hr-list-education')
+}, 
+{
+    url: "/time-sheet-log/all",
+    description: "Thống kê thời gian số lượng công việc và thời gian bấm giờ của toàn bộ nhân viên",
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/time-sheet-log/all')
 },
 
 // KPI
@@ -814,6 +824,18 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-process-template')
+
+},
+{
+    url: '/process-template',
+    description: 'Chi tiết mẫu quy trình công việc',
+    category: LINK_CATEGORY.TASK.name,
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/process-template')
 
 },
 {
@@ -1718,18 +1740,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     component: getComponentsInLink('/personal-time-sheet-log')
-}, {
-    url: "/time-sheet-log/all",
-    description: "Thống kê lịch sử bấm giờ tất cả thành viên trong công ty",
-    category: LINK_CATEGORY.TASK.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/time-sheet-log/all')
 }
 ];
 

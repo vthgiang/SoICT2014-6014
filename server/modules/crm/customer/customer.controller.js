@@ -192,7 +192,7 @@ exports.editCustomerPoint = async (req, res) => {
  */
 exports.addPromotion = async (req, res) => {
     try {
-        const newCustomer = await CustomerService.addPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id);
+        const newCustomer = await CustomerService.addPromotion(req.portal, req.user.company._id, req.params.id, req.body, req.user._id, );
         await Logger.info(req.user.email, 'add_customer_promotion_success');
         res.status(200).json({
             success: true,
@@ -327,3 +327,4 @@ exports.deleteCustomer = async (req, res) => {
         })
     }
 }
+/* Sửa dòng 195*/ 

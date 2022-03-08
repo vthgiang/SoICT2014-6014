@@ -7,6 +7,7 @@ import ScheduleMonthlyForm from './scheduleMonthlyForm';
 import { DateTimeConverter, ConfirmNotification, SelectBox } from '../../../../common-components';
 import { SystemActions } from '../redux/actions';
 import BackupInfo from './backupInfo';
+import {FileAddModal} from "./fileAddModal";
 
 function SystemManagement(props) {
     const [state, setState] = useState({
@@ -104,6 +105,10 @@ function SystemManagement(props) {
     const createBackup = () => {
         props.createBackup()
     }
+
+    const handleAddFile = () => {
+        window.$('#modal-create-file-super-admin-backup').modal('show');
+    }
     const { translate, system } = props;
     const { schedule, autoBackup, limit } = state;
 
@@ -112,9 +117,14 @@ function SystemManagement(props) {
             <div className="row">
                 <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">
                     <div className="box box-default">
-                        <div className="box-header with-border">
+                        <div className="box-header with-border btn-toolbar">
                             <button className="btn btn-success pull-right" onClick={createBackup} title={translate('system_admin.system_setting.backup.backup_button')}>
                                 {translate('system_admin.system_setting.backup.backup_button')}
+                            </button>
+                            <button className="btn btn-success pull-right"
+                                    onClick={handleAddFile}
+                                    title="Thêm file sao lưu phục hồi">
+                                Thêm file
                             </button>
                         </div>
                         <div className="box-body">
@@ -162,6 +172,7 @@ function SystemManagement(props) {
                         </div>
                     </div>
                 </div>
+                <FileAddModal/>
                 <BackupInfo backupInfo={state.backupInfo} />
                 <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                     <div className="box box-default">

@@ -522,10 +522,10 @@ function getTimeSheetOfUser(userId, month, year, requireActions = false) {
     };
 }
 
-function getAllUserTimeSheet(month, year) {
+function getAllUserTimeSheet(month, year, rowLimit, page, timeLimit) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST });
-        taskManagementService.getAllUserTimeSheet(month, year)
+        taskManagementService.getAllUserTimeSheet(month, year, rowLimit, page, timeLimit)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_SUCCESS,

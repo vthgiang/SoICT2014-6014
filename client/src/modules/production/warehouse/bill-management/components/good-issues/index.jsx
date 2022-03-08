@@ -8,9 +8,12 @@ import GoodIssueEditForm from './goodIssueEditForm';
 import GoodIssueCreateForm from './goodIssueCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
 
-import {TransportRequirementsCreateForm} from '../../../../transport/transport-requirements/components/transportRequirementsCreateForm'
+import { TransportRequirementsCreateForm } from '../../../../transport/transport-requirements/components/transportRequirementsCreateForm'
 
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
+import Swal from "sweetalert2";
+import { UserGuideCreateBillIssue } from '../config.js';
+
 function IssueManagement(props) {
     const tableId = "issue-manager-table";
     const defaultConfig = { limit: 5 }
@@ -34,8 +37,27 @@ function IssueManagement(props) {
             ...state,
             currentRow: bill
         })
-        
+
         window.$('#modal-edit-bill-issue').modal('show');
+    }
+
+    const showFilePreview = (data) => {
+        const link = process.env.REACT_APP_SERVER + data[0].url;
+        Swal.fire({
+            html: ` 
+            <h4>${data[0].pageName}</h4>
+            <div style="margin:0px;padding:0px;overflow:hidden">
+               <iframe  frameborder="0" style="overflow:hidden;height:90vh;width:100%" height="100vh" width="100%"
+                        src= ${link}
+                    />
+            </div>`,
+            width: "100%",
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: true,
+            focusConfirm: false,
+
+        })
     }
 
     // handleCreateTransportRequirement = async (bill) => {
@@ -113,6 +135,9 @@ function IssueManagement(props) {
                             onChange={props.handleCreatorChange}
                         />
                     </div>
+                    <a href="#show-detail" onClick={() => showFilePreview(UserGuideCreateBillIssue)}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px', fontSize: '20px' }} />
+                    </a>
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
@@ -281,14 +306,7 @@ function IssueManagement(props) {
                                         }
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.staff_true')}
-                                                content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => handleFinishedQualityControlStaff(x)}
-                                            />
+                                            <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
                                         }
                                     </td>
                                 </tr>

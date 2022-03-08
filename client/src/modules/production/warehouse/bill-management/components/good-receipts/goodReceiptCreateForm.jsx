@@ -32,6 +32,7 @@ function GoodReceiptCreateForm(props) {
         accountables: [],
         responsibles: [],
         approver: [],
+        sourceType: "",
     })
 
     const { translate, group, createdSource } = props;
@@ -45,6 +46,7 @@ function GoodReceiptCreateForm(props) {
         qualityControlStaffs,
         status,
         supplier,
+        manufacturingMills,
         fromStock,
         type,
         name,
@@ -55,17 +57,41 @@ function GoodReceiptCreateForm(props) {
         errorType,
         errorApprover,
         errorSupplier,
+        errorManufacturingMills,
+        errorOnSourceProduct,
+        sourceType,
         errorQualityControlStaffs,
         errorAccountables,
         errorResponsibles,
         purchaseOrderId,
     } = state;
 
+    let dataSource = [
+        {
+            value: '0',
+            text: 'Chọn nguồn hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Hàng hóa tự sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Hàng hóa nhập từ nhà cung cấp',
+        }
+    ];
+
     const getAllGoods = () => {
         let { translate } = props;
         let goodArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_good") }];
-
-        props.goods.listGoods.map((item) => {
+        let listGoodsCheckBySourceType = [];
+        let goods = props.goods.listGoods;
+        for (let i = 0; i < goods.length; i++) {
+            if (goods[i].sourceType === state.sourceType) {
+                listGoodsCheckBySourceType.push(goods[i]);
+            }
+        }
+        listGoodsCheckBySourceType.map((item) => {
             goodArr.push({
                 value: item._id,
                 text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
@@ -93,6 +119,28 @@ function GoodReceiptCreateForm(props) {
         });
     };
 
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
+
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                selfProducedCheck: value === "1" ? true : false,
+                listGood: [],
+            });
+        }
+        return msg === undefined;
+    }
+
     const handleClickCreate = () => {
         const value = generateCode("BIRE");
         setState({
@@ -117,7 +165,7 @@ function GoodReceiptCreateForm(props) {
 
     const getSupplier = () => {
         const { crm, translate } = props;
-        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_customer") }];
+        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_supplier") }];
 
         crm.customers.list.map((item) => {
             supplierArr.push({
@@ -125,10 +173,21 @@ function GoodReceiptCreateForm(props) {
                 text: item.name,
             });
         });
-        console.log("props", props);
         return supplierArr;
     };
 
+    const getManufacturingMills = () => {
+        const { manufacturingMill, translate } = props;
+        let manufacturingMillsArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_manufacturing_mills") }];
+
+        manufacturingMill.listMills.map((item) => {
+            manufacturingMillsArr.push({
+                value: item._id,
+                text: item.name,
+            });
+        });
+        return manufacturingMillsArr;
+    };
     const getStock = () => {
         const { stocks, translate } = props;
         let stockArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_stock") }];
@@ -150,6 +209,8 @@ function GoodReceiptCreateForm(props) {
             { value: "0", text: translate("manage_warehouse.bill_management.choose_type") },
             { value: "1", text: translate("manage_warehouse.bill_management.billType.1") },
             { value: "2", text: translate("manage_warehouse.bill_management.billType.2") },
+            { value: "3", text: translate("manage_warehouse.bill_management.billType.3") },
+            { value: "4", text: translate("manage_warehouse.bill_management.billType.4") },
         ];
         return typeArr;
     };
@@ -160,6 +221,10 @@ function GoodReceiptCreateForm(props) {
             await props.getGoodsByType({ type: "material" });
         } else if (type === "2") {
             await props.getGoodsByType({ type: "product" });
+        } else if (type === "3") {
+            await props.getGoodsByType({ type: "equipment" });
+        } else if (type === "4") {
+            await props.getGoodsByType({ type: "waste" });
         }
         validateType(type, true);
     };
@@ -324,6 +389,27 @@ function GoodReceiptCreateForm(props) {
         return msg === undefined;
     };
 
+    const handleManufacturingMillsChange = (value) => {
+        let manufacturingMills = value[0];
+        validateManufacturingMills(manufacturingMills, true);
+    };
+
+    const validateManufacturingMills = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value) {
+            msg = translate("manage_warehouse.bill_management.validate_manufacturing_mills");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                manufacturingMills: value,
+                errorManufacturingMills: msg,
+            });
+        }
+        return msg === undefined;
+    };
+
     const handleDescriptionChange = (e) => {
         let value = e.target.value;
         setState({
@@ -379,7 +465,8 @@ function GoodReceiptCreateForm(props) {
             // validateSupplier(state.supplier, false) &&
             validateAccountables(state.accountables, false) &&
             validateQualityControlStaffs(state.qualityControlStaffs, false) &&
-            validateResponsibles(state.responsibles, false);
+            validateResponsibles(state.responsibles, false) &&
+            validateSourceProduct(state.sourceType, false);
         return result;
     };
 
@@ -479,9 +566,6 @@ function GoodReceiptCreateForm(props) {
         return false;
     };
 
-    // useEffect(() => {
-    // }, [props.purchaseOrderAddBill])
-
     //---Lập phiếu từ đơn mua nguyên vật liệu---
     let { purchaseOrderAddBill = { code: "" } } = props;
 
@@ -490,7 +574,7 @@ function GoodReceiptCreateForm(props) {
         purchaseOrderAddBill.code !== "" &&
         purchaseOrderAddBill.code !== state.purchaseOrderCode
     ) {
-        setState ({
+        setState({
             ...state,
             group: props.group,
             code: props.billCode,
@@ -542,6 +626,7 @@ function GoodReceiptCreateForm(props) {
             users,
             approvers,
             supplier,
+            manufacturingMills,
             name,
             phone,
             email,
@@ -552,6 +637,7 @@ function GoodReceiptCreateForm(props) {
             responsibles,
             accountables,
             purchaseOrderId,
+            sourceType
         } = state;
         const { group, createdSource } = props;
         await props.createBill({
@@ -572,6 +658,8 @@ function GoodReceiptCreateForm(props) {
             description: description,
             goods: listGood,
             purchaseOrderId,
+            sourceType: sourceType,
+            manufacturingMill: manufacturingMills,
         });
 
         //Load lại dữ liệu đơn mua nguyên vật liệu sau 15000ms
@@ -582,6 +670,7 @@ function GoodReceiptCreateForm(props) {
     const listGoods = getAllGoods();
     const dataApprover = getApprover();
     const dataCustomer = getSupplier();
+    const dataManufacturingMills = getManufacturingMills();
     const dataStock = getStock();
     const dataType = getType();
 
@@ -620,7 +709,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.type")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-type-receipt-create`}
@@ -632,6 +721,10 @@ function GoodReceiptCreateForm(props) {
                                         multiple={false}
                                     />
                                     <ErrorLabel content={errorType} />
+                                </div>
+                                <div className="form-group">
+                                    <label>{translate("manage_warehouse.bill_management.description")}</label>
+                                    <textarea type="text" className="form-control" onChange={handleDescriptionChange} />
                                 </div>
                                 {/* <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
@@ -657,7 +750,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.stock")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-stock-bill-receipt-create-${purchaseOrderId}`}
@@ -670,28 +763,56 @@ function GoodReceiptCreateForm(props) {
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
-                                <div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
-                                    <label>
-                                        {translate("manage_warehouse.bill_management.supplier")}
-                                        <span className="attention"> * </span>
-                                    </label>
+                                <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                                    <span className="text-red"> * </span>
                                     <SelectBox
-                                        id={`select-customer-receipt-create-${purchaseOrderId}`}
+                                        id={`select-source-type`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={supplier}
-                                        items={dataCustomer}
-                                        onChange={handleSupplierChange}
+                                        value={sourceType}
+                                        items={dataSource}
+                                        onChange={handleSourceChange}
                                         multiple={false}
                                     />
-                                    <ErrorLabel content={errorSupplier} />
+                                    <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
-                                    <label>{translate("manage_warehouse.bill_management.description")}</label>
-                                    <textarea type="text" className="form-control" onChange={handleDescriptionChange} />
-                                </div>
+                                {sourceType === "2" ?
+                                    (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
+                                        <label>
+                                            {translate("manage_warehouse.bill_management.supplier")}
+                                            <span className="text-red"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-customer-receipt-create-${purchaseOrderId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={supplier}
+                                            items={dataCustomer}
+                                            onChange={handleSupplierChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content={errorSupplier} />
+                                    </div>)
+                                    : null}
+                                {sourceType === "1" ?
+                                    (<div className={`form-group ${!errorManufacturingMills ? "" : "has-error"}`}>
+                                        <label>
+                                            {translate("manage_warehouse.bill_management.mill")}
+                                            <span className="text-red"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-customer-receipt-create-${purchaseOrderId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={manufacturingMills}
+                                            items={dataManufacturingMills}
+                                            onChange={handleManufacturingMillsChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content={errorManufacturingMills} />
+                                    </div>)
+                                    : null}
                             </div>
                         </fieldset>
                     </div>
@@ -702,7 +823,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.approved")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-approver-bill-receipt-create`}
@@ -718,7 +839,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.users")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-accountables-bill-receipt-create`}
@@ -736,7 +857,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.qualityControlStaffs")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-qualityControlStaffs-bill-receipt-create`}
@@ -752,7 +873,7 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.accountables")}
-                                        <span className="attention"> * </span>
+                                        <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
                                         id={`select-responsibles-bill-receipt-create`}
@@ -775,32 +896,28 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.name")}
-                                        <span className="attention"> * </span>
                                     </label>
-                                    <input type="text" className="form-control" value={name} onChange={handleNameChange} />
+                                    <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.phone")}
-                                        <span className="attention"> * </span>
                                     </label>
-                                    <input type="number" className="form-control" value={phone} onChange={handlePhoneChange} />
+                                    <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.email")}
-                                        <span className="attention"> * </span>
                                     </label>
-                                    <input type="text" className="form-control" value={email} onChange={handleEmailChange} />
+                                    <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.address")}
-                                        <span className="attention"> * </span>
                                     </label>
-                                    <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
+                                    <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
                         </fieldset>
@@ -888,8 +1005,8 @@ function GoodReceiptCreateForm(props) {
                                             <th title={translate("manage_warehouse.bill_management.number")}>
                                                 {translate("manage_warehouse.bill_management.number")}
                                             </th>
-                                            <th title={translate("manage_warehouse.bill_management.note")}>
-                                                {translate("manage_warehouse.bill_management.note")}
+                                            <th title={translate("manage_warehouse.bill_management.description")}>
+                                                {translate("manage_warehouse.bill_management.description")}
                                             </th>
                                             <th>{translate("task_template.action")}</th>
                                         </tr>

@@ -982,7 +982,8 @@ editTaskByAccountableEmployees = async (req, res) => {
         };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, tasks.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`, `${task.tasks._id}@gmail.com`, null);
+        sendEmail(task.email, tasks.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`
+        +`<p>Mô tả công việc : ${tasks.description}  </p>`, `${task.tasks._id}@gmail.com`, null);
 
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc

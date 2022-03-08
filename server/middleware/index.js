@@ -10,6 +10,7 @@ const { initModels, connect } = require(`../helpers/dbHelper`);
 const { decryptMessage } = require('../helpers/functionHelper');
 const rateLimit = require("express-rate-limit");
 
+
 /**
  * ****************************************
  * Middleware xác thực truy cập người dùng
@@ -34,7 +35,7 @@ exports.authFunc = (checkPage = true) => {
             /**
              * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập/không có token để sử dụng previlegeAPI
              */
-            if (!token) throw ["access_denied"];
+            if (!token) throw ["access_denied_4001"];
 
             /**
              * Giải mã token gửi lên để check dữ liệu trong token
@@ -43,12 +44,12 @@ exports.authFunc = (checkPage = true) => {
             try {
                 verified = await jwt.verify(token, process.env.TOKEN_SECRET);
             } catch (error) {
-                throw ["access_denied"];
+                throw ["access_denied_4002"];
             }
 
             req.user = verified;
             req.token = token;
-            req.thirdParty = verified.thirdParty
+            req.thirdParty = verified.thirdParty;
             req.portal = req.thirdParty ? verified.portal : (!req.user.company
                 ? process.env.DB_NAME
                 : req.user.company.shortName);
@@ -73,7 +74,7 @@ exports.authFunc = (checkPage = true) => {
 
                     const checkToken = userParse?.tokens?.find(element => element === req.token);
                     if (!checkToken)
-                        throw ['access_denied']
+                        throw ['access_denied_4003']
                 }
 
                 let crtp, crtr, fgp;
@@ -180,11 +181,6 @@ exports.authFunc = (checkPage = true) => {
                             const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
                             if (!perAPI) throw ['api_permission_invalid'];
                         }
-
-                        /**
-                         * Ques: Truy cập với API được phân quyền thì nên được xử lý như thế nào?
-                         * Ques: Sử dụng API riêng rẽ như thế nào khi các API được gắn với trang chưa API và ko có trang riêng cho việc sử dụng API được đặc cấp
-                         */
                     }
                 }
             } else {
@@ -222,16 +218,18 @@ exports.authFunc = (checkPage = true) => {
                 }
 
                 // Kiểm tra phân quyền api cho 1 cty
-                let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({
-                        apis: {
-                            $in: [systemApi?._id]
-                        },
-                        company: verified.company
-                    })
-                if (!apiInCompany) {
-                    throw ['api_permission_to_company_invalid']
-                };
+                // let apiInCompany = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
+                //     .findOne({
+                //         apis: {
+                //             $in: [systemApi?._id]
+                //         },
+                //         shortName: req.portal,
+                //         // company: verified.company
+                //     })
+
+                //     if (!apiInCompany) {
+                //     throw ['api_permission_to_company_invalid']
+                // };
 
                 req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
                     .findOne({company: verified.company});
@@ -348,6 +346,50 @@ exports.uploadFile = (arrData, type) => {
     }
 };
 
+exports.uploadBackupFiles = (options) => {
+    // 1. Tạo folder backup/all nếu chưa tồn tại -> tạo folder backup/all/'version'/data
+    // 2. copy file được gửi lên vào backup/all/'version'/data
+    const getFile = multer({
+        storage: multer.diskStorage({
+            destination: (req, file, cb) => {
+                const time = new Date(),
+                    month = time.getMonth() + 1,
+                    date = time.getDate(),
+                    year = time.getFullYear(),
+                    hour = time.getHours(),
+                    minute = time.getMinutes(),
+                    second = time.getSeconds();
+
+                const version = `${year}.${month}.${date}.${hour}.${minute}.${second}`;
+                let path;
+                if (options.db) {
+                    path = `${SERVER_BACKUP_DIR}/${req.portal}/${version}/data`;
+                } else {
+                    path = `${SERVER_BACKUP_DIR}/all/${version}/data`;
+                }
+                if (!fs.existsSync(path)) {
+                    fs.mkdirSync(path, {
+                        recursive: true
+                    });
+                }
+                console.log(`create ${version} in multer`)
+                cb(null, path)
+            },
+            filename: function (req, file, cb) {
+                let extend = file.originalname.split(".");
+                let oldNameFile = extend.splice(0, extend.length - 1);
+                oldNameFile = oldNameFile.join(".");
+                let hash =
+                    `${req.user._id}_${Date.now()}_` +
+                    CryptoJS.MD5(oldNameFile).toString();
+                let fileName = `${hash}.${extend[extend.length - 1]}`;
+                cb(null, fileName);
+            },
+        }),
+    });
+
+    return getFile.single('files');
+}
 /**
  * Middleware kiểm tra userId gửi trong param có trùng với userId lưu trong jwt
  * @param {*} req 
@@ -357,19 +399,19 @@ exports.uploadFile = (arrData, type) => {
 exports.authTrueOwner = async (req, res, next) => {
     try {
         const token = req.header("utk"); //JWT nhận từ người dùng
-        if (!token) throw ["access_denied"];
+        if (!token) throw ["access_denied_4004"];
         let verified;
         try {
             verified = await jwt.verify(token, process.env.TOKEN_SECRET);
         } catch (error) {
-            throw ["access_denied"];
+            throw ["access_denied_4005"];
         }
 
         let userIdJwt = verified._id; // id người dùng lấy từ jwt
         let userIdParam = req.params.userId; // id người dùng trong params
 
         if (userIdJwt !== userIdParam) { // người gửi yêu cầu không phải chủ nhân thật sự của tài khoản
-            throw ['access_denied'];
+            throw ['access_denied_4006'];
         }
 
         next();
@@ -390,12 +432,12 @@ exports.authTrueOwner = async (req, res, next) => {
 exports.authAdminSuperAdmin = async (req, res, next) => {
     try {
         const token = req.header("utk"); //JWT nhận từ người dùng
-        if (!token) throw ["access_denied"];
+        if (!token) throw ["access_denied_4007"];
         let verified;
         try {
             verified = await jwt.verify(token, process.env.TOKEN_SECRET);
         } catch (error) {
-            throw ["access_denied"];
+            throw ["access_denied_4008"];
         }
 
         let userId = verified._id; // id người dùng lấy từ jwt
@@ -409,7 +451,7 @@ exports.authAdminSuperAdmin = async (req, res, next) => {
         let ad = await Role(connect(DB_CONNECTION, portal)).find({
             name: { $in: ['Super Admin', 'Admin'] }
         });
-        if (ad.length === 0) throw ['access_denied'];
+        if (ad.length === 0) throw ['access_denied_4009'];
 
         // Check người gửi request có quyền là SuperAdmin, Admin hay không?
         let userrole = await UserRole(connect(DB_CONNECTION, portal)).find({
@@ -417,7 +459,7 @@ exports.authAdminSuperAdmin = async (req, res, next) => {
             roleId: { $in: ad.map(r => r._id) }
         });
 
-        if (userrole.length === 0) throw ['access_denied'];
+        if (userrole.length === 0) throw ['access_denied_4010'];
 
         next();
     } catch (err) {

@@ -262,11 +262,6 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/personal-time-sheet-log",
                                         },
-                                        {
-                                            name: "menu.all_time_sheet_log",
-                                            icon: "fa fa-circle-o",
-                                            path: "/time-sheet-log/all",
-                                        },
                                     ],
                                 }}
                             />
@@ -383,6 +378,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
+                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all"},
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },

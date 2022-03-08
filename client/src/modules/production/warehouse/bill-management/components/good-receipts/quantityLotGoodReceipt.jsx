@@ -13,7 +13,9 @@ function QuantityLotGoodReceipt(props) {
         code: generateCode("LOT"),
         quantity: 0,
         note: '',
-        expirationDate: ''
+        expirationDate: '',
+        rfidCode: [],
+        rfidQuantity: 0,
     }
 
     const [state, setState] = useState({
@@ -26,13 +28,16 @@ function QuantityLotGoodReceipt(props) {
         oldQuantity: 0,
     })
 
-    if (props.good !== state.good) {
-        setState({
-            ...state,
-            good: props.good,
-            lots: props.initialData,
-        })
-    }
+    useEffect(() => {
+        state.code = props.lotName;
+        if (props.good !== state.good) {
+            setState({
+                ...state,
+                good: props.good,
+                lots: props.initialData,
+            })
+        }
+    }, [props.good])
 
     const handleAddLotInfo = async () => {
         setState({
@@ -90,6 +95,12 @@ function QuantityLotGoodReceipt(props) {
         validateQuantity(value, true);
     }
 
+    const handleRfidQuantityChange = (e) => {
+        state.lot.rfidCode = [];
+        let value = e.target.value;
+        validateRfidQuantity(value, true);
+    }
+
     const validateQuantity = (value, willUpdateState = true) => {
         const { oldQuantity } = state;
         let msg = undefined;
@@ -133,8 +144,33 @@ function QuantityLotGoodReceipt(props) {
     const isLotsValidated = () => {
         let result =
             validateQuantity(state.lot.quantity, false) &&
-            validateExpirationDate(state.lot.expirationDate, false);
+            validateExpirationDate(state.lot.expirationDate, false)
+            && validateRfidQuantity(state.lot.rfidQuantity, false)
+            && state.lot.rfidCode && state.lot.rfidCode.length > 0;
         return result
+    }
+
+    const isRfidCodeValidate = () => {
+        let result =
+            validateQuantity(state.lot.quantity, false) &&
+            validateRfidQuantity(state.lot.rfidQuantity, false)
+        return result
+    }
+
+    const validateRfidQuantity = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value || Number(value) > Number(state.lot.quantity) || Number(value) < 0) {
+            msg = translate('manage_warehouse.bill_management.validate_quantity_rfid');
+        }
+        if (willUpdateState) {
+            state.lot.rfidQuantity = value;
+            setState({
+                ...state,
+                errorRfidQuantity: msg,
+            });
+        }
+        return msg === undefined;
     }
 
     const handleAddLot = async (e) => {
@@ -158,6 +194,20 @@ function QuantityLotGoodReceipt(props) {
         setState({
             ...state
         })
+    }
+
+    const handleGenerateRfid = async (e) => {
+        let numberRfid = 0;
+        if (state.lot.quantity % state.lot.rfidQuantity === 0) {
+            numberRfid = state.lot.quantity / state.lot.rfidQuantity;
+        } else {
+            numberRfid = Math.floor(state.lot.quantity / state.lot.rfidQuantity) + 1;
+        }
+        state.lot.rfidCode = [];
+        for (let i = 0; i < numberRfid; i++) {
+            let code = generateCode("RFID") + "-" + String(i + 1);
+            state.lot.rfidCode.push(code);
+        }
     }
 
     const handleSaveEditLot = async (e) => {
@@ -292,8 +342,7 @@ function QuantityLotGoodReceipt(props) {
     }
 
     const { translate, group, good, quantity } = props;
-    const { lot, errorQuantity, lots, errorExpirationDate } = state;
-
+    const { lot, errorQuantity, errorRfidQuantity, lots, errorExpirationDate } = state;
     let different = difference();
 
     return (
@@ -311,7 +360,7 @@ function QuantityLotGoodReceipt(props) {
                 <form id={`form-edit-quantity-receipt`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
-                        {quantity ? (different !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center' }}>{`Bạn cần đánh lô cho ${different} số lượng hàng nhập`}</div> :
+                        {quantity ? (different !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center' }}>{`Bạn cần phải đánh lô cho ${different} số lượng hàng nhập`}</div> :
                             <div className="form-group" style={{ color: 'green', textAlign: 'center' }}>Bạn đã đánh xong lô cho {quantity} số lượng hàng nhập</div>) : []}
                         <div className={`form-group`}>
                             <label>{translate('manage_warehouse.bill_management.lot_number')}</label>
@@ -324,6 +373,14 @@ function QuantityLotGoodReceipt(props) {
                                 <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={handleQuantityChange} />
                             </div>
                             <ErrorLabel content={errorQuantity} />
+                        </div>
+
+                        <div className={`form-group ${!errorRfidQuantity ? "" : "has-error"}`}>
+                            <label className="control-label">{translate('manage_warehouse.bill_management.rfid_quantity')}</label>
+                            <div>
+                                <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.rfid_quantity')} value={lot.rfidQuantity} onChange={handleRfidQuantityChange} />
+                            </div>
+                            <ErrorLabel content={errorRfidQuantity} />
                         </div>
 
                         <div className={`form-group ${!errorExpirationDate ? "" : "has-error"}`}>
@@ -344,6 +401,7 @@ function QuantityLotGoodReceipt(props) {
                         </div>
 
                         <div className="pull-right" style={{ marginBottom: "10px" }}>
+                            <p type="button" className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={!isRfidCodeValidate()} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</p>
                             {state.editInfo ?
                                 <React.Fragment>
                                     <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -361,6 +419,7 @@ function QuantityLotGoodReceipt(props) {
                                     <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
                                     <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                     <th title={translate('manage_warehouse.bill_management.expiration_date')}>{translate('manage_warehouse.bill_management.expiration_date')}</th>
+                                    <th title={translate('manage_warehouse.bill_management.rfid_code')}>{translate('manage_warehouse.bill_management.rfid_code')}</th>
                                     <th>{translate('task_template.action')}</th>
                                 </tr>
                             </thead>
@@ -373,6 +432,11 @@ function QuantityLotGoodReceipt(props) {
                                                 <td>{x.quantity}</td>
                                                 <td>{x.note}</td>
                                                 <td>{x.expirationDate}</td>
+                                                <td>{x.rfidCode ? x.rfidCode.map((rfid, index) =>
+                                                    <div key={index}>
+                                                        <p>{rfid}<br></br></p>
+                                                    </div>) : ''}
+                                                </td>
                                                 <td>
                                                     <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditLot(x, index)}><i className="material-icons"></i></a>
                                                     <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteLot(x.lot, index)}><i className="material-icons"></i></a>

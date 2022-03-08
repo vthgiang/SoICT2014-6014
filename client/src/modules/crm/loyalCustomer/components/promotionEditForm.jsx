@@ -9,10 +9,9 @@ import PromotionAddForm from './promotionAddForm';
 
 function PromotionEditForm(props) {
     const { customerId, promotion, promotionIndex, crm } = props;
-    const [promotionEdit, setPromotionEdit] = useState();
-    if (!promotionEdit || !promotionEdit.index || promotionEdit.index != promotionIndex) {
-        setPromotionEdit({ ...promotion, index: promotionIndex })
-    }
+    const [promotionEdit, setPromotionEdit] = useState(promotion);
+
+    
 
     const handleChangeValue = async (e) => {
         const value = e.target.value;
@@ -41,7 +40,7 @@ function PromotionEditForm(props) {
 
     const save = async () => {
         if (promotionEdit) {
-            await props.editPromorion(customerId, { promotion: {...promotionEdit,index:promotionEdit.index-1} });
+            await props.editPromotion(customerId, { promotion: promotionEdit } );
         }
 
     }
@@ -135,7 +134,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    editPromorion: CrmCustomerActions.editPromotion
+    editPromotion: CrmCustomerActions.editPromotion
 
 }
 

@@ -42,16 +42,18 @@ function InventoryManagement(props) {
         props.getAllGoodsByType({ type });
     }, [])
 
-    if (state.oldType !== state.type) {
-        props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-        props.getAllLots({ type: state.type, managementLocation: state.currentRole });
-        props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
-        props.getAllGoodsByType({ type: state.type });
-        setState({
-            ...state,
-            oldType: state.type,
-        })
-    }
+    useEffect(() => {
+        if (state.oldType !== state.type) {
+            props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
+            props.getAllLots({ type: state.type, managementLocation: state.currentRole });
+            props.getAllLots({ page: state.page, limit: state.limit, type: state.type, managementLocation: state.currentRole });
+            props.getAllGoodsByType({ type: state.type });
+            setState({
+                ...state,
+                oldType: state.type,
+            })
+        }
+    }, [state.type])
 
 
     useEffect(() => {
@@ -116,7 +118,6 @@ function InventoryManagement(props) {
             good: ''
         })
     }
-    console.log("type", state.type)
 
     const handleWaste = async () => {
         let newType = 'waste';
@@ -321,7 +322,6 @@ function InventoryManagement(props) {
     }
 
     const checkQuantity = (stock) => {
-        console.log("stock", stock);
         const { stocks } = props;
         var check = 1;
         stock.map(x => {
@@ -334,8 +334,8 @@ function InventoryManagement(props) {
                             let totalQuantity = x.binLocations.reduce(function (accumulator, currentValue) {
                                 return Number(accumulator) + Number(currentValue.quantity);
                             }, 0);
-                            if (x.quantity !== totalQuantity) {
-                                check = 0;
+                            if (x.quantity === totalQuantity) {
+                                check = 1;
                             }
                         }
                     }

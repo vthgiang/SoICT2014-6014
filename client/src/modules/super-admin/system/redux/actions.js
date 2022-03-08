@@ -10,7 +10,28 @@ export const SystemActions = {
     deleteBackup,
     restore,
     editBackupInfo,
-    downloadBackupVersion
+    downloadBackupVersion,
+    uploadBackupFiles
+}
+
+function uploadBackupFiles(data) {
+    return dispatch => {
+        dispatch({ type: SystemConstants.UPLOAD_BACKUP_FILE_REQUEST });
+
+        SystemServices.uploadBackupFiles(data)
+            .then(res => {
+                dispatch({
+                    type: SystemConstants.UPLOAD_BACKUP_FILE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: SystemConstants.UPLOAD_BACKUP_FILE_FAILURE,
+                    payload: error
+                })
+            })
+    }
 }
 
 function getBackups() {

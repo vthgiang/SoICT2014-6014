@@ -37,7 +37,6 @@ function StockEditForm(props) {
     })
 
     if (props.stockId !== state.stockId) {
-        // console.log(nextProps.status);
         setState({
             ...state,
             stockId: props.stockId,
@@ -221,7 +220,6 @@ function StockEditForm(props) {
     const handleMaxQuantityChange = (e) => {
         let value = e.target.value;
         state.good.maxQuantity = value;
-        console.log(value);
         setState({
             ...state
         })
@@ -463,7 +461,6 @@ function StockEditForm(props) {
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
-    console.log(status);
     return (
         <React.Fragment>
             <DialogModal
@@ -480,16 +477,16 @@ function StockEditForm(props) {
                     <div className="row">
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.stock_management.code')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.code')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={code} disabled />
                             </div>
                             <div className={`form-group ${!errorOnAddress ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.stock_management.address')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.address')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
                                 <ErrorLabel content={errorOnAddress} />
                             </div>
                             {/* <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.department')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-edit-status-of-stock`}
                                         className="form-control select2"
@@ -504,12 +501,12 @@ function StockEditForm(props) {
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.stock_management.name')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.name')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={name} onChange={handleNameChange} />
                                 <ErrorLabel content={errorOnName} />
                             </div>
                             <div className="form-group">
-                                <label>{translate('manage_warehouse.stock_management.status')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.status')}<span className="text-red"> * </span></label>
                                 <SelectBox
                                     id={`select-status-edit-stock-${status}`}
                                     className="form-control select2"
@@ -526,7 +523,7 @@ function StockEditForm(props) {
                                 />
                             </div>
                             {/* <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.management_location')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.stock_management.management_location')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-management-location-edit-stock`}
                                         className="form-control select2"
@@ -561,7 +558,7 @@ function StockEditForm(props) {
                                     <ErrorLabel content={errorOnRole} />
                                 </div>
                                 <div className={`form-group ${!errorOnManagementGood ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.management_good')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.stock_management.management_good')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-management-good-stock-edit`}
                                         className="form-control select2"

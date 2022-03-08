@@ -17,6 +17,18 @@ const LotSchema = new Schema({
         enum: ["product", "material", "equipment", "waste"],
     },
 
+    rfid: [{
+        rfidCode: [{
+            type: [String],
+            default: []
+        }],
+
+        quantity: {
+            type: Number,
+            default: 1
+        },
+    }],
+
     stocks: [{
         stock: {
             type: Schema.Types.ObjectId,

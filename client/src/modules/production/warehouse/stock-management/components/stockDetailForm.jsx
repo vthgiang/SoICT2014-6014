@@ -11,18 +11,23 @@ function StockDetailForm(props) {
     })
 
     useEffect(() => {
-        setState({
-            ...state,
-            stockId: props.stockId,
-            code: props.code,
-            name: props.name,
-            status: props.status,
-            address: props.address,
-            goods: props.goodsManagement,
-            managementLocation: props.managementLocation,
-            manageDepartment: props.manageDepartment,
-            description: props.description,
-        })
+        if (props.stockId !== state.stockId || props.code !== state.code || props.name !== state.name ||
+            props.status !== state.status || props.address !== state.address || props.goods !== state.goods ||
+            props.managementLocation !== state.managementLocation || props.manageDepartment !== state.manageDepartment || props.description !== state.description) {
+            setState({
+                ...state,
+                stockId: props.stockId,
+                code: props.code,
+                name: props.name,
+                status: props.status,
+                address: props.address,
+                goods: props.goodsManagement,
+                managementLocation: props.managementLocation,
+                manageDepartment: props.manageDepartment,
+                description: props.description,
+            })
+        }
+
     }, [props.stockId, props.code, props.name, props.status, props.address, props.goodsManagement, props.managementLocation, props.manageDepartment, props.description])
 
     const { translate, stocks, department, role } = props;
@@ -58,7 +63,7 @@ function StockDetailForm(props) {
                             </div>
                             <div className="form-group">
                                 <strong>{translate('manage_warehouse.stock_management.status')}:&emsp;</strong>
-                                {/* <span style={{ color: translate(`manage_warehouse.stock_management.${status}.color`)}}>{translate(`manage_warehouse.stock_management.${status}.status`)}</span> */}
+                                {status && <span style={{ color: translate(`manage_warehouse.bin_location_management.${status}.color`) }}>{translate(`manage_warehouse.bin_location_management.${status}.status`)}</span>}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

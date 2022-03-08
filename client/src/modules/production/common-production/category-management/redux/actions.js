@@ -7,6 +7,7 @@ export const CategoryActions = {
     createCategory,
     editCategory,
     deleteCategory,
+    getCategories,
 }
 
 function getCategoryToTree() {
@@ -24,6 +25,27 @@ function getCategoryToTree() {
         .catch(err => {
             dispatch({
                 type: CategoryConstants.GETALL_CATEGORY_TREE_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function getCategories() {
+    return dispatch => {
+        dispatch({
+            type: CategoryConstants.GETALL_CATEGORY_REQUEST
+        });
+        CategoryServices.getCategories()
+        .then(res => {
+            dispatch({
+                type: CategoryConstants.GETALL_CATEGORY_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: CategoryConstants.GETALL_CATEGORY_FAILURE,
                 error: err
             })
         })

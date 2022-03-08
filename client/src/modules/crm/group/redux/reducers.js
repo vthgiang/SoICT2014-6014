@@ -24,6 +24,10 @@ export function groups(state = initState, action) {
         case CrmGroupConstants.GET_CRM_GROUP_REQUEST:
         case CrmGroupConstants.EDIT_CRM_GROUP_REQUEST:
         case CrmGroupConstants.DELETE_CRM_GROUP_REQUEST:
+        case CrmGroupConstants.ADD_CRM_GROUP_PROMOTION_REQUEST:
+        case CrmGroupConstants.EDIT_CRM_GROUP_PROMOTION_REQUEST:
+        case CrmGroupConstants.DELETE_CRM_GROUP_PROMOTION_REQUEST:
+        case CrmGroupConstants.GET_CRM_MEMBERS_IN_GROUP_REQUEST:
 
             return {
                 ...state,
@@ -35,7 +39,10 @@ export function groups(state = initState, action) {
         case CrmGroupConstants.GET_CRM_GROUP_FAILE:
         case CrmGroupConstants.EDIT_CRM_GROUP_FAILE:
         case CrmGroupConstants.DELETE_CRM_GROUP_FAILE:
-
+        case CrmGroupConstants.ADD_CRM_GROUP_PROMOTION_FAILE:
+        case CrmGroupConstants.EDIT_CRM_GROUP_PROMOTION_FAILE:
+        case CrmGroupConstants.DELETE_CRM_GROUP_PROMOTION_FAILE:
+        case CrmGroupConstants.GET_CRM_MEMBERS_IN_GROUP_FAILE:
             return {
                 ...state,
                 isLoading: false
@@ -74,6 +81,34 @@ export function groups(state = initState, action) {
             return {
                 ...state,
                 list: state.list.filter(gr => (gr._id !== action.payload._id)),
+                isLoading: false
+            };
+        
+        case CrmGroupConstants.ADD_CRM_GROUP_PROMOTION_SUCCESS:
+            return {
+                ...state,
+                groupById :action.payload,
+                isLoading: false
+            };
+
+        case CrmGroupConstants.EDIT_CRM_GROUP_PROMOTION_SUCCESS:
+            return {
+                ...state,
+                groupById :action.payload,
+                isLoading: false
+            };
+        
+        case CrmGroupConstants.DELETE_CRM_GROUP_PROMOTION_SUCCESS:
+            return {
+                ...state,                    
+                groupById :action.payload,
+                isLoading: false
+            };
+            
+        case CrmGroupConstants.GET_CRM_MEMBERS_IN_GROUP_SUCCESS:
+            return {
+                ...state,
+                membersInGroup: action.payload,
                 isLoading: false
             };
 

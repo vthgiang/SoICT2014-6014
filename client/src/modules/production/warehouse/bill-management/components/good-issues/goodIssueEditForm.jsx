@@ -113,8 +113,10 @@ function GoodIssueEditForm(props) {
         let typeArr = [];
         typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
-            { value: '3', text: translate('manage_warehouse.bill_management.billType.3') },
-            { value: '4', text: translate('manage_warehouse.bill_management.billType.4') },
+            { value: "5", text: translate("manage_warehouse.bill_management.billType.5") },
+            { value: "6", text: translate("manage_warehouse.bill_management.billType.6") },
+            { value: "7", text: translate("manage_warehouse.bill_management.billType.7") },
+            { value: "8", text: translate("manage_warehouse.bill_management.billType.8") },
         ]
         return typeArr;
     }
@@ -135,6 +137,7 @@ function GoodIssueEditForm(props) {
                 ...state,
                 type: value,
                 errorType: msg,
+                listGood: []
             })
         }
         return msg === undefined;
@@ -156,6 +159,7 @@ function GoodIssueEditForm(props) {
                 ...state,
                 fromStock: value,
                 errorStock: msg,
+                listGood: []
             })
         }
         return msg === undefined;
@@ -492,86 +496,88 @@ function GoodIssueEditForm(props) {
         }
         return false;
     }
+    useEffect(() => {
+        if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
+            let approver = [];
+            let qualityControlStaffs = [];
+            let responsibles = [];
+            let accountables = [];
+            if (props.approvers && props.approvers.length > 0) {
+                for (let i = 0; i < props.approvers.length; i++) {
+                    approver = [...approver, props.approvers[i].approver._id];
+                }
 
-    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
-        let approver = [];
-        let qualityControlStaffs = [];
-        let responsibles = [];
-        let accountables = [];
-        if (props.approvers && props.approvers.length > 0) {
-            for (let i = 0; i < props.approvers.length; i++) {
-                approver = [...approver, props.approvers[i].approver._id];
             }
 
-        }
+            if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
+                for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
+                    qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
+                }
 
-        if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
-            for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
-                qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
             }
 
-        }
+            if (props.responsibles && props.responsibles.length > 0) {
+                for (let i = 0; i < props.responsibles.length; i++) {
+                    responsibles = [...responsibles, props.responsibles[i]._id];
+                }
 
-        if (props.responsibles && props.responsibles.length > 0) {
-            for (let i = 0; i < props.responsibles.length; i++) {
-                responsibles = [...responsibles, props.responsibles[i]._id];
             }
 
-        }
+            if (props.accountables && props.accountables.length > 0) {
+                for (let i = 0; i < props.accountables.length; i++) {
+                    accountables = [...accountables, props.accountables[i]._id];
+                }
 
-        if (props.accountables && props.accountables.length > 0) {
-            for (let i = 0; i < props.accountables.length; i++) {
-                accountables = [...accountables, props.accountables[i]._id];
+            }
+            state.good.quantity = 0;
+            state.good.good = '';
+            state.good.description = '';
+            state.good.lots = [];
+
+            if (props.type === "3") {
+                props.getGoodsByType({ type: "material" });
+            } else if (props.type === "4") {
+                props.getGoodsByType({ type: "product" });
             }
 
+            setState({
+                ...state,
+                billId: props.billId,
+                code: props.code,
+                fromStock: props.fromStock,
+                status: props.status,
+                oldStatus: props.oldStatus,
+                group: props.group,
+                type: props.type,
+                users: props.users,
+                creator: props.creator,
+                approvers: props.approvers,
+                approver: approver,
+                qualityControlStaffs: qualityControlStaffs,
+                listQualityControlStaffs: props.listQualityControlStaffs,
+                responsibles: responsibles,
+                accountables: accountables,
+                description: props.description,
+                customer: props.customer,
+                name: props.name,
+                phone: props.phone,
+                email: props.email,
+                address: props.address,
+                listGood: props.listGood,
+                oldGoods: props.listGood,
+                editInfo: false,
+                errorStock: undefined,
+                errorType: undefined,
+                errorApprover: undefined,
+                errorCustomer: undefined,
+                errorQualityControlStaffs: undefined,
+                errorAccountables: undefined,
+                errorResponsibles: undefined
+
+            })
         }
-        state.good.quantity = 0;
-        state.good.good = '';
-        state.good.description = '';
-        state.good.lots = [];
+    }, [props.billId, props.oldStatus])
 
-        if (props.type === "3") {
-            props.getGoodsByType({ type: "material" });
-        } else if (props.type === "4") {
-            props.getGoodsByType({ type: "product" });
-        }
-
-        setState({
-            ...state,
-            billId: props.billId,
-            code: props.code,
-            fromStock: props.fromStock,
-            status: props.status,
-            oldStatus: props.oldStatus,
-            group: props.group,
-            type: props.type,
-            users: props.users,
-            creator: props.creator,
-            approvers: props.approvers,
-            approver: approver,
-            qualityControlStaffs: qualityControlStaffs,
-            listQualityControlStaffs: props.listQualityControlStaffs,
-            responsibles: responsibles,
-            accountables: accountables,
-            description: props.description,
-            customer: props.customer,
-            name: props.name,
-            phone: props.phone,
-            email: props.email,
-            address: props.address,
-            listGood: props.listGood,
-            oldGoods: props.listGood,
-            editInfo: false,
-            errorStock: undefined,
-            errorType: undefined,
-            errorApprover: undefined,
-            errorCustomer: undefined,
-            errorQualityControlStaffs: undefined,
-            errorAccountables: undefined,
-            errorResponsibles: undefined
-
-        })
-    }
 
     const save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier,
@@ -600,7 +606,7 @@ function GoodIssueEditForm(props) {
         })
     }
 
-    const checkApproved = (approvers, listQualityControlStaffs) => {
+    const checkIsApproved = (approvers, listQualityControlStaffs) => {
         let quantityApproved = 1;
         approvers.forEach((element) => {
             if (element.approvedTime == null) {
@@ -621,7 +627,7 @@ function GoodIssueEditForm(props) {
     const dataStock = getStock();
     const dataType = getType();
     const dataStatus = getStatus();
-    // const checkApproved = checkApproved(approvers, listQualityControlStaffs);
+    // const checkApproved = checkIsApproved(approvers, listQualityControlStaffs);
 
     return (
         <React.Fragment>
@@ -644,10 +650,10 @@ function GoodIssueEditForm(props) {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code} disabled />
+                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-type-issue-edit-${billId}`}
                                         className="form-control select2"
@@ -656,7 +662,7 @@ function GoodIssueEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -670,13 +676,13 @@ function GoodIssueEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        disabled={checkApproved}
+                                    // disabled={checkApproved}
                                     />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-stock-bill-issue-edit-${billId}`}
                                         className="form-control select2"
@@ -685,12 +691,12 @@ function GoodIssueEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
                                 <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.customer')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.customer')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-customer-issue-edit-${billId}`}
                                         className="form-control select2"
@@ -717,7 +723,7 @@ function GoodIssueEditForm(props) {
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-approver-bill-issue-edit-${billId}`}
                                             className="form-control select2"
@@ -730,7 +736,7 @@ function GoodIssueEditForm(props) {
                                         <ErrorLabel content={errorApprover} />
                                     </div>
                                     <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-accountables-bill-issue-edit-${billId}`}
                                             className="form-control select2"
@@ -745,7 +751,7 @@ function GoodIssueEditForm(props) {
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-qualityControlStaffs-bill-issue-edit-${billId}`}
                                             className="form-control select2"
@@ -758,7 +764,7 @@ function GoodIssueEditForm(props) {
                                         <ErrorLabel content={errorQualityControlStaffs} />
                                     </div>
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-responsibles-bill-issue-edit-${billId}`}
                                             className="form-control select2"
@@ -779,21 +785,21 @@ function GoodIssueEditForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -830,7 +836,7 @@ function GoodIssueEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {good.good && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</button>)}
+                                {good.good && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -850,7 +856,8 @@ function GoodIssueEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
                                         </tr>
                                     </thead>
@@ -864,6 +871,11 @@ function GoodIssueEditForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
+                                                        <td>{x.lots.map((lot, index) =>
+                                                            <div key={index}>
+                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                            </div>)}
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

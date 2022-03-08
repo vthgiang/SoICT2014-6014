@@ -3596,6 +3596,7 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thuốc bột của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythuocbot._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
+            turn: 5
         },
         {
             code: "NMSX202011112",
@@ -3607,6 +3608,7 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thuốc nước của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythuocnuoc._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
+            turn: 6
         },
         {
             code: "NMSX202011113",
@@ -3618,6 +3620,7 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thực phẩm chức năng của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythucphamchucnang._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
+            turn: 7
         },
     ];
     const manufacturingWorks = await ManufacturingWorks(vnistDB).insertMany(
@@ -3795,6 +3798,7 @@ const initSampleCompanyDB = async () => {
             name: "Jucca Nước",
             code: "MT001",
             type: "material",
+            sourceType: "1",
             baseUnit: "ml",
             unit: [],
             quantity: 20,
@@ -3806,6 +3810,7 @@ const initSampleCompanyDB = async () => {
             name: "Propylen Glycon",
             code: "MT002",
             type: "material",
+            sourceType: "1",
             baseUnit: "kg",
             unit: [],
             quantity: 30,
@@ -3817,6 +3822,7 @@ const initSampleCompanyDB = async () => {
             name: "Bình ắc quy",
             code: "EQ001",
             type: "material",
+            sourceType: "1",
             baseUnit: "Chiếc",
             unit: [],
             quantity: 10,
@@ -3828,6 +3834,7 @@ const initSampleCompanyDB = async () => {
             name: "Máy nén",
             code: "EQ002",
             type: "material",
+            sourceType: "1",
             baseUnit: "Chiếc",
             unit: [],
             quantity: 10,
@@ -3842,6 +3849,7 @@ const initSampleCompanyDB = async () => {
             name: "ĐƯỜNG ACESULFAME K",
             code: "PR001",
             type: "product",
+            sourceType: "1",
             baseUnit: "Thùng",
             unit: [],
             quantity: 20,
@@ -3875,6 +3883,7 @@ const initSampleCompanyDB = async () => {
             name: "ACID CITRIC MONO",
             code: "PR002",
             type: "product",
+            sourceType: "1",
             baseUnit: "Bao",
             unit: [],
             quantity: 20,
@@ -3908,6 +3917,7 @@ const initSampleCompanyDB = async () => {
             name: "TIFFY",
             code: "PR003",
             type: "product",
+            sourceType: "1",
             baseUnit: "Gói",
             unit: [],
             quantity: 100,
@@ -5370,6 +5380,7 @@ const initSampleCompanyDB = async () => {
             status: "2",
             timestamp: "02-06-2020",
             description: "Nhập kho thành phẩm",
+            sourceType: "1",
             goods: [
                 {
                     good: listProduct[0]._id,
@@ -5831,7 +5842,8 @@ const initSampleCompanyDB = async () => {
             const name = await getRandomCustomerName();
             const now = new Date();
             const month = (now.getMonth() - i > 0) ? now.getMonth() - i : now.getMonth() - i + 12;
-            const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
+            //const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
+            const year = now.getFullYear();
             const customer = {
 
                 "owner": [

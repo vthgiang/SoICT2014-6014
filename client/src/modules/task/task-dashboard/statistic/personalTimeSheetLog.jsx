@@ -48,17 +48,6 @@ function PersonalTimeSheetLog(props) {
        props.getTimeSheetOfUser(getStorage('userId'), month, year, requireActions);
     }, [])
 
-    const convertType = (value) => {
-        // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
-        if (value == 1) {
-            return "Bấm giờ"
-        } else if (value == 2) {
-            return "Bấm hẹn giờ"
-        } else {
-            return "Bấm bù giờ"
-        }
-    }
-
     const handleChangeMonthTimeSheetLog = (value) => {
         setState({
             ...state,
@@ -91,6 +80,8 @@ function PersonalTimeSheetLog(props) {
         return convertTime(total);
     }
 
+    // Tìm tổng thời gian bấm giờ của bấm giờ
+    // type= 1: tắt bấm giờ bằng tay, 2: bấm hẹn giờ, 3: bấm bù giờ
     const getTotalTimeSheetByType = (task, type) => {
         let total = 0;
         for (let action of task.taskActions) {
@@ -152,12 +143,8 @@ function PersonalTimeSheetLog(props) {
                             userTimeSheetLogs.map((task, taskIndex) => {
                                 return (<>
                                     <tr key={taskIndex}>
-                                        <td rowSpan={ task.taskActions.length +1}>{taskIndex + 1}</td>
-                                        <td rowSpan={ task.taskActions.length +1}>{task.name}</td>
-                                        <td><i>Tổng thời gian</i></td>
-                                        <td style={{ textAlign: 'center' }}>{getTotalTimeSheetByType(task, 1)}</td>
-                                        <td style={{ textAlign: 'center' }}>{getTotalTimeSheetByType(task, 2)}</td>
-                                        <td style={{ textAlign: 'center' }}>{getTotalTimeSheetByType(task, 3)}</td>
+                                        <td rowSpan={ task.taskActions.length + 2}>{taskIndex + 1}</td>
+                                        <td rowSpan={ task.taskActions.length + 2} style={{color: '#0c5c8a', fontWeight: 'bold'}}>{task.name}</td>
                                     </tr>
                                     {
                                         task.taskActions.map((action, actionIndex) => {
@@ -177,6 +164,16 @@ function PersonalTimeSheetLog(props) {
                                             )
                                         })
                                     }
+                                    {
+                                        <tr>
+                                            <td style={{ textAlign: 'right', color: '#0c5c8a'}}>Tổng thời gian</td>
+                                            <td style={{ textAlign: 'center', color: '#0c5c8a'}}>{getTotalTimeSheetByType(task, 1)}</td>
+                                            <td style={{ textAlign: 'center', color: '#0c5c8a' }}>{getTotalTimeSheetByType(task, 2)}</td>
+                                            <td style={{ textAlign: 'center', color: '#0c5c8a' }}>{getTotalTimeSheetByType(task, 3)}</td>
+                                        </tr>
+                                        
+                                    }
+                                    {<tr></tr>}
                                 </>)
                             })
                         }

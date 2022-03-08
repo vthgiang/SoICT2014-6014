@@ -1,21 +1,22 @@
-const { backup, restore } = require("../../../helpers/dbHelper");
+const { backup, restore, versionName } = require("../../../helpers/dbHelper");
 const { connect } = require("../../../helpers/dbHelper");
 const { time } = require('cron');
 const fs = require('fs');
 const exec = require('child_process').exec;
 const { Configuration } = require(`../../../models`);
+const {checkOS} = require("../../../helpers/osHelper");
 
-exports.getBackups = async () => {
+exports.getBackups = () => {
     if (!fs.existsSync(`${SERVER_BACKUP_DIR}/all`)) {
         fs.mkdirSync(`${SERVER_BACKUP_DIR}/all`, {
             recursive: true
         });
     };
-    const list = await fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
+    const list = fs.readdirSync(`${SERVER_BACKUP_DIR}/all`);
 
     const backupedList = [];
     list.forEach(dir => {
-        
+
         // Nếu là thư mục có file README.txt -> là thư mục backup
         if (fs.existsSync(`${SERVER_BACKUP_DIR}/all/${dir}/README.txt`)) {
             const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/all/${dir}`);
@@ -127,9 +128,14 @@ exports.createBackup = async () => {
 };
 
 exports.deleteBackup = async (version) => {
-    const path = `${SERVER_BACKUP_DIR}/all/${version}`;
+    const path = `${SERVER_BACKUP_DIR}\\all\\${version}`;
     if (fs.existsSync(path)) {
-        exec("rm -rf " + path, function (err) { });
+        if (checkOS() === 1) {
+            exec("rmdir /s /q " + path, function (err) { });
+        } else if (checkOS() === 2) {
+            exec("rm -rf " + path, function (err) {
+            });
+        }
         return version;
     }
     return null;
@@ -138,8 +144,7 @@ exports.deleteBackup = async (version) => {
 exports.restore = async (version) => {
     await restore({
         host: process.env.DB_HOST,
-        dbName: process.env.DB_NAME,
-        dbPort: process.env.DB_PORT || '27017',
+        port: process.env.DB_PORT || '27017',
         store: SERVER_BACKUP_DIR,
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,

@@ -9,6 +9,8 @@ import GoodReceiptCreateForm from './goodReceiptCreateForm';
 import { BillActions } from '../../redux/actions';
 import QualityControlForm from '../genaral/quatityControlForm';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
+import Swal from "sweetalert2";
+import { UserGuideCreateBillReceipt } from '../config.js';
 
 function ReceiptManagement(props) {
 
@@ -26,7 +28,6 @@ function ReceiptManagement(props) {
 
     const { translate, bills, stocks, user } = props;
     const { listPaginate, totalPages, page } = bills;
-    console.log("listPaginate", listPaginate);
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow } = state;
     const dataPartner = props.getPartner();
@@ -38,6 +39,25 @@ function ReceiptManagement(props) {
         })
 
         window.$('#modal-edit-bill-receipt').modal('show');
+    }
+
+    const showFilePreview = (data) => {
+        const link = process.env.REACT_APP_SERVER + data[0].url;
+        Swal.fire({
+            html: ` 
+            <h4>${data[0].pageName}</h4>
+            <div style="margin:0px;padding:0px;overflow:hidden">
+               <iframe  frameborder="0" style="overflow:hidden;height:90vh;width:100%" height="100vh" width="100%"
+                        src= ${link}
+                    />
+            </div>`,
+            width: "100%",
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: true,
+            focusConfirm: false,
+
+        })
     }
 
     const findIndexOfStaff = (array, id) => {
@@ -102,6 +122,9 @@ function ReceiptManagement(props) {
                             onChange={props.handleCreatorChange}
                         />
                     </div>
+                    <a href="#show-detail" onClick={() => showFilePreview(UserGuideCreateBillReceipt)}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px', fontSize: '20px' }} />
+                    </a>
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
@@ -204,6 +227,7 @@ function ReceiptManagement(props) {
                         description={currentRow.description}
                         listGood={currentRow.goods}
                         creator={currentRow.creator ? currentRow.creator._id : ''}
+                        sourceType={currentRow.sourceType}
                     />
                 }
 
@@ -252,8 +276,8 @@ function ReceiptManagement(props) {
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                    { x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
-                                    { x.type === '2' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
+                                    {x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
+                                    {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
@@ -271,14 +295,7 @@ function ReceiptManagement(props) {
                                         }
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.staff_true')}
-                                                content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => handleFinishedQualityControlStaff(x)}
-                                            />
+                                            <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
                                         }
                                     </td>
                                 </tr>

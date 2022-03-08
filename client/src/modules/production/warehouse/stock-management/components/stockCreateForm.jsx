@@ -456,7 +456,6 @@ function StockCreateForm(props) {
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
-    // console.log('state', state)
 
     return (
         <React.Fragment>
@@ -477,16 +476,16 @@ function StockCreateForm(props) {
                     <div className="row">
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.stock_management.code')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.code')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={code} disabled />
                             </div>
                             <div className={`form-group ${!errorOnAddress ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.stock_management.address')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.address')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
                                 <ErrorLabel content={errorOnAddress} />
                             </div>
                             {/* <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.department')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-status-of-stock`}
                                         className="form-control select2"
@@ -501,12 +500,12 @@ function StockCreateForm(props) {
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.stock_management.name')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.name')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={name} onChange={handleNameChange} />
                                 <ErrorLabel content={errorOnName} />
                             </div>
                             <div className="form-group">
-                                <label>{translate('manage_warehouse.stock_management.status')}<span className="attention"> * </span></label>
+                                <label>{translate('manage_warehouse.stock_management.status')}<span className="text-red"> * </span></label>
                                 <SelectBox
                                     id={`select-status-stock`}
                                     className="form-control select2"
@@ -523,7 +522,7 @@ function StockCreateForm(props) {
                                 />
                             </div>
                             {/* <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.management_location')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.stock_management.management_location')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-management-location-stock`}
                                         className="form-control select2"
@@ -558,7 +557,7 @@ function StockCreateForm(props) {
                                     <ErrorLabel content={errorOnRole} />
                                 </div>
                                 <div className={`form-group ${!errorOnManagementGood ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.management_good')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.stock_management.management_good')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-management-good-stock-create`}
                                         className="form-control select2"

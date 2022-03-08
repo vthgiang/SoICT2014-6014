@@ -5,13 +5,13 @@ const exec = child_process.exec;
 const { Configuration } = require('../../../models');
 const { time } = require('cron');
 
-exports.getBackups = async (portal) => {
+exports.getBackups = (portal) => {
     if (!fs.existsSync(`${SERVER_BACKUP_DIR}/${portal}`)) {
         fs.mkdirSync(`${SERVER_BACKUP_DIR}/${portal}`, {
             recursive: true
         });
     };
-    const list = await fs.readdirSync(`${SERVER_BACKUP_DIR}/${portal}`);
+    const list = fs.readdirSync(`${SERVER_BACKUP_DIR}/${portal}`);
 
     let backupedList = [];
     list.forEach(version => {

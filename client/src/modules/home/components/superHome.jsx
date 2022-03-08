@@ -39,7 +39,7 @@ class SuperHome extends Component {
             if (monthChange){
                 if ( month <= monthChange ){
                     year = year - 1
-                    month = month + 12 - month  
+                    month = Number(month) + 12 - monthChange  
                 } else {
                     month = month - monthChange
                 }

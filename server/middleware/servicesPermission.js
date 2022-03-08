@@ -792,6 +792,9 @@ exports.links = [
     }, {
         url: '/task-process-template',
         apis: ['@all']
+    },  {
+        url: '/process-template',
+        apis: ['@all']
     }, {
         url: '/task-management-dashboard',
         apis: ['@all']

@@ -113,7 +113,7 @@ function StockRotateEditForm(props) {
         let typeArr = [];
         typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
-            { value: '8', text: translate('manage_warehouse.bill_management.billType.8') },
+            { value: '14', text: translate('manage_warehouse.bill_management.billType.14') },
         ]
         return typeArr;
     }
@@ -492,7 +492,7 @@ function StockRotateEditForm(props) {
         return false;
     }
 
-    useEffect(() => {
+    if (props.billId !== state.billId || props.oldStatus !== state.oldStatus) {
         let approver = [];
         let qualityControlStaffs = [];
         let responsibles = [];
@@ -529,7 +529,7 @@ function StockRotateEditForm(props) {
         state.good.description = '';
         state.good.returnQuantity = 0;
         state.good.lots = [];
-        return {
+        setState({
             ...state,
             billId: props.billId,
             code: props.code,
@@ -561,8 +561,8 @@ function StockRotateEditForm(props) {
             errorApprover: undefined,
             errorToStock: undefined
 
-        }
-    }, [props.billId, props.oldStatus])
+        })
+    }
 
     const save = async () => {
 
@@ -641,7 +641,7 @@ function StockRotateEditForm(props) {
                                     <input type="text" className="form-control" value={code} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-type-rotate-edit-${billId}`}
                                         className="form-control select2"
@@ -676,7 +676,7 @@ function StockRotateEditForm(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-stock-bill-rotate-edit-${billId}`}
                                         className="form-control select2"
@@ -690,7 +690,7 @@ function StockRotateEditForm(props) {
                                     <ErrorLabel content={errorStock} />
                                 </div>
                                 <div className={`form-group ${!errorToStock ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.rotate_stock')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.rotate_stock')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-customer-rotate-edit-${billId}`}
                                         className="form-control select2"
@@ -717,7 +717,7 @@ function StockRotateEditForm(props) {
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-approver-bill-rotate-edit-${billId}`}
                                             className="form-control select2"
@@ -730,7 +730,7 @@ function StockRotateEditForm(props) {
                                         <ErrorLabel content={errorApprover} />
                                     </div>
                                     <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-accountables-bill-rotate-edit-${billId}`}
                                             className="form-control select2"
@@ -745,7 +745,7 @@ function StockRotateEditForm(props) {
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-qualityControlStaffs-bill-rotate-edit-${billId}`}
                                             className="form-control select2"
@@ -758,7 +758,7 @@ function StockRotateEditForm(props) {
                                         <ErrorLabel content={errorQualityControlStaffs} />
                                     </div>
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-responsibles-bill-rotate-edit-${billId}`}
                                             className="form-control select2"
@@ -779,21 +779,21 @@ function StockRotateEditForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -832,7 +832,7 @@ function StockRotateEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {good.good && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</button>)}
+                                {good.good && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -852,7 +852,8 @@ function StockRotateEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.lot_with_unit')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
                                         </tr>
                                     </thead>
@@ -866,6 +867,11 @@ function StockRotateEditForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
+                                                        <td>{x.lots.map((lot, index) =>
+                                                            <div key={index}>
+                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                            </div>)}
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

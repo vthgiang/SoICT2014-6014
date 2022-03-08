@@ -96,8 +96,8 @@ function StockTakeEditForm(props) {
         let typeArr = [];
         typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
-            { value: '5', text: translate('manage_warehouse.bill_management.billType.5') },
-            { value: '6', text: translate('manage_warehouse.bill_management.billType.6') },
+            { value: '9', text: translate('manage_warehouse.bill_management.billType.9') },
+            { value: '10', text: translate('manage_warehouse.bill_management.billType.10') },
         ]
         return typeArr;
     }
@@ -486,7 +486,7 @@ function StockTakeEditForm(props) {
         state.good.description = '';
         state.good.realQuantity = 0;
         state.good.lots = [];
-        setState ({
+        setState({
             ...state,
             billId: props.billId,
             code: props.code,
@@ -585,7 +585,7 @@ function StockTakeEditForm(props) {
                                     <input type="text" className="form-control" value={code} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-type-take-edit-${billId}`}
                                         className="form-control select2"
@@ -601,7 +601,7 @@ function StockTakeEditForm(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="text-red"> * </span></label>
                                     <SelectBox
                                         id={`select-stock-bill-take-edit-${billId}`}
                                         className="form-control select2"
@@ -642,7 +642,7 @@ function StockTakeEditForm(props) {
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-approver-bill-take-edit-${billId}`}
                                             className="form-control select2"
@@ -655,7 +655,7 @@ function StockTakeEditForm(props) {
                                         <ErrorLabel content={errorApprover} />
                                     </div>
                                     <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-accountables-bill-take-edit-${billId}`}
                                             className="form-control select2"
@@ -670,7 +670,7 @@ function StockTakeEditForm(props) {
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-qualityControlStaffs-bill-take-edit-${billId}`}
                                             className="form-control select2"
@@ -683,7 +683,7 @@ function StockTakeEditForm(props) {
                                         <ErrorLabel content={errorQualityControlStaffs} />
                                     </div>
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="text-red"> * </span></label>
                                         <SelectBox
                                             id={`select-responsibles-bill-take-edit-${billId}`}
                                             className="form-control select2"
@@ -731,7 +731,7 @@ function StockTakeEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {status === '2' && good.good && (<button className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</button>)}
+                                {status === '2' && good.good && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -753,7 +753,8 @@ function StockTakeEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
                                             <th title={translate('manage_warehouse.bill_management.real_quantity')}>{translate('manage_warehouse.bill_management.real_quantity')}</th>
                                             <th title={translate('manage_warehouse.bill_management.difference')}>{translate('manage_warehouse.bill_management.difference')}</th>
-                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.lot_with_unit')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
                                         </tr>
                                     </thead>
@@ -769,6 +770,11 @@ function StockTakeEditForm(props) {
                                                         <td>{x.quantity}</td>
                                                         <td>{x.realQuantity}</td>
                                                         <td>{x.damagedQuantity ? x.damagedQuantity : 0}</td>
+                                                        <td>{x.lots.map((lot, index) =>
+                                                            <div key={index}>
+                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                            </div>)}
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

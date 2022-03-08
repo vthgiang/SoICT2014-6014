@@ -5,7 +5,7 @@ export const SystemApiServices = {
     createSystemApi,
     editSystemApi,
     deleteSystemApi,
-    updateSystemApiAutomatic
+    updateSystemApi
 };
 
 /** Lấy các system api */
@@ -53,9 +53,9 @@ function deleteSystemApi(systemApiId) {
     }, true, true, 'system_admin.system_api');
 }
 
-function updateSystemApiAutomatic() {
+function updateSystemApi() {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/system-admin/system-api/system-apis/update-auto`,
         method: 'POST',
-    }, true, true, 'system_admin.system_api');
+    }, false, true, 'system_admin.system_api');
 }

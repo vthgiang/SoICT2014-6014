@@ -11,9 +11,9 @@ function PrivilegeApiCreateModal(props) {
     const { translate, systemApis, company } = props;
 
     const [state, setState] = useState({
-        email: null,
+        email: '',
         description: '',
-        description: null,
+        description: '',
         unlimitedExpirationTime: true,
         startDate: '',
         startDate: '',
@@ -218,19 +218,14 @@ function PrivilegeApiCreateModal(props) {
         return (
             arrangedApisArr.map((apisCategory) => (
                 <>
-                    <tr>
-                        <td colspan="3" style={{
-                            textAlign: 'left',
-                        }}></td>
-                    </tr>
-                    <tr>
+                    <tr key={apisCategory}>
                         <td>
                             <input
                                 type="checkbox"
                                 onChange={(e) => handleCheckboxCategory(e, apisCategory)}
                             />
                         </td>
-                        <td colspan="3" style={{
+                        <td colSpan="3" style={{
                             textAlign: 'left',
                             fontWeight: 'bold',
                         }}>Path: <span>{apisCategory.category}</span></td>
@@ -286,7 +281,7 @@ function PrivilegeApiCreateModal(props) {
                         />
                     </div>
 
-                    <td>
+                    <div>
                         <input
                             style={{ marginBottom: 10 }}
                             type="checkbox"
@@ -294,7 +289,7 @@ function PrivilegeApiCreateModal(props) {
                             onChange={handleOnChangeUnlimitedExpirationTimeCheckbox}
                         />
                         Unlimited expiration time
-                    </td>
+                    </div>
 
                     {!state.unlimitedExpirationTime &&
                         (<div className="row">
@@ -358,12 +353,11 @@ function PrivilegeApiCreateModal(props) {
                             </thead>
 
                             <tbody>
-                                {
-                                    listPaginateApi?.length > 0
-                                        ? renderApiList()
-                                        : apis.isLoading
-                                            ? <tr><td colSpan={4}>{translate('general.loading')}</td></tr>
-                                            : <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
+                                {listPaginateApi?.length > 0
+                                    ? renderApiList()
+                                    : apis.isLoading
+                                        ? <tr key={'loading'}><td colSpan={4}>{translate('general.loading')}</td></tr>
+                                        : <tr key={'no_data'}><td colSpan={4}>{translate('general.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>

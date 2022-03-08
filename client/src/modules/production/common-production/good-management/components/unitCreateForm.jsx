@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ErrorLabel, SelectMulti } from '../../../../../common-components';
+import Swal from "sweetalert2";
 
 function UnitCreateForm(props) {
     const EMPTY_UNIT = {
@@ -40,63 +41,62 @@ function UnitCreateForm(props) {
         return listUnitArray;
     }
 
-    const handleSelectMultiBaseUnit = (value) => {
-        if (value.length == 0) {
-            value = null;
-        }
-        validateMultiBaseUnit(value, true)
-    }
+    // const handleSelectMultiBaseUnit = (value) => {
+    //     if (value.length == 0) {
+    //         value = null;
+    //     }
+    //     validateMultiBaseUnit(value, true)
+    // }
 
-    const validateMultiBaseUnit = (value, willUpdateState) => {
-        console.log(value);
-        let msg = undefined;
+    // const validateMultiBaseUnit = (value, willUpdateState) => {
+    //     let msg = undefined;
 
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.good_management.choose_base_unit')
-        }
-        if (willUpdateState) {
-            let packingRule = "";
-            if (value) {
-                packingRule = convertToPackingRule(value);
-            }
-            if (packingRule !== "") {
-                setState({
-                    ...state,
-                    packingRule: packingRule,
-                    listUnitSelected: value,
-                    errorOnBaseUnit: msg
-                });
-            } else {
-                setState({
-                    ...state,
-                    listUnitSelected: value,
-                    packingRule: packingRule,
-                    errorOnBaseUnit: value ? translate("manage_warehouse.good_management.error_packing_rule") : msg
-                })
-            }
+    //     const { translate } = props;
+    //     if (!value) {
+    //         msg = translate('manage_warehouse.good_management.choose_base_unit')
+    //     }
+    //     if (willUpdateState) {
+    //         let packingRule = "";
+    //         if (value) {
+    //             packingRule = convertToPackingRule(value);
+    //         }
+    //         if (packingRule !== "") {
+    //             setState({
+    //                 ...state,
+    //                 packingRule: packingRule,
+    //                 listUnitSelected: value,
+    //                 errorOnBaseUnit: msg
+    //             });
+    //         } else {
+    //             setState({
+    //                 ...state,
+    //                 listUnitSelected: value,
+    //                 packingRule: packingRule,
+    //                 errorOnBaseUnit: value ? translate("manage_warehouse.good_management.error_packing_rule") : msg
+    //             })
+    //         }
 
-            props.onDataChange(state.listUnit);
-            // props.onDataChange(state.listUnit, state.packingRule);
+    //         props.onDataChange(state.listUnit);
+    //         // props.onDataChange(state.listUnit, state.packingRule);
 
-        }
+    //     }
 
-        return msg
-    }
+    //     return msg
+    // }
 
     // Hàm sắp xếp subListUnitArray theo thứ tự conversion rate tăng dần
-    const sortListUnitArray = (array) => {
-        for (let i = 0; i < array.length; i++) {
-            for (let j = i + 1; j < array.length; j++) {
-                if (array[i].conversionRate > array[j].conversionRate) {
-                    let tmp = array[i];
-                    array[i] = array[j];
-                    array[j] = tmp
-                }
-            }
-        }
-        return array;
-    }
+    // const sortListUnitArray = (array) => {
+    //     for (let i = 0; i < array.length; i++) {
+    //         for (let j = i + 1; j < array.length; j++) {
+    //             if (array[i].conversionRate > array[j].conversionRate) {
+    //                 let tmp = array[i];
+    //                 array[i] = array[j];
+    //                 array[j] = tmp
+    //             }
+    //         }
+    //     }
+    //     return array;
+    // }
 
     // Hàm này validate xem list unit có hợp lệ để tạo thành một packingRule hay không
     // Input là 1 array chứa các phần tử có conversion rate tăng dần
@@ -111,33 +111,33 @@ function UnitCreateForm(props) {
     }
 
 
-    const convertToPackingRule = (value) => {
-        let packingRule = '';
-        let listUnitArray = getListUnitArray();
-        let subListUnitArray = [];
-        for (let i = 0; i < listUnitArray.length; i++) {
-            for (let j = 0; j < value.length; j++) {
-                if (listUnitArray[i].value == value[j]) {
-                    subListUnitArray.push(listUnitArray[i]);
-                    break;
-                }
-            }
-        }
-        let sortListUnitArray = sortListUnitArray(subListUnitArray);
-        let resultValidate = validateListUnitArray(sortListUnitArray);
-        // Nếu chuỗi tạo thành được 1 packingRule
-        if (resultValidate) {
-            let maxIndexOfArray = sortListUnitArray.length - 1;
-            packingRule += sortListUnitArray[maxIndexOfArray].text;
-            if (maxIndexOfArray > 0) {
-                for (let i = maxIndexOfArray - 1; i >= 0; i--) {
-                    packingRule += " x " + (sortListUnitArray[i + 1].conversionRate / sortListUnitArray[i].conversionRate) + sortListUnitArray[i].text
-                }
+    // const convertToPackingRule = (value) => {
+    //     let packingRule = '';
+    //     let listUnitArray = getListUnitArray();
+    //     let subListUnitArray = [];
+    //     for (let i = 0; i < listUnitArray.length; i++) {
+    //         for (let j = 0; j < value.length; j++) {
+    //             if (listUnitArray[i].value == value[j]) {
+    //                 subListUnitArray.push(listUnitArray[i]);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     let sortListUnitArray = sortListUnitArray(subListUnitArray);
+    //     let resultValidate = validateListUnitArray(sortListUnitArray);
+    //     // Nếu chuỗi tạo thành được 1 packingRule
+    //     if (resultValidate) {
+    //         let maxIndexOfArray = sortListUnitArray.length - 1;
+    //         packingRule += sortListUnitArray[maxIndexOfArray].text;
+    //         if (maxIndexOfArray > 0) {
+    //             for (let i = maxIndexOfArray - 1; i >= 0; i--) {
+    //                 packingRule += " x " + (sortListUnitArray[i + 1].conversionRate / sortListUnitArray[i].conversionRate) + sortListUnitArray[i].text
+    //             }
 
-            }
-        }
-        return packingRule;
-    }
+    //         }
+    //     }
+    //     return packingRule;
+    // }
 
     if (props.id !== state.id || props.baseUnit !== state.baseUnit) {
         setState({
@@ -273,13 +273,30 @@ function UnitCreateForm(props) {
         // props.onDataChange(state.listUnit, state.packingRule);
         props.onDataChange(state.listUnit);
     }
+    const showListExplainUnit = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Đơn vị tính</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Đơn vị quy đổi từ đơn vị cơ bản</p>
+            <p>Ví dụ : đơn vị tính cơ bản chiếc
+            Đơn vị quy đổi : Hộp
+            1 Hộp = 20 chiếc.</b></p>`,
+            width: "50%",
+        })
+    };
 
     const { translate, id } = props;
     let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected, packingRule } = state;
     return (
 
         <fieldset className="scheduler-border">
-            <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}</legend>
+            <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}
+                <a onClick={() => showListExplainUnit()}>
+                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                </a>
+            </legend>
 
             <div className={`form-group ${!errorOnUnitName ? "" : "has-error"}`}>
                 <label className="control-label">{translate('manage_warehouse.good_management.unit_name')}</label>
@@ -343,7 +360,7 @@ function UnitCreateForm(props) {
             </table>
             {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
-                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="attention"> * </span></label>
+                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="text-red"> * </span></label>
                         <SelectMulti
                             id={`multi-select-base-unit-${id}`}
                             items={getListUnitArray()}

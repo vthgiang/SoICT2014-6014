@@ -8,8 +8,17 @@ export const SystemServices = {
     deleteBackup,
     restore,
     editBackupInfo,
-    downloadBackupVersion
+    downloadBackupVersion,
+    uploadBackupFiles
 };
+
+function uploadBackupFiles(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/system/backup/upload`,
+        method: 'POST',
+        data: data
+    }, true, true, 'super_admin.system');
+}
 
 function getBackups() {
     return sendRequest({

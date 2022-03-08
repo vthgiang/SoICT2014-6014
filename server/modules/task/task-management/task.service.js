@@ -2880,11 +2880,11 @@ exports.getTaskAnalyseOfUser = async (portal, userId, type, date) => {
  * @param {*} year
  * @param {*} requireActions
  */
-exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) => {
+exports.getUserTimeSheet = async (portal, userId, month, year, requireActions, rowLimit, page, timeLimit) => {
     let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
     let endOfMonth = new Date(year, month); // cần chỉnh lại
-
-    // Nếu cần chi lấy chi tiết từng hoạt động trong công việc
+    
+    // Nếu cần lấy chi tiết từng hoạt động trong công việc
     if (requireActions == 'true') {
         let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
             {
@@ -2892,8 +2892,8 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                     "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
                     "taskActions.timesheetLogs.startedAt": {$exists: true},
                     "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
+                    "taskActions.timesheetLogs.startedAt": {$lte: endOfMonth},
                     "taskActions.timesheetLogs.stoppedAt": {$exists: true},
-                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
                 }
             },
             {
@@ -2904,21 +2904,18 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                 }
             }
         ]);
-        console.log(tsl);
         return tsl;
     }
+    // Nếu trong query có userId thì trả về timesheetLogs của user với ID đó
     if (userId) {
-        /**
-         * Nếu trong query có userId thì trả về timesheetLogs của user với ID đó
-         * */
         let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
             {
                 $match: {
                     "taskActions.timesheetLogs.creator": mongoose.Types.ObjectId(userId),
                     "taskActions.timesheetLogs.startedAt": {$exists: true},
                     "taskActions.timesheetLogs.startedAt": {$gte: beginOfMonth},
+                    "taskActions.timesheetLogs.startedAt": {$lte: endOfMonth},
                     "taskActions.timesheetLogs.stoppedAt": {$exists: true},
-                    "taskActions.timesheetLogs.stoppedAt": {$lte: endOfMonth}
                 }
             },
             {$unwind: "$taskActions"},
@@ -2946,60 +2943,138 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) =
                     "creator": mongoose.Types.ObjectId(userId),
                     "startedAt": {$exists: true},
                     "startedAt": {$gte: beginOfMonth},
+                    "startedAt": {$lte: endOfMonth},
                     "stoppedAt": {$exists: true},
-                    "stoppedAt": {$lte: endOfMonth}
                 },
             },
         ]);
         return tsl;
-    } else {
-        /**
-         * Nếu trong query không có userId thì trả về timesheetLogs của tất cả các users
-         * */
-        let users = await User(connect(DB_CONNECTION, portal)).find().select("_id name email");
-
-        let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+    }
+    // Lấy thời gian bấm giờ và số công việc của tất cả user trong tháng
+    else {
+        let temp = await UserService.getUsers(portal, null, {limit: 1, page: 1}); // Lấy số lượng nhân viên của công ty
+        let listEmployee = await UserService.getUsers(portal, null, {limit: temp.totalDocs, page: 1});
+        let listTask = await Task(connect(DB_CONNECTION, portal)).aggregate([
             {
                 $match: {
-                    "timesheetLogs.startedAt": { $exists: true },
-                    "timesheetLogs.startedAt": { $gte: beginOfMonth },
-                    "timesheetLogs.stoppedAt": { $exists: true },
-                    "timesheetLogs.stoppedAt": { $lte: endOfMonth },
-                }
-            },
-            { $unwind: "$timesheetLogs" },
-            { $replaceRoot: { newRoot: "$timesheetLogs" } },
-            {
-                $match: {
-                    "startedAt": { $exists: true },
-                    "startedAt": { $gte: beginOfMonth },
-                    "stoppedAt": { $exists: true },
-                    "stoppedAt": { $lte: endOfMonth },
-                    "acceptLog": true
+                    "startDate": {$exists: true},
+                    "startDate": {$lte: endOfMonth},
+                    "endDate": {$exists: true},
+                    "endDate": {$gte: beginOfMonth}
                 }
             },
             {
-                $group: {
-                    _id: "$creator",
-                    total: { $sum: "$duration" }
+                $project: {
+                    "name": 1,
+                    "responsibleEmployees": 1,
+                    "accountableEmployees": 1,
+                    "consultedEmployees": 1,
+                    "informedEmployees": 1,
+                    "timesheetLogs": 1
                 }
-            },
+            }
         ]);
 
-        let allTS = [];
-        for (let i = 0; i < tsl.length; i++) {
-            let user = users.find(user => {
-                if (user && tsl[i] && user._id && tsl[i]._id && user._id.toString() === tsl[i]._id.toString()) return true;
-                return false;
-            });
-            if (user) {
-                allTS.push({
-                    creator: user,
-                    duration: tsl[i].total
-                })
+        
+
+        let countResponsibleTasks = [],
+            countAccountableTasks = [],
+            countConsultedTasks = [],
+            countInformedTasks = [],
+            totalTasks = [],
+            exist = [],
+            totalDuration = [[],[],[],[]];
+
+        for (let employee of listEmployee.docs) {
+            countResponsibleTasks[employee._id.toString()] = 0;
+            countAccountableTasks[employee._id.toString()] = 0;
+            countConsultedTasks[employee._id.toString()] = 0;
+            countInformedTasks[employee._id.toString()] = 0;
+            totalTasks[employee._id.toString()] = 0;
+            totalDuration[1][employee._id.toString()] = 0;
+            totalDuration[2][employee._id.toString()] = 0;
+            totalDuration[3][employee._id.toString()] = 0;
+        }
+
+        for (let task of listTask) {
+            exist = [];
+            for (let a of task.responsibleEmployees) {
+                countResponsibleTasks[a.toString()] += 1;
+                if (!exist[a.toString()]) {
+                    totalTasks[a.toString()]+= 1;
+                }
+                exist[a.toString()] = true;
+            }
+
+            for (let a of task.accountableEmployees) {
+                countAccountableTasks[a.toString()]+= 1;
+                if (!exist[a.toString()]) {
+                    totalTasks[a.toString()]+= 1
+                }
+                exist[a.toString()] = true;
+            }
+
+            for (let a of task.consultedEmployees) {
+                countConsultedTasks[a.toString()] += 1;
+                if (!exist[a.toString()]) {
+                    totalTasks[a.toString()]+= 1
+                }
+                exist[a.toString()] = true;
+            }
+            
+            for (let a of task.informedEmployees) {
+                countInformedTasks[a.toString()]+= 1;
+                if (!exist[a.toString()]) {
+                    totalTasks[a.toString()]+= 1
+                }
+                exist[a.toString()] = true;
+            }
+
+            for (let a of task.timesheetLogs) {
+                if (a.acceptLog == true && beginOfMonth <= a.startedAt && a.startedAt <= endOfMonth ) {
+                    totalDuration[a.autoStopped][a.creator.toString()] += a.duration;
+                }
             }
         }
-        return allTS;
+
+
+        listEmployee.docs = listEmployee.docs.map(obj => ({
+            active: obj.active,
+            _id: obj._id,
+            name: obj.name,
+            countResponsibleTasks: 0,
+            countAccountableTasks: 0,
+            countConsultedTasks: 0,
+            countInformedTasks: 0,
+            totalTasks: 0,
+            totalDuration: [0, 0, 0, 0] // 1: Bấm giờ, 2: Bấm hẹn giờ, 3: Bấm bù giờ
+        }))
+
+        for (let employee of listEmployee.docs) {
+            employee.countResponsibleTasks = countResponsibleTasks[employee._id.toString()];
+            employee.countAccountableTasks = countAccountableTasks[employee._id.toString()];
+            employee.countConsultedTasks = countConsultedTasks[employee._id.toString()];
+            employee.countInformedTasks = countInformedTasks[employee._id.toString()];
+            employee.totalTasks = totalTasks[employee._id.toString()];
+            employee.totalDuration[1] = totalDuration[1][employee._id.toString()];
+            employee.totalDuration[2] = totalDuration[2][employee._id.toString()];
+            employee.totalDuration[3] = totalDuration[3][employee._id.toString()];
+        }
+        listEmployee.docs = listEmployee.docs.filter((employee) => {
+            return employee.totalDuration[1] + employee.totalDuration[2] + employee.totalDuration[3] >= 60 * 60 * 1000 * timeLimit
+                && employee.active == true;
+        })
+        listEmployee = {
+            ...listEmployee,
+            totalDocs: listEmployee.docs.length,
+            limit: Number(rowLimit),
+            totalPages: Math.ceil(listEmployee.docs.length / rowLimit),
+            page: Number(page),
+        }
+
+        listEmployee.docs = listEmployee.docs.slice( (page - 1) * rowLimit, page * rowLimit);
+
+        return listEmployee;
     }
 }
 
@@ -3517,6 +3592,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         query[key] = JSON.parse(query[key])
     });
     const data = query;
+    console.log("quere", data);
     const chartArr = Object.keys(data);
     let result = {};
     const { organizationalUnitId, startMonth, endMonth } = data["common-params"]
@@ -4110,7 +4186,7 @@ exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
         result["load-task-organization-chart"] = resultLoad
     }
 
-    //data cho thống kê bấm giờ
+    // data cho thống kê bấm giờ
     if (chartArr.includes('all-time-sheet-log-by-unit')) {
         let dataSearchForAllTimeSheetLogs = {
             ids: organizationalUnitId,

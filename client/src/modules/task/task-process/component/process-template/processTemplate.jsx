@@ -378,7 +378,7 @@ function ProcessTemplate(props) {
     let exportData = convertDataExport([]);
     if (listDiagram && listDiagram.length !== 0) {
         exportData = convertDataExport(listDiagram);
-        console.log('list diagram', listDiagram);
+        // console.log('list diagram', listDiagram);
     }
 // console.log("");
     let totalPage = taskProcess.totalPage
@@ -488,7 +488,7 @@ function ProcessTemplate(props) {
                 <table className="table table-bordered table-striped table-hover" id={tableId}>
                     <thead>
                         <tr>
-                            <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
+                            <th title={translate('task.task_template.process_template_name')}>{translate('task_template.tasktemplate_name')}</th>
                             <th title={translate('task_template.description')}>{translate('task_template.description')}</th>
                             <th title={translate('task.task_process.num_task')}>{translate('task.task_process.num_task')}</th>
                             <th title={translate('task.task_process.manager')}>{translate('task.task_process.manager')}</th>

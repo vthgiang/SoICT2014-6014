@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from "react-redux";
-import { DialogModal, TreeSelect, ErrorLabel, ButtonModal } from "../../../../../common-components";
+import { DialogModal, TreeSelect, ErrorLabel, ButtonModal, SelectBox } from "../../../../../common-components";
 import { GoodActions } from "../redux/actions";
 import { CategoryActions } from "../../category-management/redux/actions";
 import UnitCreateForm from "./unitCreateForm";
 import ComponentCreateForm from "./componentCreateForm";
 import InfoMillCreateForm from "./infoMillCreateForm";
 import { generateCode } from "../../../../../helpers/generateCode";
+import Swal from "sweetalert2";
 
 function GoodCreateForm(props) {
     const [state, setState] = useState({
@@ -22,24 +23,41 @@ function GoodCreateForm(props) {
         category: "",
         pricePerBaseUnit: "",
         salesPriceVariance: "",
-        numberExpirationDate: ""
+        numberExpirationDate: "",
+        sourceType: "",
     })
 
-    if (props.type !== state.type) {
-        setState({
-            ...state,
-            type: props.type,
-            baseUnit: props.baseUnit ? props.baseUnit : "",
-            units: props.units ? props.units : [],
-            materials: props.materials ? props.materials : [],
-            description: props.description ? props.description : "",
-            code: props.code ? props.code : "",
-            name: props.name ? props.name : "",
-            pricePerBaseUnit: props.pricePerBaseUnit ? props.pricePerBaseUnit : "",
-            salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
-            numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : ""
-        });
-    }
+    let dataSource = [
+        {
+            value: '0',
+            text: 'Chọn nguồn hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Hàng hóa tự sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Hàng hóa nhập từ nhà cung cấp',
+        }
+    ];
+
+    useEffect(() => {
+        if (props.type !== state.type) {
+            setState({
+                type: props.type,
+                baseUnit: props.baseUnit ? props.baseUnit : "",
+                units: props.units ? props.units : [],
+                materials: props.materials ? props.materials : [],
+                description: props.description ? props.description : "",
+                code: props.code ? props.code : "",
+                name: props.name ? props.name : "",
+                pricePerBaseUnit: props.pricePerBaseUnit ? props.pricePerBaseUnit : "",
+                salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
+                numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : ""
+            });
+        }
+    }, [props.type]);
 
     const validatePrice = (value) => {
         let msg = undefined;
@@ -93,6 +111,10 @@ function GoodCreateForm(props) {
         let value = e.target.value;
         validateName(value, true);
     };
+
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
 
     const validateName = (value, willUpdateState = true) => {
         let msg = undefined;
@@ -206,7 +228,6 @@ function GoodCreateForm(props) {
     const validateNumberExpirationDate = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
-        console.log(value);
         if (value === "") {
             msg = translate("manage_warehouse.good_management.validate_number_expiration_date");
         }
@@ -214,7 +235,6 @@ function GoodCreateForm(props) {
             msg = translate("manage_warehouse.good_management.validate_number_expiration_date_input");
         }
         if (willUpdateState) {
-            console.log(msg)
             setState({
                 ...state,
                 errorOnNumberExpirationDate: msg,
@@ -224,24 +244,54 @@ function GoodCreateForm(props) {
         return msg === undefined;
     }
 
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                materials: value === "2" ? [] : state.materials,
+                manufacturingMills: value === "2" ? [] : state.manufacturingMills,
+            });
+        }
+        return msg === undefined;
+    }
+
     const isFormValidated = () => {
-        let { name, code, baseUnit, category, materials, numberExpirationDate, type } = state;
+        let { name, code, baseUnit, category, materials, numberExpirationDate, type, sourceType } = state;
         let result;
         result = validateName(name, false) &&
             validateCode(code, false) &&
             validateBaseUnit(baseUnit, false) &&
             validateCategory(category, false) &&
-            (type && type === "product") ? materials.length > 0 : true &&
-            validateNumberExpirationDate(numberExpirationDate, false)
+            ((type && type === "product") && sourceType === "1") ? materials.length > 0 : true &&
+            validateNumberExpirationDate(numberExpirationDate, false) &&
+        validateSourceProduct(sourceType, false);
         return result;
 
     };
 
     const save = () => {
         if (isFormValidated()) {
-            console.log(state);
             props.createGoodByType(state);
         }
+    };
+
+    const showListExplainVariance = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Phương sai</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được dựa trên 1 đơn vị tính cơ bản.</p>
+            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán 1 đơn vị trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
+            width: "50%",
+        })
     };
 
     const handleClickCreate = () => {
@@ -259,6 +309,7 @@ function GoodCreateForm(props) {
         errorOnCode,
         errorOnBaseUnit,
         errorOnCategory,
+        errorOnSourceProduct,
         code,
         name,
         category,
@@ -271,7 +322,8 @@ function GoodCreateForm(props) {
         salesPriceVariance,
         salesPriceVarianceError,
         numberExpirationDate,
-        errorOnNumberExpirationDate
+        errorOnNumberExpirationDate,
+        sourceType,
     } = state;
     const dataSelectBox = getAllCategory();
 
@@ -289,7 +341,7 @@ function GoodCreateForm(props) {
                 modalID={`modal-create-${type}`}
                 isLoading={goods.isLoading}
                 formID={`form-create-${type}`}
-                title={translate("manage_warehouse.good_management.add_title")}
+                title={translate(`manage_warehouse.good_management.add_title.${type}`)}
                 msg_success={translate("manage_warehouse.good_management.add_success")}
                 msg_failure={translate("manage_warehouse.good_management.add_faile")}
                 disableSubmit={!isFormValidated()}
@@ -302,44 +354,68 @@ function GoodCreateForm(props) {
                             <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.code")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <input type="text" className="form-control" disabled={true} value={code} onChange={handleCodeChange} />
                                 <ErrorLabel content={errorOnCode} />
                             </div>
-                            <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("manage_warehouse.good_management.baseUnit")}
-                                    <span className="attention"> * </span>
-                                </label>
-                                <input type="text" className="form-control" value={baseUnit} onChange={handleBaseUnitChange} />
-                                <ErrorLabel content={errorOnBaseUnit} />
-                            </div>
-                        </div>
-
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.name")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <input type="text" className="form-control" value={name} onChange={handleNameChange} />
                                 <ErrorLabel content={errorOnName} />
                             </div>
+                        </div>
+
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                                <span className="text-red"> * </span>
+                                <SelectBox
+                                    id={`select-source-type`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={sourceType}
+                                    items={dataSource}
+                                    onChange={handleSourceChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorOnSourceProduct} />
+                            </div>
                             <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.good_management.category")}
-                                    <span className="attention"> * </span>
+                                    <span className="text-red"> * </span>
                                 </label>
                                 <TreeSelect data={dataSelectBox} value={category} handleChange={handleCategoryChange} mode="hierarchical" />
                                 <ErrorLabel content={errorOnCategory} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("manage_warehouse.good_management.baseUnit")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <input type="text" className="form-control" value={baseUnit} onChange={handleBaseUnitChange} />
+                                <ErrorLabel content={errorOnBaseUnit} />
+                            </div>
+                            <div className={`form-group ${!errorOnNumberExpirationDate ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("manage_warehouse.good_management.numberExpirationDate")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <input type="number" className="form-control" value={numberExpirationDate} onChange={handleNumberExpirationDateChange} />
+                                <ErrorLabel content={errorOnNumberExpirationDate} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>
                                 <label>
                                     {"Giá một đơn vị tính cơ bản"}
-                                    <span className="attention"> </span>
+                                    <span className="text-red"> </span>
                                 </label>
                                 <input
                                     type="number"
@@ -350,21 +426,14 @@ function GoodCreateForm(props) {
                                 />
                                 <ErrorLabel content={pricePerBaseUnitError} />
                             </div>
-                            <div className={`form-group ${!errorOnNumberExpirationDate ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("manage_warehouse.good_management.numberExpirationDate")}
-                                    <span className="attention"> * </span>
-                                </label>
-                                <input type="number" className="form-control" value={numberExpirationDate} onChange={handleNumberExpirationDateChange} />
-                                <ErrorLabel content={errorOnNumberExpirationDate} />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
                                 <label>
-                                    {"Phương sai giá bán"}
-                                    <span className="attention"> </span>
+                                    {"Phương sai giá bán / 1 đơn vị tính cơ bản"}
+                                    <span className="text-red"> </span>
                                 </label>
+                                <a onClick={() => showListExplainVariance()}>
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                </a>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -381,14 +450,13 @@ function GoodCreateForm(props) {
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
-                            {type === "product" ? (
-                                <React.Fragment>
-                                    <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} />
-                                    <InfoMillCreateForm onDataChange={handleListMillsChange} />
-                                </React.Fragment>
-                            ) : (
-                                ""
-                            )}
+
+                            <React.Fragment>
+                                {(type === "product" && sourceType === "1") ? (
+                                    <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ("")}
+                                {(sourceType === "1" ? (<InfoMillCreateForm onDataChange={handleListMillsChange} />) : "")}
+                            </React.Fragment>
+
                         </div>
                     </div>
                 </form>

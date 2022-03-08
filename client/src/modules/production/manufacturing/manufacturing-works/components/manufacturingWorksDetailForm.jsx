@@ -66,6 +66,10 @@ class ManufacturingWorksDetailForm extends Component {
                                 {currentWorks.address}
                             </div>
                             <div className={`form-group`}>
+                                <strong>{translate('manufacturing.manufacturing_works.turn')}:&emsp;</strong>
+                                {currentWorks.turn?currentWorks.turn:""}
+                            </div>
+                            <div className={`form-group`}>
                                 <strong>{translate('manufacturing.manufacturing_works.created_at')}:&emsp;</strong>
                                 {formatDate(currentWorks.createdAt)}
                             </div>

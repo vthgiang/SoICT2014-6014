@@ -95,7 +95,6 @@ function CategoryManagementTable(props) {
     const { categories, translate } = props;
     const { listPaginate, totalPages, page, categoryToTree } = categories;
     // const { tableId } = state;
-    console.log(categoryToTree);
 
     return (
         <div className="box">

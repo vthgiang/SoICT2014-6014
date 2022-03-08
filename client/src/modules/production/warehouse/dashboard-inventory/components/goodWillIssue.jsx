@@ -128,7 +128,6 @@ function GoodWillIssue(props) {
         let startMonth = new Date(state.startMonth);
         let endMonth = new Date(state.endMonth);
         if (startMonth.getTime() > endMonth.getTime()) {
-            console.log("ssdfsdf");
             const { translate } = props;
             Swal.fire({
                 title: translate('manage_warehouse.dashboard_inventory.wrong_time'),
