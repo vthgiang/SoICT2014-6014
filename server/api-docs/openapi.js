@@ -1,10 +1,11 @@
 const apiTagNames = require('./apiTagName');
 
 const openApi_documentScheme = require('../models/document/_openapi');
+const openApi_taskScheme = require('../models/task/_openapi');
 
 const openApi_systemAdminManagementRoute = require('../modules/system-admin/system-api/system-api-management/_openapi');
 const openapi_documentRoute = require("../modules/document/_openapi");
-const openapi_taskManagementRoute = require('../modules/task/task-perform/_openapi');
+const openapi_taskManagementRoute = require('../modules/task/task-management/_openapi');
 const openapi_taskPerformRoute = require('../modules/task/task-perform/_openapi');
 const openapi_organizationalUnit = require('../modules/super-admin/organizational-unit/_openapi');
 const openapi_user = require('../modules/super-admin/user/_openapi');
@@ -55,7 +56,8 @@ const openApiData = {
     ],
     components: {
         schemas: {
-            ...openApi_documentScheme
+            ...openApi_documentScheme,
+            ...openApi_taskScheme,
         },
         securitySchemes: {
             bearerAuth: {
