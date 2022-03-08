@@ -221,8 +221,8 @@ class SearchEmployeeForCareerPosition extends Component {
     }
     
     render() {
-        console.log('oppend', this.state);
-        console.log("department", this.props.department)
+        // console.log('oppend', this.state);
+        // console.log("department", this.props.department)
 
         const { employeesManager, translate, career, major, certificate } = this.props;
 

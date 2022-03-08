@@ -42,38 +42,35 @@ function ModalEditCareerPosition(props) {
         file: "",
     })
 
-    useEffect(() => {
-        setState(state => {
-            const newState = {
-                ...state,
-                id: props.id,
-                index: props.index,
-                company: props.company,
-                startDate: props.startDate,
-                endDate: props.endDate,
-                careerPosition: props.careerPosition,
-                project: props.project ? props.project : '',
-                professionalExperience: props.professionalExperience ? props.professionalExperience : '',
-                files: props.file ? [{ fileName: props.file, urlFile: props.urlFile, fileUpload: props.fileUpload }] : [],
-                urlFile: props.urlFile,
-                fileUpload: props.fileUpload,
-                errorOnPosition: undefined,
-                errorOnUnit: undefined,
-                errorOnStartDate: undefined,
-                errorOnEndDate: undefined,
-                errorOnProject: undefined
-            }
-            return newState
+    // useEffect(() => {
+        if (props.id !== state.id) {
+        setState({
+            ...state,
+            id: props.id,
+            index: props.index,
+            company: props.company,
+            startDate: props.startDate,
+            endDate: props.endDate,
+            careerPosition: props.careerPosition,
+            project: props.project ? props.project : '',
+            professionalExperience: props.professionalExperience ? props.professionalExperience : '',
+            files: props.file ? [{ fileName: props.file, urlFile: props.urlFile, fileUpload: props.fileUpload }] : [],
+            urlFile: props.urlFile,
+            fileUpload: props.fileUpload,
+            errorOnPosition: undefined,
+            errorOnUnit: undefined,
+            errorOnStartDate: undefined,
+            errorOnEndDate: undefined,
+            errorOnProject: undefined
         })
-        if (props._id) {
-            setState(state => {
-                return {
-                    ...state,
-                    _id: props._id
-                }
-            })
-        }
-    }, [props.id])
+        // if (props._id) {
+        //     setState({
+        //         ...state,
+        //         _id: props._id
+        //     })
+        // }
+    }
+    // }, [props.id])
 
     const { translate, listPosition } = props;
 
@@ -113,13 +110,18 @@ function ModalEditCareerPosition(props) {
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
+             setState({
+                ...state,
                     careerPosition: value,
                     errorOnPosition: message,
-                }
             });
+            // setState(state => {
+            //     return {
+            //         ...state,
+            //         careerPosition: value,
+            //         errorOnPosition: message,
+            //     }
+            // });
         }
         return message === undefined;
     }
@@ -266,7 +268,7 @@ function ModalEditCareerPosition(props) {
             <DialogModal
                 size='50' modalID={`modal-edit-career-position-${id}`} isLoading={false}
                 formID={`form-edit-career-position-${id}`}
-                title={"Chỉnh sửa thông tin kinh nghiệm chuyên ngành"}
+                title={translate('human_resource.profile.add_experience')}
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
@@ -312,7 +314,7 @@ function ModalEditCareerPosition(props) {
 
                     {/* Vị trí công việc */}
                     <div className={`form-group ${errorOnPosition && "has-error"}`}>
-                        <label>Vị trí công việc<span className="text-red">*</span></label>
+                        <label>{translate('human_resource.profile.project_employee_position')}<span className="text-red">*</span></label>
                         <SelectBox
                             id={`career-position-${id}`}
                             className="form-control select2"
@@ -336,7 +338,7 @@ function ModalEditCareerPosition(props) {
 
                     {/* Kinh nghiệm chuyên môn và quản lý có liên quan */}
                     <div className="form-group">
-                        <label>Kinh nghiệm chuyên môn và quản lý có liên quan</label>
+                        <label>{translate('human_resource.profile.project_professional_or_managerment')}</label>
                         <textarea style={{ minHeight: '100px' }} type="text" name="professionalExperience" value={professionalExperience} className="form-control" onChange={handleProfessionalExperience} />
                     </div>
 

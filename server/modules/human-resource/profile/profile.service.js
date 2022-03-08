@@ -3031,6 +3031,12 @@ exports.getEmployeeByPackageId = async (
                 companyId
             );
 
+            if (employee.length === 0)
+                return {
+                    listEmployees: null,
+                    isComplete: 0,
+                };
+
             employees.push(employee);
         }
     }

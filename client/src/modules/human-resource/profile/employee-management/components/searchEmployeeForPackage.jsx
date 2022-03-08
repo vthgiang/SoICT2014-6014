@@ -193,7 +193,7 @@ const SearchEmployeeForPackage = (props) => {
         })
     }
     
-    console.log('oppend', state);
+    // console.log('oppend', state);
     const { employeesManager, translate, career, major, certificate, biddingPackagesManager, role } = props;
 
     let listRoles = role?.list.filter(x => x.type.name !== "Root");
@@ -460,6 +460,10 @@ const SearchEmployeeForPackage = (props) => {
         return res;
     }
 
+    console.log("state.keyPeople", state.keyPeople)
+    console.log("state.keyPeopleRequires", state.keyPeopleRequires)
+    console.log("employeesManager.isSearchComplete", employeesManager.isSearchComplete)
+
     return (
         <div className="box">
             <div className="box-body qlcv">
@@ -494,7 +498,9 @@ const SearchEmployeeForPackage = (props) => {
                 </div>
 
                 {
-                    state.keyPeople && state.keyPeopleRequires && employeesManager.isSearchComplete && state.keyPeople.map((item, index) => (
+                    state.keyPeople && state.keyPeopleRequires && employeesManager.isSearchComplete == 1 && state.keyPeople.map((item, index) => {
+                        
+                        return (
                         <section className="col-lg-12 col-md-12" key={`section-${index}`}>
                             <div className="box">
                                 <div className="box-header with-border">
@@ -669,7 +675,7 @@ const SearchEmployeeForPackage = (props) => {
                                 </div>
                             </div>
                         </section>
-                    )) 
+                    )}) 
                 }
 
                 {

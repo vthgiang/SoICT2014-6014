@@ -372,10 +372,10 @@ function ExperienceTab(props) {
                 </fieldset>
                 
                 <fieldset className="scheduler-border">
-                    <legend className="scheduler-border" ><h4 className="box-title">Dự án từng tham gia</h4></legend>
+                    <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.project_experience')}</h4></legend>
                     <div className="row">
                         <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                            <label >Trạng thái tham gia dự án/gói thầu</label>
+                            <label >{translate('human_resource.profile.project_participation_status')}</label>
                             <SelectBox
                                 id={`status${id}`}
                                 className="form-control select2"
@@ -391,7 +391,7 @@ function ExperienceTab(props) {
                         </div>
                         {/* Ngày kết thúc gói thầu */}
                         { biddingPackagePersonalStatus === 3 && <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12`}>
-                            <label >Ngày kết thúc gói thầu</label>
+                            <label >{translate('human_resource.profile.project_end_date')}</label>
                             <DatePicker
                                 id={`endBiddingPackage${id}`}
                                 value={biddingPackageEndDate}
@@ -410,8 +410,8 @@ function ExperienceTab(props) {
                                 <th>{translate('human_resource.profile.to_month_year')}</th>
                                 <th>{translate('human_resource.profile.unit')}</th>
                                 <th>{translate('human_resource.profile.project')}</th>
-                                <th>Vị trí công việc</th>
-                                <th>Kinh nghiệm chuyên môn và quản lý có liên quan</th>
+                                <th>{translate('human_resource.profile.project_employee_position')}</th>
+                                <th>{translate('human_resource.profile.project_professional_or_managerment')}</th>
                                 <th>{translate('human_resource.profile.attached_files')}</th>
                                 <th style={{ width: '120px' }}>{translate('general.action')}</th>
                             </tr>
