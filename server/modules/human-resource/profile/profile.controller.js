@@ -123,7 +123,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 majors: req.query.majors,
                 certificates: req.query.certificates,
                 certificatesCount: req.query.certificatesCount,
-                certificatesEndDate: req.query.certificatesEndDate,
+                certificatesEndDate: req.query.certificatesEndDate ? req.query.certificatesEndDate : req.query.startDate ? req.query.startDate : null,
+                startDate: req.query.startDate,
                 package: req.query.package,
                 careerPosition: req.query.careerPosition,
                 biddingPackagePersonalStatus: req.query.biddingPackagePersonalStatus ? req.query.biddingPackagePersonalStatus.map(item => Number(item)) : [],
@@ -138,10 +139,13 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 req.user.company
             );
 
+            
             if (req.query.listPeople) {
                 let listPeople = req.query.listPeople;
                 listId = listId.filter((item) => !listPeople.includes(item));
             }
+            
+            // console.log(listId);
 
             data = await EmployeeService.getEmployeeInforByListId(
                 req.portal,
@@ -664,7 +668,7 @@ exports.searchEmployeeForPackage = async (req, res) => {
             "GET_EMPLOYEES_FOR_BIDDING_PACKAGE",
             req.portal
         );
-        console.log("package", req.query.package);
+        // console.log("package", req.query.package);
         if (req.query.package) {
             data = await EmployeeService.getEmployeeByPackageId(
                 req.portal,
@@ -672,7 +676,7 @@ exports.searchEmployeeForPackage = async (req, res) => {
                 req.user.company._id
             );
         }
-        console.log("data2", data);
+        // console.log("data2", data);
 
         res.status(200).json({
             success: true,

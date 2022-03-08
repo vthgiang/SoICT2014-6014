@@ -314,7 +314,9 @@ function ModalEditCareerPosition(props) {
 
                     {/* Vị trí công việc */}
                     <div className={`form-group ${errorOnPosition && "has-error"}`}>
-                        <label>{translate('human_resource.profile.project_employee_position')}<span className="text-red">*</span></label>
+                        <label>{translate('human_resource.profile.project_employee_position')}<span className="text-red">*</span>
+                            <a href='/hr-list-career-position' target="_blank"> (Quản lý) </a>
+                        </label>
                         <SelectBox
                             id={`career-position-${id}`}
                             className="form-control select2"

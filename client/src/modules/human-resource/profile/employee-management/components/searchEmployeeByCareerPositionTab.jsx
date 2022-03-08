@@ -16,7 +16,7 @@ function SearchEmployeeByCareerPositionTab(props) {
 
     const [state, setState] = useState({ 
         searchForPackage: true,
-        set: 0,
+        page: 0,
         limit: 5
     });
 
@@ -27,11 +27,6 @@ function SearchEmployeeByCareerPositionTab(props) {
     const listCertificate = certificate?.listCertificate;
     
     const { limit, page, currentRowView } = state;
-
-    let pageTotal = ((employeesManager.totalList % limit) === 0) ?
-            parseInt(employeesManager.totalList / limit) :
-            parseInt((employeesManager.totalList / limit) + 1);
-    let currentPage = parseInt((page / limit) + 1);
 
     let professionalSkillArr = [
         { value: null, text: "Chọn trình độ" },
@@ -47,7 +42,24 @@ function SearchEmployeeByCareerPositionTab(props) {
     ];
     
     useEffect(() => {
-        props.getAllEmployee({...state, careerPosition: keySearch?.careerPosition , certificates: keySearch?.certificateRequirements?.certificates, certificatesCount: keySearch?.certificateRequirements?.certificatesCount, majors: keySearch?.majors, exp: keySearch?.numberYearsOfExperience, sameExp: keySearch?.experienceWorkInCarreer,listPeople: props.listPeople, page: 0, limit: 5})
+        let careerPosition = keySearch?.sameCareerPosition ? keySearch?.sameCareerPosition : [];
+        if (keySearch?.careerPosition) careerPosition.push(keySearch?.careerPosition)
+        if (props._id)
+        props.getAllEmployee(
+            {
+                ...state, 
+                careerPosition: careerPosition , 
+                certificates: keySearch?.certificateRequirements?.certificates, 
+                certificatesCount: keySearch?.certificateRequirements?.certificatesCount, 
+                certificateEndDate: keySearch?.certificateRequirements?.certificatesEndDate,
+                professionalSkill: keySearch?.professionalSkill ? Number(keySearch?.professionalSkill) : 0,
+                majors: keySearch?.majors, 
+                exp: keySearch?.numberYearsOfExperience, 
+                sameExp: keySearch?.experienceWorkInCarreer,
+                listPeople: props.listPeople, 
+                page: 0, 
+                limit: 300
+            })
 
         
     }, [props._id])
@@ -93,30 +105,6 @@ function SearchEmployeeByCareerPositionTab(props) {
         })
     }
 
-    /**
-     * Bắt sự kiện setting số dòng hiện thị trên một trang
-     * @param {*} number : Số dòng trên 1 trang
-     */
-    const setLimit = async (number) => {
-        await setState({
-            limit: parseInt(number),
-        });
-        props.getAllEmployee({...state, careerPosition: keySearch?.careerPosition , certificates: keySearch?.certificateRequirements?.certificates, certificatesCount: keySearch?.certificateRequirements?.certificatesCount, majors: keySearch?.majors, exp: keySearch?.numberYearsOfExperience, sameExp: keySearch?.experienceWorkInCarreer,listPeople: props.listPeople});
-    }
-
-    /**
-     * Bắt sự kiện chuyển trang
-     * @param {*} pageNumber : Số trang muốn xem
-     */
-    const setPage = async (pageNumber) => {
-        let keySearch = props.keySearch
-        let page = (pageNumber - 1) * (state.limit);
-        await setState({
-            page: parseInt(page),
-        });
-        props.getAllEmployee({...state, careerPosition: keySearch?.careerPosition , certificates: keySearch?.certificateRequirements?.certificates, certificatesCount: keySearch?.certificateRequirements?.certificatesCount, majors: keySearch?.majors, exp: keySearch?.numberYearsOfExperience, sameExp: keySearch?.experienceWorkInCarreer,listPeople: props.listPeople});
-    }
-
     const save = (value) => {
         props.handleChange(props._id, value);
         handleCloseModal(props?._id)
@@ -158,20 +146,6 @@ function SearchEmployeeByCareerPositionTab(props) {
                                 <th>Chứng chỉ</th>
                                 <th>Bằng cấp</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
-                                    <DataTableSetting
-                                        tableId="employee-table"
-                                        columnArr={[
-                                            translate('human_resource.staff_name'),
-                                            "Vị trí công việc",
-                                            "Trình độ chuyên môn",
-                                            "Chuyên ngành",
-                                            "Chứng chỉ",
-                                            "Bằng cấp",
-                                        ]}
-                                        limit={state.limit}
-                                        setLimit={setLimit}
-                                        hideColumnOption={true}
-                                    />
                                 </th>
                             </tr>
                         </thead>
@@ -186,7 +160,23 @@ function SearchEmployeeByCareerPositionTab(props) {
                                             })) : <p>Chưa có dữ liệu</p>
                                             }
                                         </td>
-                                        <td>{x.professionalSkill}</td>
+                                        <td>{x.degrees?.length > 0 ? (x.degrees?.map((e, key) => {
+                                                let degreeQualification = ''
+                                                if (e.degreeQualification) {
+
+                                                    degreeQualification = professionalSkillArr.find(item => item.value == e.degreeQualification).text
+                                                } else {
+                                                    degreeQualification = "Không có"
+                                                }
+                                                if (e.major)
+                                                return (
+                                                    <li>
+                                                        {degreeQualification} ({e.major.name})
+                                                    </li>
+                                                )
+                                                else return ''
+                                            })) : <p>Chưa có dữ liệu</p>}
+                                        </td>
                                         <td>{x.degrees?.length > 0 ? (x.degrees?.map((e, key) => {
                                             return <li key={key}> {e?.major?.name ? e?.major?.name : ""} </li>
                                         })) : <p>Chưa có dữ liệu</p>}
@@ -198,7 +188,7 @@ function SearchEmployeeByCareerPositionTab(props) {
                                         </td>
                                         <td>
                                             {x.degrees?.length > 0 ? x.degrees?.map((e, key) => {
-                                                return <li key={key}> { formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {professionalSkillArr.filter(item => item.value == e.degreeQualification).name }</li>
+                                                return <li key={key}> { formatDate(e?.year)} - {e?.name} - Loại: {translate(`human_resource.profile.${e?.degreeType}`)} - Chuyên ngành: {e.major?.name} - Bậc: {professionalSkillArr.filter(item => item.value == e.degreeQualification).name }</li>
                                             }) : <p>Chưa có dữ liệu</p>}
                                         </td>
                                         <td>
@@ -215,7 +205,6 @@ function SearchEmployeeByCareerPositionTab(props) {
                         (!listEmployees || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
                 </div>
 
                 {/* From xem thông tin nhân viên */

@@ -243,7 +243,9 @@ function CertificateAddModal(props) {
                 <form className="form-group" id={`form-create-certificateShort-${id}`}>
                     {/* Chọn chứng chỉ */}
                     <div className={`form-group ${errorOnName && "has-error"}`}>
-                        <label>Chọn chứng chỉ<span className="text-red">*</span></label>
+                        <label>Chọn chứng chỉ<span className="text-red">*</span>
+                            <a href='/hr-list-certificate' target="_blank"> (Quản lý) </a>
+                        </label>
                         <SelectBox
                             id={`create-degree-field${id}`}
                             className="form-control select2"

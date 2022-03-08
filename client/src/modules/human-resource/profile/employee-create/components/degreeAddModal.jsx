@@ -239,7 +239,9 @@ function DegreeAddModal(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Chọn chuyên ngnành</label>
+                        <label>Chuyên ngành
+                            <a href='/hr-list-major' target="_blank"> (Quản lý) </a>
+                        </label>
                         <SelectBox
                             id={`create-major${id}`}
                             className="form-control select2"
@@ -250,7 +252,7 @@ function DegreeAddModal(props) {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Chọn trình độ chuyên môn</label>
+                        <label>Trình độ</label>
                         <SelectBox
                             id={`create-professional${id}`}
                             className="form-control select2"

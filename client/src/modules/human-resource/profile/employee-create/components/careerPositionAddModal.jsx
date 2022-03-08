@@ -283,7 +283,9 @@ function ModalAddCareerPosition(props) {
 
                     {/* Vị trí công việc */}
                     <div className={`form-group ${errorOnPosition && "has-error"}`}>
-                        <label>{translate('human_resource.profile.project_employee_position ')}<span className="text-red">*</span></label>
+                        <label>{translate('human_resource.profile.project_employee_position')}<span className="text-red">*</span>
+                            <a href='/hr-list-career-position' target="_blank"> (Quản lý) </a>
+                        </label>
                         <SelectBox
                             id={`career-position${id}`}
                             key={id}
@@ -306,7 +308,8 @@ function ModalAddCareerPosition(props) {
 
                     {/* Kinh nghiệm chuyên môn và quản lý có liên quan */}
                     <div className="form-group">
-                        <label>{translate('human_resource.profile.project_professional_or_managerment')}</label>
+                        <label>{translate('human_resource.profile.project_professional_or_managerment')}
+                        </label>
                         <textarea style={{ minHeight: '100px' }} type="text" value={professionalExperience} className="form-control" onChange={handleReferenceInformation} />
                     </div>
 

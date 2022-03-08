@@ -83,7 +83,7 @@ function ExperiencTab(props) {
 
     if (professionalSkill) {
         professionalSkill.map(item => {
-            professionalSkills = professionalSkills + professionalSkillArr.find(x => x.value == item.degreeQualification).text + " (" + listMajor.find(y => item.major == y._id).name + ", " + item.issuedBy + ", " + new Date(item.year).getFullYear() + ")" + `; `
+            professionalSkills = professionalSkills + professionalSkillArr.find(x => x.value == item.degreeQualification).text + " (" + listMajor.find(y => item.major == y._id)?.name + ", " + item.issuedBy + ", " + new Date(item.year).getFullYear() + ")" + `; `
         })
     }
 

@@ -47,6 +47,7 @@ class SearchEmployeeForCareerPosition extends Component {
         this.props.getListMajor({ name: '', page: 0, limit: 1000 });
         this.props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
         this.props.getListCertificate({ name: '', page: 0, limit: 1000 });
+        this.props.getAllEmployee(this.state);
     }
 
 
@@ -462,7 +463,7 @@ class SearchEmployeeForCareerPosition extends Component {
                                                     } else {
                                                         degreeQualification = "Không có"
                                                     }
-                                                    return <li key={key}> {this.formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {degreeQualification}</li>
+                                                    return <li key={key}> {this.formatDate(e?.year)} - {e?.name} - Loại: {translate(`human_resource.profile.${e?.degreeType}`)} - Chuyên ngành: {e.major?.name} - Bậc: {degreeQualification}</li>
                                                 }) : <p>Chưa có dữ liệu</p>}
                                             </td>
                                             <td>

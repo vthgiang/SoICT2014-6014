@@ -460,9 +460,9 @@ const SearchEmployeeForPackage = (props) => {
         return res;
     }
 
-    console.log("state.keyPeople", state.keyPeople)
-    console.log("state.keyPeopleRequires", state.keyPeopleRequires)
-    console.log("employeesManager.isSearchComplete", employeesManager.isSearchComplete)
+    // console.log("state.keyPeople", state.keyPeople)
+    // console.log("state.keyPeopleRequires", state.keyPeopleRequires)
+    // console.log("employeesManager.isSearchComplete", employeesManager.isSearchComplete)
 
     return (
         <div className="box">
@@ -661,7 +661,7 @@ const SearchEmployeeForPackage = (props) => {
                                                                 } else {
                                                                     degreeQualification = "Không có"
                                                                 }
-                                                                return <li key={key}> {formatDate(e?.year)} - {e?.name} - Loại: {e?.degreeType} - Chuyên ngành: {e.major?.name} - Bậc: {degreeQualification}</li>
+                                                                return <li key={key}> {formatDate(e?.year)} - {e?.name} - Loại: {translate(`human_resource.profile.${e?.degreeType}`)} - Chuyên ngành: {e.major?.name} - Bậc: {degreeQualification}</li>
                                                             }) : <p>Chưa có dữ liệu</p>}
                                                         </td>
                                                         <td>

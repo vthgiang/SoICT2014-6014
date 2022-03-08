@@ -21,6 +21,7 @@ const { connect } = require(`../../../helpers/dbHelper`);
 
 const fs = require("fs");
 const mongoose = require("mongoose");
+const moment = require("moment");
 const UserService = require(`../../super-admin/user/user.service`);
 const RoleService = require(`../../super-admin/role/role.service`);
 
@@ -2690,7 +2691,7 @@ const checkEmployeePackageValid = async (employees, require, otherEmployee) => {
 };
 
 exports.searchEmployeeForPackage = async (portal, params, companyId) => {
-    console.log("params", params);
+
     let noResultsPerPage = parseInt(params.limit);
     let pageNumber = parseInt(params.page);
     let keySearch = [{ $match: { status: "active" } }];
@@ -2778,13 +2779,27 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
         let year = new Date();
         let yearOfExp = year.getFullYear() - params.exp;
         year.setFullYear(yearOfExp);
+        let lever = 2;
+        if (params.professionalSkill && Number(params.professionalSkill) < lever) {
+            lever = Number(params.professionalSkill);
+        }
+
         keySearch = [
             ...keySearch,
             {
                 $match: {
-                    "degrees.year": {
-                        $lte: year,
-                    },
+                    $and: [
+                        {
+                            "degrees.year": {
+                                $lte: year,
+                            },
+                        },
+                        {
+                            "degrees.degreeQualification": {
+                                $gte: lever,
+                            },
+                        },
+                    ],
                 },
             },
         ];
@@ -2997,7 +3012,7 @@ exports.getEmployeeByPackageId = async (
             let params = {
                 careerPosition: careerPositions ? careerPositions : NaN,
                 professionalSkill: require?.professionalSkill
-                    ? String(require?.professionalSkill)
+                    ? Number(require?.professionalSkill)
                     : NaN,
                 majors: require?.majors
                     ? require?.majors?.map((item) => String(item))
@@ -3010,10 +3025,13 @@ exports.getEmployeeByPackageId = async (
                 certificatesCount: require?.certificateRequirements?.count
                     ? require?.certificateRequirements?.count
                     : 0,
-                certificatesEndDate: require?.certificatesEndDate?.count
-                    ? require?.certificatesEndDate?.count
-                    : 0,
-                exp: require?.numberYearsOfExperience
+                certificatesEndDate: require?.certificateRequirements
+                    ?.certificatesEndDate
+                    ? moment(
+                          require?.certificateRequirements?.certificatesEndDate
+                      ).format("DD-MM-YYYY")
+                    : null,
+                exp: require?.certificateRequirements?.numberYearsOfExperience
                     ? require?.numberYearsOfExperience
                     : NaN,
                 sameExp: require?.experienceWorkInCarreer
@@ -3040,7 +3058,7 @@ exports.getEmployeeByPackageId = async (
             employees.push(employee);
         }
     }
-    console.log("employees", employees);
+    // console.log("employees", employees);
 
     let [valid] = await Promise.all([
         employees.filter((item, index) => item.length < numberEmployees[index]),
