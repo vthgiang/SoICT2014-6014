@@ -186,7 +186,7 @@ function LoyalCustomerHomePage(props) {
                             <th>{"Điểm số"}</th>
                             <th>{"Tổng số đơn hàng"}</th>
                             <th>{"Tổng giá trị đơn hàng"}</th>
-                            <th>{"Số khuyến mãi hiện có"}</th>
+                            <th>{"Số khuyến mãi cá nhân"}</th>
                             <th style={{ width: "120px" }}>
                                 {translate('table.action')}
                                 <DataTableSetting
