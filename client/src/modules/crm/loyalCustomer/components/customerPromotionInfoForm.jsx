@@ -25,6 +25,15 @@ function CustomerPromotionInfoForm(props) {
         props.getCustomerById(customerId)
     }
 
+    /*
+    // Đoạn này thêm vào chỉ để test api getCustomerPromotions và api usePromotion, ko liên quan đến component này
+    useEffect(() => {
+        customerId && props.getCustomerPromotions(customerId);
+        //customerId && props.usePromotion("62282c0ad76f84272cfa24b8", { "code":"KM001"} );
+        //customerId && props.usePromotion("62282c0ad76f84272cfa24b8", { "code":"KMN001"} );
+    }, [customerId])
+    */
+
     // Khuyến mãi nhóm 
     useEffect(() => {
         let groupId;
@@ -67,12 +76,32 @@ function CustomerPromotionInfoForm(props) {
     }
     const formatPromotionStatus = (promotion) => {
         const now = new Date();
-        console.log(new Date(promotion.expirationDate),new Date(promotion.expirationDate).getMilliseconds());
-        console.log('now',now,now.getMilliseconds());
+        //console.log(new Date(promotion.expirationDate),new Date(promotion.expirationDate).getMilliseconds());
+        //console.log('now',now,now.getMilliseconds());
 
         if (now > new Date(promotion.expirationDate)) return "Đã hết hạn";
         if (promotion.status == 1) return "Chưa sử dụng";
         return "Đã sử dụng";
+    }
+    
+    const formatPromotionStatus2 = (promotion) => {
+        const now = new Date();
+        //console.log(new Date(promotion.expirationDate),new Date(promotion.expirationDate).getMilliseconds());
+        //console.log('now',now,now.getMilliseconds());
+
+        if (now > new Date(promotion.expirationDate)) return "Đã hết hạn";
+
+        let checkUsed = true; // Kiểm tra xem khách hàng đã từng sử dụng khuyến mại chưa 
+        // true -> chưa từng
+        if (promotion.customerUsed) {
+            promotion.customerUsed.map((o) => {
+                if (o.toString() === customerId.toString()) {
+                    checkUsed = false;    
+                }                
+            })
+        }
+        if (checkUsed) return "Đã sử dụng";
+        return "Chưa sử dụng";
     }
     return (
         <React.Fragment>
@@ -194,7 +223,7 @@ function CustomerPromotionInfoForm(props) {
                                 <td>{o.promotionalValueMax}</td>
                                 <td>{o.description}</td>
                                 <td>{formatFunction.formatDate(o.expirationDate)}</td>
-                                <td>{formatPromotionStatus(o)}</td>
+                                <td>{formatPromotionStatus2(o)}</td>
                             </tr>
                         ))
 
@@ -216,9 +245,8 @@ const mapDispatchToProps = {
     getCustomerById: CrmCustomerActions.getCustomer,
     deletePromotion: CrmCustomerActions.deletePromotion,
     getGroupById: CrmGroupActions.getGroup,
-
+    getCustomerPromotions: CrmCustomerActions.getCustomerPromotions,
+    usePromotion: CrmCustomerActions.usePromotion
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerPromotionInfoForm));
-
-/* Thêm 58, 70,90*/
