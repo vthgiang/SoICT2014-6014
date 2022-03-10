@@ -23,19 +23,32 @@ function ReceiptManagement(props) {
         limit: limit,
         page: 1,
         group: '1',
-        tableId
+        tableId,
+        actionAddLotOrEdit: '1',
     })
 
     const { translate, bills, stocks, user } = props;
     const { listPaginate, totalPages, page } = bills;
     const { listStocks } = stocks;
-    const { startDate, endDate, group, currentRow } = state;
+    const { startDate, endDate, group, currentRow, actionAddLotOrEdit } = state;
     const dataPartner = props.getPartner();
+    const userId = localStorage.getItem("userId");
 
     const handleEdit = async (bill) => {
         await setState({
             ...state,
-            currentRow: bill
+            currentRow: bill,
+            actionAddLotOrEdit: '1',
+        })
+
+        window.$('#modal-edit-bill-receipt').modal('show');
+    }
+
+    const handleAddLot = async (bill) => {
+        await setState({
+            ...state,
+            currentRow: bill,
+            actionAddLotOrEdit: '2',
         })
 
         window.$('#modal-edit-bill-receipt').modal('show');
@@ -211,7 +224,7 @@ function ReceiptManagement(props) {
                         code={currentRow.code}
                         group={currentRow.group}
                         type={currentRow.type}
-                        status={currentRow.status}
+                        status={actionAddLotOrEdit === '2' ? '2' : currentRow.status}
                         oldStatus={currentRow.status}
                         users={currentRow.users}
                         approvers={currentRow.approvers ? currentRow.approvers : []}
@@ -228,6 +241,7 @@ function ReceiptManagement(props) {
                         listGood={currentRow.goods}
                         creator={currentRow.creator ? currentRow.creator._id : ''}
                         sourceType={currentRow.sourceType}
+                        actionAddLotOrEdit={actionAddLotOrEdit}
                     />
                 }
 
@@ -280,8 +294,11 @@ function ReceiptManagement(props) {
                                     {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
+                                        {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                        {/*Chỉnh sửa phiếu */}
                                         {props.checkRoleCanEdit(x) && <a onClick={() => handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                        {/*Phê duyệt phiếu*/}
                                         {
                                             props.checkRoleApprovers(x) && x.status === '1' &&
                                             <ConfirmNotification
@@ -293,9 +310,46 @@ function ReceiptManagement(props) {
                                                 func={() => props.handleFinishedApproval(x)}
                                             />
                                         }
+                                        {/*Chuyển sang trạng thái đang thực hiện*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.status === '3' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.in_processing')}
+                                                content={translate('manage_warehouse.bill_management.in_processing') + " " + x.code}
+                                                name="business_center"
+                                                className="text-violet"
+                                                func={() => props.handleInProcessingStatus(x)}
+                                            />
+                                        }
+                                        {/*Kiểm định chất lượng*/}
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
                                             <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
+                                        }
+                                        {/*Hoàn thành phiếu và đánh lô*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].time !== null
+                                            && (x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 2 || x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 3)
+                                            && x.status === '5' &&
+                                            <a
+                                                className="text-green"
+                                                title={translate('manage_warehouse.inventory_management.add_lot')}
+                                                onClick={() => handleAddLot(x)}
+                                            ><i className="material-icons">add_box</i>
+                                            </a>
+                                        }
+                                        {/*Chuyển phiếu sang trạng thái đã hủy*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.status !== '4' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.cancel_bill')}
+                                                content={translate('manage_warehouse.bill_management.cancel_bill') + " " + x.code}
+                                                name="cancel"
+                                                className="text-red"
+                                                func={() => props.handleCancelBill(x)}
+                                            />
                                         }
                                     </td>
                                 </tr>

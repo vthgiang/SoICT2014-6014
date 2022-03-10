@@ -27,6 +27,7 @@ function TakeManagement(props) {
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow } = state;
     const dataPartner = props.getPartner();
+    const userId = localStorage.getItem("userId");
 
     const handleEdit = async (bill) => {
         await setState({
@@ -254,8 +255,11 @@ function TakeManagement(props) {
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
+                                        {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                        {/*Chỉnh sửa phiếu */}
                                         {props.checkRoleCanEdit(x) && <a onClick={() => handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                        {/*Phê duyệt phiếu*/}
                                         {
                                             props.checkRoleApprovers(x) && x.status === '1' &&
                                             <ConfirmNotification
@@ -267,9 +271,48 @@ function TakeManagement(props) {
                                                 func={() => props.handleFinishedApproval(x)}
                                             />
                                         }
+                                        {/*Chuyển sang trạng thái đang thực hiện*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.status === '3' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.in_processing')}
+                                                content={translate('manage_warehouse.bill_management.in_processing') + " " + x.code}
+                                                name="business_center"
+                                                className="text-violet"
+                                                func={() => props.handleInProcessingStatus(x)}
+                                            />
+                                        }
+                                        {/*Kiểm định chất lượng*/}
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
                                             <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
+                                        }
+                                        {/*Hoàn thành phiếu*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].time !== null
+                                            && (x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 2 || x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 3)
+                                            && x.status === '5' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.complete_bill')}
+                                                content={translate('manage_warehouse.bill_management.complete_bill') + " " + x.code}
+                                                name="assignment_turned_in"
+                                                className="text-green"
+                                                func={() => props.handleCompleteBill(x)}
+                                            />
+                                        }
+                                        {/*Chuyển phiếu sang trạng thái đã hủy*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.status !== '4' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.cancel_bill')}
+                                                content={translate('manage_warehouse.bill_management.cancel_bill') + " " + x.code}
+                                                name="cancel"
+                                                className="text-red"
+                                                func={() => props.handleCancelBill(x)}
+                                            />
                                         }
                                     </td>
                                 </tr>
