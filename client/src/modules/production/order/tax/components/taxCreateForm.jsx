@@ -513,7 +513,7 @@ function TaxCreateForm(props) {
                             {translate("manage_order.tax.tax_code")}
                             <span className="attention"> </span>
                         </label>
-                        <input type="text" className="form-control" value={code} disabled="true" />
+                        <input type="text" className="form-control" value={code} disabled={true} />
                     </div>
                     <div className={`form-group ${!nameTaxError ? "" : "has-error"}`}>
                         <label>
