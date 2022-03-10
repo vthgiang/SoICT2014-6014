@@ -226,7 +226,7 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
  * @param {*} companyId 
  * @param {*} query 
  */
- exports.getCustomers = async (portal, companyId, query, userId, role) => {
+ /*exports.getCustomers = async (portal, companyId, query, userId, role) => {
     const { page, limit, customerCode, customerStatus, customerGroup, customerOwner, isNewCustomer, month, year, getAll } = query;
 
     let keySearch = {}
@@ -290,6 +290,81 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
         .populate({ path: 'customerGroup', select: '_id name' })
         .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
+    return { listDocsTotal, customers };
+}*/
+
+exports.getCustomers = async (portal, companyId, query, userId, role) => {
+    const { page, limit, customerCode, customerStatus, customerGroup, customerOwner, isNewCustomer, month, year, getAll } = query;
+
+    let keySearch = {}
+    if (!getAll) {
+        // lấy đơn vị CSKH từ role
+        const crmUnit = await getCrmUnitByRole(portal, companyId, role);
+        //if (!crmUnit) return { listDocsTotal: 0, customers: [] };
+        if (!crmUnit){
+            keySearch = { ...keySearch, creator: userId };
+        } 
+        keySearch = { ...keySearch, customerCareUnit: crmUnit._id };
+    }
+    if (customerCode) {
+        keySearch = {
+            ...keySearch,
+            code: { $regex: customerCode, $options: "i" },
+        }
+    }
+    if (customerStatus)
+        keySearch = {
+            ...keySearch,
+            customerStatus: { $in: customerStatus }
+        };
+    if (customerGroup)
+        keySearch = {
+            ...keySearch,
+            customerGroup: { $in: customerGroup }
+        }
+    if (customerOwner && customerOwner != 0) {
+        keySearch = {
+            ...keySearch,
+            owner: { $in: customerOwner }
+        }
+    }
+    if (month && year) {
+        let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+        let endOfMonth = new Date(year, month); // cần chỉnh lại
+        if (isNewCustomer)
+            keySearch =
+            {
+                ...keySearch,
+                createdAt: { $gte: beginOfMonth, $lt: endOfMonth }
+            }
+        else
+            keySearch =
+            {
+                ...keySearch,
+                createdAt: { $lt: beginOfMonth }
+            }
+    }
+
+    const listDocsTotal = await Customer(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+
+    let customers;
+    if (page && limit) customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        .skip(parseInt(page)).limit(parseInt(limit))
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name email' });
+    else customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
+        .populate({ path: 'customerGroup', select: '_id name' })
+        .populate({ path: 'customerStatus', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name email' });
+
+    
+    if (getAll) {
+        for (let i = 0; i < customers.length; i++) {
+            let allPromotions = await this.getCustomerPromotions(portal, companyId, customers[i]._id);
+            customers[i].canUsedPromotions = allPromotions;
+        }
+    }
     return { listDocsTotal, customers };
 }
 
@@ -446,7 +521,7 @@ exports.getCustomerPromotions = async (portal, companyId, customerId) => {
     if (customer.customerGroup) {
         group = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(customer.customerGroup);
     }
-    
+
     // Lấy khuyến mại áp dụng với nhóm mà khách hàng nằm trong nhóm đó (lấy những khuyến mãi mà khách hàng chưa sử dụng)
     if (group && group.promotions) {
         const groupPromotions = group.promotions;
@@ -480,7 +555,7 @@ exports.getCustomerPromotions = async (portal, companyId, customerId) => {
             }
         })
     }
-    
+
     return promotions;
 
 }
@@ -532,29 +607,7 @@ exports.deletePromotion = async (portal, companyId, customerId, data, userId) =>
 
 }
 
-/*exports.usePromotion = async (portal, companyId, customerId, data, userId) => {
-    let { promoIndex } = data;
-    let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
-    if (promoIndex < 0) return customer;
-    let promotions = customer.promotions.map(x => x);
-
-    let promotionUsed = promotions[promoIndex];
-    console.log('promotionUsed ban dau-----------------', promotionUsed)
-    promotionUsed = { ...promotionUsed.toObject(), status: 0 };
-    console.log('promo lúc sau -----------------', promotionUsed)
-
-    promotions.splice(promoIndex, 1);
-    promotions.push(promotionUsed);
-
-    customer = { ...customer.toObject(), promotions };
-    console.log(customer)
-    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
-        $set: customer
-    }, { new: true });
-
-}*/
 exports.usePromotion = async (portal, companyId, customerId, data, userId) => {
-    console.log("vao usePromotion");
     let { code } = data;
     //console.log("du lieu dau vao");
     //console.log(code);
@@ -630,5 +683,3 @@ exports.editPromotion = async (portal, companyId, customerId, data, userId) => {
     }, { new: true });
 
 }
-
-/* Thêm từ 42 -> 60 , 408-> 411, 414, Sửa 405, 417 */ 

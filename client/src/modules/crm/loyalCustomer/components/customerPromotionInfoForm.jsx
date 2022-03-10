@@ -100,7 +100,7 @@ function CustomerPromotionInfoForm(props) {
                 }                
             })
         }
-        if (checkUsed) return "Đã sử dụng";
+        if (!checkUsed) return "Đã sử dụng";
         return "Chưa sử dụng";
     }
     return (
