@@ -241,13 +241,13 @@ function PurchaseOrderTable(props) {
                 <div className="form-inline">
                     {/*Chọn cách thêm đơn mua nguyên vật liệu*/}
                     {/* Button dropdown thêm mới đơn mua nguyên vật liệu */}
-                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                    <div className="dropdown pull-right" style={{ marginTop: 5 }}>
                         <button
                             type="button"
                             className="btn btn-success dropdown-toggle pull-right"
                             data-toggle="dropdown"
                             aria-expanded="true"
-                            title={"Thêm mới đơn mu nguyên vật liệu"}
+                            title={"Thêm mới đơn mua nguyên vật liệu"}
                             onClick={handleClickCreateCode}
                         >
                             Thêm đơn
