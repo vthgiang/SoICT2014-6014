@@ -216,6 +216,12 @@ const ProcessTemplateSchema = new Schema({
         type: Number,
         default: 0,
     },
+    listProcess:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: "TaskProcess",
+        }
+    ]
 });
 
 module.exports = (db) => {
