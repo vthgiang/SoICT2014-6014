@@ -41,10 +41,12 @@ function getAllXmlDiagram(pageNumber, noResultsPerPage, name) {
  */
 function getAllTaskProcess(pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
+    let currentRole = getStorage("currentRole");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process`,
         method: 'GET',
         params: {
+            currentRole: currentRole,
             userId: userId,
             pageNumber: pageNumber,
             noResultsPerPage: noResultsPerPage,

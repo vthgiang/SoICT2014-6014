@@ -102,12 +102,13 @@ function TaskProcessManagement(props) {
 	}
 
 	const isManager = (itemProcess) => {
-		let { currentUser } = state;
+		let { currentUser, currentRole } = state;
 		let check = false;
 		let manager = itemProcess.manager;
-		// console.log(manager, currentUser);
+		console.log(manager, currentUser);
 		for (let x in manager) {
-			if (manager[x].id === currentUser) {
+			console.log(manager[x].userId, currentUser,currentRole);
+			if (manager[x].id === currentUser || manager[x].id === currentRole) {
 				check = true;
 			}
 		}
