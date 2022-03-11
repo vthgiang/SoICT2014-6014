@@ -28,7 +28,7 @@ const TaskProcessSchema = new Schema({
         type: String,
         default: "inprocess",
         required: true,
-        enum: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"],
+        enum: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled","not initialized"],
     },
     creator: {
         type: Schema.Types.ObjectId,
@@ -49,13 +49,17 @@ const TaskProcessSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Task',
     }],
+    processTemplate:{
+        type: Schema.Types.ObjectId,
+        ref: "ProcessTemplate",
+    },
     processChilds:[{
         type: Schema.Types.ObjectId,
-        ref: "Process",
+        ref: "TaskProcess",
     }],
     processParent:{
         type: Schema.Types.ObjectId,
-        ref: "Process",
+        ref: "TaskProcess",
     },
     codeInProcess:{
         type: String,
@@ -77,6 +81,10 @@ const TaskProcessSchema = new Schema({
             },
             link: {
                 type: String,
+            },
+            activated: {
+                type: Boolean,
+                default: false,
             },
         },
     ],
