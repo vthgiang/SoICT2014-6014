@@ -111,6 +111,7 @@ function EmployeeCreatePage(props) {
         courses: [],
         degrees: [],
         certificates: [],
+        careerPositions: [],
         contracts: [],
         files: [],
         disciplines: [],
@@ -133,7 +134,7 @@ function EmployeeCreatePage(props) {
         editMember: initMember,
     });
 
-    const { img, avatar, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
+    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, editMember } = state;
 
     useEffect(() => {
         props.getDepartment();
@@ -208,15 +209,20 @@ function EmployeeCreatePage(props) {
      */
     const handleChangeExperience = (data, addData) => {
         const { employee } = state;
-        setState(state => {
-            return {
-                ...state,
-                employee: {
-                    ...employee,
-                    experiences: [...data]
-                }
+        setState(state => ({
+            ...state,
+            employee: {
+                ...employee,
+                experiences: data
             }
-        })
+        }))
+    }
+
+    const handleChangeCareerPosition = (data, addData) => {
+        setState(state => ({
+            ...state,
+            careerPositions: data
+        }))
     }
 
     const handleChangeWorkProcess = (data, addData) => {
@@ -396,28 +402,37 @@ function EmployeeCreatePage(props) {
      * Function thêm mới thông tin nhân viên
      */
     const handleSubmit = async () => {
+
+        let { employee, degrees, certificates, contracts, files, avatar, careerPositions, disciplines, commendations, annualLeaves, courses, houseHold } = state;
         setState({
             ...state,
             employee: {
                 ...employee,
-                degrees: [...state.degrees],
-                certificates: [...state.certificates],
-                contracts: [...state.contracts],
-                files: [...state.files],
-                disciplines: [...state.disciplines],
-                commendations: [...state.commendations],
-                annualLeaves: [...state.annualLeaves],
-                courses: [...state.courses],
-                // career,
-                // major,
-                houseHold: { ...state.houseHold },
+                degrees,
+                certificates,
+                contracts,
+                files,
+                disciplines,
+                commendations,
+                annualLeaves,
+                courses,
+                careerPositions,
+                houseHold,
             }
         })
+
+        const degreesConvert = state?.degrees?.length ? state.degrees.map(x => {
+            const splitDate = x?.year ? x.year.split("-") : x.year;
+            return {
+                ...x,
+                year: [splitDate[2], splitDate[1], splitDate[0]].join("-")
+            }
+        }) : [];
 
 
         let formData = convertJsonObjectToFormData({
             ...employee,
-            degrees: [...state.degrees],
+            degrees: degreesConvert,
             certificates: [...state.certificates],
             contracts: [...state.contracts],
             files: [...state.files],
@@ -425,8 +440,7 @@ function EmployeeCreatePage(props) {
             commendations: [...state.commendations],
             annualLeaves: [...state.annualLeaves],
             courses: [...state.courses],
-            // career,
-            // major,
+            careerPositions:  [...state.careerPositions],
             houseHold: { ...state.houseHold },
         });
         degrees.forEach(x => {
@@ -439,18 +453,16 @@ function EmployeeCreatePage(props) {
             })
         }
 
+        careerPositions.forEach(x => {
+            formData.append("fileCareerPosition", x.fileUpload);
+        })
+
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
-        // major.forEach(x => {
-        //     formData.append("fileMajor", x.fileUpload);
-        // })
-        // career.forEach(x => {
-        //     formData.append("fileCareer", x.fileUpload);
-        // })
         formData.append("fileAvatar", avatar);
         employee && employee.healthInsuranceAttachment && employee.healthInsuranceAttachment.forEach(x => {
             formData.append('healthInsuranceAttachment', x.fileUpload)
@@ -617,7 +629,7 @@ function EmployeeCreatePage(props) {
             }
         })
     }
-    // console.log(state);
+    console.log("stateeeee", state);
 
     return (
         <div className=" qlcv">
@@ -665,9 +677,9 @@ function EmployeeCreatePage(props) {
                         handleEditExperience={handleChangeExperience}
                         handleDeleteExperience={handleChangeExperience}
 
-                        handleAddWorkProcess={handleChangeWorkProcess}
-                        handleEditWorkProcess={handleChangeWorkProcess}
-                        handleDeleteWorkProcess={handleChangeWorkProcess}
+                        handleAddCareerPosition={handleChangeCareerPosition}
+                        handleEditCareerPosition={handleChangeCareerPosition}
+                        handleDeleteCareerPosition={handleChangeCareerPosition}
                     />
                     {/* Tab bằng cấp - chứng chỉ */}
                     <CertificateTab

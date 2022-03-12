@@ -13,7 +13,7 @@ function GeneralTab(props) {
 
     const { translate } = props;
     
-    const { id, startDate, endDate,  name, code, status, type, description, errorOnName } = state;
+    const { id, startDate, endDate,  name, code, customer, resultLocation, sendLocal, price, status, type, description, errorOnName } = state;
     
     useEffect(() => {
         if ((props.id === "general" || props.id === "page_general") && !state.name && !state.code && props.biddingPackage && props.biddingPackage.name && props.biddingPackage.code) {
@@ -33,6 +33,7 @@ function GeneralTab(props) {
                     id: props.id,
                     name: props.biddingPackage ? props.biddingPackage.name : '',
                     code: props.biddingPackage ? props.biddingPackage.code : '',
+                    customer: props.biddingPackage ? props.biddingPackage.customer : '',
                     startDate: formatDate(props.biddingPackage ? props.biddingPackage.startDate : ''),
                     endDate: formatDate(props.biddingPackage ? props.biddingPackage.endDate : ''),
                     status: props.biddingPackage ? props.biddingPackage.status : "",
@@ -134,6 +135,17 @@ function GeneralTab(props) {
     const handleBiddingPackageName = (e) => {
         const { value } = e.target;
         validateBiddingPackageName(value, true);
+    }
+
+    /** Function bắt sự kiện thay đổi mã nhân viên */
+    const handleCustomer = (e) => {
+        const { value } = e.target;
+        setState(state => {
+                return {
+                    ...state,
+                    customer: value,
+                }
+            });
     }
 
     const validateBiddingPackageName = (value, willUpdateState = true) => {
@@ -305,6 +317,32 @@ function GeneralTab(props) {
                                 ]}
                                 onChange={handleChangeStatus}
                             />
+                        </div>
+                    </div>
+                    <div className="row">
+                        {/* Tên gói thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnName && "has-error"}`}>
+                            <label>Bên mời thầu<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="name" value={customer ? customer : ''} placeholder="Tên gói thầu" onChange={handleBiddingPackageName} />
+                            <ErrorLabel content={errorOnName} />
+                        </div>
+                        {/* Mã gói thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <label htmlFor="MGT">Dự toán gói thầu</label>
+                            <input type="text" className="form-control" placeholder="Mã gói thầu" name="code" value={code ? code : ''} onChange={handleChangeCode} autoComplete="off" />
+                        </div>
+                    </div>
+                    <div className="row">
+                        {/* Tên gói thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnName && "has-error"}`}>
+                            <label>Địa điểm mở thầu<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="name" value={name ? name : ''} placeholder="Tên gói thầu" onChange={handleBiddingPackageName} />
+                            <ErrorLabel content={errorOnName} />
+                        </div>
+                        {/* Mã gói thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <label htmlFor="MGT">Địa điểm nhận thầu</label>
+                            <input type="text" className="form-control" placeholder="Mã gói thầu" name="code" value={code ? code : ''} onChange={handleChangeCode} autoComplete="off" />
                         </div>
                     </div>
                 </div>

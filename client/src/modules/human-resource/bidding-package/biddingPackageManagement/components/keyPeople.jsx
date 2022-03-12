@@ -53,9 +53,6 @@ function KeyPeople(props) {
         }
     }, [props.id, props.biddingPackage.keyPersonnelRequires, props.keyPersonnelRequires])
 
-    // console.log("xxxxxxxxxxxxxxxxx", state)
-
-    
     const handleKeyEmployee = (value, listIndex) => {
         if (value) {
             let newList = state.keyPeople.map((item, index) => {
@@ -74,8 +71,6 @@ function KeyPeople(props) {
                     keyPeople: newList
                 }
             });
-
-            // console.log("xxxxxxxxxxxxxxxxx", value, newList)
 
             props.handleChange("keyPeople", newList);
         }

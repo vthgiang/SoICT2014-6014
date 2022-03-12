@@ -145,7 +145,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 listId = listId.filter((item) => !listPeople.includes(item));
             }
             
-            // console.log(listId);
+            //  .log(listId);
 
             data = await EmployeeService.getEmployeeInforByListId(
                 req.portal,
@@ -232,6 +232,7 @@ exports.createEmployee = async (req, res) => {
             healthInsuranceAttachment,
         };
 
+
         // Kiểm tra dữ liệu truyền vào
         if (
             req.body.employeeNumber === undefined ||
@@ -275,6 +276,8 @@ exports.createEmployee = async (req, res) => {
                         req.user.company._id,
                         fileInfor
                     );
+
+
                     if (emailInCompany) {
                         let checkUser = await UserService.checkUserExited(
                             req.portal,

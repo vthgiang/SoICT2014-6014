@@ -28,6 +28,15 @@ const BiddingPackageSchema = new Schema(
             type: Number, // 1: hoạt động, 0: ngưng hoạt động, 2: đang chờ kết quả dự thầu, 3: Đang thực hiện gói thầu, 4:hoàn thành
             default: 1,
         },
+        price: {
+            type: String,
+        },
+        local: {
+            type: String,
+        },
+        customer: {
+            type: String,
+        },
         keyPersonnelRequires: [
             {
                 careerPosition: {

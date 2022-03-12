@@ -34,6 +34,8 @@ function CertificateTab(props) {
 
     const { translate, field, listMajors, listCertificates, listPositions } = props;
 
+    // console.log("xxxxxxxxxxxxxxxxx", listMajors)
+
     const { id } = props;
 
     const { degrees, certificates, currentRow, currentRowCertificates } = state;
@@ -262,7 +264,7 @@ function CertificateTab(props) {
                                     }
                                     let major = '';
                                     if (x.major) {
-                                        major = listMajors.find(y => y._id.toString() === x.major.toString());
+                                        major = listMajors?.find(y => y._id.toString() === x.major.toString());
                                         if (major) {
                                             major = major.name
                                         } else {
@@ -332,7 +334,7 @@ function CertificateTab(props) {
                                 certificates.map((x, index) => {
                                     let certificate = '';
                                     if (x.certificate) {
-                                        certificate = listCertificates.find(y => y._id.toString() === x.certificate.toString());
+                                        certificate = listCertificates?.find(y => y._id.toString() === x.certificate.toString());
                                         if (certificate) {
                                             certificate = certificate.name
                                         } else {

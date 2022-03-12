@@ -961,6 +961,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
             delete career[i].position;
         }
     }
+
     degrees = degrees
         ? degrees.map((x) => {
               if (x.field === "") x.field = null;
@@ -971,13 +972,20 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     // career = this.mergeUrlFileToObject(fileCareer, career);
     // major = this.mergeUrlFileToObject(fileMajor, major);
     degrees = this.mergeUrlFileToObject(fileDegree, degrees);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileDegree);
+
     certificates = this.mergeUrlFileToObject(fileCertificate, certificates);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileCertificate);
+
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileContract);
+
     experiences = this.mergeUrlFileToObject(fileExperience, experiences);
-    careerPositions = this.mergeUrlFileToObject(
-        fileCareerPosition,
-        careerPositions
-    );
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileExperience);
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileCareerPosition);
+    careerPositions = this.mergeUrlFileToObject(fileCareerPosition, career);
+    console.log("aaaaaaaaaaaaaaaaaaaaa");
+
     files = this.mergeUrlFileToObject(file, files);
 
     // file đính kèm bảo hiểm y tế
@@ -2691,7 +2699,6 @@ const checkEmployeePackageValid = async (employees, require, otherEmployee) => {
 };
 
 exports.searchEmployeeForPackage = async (portal, params, companyId) => {
-
     let noResultsPerPage = parseInt(params.limit);
     let pageNumber = parseInt(params.page);
     let keySearch = [{ $match: { status: "active" } }];
@@ -2780,7 +2787,10 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
         let yearOfExp = year.getFullYear() - params.exp;
         year.setFullYear(yearOfExp);
         let lever = 2;
-        if (params.professionalSkill && Number(params.professionalSkill) < lever) {
+        if (
+            params.professionalSkill &&
+            Number(params.professionalSkill) < lever
+        ) {
             lever = Number(params.professionalSkill);
         }
 

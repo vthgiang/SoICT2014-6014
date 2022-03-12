@@ -588,7 +588,7 @@ const SearchEmployeeForPackage = (props) => {
                                                         lassName="form-control select2"
                                                         style={{ width: "100%" }}
                                                         items={listCertificate?.map(x => {
-                                                            return { text: x.name, value: x._id }
+                                                            return { text: x.name + " (" + x.abbreviation + ")", value: x._id }
                                                         })}
                                                         options={{ placeholder: "Chọn chứng chỉ - bằng cấp" }}
                                                         value={state.keyPeopleRequires?.[index]?.certificateRequirements?.certificates}

@@ -176,7 +176,7 @@ function SearchEmployeeByCareerPositionTab(props) {
                                                 )
                                                 else return ''
                                             })) : <p>Chưa có dữ liệu</p>}
-                                        </td>
+                                         </td>
                                         <td>{x.degrees?.length > 0 ? (x.degrees?.map((e, key) => {
                                             return <li key={key}> {e?.major?.name ? e?.major?.name : ""} </li>
                                         })) : <p>Chưa có dữ liệu</p>}

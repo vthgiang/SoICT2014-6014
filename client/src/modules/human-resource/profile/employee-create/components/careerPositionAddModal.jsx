@@ -250,7 +250,7 @@ function ModalAddCareerPosition(props) {
                     {/* Đơn vị */}
                     <div className={`form-group ${errorOnUnit && "has-error"}`}>
                         <label>{translate('human_resource.profile.unit')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" name="company" value={company} onChange={handleUnitChange} autoComplete="off" />
+                        <input type="text" className="form-control" name="company" value={company ? company : ''} onChange={handleUnitChange} autoComplete="off" />
                         <ErrorLabel content={errorOnUnit} />
                     </div>
 
@@ -303,14 +303,14 @@ function ModalAddCareerPosition(props) {
                     {/* Dự án */}
                     <div className="form-group">
                         <label>{translate('human_resource.profile.project')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" name="position" value={project} onChange={handleProjectChange} autoComplete="off" />
+                        <input type="text" className="form-control" name="position" value={project ? project : ''} onChange={handleProjectChange} autoComplete="off" />
                     </div>
 
                     {/* Kinh nghiệm chuyên môn và quản lý có liên quan */}
                     <div className="form-group">
                         <label>{translate('human_resource.profile.project_professional_or_managerment')}
                         </label>
-                        <textarea style={{ minHeight: '100px' }} type="text" value={professionalExperience} className="form-control" onChange={handleReferenceInformation} />
+                        <textarea style={{ minHeight: '100px' }} type="text" value={professionalExperience ? professionalExperience : ""} className="form-control" onChange={handleReferenceInformation} />
                     </div>
 
                     {/* File đính kèm */}

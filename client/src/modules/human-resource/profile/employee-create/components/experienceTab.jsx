@@ -14,11 +14,14 @@ function ExperienceTab(props) {
 
     })
 
-    const { translate, major, listPosition } = props;
+    const { translate, major, career } = props;
+
+    const listPosition = career.listPosition
+    // console.log("xxxxxxxxxxx", listPosition)
 
     const { id } = props;
 
-    const { educationalLevel, foreignLanguage, professionalSkill, experiences, careerPositions, currentRowEditCareerPosition, biddingPackagePersonalStatus, biddingPackageEndDate, career, currentRow } = state;
+    const { educationalLevel, foreignLanguage, professionalSkill, experiences, careerPositions, currentRowEditCareerPosition, biddingPackagePersonalStatus, biddingPackageEndDate, currentRow } = state;
 
     useEffect(() => {
         setState(state => {
@@ -28,7 +31,7 @@ function ExperienceTab(props) {
                 careerPositions: props?.employee?.careerPositions ? props.employee.careerPositions : [],
                 workProcess: props?.employee?.workProcess ? props.employee.workProcess : [],
                 experiences: props.employee?.experiences ? props.employee.experiences : [],
-                professionalSkill: props.employee?.degrees ? props.employee.degrees : [],
+                professionalSkill: props.employee?.professionalSkill ? props.employee.professionalSkill : "",
                 foreignLanguage: props.employee?.foreignLanguage ? props.employee.foreignLanguage : "",
                 educationalLevel: props.employee?.educationalLevel ? props.employee.educationalLevel : "",
                 biddingPackagePersonalStatus: props.employee?.biddingPackagePersonalStatus ? Number(props.employee?.biddingPackagePersonalStatus) : 3,
@@ -36,6 +39,10 @@ function ExperienceTab(props) {
             }
         })
     }, [props.id, props.employee?.experiences, props?.employee?.careerPositions])
+
+    useEffect(() => {
+        props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
+    }, [])
 
 
     /**
@@ -279,12 +286,6 @@ function ExperienceTab(props) {
         3: "Đang tham gia gói thầu"
     }
 
-    if (professionalSkill) {
-        professionalSkill.map(item => {
-            professionalSkills = professionalSkills + professionalSkillArr.find(x => x.value == item.degreeQualification).text + " (" + major.find(y => item.major == y._id)?.name + ", " + item.issuedBy + ", " + new Date(item.year).getFullYear() + ")" + `; `
-        })
-    }
-
     const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
         props.downloadFile(path, fileName)
@@ -319,10 +320,17 @@ function ExperienceTab(props) {
                     </div>
 
                     {/* Trình độ chuyên môn */}
-                    {professionalSkills && <div className="form-group">
-                        <strong>{translate('human_resource.profile.qualification')}&emsp; </strong>
-                        {professionalSkills}
-                    </div>}
+                    <div className="form-group">
+                        <label>{translate('human_resource.profile.qualification')}</label>
+                        <select className="form-control" name="professionalSkill" value={professionalSkill} onChange={handleChange}>
+                            <option value="intermediate_degree">{translate('human_resource.profile.intermediate_degree')}</option>
+                            <option value="colleges">{translate('human_resource.profile.colleges')}</option>
+                            <option value="university">{translate('human_resource.profile.university')}</option>
+                            <option value="master_degree">{translate('human_resource.profile.master_degree')}</option>
+                            <option value="phd">{translate('human_resource.profile.phd')}</option>
+                            <option value="unavailable">{translate('human_resource.profile.unavailable')}</option>
+                        </select>
+                    </div>
                 </fieldset>
 
                 {/* Kinh nghiệm làm việc */}

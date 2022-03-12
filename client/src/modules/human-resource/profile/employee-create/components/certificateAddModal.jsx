@@ -251,7 +251,7 @@ function CertificateAddModal(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={certificate}
-                            items={[{ value: '', text: 'Chọn chứng chỉ' }, ...listCertificates.map(y => { return { value: y._id, text: y.name } })]}
+                            items={[{ value: '', text: 'Chọn chứng chỉ' }, ...listCertificates.map(y => { return { value: y._id, text: y.name + " (" + y.abbreviation + ")" } })]}
                             onChange={handleCertificateChange}
                         />
                     </div>

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
@@ -60,6 +60,8 @@ const BiddingPackageCreateForm = (props) => {
         },
         editBiddingPackge: initBiddingPackage
     })
+
+    // useEffect()
 
     /**
      * Function upload avatar 

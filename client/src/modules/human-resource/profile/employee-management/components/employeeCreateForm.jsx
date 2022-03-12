@@ -10,6 +10,11 @@ import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, Experienc
 import { EmployeeManagerActions } from '../redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
 import { generateCode } from "../../../../../helpers/generateCode";
+import { EmployeeInfoActions } from '../../employee-info/redux/actions';
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
 
 
 const initMember = {
@@ -80,6 +85,7 @@ const EmployeeCreateForm = (props) => {
         courses: [],
         degrees: [],
         certificates: [],
+        careerPositions: [],
         contracts: [],
         files: [],
         disciplines: [],
@@ -165,6 +171,17 @@ const EmployeeCreateForm = (props) => {
             employee: {
                 ...employee,
                 experiences: data
+            }
+        }))
+    }
+
+    const handleChangeCareerPosition = (data, addData) => {
+        const { employee } = state;
+        setState(state => ({
+            ...state,
+            employee: {
+                ...employee,
+                careerPositions: data
             }
         }))
     }
@@ -406,12 +423,6 @@ const EmployeeCreateForm = (props) => {
         careerPositions.forEach(x => {
             formData.append("fileCareerPosition", x.fileUpload);
         })
-        // major.forEach(x => {
-        //     formData.append("fileMajor", x.fileUpload);
-        // })
-        // career.forEach(x => {
-        //     formData.append("fileCareer", x.fileUpload);
-        // })
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
@@ -422,8 +433,14 @@ const EmployeeCreateForm = (props) => {
         employee && employee.healthInsuranceAttachment && employee.healthInsuranceAttachment.forEach(x => {
             formData.append('healthInsuranceAttachment', x.fileUpload)
         })
+
+        console.log("xxxxxxxxxxxxxxxxxxxx", formData)
         props.addNewEmployee(formData);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                 // End save                                */
+    /* -------------------------------------------------------------------------- */
 
     const _fm_saveMember = (data) => {
         setState(prev => ({
@@ -581,7 +598,7 @@ const EmployeeCreateForm = (props) => {
         })
     }
 
-    const { translate, employeesManager } = props;
+    const { translate, employeesManager, employeesInfo, career, major, certificate } = props;
     const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, editMember } = state;
 
     return (
@@ -634,15 +651,18 @@ const EmployeeCreateForm = (props) => {
                             handleEditExperience={handleChangeExperience}
                             handleDeleteExperience={handleChangeExperience}
 
-                            handleAddWorkProcess={handleChangeWorkProcess}
-                            handleDeleteWorkProcess={handleChangeWorkProcess}
-                            handleEditWorkProcess={handleChangeWorkProcess}
+                            handleAddCareerPosition={handleChangeCareerPosition}
+                            handleEditCareerPosition={handleChangeCareerPosition}
+                            handleDeleteCareerPosition={handleChangeCareerPosition}
                         />
                         {/* Tab bằng cấp - chứng chỉ */}
                         <CertificateTab
                             id="diploma"
                             degrees={degrees}
                             certificates={certificates}
+                            listMajors={major?.listMajor}
+                            listCertificates={certificate?.listCertificate}
+                            listPositions={career?.listPosition}
 
                             handleAddDegree={handleChangeDegree}
                             handleEditDegree={handleChangeDegree}
@@ -749,12 +769,17 @@ const EmployeeCreateForm = (props) => {
 };
 
 function mapState(state) {
-    const { employeesManager } = state;
-    return { employeesManager };
+    const { employeesManager, employeesInfo, major, career, certificate, biddingPackagesManager } = state;
+    return { employeesManager, employeesInfo, major, career, certificate, biddingPackagesManager };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
+    getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getListBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(EmployeeCreateForm));
