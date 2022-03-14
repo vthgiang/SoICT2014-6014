@@ -328,11 +328,11 @@ function PurchaseOrderTable(props) {
                     <div className="form-group">
                         <label className="form-control-static">Nhà cung cấp</label>
                         <SelectMulti
-                            id={`selectMulti-filter-suppliet-purchase-order`}
+                            id={`selectMulti-filter-supplier-purchase-order`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={
-                                props.customers.list
+                                props.customers.list.length !== 0
                                     ? props.customers.list.map((customerItem) => {
                                         return {
                                             value: customerItem._id,
