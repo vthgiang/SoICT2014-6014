@@ -94,6 +94,7 @@ function ReceiptManagement(props) {
             qcStatus: qcStatus,
             qcContent: qcContent
         })
+        console.log(bill);
         window.$('#modal-quality-control-bill').modal('show');
     }
 
@@ -108,6 +109,7 @@ function ReceiptManagement(props) {
                         code={state.currentControl.code}
                         status={state.qcStatus}
                         content={state.qcContent}
+                        listGoods={state.currentControl.goods}
                     />
                 }
                 <div className="form-inline">

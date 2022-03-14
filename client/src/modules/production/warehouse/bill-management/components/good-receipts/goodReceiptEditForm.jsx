@@ -830,6 +830,7 @@ function GoodReceiptEditForm(props) {
         qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
         errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
     const listGoods = getAllGoods();
+    console.log(listGood);
     const dataApprover = getApprover();
     const dataCustomer = getCustomer();
     const dataMills = getMills();
@@ -1121,7 +1122,7 @@ function GoodReceiptEditForm(props) {
                                                         {(checkLots(x.lots, x.quantity)) ?
                                                             <td>{x.lots.map((lot, index) =>
                                                                 <div key={index}>
-                                                                    <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                    {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                                 </div>)}
                                                             </td> :
                                                             <td>{''}</td>

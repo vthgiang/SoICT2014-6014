@@ -772,7 +772,7 @@ function StockTakeEditForm(props) {
                                                         <td>{x.damagedQuantity ? x.damagedQuantity : 0}</td>
                                                         <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
-                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                             </div>)}
                                                         </td>
                                                         <td>{x.description}</td>

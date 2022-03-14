@@ -941,7 +941,7 @@ function GoodReturnEditForm(props) {
                                                         <td>{x.returnQuantity}</td>
                                                         <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
-                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                             </div>)}
                                                         </td>
                                                         <td>{x.description}</td>
