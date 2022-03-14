@@ -90,7 +90,7 @@ function SalesOrderCreateForm(props) {
     const handleCustomerChange = (value) => {
         if (value[0] !== "" && value[0] !== "title") {
             let customerInfo = props.customers.list.filter((item) => item._id === value[0]);
-            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status == 1);
+            let customerPromotions = customerInfo[0].canUsedPromotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status == 1);
             if (customerInfo.length) {
                 setState({
                     ...state,
@@ -610,7 +610,8 @@ function SalesOrderCreateForm(props) {
             };
 
             await props.createNewSalesOrder(data);
-            await props.usePromotion(customer, { promoIndex: customerPromotions.findIndex((promo) => promo.checked) })
+            let usedCustomerPromotions = customerPromotions.filter((promo) => promo.checked);
+            await props.usePromotion(customer, { code: usedCustomerPromotions[0].code });
             await props.getCustomers({ getAll: true })
             setState((state) => {
                 return {

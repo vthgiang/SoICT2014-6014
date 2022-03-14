@@ -10,11 +10,13 @@ function PromotionEditForm(props) {
     const { groupId, groupPromotionEdit, crm } = props;
     const [promotionEdit, setPromotionEdit] = useState();
 
+    // Lấy danh sách thành viên trong nhóm ở store
     let allMembersGroup;
     if ( crm?.groups?.membersInGroup ) {
         allMembersGroup = crm.groups.membersInGroup;
     };
 
+    // Viết lại danh sách nhóm cho đúng định dạng để biểu diễn
     allMembersGroup = allMembersGroup.map((e) => {
         return {
             value: e._id,
@@ -26,6 +28,7 @@ function PromotionEditForm(props) {
         setPromotionEdit({...groupPromotionEdit});
     }
 
+    // Danh sách các khách hàng ko được hưởng khuyến mãi đó có từ trước khi edit
     let exceptCustomer;
     if (promotionEdit && promotionEdit.exceptCustomer) {
         exceptCustomer = promotionEdit.exceptCustomer.map((e) => {
@@ -34,10 +37,10 @@ function PromotionEditForm(props) {
                 text: e.name
             }
         });
-        console.log(exceptCustomer);
     }
 
 
+    // Các hàm thay đổi giá trị các trường thông tin
     const handleChangeValue = async (e) => {
         const value = e.target.value;
         setPromotionEdit({...promotionEdit, value: value});
@@ -70,6 +73,7 @@ function PromotionEditForm(props) {
     const save = async () => {
         if (promotionEdit) {
             await props.editPromotion(groupId, { promotion: {...promotionEdit}});
+            // Gọi api để load lại dữ liệu của component cha
             await props.getRefreshData();
         }
     }

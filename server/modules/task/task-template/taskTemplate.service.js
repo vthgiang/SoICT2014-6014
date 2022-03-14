@@ -96,7 +96,7 @@ exports.getTaskTemplate = async (portal, id) => {
 exports.createTaskTemplate = async (portal, body, userId) => {
     //kiểm tra tên mẫu công việc đã tồn tại hay chưa ?
     let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
-    if (checkTaskTemplate) throw ['task_template_name_exist'];
+    // if (checkTaskTemplate) throw ['task_template_name_exist'];
 
     for (let i in body.taskActions) {
         if (body.taskActions[i].description) {

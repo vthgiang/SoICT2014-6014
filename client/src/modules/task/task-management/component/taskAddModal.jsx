@@ -58,7 +58,7 @@ function TaskAddModal(props) {
             name: newTask?.name ? newTask.name.trim() : newTask?.name,
             startDate: startDateTask,
             endDate: endDateTask,
-            taskProject: projectId,
+            taskProject: projectId ? projectId : newTask.taskProject,
             imgs: null
         }
         let formData = new FormData();

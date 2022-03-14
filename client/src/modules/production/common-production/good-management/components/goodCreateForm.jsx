@@ -271,7 +271,7 @@ function GoodCreateForm(props) {
             validateCategory(category, false) &&
             ((type && type === "product") && sourceType === "1") ? materials.length > 0 : true &&
             validateNumberExpirationDate(numberExpirationDate, false) &&
-            validateSourceProduct(sourceType, false);
+        validateSourceProduct(sourceType, false);
         return result;
 
     };
@@ -288,9 +288,9 @@ function GoodCreateForm(props) {
 
             html: `<h3 style="color: red"><div>Phương sai</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được.</p>
-            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán được trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
-            width: "50%", 
+            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được dựa trên 1 đơn vị tính cơ bản.</p>
+            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán 1 đơn vị trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
+            width: "50%",
         })
     };
 
@@ -374,13 +374,13 @@ function GoodCreateForm(props) {
                                 <label>{translate('manage_warehouse.good_management.good_source')}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
-                                        id={`select-source-type`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={sourceType}
-                                        items={dataSource}
-                                        onChange={handleSourceChange}
-                                        multiple={false}
+                                    id={`select-source-type`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={sourceType}
+                                    items={dataSource}
+                                    onChange={handleSourceChange}
+                                    multiple={false}
                                 />
                                 <ErrorLabel content={errorOnSourceProduct} />
                             </div>
@@ -428,7 +428,7 @@ function GoodCreateForm(props) {
                             </div>
                             <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
                                 <label>
-                                    {"Phương sai giá bán"}
+                                    {"Phương sai giá bán / 1 đơn vị tính cơ bản"}
                                     <span className="text-red"> </span>
                                 </label>
                                 <a onClick={() => showListExplainVariance()}>
@@ -450,13 +450,13 @@ function GoodCreateForm(props) {
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
-                            
-                                <React.Fragment>
-                                    {(type === "product" && sourceType === "1") ? (
+
+                            <React.Fragment>
+                                {(type === "product" && sourceType === "1") ? (
                                     <ComponentCreateForm initialData={listMaterial} onDataChange={handleListMaterialChange} />) : ("")}
-                                    {(sourceType ==="1" ? ( <InfoMillCreateForm onDataChange={handleListMillsChange} />) : "")}
-                                </React.Fragment>
-                            
+                                {(sourceType === "1" ? (<InfoMillCreateForm onDataChange={handleListMillsChange} />) : "")}
+                            </React.Fragment>
+
                         </div>
                     </div>
                 </form>

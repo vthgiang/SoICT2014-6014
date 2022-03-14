@@ -4589,6 +4589,7 @@ export default {
                 choose_stock: "Select warehouse",
                 choose_good: "Select commodity",
                 detail_title: "Detail storage location",
+                empty_stock: "Kho trống",
             },
             bill_management: {
                 text: "Consignment have not been writen",
@@ -4678,6 +4679,9 @@ export default {
                 goods: "List of commodity",
                 good_name: "Commodity name",
                 approved_true: "Approve bill",
+                in_processing: "In processing",
+                complete_bill: "Complete bill",
+                cancel_bill: "Cancel bill",
                 staff_true: "Checking the quality of commodity",
                 good_code: "Commodity code",
                 number: "number",
@@ -4694,6 +4698,7 @@ export default {
                 choose_type: "Select bill",
                 choose_approver: "Select approver",
                 choose_customer: "Select customer",
+                choose_supplier: "Select supplier",
                 choose_manufacturing_mills: "Select mill",
                 choose_lot: "Select consignment",
                 choose_stock: "Select warehouse",
@@ -4827,6 +4832,7 @@ export default {
                 create_rfid_code: "Create RFID code",
                 goods_returned_to_the_factory: "Goods returned to the factory",
                 goods_returned_to_the_supplier: "Goods returned to the supplier",
+                goods_returned_to_the_stock: "Goods returned to the stock",
 
             },
             inventory_management: {

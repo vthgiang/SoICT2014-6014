@@ -131,7 +131,7 @@ exports.addGroupPromotion = async (portal, companyId, groupId, userId, data, rol
     
     let promotions = [];
     if (modifyGroup.promotions) promotions = modifyGroup.promotions;
-    const promo = {code, value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer};   
+    const promo = {code, value, description, minimumOrderValue, promotionalValueMax, expirationDate, exceptCustomer, status: 1};   
     promotions = await [...promotions, promo];
     modifyGroup.promotions = promotions;
     

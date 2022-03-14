@@ -178,7 +178,7 @@ function ComponentCreateForm(props) {
     return (
 
         <fieldset className="scheduler-border">
-            <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}<span className="text-red">*</span></legend>
+            <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}</legend>
 
             <div className={`form-group ${!errorOnGood ? "" : "has-error"}`}>
                 <label>{translate('manage_warehouse.good_management.material')}</label>

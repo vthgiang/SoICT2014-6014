@@ -46,7 +46,7 @@ const { forEach } = require("lodash");
         loyalCustomers = [...loyalCustomers, { customer, totalOrder: saleOrders.length, totalOrderValue, rankPoint, totalPromotion }];
 
     }
-    loyalCustomers = loyalCustomers.sort((a, b) => (a.rankPoint < b.rankPoint) ? 1 : -1).filter((x) => x.rankPoint > 0);
+    loyalCustomers = loyalCustomers.sort((a, b) => (a.rankPoint < b.rankPoint) ? 1 : -1).filter((x) => x.rankPoint >= 0);
 
     if (page, limit) {
         page = parseInt(page)-1;

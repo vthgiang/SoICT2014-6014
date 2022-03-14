@@ -193,7 +193,7 @@ function QuantityLotGoodIssue(props) {
     const save = () => {
         props.onDataChange(state.lots);
     }
-    
+
     const { translate, group, good } = props;
     const { errorLot, lot, errorQuantity, lots } = state;
     const dataLots = getLotsByGood();
