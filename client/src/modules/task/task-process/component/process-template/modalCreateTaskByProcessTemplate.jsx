@@ -959,6 +959,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                                                     <h3>{translate("task.task_process.create_task_with_template")} {taskName}</h3>
                                                 </div>
                                                 <EditProcessTemplateChild
+                                                    user={user}
                                                     id={id}
                                                     infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`].process}
                                                     handleDataProcessChild={handleDataProcessTempalte}

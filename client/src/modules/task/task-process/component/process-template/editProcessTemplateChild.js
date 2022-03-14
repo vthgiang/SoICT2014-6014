@@ -8,7 +8,7 @@ import { DatePicker, ErrorLabel, QuillEditor, SelectBox } from '../../../../../c
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { TaskFormValidator } from '../../../task-management/component/taskFormValidator';
-
+import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 function EditProcessTemplateChild(props) {
     // let userId = getStorage
     let userId = getStorage("userId")
@@ -130,10 +130,15 @@ function EditProcessTemplateChild(props) {
         }
         return msgEnd === undefined;
     }
-    const {translate, taskProcess, role,infoTemplate} = props
+    const {translate, taskProcess, role,infoTemplate, user} = props
     const {newProcessTemplate,show} = state
     const { currentDiagram} = taskProcess
     let listRole = [];
+    let usersInUnitsOfCompany;
+    if (user && user.usersInUnitsOfCompany) {
+        usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+    }
+    let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
     if (role && role.list.length !== 0) listRole = role.list;
     let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
         .map(item => { return { text: item.name, value: item._id } });
@@ -194,12 +199,12 @@ function EditProcessTemplateChild(props) {
                             {/* Người quản lý mẫu quy trình */}
                             <strong>{translate("task.task_process.manager")}:</strong>
                             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                            {
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={`select-manager-employee-create-${infoTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={listItem}
+                                    items={allUnitsMember}
                                     onChange={handleChangeManager}
                                     multiple={true}
                                     value={state.manager}
@@ -210,12 +215,12 @@ function EditProcessTemplateChild(props) {
                             {/* Người được xem mẫu quy trình */}
                             <strong>{translate("task.task_process.viewer")}:</strong>
                             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                            {
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={`select-viewer-employee-create-${infoTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={listItem}
+                                    items={allUnitsMember}
                                     onChange={handleChangeViewer}
                                     multiple={true}
                                     value={state.viewer}

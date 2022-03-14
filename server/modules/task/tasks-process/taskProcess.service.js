@@ -502,7 +502,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         let listFollowingProcess = [];
         let listPreceedingProcess = [];
         for (let i in dataProcess[x].followingTasks) {
-            console.log(dataProcess[x].followingTasks[i].task);
+            // console.log(dataProcess[x].followingTasks[i].task);
             let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: dataProcess[x].followingTasks[i].task });
             if (item) {
                 if (item.status === "inprocess") {
