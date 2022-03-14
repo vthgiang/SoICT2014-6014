@@ -10,57 +10,57 @@ export const attributeServices = {
 function getAttributes(queryData) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/examples`,
+            url: `${process.env.REACT_APP_SERVER}/attribute/attributes`,
             method: "GET",
             params: {
-                exampleName: queryData?.exampleName ? queryData.exampleName : "",
+                attributeName: queryData?.attributeName ? queryData.attributeName : "",
                 page: queryData?.page ? queryData.page : null,
                 perPage: queryData?.perPage ? queryData.perPage : null
             }
         },
         false,
         true,
-        "manage_example"
+        "manage_attribute"
     );
 }
 
 function deleteAttributes(data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/examples`,
+            url: `${process.env.REACT_APP_SERVER}/attribute/attributes`,
             method: "DELETE",
             data: {
-                exampleIds: data?.exampleIds
+                attributeIds: data?.attributeIds
             }
         },
         true,
         true,
-        "manage_example"
+        "manage_attribute"
     )
 }
 
 function createAttribute(data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/examples`,
+            url: `${process.env.REACT_APP_SERVER}/attribute/attributes`,
             method: "POST",
             data: data
         },
         true,
         true,
-        "manage_example"
+        "manage_attribute"
     )
 }
 
 function editAttribute(id, data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/examples/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/attribute/attributes/${id}`,
             method: "PATCH",
             data: data
         },
         true,
         true,
-        "manage_example"
+        "manage_attribute"
     )
 }

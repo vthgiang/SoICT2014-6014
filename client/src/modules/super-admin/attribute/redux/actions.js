@@ -1,98 +1,98 @@
-import { exampleConstants } from './constants';
-import { exampleServices } from './services';
+import { attributeConstants } from './constants';
+import { attributeServices } from './services';
 
-export const exampleActions = {
-    getExamples,
-    deleteExamples,
-    createExample,
-    editExample
+export const attributeActions = {
+    getAttributes,
+    deleteAttributes,
+    createAttribute,
+    editAttribute
 }
 
-function getExamples(queryData) {
+function getAttributes(queryData) {
     return (dispatch) => {
         dispatch({
-            type: exampleConstants.GET_ALL_EXAMPLES_REQUEST
+            type: attributeConstants.GET_ALL_ATTRIBUTES_REQUEST
         });
 
-        exampleServices
-            .getExamples(queryData)
+        attributeServices
+            .getAttributes(queryData)
             .then((res) => {
                 dispatch({
-                    type: exampleConstants.GET_ALL_EXAMPLES_SUCCESS,
+                    type: attributeConstants.GET_ALL_ATTRIBUTES_SUCCESS,
                     payload: res.data.content
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: exampleConstants.GET_ALL_EXAMPLES_FAILURE,
+                    type: attributeConstants.GET_ALL_ATTRIBUTES_FAILURE,
                     error
                 });
             });
     }
 }
 
-function deleteExamples(data) {
+function deleteAttributes(data) {
     return (dispatch) => {
         dispatch({
-            type: exampleConstants.DELETE_EXAMPLE_REQUEST
+            type: attributeConstants.DELETE_ATTRIBUTE_REQUEST
         });
 
-        exampleServices
-            .deleteExamples(data)
+        attributeServices
+            .deleteAttributes(data)
             .then((res) => {
                 dispatch({
-                    type: exampleConstants.DELETE_EXAMPLE_SUCCESS,
+                    type: attributeConstants.DELETE_ATTRIBUTE_SUCCESS,
                     payload: res.data.content,
-                    exampleIds: data.exampleIds
+                    attributeIds: data.attributeIds
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: exampleConstants.DELETE_EXAMPLE_FAILURE,
+                    type: attributeConstants.DELETE_ATTRIBUTE_FAILURE,
                     error
                 });
             });
     }
 }
 
-function createExample(data) {
+function createAttribute(data) {
     return (dispatch) => {
         dispatch({
-            type: exampleConstants.CREATE_EXAMPLE_REQUEST
+            type: attributeConstants.CREATE_ATTRIBUTE_REQUEST
         });
-        exampleServices
-            .createExample(data)
+        attributeServices
+            .createAttribute(data)
             .then((res) => {
                 dispatch({
-                    type: exampleConstants.CREATE_EXAMPLE_SUCCESS,
+                    type: attributeConstants.CREATE_ATTRIBUTE_SUCCESS,
                     payload: res.data.content
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: exampleConstants.CREATE_EXAMPLE_FAILURE,
+                    type: attributeConstants.CREATE_ATTRIBUTE_FAILURE,
                     error
                 });
             });
     }
 }
 
-function editExample(id, data) {
+function editAttribute(id, data) {
     return (dispatch) => {
         dispatch({
-            type: exampleConstants.EDIT_EXAMPLE_REQUEST
+            type: attributeConstants.EDIT_ATTRIBUTE_REQUEST
         });
-        exampleServices
-            .editExample(id, data)
+        attributeServices
+            .editAttribute(id, data)
             .then((res) => {
                 dispatch({
-                    type: exampleConstants.EDIT_EXAMPLE_SUCCESS,
+                    type: attributeConstants.EDIT_ATTRIBUTE_SUCCESS,
                     payload: res.data.content
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: exampleConstants.EDIT_EXAMPLE_FAILURE,
+                    type: attributeConstants.EDIT_ATTRIBUTE_FAILURE,
                     error
                 });
             });
