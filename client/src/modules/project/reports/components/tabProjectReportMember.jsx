@@ -282,7 +282,7 @@ const TabProjectReportMember = (props) => {
 
     const renderHighScoreChart = () => {
         const currentChartHighScore = chartHighScoreRef.current;
-        while (currentChartHighScore.hasChildNodes()) {
+        while (currentChartHighScore && currentChartHighScore.hasChildNodes()) {
             currentChartHighScore.removeChild(currentChartHighScore.lastChild);
         }
         let chartHighScore = c3.generate({
