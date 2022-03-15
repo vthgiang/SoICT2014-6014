@@ -6,7 +6,7 @@ import { DialogModal, SelectBox, UploadFile } from '../../../../../../common-com
 
 function QualityControlForm(props) {
     const [state, setState] = useState({
-
+        quantityPassedTest: [],
     })
 
     const handleStatusChange = (value) => {
@@ -23,6 +23,16 @@ function QualityControlForm(props) {
             ...state,
             content: value
         });
+    }
+
+    const handleQualityControlEachProduct = (index) => {
+        const arr = [];
+        arr[index] = index;
+        setState({
+            ...state,
+            quantityPassedTest: arr
+        });
+        console.log(state.quantityPassedTest);
     }
 
     if (props.billId !== state.billId) {
@@ -62,11 +72,8 @@ function QualityControlForm(props) {
         return true;
     }
 
-    const handleQualityControl = (good, index) => {
-
-    }
     const { translate, bills, listGoods } = props;
-    const { status, content, code } = state;
+    const { status, content, code, quantityPassedTest } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -76,7 +83,7 @@ function QualityControlForm(props) {
                 msg_success={translate('manage_warehouse.bill_management.edit_successfully')}
                 msg_failure={translate('manage_warehouse.bill_management.edit_failed')}
                 func={save}
-                // disableSubmit={!this.isFormValidated()}
+                // disableSubmit={!isFormValidated()}
                 size={50}
                 maxWidth={500}
             >
@@ -134,23 +141,18 @@ function QualityControlForm(props) {
                                                         <td>
                                                             <span>{x.quantity}</span>
                                                         </td>}
-                                                    {(checkLots(x.lots, x.quantity)) ?
-                                                        <td>{x.lots.map((lot, index) =>
-                                                            <div key={index}>
-                                                                {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
-                                                            </div>)}
-                                                        </td> :
-                                                        <td>{''}</td>
-                                                    }
-                                                    <td>{x.description}</td>
                                                     <td>
+                                                        <input style={{'border': 'white', 'paddingBottom' : '15px'}} value={quantityPassedTest[index]} type="text" className="form-control" onChange={handleQualityControlEachProduct(index)}></input>
+                                                    </td>
+                                                    <td>{x.description}</td>
+                                                    {/* <td>
                                                         <a
                                                             className="text-blue"
                                                             title={translate('manage_warehouse.inventory_management.add_lot')}
                                                             onClick={() => handleQualityControl(x, index)}
                                                         ><i className="material-icons">adjust</i>
                                                         </a>
-                                                    </td>
+                                                    </td> */}
                                                 </tr>
                                             )
                                     }
