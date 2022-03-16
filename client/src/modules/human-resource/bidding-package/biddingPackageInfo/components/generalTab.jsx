@@ -40,6 +40,10 @@ function GeneralTab(props) {
                 id: props.id,
                 name: props.biddingPackage.name,
                 code: props.biddingPackage.code,
+                customer: props.biddingPackage ? props.biddingPackage.customer : '',
+                price: props.biddingPackage.price ? props.biddingPackage.price : 0,
+                openLocal: props.biddingPackage.openLocal ? props.biddingPackage.openLocal : '',
+                receiveLocal: props.biddingPackage.receiveLocal ? props.biddingPackage.receiveLocal : '',
                 startDate: props.biddingPackage.startDate,
                 endDate: props.biddingPackage.endDate,
                 type: props.biddingPackage.type,
@@ -51,7 +55,7 @@ function GeneralTab(props) {
 
     const { translate } = props;
 
-    const { id, name, code, startDate, endDate, type, status, description } = state;
+    const { id, name, code, customer, receiveLocal, openLocal, price, startDate, endDate, type, status, description } = state;
 
     const typeArr = [
         { value: 1, text: 'Gói thầu tư vấn' },
@@ -111,9 +115,33 @@ function GeneralTab(props) {
                         </div>
                     </div>
                     <div className="row">
+                        {/* Bên mới thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <strong>Bên mời thầu&emsp; </strong>
+                            {customer}
+                        </div>
+                        {/* Dự toán gói thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <strong>Dự toán gói thầu&emsp; </strong>
+                            {price}
+                        </div>
+                    </div>
+                    <div className="row">
+                        {/* Địa điểm mở thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <strong>Địa điểm mở thầu&emsp; </strong>
+                            {openLocal}
+                        </div>
+                        {/* Địa điểm nhận thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <strong>Địa điểm nhận thầu&emsp; </strong>
+                            {receiveLocal}
+                        </div>
+                    </div>
+                    <div className="row">
                         {/* Mô tả */}
                         <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
-                            <label htmlFor="emailCompany">Mô tả</label>
+                            <strong htmlFor="emailCompany">Mô tả</strong>
                             &emsp; { description }
                         </div>
                     </div>

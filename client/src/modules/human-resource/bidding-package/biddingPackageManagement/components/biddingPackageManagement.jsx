@@ -339,7 +339,7 @@ const BiddingPackageManagement = (props) => {
                     </thead>
                     <tbody>
                         {listBiddingPackages && listBiddingPackages.length !== 0 &&
-                            listBiddingPackages.map((x, index) => (
+                            listBiddingPackages?.map((x, index) => (
                                 <tr key={index}>
                                     <td style={{ textAlign: 'center' }}>{index + 1}</td>
                                     <td>{x.name}</td>

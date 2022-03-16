@@ -42,8 +42,7 @@ function ModalEditCareerPosition(props) {
         file: "",
     })
 
-    // useEffect(() => {
-        if (props.id !== state.id) {
+    if (props.id !== state.id) {
         setState({
             ...state,
             id: props.id,
@@ -63,14 +62,15 @@ function ModalEditCareerPosition(props) {
             errorOnEndDate: undefined,
             errorOnProject: undefined
         })
-        // if (props._id) {
-        //     setState({
-        //         ...state,
-        //         _id: props._id
-        //     })
-        // }
     }
-    // }, [props.id])
+    useEffect(() => {
+        if (props._id) {
+            setState({
+                ...state,
+                _id: props._id
+            })
+        }
+    }, [props.id])
 
     const { translate, listPosition } = props;
 

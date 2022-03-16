@@ -141,7 +141,7 @@ const BiddingPackageCreateForm = (props) => {
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
         let { keyPeople, biddingPackage, keyPersonnelRequires, code, startDate, endDate, status, type,
-            description, name } = state;
+            description, name, price, customer, openLocal, receiveLocal } = state;
 
         await setState(state => ({
             ...state,
@@ -149,6 +149,10 @@ const BiddingPackageCreateForm = (props) => {
                 ...biddingPackage,
                 name,
                 code,
+                customer,
+                price,
+                openLocal,
+                receiveLocal,
                 startDate,
                 endDate,
                 status, 

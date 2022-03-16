@@ -29,9 +29,12 @@ const BiddingPackageSchema = new Schema(
             default: 1,
         },
         price: {
+            type: Number,
+        },
+        openLocal: {
             type: String,
         },
-        local: {
+        receiveLocal: {
             type: String,
         },
         customer: {

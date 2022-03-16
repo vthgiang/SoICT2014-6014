@@ -13,7 +13,7 @@ function GeneralTab(props) {
 
     const { translate } = props;
     
-    const { id, startDate, endDate,  name, code, customer, resultLocation, sendLocal, price, status, type, description, errorOnName } = state;
+    const { id, startDate, endDate,  name, code, customer, receiveLocal, openLocal, price, status, type, description, errorOnName } = state;
     
     useEffect(() => {
         if ((props.id === "general" || props.id === "page_general") && !state.name && !state.code && props.biddingPackage && props.biddingPackage.name && props.biddingPackage.code) {
@@ -21,7 +21,11 @@ function GeneralTab(props) {
                 return {
                     ...state,
                     name: props.biddingPackage.name,
-                    code: props.biddingPackage.code
+                    code: props.biddingPackage.code,
+                    customer: props.biddingPackage.customer,
+                    price: props.biddingPackage.price ? props.biddingPackage.price : 0,
+                    openLocal: props.biddingPackage.openLocal,
+                    receiveLocal: props.biddingPackage.receiveLocal,
                 }
             })
         }
@@ -34,6 +38,9 @@ function GeneralTab(props) {
                     name: props.biddingPackage ? props.biddingPackage.name : '',
                     code: props.biddingPackage ? props.biddingPackage.code : '',
                     customer: props.biddingPackage ? props.biddingPackage.customer : '',
+                    price: props.biddingPackage.price ? props.biddingPackage.price : 0,
+                    openLocal: props.biddingPackage.openLocal ? props.biddingPackage.openLocal : '',
+                    receiveLocal: props.biddingPackage.receiveLocal ? props.biddingPackage.receiveLocal : '',
                     startDate: formatDate(props.biddingPackage ? props.biddingPackage.startDate : ''),
                     endDate: formatDate(props.biddingPackage ? props.biddingPackage.endDate : ''),
                     status: props.biddingPackage ? props.biddingPackage.status : "",
@@ -45,7 +52,7 @@ function GeneralTab(props) {
                 }
             });
         }
-    }, [props.id, props.biddingPackage])
+    }, [props.id])
 
     /**
      * Function format dữ liệu Date thành string
@@ -137,17 +144,6 @@ function GeneralTab(props) {
         validateBiddingPackageName(value, true);
     }
 
-    /** Function bắt sự kiện thay đổi mã nhân viên */
-    const handleCustomer = (e) => {
-        const { value } = e.target;
-        setState(state => {
-                return {
-                    ...state,
-                    customer: value,
-                }
-            });
-    }
-
     const validateBiddingPackageName = (value, willUpdateState = true) => {
         const { translate } = props;
         let { message } = ValidationHelper.validateCode(translate, value);
@@ -164,7 +160,57 @@ function GeneralTab(props) {
         return message === undefined;
     }
 
-    /** Function bắt sự kiện thay đổi mã chấm công */
+    /** Function bắt sự kiện thay đổi bên mời thầu*/
+    const handleChangeCustomer = (e) => {
+        const { value } = e.target;
+        setState(state => {
+            return {
+                ...state,
+                customer: value,
+            }
+        });
+        props.handleChange("customer", value);
+    }
+
+    /** Function bắt sự kiện thay đổi bên mời thầu*/
+    const handleChangePrice = (e) => {
+        const { value } = e.target;
+        setState(state => {
+            return {
+                ...state,
+                price: Number(value),
+            }
+        });
+
+        props.handleChange("price", Number(value));
+    }
+
+    /** Function bắt sự kiện thay đổi bên mời thầu*/
+    const handleChangeOpenLocal = (e) => {
+        const { value } = e.target;
+        setState(state => {
+            return {
+                ...state,
+                openLocal: value,
+            }
+        });
+        props.handleChange("openLocal", value);
+    }
+
+    /** Function bắt sự kiện thay đổi bên mời thầu*/
+    const handleChangeReceiveLocal = (e) => {
+        const { value } = e.target;
+        setState(state => {
+            return {
+                ...state,
+                receiveLocal: value,
+            }
+        });
+        props.handleChange("receiveLocal", value);
+    }
+
+
+    /** Function bắt sự kiện thay đổi mã gói thầu */
     const handleChangeCode = (e) => {
         const { value } = e.target;
         setState(state => {
@@ -189,7 +235,7 @@ function GeneralTab(props) {
     }
 
     /**
-     * Function bắt sự kiện thay đổi ngày sinh
+     * Function bắt sự kiện thay đổi ngày kết thúc
      * @param {*} value : Ngày sinh
      */
     const handleEndDateChange = (value) => {
@@ -320,29 +366,27 @@ function GeneralTab(props) {
                         </div>
                     </div>
                     <div className="row">
-                        {/* Tên gói thầu */}
-                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnName && "has-error"}`}>
-                            <label>Bên mời thầu<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={customer ? customer : ''} placeholder="Tên gói thầu" onChange={handleBiddingPackageName} />
-                            <ErrorLabel content={errorOnName} />
-                        </div>
-                        {/* Mã gói thầu */}
+                        {/* Bên mới thầu */}
                         <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
-                            <label htmlFor="MGT">Dự toán gói thầu</label>
-                            <input type="text" className="form-control" placeholder="Mã gói thầu" name="code" value={code ? code : ''} onChange={handleChangeCode} autoComplete="off" />
+                            <label>Bên mời thầu</label>
+                            <input type="text" className="form-control" name="customer" value={customer ? customer : ''} placeholder="Bên mời thầu" onChange={handleChangeCustomer} />
+                        </div>
+                        {/* Dự toán gói thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <label>Dự toán gói thầu</label>
+                            <input type="number" className="form-control" placeholder="Giá dự toán" name="price" value={price ? price : ''} onChange={handleChangePrice} autoComplete="off" />
                         </div>
                     </div>
                     <div className="row">
-                        {/* Tên gói thầu */}
-                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnName && "has-error"}`}>
-                            <label>Địa điểm mở thầu<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={name ? name : ''} placeholder="Tên gói thầu" onChange={handleBiddingPackageName} />
-                            <ErrorLabel content={errorOnName} />
-                        </div>
-                        {/* Mã gói thầu */}
+                        {/* Địa điểm mở thầu */}
                         <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
-                            <label htmlFor="MGT">Địa điểm nhận thầu</label>
-                            <input type="text" className="form-control" placeholder="Mã gói thầu" name="code" value={code ? code : ''} onChange={handleChangeCode} autoComplete="off" />
+                            <label>Địa điểm mở thầu</label>
+                            <input type="text" className="form-control" placeholder="Địa điểm mở thầu" name="openLocal" value={openLocal ? openLocal : ''} onChange={handleChangeOpenLocal}  autoComplete="off" />
+                        </div>
+                        {/* Địa điểm nhận thầu */}
+                        <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
+                            <label>Địa điểm nhận thầu</label>
+                            <input type="text" className="form-control" placeholder="Địa điểm nhận thầu" name="receiveLocal" value={receiveLocal ? receiveLocal : ''} onChange={handleChangeReceiveLocal} autoComplete="off" />
                         </div>
                     </div>
                 </div>

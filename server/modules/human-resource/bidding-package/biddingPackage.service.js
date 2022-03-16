@@ -79,9 +79,11 @@ exports.searchBiddingPackage = async (portal, params, company) => {
     }
 
     if (params.limit === undefined && params.page === undefined) {
-        let data = await BiddingPackage(connect(DB_CONNECTION, portal)).find(
-            keySearch
-        );
+        let data = await BiddingPackage(connect(DB_CONNECTION, portal))
+            .find(keySearch)
+            .sort({
+                endDate: -1,
+            });
         return {
             listBiddingPackages: data,
             totalList: data.length,
@@ -166,6 +168,10 @@ exports.createNewBiddingPackage = async (portal, data, company) => {
     position = await BiddingPackage(connect(DB_CONNECTION, portal)).create({
         name: data.name,
         code: data.code,
+        customer: data.customer,
+        price: data.price,
+        openLocal: data.openLocal,
+        receiveLocal: data.receiveLocal,
         startDate: data.startDate,
         endDate: data.endDate,
         status: data.status ? data.status : 1,
@@ -232,6 +238,10 @@ exports.editBiddingPackage = async (portal, data, params, company) => {
                     company: company,
                     name: data.name,
                     code: data.code,
+                    customer: data.customer,
+                    price: data.price,
+                    openLocal: data.openLocal,
+                    receiveLocal: data.receiveLocal,
                     startDate: data.startDate,
                     endDate: data.endDate,
                     status: data.status ? Number(data.status) : 1,

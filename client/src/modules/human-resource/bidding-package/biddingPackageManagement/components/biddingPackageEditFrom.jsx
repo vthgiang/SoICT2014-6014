@@ -157,23 +157,7 @@ const BiddingPackageEditFrom = (props) => {
     }
 
     const save = async () => {
-        let { _id, biddingPackage, keyPersonnelRequires, code, startDate, endDate, status, type,
-            description, name } = state;
-
-        // setState(state => ({
-        //     ...state,
-        //     biddingPackage: {
-        //         ...biddingPackage,
-        //         name,
-        //         code,
-        //         startDate,
-        //         endDate,
-        //         status, 
-        //         type,
-        //         description,
-        //         keyPersonnelRequires: keyPersonnelRequires
-        //     }
-        // }))
+        let { _id, biddingPackage } = state;
 
         await props.updateBiddingPackage(_id, biddingPackage);
         await props.getDetailBiddingPackage( props._id, {} );
@@ -190,6 +174,12 @@ const BiddingPackageEditFrom = (props) => {
                 formID={`form-edit-bidding-package${_id}`}
                 title="Chỉnh sửa thông tin gói thầu"
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    _id: null,
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-edit-biddingPackage"> */}
@@ -203,7 +193,7 @@ const BiddingPackageEditFrom = (props) => {
                         <div className="tab-content">
                             {/* Tab thông tin chung */
                                 <GeneralTab
-                                    id={`edit_general_bidding_package${_id}`}
+                                    id={`edit_general${_id}`}
                                     handleChange={handleChange}
                                     handleUpload={handleUpload}
                                     biddingPackage={biddingPackage}
