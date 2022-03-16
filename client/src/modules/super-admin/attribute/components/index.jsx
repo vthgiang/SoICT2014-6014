@@ -2,16 +2,16 @@ import React from 'react';
 
 import { withTranslate } from "react-redux-multilingual";
 
-import { ExampleManagementTable } from './exampleManagementTable';
+import { AttributeTable } from './attributeTable';
 
-function ExampleManagement() {
+function ManageAttribute() {
     return (
         <div className="box" style={{ minHeight: "450px" }}>
             <div className="box-body">
-                <ExampleManagementTable />
+                <AttributeTable />
             </div>
         </div>
     );
 }
 
-export default (withTranslate(ExampleManagement));
+export default (withTranslate(ManageAttribute));

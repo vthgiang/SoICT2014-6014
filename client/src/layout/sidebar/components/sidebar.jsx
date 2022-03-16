@@ -182,6 +182,11 @@ class SideBar extends Component {
                                             path: "/links-management",
                                         },
                                         {
+                                            name: "menu.manage_attribute",
+                                            icon: "fa fa-reorder",
+                                            path: "/attributes-management",
+                                        },
+                                        {
                                             name: "menu.manage_api",
                                             icon: "fa fa-link",
                                             path: "/apis-management",

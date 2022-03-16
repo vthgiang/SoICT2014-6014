@@ -110,6 +110,13 @@ exports.links = [
             { path: '/link/links/company/:idCompany', method: 'GET' },
             { path: '/link/links/company/update', method: 'PATCH' },
 
+            { path: '/attribute/attributes', method: 'GET' },
+            { path: '/attribute/attributes', method: 'POST' },
+            { path: '/attribute/attributes/paginate', method: 'POST' },
+            { path: '/attribute/attributes/:id', method: 'GET' },
+            { path: '/attribute/attributes/:id', method: 'PATCH' },
+            { path: '/attribute/attributes/:id', method: 'DELETE' },
+
             { path: '/organizational-units/organizational-units', method: 'GET' },
             { path: '/organizational-units/organizational-units', method: 'POST' },
             { path: '/organizational-units/organizational-units/:id', method: 'GET' },
@@ -651,6 +658,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/links-management',
+        apis: ['@all']
+    }, {
+        url: '/attributes-management',
         apis: ['@all']
     }, {
         url: '/apis-management',

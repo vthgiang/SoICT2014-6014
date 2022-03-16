@@ -181,6 +181,13 @@ function RoleCreateForm(props) {
         }
     };
 
+    const handleParent = (value) => {
+        setState({
+            ...state,
+            roleAttributes: value[0]
+        });
+    }
+
     const validateAttributes = () => {
         var roleAttributes = state.roleAttributes;
         let result = true;
@@ -227,7 +234,7 @@ function RoleCreateForm(props) {
         window.$(`#modal-import-role`).modal('show')
     }
 
-    const { translate, role, user } = props;
+    const { translate, role, user, attribute } = props;
     const { roleNameError, roleAttributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue } = state;
 
     return (
@@ -317,10 +324,20 @@ function RoleCreateForm(props) {
                                                 <center> {translate('table.no_data')}</center>
                                             </td>
                                         </tr> :
-                                        roleAttributes.map((attribute, index) => {
+                                        roleAttributes.map((attr, index) => {
                                             return <tr key={index}>
                                                 <td>
-                                                    <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
+                                                    <SelectBox
+                                                        id="create-role"
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        items={[
+                                                            { text: "Không có thuộc tính" }, ...attribute.lists.map(attribute => { return { value: attribute ? attribute._id : null, text: attribute ? attribute.attributeName : "" } })
+                                                        ]}
+                                                        onChange={handleParent}
+                                                        multiple={false}
+                                                    />
+                                                    {/* <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
                                                         <input type="text"
                                                             className="form-control"
                                                             placeholder={translate('manage_role.attribute_name_example')}
@@ -328,7 +345,7 @@ function RoleCreateForm(props) {
                                                             onChange={(e) => handleChangeAttributeName(e, index)}
                                                         />
                                                         {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
-                                                    </div>
+                                                    </div> */}
                                                 </td>
 
                                                 <td>
@@ -336,7 +353,7 @@ function RoleCreateForm(props) {
                                                         <input type="text"
                                                             className="form-control"
                                                             placeholder={translate('manage_role.attribute_value_example')}
-                                                            value={attribute.value}
+                                                            value={attr.value}
                                                             onChange={(e) => handleChangeAttributeValue(e, index)}
                                                         />
                                                         {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
@@ -348,7 +365,7 @@ function RoleCreateForm(props) {
                                                         <input type="text"
                                                             className="form-control"
                                                             placeholder={translate('manage_role.attribute_description_example')}
-                                                            value={attribute.description}
+                                                            value={attr.description}
                                                             onChange={(e) => handleChangeAttributeDescription(e, index)}
                                                         />
 
@@ -376,8 +393,8 @@ function RoleCreateForm(props) {
 }
 
 function mapStateToProps(state) {
-    const { role, user } = state;
-    return { role, user };
+    const { role, user, attribute } = state;
+    return { role, user, attribute };
 }
 
 

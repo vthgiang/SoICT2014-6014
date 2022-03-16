@@ -4,44 +4,44 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DeleteNotification, PaginateBar, SmartTable } from "../../../../common-components";
 
-import { ExampleCreateForm } from "./exampleCreateForm";
-import { ExampleEditForm } from "./exampleEditForm";
-import { ExampleDetailInfo } from "./exampleDetailInfo";
-import { ExampleImportForm } from "./exampleImortForm";
+import { AttributeCreateForm } from "./attributeCreateForm";
+import { AttributeEditForm } from "./attributeEditForm";
+import { AttributeDetailInfo } from "./attributeDetailInfo";
+import { AttributeImportForm } from "./attributeImortForm";
 
-import { exampleActions } from "../redux/actions";
+import { AttributeActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
-function ExampleManagementTable(props) {
-    const getTableId = "table-manage-example1-hooks";
+function AttributeTable(props) {
+    const getTableId = "table-manage-attribute1-hooks";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     // Khởi tạo state
     const [state, setState] = useState({
-        exampleName: "",
+        attributeName: "",
         page: 1,
         perPage: getLimit,
         tableId: getTableId,
     })
     const [selectedData, setSelectedData] = useState()
 
-    const { example, translate } = props;
-    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId } = state;
+    const { attribute, translate } = props;
+    const { attributeName, page, perPage, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
-        props.getExamples({ exampleName, page, perPage });
+        props.getAttributes({ attributeName, page, perPage });
     }, [])
 
     /**
      * Hàm xử lý khi tên ví dụ thay đổi
      * @param {*} e 
      */
-    const handleChangeExampleName = (e) => {
+    const handleChangeAttributeName = (e) => {
         const { value } = e.target;
         setState({
             ...state,
-            exampleName: value
+            attributeName: value
         });
     }
 
@@ -50,8 +50,8 @@ function ExampleManagementTable(props) {
      * Hàm xử lý khi click nút tìm kiếm
      */
     const handleSubmitSearch = () => {
-        props.getExamples({
-            exampleName,
+        props.getAttributes({
+            attributeName,
             perPage,
             page: 1
         });
@@ -72,8 +72,8 @@ function ExampleManagementTable(props) {
             page: parseInt(pageNumber)
         });
 
-        props.getExamples({
-            exampleName,
+        props.getAttributes({
+            attributeName,
             perPage,
             page: parseInt(pageNumber)
         });
@@ -90,8 +90,8 @@ function ExampleManagementTable(props) {
             perPage: parseInt(number),
             page: 1
         });
-        props.getExamples({
-            exampleName,
+        props.getAttributes({
+            attributeName,
             perPage: parseInt(number),
             page: 1
         });
@@ -103,13 +103,13 @@ function ExampleManagementTable(props) {
      * @param {*} id của ví dụ cần xóa
      */
     const handleDelete = (id) => {
-        props.deleteExamples({
-            exampleIds: [id]
+        props.deleteAttributes({
+            attributeIds: [id]
         });
-        props.getExamples({
-            exampleName,
+        props.getAttributes({
+            attributeName,
             perPage,
-            page: example && example.lists && example.lists.length === 1 ? page - 1 : page
+            page: attribute && attribute.lists && attribute.lists.length === 1 ? page - 1 : page
         });
     }
 
@@ -118,62 +118,62 @@ function ExampleManagementTable(props) {
     }
 
     const handleDeleteOptions = () => {
-        props.deleteExamples({
-            exampleIds: selectedData
+        props.deleteAttributes({
+            attributeIds: selectedData
         });
     }
 
     /**
      * Hàm xử lý khi click edit một ví vụ
-     * @param {*} example thông tin của ví dụ cần chỉnh sửa
+     * @param {*} attribute thông tin của ví dụ cần chỉnh sửa
      */
-    const handleEdit = (example) => {
+    const handleEdit = (attribute) => {
         setState({
             ...state,
-            currentRow: example
+            currentRow: attribute
         });
-        window.$('#modal-edit-example-hooks').modal('show');
+        window.$('#modal-edit-attribute-hooks').modal('show');
     }
 
     /**
      * Hàm xử lý khi click xem chi tiết một ví dụ
-     * @param {*} example thông tin của ví dụ cần xem
+     * @param {*} attribute thông tin của ví dụ cần xem
      */
-    const handleShowDetailInfo = (example) => {
+    const handleShowDetailInfo = (attribute) => {
         setState({
             ...state,
-            curentRowDetail: example,
+            curentRowDetail: attribute,
         });
-        window.$(`#modal-detail-info-example-hooks`).modal('show')
+        window.$(`#modal-detail-info-attribute-hooks`).modal('show')
     }
 
     let lists = [];
-    if (example) {
-        lists = example.lists
+    if (attribute) {
+        lists = attribute.lists
     }
 
-    const totalPage = example && Math.ceil(example.totalList / perPage);
+    const totalPage = attribute && Math.ceil(attribute.totalList / perPage);
 
     return (
         <React.Fragment>
-            <ExampleEditForm
-                exampleID={currentRow && currentRow._id}
-                exampleName={currentRow && currentRow.exampleName}
+            <AttributeEditForm
+                attributeID={currentRow && currentRow._id}
+                attributeName={currentRow && currentRow.attributeName}
                 description={currentRow && currentRow.description}
             />
 
-            <ExampleDetailInfo
-                exampleID={curentRowDetail && curentRowDetail._id}
-                exampleName={curentRowDetail && curentRowDetail.exampleName}
+            <AttributeDetailInfo
+                attributeID={curentRowDetail && curentRowDetail._id}
+                attributeName={curentRowDetail && curentRowDetail.attributeName}
                 description={curentRowDetail && curentRowDetail.description}
             />
 
-            <ExampleCreateForm
+            <AttributeCreateForm
                 page={page}
                 perPage={perPage}
             />
 
-            <ExampleImportForm
+            <AttributeImportForm
                 page={page}
                 perPage={perPage}
             />
@@ -182,53 +182,53 @@ function ExampleManagementTable(props) {
                 <div className="form-inline">
                     {/* Button thêm mới */}
                     <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
-                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button>
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_attribute.add_title')} >{translate('manage_attribute.add')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-example-hooks').modal('show')} title={translate('manage_example.add_multi_example')}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-attribute-hooks').modal('show')} title={translate('manage_attribute.add_multi_attribute')}>
                                 {translate('human_resource.salary.add_import')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-example-hooks').modal('show')} title={translate('manage_example.add_one_example')}>
-                                {translate('manage_example.add_example')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-attribute-hooks').modal('show')} title={translate('manage_attribute.add_one_attribute')}>
+                                {translate('manage_attribute.add_attribute')}</a></li>
                         </ul>
                     </div>
                     {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}
 
                     {/* Tìm kiếm */}
                     <div className="form-group">
-                        <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                        <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
+                        <label className="form-control-static">{translate('manage_attribute.attributeName')}</label>
+                        <input type="text" className="form-control" name="attributeName" onChange={handleChangeAttributeName} placeholder={translate('manage_attribute.attributeName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
+                        <button type="button" className="btn btn-success" title={translate('manage_attribute.search')} onClick={() => handleSubmitSearch()}>{translate('manage_attribute.search')}</button>
                     </div>
                 </div>
 
                 <SmartTable
                     tableId={tableId}
                     columnData={{
-                        index: translate('manage_example.index'),
-                        exampleName: translate('manage_example.exampleName'),
-                        description: translate('manage_example.description')
+                        index: translate('manage_attribute.index'),
+                        attributeName: translate('manage_attribute.attributeName'),
+                        description: translate('manage_attribute.description')
                     }}
                     tableHeaderData={{
-                        index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>,
-                        exampleName: <th>{translate('manage_example.exampleName')}</th>,
-                        description: <th>{translate('manage_example.description')}</th>,
+                        index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_attribute.index')}</th>,
+                        attributeName: <th>{translate('manage_attribute.attributeName')}</th>,
+                        description: <th>{translate('manage_attribute.description')}</th>,
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                     }}
                     tableBodyData={lists?.length > 0 && lists.map((item, index) => {
                         return {
                             id: item?._id,
                             index: <td>{index + 1}</td>,
-                            exampleName: <td>{item?.exampleName}</td>,
+                            attributeName: <td>{item?.attributeName}</td>,
                             description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>
-                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
-                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_attribute.detail_info_attribute')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_attribute.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
                                 <DeleteNotification
-                                    content={translate('manage_example.delete')}
+                                    content={translate('manage_attribute.delete')}
                                     data={{
                                         id: item._id,
-                                        info: item.exampleName
+                                        info: item.attributeName
                                     }}
                                     func={handleDelete}
                                 />
@@ -241,7 +241,7 @@ function ExampleManagementTable(props) {
                 />
 
                 {/* PaginateBar */}
-                {example && example.isLoading ?
+                {attribute && attribute.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
@@ -249,7 +249,7 @@ function ExampleManagementTable(props) {
                     pageTotal={totalPage ? totalPage : 0}
                     currentPage={page}
                     display={lists && lists.length !== 0 && lists.length}
-                    total={example && example.totalList}
+                    total={attribute && attribute.totalList}
                     func={setPage}
                 />
             </div>
@@ -258,14 +258,14 @@ function ExampleManagementTable(props) {
 }
 
 function mapState(state) {
-    const example = state.example1;
-    return { example }
+    const attribute = state.attribute;
+    return { attribute }
 }
 
 const actions = {
-    getExamples: exampleActions.getExamples,
-    deleteExamples: exampleActions.deleteExamples
+    getAttributes: AttributeActions.getAttributes,
+    deleteAttributes: AttributeActions.deleteAttributes
 }
 
-const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ExampleManagementTable));
-export { connectedExampleManagementTable as ExampleManagementTable };
+const connectedAttributeTable = connect(mapState, actions)(withTranslate(AttributeTable));
+export { connectedAttributeTable as AttributeTable };

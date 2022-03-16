@@ -20,7 +20,7 @@ function getAttributes(queryData) {
         },
         false,
         true,
-        "manage_attribute"
+        "super_admin.attribute"
     );
 }
 
@@ -35,7 +35,7 @@ function deleteAttributes(data) {
         },
         true,
         true,
-        "manage_attribute"
+        "super_admin.attribute"
     )
 }
 
@@ -48,7 +48,7 @@ function createAttribute(data) {
         },
         true,
         true,
-        "manage_attribute"
+        "super_admin.attribute"
     )
 }
 
@@ -61,6 +61,6 @@ function editAttribute(id, data) {
         },
         true,
         true,
-        "manage_attribute"
+        "super_admin.attribute"
     )
 }

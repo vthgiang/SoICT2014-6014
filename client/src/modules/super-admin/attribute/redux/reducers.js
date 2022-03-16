@@ -1,4 +1,4 @@
-import { exampleConstants } from './constants';
+import { attributeConstants } from './constants';
 
 var findIndex = (array, id) => {
     var result = -1;
@@ -17,40 +17,40 @@ const initialState = {
     totalList: 0,
 }
 
-export function example1(state = initialState, action) {
+export function attribute(state = initialState, action) {
     let index = -1;
     switch (action.type) {
-        case exampleConstants.GET_ALL_EXAMPLES_REQUEST:
-        case exampleConstants.DELETE_EXAMPLE_REQUEST:
-        case exampleConstants.CREATE_EXAMPLE_REQUEST:
-        case exampleConstants.EDIT_EXAMPLE_REQUEST:
+        case attributeConstants.GET_ALL_ATTRIBUTES_REQUEST:
+        case attributeConstants.DELETE_ATTRIBUTE_REQUEST:
+        case attributeConstants.CREATE_ATTRIBUTE_REQUEST:
+        case attributeConstants.EDIT_ATTRIBUTE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
-        case exampleConstants.GET_ALL_EXAMPLES_FAILURE:
-        case exampleConstants.DELETE_EXAMPLE_FAILURE:
-        case exampleConstants.CREATE_EXAMPLE_FAILURE:
-        case exampleConstants.EDIT_EXAMPLE_FAILURE:
+        case attributeConstants.GET_ALL_ATTRIBUTES_FAILURE:
+        case attributeConstants.DELETE_ATTRIBUTE_FAILURE:
+        case attributeConstants.CREATE_ATTRIBUTE_FAILURE:
+        case attributeConstants.EDIT_ATTRIBUTE_FAILURE:
             return {
                 ...state,
                 isLoading: false,
                 error: action.error
             }
-        case exampleConstants.GET_ALL_EXAMPLES_SUCCESS:
+        case attributeConstants.GET_ALL_ATTRIBUTES_SUCCESS:
             return {
                 ...state,
                 lists: action.payload.data,
                 totalList: action.payload.totalList,
                 isLoading: false
             }
-        case exampleConstants.DELETE_EXAMPLE_SUCCESS:
+        case attributeConstants.DELETE_ATTRIBUTE_SUCCESS:
             return {
                 ...state,
-                lists: state.lists.filter(example => !action.exampleIds.includes(example?._id)),
+                lists: state.lists.filter(attribute => !action.attributeIds.includes(attribute?._id)),
                 isLoading: false
             }
-        case exampleConstants.CREATE_EXAMPLE_SUCCESS:
+        case attributeConstants.CREATE_ATTRIBUTE_SUCCESS:
             return {
                 ...state,
                 lists: [
@@ -59,7 +59,7 @@ export function example1(state = initialState, action) {
                 ],
                 isLoading: false
             }
-        case exampleConstants.EDIT_EXAMPLE_SUCCESS:
+        case attributeConstants.EDIT_ATTRIBUTE_SUCCESS:
             index = findIndex(state.lists, action.payload._id);
             if (index !== -1) {
                 state.lists[index] = action.payload

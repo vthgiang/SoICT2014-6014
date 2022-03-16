@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { exampleActions } from '../redux/actions';
+import { AttributeActions } from '../redux/actions';
 
 import { ShowImportData, ConFigImportFile, ImportFileExcel, DialogModal, ExportExcel } from '../../../../common-components/index';
 
-import { configurationExampleTemplate, importExampleTemplate } from '../components/fileConfigurationImportExample';
+import { configurationAttributeTemplate, importAttributeTemplate } from '../components-import/fileConfigurationImportAttribute';
 
-function ExampleImportForm(props) {
+function AttributeImportForm(props) {
 
     const [state, setState] = useState({
-        id: "import_file_example",
+        id: "import_file_attribute",
         importData: undefined,
         rowError: [],
         configData: undefined,
@@ -36,12 +36,12 @@ function ExampleImportForm(props) {
             value = value.map((item, index) => {
                 let errorAlert = [];
   
-                if (!item.exampleName) {
+                if (!item.attributeName) {
                     rowError = [...rowError, index + 1];
                     item = { ...item, error: true };
                 }
                 
-                if (!item.exampleName) {
+                if (!item.attributeName) {
                     errorAlert = [...errorAlert, 'Tên ví dụ không được bỏ trống']
                 }
                 
@@ -74,9 +74,9 @@ function ExampleImportForm(props) {
 
     const save = () => {
         if (isFormValidated()) {
-            importData && props.createExample(importData);
-            importData && props.getExamples({
-                exampleName: "",
+            importData && props.createAttribute(importData);
+            importData && props.getAttributes({
+                attributeName: "",
                 page: page,
                 perPage: perPage
             })
@@ -86,19 +86,19 @@ function ExampleImportForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-import-file-example-hooks`} isLoading={false}
-                formID={`form-import-file-example-hooks`}
+                modalID={`modal-import-file-attribute-hooks`} isLoading={false}
+                formID={`form-import-file-attribute-hooks`}
                 title={translate('human_resource.add_data_by_excel')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}
             >
-                <form className="form-group" id={`form-import-file-example-hooks`}>
+                <form className="form-group" id={`form-import-file-attribute-hooks`}>
                     <div className="col-md-12 col-xs-12">
                         <ConFigImportFile
                             id={`import_asset_config${id}`}
                             scrollTable={false}
-                            configData={configData ? configData : configurationExampleTemplate}
+                            configData={configData ? configData : configurationAttributeTemplate}
                             handleChangeConfig={handleChangeConfig}
                         />
                     </div>
@@ -106,21 +106,21 @@ function ExampleImportForm(props) {
                         <div className="col-md-4 col-xs-12">
                             <label>{translate('human_resource.choose_file')}</label>
                             <ImportFileExcel
-                                id={'file-import-example'}
-                                configData={configData ? configData : configurationExampleTemplate}
+                                id={'file-import-attribute'}
+                                configData={configData ? configData : configurationAttributeTemplate}
                                 handleImportExcel={handleImportExcel}
                             />
                         </div>
                         <div className="col-md-8 col-xs-12">
                             <label></label>
-                            <ExportExcel id="download_template_example" type='link' exportData={importExampleTemplate}
+                            <ExportExcel id="download_template_attribute" type='link' exportData={importAttributeTemplate}
                                 buttonName='Download file import mẫu' />
                         </div>
                     </div>
                     <div className="col-md-12 col-xs-12">
                         <ShowImportData
                             id={`import_asset_show_data${id}`}
-                            configData={configData ? configData : configurationExampleTemplate}
+                            configData={configData ? configData : configurationAttributeTemplate}
                             importData={importData}
                             rowError={rowError}
                             checkFileImport={checkFileImport}
@@ -136,9 +136,9 @@ function ExampleImportForm(props) {
 }
 
 const actions = {
-    createExample: exampleActions.createExample,
-    getExamples: exampleActions.getExamples,
+    createAttribute: AttributeActions.createAttribute,
+    getAttributes: AttributeActions.getAttributes,
 }
 
-const connectedExampleImportForm = connect(null, actions)(withTranslate(ExampleImportForm));
-export { connectedExampleImportForm as ExampleImportForm };
+const connectedAttributeImportForm = connect(null, actions)(withTranslate(AttributeImportForm));
+export { connectedAttributeImportForm as AttributeImportForm };

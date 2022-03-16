@@ -1,5 +1,5 @@
-// Config import example
-export const configurationExampleTemplate = {
+// Config import attribute
+export const configurationAttributeTemplate = {
     sheets: {
         description: "Tên các sheet",
         value: ["Thông tin ví dụ"]
@@ -8,7 +8,7 @@ export const configurationExampleTemplate = {
         description: "Số dòng tiêu đề của bảng",
         value: 1
     },
-    exampleName: {
+    attributeName: {
         columnName: "Tên ví dụ",
         description: "Tên tiêu đề ứng với tên ví dụ",
         value: "Tên ví dụ"
@@ -21,7 +21,7 @@ export const configurationExampleTemplate = {
 }
 
 // Dữliệu file export mẫu 
-export const importExampleTemplate = {
+export const importAttributeTemplate = {
     fileName: "Mẫu import ví dụ",
     dataSheets: [{
         sheetName: "Thông tin ví dụ",
@@ -29,16 +29,16 @@ export const importExampleTemplate = {
         tables: [{
             rowHeader: 1,
             columns: [
-                { key: "exampleName", value: "Tên ví dụ" },
+                { key: "attributeName", value: "Tên ví dụ" },
                 { key: "description", value: "Mô tả" }
             ],
             data: [
                 {
-                    exampleName: "VD1",
+                    attributeName: "VD1",
                     description: "VD1",
                 },
                 {
-                    exampleName: "VD2",
+                    attributeName: "VD2",
                     description: "VD2"
                 }
             ]

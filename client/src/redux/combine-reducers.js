@@ -14,6 +14,7 @@ import { system } from '../modules/super-admin/system/redux/reducers';
 import { user } from '../modules/super-admin/user/redux/reducers';
 import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
+import { attribute } from '../modules/super-admin/attribute/redux/reducers';
 import { apis } from '../modules/super-admin/api/api-management/redux/reducers';
 import { apiRegistration } from '../modules/super-admin/api/api-registration/redux/reducers'
 import { component } from '../modules/super-admin/component/redux/reducers';
@@ -150,6 +151,7 @@ const appReducer = combineReducers({
     user,
     role,
     link,
+    attribute,
     apis,
     apiRegistration,
     component,

@@ -5,31 +5,31 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal, ErrorLabel } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-import { exampleActions } from '../redux/actions';
+import { AttributeActions } from '../redux/actions';
 
-function ExampleEditForm(props) {
+function AttributeEditForm(props) {
     // Khởi tạo state
     const [state, setState] = useState({
-        exampleID: undefined,
-        exampleName: "",
+        attributeID: undefined,
+        attributeName: "",
         description: "",
-        exampleNameError: {
+        attributeNameError: {
             message: undefined,
             status: true
         }
     })
 
-    const { translate, example } = props;
-    const { exampleName, description, exampleNameError, exampleID } = state;
+    const { translate, attribute } = props;
+    const { attributeName, description, attributeNameError, attributeID } = state;
 
     // setState từ props mới
-    if (props.exampleID !== exampleID) {
+    if (props.attributeID !== attributeID) {
         setState({
             ...state,
-            exampleID: props.exampleID,
-            exampleName: props.exampleName,
+            attributeID: props.attributeID,
+            attributeName: props.attributeName,
             description: props.description,
-            exampleNameError: {
+            attributeNameError: {
                 message: undefined,
                 status: true
             }
@@ -40,7 +40,7 @@ function ExampleEditForm(props) {
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
-        if (!exampleNameError.status) {
+        if (!attributeNameError.status) {
             return false;
         }
         return true;
@@ -52,7 +52,7 @@ function ExampleEditForm(props) {
      */
     const save = () => {
         if (isFormValidated) {
-            props.editExample(exampleID, { exampleName, description });
+            props.editAttribute(attributeID, { attributeName, description });
         }
     }
 
@@ -61,14 +61,14 @@ function ExampleEditForm(props) {
      * Hàm xử lý khi tên ví dụ thay đổi
      * @param {*} e 
      */
-    const handleExampleName = (e) => {
+    const handleAttributeName = (e) => {
         const { value } = e.target;
         let result = ValidationHelper.validateName(translate, value, 6, 255);
 
         setState({
             ...state,
-            exampleName: value,
-            exampleNameError: result
+            attributeName: value,
+            attributeNameError: result
         });
     }
 
@@ -77,7 +77,7 @@ function ExampleEditForm(props) {
      * Hàm xử lý khi mô tả ví dụ thay đổi
      * @param {*} e 
      */
-    const handleExampleDescription = (e) => {
+    const handleAttributeDescription = (e) => {
         const { value } = e.target;
         setState({
             ...state,
@@ -88,26 +88,26 @@ function ExampleEditForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-edit-example-hooks`} isLoading={example.isLoading}
-                formID={`form-edit-example-hooks`}
-                title={translate('manage_example.edit_title')}
+                modalID={`modal-edit-attribute-hooks`} isLoading={attribute.isLoading}
+                formID={`form-edit-attribute-hooks`}
+                title={translate('manage_attribute.edit_title')}
                 disableSubmit={!isFormValidated}
                 func={save}
                 size={50}
                 maxWidth={500}
             >
-                <form id={`form-edit-example-hooks`}>
+                <form id={`form-edit-attribute-hooks`}>
                     {/* Tên ví dụ */}
-                    <div className={`form-group ${exampleNameError ? "" : "has-error"}`}>
-                        <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={exampleName} onChange={handleExampleName} />
-                        <ErrorLabel content={exampleNameError.message} />
+                    <div className={`form-group ${attributeNameError ? "" : "has-error"}`}>
+                        <label>{translate('manage_attribute.attributeName')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" value={attributeName} onChange={handleAttributeName} />
+                        <ErrorLabel content={attributeNameError.message} />
                     </div>
 
                     {/* Mô tả ví dụ */}
                     <div className={`form-group`}>
-                        <label>{translate('manage_example.description')}</label>
-                        <input type="text" className="form-control" value={description} onChange={handleExampleDescription} />
+                        <label>{translate('manage_attribute.description')}</label>
+                        <input type="text" className="form-control" value={description} onChange={handleAttributeDescription} />
                     </div>
                 </form>
             </DialogModal>
@@ -116,13 +116,13 @@ function ExampleEditForm(props) {
 }
 
 function mapState(state) {
-    const example = state.example1;
-    return { example }
+    const attribute = state.attribute;
+    return { attribute }
 }
 
 const actions = {
-    editExample: exampleActions.editExample
+    editAttribute: AttributeActions.editAttribute
 }
 
-const connectedExampleEditForm = connect(mapState, actions)(withTranslate(ExampleEditForm));
-export { connectedExampleEditForm as ExampleEditForm };
+const connectedAttributeEditForm = connect(mapState, actions)(withTranslate(AttributeEditForm));
+export { connectedAttributeEditForm as AttributeEditForm };

@@ -1,7 +1,7 @@
 import { attributeConstants } from './constants';
 import { attributeServices } from './services';
 
-export const attributeActions = {
+export const AttributeActions = {
     getAttributes,
     deleteAttributes,
     createAttribute,

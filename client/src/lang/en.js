@@ -98,6 +98,7 @@ export default {
             manage_company: "Manage Company",
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
+            manage_attribute: "Manage Attributes",
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
             registration_api: "Manage API registration",
@@ -778,6 +779,16 @@ export default {
                 this_url_cannot_be_use: "This url cannot be use",
                 url_exist: "Url already exists",
             },
+            attribute: {
+                // Thông điệp trả về từ server
+                delete_success: "Delete attribute successfully!",
+                delete_fail: "Delete attribute fail!",
+                add_success: "Add attribute successfully!",
+                add_fail: "Add attribute fail!",
+                edit_attribute_success: "Update attribute successfully!",
+                edit_attribute_fail: "Update attribute fail!",
+                
+            },
             component: {
                 // Thông điệp trả về từ server
                 edit_component_success: "Edit component successfully",
@@ -1394,6 +1405,29 @@ export default {
             edit_success: "Edit successfully!",
             edit_faile: "Edit failed!",
             category: "Category",
+        },
+
+        manage_attribute: {
+            attributeName: "Attribute Name",
+            search: "Search",
+            add_attribute: "Add Attribute",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this attribute",
+            delete: "Delete this attribute",
+            delete_success: "Delete attribute successfully!",
+            delete_fail: "Delete attribute fail!",
+            add: "Add attribute",
+            add_title: "Add a new attribute",
+            add_multi_attribute: "Add many new attributes",
+            add_one_attribute: "Add 1 new attribute",
+            add_success: "Add attribute successfully!",
+            add_fail: "Add attribute fail!",
+            attribute_description: "Attribute Description",
+            edit_title: "Update a attribute",
+            edit_attribute_success: "Update attribute successfully!",
+            edit_attribute_fail: "Update attribute fail!",
+            detail_info_attribute: "Detail infomation of attribute",
         },
 
         manage_api: {

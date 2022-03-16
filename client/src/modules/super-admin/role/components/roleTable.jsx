@@ -6,6 +6,7 @@ import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip }
 
 import { RoleActions } from '../redux/actions';
 import { UserActions } from '../../user/redux/actions';
+import { AttributeActions } from '../../attribute/redux/actions';
 
 import RoleCreateForm from './roleCreateForm';
 import RoleInfoForm from './roleInfoForm';
@@ -148,6 +149,7 @@ function RoleTable(props) {
         props.get();
         props.get({ page: state.page, limit: state.limit });
         props.getUser();
+        props.getAttribute();
     }, [])
 
     const deleteRole = (roleId) => {
@@ -276,7 +278,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     get: RoleActions.get,
     getUser: UserActions.get,
-    destroy: RoleActions.destroy
+    destroy: RoleActions.destroy,
+    getAttribute: AttributeActions.getAttributes
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoleTable));

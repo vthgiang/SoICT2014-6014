@@ -99,6 +99,7 @@ export default {
             manage_company: "Doanh nghiệp",
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
+            manage_attribute: "Quản lý thuộc tính",
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
             registration_api: "Quản lý đăng ký API",
@@ -831,6 +832,14 @@ export default {
                     "Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng",
                 attribute_name_duplicate: "Tên các thuộc tính đã nhập bị trùng với nhau"
             },
+            attribute: {
+                delete_success: "Xóa thuộc tính thành công!",
+                delete_fail: "Xóa thuộc tính thất bại!",
+                add_success: "Thêm thuộc tính thành công!",
+                add_fail: "Thêm thuộc tính thất bại!",
+                edit_attribute_success: "Cập nhật thuộc tính thành công!",
+                edit_attribute_fail: "Cập nhật thuộc tính thất bại!",
+            },
             link: {
                 // Thông điệp trả về từ server
                 create_link_success: "Tạo link thành công",
@@ -1494,6 +1503,29 @@ export default {
             edit_success: "Chỉnh sửa thành công",
             edit_faile: "Chỉnh sửa thất bại",
             category: "Danh mục",
+        },
+
+        manage_attribute: {
+            attributeName: "Tên thuộc tính",
+            search: "Tìm kiếm",
+            add_attribute: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin thuộc tính",
+            delete: "Xóa thuộc tính",
+            delete_success: "Xóa thuộc tính thành công!",
+            delete_fail: "Xóa thuộc tính thất bại!",
+            add: "Thêm thuộc tính",
+            add_title: "Thêm mới thuộc tính",
+            add_multi_attribute: "Thêm nhiều thuộc tính",
+            add_one_attribute: "Thêm một thuộc tính",
+            add_success: "Thêm thuộc tính thành công!",
+            add_fail: "Thêm thuộc tính thất bại!",
+            attribute_description: "Mô tả thuộc tính",
+            edit_title: "Cập nhật thuộc tính",
+            edit_attribute_success: "Cập nhật thuộc tính thành công!",
+            edit_attribute_fail: "Cập nhật thuộc tính thất bại!",
+            detail_info_attribute: "Thông tin chi tiết thuộc tính",
         },
 
         manage_api: {
