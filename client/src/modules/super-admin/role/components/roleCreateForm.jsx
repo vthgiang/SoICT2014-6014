@@ -76,6 +76,22 @@ function RoleCreateForm(props) {
         return message === undefined;
     }
 
+    const validateCategory = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value) {
+            msg = translate('document.doc_version.no_blank_category');
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                documentCategory: value,
+                errorCategory: msg,
+            })
+        }
+        return msg === undefined;
+    }
+
     /**
      * Bắt sự kiện chỉnh sửa mô tả thuộc tính
      */
@@ -181,10 +197,10 @@ function RoleCreateForm(props) {
         }
     };
 
-    const handleParent = (value) => {
+    const handleAttributeName = (value) => {
         setState({
             ...state,
-            roleAttributes: value[0]
+            roleAttributes: value
         });
     }
 
@@ -327,16 +343,19 @@ function RoleCreateForm(props) {
                                         roleAttributes.map((attr, index) => {
                                             return <tr key={index}>
                                                 <td>
-                                                    <SelectBox
-                                                        id="create-role"
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={[
-                                                            { text: "Không có thuộc tính" }, ...attribute.lists.map(attribute => { return { value: attribute ? attribute._id : null, text: attribute ? attribute.attributeName : "" } })
-                                                        ]}
-                                                        onChange={handleParent}
-                                                        multiple={false}
-                                                    />
+                                                    <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
+                                                        <SelectBox
+                                                            id="create-role"
+                                                            className="form-control select2"
+                                                            style={{ width: "100%" }}
+                                                            items={[
+                                                                { text: translate('manage_role.attribute_name_empty') }, ...attribute.lists.map(attribute => { return { value: attribute ? attribute._id : null, text: attribute ? attribute.attributeName : "" } })
+                                                            ]}
+                                                            onChange={handleAttributeName}
+                                                            multiple={false}
+                                                        />
+                                                        {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
+                                                    </div>
                                                     {/* <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
                                                         <input type="text"
                                                             className="form-control"

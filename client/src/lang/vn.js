@@ -1465,6 +1465,7 @@ export default {
             attribute_description_example: "VD: Vị trí trong nhóm",
             add_attribute_title: "Thêm thuộc tính cho phân quyền",
             roles_add_attribute: "Các phân quyền thêm thuộc tính",
+            attribute_name_empty: "Chưa chọn thuộc tính"
         },
 
         manage_user: {

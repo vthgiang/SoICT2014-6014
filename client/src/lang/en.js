@@ -1366,7 +1366,8 @@ export default {
             attribute_value_example: "VD: Leader",
             attribute_description_example: "VD: Role position in group",
             add_attribute_title: "Add role attribute",
-            roles_add_attribute: "Attributes of roles"
+            roles_add_attribute: "Attributes of roles",
+            attribute_name_empty: "Attribute not selected"
         },
 
         manage_user: {
