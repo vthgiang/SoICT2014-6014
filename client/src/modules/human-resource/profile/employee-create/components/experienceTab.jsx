@@ -17,7 +17,6 @@ function ExperienceTab(props) {
     const { translate, major, career } = props;
 
     const listPosition = career.listPosition
-    // console.log("xxxxxxxxxxx", listPosition)
 
     const { id } = props;
 
@@ -297,16 +296,7 @@ function ExperienceTab(props) {
                 {/* Trình độ học vấn*/}
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.academic_level')}</h4></legend>
-                    {/* Trình độ văn hoá */}
-                    {/* <div className="form-group">
-                            <label>{translate('human_resource.profile.educational_level')}<span className="text-red">&#42;</span></label>
-                            <select className="form-control" name="educationalLevel" value={educationalLevel} onChange={handleChange}>
-                                <option value="12/12">12/12</option>
-                                <option value="11/12">11/12</option>
-                                <option value="10/12">10/12</option>
-                                <option value="9/12">9/12</option>
-                            </select>
-                        </div> */}
+
                     <div className="form-group">
                         <label >{translate('human_resource.profile.educational_level')}</label>
                         <input type="text" className="form-control" name="educationalLevel" value={educationalLevel ? educationalLevel : ''} onChange={handleChange}

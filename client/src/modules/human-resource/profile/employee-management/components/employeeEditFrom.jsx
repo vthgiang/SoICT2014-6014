@@ -1073,8 +1073,6 @@ const EmployeeEditFrom = (props) => {
         })
     }
 
-    // console.log("bbbbbbbbbbbbbb", state)
-
     return (
         <React.Fragment>
             <DialogModal

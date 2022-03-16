@@ -204,7 +204,7 @@ function ModalAddExperience(props) {
             setState(state => {
                 return {
                     ...state,
-                    files: [],
+                    files: undefined,
                     file: "",
                     urlFile: "",
                     fileUpload: ""

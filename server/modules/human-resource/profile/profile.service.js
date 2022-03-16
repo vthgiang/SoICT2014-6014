@@ -942,25 +942,17 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         fileCertificate = fileInfor.fileCertificate,
         fileContract = fileInfor.fileContract,
         fileExperience = fileInfor.fileExperience,
-        // fileMajor = fileInfor.fileMajor,
         fileCareerPosition = fileInfor.fileCareerPosition,
         file = fileInfor.file,
         healthInsuranceAttachment = fileInfor.healthInsuranceAttachment;
     let {
         degrees,
         certificates,
-        career,
-        major,
+        careerPositions,
         experiences,
         contracts,
         files,
     } = data;
-
-    for (let i in career) {
-        if (career[i] && career[i].position === "undefined") {
-            delete career[i].position;
-        }
-    }
 
     degrees = degrees
         ? degrees.map((x) => {
@@ -969,22 +961,17 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
           })
         : [];
 
-    // career = this.mergeUrlFileToObject(fileCareer, career);
-    // major = this.mergeUrlFileToObject(fileMajor, major);
     degrees = this.mergeUrlFileToObject(fileDegree, degrees);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileDegree);
 
     certificates = this.mergeUrlFileToObject(fileCertificate, certificates);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileCertificate);
 
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileContract);
 
+    console.log("aaaaaaaaaaaaaaaaaaaaa", fileExperience);
+    console.log("aaaaaaaaaaaaaaaaaaaaa", fileCareerPosition);
     experiences = this.mergeUrlFileToObject(fileExperience, experiences);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileExperience);
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxx", fileCareerPosition);
-    careerPositions = this.mergeUrlFileToObject(fileCareerPosition, career);
-    console.log("aaaaaaaaaaaaaaaaaaaaa");
+
+    careerPositions = this.mergeUrlFileToObject(fileCareerPosition, careerPositions);
 
     files = this.mergeUrlFileToObject(file, files);
 
@@ -1037,6 +1024,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         foreignLanguage: data.foreignLanguage,
         educationalLevel: data.educationalLevel,
         experiences: experiences,
+        careerPositions: careerPositions,
         workProcess: data.workProcess,
         certificates: certificates,
         degrees: degrees,

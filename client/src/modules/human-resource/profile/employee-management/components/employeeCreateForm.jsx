@@ -79,20 +79,18 @@ const EmployeeCreateForm = (props) => {
             birthdate: formatDate2(Date.now()),
             roles: [],
             workProcess: [],
-            experiences: [],
             socialInsuranceDetails: [],
         },
         courses: [],
         degrees: [],
         certificates: [],
         careerPositions: [],
+        experiences: [],
         contracts: [],
         files: [],
         disciplines: [],
         commendations: [],
         annualLeaves: [],
-        // major: [],
-        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -106,7 +104,6 @@ const EmployeeCreateForm = (props) => {
             familyMembers: []
         },
         editMember: initMember
-
     })
 
 
@@ -165,24 +162,16 @@ const EmployeeCreateForm = (props) => {
      * @param {*} addData : Kinh nghiệm làm việc muốn thêm
      */
     const handleChangeExperience = (data, addData) => {
-        const { employee } = state;
         setState(state => ({
             ...state,
-            employee: {
-                ...employee,
-                experiences: data
-            }
+            experiences: data
         }))
     }
 
     const handleChangeCareerPosition = (data, addData) => {
-        const { employee } = state;
         setState(state => ({
             ...state,
-            employee: {
-                ...employee,
-                careerPositions: data
-            }
+            careerPositions: data
         }))
     }
 
@@ -222,30 +211,6 @@ const EmployeeCreateForm = (props) => {
             certificates: data
         }))
     }
-
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
-    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
-    //  * @param {*} addData : Chuyên ngành tương đương muốn thêm
-    //  */
-    // const handleChangeMajor = (data, addData) => {
-    //     setState(state => ({
-    //         ...state,
-    //         major: data
-    //     }))
-    // }
-
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin công việc tương đương
-    //  * @param {*} data : Dữ liệu thông tin công việc tương đương
-    //  * @param {*} addData : Công việc tương đương muốn thêm
-    //  */
-    // const handleChangeCareer = (data, addData) => {
-    //     setState(state => ({
-    //         ...state,
-    //         career: data
-    //     }))
-    // }
 
     /**
      * Function thêm, chỉnh sửa thông tin quá trình đóng BHXH
@@ -371,7 +336,7 @@ const EmployeeCreateForm = (props) => {
 
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
-        let { employee, degrees, certificates, contracts, files, avatar, careerPositions,
+        let { employee, degrees, experiences, certificates, contracts, files, avatar, careerPositions,
             disciplines, commendations, annualLeaves, courses, houseHold } = state;
 
         await setState(state => ({
@@ -387,8 +352,7 @@ const EmployeeCreateForm = (props) => {
                 annualLeaves,
                 courses,
                 careerPositions,
-                // career,
-                // major,
+                experiences,
                 houseHold
             }
         }))
@@ -412,6 +376,7 @@ const EmployeeCreateForm = (props) => {
             annualLeaves: [...state.annualLeaves],
             courses: [...state.courses],
             careerPositions:  [...state.careerPositions],
+            experiences:  [...state.experiences],
             houseHold: { ...state.houseHold },
         });
         degrees.forEach(x => {
@@ -419,6 +384,9 @@ const EmployeeCreateForm = (props) => {
         })
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
+        })
+        experiences.forEach(x => {
+            formData.append("fileExperience", x.fileUpload);
         })
         careerPositions.forEach(x => {
             formData.append("fileCareerPosition", x.fileUpload);

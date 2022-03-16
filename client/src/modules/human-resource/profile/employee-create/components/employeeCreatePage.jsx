@@ -93,32 +93,26 @@ function EmployeeCreatePage(props) {
             identityCardAddress: "",
             roles: [],
             phoneNumber: "",
-            experiences: [],
             workProcess: [],
             socialInsuranceDetails: [],
-            degrees: [],
-            certificates: [],
             contracts: [],
             files: [],
             disciplines: [],
             commendations: [],
             annualLeaves: [],
             courses: [],
-            // career:[],
-            // major:[],
             houseHold: {}
         },
         courses: [],
         degrees: [],
         certificates: [],
+        experiences: [],
         careerPositions: [],
         contracts: [],
         files: [],
         disciplines: [],
         commendations: [],
         annualLeaves: [],
-        // major: [],
-        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -208,13 +202,9 @@ function EmployeeCreatePage(props) {
      * @param {*} addData : Kinh nghiệm làm việc muốn thêm
      */
     const handleChangeExperience = (data, addData) => {
-        const { employee } = state;
         setState(state => ({
             ...state,
-            employee: {
-                ...employee,
-                experiences: data
-            }
+            experiences: data
         }))
     }
 
@@ -370,41 +360,14 @@ function EmployeeCreatePage(props) {
         })
     }
 
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
-    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
-    //  * @param {*} addData : Chuyên ngành tương đương muốn thêm
-    //  */
-    // const handleChangeMajor = (data, addData) => {
-    //     setState(state => {
-    //         return {
-    //             ...state,
-    //             major: data
-    //         }
-    //     })
-    // }
-
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin công việc tương đương
-    //  * @param {*} data : Dữ liệu thông tin công việc tương đương
-    //  * @param {*} addData : Công việc tương đương muốn thêm
-    //  */
-    // const handleChangeCareer = (data, addData) => {
-    //     setState(state => {
-    //         return {
-    //             ...state,
-    //             career: data
-    //         }
-    //     })
-    // }
-
     /**
      * Function thêm mới thông tin nhân viên
      */
     const handleSubmit = async () => {
 
-        let { employee, degrees, certificates, contracts, files, avatar, careerPositions, disciplines, commendations, annualLeaves, courses, houseHold } = state;
-        setState({
+        let { employee, degrees, experiences, certificates, contracts, files, avatar, careerPositions, disciplines, commendations, annualLeaves, courses, houseHold } = state;
+
+        await setState({
             ...state,
             employee: {
                 ...employee,
@@ -417,6 +380,7 @@ function EmployeeCreatePage(props) {
                 annualLeaves,
                 courses,
                 careerPositions,
+                experiences,
                 houseHold,
             }
         })
@@ -441,6 +405,7 @@ function EmployeeCreatePage(props) {
             annualLeaves: [...state.annualLeaves],
             courses: [...state.courses],
             careerPositions:  [...state.careerPositions],
+            experiences:  [...state.experiences],
             houseHold: { ...state.houseHold },
         });
         degrees.forEach(x => {
@@ -457,6 +422,10 @@ function EmployeeCreatePage(props) {
             formData.append("fileCareerPosition", x.fileUpload);
         })
 
+        experiences.forEach(x => {
+            formData.append("fileExperience", x.fileUpload);
+        })
+
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
@@ -469,7 +438,6 @@ function EmployeeCreatePage(props) {
         })
         props.addNewEmployee(formData);
         // console.log(...formData);
-        // console.log(employee);
     }
 
     const _fm_saveMember = (data) => {
