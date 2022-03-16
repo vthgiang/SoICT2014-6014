@@ -5818,11 +5818,11 @@ export default {
                 qc_status: {
                     1: {
                         color: "orange",
-                        content: "Chưa kiểm định",
+                        content: "Chưa kiểm định xong",
                     },
                     2: {
                         color: "green",
-                        content: "Đạt kiểm định",
+                        content: "Đã kiểm định xong",
                     },
                     3: {
                         color: "red",

@@ -4734,11 +4734,11 @@ export default {
                 qc_status: {
                     1: {
                         color: "orange",
-                        content: "Untested",
+                        content: "Unfinished test",
                     },
                     2: {
                         color: "green",
-                        content: "Pass the test",
+                        content: "Finished test",
                     },
                     3: {
                         color: "red",

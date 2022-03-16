@@ -9,6 +9,8 @@ function QualityControlForm(props) {
         quantityPassedTest: [],
     })
 
+    const { translate, bills, listGoods } = props;
+    const { status, content, code } = state;
     const handleStatusChange = (value) => {
         const status = value[0];
         setState({
@@ -25,14 +27,14 @@ function QualityControlForm(props) {
         });
     }
 
-    const handleQualityControlEachProduct = (index) => {
-        const arr = [];
-        arr[index] = index;
+    const handleQualityControlEachProduct = (index, value) => {
+        const data = [...listGoods];
+        data[index].realQuantity = value.toString();
         setState({
             ...state,
-            quantityPassedTest: arr
+            listGoods: data
         });
-        console.log(state.quantityPassedTest);
+        checkLots(data[index].quantity, index);
     }
 
     if (props.billId !== state.billId) {
@@ -45,6 +47,16 @@ function QualityControlForm(props) {
         })
     }
 
+    const isFormValidated = () => {
+        let count = 0;
+        state.listGoods && state.listGoods.forEach(item => {
+            if (item.realQuantity === '' || parseInt(item.realQuantity) > item.quantity || parseInt(item.realQuantity) < 0) {
+                count++;
+            }
+        })
+        return count === 0;
+    }
+
     const save = () => {
         const userId = localStorage.getItem("userId");
         const data = {
@@ -52,28 +64,19 @@ function QualityControlForm(props) {
                 staff: userId,
                 status: state.status !== "" ? state.status : 1,
                 content: state.content,
-            }
+            },
+            goods: state.listGoods,
         }
         props.editBill(state.billId, data);
     }
 
-    const checkLots = (lots, quantity) => {
-        if (lots.length === 0) {
-            return false;
-        } else {
-            let totalQuantity = 0;
-            for (let i = 0; i < lots.length; i++) {
-                totalQuantity += Number(lots[i].quantity);
-            }
-            if (Number(quantity) !== Number(totalQuantity)) {
-                return false;
-            }
+    const checkLots = (quantity, index) => {
+        if (listGoods[index].realQuantity > quantity || listGoods[index].realQuantity < 0 || listGoods[index].realQuantity === "") {
+            return [false, "Số lượng kiểm định phải nhỏ hơn số lượng gốc và lớn hơn 0, không được để trống"];
         }
-        return true;
+        return [true, ""];
     }
 
-    const { translate, bills, listGoods } = props;
-    const { status, content, code, quantityPassedTest } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -83,9 +86,9 @@ function QualityControlForm(props) {
                 msg_success={translate('manage_warehouse.bill_management.edit_successfully')}
                 msg_failure={translate('manage_warehouse.bill_management.edit_failed')}
                 func={save}
-                // disableSubmit={!isFormValidated()}
+                disableSubmit={!isFormValidated()}
                 size={50}
-                maxWidth={500}
+                maxWidth={700}
             >
                 <form id="form-quality-control-bill">
                     <div className="form-group">
@@ -124,7 +127,6 @@ function QualityControlForm(props) {
                                         <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
                                         <th title={translate('manage_warehouse.bill_management.quantity_passed_test')}>{translate('manage_warehouse.bill_management.quantity_passed_test')}</th>
                                         <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
-                                        <th>{translate('task_template.action')}</th>
                                     </tr>
                                 </thead>
 
@@ -137,22 +139,21 @@ function QualityControlForm(props) {
                                                     <td>{x.good.code}</td>
                                                     <td>{x.good.name}</td>
                                                     <td>{x.good.baseUnit}</td>
-                                                    {(checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> :
+                                                    {/* {(checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> :
                                                         <td>
                                                             <span>{x.quantity}</span>
-                                                        </td>}
+                                                        </td>} */}
+                                                    <td>{x.quantity}</td>
                                                     <td>
-                                                        <input style={{'border': 'white', 'paddingBottom' : '15px'}} value={quantityPassedTest[index]} type="text" className="form-control" onChange={handleQualityControlEachProduct(index)}></input>
+                                                        {(checkLots(x.quantity, index))[0] ?
+                                                            <input placeholder='Nhập số hàng đạt kiểm định' style={{ 'border': 'white', 'paddingBottom': '15px' }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)}/>
+                                                            :
+                                                            <div className="tooltip-abc">
+                                                                <input placeholder='Nhập số hàng đạt kiểm định' style={{ 'border': 'white', 'paddingBottom': '15px', 'color': "red" }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)}/>
+                                                                <span className="tooltiptext"><p style={{ color: "white" }}>{checkLots(x.quantity, index)[1]}</p></span>
+                                                            </div>}
                                                     </td>
                                                     <td>{x.description}</td>
-                                                    {/* <td>
-                                                        <a
-                                                            className="text-blue"
-                                                            title={translate('manage_warehouse.inventory_management.add_lot')}
-                                                            onClick={() => handleQualityControl(x, index)}
-                                                        ><i className="material-icons">adjust</i>
-                                                        </a>
-                                                    </td> */}
                                                 </tr>
                                             )
                                     }

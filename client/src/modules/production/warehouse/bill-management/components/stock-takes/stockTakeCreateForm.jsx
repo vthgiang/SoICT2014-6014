@@ -12,6 +12,7 @@ function StockTakeCreateForm(props) {
         quantity: '',
         realQuantity: '',
         damagedQuantity: 0,
+        realQuantity: 0,
         description: '',
         lots: []
     }

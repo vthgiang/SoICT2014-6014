@@ -9,6 +9,7 @@ function QuantityLotStockTakeEdit(props) {
         quantity: 0,
         realQuantity: '',
         damagedQuantity: 0,
+        realQuantity: '',
         note: ''
     }
 

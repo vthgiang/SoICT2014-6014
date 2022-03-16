@@ -9,6 +9,7 @@ function QuantityLotGoodReturnEdit(props) {
         quantity: 0,
         returnQuantity: 0,
         damagedQuantity: 0,
+        realQuantity: 0,
         note: ''
     }
 

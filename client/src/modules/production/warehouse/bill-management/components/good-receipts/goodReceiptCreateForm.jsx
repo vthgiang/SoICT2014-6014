@@ -12,6 +12,8 @@ function GoodReceiptCreateForm(props) {
         good: "",
         quantity: 0,
         returnQuantity: 0,
+        damagedQuantity: 0,
+        realQuantity: 0,
         description: "",
         lots: [],
     };

@@ -94,7 +94,6 @@ function ReceiptManagement(props) {
             qcStatus: qcStatus,
             qcContent: qcContent
         })
-        console.log(bill);
         window.$('#modal-quality-control-bill').modal('show');
     }
 
