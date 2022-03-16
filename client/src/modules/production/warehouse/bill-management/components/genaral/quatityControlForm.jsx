@@ -106,9 +106,11 @@ function QualityControlForm(props) {
                                 value: 1, text: translate('manufacturing.command.qc_status.1.content')
                             }, {
                                 value: 2, text: translate('manufacturing.command.qc_status.2.content')
-                            }, {
-                                value: 3, text: translate('manufacturing.command.qc_status.3.content')
-                            }]}
+                            }
+                                // , {
+                                //     value: 3, text: translate('manufacturing.command.qc_status.3.content')
+                                // }
+                            ]}
                             onChange={handleStatusChange}
                             multiple={false}
                         />
@@ -139,17 +141,13 @@ function QualityControlForm(props) {
                                                     <td>{x.good.code}</td>
                                                     <td>{x.good.name}</td>
                                                     <td>{x.good.baseUnit}</td>
-                                                    {/* {(checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> :
-                                                        <td>
-                                                            <span>{x.quantity}</span>
-                                                        </td>} */}
                                                     <td>{x.quantity}</td>
                                                     <td>
                                                         {(checkLots(x.quantity, index))[0] ?
-                                                            <input placeholder='Nhập số hàng đạt kiểm định' style={{ 'border': 'white', 'paddingBottom': '15px' }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)}/>
+                                                            <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'green 1px solid', 'width': '30%' }} type="number" value={x.realQuantity === 0 ? '' : x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
                                                             :
                                                             <div className="tooltip-abc">
-                                                                <input placeholder='Nhập số hàng đạt kiểm định' style={{ 'border': 'white', 'paddingBottom': '15px', 'color': "red" }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)}/>
+                                                                <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'red 1px solid', 'paddingBottom': '15px', 'color': "red" }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{checkLots(x.quantity, index)[1]}</p></span>
                                                             </div>}
                                                     </td>

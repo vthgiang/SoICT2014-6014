@@ -4686,6 +4686,7 @@ export default {
                 staff_true: "Checking the quality of commodity",
                 good_code: "Commodity code",
                 number: "number",
+                number_passed: 'Number of passed',
                 unit: "Unit",
                 note: "Note",
                 issued_quantity: "Issued quantity",

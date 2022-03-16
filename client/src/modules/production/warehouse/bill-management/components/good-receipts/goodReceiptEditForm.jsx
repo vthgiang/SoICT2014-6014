@@ -13,6 +13,7 @@ function GoodReceiptEditForm(props) {
     const EMPTY_GOOD = {
         good: '',
         quantity: 0,
+        realQuantity: 0,
         returnQuantity: 0,
         description: '',
         lots: []
@@ -1100,6 +1101,7 @@ function GoodReceiptEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.number_passed')}>{translate('manage_warehouse.bill_management.number_passed')}</th>
                                             <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
@@ -1114,12 +1116,13 @@ function GoodReceiptEditForm(props) {
                                                         <td>{x.good.code}</td>
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
-                                                        {(checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> :
+                                                        <td>{x.quantity}</td>
+                                                        {(checkLots(x.lots, x.realQuantity)) ? <td>{x.realQuantity}</td> :
                                                             <td className="tooltip-abc">
-                                                                <span style={{ color: "red" }}>{x.quantity}</span>
+                                                                <span style={{ color: "red" }}>{x.realQuantity}</span>
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.bill_management.text')}</p></span>
                                                             </td>}
-                                                        {(checkLots(x.lots, x.quantity)) ?
+                                                        {(checkLots(x.lots, x.realQuantity)) ?
                                                             <td>{x.lots.map((lot, index) =>
                                                                 <div key={index}>
                                                                     {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}

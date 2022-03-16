@@ -4939,6 +4939,7 @@ export default {
                 staff_true: "Kiểm định chất lượng hàng hóa",
                 good_code: "Mã hàng hóa",
                 number: "Số lượng",
+                number_passed: "Số lượng đạt kiểm định",
                 unit: "Đơn vị tính",
                 note: "Ghi chú",
                 issued_quantity: "Số lượng xuất",
@@ -4987,11 +4988,11 @@ export default {
                 qc_status: {
                     1: {
                         color: "orange",
-                        content: "Chưa kiểm định",
+                        content: "Chưa kiểm định xong",
                     },
                     2: {
                         color: "green",
-                        content: "Đạt kiểm định",
+                        content: "Đã kiểm định xong",
                     },
                     3: {
                         color: "red",
@@ -5818,11 +5819,11 @@ export default {
                 qc_status: {
                     1: {
                         color: "orange",
-                        content: "Chưa kiểm định xong",
+                        content: "Chưa kiểm định",
                     },
                     2: {
                         color: "green",
-                        content: "Đã kiểm định xong",
+                        content: "Đạt kiểm định",
                     },
                     3: {
                         color: "red",
