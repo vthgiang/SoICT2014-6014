@@ -57,6 +57,7 @@ function CategoryManagementTable(props) {
     }
 
     const setOption = (title, option) => {
+        console.log(title, option);
         setState({
             ...state,
             [title]: option
@@ -64,6 +65,7 @@ function CategoryManagementTable(props) {
     }
 
     const searchWithOption = async () => {
+        console.log(state);
         const data = {
             limit: state.limit,
             page: 1,
@@ -105,6 +107,29 @@ function CategoryManagementTable(props) {
         return name;
     }
 
+    const EMPTY_ROLE = {
+        role: '',
+        managementGood: []
+    }
+
+    const handleSaveEdit = async (e) => {
+        e.preventDefault();
+        const { indexInfoRole, managementLocation } = state;
+        let newManagementLocation;
+        if (managementLocation) {
+            newManagementLocation = managementLocation.map((item, index) => {
+                return (index === indexInfoRole) ? state.role : item;
+            })
+        }
+        await setState({
+            ...state,
+            editInfoRole: false,
+            managementLocation: newManagementLocation,
+            role: Object.assign({}, EMPTY_ROLE)
+        })
+    }
+
+
     const { categories, translate } = props;
     const { listPaginate, totalPages, page, categoryToTree } = categories;
     // const { tableId } = state;
@@ -113,7 +138,7 @@ function CategoryManagementTable(props) {
         <div className="box">
             <div className="box-body qlcv">
                 <CategoryCreateForm />
-
+                
                 <SearchBar
                     columns={[
                         { title: translate('manage_warehouse.category_management.code'), value: 'code' },
@@ -151,8 +176,8 @@ function CategoryManagementTable(props) {
                         code={state.currentRow.code}
                         name={state.currentRow.name}
                         type={state.currentRow.type}
-                        parent={state.currentRow.parent}
                         description={state.currentRow.description}
+                        parentName={changeIdToName(state.currentRow.parent)}
                     />
                 }
 
@@ -189,7 +214,7 @@ function CategoryManagementTable(props) {
                                     <td>{changeIdToName(x.parent)}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
-                                        <a className="text-green" onClick={() => handleShowDetailInfo(x)}><i className="material-icons">visibility</i></a>
+                                        <a  onClick={() => handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
                                         <DeleteNotification
                                             content={translate('manage_warehouse.category_management.delete_info')}

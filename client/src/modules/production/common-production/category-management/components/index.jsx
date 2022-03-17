@@ -26,8 +26,7 @@ function CategoryManagement(props) {
 
     const { translate } = props;
     return (
-        <div className="box" >
-            <div className="box-body">
+        <div className= "nav-tabs-custom">
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#category-table" data-toggle="tab" onClick={() => updateCategoryTable()}>{translate('manage_warehouse.bin_location_management.category_table')}</a></li>
                     <li><a href="#category-tree" data-toggle="tab" onClick={() => updateCategoryTree()}>{translate('manage_warehouse.bin_location_management.category_tree')}</a></li>
@@ -45,7 +44,6 @@ function CategoryManagement(props) {
                     </div>
                 </div>
                
-            </div>
         </div>
     );
 }

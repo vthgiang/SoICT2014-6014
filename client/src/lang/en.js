@@ -866,6 +866,7 @@ export default {
             no_version: "Not have different version",
             no_blank_description: "Description should not empty",
             no_blank_name: "Name should not empty",
+            no_blank_code:"Code should not empty",
             infomation_docs: "Document Infomation",
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",

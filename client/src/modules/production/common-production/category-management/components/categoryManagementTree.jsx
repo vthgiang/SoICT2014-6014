@@ -9,6 +9,11 @@ import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components'
 import './category.css';
 
 function CategoryManagementTree(props) {
+    const EMPTY_CATEGORY = {
+        category: '',
+        maxQuantity: '',
+        minQuantity: ''
+    }
     const [state, setState] = useState({
         categoryParent: [],
         deleteNode: [],
@@ -47,6 +52,23 @@ function CategoryManagementTree(props) {
     const handleAddCategory = (event) => {
         event.preventDefault();
         window.$('#modal-create-category-good').modal('show');
+    }
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+        const { indexInfo, categores } = state;
+        let newCategores;
+        if (categores) {
+            newCategores = categores.map((item, index) => {
+                return (index === indexInfo) ? state.categores : item;
+            })
+        }
+        await setState({
+            ...state,
+            editInfo: false,
+            categores: newCategores,
+            category: Object.assign({}, EMPTY_CATEGORY)
+        })
     }
 
     const deleteCategory = () => {
@@ -97,18 +119,18 @@ function CategoryManagementTree(props) {
         <React.Fragment>
 
             <div className="form-inline">
-                <div className="dropdown pull-right" style={{ marginBottom: 15 },{marginTop: 15}}>
+                <div className="dropdown pull-right">
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_warehouse.category_management.add')}
-                        disabled={categoryParent.length > 1 ? true : false}>{translate('manage_warehouse.category_management.add')}</button>
+                        disabled={categoryParent.length > 1 ? true : false }  onClick={handleSave} >{translate('manage_warehouse.category_management.add')}</button>
                     <ul className="dropdown-menu pull-right">
-                        <li><a href="#modal-create-category-good" title="Add category" onClick={(event) => { handleAddCategory(event) }}>{translate('manage_warehouse.category_management.add')}</a></li>
+                    <li><a href="#modal-create-category-good" title="Add category" onClick={(event) => { handleAddCategory(event) }}>{translate('manage_warehouse.category_management.add')}</a></li>
                         {/* <li><a href="#modal_import_file_category_good" title="ImportForm" onClick={(event) => { handImportFile(event) }}>ImportFile</a></li> */}
                     </ul>
                 </div>
             </div>
 
             {
-                deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' },{marginTop: 15}} onClick={deleteCategory}>{translate('general.delete')}</button>
+                deleteNode.length > 0 && <button className="btn btn-danger" onClick={deleteCategory}>{translate('general.delete')}</button>
             }
             <CategoryCreateTree categoryParent={state.categoryParent[0]} />
             <div className="row">

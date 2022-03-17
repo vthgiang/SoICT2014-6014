@@ -932,6 +932,7 @@ export default {
             no_version: "Không có phiên bản nào khác",
             no_blank_description: "Mô tả không được để trống",
             no_blank_name: "Tên không được để trống",
+            no_blank_code: "Mã danh mục không được để trống",
             infomation_docs: "Thông tin tài liệu",
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
             statistical_document: "Thống kê các loại tài liệu",

@@ -78,7 +78,7 @@ function CategoryEditForm(props) {
     const handleParent = (value) => {
         setState({
             ...state,
-            categoryParent: value[0]
+            parent: value[0]
         });
     };
 
@@ -113,7 +113,7 @@ function CategoryEditForm(props) {
 
     const { translate, categories } = props;
     const { list } = categories.categoryToTree;
-    const { errorOnName, errorOnCode, id, code, name, type, description, categoryParent } = state;
+    const { errorOnName, errorOnCode, id, code, name, type, description, parent } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -140,7 +140,7 @@ function CategoryEditForm(props) {
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.type')}<span className="text-red">*</span></label>
-                        <TreeSelect data={list} value={!categoryParent ? "" : [categoryParent]} handleChange={handleParent} mode="radioSelect" />
+                        <TreeSelect data={list} value={!parent ? "" : [parent]} handleChange={handleParent} mode="radioSelect" />
                     </div>
                     {/* <div className="form-group">
                             <label>{translate('manage_warehouse.category_management.good')}</label>

@@ -58,7 +58,7 @@ function CategoryCreateForm(props) {
     const handleParent = (value) => {
         setState({
             ...state,
-            categoryParent: value[0]
+            parent: value[0]
         });
     };
 
@@ -78,6 +78,7 @@ function CategoryCreateForm(props) {
     }
 
     const save = () => {
+        console.log(state);
         if (isFormValidated()) {
             props.createCategory(state);
         }
@@ -92,7 +93,7 @@ function CategoryCreateForm(props) {
 
     const { translate, categories } = props;
     const { list } = categories.categoryToTree;
-    const { errorOnName, errorOnCode, id, code, name, type, description,categoryParent } = state;
+    const { errorOnName, errorOnCode, id, code, name, type, description, parent } = state;
     return (
         <React.Fragment>
             <ButtonModal modalID="modal-create-category" button_name={translate('manage_warehouse.category_management.add')} title={translate('manage_warehouse.category_management.add_title')} />
@@ -121,7 +122,7 @@ function CategoryCreateForm(props) {
                     </div>
                     <div className=' form-group' >
                         <label>{translate('manage_warehouse.category_management.type')}</label>
-                        <TreeSelect data={list} value={!categoryParent ? "" : [categoryParent]} handleChange={handleParent} mode="radioSelect" />
+                        <TreeSelect data={list} value={!parent ? "" : [parent]} handleChange={handleParent} mode="radioSelect" />
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.description')}</label>
