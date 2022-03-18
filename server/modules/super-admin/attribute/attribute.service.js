@@ -10,11 +10,32 @@ const mongoose = require('mongoose');
 // Tạo mới mảng Ví dụ
 exports.createAttribute = async (portal, data) => {
     let newAttribute;
-    if (data && data.length !== 0) {
-        for (let i = 0; i < data.length; i++) {
+
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+            
+            for (let i = 0; i < array.length; i++) {
+                const checkAttributeCreated = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: array[i].attributeName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+                if (checkAttributeCreated) {
+                    throw ['attribute_name_exist'];
+                }
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const attrArray = await filterValidAttributeArray(data);
+    
+    if (attrArray && attrArray.length !== 0) {
+        for (let i = 0; i < attrArray.length; i++) {
             newAttribute = await Attribute(connect(DB_CONNECTION, portal)).create({
-                attributeName: data[i].attributeName,
-                description: data[i].description
+                attributeName: attrArray[i].attributeName.trim(),
+                description: attrArray[i].description.trim()
             });
         }
         

@@ -1,5 +1,5 @@
 const Terms = require('../../../helpers/config');
-const { OrganizationalUnit, Role, RoleType, UserRole, Privilege } = require('../../../models');
+const { OrganizationalUnit, Role, RoleType, UserRole, Privilege, Attribute } = require('../../../models');
 const { connect } = require('../../../helpers/dbHelper');
 const RoleService = require('./role.service');
 const mongoose = require('mongoose');
@@ -106,12 +106,16 @@ exports.createRole = async (portal, data) => {
         let resArray = [];
         if (array.length > 0) {
 
-            if ((new Set(array.map(attr => attr.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
-                throw ['attribute_name_duplicate'];
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
             }
 
             for (let i = 0; i < array.length; i++) {
-                if (array[i]) resArray = [...resArray, array[i]];
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName};
+                    resArray = [...resArray, array[i]];
+                }
             }
 
             return resArray;
@@ -123,6 +127,7 @@ exports.createRole = async (portal, data) => {
     const attrArray = await filterValidAttributeArray(data.attributes);
     const dataAttr = attrArray.map(attr => {
         return {
+            attributeId: attr.attributeId,
             name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
@@ -149,12 +154,16 @@ exports.createRoleAttribute = async (portal, data) => {
         let resArray = [];
         if (array.length > 0) {
 
-            if ((new Set(array.map(attr => attr.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
-                throw ['attribute_name_duplicate'];
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
             }
 
             for (let i = 0; i < array.length; i++) {
-                if (array[i]) resArray = [...resArray, array[i]];
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName};
+                    resArray = [...resArray, array[i]];
+                }
             }
 
             return resArray;
@@ -166,6 +175,7 @@ exports.createRoleAttribute = async (portal, data) => {
     const attrArray = await filterValidAttributeArray(data.attributes);
     const dataAttr = attrArray.map(attr => {
         return {
+            attributeId: attr.attributeId,
             name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
@@ -185,10 +195,10 @@ exports.createRoleAttribute = async (portal, data) => {
 
     // Thêm - cập nhật thuộc tính
     roleAddAttribute.forEach(async (role) => {
-        // Kiểm tra trùng tên thuộc tính thì không têm mới mà chỉ cập nhật value và description
+        // Kiểm tra trùng thuộc tính thì không têm mới mà chỉ cập nhật value và description
         role.attributes.forEach((attr) => {
             dataAttr.forEach((inputAttr) => {
-                if (attr.name.toLowerCase().replace(/ /g, "") === inputAttr.name.toLowerCase().replace(/ /g, "")) {
+                if (attr.attributeId == inputAttr.attributeId) {
                     attr.value = inputAttr.value;
                     attr.description = inputAttr.description
                 }
@@ -196,8 +206,8 @@ exports.createRoleAttribute = async (portal, data) => {
         })
         // Thêm các thuộc tính chưa có
         if (role.attributes.length > 0) {
-            const roleAttrName = role.attributes.map(attr => attr.name.toLowerCase().replace(/ /g, ""));
-            role.attributes = role.attributes.concat(dataAttr.filter(a => !roleAttrName.includes(a.name.toLowerCase().replace(/ /g, ""))))
+            const roleAttrId = role.attributes.map(attr => attr.attributeId);
+            role.attributes = role.attributes.concat(dataAttr.filter(a => !roleAttrId.includes(a.attributeId)));
         }
         // Thêm mới nếu chưa có thuộc tính nào
         else {
@@ -340,12 +350,16 @@ exports.editRole = async (portal, id, data = {}) => {
         let resArray = [];
         if (array.length > 0) {
 
-            if ((new Set(array.map(attr => attr.name.toLowerCase().replace(/ /g, "")))).size !== array.length) {
-                throw ['attribute_name_duplicate'];
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
             }
 
             for (let i = 0; i < array.length; i++) {
-                if (array[i]) resArray = [...resArray, array[i]];
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName};
+                    resArray = [...resArray, array[i]];
+                }
             }
 
             return resArray;
@@ -369,6 +383,7 @@ exports.editRole = async (portal, id, data = {}) => {
     const attrArray = await filterValidAttributeArray(data.attributes);
     const dataAttr = attrArray.map(attr => {
         return {
+            attributeId: attr.attributeId,
             name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description?.trim(),

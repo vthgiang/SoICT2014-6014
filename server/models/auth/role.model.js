@@ -27,10 +27,10 @@ const RoleSchema = new Schema(
         },
         attributes: [
             {
-                // attributeId: {
-                //     type: Schema.Types.ObjectId,
-                //     ref: "Attribute"
-                // },
+                attributeId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Attribute"
+                },
                 // thuộc tính của role
                 name: String, // tên thuộc tính
                 value: String, //giá trị

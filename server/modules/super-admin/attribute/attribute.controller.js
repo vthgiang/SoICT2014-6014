@@ -18,7 +18,7 @@ exports.createAttribute = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["add_fail"],
+            messages: Array.isArray(error) ? error : ['add_fail'],
             content: error.message
         })
     }

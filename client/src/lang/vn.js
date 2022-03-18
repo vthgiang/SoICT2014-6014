@@ -830,7 +830,7 @@ export default {
                     "Tên cho phân quyền của phó đơn vị này đã được sử dụng",
                 role_employee_exist:
                     "Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng",
-                attribute_name_duplicate: "Tên các thuộc tính đã nhập bị trùng với nhau"
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau"
             },
             attribute: {
                 delete_success: "Xóa thuộc tính thành công!",
@@ -839,6 +839,8 @@ export default {
                 add_fail: "Thêm thuộc tính thất bại!",
                 edit_attribute_success: "Cập nhật thuộc tính thành công!",
                 edit_attribute_fail: "Cập nhật thuộc tính thất bại!",
+                attribute_name_exist: "Tên thuộc tính đã tồn tại!"
+
             },
             link: {
                 // Thông điệp trả về từ server
@@ -1465,7 +1467,8 @@ export default {
             attribute_description_example: "VD: Vị trí trong nhóm",
             add_attribute_title: "Thêm thuộc tính cho phân quyền",
             roles_add_attribute: "Các phân quyền thêm thuộc tính",
-            attribute_name_empty: "Chưa chọn thuộc tính"
+            attribute_select: "Chọn thuộc tính",
+            attribute_not_selected: "Chưa chọn thuộc tính"
         },
 
         manage_user: {

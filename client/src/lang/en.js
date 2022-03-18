@@ -766,7 +766,7 @@ export default {
                 role_manager_exist: "Manager role name already exists",
                 role_deputy_manager_exist: "Deputy manager role name already exists",
                 role_employee_exist: "Employee role name already exists",
-                attribute_name_duplicate: "Input attribute names are duplicated"
+                attribute_selected_duplicate: "Selected attribute names are duplicated"
 
             },
             link: {
@@ -787,6 +787,7 @@ export default {
                 add_fail: "Add attribute fail!",
                 edit_attribute_success: "Update attribute successfully!",
                 edit_attribute_fail: "Update attribute fail!",
+                attribute_name_exist: "Attribute name exists!"
                 
             },
             component: {
@@ -1367,7 +1368,8 @@ export default {
             attribute_description_example: "VD: Role position in group",
             add_attribute_title: "Add role attribute",
             roles_add_attribute: "Attributes of roles",
-            attribute_name_empty: "Attribute not selected"
+            attribute_select: "Select attribute",
+            attribute_not_selected: "Attribute not selected"
         },
 
         manage_user: {
