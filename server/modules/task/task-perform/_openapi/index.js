@@ -574,6 +574,326 @@ const openapi_taskPerformRoute = {
             "x-codegen-request-body-name": "body"
         }
     },
+    "/performtask/tasks/:taskId/timesheet-logs/:timesheetlogId": {
+        "patch": { // Sửa lịch sửa bấm giờ
+            "tags": [
+                "TaskPerform"
+            ],
+            "description": "Sửa lịch sửa bấm giờ",
+            "operationId": "EditTimesheetLog",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc cần cập nhật",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "timesheetlogId",
+                    "in": "path",
+                    "description": "Nhập id bấm giờ",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin bấm giờ (acceptLog)",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "acceptLog": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    },
+                    "application/xml": {
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "edit_task_timesheetlog_success"
+                },
+                "400": {
+                    "description": "edit_task_timesheetlog_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        },
+    },
+    "/performtask/tasks/:taskId/logs": {
+        "get": {
+            "tags": [
+                "TaskPerform"
+            ],
+            "description": "Lấy lịch sử log task",
+            "operationId": "getTaskLog",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "get_log_task_success",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "get_log_task_fail",
+                    "content": {}
+                }
+            }
+        },
+        "post": {
+            "tags": [
+                "TaskPerform"
+            ],
+            "description": "Thêm mới lịch sử chỉnh sửa task",
+            "operationId": "addTaskLog",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin lịch sử hoạt động (creator, title, description, createdAt)",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "application/xml": {
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "create_task_log_success"
+                },
+                "400": {
+                    "description": "create_task_log_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/:taskId/files": {
+        "post": {
+            "tags": [
+                "TaskPerform"
+            ],
+            "description": "Upload tài liệu công việc",
+            "operationId": "uploadFile",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin file (creator, description)",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "name": "files",
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                            
+                        }
+                    }
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "upload_files_success"
+                },
+                "400": {
+                    "description": "upload_files_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
 }
 
 module.exports = openapi_taskPerformRoute;
