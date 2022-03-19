@@ -105,9 +105,9 @@ function RoleAttributeCreateForm(props) {
             <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
                 {
                     <div className="dropdown">
-                        <button style={{ marginRight: 10 }} type="button" className="btn btn-primary dropdown-toggler" data-toggle="dropdown" aria-expanded="true">Thêm thuộc tính</button>
+                        <button style={{ marginRight: 10 }} type="button" className="btn btn-primary dropdown-toggler" data-toggle="dropdown" aria-expanded="true">{translate('manage_role.add_attribute')}</button>
                         <ul className="dropdown-menu pull-right">
-                            <li><a href="#" onClick={handleOpenModalCreateRoleAttribute}>Thêm thuộc tính phân quyền</a></li>
+                            <li><a href="#" onClick={handleOpenModalCreateRoleAttribute}>{translate('manage_role.add_role_attribute')}</a></li>
                             {/* <li><a href="#" onClick={handleOpenModalImportRoleAttribute}>Thêm thuộc tính từ file</a></li> */}
                         </ul>
                     </div>
@@ -155,6 +155,7 @@ function RoleAttributeCreateForm(props) {
                         attributes={roleAttributes}
                         handleChange={handleChange}
                         attributeOwner={'roleAttributes'}
+                        translation={'manage_role'}
                     />
 
                 </form>

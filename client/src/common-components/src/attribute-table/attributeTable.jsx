@@ -5,7 +5,7 @@ import {SelectBox, ErrorLabel } from '../../../common-components';
 import ValidationHelper from '../../../helpers/validationHelper';
 
 function AttributeTable(props) {
-    const [state, setState] = useState({i: 0})
+    const [state, setState] = useState({i: 0, translation: props.translation})
 
     // Thiet lap cac gia tri tu props vao state
     useEffect(() => {
@@ -47,7 +47,7 @@ function AttributeTable(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate('manage_role.attribute_not_selected');
+            msg = translate(translation + '.attribute_not_selected');
         }
         if (willUpdateState) {
             var { attributes } = state;
@@ -179,20 +179,20 @@ function AttributeTable(props) {
     };
 
     const { translate, attribute } = props;
-    const { roleName, attributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue } = state;
+    const { attributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue, translation } = state;
 
     return (
         <React.Fragment>
 
                     {/* Các thuộc tính của phân quyền */}
                     <div className="form-group">
-                        <label>{translate('manage_role.attributes')} {roleName}</label>
+                        <label>{translate(translation + '.attributes')}</label>
                         <table className="table table-hover table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th style={{ width: '30%' }}><label>{translate('manage_role.attribute_name')}</label></th>
-                                    <th style={{ width: '30%' }}><label>{translate('manage_role.attribute_value')}</label></th>
-                                    <th style={{ width: '30%' }}><label>{translate('manage_role.attribute_description')}</label></th>
+                                    <th style={{ width: '30%' }}><label>{translate(translation + '.attribute_name')}</label></th>
+                                    <th style={{ width: '30%' }}><label>{translate(translation + '.attribute_value')}</label></th>
+                                    <th style={{ width: '30%' }}><label>{translate(translation + '.attribute_description')}</label></th>
 
                                     <th style={{ width: '40px' }} className="text-center"><a href="#add-attributes" className="text-green" onClick={handleAddAttributes}><i className="material-icons">add_box</i></a></th>
                                 </tr>
@@ -217,7 +217,7 @@ function AttributeTable(props) {
                                                             items={attribute.lists.map(attribute => { return { value: attribute ? attribute._id : null, text: attribute ? attribute.attributeName : "" } })}
                                                             onChange={(e) => handleChangeAttributeName(e, index)}
                                                             multiple={false}
-                                                            options={{ placeholder: translate('manage_role.attribute_select') }}
+                                                            options={{ placeholder: translate(translation + '.attribute_select') }}
                                                         />
                                                         {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
                                                     </div>
@@ -227,7 +227,7 @@ function AttributeTable(props) {
                                                     <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
                                                         <input type="text"
                                                             className="form-control"
-                                                            placeholder={translate('manage_role.attribute_value_example')}
+                                                            placeholder={translate(translation + '.attribute_value_example')}
                                                             value={attr.value}
                                                             onChange={(e) => handleChangeAttributeValue(e, index)}
                                                         />
@@ -239,7 +239,7 @@ function AttributeTable(props) {
                                                     <div className="form-group">
                                                         <input type="text"
                                                             className="form-control"
-                                                            placeholder={translate('manage_role.attribute_description_example')}
+                                                            placeholder={translate(translation + '.attribute_description_example')}
                                                             value={attr.description}
                                                             onChange={(e) => handleChangeAttributeDescription(e, index)}
                                                         />

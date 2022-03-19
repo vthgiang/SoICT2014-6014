@@ -9,6 +9,8 @@ import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../c
 
 import LinkInfoForm from './linkInfoForm';
 import ModalImportLinkPrivilege from './modalImportLinkPrivilege';
+import LinkAttributeCreateForm from './linkAttributeCreateForm'
+
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 function ManageLink(props) {
     const tableId_contructor = "table-manage-link";
@@ -81,6 +83,13 @@ function ManageLink(props) {
         props.getRoles();
     }, [])
 
+    const handleChange = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
     // Cac ham xu ly du lieu voi modal
     const handleEdit = async (link) => {
         await setState({
@@ -130,6 +139,9 @@ function ManageLink(props) {
                             </div>
                         }
                     </div>
+
+                    {/* Form thêm thuộc tính cho trang */}
+                    <LinkAttributeCreateForm handleChange={handleChange} />
 
                     {/* Thanh tìm kiếm */}
                     <SearchBar

@@ -196,6 +196,7 @@ function RoleCreateForm(props) {
                         attributes={roleAttributes}
                         handleChange={handleChange}
                         attributeOwner={'roleAttributes'}
+                        translation={'manage_role'}
                     />
 
                 </form>

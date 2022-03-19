@@ -17,6 +17,18 @@ const LinkSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Component'
     }],
+    attributes: [
+        {
+            attributeId: {
+                type: Schema.Types.ObjectId,
+                ref: "Attribute"
+            },
+            // thuộc tính của role
+            name: String, // tên thuộc tính
+            value: String, //giá trị
+            description: String // mô tả
+        },
+    ],
     deleteSoft: {
         type: Boolean,
         default: true

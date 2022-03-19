@@ -22,6 +22,18 @@ const ComponentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Company'
     },
+    attributes: [
+        {
+            attributeId: {
+                type: Schema.Types.ObjectId,
+                ref: "Attribute"
+            },
+            // thuộc tính của role
+            name: String, // tên thuộc tính
+            value: String, //giá trị
+            description: String // mô tả
+        },
+    ],
 },{
     timestamps: true,
     toJSON: { virtuals: true }

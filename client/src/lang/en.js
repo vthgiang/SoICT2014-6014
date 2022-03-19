@@ -1369,7 +1369,9 @@ export default {
             add_attribute_title: "Add role attribute",
             roles_add_attribute: "Attributes of roles",
             attribute_select: "Select attribute",
-            attribute_not_selected: "Attribute not selected"
+            attribute_not_selected: "Attribute not selected",
+            add_attribute: "Add attribute",
+            add_role_attribute: "Add role attribute",
         },
 
         manage_user: {
@@ -1408,6 +1410,19 @@ export default {
             edit_success: "Edit successfully!",
             edit_faile: "Edit failed!",
             category: "Category",
+            add_attribute: "Add attribute",
+            add_link_attribute: "Add link attribute",
+            attributes: "Link attributes",
+            attribute_name: "Attribute name",
+            attribute_value: "Attribute value",
+            attribute_description: "Attribute description",
+            attribute_name_example: "VD: Project A",
+            attribute_value_example: "VD: Page Project A",
+            attribute_description_example: "VD: Page for project A",
+            add_attribute_title: "Add link attribute",
+            links_add_attribute: "Attributes of links",
+            attribute_select: "Select attribute",
+            attribute_not_selected: "Attribute not selected",
         },
 
         manage_attribute: {

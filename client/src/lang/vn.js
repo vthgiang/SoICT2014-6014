@@ -1468,7 +1468,9 @@ export default {
             add_attribute_title: "Thêm thuộc tính cho phân quyền",
             roles_add_attribute: "Các phân quyền thêm thuộc tính",
             attribute_select: "Chọn thuộc tính",
-            attribute_not_selected: "Chưa chọn thuộc tính"
+            attribute_not_selected: "Chưa chọn thuộc tính",
+            add_attribute: "Thêm thuộc tính",
+            add_role_attribute: "Thêm thuộc tính vai trò",
         },
 
         manage_user: {
@@ -1507,6 +1509,19 @@ export default {
             edit_success: "Chỉnh sửa thành công",
             edit_faile: "Chỉnh sửa thất bại",
             category: "Danh mục",
+            add_attribute: "Thêm thuộc tính",
+            add_link_attribute: "Thêm thuộc tính trang",
+            attributes: "Các thuộc tính của trang",
+            attribute_name: "Tên thuộc tính",
+            attribute_value: "Giá trị",
+            attribute_description: "Mô tả",
+            attribute_name_example: "VD: Project A",
+            attribute_value_example: "VD: Trang dự án",
+            attribute_description_example: "VD: Trang truy cập",
+            add_attribute_title: "Thêm thuộc tính cho trang",
+            links_add_attribute: "Các trang thêm thuộc tính",
+            attribute_select: "Chọn thuộc tính",
+            attribute_not_selected: "Chưa chọn thuộc tính",
         },
 
         manage_attribute: {
