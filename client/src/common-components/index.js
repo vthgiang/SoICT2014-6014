@@ -36,3 +36,4 @@ export * from './src/gantt/gantt';
 export * from './src/input-tags/inputTags';
 export * from './src/smart-table/smartTable';
 export * from './src/googledriver/ggdrive';
+export * from './src/attribute-table/attributeTable';

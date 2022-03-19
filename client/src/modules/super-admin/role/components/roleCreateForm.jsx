@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
+import { DialogModal, ButtonModal, SelectBox, ErrorLabel, AttributeTable} from '../../../../common-components';
 import { RoleActions } from '../redux/actions';
+import { AttributeActions } from '../../attribute/redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import ModalImportRole from './modalImportRole';
 
@@ -10,8 +11,7 @@ function RoleCreateForm(props) {
     const [state, setState] = useState({
         roleUsers: [],
         roleParents: [],
-        roleAttributes: [],
-        i: 0
+        roleAttributes: []
     })
 
     useEffect(() => {
@@ -51,172 +51,24 @@ function RoleCreateForm(props) {
         });
     }
 
-    /**
-     * Bắt sự kiện chỉnh sửa tên thuộc tính
-     */
-    // const handleChangeAttributeName = (e, index) => {
-    //     var { value } = e.target;
-    //     validateNameField(value, index);
-    // }
+    const handleChange = (name, value) => {
+        // if (name === 'roleAttributes') { //
+        //     if (value) {
+        //         var partValue = value.split('-');
+        //         value = [partValue[2], partValue[1], partValue[0]].join('-');
+        //     } else {
+        //         value = null
+        //     }
+        // }
+        // if (name === "assetType") {
+        //     value = JSON.stringify(value);
+        // }
 
-    const handleChangeAttributeName = (e, index) => {
-        validateAttributeName(e[0], index);
+        setState({
+            ...state,
+            [name]: value
+        });
     }
-
-    const validateAttributeName = (value, className, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_role.attribute_not_selected');
-        }
-        if (willUpdateState) {
-            var { roleAttributes } = state;
-            roleAttributes[className] = { ...roleAttributes[className], attributeId: value}
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnNameField: msg,
-                    errorOnNameFieldPosition: msg ? className : null,
-                    roleAttributes: roleAttributes
-                }
-            });
-            props.handleChange("roleAttributes", roleAttributes);
-        }
-        return msg === undefined;
-    }
-
-    // const validateNameField = (value, className, willUpdateState = true) => {
-    //     let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-    //     if (willUpdateState) {
-    //         var { roleAttributes } = state;
-    //         roleAttributes[className] = { ...roleAttributes[className], name: value }
-    //         setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnNameField: message,
-    //                 errorOnNameFieldPosition: message ? className : null,
-    //                 roleAttributes: roleAttributes
-    //             }
-    //         });
-    //         props.handleChange("roleAttributes", roleAttributes);
-    //     }
-    //     return message === undefined;
-    // }
-
-
-    /**
-     * Bắt sự kiện chỉnh sửa mô tả thuộc tính
-     */
-    const handleChangeAttributeDescription = (e, index, willUpdateState = true) => {
-        var { value } = e.target;
-
-        if (willUpdateState) {
-            var { roleAttributes } = state;
-            roleAttributes[index] = { ...roleAttributes[index], description: value }
-            setState(state => {
-                return {
-                    ...state,
-                    roleAttributes: roleAttributes
-                }
-            });
-            props.handleChange("roleAttributes", roleAttributes);
-        }
-    }
-
-    /**
-     * Bắt sự kiện chỉnh sửa giá trị thuộc tính
-     */
-    const handleChangeAttributeValue = (e, index) => {
-        var { value } = e.target;
-        validateValue(value, index);
-    }
-    const validateValue = (value, className, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-            var { roleAttributes } = state;
-            roleAttributes[className] = { ...roleAttributes[className], value: value }
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnValue: message,
-                    errorOnValuePosition: message ? className : null,
-                    roleAttributes: roleAttributes
-                }
-            });
-            props.handleChange("roleAttributes", roleAttributes);
-        }
-        return message === undefined;
-    }
-
-    /**
-     * Bắt sự kiện click thêm Thông tin chi tiết
-     */
-    const handleAddAttributes = () => {
-        var roleAttributes = state.roleAttributes;
-        var ind = state.i;
-        ind++;
-        setState(state => {
-            return {
-                ...state,
-                i: ind
-            }
-        })
-        if (roleAttributes.length !== 0) {
-            let result;
-
-            for (let n in roleAttributes) {
-                result = validateAttributeName(roleAttributes[n].attributeId, n) && validateValue(roleAttributes[n].value, n);
-                if (!result) {
-                    validateAttributeName(roleAttributes[n].attributeId, n);
-                    validateValue(roleAttributes[n].value, n)
-                    break;
-                }
-            }
-
-            if (result) {
-                setState(state => {
-                    return {
-                        ...state,
-                        roleAttributes: [...roleAttributes, { attributeId: "", description: "", value: "", addOrder: ind }]
-                    }
-                })
-            }
-            
-        } else {
-            setState(state => {
-                return {
-                    ...state,
-                    roleAttributes: [...roleAttributes, { attributeId: "", description: "", value: "", addOrder: ind }]
-                }
-            })
-        }
-
-    }
-
-    /**
-         * Bắt sự kiện xóa thông tin chi tiết
-         */
-    const handleRemoveAttribute = (index) => {
-        var { roleAttributes } = state;
-        roleAttributes.splice(index, 1);
-        if (roleAttributes.length !== 0) {
-            for (let n in roleAttributes) {
-                validateAttributeName(roleAttributes[n].attributeId, n);
-                validateValue(roleAttributes[n].value, n)
-            }
-        } else {
-            setState(state => {
-                return {
-                    ...state,
-                    roleAttributes: roleAttributes,
-                    errorOnValue: undefined,
-                    errorOnNameField: undefined
-                }
-            })
-        }
-    };
 
 
     const validateAttributes = () => {
@@ -266,8 +118,12 @@ function RoleCreateForm(props) {
         window.$(`#modal-import-role`).modal('show')
     }
 
-    const { translate, role, user, attribute } = props;
-    const { roleNameError, roleAttributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue } = state;
+    useEffect(() => {
+        props.getAttribute();
+    }, [])
+
+    const { translate, role, user} = props;
+    const { roleNameError, roleAttributes} = state;
 
     return (
         <React.Fragment>
@@ -336,91 +192,11 @@ function RoleCreateForm(props) {
                     </div>
 
                     {/* Các thuộc tính của phân quyền */}
-                    <div className="form-group">
-                        <label>{translate('manage_role.attributes')}</label>
-                        <table className="table table-hover table-striped table-bordered attribute-table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '30%' }}><label>{translate('manage_role.attribute_name')}</label></th>
-                                    <th style={{ width: '30%' }}><label>{translate('manage_role.attribute_value')}</label></th>
-                                    <th style={{ width: '30%' }}><label>{translate('manage_role.attribute_description')}</label></th>
-
-                                    <th style={{ width: '40px' }} className="text-center"><a href="#add-attributes" className="text-green" onClick={handleAddAttributes}><i className="material-icons">add_box</i></a></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    (!roleAttributes || roleAttributes.length == 0) ?
-                                        <tr>
-                                            <td colSpan={4}>
-                                                <center> {translate('table.no_data')}</center>
-                                            </td>
-                                        </tr> :
-                                        roleAttributes.map((attr, index) => {
-                                            return <tr key={index}>
-                                                <td>
-                                                    <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
-                                                        <SelectBox
-                                                            id={attr.addOrder}
-                                                            className="form-control select2"
-                                                            style={{ width: "100%" }}
-                                                            items={attribute.lists.map(attribute => { return { value: attribute ? attribute._id : null, text: attribute ? attribute.attributeName : "" } })}
-                                                            onChange={(e) => handleChangeAttributeName(e, index)}
-                                                            value={attr.attributeId}
-                                                            multiple={false}
-                                                            options={{ placeholder: translate('manage_role.attribute_select') }}
-                                                        />
-                                                        {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
-                                                        {/* {attr.attributeId} */}
-                                                    </div>
-                                                    {/* <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
-                                                        <input type="text"
-                                                            className="form-control"
-                                                            placeholder={translate('manage_role.attribute_name_example')}
-                                                            value={attribute.name}
-                                                            onChange={(e) => handleChangeAttributeName(e, index)}
-                                                        />
-                                                        {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
-                                                    </div> */}
-                                                </td>
-
-                                                <td>
-                                                    <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
-                                                        <input type="text"
-                                                            className="form-control"
-                                                            placeholder={translate('manage_role.attribute_value_example')}
-                                                            value={attr.value}
-                                                            onChange={(e) => handleChangeAttributeValue(e, index)}
-                                                        />
-                                                        {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <div className="form-group">
-                                                        <input type="text"
-                                                            className="form-control"
-                                                            placeholder={translate('manage_role.attribute_description_example')}
-                                                            value={attr.description}
-                                                            onChange={(e) => handleChangeAttributeDescription(e, index)}
-                                                        />
-
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <a href="#delete-attribute"
-                                                        className="text-red"
-                                                        style={{ border: 'none' }}
-                                                        onClick={() => handleRemoveAttribute(index)}><i className="fa fa-trash"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    <AttributeTable 
+                        attributes={roleAttributes}
+                        handleChange={handleChange}
+                        attributeOwner={'roleAttributes'}
+                    />
 
                 </form>
             </DialogModal>
@@ -429,14 +205,15 @@ function RoleCreateForm(props) {
 }
 
 function mapStateToProps(state) {
-    const { role, user, attribute } = state;
-    return { role, user, attribute };
+    const { role, user } = state;
+    return { role, user };
 }
 
 
 const mapDispatchToProps = {
     get: RoleActions.get,
-    create: RoleActions.create
+    create: RoleActions.create,
+    getAttribute: AttributeActions.getAttributes
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoleCreateForm));
