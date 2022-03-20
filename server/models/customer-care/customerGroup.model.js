@@ -35,6 +35,11 @@ const CustomerGroupSchema = new Schema({
         exceptCustomer: [{
             type: Schema.Types.ObjectId,
             ref: "Customer"
+        }],
+        status: { type: Number },
+        customerUsed: [{
+            type: Schema.Types.ObjectId,
+            ref: "Customer"
         }]
     }],
     createdAt: { // ngày tạo nhóm

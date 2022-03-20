@@ -175,7 +175,7 @@ export default {
             partner_management: "Quản lý đối tác",
             proposal_management: "Quản lý phiếu đề nghị",
             bill_management: "Quản lý thông tin phiếu",
-            inventory_management: "Quản lý lô hàng tồn kho",
+            inventory_management: "Quản lý lô hàng",
 
             manage_kpi_unit: "KPI đơn vị",
             manage_kpi_personal: "KPI cá nhân",
@@ -4995,6 +4995,9 @@ export default {
                 goods: "Danh sách hàng hóa",
                 good_name: "Tên hàng hóa",
                 approved_true: "Phê duyệt phiếu",
+                in_processing: "Chuyển trạng thái đang thực hiện",
+                complete_bill: "Chuyển sang trạng thái hoàn thành",
+                cancel_bill: "Hủy phiếu",
                 staff_true: "Kiểm định chất lượng hàng hóa",
                 good_code: "Mã hàng hóa",
                 number: "Số lượng",

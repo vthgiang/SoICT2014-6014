@@ -2113,7 +2113,7 @@ exports.createTask = async (portal, task) => {
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
-        taskProject,
+        taskProject: taskProject,
         tags: task.tags
     });
 

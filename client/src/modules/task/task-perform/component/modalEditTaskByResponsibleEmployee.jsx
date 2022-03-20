@@ -340,13 +340,13 @@ function ModalEditTaskByResponsibleEmployee(props) {
         return errorMessage === undefined;
     }
 
-    const handleTaskProject = (value) => {
-        value = value.toString();
-        setState({
-            ...state,
-            taskProjectName: value
-        })
-    }
+    // const handleTaskProject = (value) => {
+    //     value = value.toString();
+    //     setState({
+    //         ...state,
+    //         taskProjectName: value
+    //     })
+    // }
 
     const handleTaskTags = (value) => {
         setState({
@@ -451,7 +451,7 @@ function ModalEditTaskByResponsibleEmployee(props) {
                                     />
                                     <ErrorLabel content={errorTaskDescription} />
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>
                                         {translate('task.task_management.project')}
                                     </label>
@@ -462,7 +462,7 @@ function ModalEditTaskByResponsibleEmployee(props) {
                                         handleChange={handleTaskProject}
                                         value={[taskProjectName]}
                                     />
-                                </div>
+                                </div> */}
                                 <div className="form-group">
                                     <label>Tags</label>
                                     <InputTags
