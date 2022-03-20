@@ -821,7 +821,7 @@ export default {
                 create_role_success: "Tạo role mới thành công",
                 edit_role_success: "Chỉnh sửa role thành công",
                 delete_role_success: "Xóa role thành công",
-                create_role_attribute_success: "Thêm thuộc tính thành công",
+                create_role_attribute_success: "Thêm thuộc tính vai trò thành công",
                 role_name_exist:
                     "Tên cho phân quyền đã được sử dụng cho một phân quyền khác",
                 role_manager_exist:
@@ -851,6 +851,8 @@ export default {
                 cannot_create_this_url: "Không thể tạo link này",
                 this_url_cannot_be_use: "Url này không được phép sử dụng",
                 url_exist: "Url này đã đươc sử dụng",
+                create_link_attribute_success: "Thêm thuộc tính trang thành công",
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau"
             },
             component: {
                 // Thông điệp trả về từ server

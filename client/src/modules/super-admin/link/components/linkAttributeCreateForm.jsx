@@ -69,7 +69,7 @@ function LinkAttributeCreateForm(props) {
         }
 
         if (isFormValidated()) {
-            // return props.createLinkAttribute(data);
+            return props.createLinkAttribute(data);
         }
     }
 
@@ -174,7 +174,7 @@ function mapStateToProps(state) {
 
 
 const mapDispatchToProps = {
-    // createLinkAttribute: LinkActions.createLinkAttribute,
+    createLinkAttribute: LinkActions.createLinkAttribute,
     getAttribute: AttributeActions.getAttributes
 }
 

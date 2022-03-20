@@ -38,13 +38,18 @@ export function link(state = initState, action) {
         case LinkConstants.CREATE_LINK_REQUEST:
         case LinkConstants.EDIT_LINK_REQUEST:
         case LinkConstants.DELETE_LINK_REQUEST:
+        case LinkConstants.CREATE_LINK_ATTRIBUTE_REQUEST:
             // case LinkConstants.IMPORT_LINK_PRIVILEGE_REQUEST:
 
             return {
                 ...state,
                 isLoading: true
             };
-
+        case LinkConstants.CREATE_LINK_ATTRIBUTE_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+            }
         case LinkConstants.GET_LINKS_SUCCESS:
             return {
                 ...state,
@@ -119,6 +124,28 @@ export function link(state = initState, action) {
                 state.listPaginate.splice(indexPaginate, 1);
             }
 
+            return {
+                ...state,
+                isLoading: false
+            };
+        
+        case LinkConstants.CREATE_LINK_ATTRIBUTE_SUCCESS:
+            console.log(action.payload)
+            action.payload.forEach(x => {
+                index = findIndex(state.list, x._id);
+                indexPaginate = findIndex(state.listPaginate, x._id);
+                console.log(index); console.log(indexPaginate)
+                if (index !== -1) {
+                    state.list[index] = x;
+                }
+
+                if (indexPaginate !== -1) {
+
+                    state.listPaginate[indexPaginate] = x;
+                }
+
+            })
+            console.log("done")
             return {
                 ...state,
                 isLoading: false

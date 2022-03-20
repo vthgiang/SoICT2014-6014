@@ -12,5 +12,6 @@ router.patch("/links/:id", auth, LinkController.editLink);
 router.delete("/links/:id", auth, LinkController.deleteLink);
 // router.post('/links/importPrivileges', auth, LinkController.importPrivilegess);
 router.patch("/links/company/update", auth, LinkController.updateCompanyLinks);
+router.post("/links/attributes", auth, LinkController.createLinkAttribute);
 
 module.exports = router;

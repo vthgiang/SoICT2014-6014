@@ -9,7 +9,8 @@ export const LinkActions = {
     get,
     show,
     edit,
-    destroy
+    destroy,
+    createLinkAttribute
     // importLinkPrivilege
 };
 
@@ -121,6 +122,27 @@ function destroy(id, link) {
                 dispatch({
                     type: LinkConstants.DELETE_LINK_FAILE
                 })
+            })
+    }
+}
+
+function createLinkAttribute(data) {
+    return dispatch => {
+        dispatch({
+            type: LinkConstants.CREATE_LINK_ATTRIBUTE_REQUEST
+        });
+        LinkServices
+            .createLinkAttribute(data)
+            .then(res => {
+                dispatch({
+                    type: LinkConstants.CREATE_LINK_ATTRIBUTE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: LinkConstants.CREATE_LINK_ATTRIBUTE_FAILE
+                });
             })
     }
 }

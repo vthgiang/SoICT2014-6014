@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../role/redux/actions';
 import { LinkActions } from '../redux/actions';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { AttributeActions } from '../../attribute/redux/actions';
+import { DialogModal, ErrorLabel, SelectBox, AttributeTable} from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 function LinkInfoForm(props) {
@@ -11,7 +12,7 @@ function LinkInfoForm(props) {
 
     // Thiet lap cac gia tri tu props vao state
     useEffect(() => {
-        if (props.linkId !== state.linkId) {
+        if (props.linkId !== state.linkId || props.linkAttributes !== state.linkAttributes) {
             setState({
                 ...state,
                 linkId: props.linkId,
@@ -19,9 +20,12 @@ function LinkInfoForm(props) {
                 linkDescription: props.linkDescription,
                 linkRoles: props.linkRoles,
                 linkDescriptionError: undefined,
+                linkAttributes: props.linkAttributes.map((a, index) => a = {...a, addOrder: -index })
             })
         }
-    }, [props.linkId])
+    }, [props.linkId, props.linkAttributes])
+
+    console.log(state)
 
     const handleLinkDescription = (e) => {
         let { value } = e.target;
@@ -41,13 +45,46 @@ function LinkInfoForm(props) {
         });
     }
 
+    // Function lưu các trường thông tin vào state
+    const handleChange = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
+    useEffect(() => {
+        props.getAttribute();
+    }, [])
+
+    const validateAttributes = () => {
+        var linkAttributes = state.linkAttributes;
+        console.log(linkAttributes)
+        let result = true;
+
+        if (linkAttributes.length !== 0) {
+
+            for (let n in linkAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, linkAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, linkAttributes[n].value).status) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        console.log(result);
+        return result;
+    }
+
     const save = () => {
+        var keys_to_keep = ['attributeId', 'value', 'description']
+
         const { linkId, linkUrl, linkDescription, linkRoles } = state;
 
         const link = {
             url: linkUrl,
             description: linkDescription,
-            roles: linkRoles
+            roles: linkRoles,
+            attributes: state.linkAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
         };
 
         if (isFormValidated()) {
@@ -58,7 +95,7 @@ function LinkInfoForm(props) {
     const isFormValidated = () => {
         let { linkDescription } = state;
         let { translate } = props;
-        if (!ValidationHelper.validateDescription(translate, linkDescription).status) return false;
+        if (!ValidationHelper.validateDescription(translate, linkDescription).status  || !validateAttributes()) return false;
         return true;
     }
 
@@ -67,7 +104,7 @@ function LinkInfoForm(props) {
     }, [])
 
     const { translate, role, link } = props;
-    const { linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError } = state;
+    const { linkId, linkUrl, linkDescription, linkRoles, linkDescriptionError, linkAttributes} = state;
 
     return (
         <React.Fragment>
@@ -109,6 +146,15 @@ function LinkInfoForm(props) {
                             multiple={true}
                         />
                     </div>
+
+                    {/* Các thuộc tính của phân quyền */}
+                    <AttributeTable 
+                        attributes={linkAttributes}
+                        handleChange={handleChange}
+                        attributeOwner={'linkAttributes'}
+                        translation={'manage_link'}
+                    />
+
                 </form>
             </DialogModal>
         </React.Fragment>
@@ -120,9 +166,10 @@ function mapState(state) {
     return { role, link };
 }
 
-const getState = {
+const dispatchStateToProps = {
     getRole: RoleActions.get,
     editLink: LinkActions.edit,
+    getAttribute: AttributeActions.getAttributes
 }
 
-export default connect(mapState, getState)(withTranslate(LinkInfoForm));
+export default connect(mapState, dispatchStateToProps)(withTranslate(LinkInfoForm));

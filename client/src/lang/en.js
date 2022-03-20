@@ -778,6 +778,8 @@ export default {
                 cannot_create_this_url: "Cannot create this url",
                 this_url_cannot_be_use: "This url cannot be use",
                 url_exist: "Url already exists",
+                create_link_attribute_success: "Add link attributes successfully",
+                attribute_selected_duplicate: "Selected attribute names are duplicated"
             },
             attribute: {
                 // Thông điệp trả về từ server

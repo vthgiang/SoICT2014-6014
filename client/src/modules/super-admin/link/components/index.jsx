@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { LinkActions } from '../redux/actions';
 import { RoleActions } from '../../role/redux/actions';
+import { AttributeActions } from '../../attribute/redux/actions';
 
 import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../common-components';
 
@@ -76,19 +77,22 @@ function ManageLink(props) {
         props.getLinks(params);
     }
 
-    useEffect(() => {
-        let { page, limit } = state;
-        props.getLinks({ type: "active" });
-        props.getLinks({ type: "active", page, limit });
-        props.getRoles();
-    }, [])
-
     const handleChange = (name, value) => {
         setState({
             ...state,
             [name]: value
         });
     }
+
+    useEffect(() => {
+        let { page, limit } = state;
+        props.getLinks({ type: "active" });
+        props.getLinks({ type: "active", page, limit });
+        props.getRoles();
+        props.getAttribute();
+    }, [])
+
+    
 
     // Cac ham xu ly du lieu voi modal
     const handleEdit = async (link) => {
@@ -111,16 +115,6 @@ function ManageLink(props) {
         <div className="box" style={{ minHeight: '450px' }}>
             <div className="box-body">
                 <React.Fragment>
-                    {/* Form hỉnh sửa thông tin   */}
-                    {
-                        currentRow &&
-                        <LinkInfoForm
-                            linkId={currentRow._id}
-                            linkUrl={currentRow.url}
-                            linkDescription={currentRow.description}
-                            linkRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
-                        />
-                    }
 
                     {/* Form import file quản lý phân quyền trang */}
                     <ModalImportLinkPrivilege />
@@ -142,6 +136,19 @@ function ManageLink(props) {
 
                     {/* Form thêm thuộc tính cho trang */}
                     <LinkAttributeCreateForm handleChange={handleChange} />
+
+                    {/* Form hỉnh sửa thông tin   */}
+                    {
+                        currentRow &&
+                        <LinkInfoForm
+                            linkId={currentRow._id}
+                            linkUrl={currentRow.url}
+                            linkDescription={currentRow.description}
+                            linkRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
+                            linkAttributes={currentRow.attributes}
+                            handleChange={handleChange}
+                        />
+                    }
 
                     {/* Thanh tìm kiếm */}
                     <SearchBar
@@ -208,15 +215,23 @@ function ManageLink(props) {
     );
 }
 
-function mapState(state) {
+function mapStateToProps(state) {
     const { link, role } = state;
     return { link };
 }
 
-const getState = {
+// const getState = {
+//     getLinks: LinkActions.get,
+//     getRoles: RoleActions.get,
+//     destroy: LinkActions.destroy,
+//     getAttribute: AttributeActions.getAttributes
+// }
+
+const mapDispatchToProps = {
     getLinks: LinkActions.get,
     getRoles: RoleActions.get,
     destroy: LinkActions.destroy,
+    getAttribute: AttributeActions.getAttributes
 }
 
-export default connect(mapState, getState)(withTranslate(ManageLink));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManageLink));

@@ -114,6 +114,11 @@ exports.editAttribute = async (portal, id, data) => {
     if (!oldAttribute) {
         return -1;
     }
+    const check = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: data.attributeName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+
+    if (oldAttribute.attributeName.trim().toLowerCase().replace(/ /g, "") !== data.attributeName.trim().toLowerCase().replace(/ /g, "")) {
+        if (check) throw ['attribute_name_exist'];
+    }
 
     // Cach 2 de update
     await Attribute(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });

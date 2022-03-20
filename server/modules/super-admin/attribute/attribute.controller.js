@@ -96,7 +96,7 @@ exports.editAttribute = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["edit_attribute_fail"],
+            messages: Array.isArray(error) ? error : ["edit_attribute_fail"],
             content: error.message
         });
     }

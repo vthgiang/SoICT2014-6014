@@ -7,7 +7,8 @@ export const LinkServices = {
     show,
     create,
     edit,
-    destroy
+    destroy,
+    createLinkAttribute
     // importLinkPrivilege
 };
 
@@ -47,6 +48,14 @@ function destroy(id) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/link/links/${id}`,
         method: 'DELETE',
+    }, true, true, 'super_admin.link');
+}
+
+function createLinkAttribute(link) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/link/links/attributes`,
+        method: 'POST',
+        data: link,
     }, true, true, 'super_admin.link');
 }
 

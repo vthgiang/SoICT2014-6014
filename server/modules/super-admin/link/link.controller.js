@@ -72,6 +72,27 @@ exports.createLink = async (req, res) => {
     }
 };
 
+exports.createLinkAttribute = async (req, res) => {
+    try {
+        const linkAttr = await LinkService.createLinkAttribute(req.portal, req.body);
+
+        Logger.info(req.user.email, 'create_link_attribute_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['create_link_attribute_success'],
+            content: linkAttr
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'create_link_attribute_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_link_attribute_faile'],
+            content: error
+        });
+    }
+};
+
 exports.editLink = async (req, res) => {
     try {
         await LinkService.relationshipLinkRole(req.portal, req.params.id, req.body.roles);
