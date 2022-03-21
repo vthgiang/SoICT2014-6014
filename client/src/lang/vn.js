@@ -4930,7 +4930,7 @@ export default {
                 approved_time: "Thời gian phê duyệt",
                 time: "Thời gian kiểm định",
                 goods: "Danh sách hàng hóa",
-                quality_control_of_each_goods: "Kiểm định chất lượng từng mặt hàng",
+                quality_control_of_each_goods: "Kiểm định chất lượng từng mặt hàng (Nhập số lượng đạt kiểm định vào cột số lượng đạt kiểm định)",
                 good_name: "Tên hàng hóa",
                 approved_true: "Phê duyệt phiếu",
                 in_processing: "Chuyển trạng thái đang thực hiện",

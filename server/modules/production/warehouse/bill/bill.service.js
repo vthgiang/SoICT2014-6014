@@ -275,7 +275,6 @@ exports.createBill = async (userId, data, portal) => {
     log.title = "Tạo phiếu";
     log.versions = "versions 1";
     logs = [...logs, log];
-    console.log(data.goods);
     let query = {
         fromStock: data.fromStock,
         group: data.group,
@@ -435,7 +434,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             quantity: item.quantity,
             returnQuantity: item.returnQuantity,
             realQuantity: item.realQuantity,
-            damagedQuantity: item.damagedQuantity,
+            damagedQuantity: item.quantity - item.realQuantity,
             description: item.description,
             lots: item.lots.map(x => {
                 return {

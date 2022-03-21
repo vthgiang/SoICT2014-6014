@@ -418,7 +418,7 @@ function GoodReceiptEditForm(props) {
         let totalQuantity = lots.length > 0 ? lots.reduce(function (accumulator, currentValue) {
             return Number(accumulator) + Number(currentValue.quantity);
         }, 0) : 0;
-        state.good.quantity = totalQuantity;
+        state.good.realQuantity = totalQuantity;
         state.good.lots = lots;
         setState({
             ...state,
@@ -571,7 +571,7 @@ function GoodReceiptEditForm(props) {
             indexInfo: index,
             good: Object.assign({}, good),
             lots: lots,
-            quantity: good.quantity
+            quantity: good.realQuantity
         })
 
         const { fromStock } = state;
@@ -814,7 +814,7 @@ function GoodReceiptEditForm(props) {
         let check = 1;
         if (listGood.length > 0) {
             for (let i = 0; i < listGood.length; i++) {
-                let result = checkLots(listGood[i].lots, listGood[i].quantity);
+                let result = checkLots(listGood[i].lots, listGood[i].realQuantity);
                 if (!result) {
                     check = 0;
                 }
@@ -831,7 +831,6 @@ function GoodReceiptEditForm(props) {
         qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
         errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
     const listGoods = getAllGoods();
-    console.log(listGood);
     const dataApprover = getApprover();
     const dataCustomer = getCustomer();
     const dataMills = getMills();
@@ -1068,9 +1067,10 @@ function GoodReceiptEditForm(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
-                                    <label>{translate('manage_warehouse.bill_management.number')}</label>
+                                    {good.good && status === '2'&&  <label>{translate('manage_warehouse.bill_management.number_passed')}</label>}
+                                    {(!good.good || status !== '2') && <label>{translate('manage_warehouse.bill_management.number')}</label>}
                                     <div style={{ display: "flex" }}>
-                                        <input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />
+                                        <input className="form-control" value={(good.good && status === '2') ? good.realQuantity : good.quantity} onChange={handleQuantityChange} type="number" />
                                     </div>
                                 </div>
                             </div>

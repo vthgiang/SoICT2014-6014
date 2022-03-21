@@ -94,7 +94,6 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        console.log(state.currentRole, data);
         await props.getBillsByType(data);
     }
 
@@ -122,7 +121,6 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        console.log(state.currentRole);
         await props.getBillsByType(data);
     }
 

@@ -23,7 +23,9 @@ function IssueManagement(props) {
         limit: limit,
         page: 1,
         group: '2',
-        tableId
+        tableId,
+        realQuantity: '',
+        quantity: '',
     })
 
     const { translate, bills, stocks, user } = props;
@@ -89,6 +91,7 @@ function IssueManagement(props) {
         let index = findIndexOfStaff(bill.qualityControlStaffs, userId);
         let qcStatus = bill.qualityControlStaffs[index].status ? bill.qualityControlStaffs.status : "";
         let qcContent = bill.qualityControlStaffs[index].content ? bill.qualityControlStaffs[index].content : "";
+        console.log(bill);
         await setState({
             ...state,
             currentControl: bill,
@@ -109,6 +112,7 @@ function IssueManagement(props) {
                         code={state.currentControl.code}
                         status={state.qcStatus}
                         content={state.qcContent}
+                        listGoods={state.currentControl.goods}
                     />
                 }
                 <div className="form-inline">
