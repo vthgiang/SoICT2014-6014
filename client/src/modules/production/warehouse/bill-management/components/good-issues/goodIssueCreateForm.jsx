@@ -11,8 +11,9 @@ import { GoodActions } from "../../../../common-production/good-management/redux
 function GoodIssueCreateForm(props) {
     const EMPTY_GOOD = {
         good: "",
-        quantity: "",
-        returnQuantity: "",
+        quantity: 0,
+        returnQuantity: 0,
+        realQuantity: 0,
         description: "",
         lots: [],
     };
@@ -478,11 +479,9 @@ function GoodIssueCreateForm(props) {
         if (listGood) {
             newListGood = listGood.filter((item, x) => index !== x);
         }
-        await setState((state) => {
-            return {
-                ...state,
-                listGood: newListGood,
-            };
+        await setState({
+            ...state,
+            listGood: newListGood,
         });
     };
 

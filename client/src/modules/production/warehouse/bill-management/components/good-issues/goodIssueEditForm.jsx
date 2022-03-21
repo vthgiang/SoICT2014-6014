@@ -856,6 +856,7 @@ function GoodIssueEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.number_passed')}>{translate('manage_warehouse.bill_management.number_passed')}</th>
                                             <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
@@ -871,6 +872,7 @@ function GoodIssueEditForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
+                                                        <td>{x.realQuantity}</td>
                                                         <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
                                                                 {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
