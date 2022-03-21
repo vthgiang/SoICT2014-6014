@@ -12,5 +12,6 @@ router.patch("/users/:id", auth, UserController.editUser);
 router.delete("/users/:id", auth, UserController.deleteUser);
 router.get('/users/roles/abc', auth, UserController.getAllUsersWithRole);
 router.post('/users/import', auth, UserController.importUsers);
+router.post("/users/attributes", auth, UserController.createUserAttribute);
 
 module.exports = router;

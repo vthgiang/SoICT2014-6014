@@ -17,7 +17,8 @@ export const UserActions = {
     create,
     destroy,
     importUsers,
-    sendEmailResetPasswordUser
+    sendEmailResetPasswordUser,
+    createUserAttribute
 };
 
 /**
@@ -447,6 +448,27 @@ function sendEmailResetPasswordUser(email) {
             })
             .catch(err => {
                 dispatch({ type: UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_FAILE });
+            })
+    }
+}
+
+function createUserAttribute(data) {
+    return dispatch => {
+        dispatch({
+            type: UserConstants.CREATE_USER_ATTRIBUTE_REQUEST
+        });
+        UserServices
+            .createUserAttribute(data)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.CREATE_USER_ATTRIBUTE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: UserConstants.CREATE_USER_ATTRIBUTE_FAILE
+                });
             })
     }
 }

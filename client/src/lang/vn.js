@@ -815,6 +815,8 @@ export default {
                 user_not_found: "Không tìm thấy thông tin về tài khoản",
                 department_not_found:
                     "Không tìm thấy thông tin về phòng ban của user",
+                create_user_attribute_success: "Thêm thuộc tính người dùng thành công",
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau"
             },
             role: {
                 // Thông điệp trả về từ server
@@ -1494,6 +1496,19 @@ export default {
             name: "Tên người dùng",
             email: "Địa chỉ email",
             status: "Trạng thái tài khoản",
+            add_attribute: "Thêm thuộc tính",
+            add_user_attribute: "Thêm thuộc tính người dùng",
+            attributes: "Các thuộc tính của người dùng",
+            attribute_name: "Tên thuộc tính",
+            attribute_value: "Giá trị",
+            attribute_description: "Mô tả",
+            attribute_name_example: "VD: Project A",
+            attribute_value_example: "VD: PM",
+            attribute_description_example: "VD: Project Manager dự án A",
+            add_attribute_title: "Thêm thuộc tính cho người dùng",
+            users_add_attribute: "Các người dùng thêm thuộc tính",
+            attribute_select: "Chọn thuộc tính",
+            attribute_not_selected: "Chưa chọn thuộc tính",
         },
 
         manage_link: {
@@ -1518,8 +1533,8 @@ export default {
             attribute_value: "Giá trị",
             attribute_description: "Mô tả",
             attribute_name_example: "VD: Project A",
-            attribute_value_example: "VD: Trang dự án",
-            attribute_description_example: "VD: Trang truy cập",
+            attribute_value_example: "VD: PageProjectA",
+            attribute_description_example: "VD: Trang truy cập dự án A",
             add_attribute_title: "Thêm thuộc tính cho trang",
             links_add_attribute: "Các trang thêm thuộc tính",
             attribute_select: "Chọn thuộc tính",

@@ -41,6 +41,8 @@ export function user(state = initState, action) {
         case UserConstants.SEARCH_USER_BY_NAME_REQUEST:
         case UserConstants.IMPORT_USERS_REQUEST:
         case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_REQUEST:
+        case UserConstants.CREATE_USER_ATTRIBUTE_REQUEST:
+
             return {
                 ...state,
                 isLoading: true,
@@ -55,6 +57,7 @@ export function user(state = initState, action) {
         case UserConstants.IMPORT_USERS_FAILE:
         case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_FAILE:
         case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_SUCCESS:
+        case UserConstants.CREATE_USER_ATTRIBUTE_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -379,6 +382,27 @@ export function user(state = initState, action) {
             return {
                 isLoading: false
             }
+        case UserConstants.CREATE_USER_ATTRIBUTE_SUCCESS:
+            console.log(action.payload)
+            action.payload.forEach(x => {
+                index = findIndex(state.list, x._id);
+                indexPaginate = findIndex(state.listPaginate, x._id);
+                console.log(index); console.log(indexPaginate)
+                if (index !== -1) {
+                    state.list[index] = x;
+                }
+
+                if (indexPaginate !== -1) {
+
+                    state.listPaginate[indexPaginate] = x;
+                }
+
+            })
+            console.log("done")
+            return {
+                ...state,
+                isLoading: false
+            };
         default:
             return state;
     }

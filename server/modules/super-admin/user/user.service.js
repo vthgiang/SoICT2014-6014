@@ -5,7 +5,8 @@ const {
     UserRole,
     Role,
     Company,
-    Employee
+    Employee,
+    Attribute
 } = require(`../../../models`);
 const bcrypt = require("bcryptjs");
 const generator = require("generate-password");
@@ -448,17 +449,130 @@ exports.createUser = async (portal, data, company) => {
         throw ["email_exist"];
     }
 
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName};
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const attrArray = await filterValidAttributeArray(data.attributes);
+    const dataAttr = attrArray.map(attr => {
+        return {
+            attributeId: attr.attributeId,
+            name: attr.name.trim(),
+            value: attr.value.trim(),
+            description: attr.description.trim()
+        }
+    });
+
     var user = await User(connect(DB_CONNECTION, portal)).create({
         name: data.name.trim(),
         email: data.email.trim(),
         password: hash,
         company: company,
+        attributes: dataAttr,
     });
 
     await this.sendMailAboutCreatedAccount(data.email, password, portal);
 
     return user;
 };
+
+exports.createUserAttribute = async (portal, data) => {
+    console.log("create-user-attribute")
+
+    // Lấy danh sách các attribute valid
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName};
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    const attrArray = await filterValidAttributeArray(data.attributes);
+    const dataAttr = attrArray.map(attr => {
+        return {
+            attributeId: attr.attributeId,
+            name: attr.name.trim(),
+            value: attr.value.trim(),
+            description: attr.description.trim()
+        }
+    });
+
+    // lấy ds các user cập nhật thuộc tính
+    const userAddAttribute = await User(connect(DB_CONNECTION, portal)).find({
+        _id: {
+            $in: data.userList.map(id => mongoose.Types.ObjectId(id))
+        }
+    }).populate([
+        {
+            path: "roles",
+            populate: {
+                path: "roleId",
+            },
+        },
+    ]);
+
+    // Thêm - cập nhật thuộc tính
+    userAddAttribute.forEach(async (user) => {
+        // Kiểm tra trùng thuộc tính thì không têm mới mà chỉ cập nhật value và description
+        user.attributes.forEach((attr) => {
+            dataAttr.forEach((inputAttr) => {
+                if (attr.attributeId == inputAttr.attributeId) {
+                    attr.value = inputAttr.value;
+                    attr.description = inputAttr.description
+                }
+            })
+        })
+        // Thêm các thuộc tính chưa có
+        if (user.attributes.length > 0) {
+            const userAttrId = user.attributes.map(attr => attr.attributeId);
+            user.attributes = user.attributes.concat(dataAttr.filter(a => !userAttrId.includes(a.attributeId)));
+        }
+        // Thêm mới nếu chưa có thuộc tính nào
+        else {
+            user.attributes = dataAttr
+
+        }
+        await user.save()
+
+    })
+
+    console.log("userAddAttribute", userAddAttribute)
+    return userAddAttribute;
+
+}
 
 /**
  * Gửi email thông báo đã tạo tài khoản thành công
@@ -656,6 +770,43 @@ exports.editUser = async (portal, id, data) => {
 
     const oldEmail = user.email;
     user.email = email;
+
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName};
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+
+    if (data.attributes) {
+        const attrArray = await filterValidAttributeArray(data.attributes);
+        const dataAttr = attrArray.map(attr => {
+            return {
+                attributeId: attr.attributeId,
+                name: attr.name.trim(),
+                value: attr.value.trim(),
+                description: attr.description?.trim(),
+            }
+        });
+    
+        user.attributes = dataAttr;
+    }
+
     await user.save();
 
     // Tìm user trong bảng employees và cập nhật lại email

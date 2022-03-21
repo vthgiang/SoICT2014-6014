@@ -250,3 +250,23 @@ exports.sendEmailResetPasswordUser = async(req, res) => {
     }
 }
 
+exports.createUserAttribute = async (req, res) => {
+    try {
+        const userAttr = await UserService.createUserAttribute(req.portal, req.body);
+
+        Logger.info(req.user.email, 'create_user_attribute_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['create_user_attribute_success'],
+            content: userAttr
+        });
+    } catch (error) {
+        console.log(error)
+        Logger.error(req.user.email, 'create_user_attribute_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_user_attribute_faile'],
+            content: error
+        });
+    }
+};

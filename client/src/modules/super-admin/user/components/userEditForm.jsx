@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, AttributeTable } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
+import { AttributeActions } from '../../attribute/redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 function UserEditForm(props) {
@@ -32,12 +33,14 @@ function UserEditForm(props) {
     }
 
     const save = () => {
+        var keys_to_keep = ['attributeId', 'value', 'description']
         if (isFormValidated()) {
             return props.edit(props.userId, {
                 email: state.userEmail,
                 name: state.userName,
                 active: state.userActive,
-                roles: state.userRoles
+                roles: state.userRoles,
+                attributes: state.userAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
             });
         }
     }
@@ -45,7 +48,7 @@ function UserEditForm(props) {
     const isFormValidated = () => {
         let { userName, userEmail } = state;
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, userName, 6, 255).status || !ValidationHelper.validateEmail(translate, userEmail).status) return false;
+        if (!ValidationHelper.validateName(translate, userName, 6, 255).status || !ValidationHelper.validateEmail(translate, userEmail).status || !validateAttributes()) return false;
         return true;
     }
 
@@ -86,8 +89,33 @@ function UserEditForm(props) {
         });
     }
 
+    // Function lưu các trường thông tin vào state
+    const handleChange = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
+    const validateAttributes = () => {
+        var userAttributes = state.userAttributes;
+        let result = true;
+
+        if (userAttributes.length !== 0) {
+
+            for (let n in userAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, userAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, userAttributes[n].value).status) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        console.log(result);
+        return result;
+    }
+
     useEffect(() => {
-        if (props.userId !== state.userId) {
+        if (props.userId !== state.userId || props.userAttributes !== state.userAttributes) {
             setState({
                 ...state,
                 userId: props.userId,
@@ -98,13 +126,17 @@ function UserEditForm(props) {
                 userAvatar: props.userAvatar,
                 userEmailError: undefined,
                 userNameError: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                userAttributes: props.userAttributes.map((a, index) => a = {...a, addOrder: -index })
             })
         }
-    }, [props.userId])
+    }, [props.userId, props.userAttributes])
 
+    useEffect(() => {
+        props.getAttribute();
+    }, [])
 
     const { translate, role, user, auth } = props;
-    const { userId, userEmail, userName, userActive, userRoles, status, userNameError, userEmailError, userAvatar } = state;
+    const { userId, userEmail, userName, userActive, userRoles, status, userNameError, userEmailError, userAvatar, userAttributes } = state;
 
     return (
         <React.Fragment>
@@ -196,6 +228,14 @@ function UserEditForm(props) {
                                 />
                             </div>
                     }
+
+                    {/* Các thuộc tính của user */}
+                    <AttributeTable 
+                        attributes={userAttributes}
+                        handleChange={handleChange}
+                        attributeOwner={'userAttributes'}
+                        translation={'manage_user'}
+                    />
                 </form>
             </DialogModal>
         </React.Fragment>
@@ -208,7 +248,8 @@ function mapStateToProps(state) {
 }
 
 const action = {
-    edit: UserActions.edit
+    edit: UserActions.edit,
+    getAttribute: AttributeActions.getAttributes
 }
 
 

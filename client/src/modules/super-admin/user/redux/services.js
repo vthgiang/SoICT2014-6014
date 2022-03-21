@@ -21,6 +21,7 @@ export const UserServices = {
     destroy,
     importUsers,
     sendEmailResetPasswordUser,
+    createUserAttribute
 };
 
 function get(params) {
@@ -303,4 +304,12 @@ function sendEmailResetPasswordUser(email) {
         true,
         "super_admin.user"
     );
+}
+
+function createUserAttribute(user) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/user/users/attributes`,
+        method: 'POST',
+        data: user,
+    }, true, true, 'super_admin.user');
 }

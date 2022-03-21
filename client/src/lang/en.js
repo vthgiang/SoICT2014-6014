@@ -754,6 +754,8 @@ export default {
                 email_exist: "Email already exists",
                 user_not_found: "User not found",
                 department_not_found: "Organizational unit of user not found",
+                create_user_attribute_success: "Add user attributes successfully",
+                attribute_selected_duplicate: "Selected attribute names are duplicated"
             },
             role: {
                 // Thông điệp trả về từ server
@@ -1395,6 +1397,19 @@ export default {
             name: "User name",
             email: "Email",
             status: "Status",
+            add_attribute: "Add attribute",
+            add_user_attribute: "Add user attribute",
+            attributes: "User attributes",
+            attribute_name: "Attribute name",
+            attribute_value: "Attribute value",
+            attribute_description: "Attribute description",
+            attribute_name_example: "VD: Project A",
+            attribute_value_example: "VD: PM",
+            attribute_description_example: "VD: Manager of project A",
+            add_attribute_title: "Add user attribute",
+            users_add_attribute: "Attributes of users",
+            attribute_select: "Select attribute",
+            attribute_not_selected: "Attribute not selected",
         },
 
         manage_link: {
@@ -1419,7 +1434,7 @@ export default {
             attribute_value: "Attribute value",
             attribute_description: "Attribute description",
             attribute_name_example: "VD: Project A",
-            attribute_value_example: "VD: Page Project A",
+            attribute_value_example: "VD: PageProjectA",
             attribute_description_example: "VD: Page for project A",
             add_attribute_title: "Add link attribute",
             links_add_attribute: "Attributes of links",

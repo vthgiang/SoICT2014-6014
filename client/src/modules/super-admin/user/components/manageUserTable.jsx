@@ -6,7 +6,9 @@ import parse from 'html-react-parser';
 import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip, ConfirmNotification } from '../../../../common-components';
 
 import { UserActions } from '../redux/actions';
+import { AttributeActions } from '../../attribute/redux/actions';
 
+import UserAttributeCreateForm from './userAttributeCreateForm'
 import UserEditForm from './userEditForm';
 import UserCreateForm from './userCreateForm';
 import ModalImportUser from './modalImportUser';
@@ -94,8 +96,18 @@ function ManageUserTable(props) {
         props.getUser(data);
     }
 
+    // Function lưu các trường thông tin vào state
+    const handleChange = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
     useEffect(() => {
         props.getUser({ limit: state.limit, page: state.page });
+        props.getUser();
+        props.getAttribute();
     }, [])
 
     const sendEmailResetPasswordUser = (email) => {
@@ -115,7 +127,10 @@ function ManageUserTable(props) {
             </div>
 
             {/* Form thêm mới người dùng */}
-            <UserCreateForm />
+            <UserCreateForm handleChange={handleChange} />
+
+            <UserAttributeCreateForm handleChange={handleChange} />
+
             {/* Form import thông tin người dùng */}
             <ModalImportUser limit={limit} />
 
@@ -140,6 +155,8 @@ function ManageUserTable(props) {
                     userActive={state.currentRow.active}
                     userRoles={state.currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
                     userAvatar={state.currentRow.avatar}
+                    userAttributes={state.currentRow.attributes}
+                    handleChange={handleChange}
                 />
             }
 
@@ -223,6 +240,7 @@ const mapDispatchToProps = {
     getUser: UserActions.get,
     edit: UserActions.edit,
     destroy: UserActions.destroy,
+    getAttribute: AttributeActions.getAttributes,
     sendEmailResetPasswordUser: UserActions.sendEmailResetPasswordUser,
 }
 
