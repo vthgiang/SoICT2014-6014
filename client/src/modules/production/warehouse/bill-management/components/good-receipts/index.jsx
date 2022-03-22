@@ -5,6 +5,7 @@ import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotifica
 
 import BillDetailForm from '../genaral/billDetailForm';
 import GoodReceiptEditForm from './goodReceiptEditForm';
+import GoodDetailModal from './goodDetailModal';
 import GoodReceiptCreateForm from './goodReceiptCreateForm';
 import { BillActions } from '../../redux/actions';
 import QualityControlForm from '../genaral/quatityControlForm';
@@ -97,6 +98,44 @@ function ReceiptManagement(props) {
         window.$('#modal-quality-control-bill').modal('show');
     }
 
+    const checkGoods = (goods) => {
+        let text = "";
+        let countReturnGood = 0;
+        let countInventory = 0;
+        goods.forEach((element, index) => {
+            if (element.realQuantity < element.quantity) {
+                countReturnGood++
+            }
+            if (checkLots(element.lots, element.realQuantity)) {
+                countInventory++
+            }
+        });
+        return text = text + (countReturnGood > 0 ? `Có hàng hóa không đạt kiểm định, cần trả hàng.\n` : "") + (countInventory > 0 ? `Có hàng hóa chưa xếp vào kho, cần xếp vào kho. ` : "");
+    }
+
+    const checkLots = (lots, quantity) => {
+        if (lots.length === 0) {
+            return false;
+        } else {
+            let totalQuantity = 0;
+            for (let i = 0; i < lots.length; i++) {
+                totalQuantity += Number(lots[i].quantity);
+            }
+            if (Number(quantity) !== Number(totalQuantity)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const handleShowGoodDetail = async (bill) => {
+        await setState({
+            ...state,
+            currentBill: bill,
+        })
+        window.$('#modal-good-detail').modal('show');
+    }
+
     return (
         <div id="bill-good-receipts">
             <div className="box-body qlcv">
@@ -109,6 +148,14 @@ function ReceiptManagement(props) {
                         status={state.qcStatus}
                         content={state.qcContent}
                         listGoods={state.currentControl.goods}
+                    />
+                }
+                {
+                    state.currentBill &&
+                    <GoodDetailModal
+                        billId={state.currentBill._id}
+                        code={state.currentBill.code}
+                        listGoods={state.currentBill.goods}
                     />
                 }
                 <div className="form-inline">
@@ -258,7 +305,7 @@ function ReceiptManagement(props) {
                             <th>{translate('manage_warehouse.bill_management.date')}</th>
                             <th>{translate('manage_warehouse.bill_management.stock')}</th>
                             <th>{translate('manage_warehouse.bill_management.supplier')}</th>
-                            <th>{translate('manage_warehouse.bill_management.description')}</th>
+                            <th>{translate('manage_warehouse.bill_management.infor_of_goods')}</th>
                             <th style={{ width: '120px' }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
@@ -272,7 +319,7 @@ function ReceiptManagement(props) {
                                         translate('manage_warehouse.bill_management.date'),
                                         translate('manage_warehouse.bill_management.stock'),
                                         translate('manage_warehouse.bill_management.supplier'),
-                                        translate('manage_warehouse.bill_management.description')
+                                        translate('manage_warehouse.bill_management.infor_of_goods')
                                     ]}
                                     setLimit={props.setLimit}
                                 />
@@ -293,7 +340,7 @@ function ReceiptManagement(props) {
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     {x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
                                     {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
-                                    <td>{x.description}</td>
+                                    <td><a onClick={() => handleShowGoodDetail(x)}> <p className='text-red' style={{whiteSpace: 'pre-wrap'}}>{x.status === '2' && checkGoods(x.goods)}</p></a></td>
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>

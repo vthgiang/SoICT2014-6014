@@ -4846,6 +4846,7 @@ export default {
             },
             bill_management: {
                 text: "Chưa đánh lô cho hàng hóa",
+
                 billType: {
                     1: "Nhập nguyên vật liệu",
                     2: "Nhập thành phẩm",
@@ -4903,6 +4904,7 @@ export default {
                 creator: "Người tạo",
                 date: "Ngày tạo",
                 description: "Mô tả",
+                infor_of_goods: "Thông tin hàng hóa",
                 stock: "Kho",
                 rotate_stock: "Kho nhập",
                 from_date: "Từ ngày",
@@ -5083,12 +5085,16 @@ export default {
                 quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!",
                 lot_with_unit: "Lô hàng (Mã lô/ Số lượng)",
                 quantity_passed_test: "Số lượng đạt kiểm định",
+                quantity_return_supplier: "Số lượng không đạt kiểm định cần trả",
                 rfid_code: "Mã RFID",
                 rfid_quantity: "Số lượng mã sản phẩm / 1 mã  RFID",
                 create_rfid_code: "Thêm mã RFID",
                 goods_returned_to_the_factory: "Hàng trả về xưởng",
                 goods_returned_to_the_supplier: "Hàng trả về nhà cung cấp",
                 goods_returned_to_the_stock: "Hàng trả kho",
+                action: "Hành động",
+                arrange_goods_into_the_warehouse: "Sắp xếp hàng vào kho",
+                good_detail: "Chi tiết hàng hóa",
             },
             inventory_management: {
                 product: "Sản phẩm",

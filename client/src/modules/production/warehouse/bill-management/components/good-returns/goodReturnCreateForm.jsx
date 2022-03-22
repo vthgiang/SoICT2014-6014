@@ -579,7 +579,7 @@ function GoodReturnCreateForm(props) {
         })
     }
 
-    const { translate, group, bills } = props;
+    const { translate, group, bills, isHideButtonCreate, size } = props;
     const { lots, listGood, good, code, approver, accountables, responsibles, qualityControlStaffs, status, fromStock, type, name, phone, email, address,
         errorStock, errorType, errorApprover, errorBill, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
     const dataApprover = getApprover();
@@ -589,7 +589,7 @@ function GoodReturnCreateForm(props) {
 
     return (
         <React.Fragment>
-            <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
+            {!isHideButtonCreate && <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />}
 
             <DialogModal
                 modalID={`modal-create-bill-return`}

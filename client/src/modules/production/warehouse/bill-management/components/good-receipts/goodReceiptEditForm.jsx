@@ -1104,7 +1104,7 @@ function GoodReceiptEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.number_passed')}>{translate('manage_warehouse.bill_management.number_passed')}</th>
                                             <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
-                                            <th>{translate('task_template.action')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.action')}>{translate('manage_warehouse.bill_management.action')}</th>
                                         </tr>
                                     </thead>
                                     <tbody id={`good-bill-edit`}>

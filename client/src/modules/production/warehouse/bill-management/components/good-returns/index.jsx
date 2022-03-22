@@ -89,7 +89,7 @@ function ReturnManagement(props) {
     return (
         <div id="bill-good-returns">
             <div className="box-body qlcv">
-                <GoodReturnCreateForm group={group} />
+                <GoodReturnCreateForm group={group} isHideButtonCreate={false}/>
                 {
                     state.currentControl &&
                     <QualityControlForm
