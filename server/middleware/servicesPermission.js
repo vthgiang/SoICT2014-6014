@@ -117,6 +117,13 @@ exports.links = [
             { path: '/attribute/attributes/:id', method: 'PATCH' },
             { path: '/attribute/attributes/:id', method: 'DELETE' },
 
+            { path: '/policy/policies', method: 'GET' },
+            { path: '/policy/policies', method: 'POST' },
+            { path: '/policy/policies/paginate', method: 'POST' },
+            { path: '/policy/policies/:id', method: 'GET' },
+            { path: '/policy/policies/:id', method: 'PATCH' },
+            { path: '/policy/policies/:id', method: 'DELETE' },
+
             { path: '/organizational-units/organizational-units', method: 'GET' },
             { path: '/organizational-units/organizational-units', method: 'POST' },
             { path: '/organizational-units/organizational-units/:id', method: 'GET' },
@@ -663,6 +670,9 @@ exports.links = [
         url: '/attributes-management',
         apis: ['@all']
     }, {
+        url: '/policies-management',
+        apis: ['@all']
+    },{
         url: '/apis-management',
         apis: ['@all']
     }, {

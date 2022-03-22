@@ -80,6 +80,7 @@ router.use("/role", require("./modules/super-admin/role/role.route"));
 router.use("/component", require("./modules/super-admin/component/component.route"));
 router.use("/link", require("./modules/super-admin/link/link.route"));
 router.use("/attribute", require("./modules/super-admin/attribute/attribute.route"));
+router.use("/policy", require("./modules/super-admin/policy/policy.route"));
 router.use("/api", require("./modules/super-admin/api/api.route"));
 router.use("/organizational-units", require("./modules/super-admin/organizational-unit/organizationalUnit.route"));
 

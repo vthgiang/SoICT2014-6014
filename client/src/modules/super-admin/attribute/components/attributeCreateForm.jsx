@@ -40,11 +40,11 @@ function AttributeCreateForm(props) {
     const save = () => {
         if (isFormValidated() && attributeName) {
             props.createAttribute([{ attributeName, description }]);
-            props.getAttributes({
-                attributeName: "",
-                page: page,
-                perPage: perPage
-            });
+            // props.getAttributes({
+            //     attributeName: "",
+            //     page: page,
+            //     perPage: perPage
+            // });
         }
     }
 

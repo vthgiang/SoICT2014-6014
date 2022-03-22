@@ -99,6 +99,7 @@ export default {
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
             manage_attribute: "Manage Attributes",
+            manage_policy: "Manage Authorization Policies",
             manage_component: "Manage permissions on page",
             manage_api: "Manage API",
             registration_api: "Manage API registration",
@@ -794,6 +795,17 @@ export default {
                 attribute_name_exist: "Attribute name exists!"
                 
             },
+            policy: {
+                // Thông điệp trả về từ server
+                delete_success: "Delete policy successfully!",
+                delete_fail: "Delete policy fail!",
+                add_success: "Add policy successfully!",
+                add_fail: "Add policy fail!",
+                edit_policy_success: "Update policy successfully!",
+                edit_policy_fail: "Update policy fail!",
+                policy_name_exist: "Policy name exists!",
+                attribute_selected_duplicate: "Selected attribute names are duplicated"                
+            },
             component: {
                 // Thông điệp trả về từ server
                 edit_component_success: "Edit component successfully",
@@ -1463,6 +1475,29 @@ export default {
             edit_attribute_success: "Update attribute successfully!",
             edit_attribute_fail: "Update attribute fail!",
             detail_info_attribute: "Detail infomation of attribute",
+        },
+
+        manage_policy: {
+            policyName: "Policy Name",
+            search: "Search",
+            add_policy: "Add Policy",
+            index: "Index",
+            description: "Description",
+            edit: "Edit this policy",
+            delete: "Delete this policy",
+            delete_success: "Delete policy successfully!",
+            delete_fail: "Delete policy fail!",
+            add: "Add policy",
+            add_title: "Add a new policy",
+            add_multi_policy: "Add many new policies",
+            add_one_policy: "Add 1 new policy",
+            add_success: "Add policy successfully!",
+            add_fail: "Add policy fail!",
+            policy_description: "Policy Description",
+            edit_title: "Update a policy",
+            edit_policy_success: "Update policy successfully!",
+            edit_policy_fail: "Update policy fail!",
+            detail_info_policy: "Detail infomation of policy",
         },
 
         manage_api: {

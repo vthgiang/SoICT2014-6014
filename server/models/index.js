@@ -3,6 +3,7 @@ module.exports = {
     Role: require('./auth/role.model'),
     User: require('./auth/user.model'),
     UserRole: require('./auth/userRole.model'),
+    Policy: require('./auth/policy.model'),
 
     Document: require('./document/document.model'),
     DocumentCategory: require('./document/documentCategory.model'),

@@ -100,6 +100,7 @@ export default {
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
             manage_attribute: "Quản lý thuộc tính",
+            manage_policy: "Quản lý chính sách phân quyền",
             manage_component: "Quản lý phân quyền trên các trang",
             manage_api: "Quản lý API",
             registration_api: "Quản lý đăng ký API",
@@ -844,6 +845,16 @@ export default {
                 attribute_name_exist: "Tên thuộc tính đã tồn tại!"
 
             },
+            policy: {
+                delete_success: "Xóa chính sách thành công!",
+                delete_fail: "Xóa chính sách thất bại!",
+                add_success: "Thêm chính sách thành công!",
+                add_fail: "Thêm chính sách thất bại!",
+                edit_policy_success: "Cập nhật chính sách thành công!",
+                edit_policy_fail: "Cập nhật chính sách thất bại!",
+                policy_name_exist: "Tên chính sách đã tồn tại!",
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau"
+            },
             link: {
                 // Thông điệp trả về từ server
                 create_link_success: "Tạo link thành công",
@@ -1563,7 +1574,28 @@ export default {
             edit_attribute_fail: "Cập nhật thuộc tính thất bại!",
             detail_info_attribute: "Thông tin chi tiết thuộc tính",
         },
-
+        manage_policy: {
+            policyName: "Tên chính sách",
+            search: "Tìm kiếm",
+            add_policy: "Thêm mới",
+            index: "STT",
+            description: "Mô tả",
+            edit: "Chỉnh sửa thông tin chính sách",
+            delete: "Xóa chính sách",
+            delete_success: "Xóa chính sách thành công!",
+            delete_fail: "Xóa chính sách thất bại!",
+            add: "Thêm chính sách",
+            add_title: "Thêm mới chính sách",
+            add_multi_policy: "Thêm nhiều chính sách",
+            add_one_policy: "Thêm một chính sách",
+            add_success: "Thêm chính sách thành công!",
+            add_fail: "Thêm chính sách thất bại!",
+            policy_description: "Mô tả chính sách",
+            edit_title: "Cập nhật chính sách",
+            edit_policy_success: "Cập nhật chính sách thành công!",
+            edit_policy_fail: "Cập nhật chính sách thất bại!",
+            detail_info_policy: "Thông tin chi tiết chính sách",
+        },
         manage_api: {
             description: "Mô tả api",
         },

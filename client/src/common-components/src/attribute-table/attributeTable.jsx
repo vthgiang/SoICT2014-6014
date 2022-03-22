@@ -5,7 +5,7 @@ import {SelectBox, ErrorLabel } from '../../../common-components';
 import ValidationHelper from '../../../helpers/validationHelper';
 
 function AttributeTable(props) {
-    const [state, setState] = useState({i: 0, translation: props.translation})
+    const [state, setState] = useState({i: 0, translation: props.translation, noDescription: props.noDescription ? props.noDescription : false})
 
     // Thiet lap cac gia tri tu props vao state
     useEffect(() => {
@@ -179,7 +179,7 @@ function AttributeTable(props) {
     };
 
     const { translate, attribute } = props;
-    const { attributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue, translation } = state;
+    const { attributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue, translation, noDescription } = state;
 
     return (
         <React.Fragment>
@@ -190,12 +190,13 @@ function AttributeTable(props) {
                         <table className="table table-hover table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th style={{ width: '30%' }}><label>{translate(translation + '.attribute_name')}</label></th>
-                                    <th style={{ width: '30%' }}><label>{translate(translation + '.attribute_value')}</label></th>
-                                    <th style={{ width: '30%' }}><label>{translate(translation + '.attribute_description')}</label></th>
-
+                                    <th style={(noDescription) ? {width: '45%'} : { width: '30%' }}><label>{translate(translation + '.attribute_name')}</label></th>
+                                    <th style={(noDescription) ? {width: '45%'} : { width: '30%' }}><label>{translate(translation + '.attribute_value')}</label></th>
+                                    {(noDescription) ? null :
+                                        <th style={{ width: '30%' }}><label>{translate(translation + '.attribute_description')}</label></th>
+                                    } 
                                     <th style={{ width: '40px' }} className="text-center"><a href="#add-attributes" className="text-green" onClick={handleAddAttributes}><i className="material-icons">add_box</i></a></th>
-                                </tr>
+                                    </tr>
                             </thead>
                             <tbody>
                                 {
@@ -234,7 +235,7 @@ function AttributeTable(props) {
                                                         {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
                                                     </div>
                                                 </td>
-
+                                                {(noDescription) ? null : 
                                                 <td>
                                                     <div className="form-group">
                                                         <input type="text"
@@ -246,6 +247,7 @@ function AttributeTable(props) {
 
                                                     </div>
                                                 </td>
+                                                }
 
                                                 <td>
                                                     <a href="#delete-attribute"

@@ -6,6 +6,7 @@ module.exports = {
     mt_component: require("./super-admin/component/component.route"),
     mt_link: require("./super-admin/link/link.route"),
     mt_attribute: require('./super-admin/attribute/attribute.route'),
+    mt_policy: require('./super-admin/policy/policy.route'),
     mt_organizationalUnit: require("./super-admin/organizational-unit/organizationalUnit.route"),
     mt_privilege: require("./super-admin/privilege/privilege.route"),
     

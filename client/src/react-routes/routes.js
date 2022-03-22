@@ -21,6 +21,7 @@ const ManageUser = lazy(() => import("../modules/super-admin/user/components"))
 const ManageRole = lazy(() => import("../modules/super-admin/role/components"))
 const ManageLink = lazy(() => import("../modules/super-admin/link/components"))
 const ManageAttribute = lazy(() => import("../modules/super-admin/attribute/components"))
+const ManagePolicy = lazy(() => import("../modules/super-admin/policy/components"))
 const ManageApi = lazy(() => import("../modules/super-admin/api/api-management/components/apiManagement"))
 const ApiRegistration = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistration"))
 const ApiRegistrationEmployee = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistrationEmployee"))
@@ -502,6 +503,29 @@ class Routes extends Component {
                         pageName={"manage_attribute"}
                         layout={Layout}
                         component={ManageAttribute}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.link.isLoading}
+                        key={"policies-management"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/policies-management",
+                                name: "manage_policy",
+                                icon: "fa fa-file-powerpoint-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/policies-management"}
+                        path={"/policies-management"}
+                        pageName={"manage_policy"}
+                        layout={Layout}
+                        component={ManagePolicy}
                     />
                     <PrivateRoute
                         isLoading={this.props.api?.isLoading}
