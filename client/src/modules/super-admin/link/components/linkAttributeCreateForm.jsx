@@ -12,7 +12,7 @@ function LinkAttributeCreateForm(props) {
         linkAttributes: [],
     })
 
-    
+
 
 
     const handleLinkList = (value) => {
@@ -25,14 +25,18 @@ function LinkAttributeCreateForm(props) {
     /**
      * Bắt sự kiện chỉnh sửa tên thuộc tính
      */
-     // Function lưu các trường thông tin vào state
+    // Function lưu các trường thông tin vào state
     const handleChange = (name, value) => {
         setState({
             ...state,
             [name]: value
         });
     }
-    
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        props.handleChangeAddRowAttribute(name, value)
+    }
+
     useEffect(() => {
         props.getAttribute();
     }, [])
@@ -65,7 +69,7 @@ function LinkAttributeCreateForm(props) {
         var keys_to_keep = ['attributeId', 'value', 'description']
         const data = {
             linkList: state.linkList,
-            attributes: state.linkAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
+            attributes: state.linkAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({ [key]: element[key] }))))
         }
 
         if (isFormValidated()) {
@@ -83,30 +87,30 @@ function LinkAttributeCreateForm(props) {
     // }
 
     const { translate, link } = props;
-    const { linkAttributes} = state;
+    const { linkAttributes } = state;
 
     let allLinksByCategory;
-    let allLinkCategory=link.list.map(l => l.category);
+    let allLinkCategory = link.list.map(l => l.category);
     let linkCategory = allLinkCategory.filter((x, i, a) => a.indexOf(x) == i);
-    
-    if(link.list){
-        allLinksByCategory=linkCategory.map(cat=>{
-            var temp=[];
-            
-            for(let i=0;i<link.list.length;i++){
-                if(link.list[i].category == cat){
+
+    if (link.list) {
+        allLinksByCategory = linkCategory.map(cat => {
+            var temp = [];
+
+            for (let i = 0; i < link.list.length; i++) {
+                if (link.list[i].category == cat) {
                     temp.push({
                         text: link.list[i].url,
-                        value : link.list[i].id
+                        value: link.list[i].id
                     });
                 }
             }
-            var unit ={
-                text : cat,
-                value : temp
+            var unit = {
+                text: cat,
+                value: temp
             };
 
-            return unit;                
+            return unit;
         });
     }
 
@@ -154,11 +158,13 @@ function LinkAttributeCreateForm(props) {
                     </div>
 
                     {/* Các thuộc tính của phân quyền */}
-                    <AttributeTable 
+                    <AttributeTable
                         attributes={linkAttributes}
                         handleChange={handleChange}
                         attributeOwner={'linkAttributes'}
                         translation={'manage_link'}
+                        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                        i={props.i}
                     />
 
                 </form>

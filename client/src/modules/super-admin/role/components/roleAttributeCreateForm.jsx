@@ -39,14 +39,18 @@ function RoleAttributeCreateForm(props) {
     /**
      * Bắt sự kiện chỉnh sửa tên thuộc tính
      */
-     // Function lưu các trường thông tin vào state
+    // Function lưu các trường thông tin vào state
     const handleChange = (name, value) => {
         setState({
             ...state,
             [name]: value
         });
     }
-    
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        props.handleChangeAddRowAttribute(name, value)
+    }
+
     useEffect(() => {
         props.getAttribute();
     }, [])
@@ -79,7 +83,7 @@ function RoleAttributeCreateForm(props) {
         var keys_to_keep = ['attributeId', 'value', 'description']
         const data = {
             roleList: state.roleList,
-            attributes: state.roleAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
+            attributes: state.roleAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({ [key]: element[key] }))))
         }
 
         if (isFormValidated()) {
@@ -97,7 +101,7 @@ function RoleAttributeCreateForm(props) {
     // }
 
     const { translate, role } = props;
-    const { roleAttributes} = state;
+    const { roleAttributes } = state;
 
     return (
         <React.Fragment>
@@ -151,11 +155,13 @@ function RoleAttributeCreateForm(props) {
                     </div>
 
                     {/* Các thuộc tính của phân quyền */}
-                    <AttributeTable 
+                    <AttributeTable
                         attributes={roleAttributes}
                         handleChange={handleChange}
+                        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
                         attributeOwner={'roleAttributes'}
                         translation={'manage_role'}
+                        i={props.i}
                     />
 
                 </form>
@@ -165,7 +171,7 @@ function RoleAttributeCreateForm(props) {
 }
 
 function mapStateToProps(state) {
-    const { role, user} = state;
+    const { role, user } = state;
     return { role, user };
 }
 

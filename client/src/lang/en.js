@@ -793,7 +793,7 @@ export default {
                 edit_attribute_success: "Update attribute successfully!",
                 edit_attribute_fail: "Update attribute fail!",
                 attribute_name_exist: "Attribute name exists!"
-                
+
             },
             policy: {
                 // Thông điệp trả về từ server
@@ -804,7 +804,7 @@ export default {
                 edit_policy_success: "Update policy successfully!",
                 edit_policy_fail: "Update policy fail!",
                 policy_name_exist: "Policy name exists!",
-                attribute_selected_duplicate: "Selected attribute names are duplicated"                
+                attribute_selected_duplicate: "Selected attribute names are duplicated"
             },
             component: {
                 // Thông điệp trả về từ server
@@ -1498,6 +1498,54 @@ export default {
             edit_policy_success: "Update policy successfully!",
             edit_policy_fail: "Update policy fail!",
             detail_info_policy: "Detail infomation of policy",
+            general_information: "General information",
+            subject_information: "Subject attributes information",
+            resource_information: "Resource attributes information",
+            user: {
+                add_attribute: "Add attribute",
+                add_user_attribute: "Add user attribute",
+                attributes: "User attributes",
+                attribute_name: "Attribute name",
+                attribute_value: "Attribute value",
+                attribute_description: "Attribute description",
+                attribute_name_example: "VD: Project A",
+                attribute_value_example: "VD: PM",
+                attribute_description_example: "VD: Manager of project A",
+                add_attribute_title: "Add user attribute",
+                users_add_attribute: "Attributes of users",
+                attribute_select: "Select attribute",
+                attribute_not_selected: "Attribute not selected",
+            },
+            role: {
+                attributes: "Role attributes",
+                attribute_name: "Attribute name",
+                attribute_value: "Attribute value",
+                attribute_description: "Attribute description",
+                attribute_name_example: "VD: Group",
+                attribute_value_example: "VD: Leader",
+                attribute_description_example: "VD: Role position in group",
+                add_attribute_title: "Add role attribute",
+                roles_add_attribute: "Attributes of roles",
+                attribute_select: "Select attribute",
+                attribute_not_selected: "Attribute not selected",
+                add_attribute: "Add attribute",
+                add_role_attribute: "Add role attribute",
+            },
+            resource: {
+                add_attribute: "Add attribute",
+                add_link_attribute: "Add link attribute",
+                attributes: "Link attributes",
+                attribute_name: "Attribute name",
+                attribute_value: "Attribute value",
+                attribute_description: "Attribute description",
+                attribute_name_example: "VD: Project A",
+                attribute_value_example: "VD: PageProjectA",
+                attribute_description_example: "VD: Page for project A",
+                add_attribute_title: "Add link attribute",
+                links_add_attribute: "Attributes of links",
+                attribute_select: "Select attribute",
+                attribute_not_selected: "Attribute not selected",
+            }
         },
 
         manage_api: {
@@ -3702,8 +3750,8 @@ export default {
                 view_task_process_template: "View task process template",
                 import_task_template_success: "Import task template success",
                 import_task_template_failure: "Import task template failure",
-                select_task_process_template:"Select taskprocess template",
-                process_template_name:"Process template name",
+                select_task_process_template: "Select taskprocess template",
+                process_template_name: "Process template name",
             },
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
@@ -4638,7 +4686,7 @@ export default {
                 asset: "Asset",
                 bin_location: "Storage location",
                 category_tree: "Tree directory",
-                category_table:"Table list",
+                category_table: "Table list",
                 archive: "Storage category",
                 1: {
                     status: "Ready to use",

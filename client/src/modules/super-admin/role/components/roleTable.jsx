@@ -25,7 +25,8 @@ function RoleTable(props) {
         limit: limit,
         page: 1,
         option: 'name', // Mặc định tìm kiếm theo tên
-        value: ''
+        value: '',
+        i: 0
     })
 
     let { roleDuplicate, roleDuplicateName } = state;
@@ -145,6 +146,13 @@ function RoleTable(props) {
         });
     }
 
+    const handleChangeAddRowAttribute = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
     useEffect(() => {
         props.get();
         props.get({ page: state.page, limit: state.limit });
@@ -157,15 +165,15 @@ function RoleTable(props) {
     }
 
     const { role, translate } = props;
-    const { currentRow, option, tableId } = state;
+    const { currentRow, option, tableId, i } = state;
 
     return (
         <React.Fragment>
 
             {/* Button thêm phân quyền mới */}
-            <RoleCreateForm handleChange={handleChange} />
+            <RoleCreateForm handleChange={handleChange} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
-            <RoleAttributeCreateForm handleChange={handleChange} />
+            <RoleAttributeCreateForm handleChange={handleChange} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
             {/* Button kiểm tra tất cả phân quyền hợp lệ không*/}
             <div style={{ display: 'flex', marginBottom: 6, float: 'right' }}>
@@ -183,6 +191,8 @@ function RoleTable(props) {
                     roleUsers={currentRow.users.map(user => user && user.userId ? user.userId._id : null)}
                     roleAttributes={currentRow.attributes}
                     handleChange={handleChange}
+                    handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                    i={state.i}
                 />
             }
 

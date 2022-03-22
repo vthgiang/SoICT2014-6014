@@ -21,7 +21,7 @@ function RoleInfoForm(props) {
                 roleParents: props.roleParents,
                 roleUsers: props.roleUsers,
                 roleNameError: undefined,
-                roleAttributes: props.roleAttributes.map((a, index) => a = {...a, addOrder: -index })
+                roleAttributes: props.roleAttributes.map((a, index) => a = { ...a, addOrder: index + props.roleId })
             })
         }
     }, [props.roleId, props.roleAttributes]);
@@ -72,7 +72,11 @@ function RoleInfoForm(props) {
             [name]: value
         });
     }
-    
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        props.handleChangeAddRowAttribute(name, value)
+    }
+
     useEffect(() => {
         props.getAttribute();
     }, [])
@@ -109,7 +113,7 @@ function RoleInfoForm(props) {
             name: state.roleName,
             parents: state.roleParents,
             users: state.roleUsers,
-            attributes: state.roleAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
+            attributes: state.roleAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({ [key]: element[key] }))))
         };
         console.log(role)
 
@@ -119,7 +123,7 @@ function RoleInfoForm(props) {
     }
 
     const { role, user, translate } = props;
-    const { roleId, roleType, roleName, roleParents, roleUsers, roleNameError, roleAttributes} = state;
+    const { roleId, roleType, roleName, roleParents, roleUsers, roleNameError, roleAttributes } = state;
 
     return (
         <React.Fragment>
@@ -181,11 +185,13 @@ function RoleInfoForm(props) {
                     </div>
 
                     {/* Các thuộc tính của phân quyền */}
-                    <AttributeTable 
+                    <AttributeTable
                         attributes={roleAttributes}
                         handleChange={handleChange}
+                        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
                         attributeOwner={'roleAttributes'}
                         translation={'manage_role'}
+                        i={props.i}
                     />
 
                 </form>

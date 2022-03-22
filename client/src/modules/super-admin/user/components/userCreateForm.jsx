@@ -19,7 +19,7 @@ function UserCreateForm(props) {
                 name: state.userName,
                 email: state.userEmail,
                 roles: state.userRoles,
-                attributes: state.userAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
+                attributes: state.userAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({ [key]: element[key] }))))
             });
         }
     }
@@ -66,6 +66,10 @@ function UserCreateForm(props) {
             ...state,
             [name]: value
         });
+    }
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        props.handleChangeAddRowAttribute(name, value)
     }
 
     useEffect(() => {
@@ -141,12 +145,14 @@ function UserCreateForm(props) {
                 </div>
 
                 {/* Các thuộc tính của user */}
-                <AttributeTable 
-                        attributes={userAttributes}
-                        handleChange={handleChange}
-                        attributeOwner={'userAttributes'}
-                        translation={'manage_user'}
-                    />
+                <AttributeTable
+                    attributes={userAttributes}
+                    handleChange={handleChange}
+                    attributeOwner={'userAttributes'}
+                    translation={'manage_user'}
+                    handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                    i={props.i}
+                />
             </form>
         </DialogModal>
     );

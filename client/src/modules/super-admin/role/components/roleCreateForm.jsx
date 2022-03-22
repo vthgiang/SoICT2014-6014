@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, SelectBox, ErrorLabel, AttributeTable} from '../../../../common-components';
+import { DialogModal, ButtonModal, SelectBox, ErrorLabel, AttributeTable } from '../../../../common-components';
 import { RoleActions } from '../redux/actions';
 import { AttributeActions } from '../../attribute/redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
@@ -70,6 +70,9 @@ function RoleCreateForm(props) {
         });
     }
 
+    const handleChangeAddRowAttribute = (name, value) => {
+        props.handleChangeAddRowAttribute(name, value)
+    }
 
     const validateAttributes = () => {
         var roleAttributes = state.roleAttributes;
@@ -101,7 +104,7 @@ function RoleCreateForm(props) {
             name: state.roleName,
             parents: state.roleParents,
             users: state.roleUsers,
-            attributes: state.roleAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
+            attributes: state.roleAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({ [key]: element[key] }))))
         }
 
         if (isFormValidated()) {
@@ -122,8 +125,8 @@ function RoleCreateForm(props) {
         props.getAttribute();
     }, [])
 
-    const { translate, role, user} = props;
-    const { roleNameError, roleAttributes} = state;
+    const { translate, role, user } = props;
+    const { roleNameError, roleAttributes } = state;
 
     return (
         <React.Fragment>
@@ -192,11 +195,13 @@ function RoleCreateForm(props) {
                     </div>
 
                     {/* Các thuộc tính của phân quyền */}
-                    <AttributeTable 
+                    <AttributeTable
                         attributes={roleAttributes}
                         handleChange={handleChange}
                         attributeOwner={'roleAttributes'}
                         translation={'manage_role'}
+                        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                        i={props.i}
                     />
 
                 </form>

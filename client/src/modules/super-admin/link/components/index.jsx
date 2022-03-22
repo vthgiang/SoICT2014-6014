@@ -23,7 +23,8 @@ function ManageLink(props) {
         limit: limit,
         page: 1,
         option: "url", // Mặc định tìm kiếm theo tên
-        value: ""
+        value: "",
+        i: 0
     })
 
     const setOption = (title, option) => {
@@ -84,6 +85,13 @@ function ManageLink(props) {
         });
     }
 
+    const handleChangeAddRowAttribute = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
     useEffect(() => {
         let { page, limit } = state;
         props.getLinks({ type: "active" });
@@ -92,7 +100,7 @@ function ManageLink(props) {
         props.getAttribute();
     }, [])
 
-    
+
 
     // Cac ham xu ly du lieu voi modal
     const handleEdit = async (link) => {
@@ -135,7 +143,7 @@ function ManageLink(props) {
                     </div>
 
                     {/* Form thêm thuộc tính cho trang */}
-                    <LinkAttributeCreateForm handleChange={handleChange} />
+                    <LinkAttributeCreateForm handleChange={handleChange} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
                     {/* Form hỉnh sửa thông tin   */}
                     {
@@ -147,6 +155,8 @@ function ManageLink(props) {
                             linkRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
                             linkAttributes={currentRow.attributes}
                             handleChange={handleChange}
+                            handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                            i={state.i}
                         />
                     }
 

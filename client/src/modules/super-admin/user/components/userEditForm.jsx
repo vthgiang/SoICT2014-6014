@@ -40,7 +40,7 @@ function UserEditForm(props) {
                 name: state.userName,
                 active: state.userActive,
                 roles: state.userRoles,
-                attributes: state.userAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
+                attributes: state.userAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({ [key]: element[key] }))))
             });
         }
     }
@@ -97,6 +97,10 @@ function UserEditForm(props) {
         });
     }
 
+    const handleChangeAddRowAttribute = (name, value) => {
+        props.handleChangeAddRowAttribute(name, value)
+    }
+
     const validateAttributes = () => {
         var userAttributes = state.userAttributes;
         let result = true;
@@ -126,7 +130,7 @@ function UserEditForm(props) {
                 userAvatar: props.userAvatar,
                 userEmailError: undefined,
                 userNameError: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                userAttributes: props.userAttributes.map((a, index) => a = {...a, addOrder: -index })
+                userAttributes: props.userAttributes.map((a, index) => a = { ...a, addOrder: index + props.userId })
             })
         }
     }, [props.userId, props.userAttributes])
@@ -230,11 +234,13 @@ function UserEditForm(props) {
                     }
 
                     {/* Các thuộc tính của user */}
-                    <AttributeTable 
+                    <AttributeTable
                         attributes={userAttributes}
                         handleChange={handleChange}
                         attributeOwner={'userAttributes'}
                         translation={'manage_user'}
+                        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                        i={props.i}
                     />
                 </form>
             </DialogModal>

@@ -12,7 +12,7 @@ function UserAttributeCreateForm(props) {
         userAttributes: [],
     })
 
-    
+
 
 
     const handleUserList = (value) => {
@@ -25,14 +25,18 @@ function UserAttributeCreateForm(props) {
     /**
      * Bắt sự kiện chỉnh sửa tên thuộc tính
      */
-     // Function lưu các trường thông tin vào state
+    // Function lưu các trường thông tin vào state
     const handleChange = (name, value) => {
         setState({
             ...state,
             [name]: value
         });
     }
-    
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        props.handleChangeAddRowAttribute(name, value)
+    }
+
     useEffect(() => {
         props.getAttribute();
     }, [])
@@ -65,7 +69,7 @@ function UserAttributeCreateForm(props) {
         var keys_to_keep = ['attributeId', 'value', 'description']
         const data = {
             userList: state.userList,
-            attributes: state.userAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({[key]: element[key]}))))
+            attributes: state.userAttributes.map(element => Object.assign({}, ...keys_to_keep.map(key => ({ [key]: element[key] }))))
         }
 
         if (isFormValidated()) {
@@ -83,7 +87,7 @@ function UserAttributeCreateForm(props) {
     // }
 
     const { translate, user } = props;
-    const { userAttributes} = state;
+    const { userAttributes } = state;
 
     return (
         <React.Fragment>
@@ -122,18 +126,20 @@ function UserAttributeCreateForm(props) {
                             style={{ width: "100%" }}
                             items={
                                 user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
-                            }                            
+                            }
                             onChange={handleUserList}
                             multiple={true}
                         />
                     </div>
 
                     {/* Các thuộc tính của phân quyền */}
-                    <AttributeTable 
+                    <AttributeTable
                         attributes={userAttributes}
                         handleChange={handleChange}
                         attributeOwner={'userAttributes'}
                         translation={'manage_user'}
+                        handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                        i={props.i}
                     />
 
                 </form>

@@ -23,7 +23,8 @@ function ManageUserTable(props) {
         limit: limit_constructor,
         page: 1,
         option: 'name', // Mặc định tìm kiếm theo tên
-        value: ''
+        value: '',
+        i: 0
     })
 
     const handleEdit = async (user) => {
@@ -104,6 +105,13 @@ function ManageUserTable(props) {
         });
     }
 
+    const handleChangeAddRowAttribute = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
     useEffect(() => {
         props.getUser({ limit: state.limit, page: state.page });
         props.getUser();
@@ -127,9 +135,9 @@ function ManageUserTable(props) {
             </div>
 
             {/* Form thêm mới người dùng */}
-            <UserCreateForm handleChange={handleChange} />
+            <UserCreateForm handleChange={handleChange} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
-            <UserAttributeCreateForm handleChange={handleChange} />
+            <UserAttributeCreateForm handleChange={handleChange} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
             {/* Form import thông tin người dùng */}
             <ModalImportUser limit={limit} />
@@ -157,6 +165,8 @@ function ManageUserTable(props) {
                     userAvatar={state.currentRow.avatar}
                     userAttributes={state.currentRow.attributes}
                     handleChange={handleChange}
+                    handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                    i={state.i}
                 />
             }
 

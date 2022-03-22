@@ -8,7 +8,7 @@ import { PolicyCreateForm } from "./policyCreateForm";
 import { PolicyEditForm } from "./policyEditForm";
 import { PolicyDetailInfo } from "./policyDetailInfo";
 import { PolicyImportForm } from "./policyImortForm";
-
+import { AttributeActions } from '../../attribute/redux/actions';
 import { PolicyActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
@@ -23,6 +23,7 @@ function PolicyTable(props) {
         page: 1,
         perPage: getLimit,
         tableId: getTableId,
+        i: 0
     })
     const [selectedData, setSelectedData] = useState()
 
@@ -32,6 +33,17 @@ function PolicyTable(props) {
     useEffect(() => {
         props.getPolicies({ policyName, page, perPage });
     }, [])
+
+    useEffect(() => {
+        props.getAttribute();
+    }, [])
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
 
     /**
      * Hàm xử lý khi tên ví dụ thay đổi
@@ -171,6 +183,8 @@ function PolicyTable(props) {
             <PolicyCreateForm
                 page={page}
                 perPage={perPage}
+                handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                i={state.i}
             />
 
             <PolicyImportForm
@@ -264,7 +278,8 @@ function mapState(state) {
 
 const actions = {
     getPolicies: PolicyActions.getPolicies,
-    deletePolicies: PolicyActions.deletePolicies
+    deletePolicies: PolicyActions.deletePolicies,
+    getAttribute: AttributeActions.getAttributes
 }
 
 const connectedPolicyTable = connect(mapState, actions)(withTranslate(PolicyTable));
