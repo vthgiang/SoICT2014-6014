@@ -334,8 +334,8 @@ function InventoryManagement(props) {
                             let totalQuantity = x.binLocations.reduce(function (accumulator, currentValue) {
                                 return Number(accumulator) + Number(currentValue.quantity);
                             }, 0);
-                            if (x.quantity !== totalQuantity) {
-                                check = 0;
+                            if (x.quantity === totalQuantity) {
+                                check = 1;
                             }
                         }
                     }

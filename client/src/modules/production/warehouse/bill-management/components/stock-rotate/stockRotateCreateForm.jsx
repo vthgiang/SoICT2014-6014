@@ -676,21 +676,21 @@ function StockRotateCreateForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -763,11 +763,11 @@ function StockRotateCreateForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
-                                                        <td>{x.lots.map((lot, index) => 
+                                                        <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
                                                                 <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                             </div>)}
-                                                        </td> 
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

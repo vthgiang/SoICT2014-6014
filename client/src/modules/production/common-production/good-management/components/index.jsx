@@ -37,7 +37,7 @@ function GoodManagement(props) {
     useEffect(() => {
         if (state.oldType !== state.type) {
             props.getGoodsByType({ page: state.page, limit: state.limit, type: state.type });
-            setState ({
+            setState({
                 ...state,
                 oldType: state.type,
             });
@@ -45,7 +45,7 @@ function GoodManagement(props) {
     }, [state.type])
 
     useEffect(() => {
-        if(!state.type) {
+        if (!state.type) {
             setType();
         }
     }, [state.type])
@@ -250,28 +250,28 @@ function GoodManagement(props) {
 
     const setType = () => {
         if (checkManagementGood('product') || checkManagementGood('waste')) {
-            setState({ 
+            setState({
                 ...state,
                 type: 'product',
-                 activeP: true 
+                activeP: true
             });
         } else if (checkManagementGood('material')) {
-            setState({ 
-                ...state, 
-                type: 'material', 
-                activeM: true 
+            setState({
+                ...state,
+                type: 'material',
+                activeM: true
             });
         } else if (checkManagementGood('equipment')) {
-            setState({ 
-                ...state, 
+            setState({
+                ...state,
                 type: 'equipment',
-                activeE: true 
+                activeE: true
             });
         } else if (checkManagementGood('waste')) {
-            setState({ 
-                ...state, 
+            setState({
+                ...state,
                 type: 'waste',
-                 activeW: true
+                activeW: true
             });
         }
     }
@@ -301,11 +301,11 @@ function GoodManagement(props) {
                         {translate("manage_warehouse.good_management.equipment")}
                     </a>
                 </li>}
-                { checkManagementGood('waste') && <li className={`${state.activeW ? "active" : ''}`}>
-                        <a href="#good-wastes" data-toggle="tab" onClick={() => handleWaste()}>
-                            {translate("manage_warehouse.good_management.waste")}
-                        </a>
-                    </li>}
+                {checkManagementGood('waste') && <li className={`${state.activeW ? "active" : ''}`}>
+                    <a href="#good-wastes" data-toggle="tab" onClick={() => handleWaste()}>
+                        {translate("manage_warehouse.good_management.waste")}
+                    </a>
+                </li>}
             </ul>
             <div className="box-body qlcv">
                 <GoodCreateForm type={type} />
@@ -377,16 +377,16 @@ function GoodManagement(props) {
                         <label className="form-control-static">{translate("manage_warehouse.good_management.category")}</label>
                         <TreeSelect data={dataCategory} value={categorySearch} handleChange={handleCategoryChange} mode="hierarchical" />
                     </div>
-                    {type === "product" && 
-                    (<div className="form-group">
-                        <label className="form-control-static">{translate('manage_warehouse.good_management.choose_source')}</label>
-                        <SelectMulti
-                            id={`select-multi-partner-source-type`}
-                            multiple="multiple"
-                            options={{ nonSelectedText: "Chọn nguồn hàng hóa", allSelectedText: "Chọn tất cả" }}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={[
+                    {type === "product" &&
+                        (<div className="form-group">
+                            <label className="form-control-static">{translate('manage_warehouse.good_management.choose_source')}</label>
+                            <SelectMulti
+                                id={`select-multi-partner-source-type`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn nguồn hàng hóa", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
                                     {
                                         value: '1',
                                         text: translate('manage_warehouse.good_management.selfProduced'),
@@ -396,9 +396,9 @@ function GoodManagement(props) {
                                         text: translate('manage_warehouse.good_management.importedFromSuppliers'),
                                     }
                                 ]}
-                            onChange={handleSourceChange}
-                        />
-                    </div>)}
+                                onChange={handleSourceChange}
+                            />
+                        </div>)}
                     <div className="form-group">
                         <button
                             type="button"
@@ -461,15 +461,15 @@ function GoodManagement(props) {
                                     </td>
                                     <td>{x.baseUnit}</td>
                                     {
-                                        type === "product" && 
+                                        type === "product" &&
                                         <td>{
-                                        x.materials.length > 0 &&
-                                        x.materials.map((y, i)  => {
-                                            if(x.materials.length === i + 1){
-                                                return y.good.name
-                                            }
-                                            return y.good.name + ", "
-                                        })
+                                            x.materials.length > 0 &&
+                                            x.materials.map((y, i) => {
+                                                if (x.materials.length === i + 1) {
+                                                    return y.good.name
+                                                }
+                                                return y.good.name + ", "
+                                            })
                                         }</td>
                                     }
                                     <td>{x.sourceType === "1" ? translate("manage_warehouse.good_management.selfProduced") : translate("manage_warehouse.good_management.importedFromSuppliers")}</td>

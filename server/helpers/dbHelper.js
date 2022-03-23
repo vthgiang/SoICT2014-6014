@@ -77,13 +77,17 @@ exports.restore = async (options) => {
 
             if (checkOS() === 1) {
                 return {
-                    delete: `rmdir /s /q ${SERVER_DIR}\\upload\\private\\${options.db}\\* && rmdir /s /q ${SERVER_DIR}\\upload\\avatars\\${options.db}\\*`,
-                    new: `xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\private\\*  ${SERVER_DIR}\\upload\\private\\${options.db} /E/H/C/I && xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\avatars\\*  ${SERVER_DIR}\\upload\\avatars\\${options.db} /E/H/C/I`
+                    delete: [`rmdir /s /q ${SERVER_DIR}\\upload\\private\\${options.db}\\*`,
+                             `rmdir /s /q ${SERVER_DIR}\\upload\\avatars\\${options.db}\\*`],
+                    new: [`xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\private\\*  ${SERVER_DIR}\\upload\\private\\${options.db} /E/H/C/I`,
+                          `xcopy  ${SERVER_BACKUP_DIR}\\${options.db}\\${options.version}\\data\\avatars\\*  ${SERVER_DIR}\\upload\\avatars\\${options.db} /E/H/C/I`]
                 }
             } else if (checkOS() === 2) {
                 return {
-                    delete: `rm -rf ${SERVER_DIR}/upload/private/${options.db}/* && rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`,
-                    new: `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db} && cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`
+                    delete: [`rm -rf ${SERVER_DIR}/upload/private/${options.db}/*`,
+                             `rm -rf ${SERVER_DIR}/upload/avatars/${options.db}/*`],
+                    new: [`cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/private/* ${SERVER_DIR}/upload/private/${options.db}`,
+                          `cp -r ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/avatars/* ${SERVER_DIR}/upload/avatars/${options.db}`]
                 }
             }
         }
@@ -91,13 +95,13 @@ exports.restore = async (options) => {
             checkDirectory(`${SERVER_DIR}`);
             if (checkOS() === 1) {
                 return {
-                    delete: `rmdir /s /q ${SERVER_DIR}\\upload`,
-                    new: `xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR} /E/H/C/I`
+                    delete: [`rmdir /s /q ${SERVER_DIR}\\upload`],
+                    new: [`xcopy ${SERVER_BACKUP_DIR}\\all\\${options.version}\\data\\upload ${SERVER_DIR}\\upload /E/H/C/I`]
                 }
             } else if (checkOS() === 2) {
                 return {
-                    delete: `rm -rf ${SERVER_DIR}/upload`,
-                    new: `cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload ${SERVER_DIR}`
+                    delete: [`rm -rf ${SERVER_DIR}/upload`],
+                    new: [`cp -r ${SERVER_BACKUP_DIR}/all/${options.version}/data/upload ${SERVER_DIR}`]
                 }
             }
         }
@@ -111,14 +115,19 @@ exports.restore = async (options) => {
 
     // 2. Khôi phục các file ( image, video, file, doc, excel, v.v. )
     const command2 = commandRestoreFile(options);
-    exec(command2.delete, function (err) {
-        if (checkOS() === 1) {
-            fs.mkdirSync(`${SERVER_DIR}/upload`, {
-                recursive: true
-            });
-        }
-        exec(command2.new, function (err) { });
-    });
+    for(let j = 0; j < command2.delete.length; j++) {
+        exec(command2.delete[j], function (err) {
+            if (checkOS() === 1) {
+                fs.mkdirSync(`${SERVER_DIR}/upload`, {
+                    recursive: true
+                });
+            }
+            for (let i = 0; i < command2.new.length; i++) {
+                exec(command2.new[i], function (err) {
+                });
+            }
+        });
+    }
 }
 
 /**
@@ -171,18 +180,20 @@ exports.backup = async (options) => {
             checkDirectory(`${backupPath}/data/avatars`);
 
             if (checkOS() === 1) {
-                return `xcopy  ${SERVER_DIR}\\upload\\private\\${options.db}\\*  ${backupPath}\\data\\private /E/H/C/I && xcopy  ${SERVER_DIR}\\upload\\avatars\\${options.db}\\*  ${backupPath}\\data\\avatars /E/H/C/I`;
+                return [`xcopy  ${SERVER_DIR}\\upload\\private\\${options.db}\\*  ${backupPath}\\data\\private /E/H/C/I`,
+                        `xcopy  ${SERVER_DIR}\\upload\\avatars\\${options.db}\\*  ${backupPath}\\data\\avatars /E/H/C/I`];
             } else if (checkOS() === 2) {
-                return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
+                return [`cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private`,
+                        `cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`];
             }
         } else { // Backup file cho toàn hệ thống
             checkDirectory(`${SERVER_DIR}/upload`);
             checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/data/upload`);
 
             if (checkOS() === 1) {
-                return `xcopy  ${SERVER_DIR}\\upload\\*  ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload /E/H/C/I`;
+                return [`xcopy  ${SERVER_DIR}\\upload\\*  ${SERVER_BACKUP_DIR}\\all\\${version}\\data\\upload /E/H/C/I`];
             } else if (checkOS() === 2) {
-                return `cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/data/upload`;
+                return [`cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/data/upload`];
             }
         }
     }
@@ -191,11 +202,13 @@ exports.backup = async (options) => {
     const commandBackupFile = getCommandBackupFile(options);
 
     console.log('backup', commandBackupFile);
-    await exec(commandBackupFile, (error, stdout, stderr) => {
-        if (error) console.log(error);
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-    });
+    for(let i = 0; i < commandBackupFile.length; i++) {
+        await exec(commandBackupFile[i], (error, stdout, stderr) => {
+            if (error) console.log(error);
+            console.log(`stdout: ${stdout}`);
+            console.error(`stderr: ${stderr}`);
+        });
+    }
     const folderInfo = options.db ?
         fs.statSync(backupPath) :
         fs.statSync(`${SERVER_BACKUP_DIR}/all/${version}`);

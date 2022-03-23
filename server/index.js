@@ -32,6 +32,7 @@ app.use("/upload/user-guide/hr", express.static("upload/user-guide/hr"));
 app.use("/upload/user-guide/system", express.static("upload/user-guide/system"));
 app.use("/upload/user-guide/document", express.static("upload/user-guide/document"));
 app.use("/upload/user-guide/asset", express.static("upload/user-guide/asset"));
+app.use("/upload/user-guide/bill", express.static("upload/user-guide/bill"));
 
 const router = express.Router();
 

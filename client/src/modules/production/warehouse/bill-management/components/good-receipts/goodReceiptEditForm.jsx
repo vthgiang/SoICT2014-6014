@@ -13,6 +13,7 @@ function GoodReceiptEditForm(props) {
     const EMPTY_GOOD = {
         good: '',
         quantity: 0,
+        realQuantity: 0,
         returnQuantity: 0,
         description: '',
         lots: []
@@ -109,7 +110,7 @@ function GoodReceiptEditForm(props) {
 
     const getCustomer = () => {
         const { crm, translate } = props;
-        let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
+        let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_supplier') }];
 
         crm.customers.list.map(item => {
             CustomerArr.push({
@@ -417,7 +418,7 @@ function GoodReceiptEditForm(props) {
         let totalQuantity = lots.length > 0 ? lots.reduce(function (accumulator, currentValue) {
             return Number(accumulator) + Number(currentValue.quantity);
         }, 0) : 0;
-        state.good.quantity = totalQuantity;
+        state.good.realQuantity = totalQuantity;
         state.good.lots = lots;
         setState({
             ...state,
@@ -570,7 +571,7 @@ function GoodReceiptEditForm(props) {
             indexInfo: index,
             good: Object.assign({}, good),
             lots: lots,
-            quantity: good.quantity
+            quantity: good.realQuantity
         })
 
         const { fromStock } = state;
@@ -667,40 +668,40 @@ function GoodReceiptEditForm(props) {
                 for (let i = 0; i < props.approvers.length; i++) {
                     approver = [...approver, props.approvers[i].approver._id];
                 }
-    
+
             }
-    
+
             if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
                 for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
                     qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
                 }
-    
+
             }
-    
+
             if (props.responsibles && props.responsibles.length > 0) {
                 for (let i = 0; i < props.responsibles.length; i++) {
                     responsibles = [...responsibles, props.responsibles[i]._id];
                 }
-    
+
             }
-    
+
             if (props.accountables && props.accountables.length > 0) {
                 for (let i = 0; i < props.accountables.length; i++) {
                     accountables = [...accountables, props.accountables[i]._id];
                 }
-    
+
             }
             state.good.quantity = 0;
             state.good.good = '';
             state.good.description = '';
             state.good.lots = [];
-    
+
             if (props.type === "1") {
                 props.getGoodsByType({ type: "material" });
             } else if (props.type === "2") {
                 props.getGoodsByType({ type: "product" });
             }
-    
+
             setState({
                 ...state,
                 billId: props.billId,
@@ -735,7 +736,7 @@ function GoodReceiptEditForm(props) {
                 errorQualityControlStaffs: undefined,
                 errorAccountables: undefined,
                 errorResponsibles: undefined
-    
+
             })
         }
     }, [props.billId, props.oldStatus])
@@ -775,10 +776,10 @@ function GoodReceiptEditForm(props) {
         })
     }
 
-    const handleAddLots = (e) => {
-        e.preventDefault();
-        window.$('#modal-edit-quantity-receipt').modal('show');
-    }
+    // const handleAddLots = (e) => {
+    //     e.preventDefault();
+    //     window.$('#modal-edit-quantity-receipt').modal('show');
+    // }
 
     const checkApproved = (approvers, listQualityControlStaffs) => {
         let quantityApproved = 1;
@@ -813,7 +814,7 @@ function GoodReceiptEditForm(props) {
         let check = 1;
         if (listGood.length > 0) {
             for (let i = 0; i < listGood.length; i++) {
-                let result = checkLots(listGood[i].lots, listGood[i].quantity);
+                let result = checkLots(listGood[i].lots, listGood[i].realQuantity);
                 if (!result) {
                     check = 0;
                 }
@@ -825,7 +826,7 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    const { translate, group, sourceType } = props;
+    const { translate, group, sourceType, actionAddLotOrEdit } = props;
     const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
         qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
         errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
@@ -844,22 +845,23 @@ function GoodReceiptEditForm(props) {
             <DialogModal
                 modalID={`modal-edit-bill-receipt`}
                 formID={`form-edit-bill-receipt`}
-                title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
+                title={actionAddLotOrEdit === '1' ? translate(`manage_warehouse.bill_management.edit_title.${group}`) : translate(`manage_warehouse.inventory_management.add_lot`)}
                 msg_success={translate('manage_warehouse.bill_management.add_success')}
                 msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                 disableSubmit={!isFormValidated()}
                 func={save}
                 size={75}
             >
-                <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} />
+                <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-receipt`}>
+                    {actionAddLotOrEdit === '1' &&
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code ? code : '' } disabled />
+                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
                                 </div>
                                 <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
@@ -871,7 +873,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -885,7 +887,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        // disabled={checkApprove}
+                                    // disabled={checkApprove}
                                     />
                                 </div>
                             </div>
@@ -900,7 +902,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
@@ -915,7 +917,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataSource}
                                         onChange={handleSourceChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
@@ -929,7 +931,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataCustomer}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
                                 </div>) : null}
@@ -943,7 +945,7 @@ function GoodReceiptEditForm(props) {
                                         items={dataMills}
                                         onChange={handlePartnerChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorCustomer} />
                                 </div>) : null}
@@ -955,8 +957,8 @@ function GoodReceiptEditForm(props) {
                                 </div>
                             </div>
                         </fieldset>
-                    </div>
-                    {state.userId === state.creator &&
+                    </div>}
+                    {actionAddLotOrEdit === '1' && state.userId === state.creator &&
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
@@ -1019,31 +1021,32 @@ function GoodReceiptEditForm(props) {
                             </fieldset>
                         </div>
                     }
+                    {actionAddLotOrEdit === '1' &&
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
                         </fieldset>
-                    </div>
+                    </div>}
 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
@@ -1064,10 +1067,11 @@ function GoodReceiptEditForm(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
-                                    <label>{translate('manage_warehouse.bill_management.number')}</label>
+                                    {good.good && status === '2'&&  <label>{translate('manage_warehouse.bill_management.number_passed')}</label>}
+                                    {(!good.good || status !== '2') && <label>{translate('manage_warehouse.bill_management.number')}</label>}
                                     <div style={{ display: "flex" }}>
-                                        <input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />
-                                        </div>
+                                        <input className="form-control" value={(good.good && status === '2') ? good.realQuantity : good.quantity} onChange={handleQuantityChange} type="number" />
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -1097,9 +1101,10 @@ function GoodReceiptEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.number_passed')}>{translate('manage_warehouse.bill_management.number_passed')}</th>
                                             <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
-                                            <th>{translate('task_template.action')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.action')}>{translate('manage_warehouse.bill_management.action')}</th>
                                         </tr>
                                     </thead>
                                     <tbody id={`good-bill-edit`}>
@@ -1111,18 +1116,19 @@ function GoodReceiptEditForm(props) {
                                                         <td>{x.good.code}</td>
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
-                                                        {(checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> :
+                                                        <td>{x.quantity}</td>
+                                                        {(checkLots(x.lots, x.realQuantity)) ? <td>{x.realQuantity}</td> :
                                                             <td className="tooltip-abc">
-                                                                <span style={{ color: "red" }}>{x.quantity}</span>
+                                                                <span style={{ color: "red" }}>{x.realQuantity}</span>
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.bill_management.text')}</p></span>
                                                             </td>}
-                                                        {(checkLots(x.lots, x.quantity)) ? 
-                                                            <td>{x.lots.map((lot, index) => 
+                                                        {(checkLots(x.lots, x.realQuantity)) ?
+                                                            <td>{x.lots.map((lot, index) =>
                                                                 <div key={index}>
-                                                                    <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                    {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                                 </div>)}
-                                                            </td> : 
-                                                            <td>{''}</td> 
+                                                            </td> :
+                                                            <td>{''}</td>
                                                         }
                                                         <td>{x.description}</td>
                                                         <td>

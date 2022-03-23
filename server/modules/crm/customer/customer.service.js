@@ -126,7 +126,7 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts, r
     const crmTask = await getCrmTask(portal, companyId, userId, role, 1);
     //thêm mới hoạt động váo công việc
     const params = { taskId: crmTask.task }
-    console.log('newCustomer',newCustomer);
+    // console.log('newCustomer',newCustomer);
     const body = {
         creator: userId,
         description: `
@@ -226,7 +226,8 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
  * @param {*} companyId 
  * @param {*} query 
  */
- exports.getCustomers = async (portal, companyId, query, userId, role) => {
+
+exports.getCustomers = async (portal, companyId, query, userId, role) => {
     const { page, limit, customerCode, customerStatus, customerGroup, customerOwner, isNewCustomer, month, year, getAll } = query;
 
     let keySearch = {}
@@ -290,6 +291,14 @@ exports.importCustomers = async (portal, companyId, data, userId, role) => {
         .populate({ path: 'customerGroup', select: '_id name' })
         .populate({ path: 'customerStatus', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
+
+    
+    if (getAll) {
+        for (let i = 0; i < customers.length; i++) {
+            let allPromotions = await this.getCustomerPromotions(portal, companyId, customers[i]._id);
+            customers[i].canUsedPromotions = allPromotions;
+        }
+    }
     return { listDocsTotal, customers };
 }
 
@@ -427,41 +436,60 @@ exports.addPromotion = async (portal, companyId, id, data, userId, careCode) => 
         .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
 }
 
-// Lấy tất cả danh sách khuyến mãi của 1 khách hàng ( Lấy từ bảng customer và khuyến mãi từ bảng customerGroup)
+// Lấy tất cả danh sách khuyến mãi của 1 khách hàng còn sử dụng được( Lấy từ bảng customer và khuyến mãi từ bảng customerGroup)
 exports.getCustomerPromotions = async (portal, companyId, customerId) => {
-    console.log('vao get promotion');
-    
     let promotions = [];
     const customer = await this.getCustomerById(portal, companyId, customerId);
-    
-    if (customer && customer.promotions) promotions = [...promotions, customer.promotions]
-    console.log("sau khi lay khuyen mai tu bang khach hang");
-    console.log(promotions);
+
+    let now = new Date();
+    // Lấy khuyến mại của riêng khách hàng còn sử dụng được, chưa hết hạn, chưa từng sử dụng
+    if (customer && customer.promotions)  { 
+        for ( let i = 0; i < customer.promotions.length; i++) {
+            if (customer.promotions[i].status == 1 && now < new Date(customer.promotions[i].expirationDate)) {
+                promotions = [...promotions, customer.promotions[i]];
+            }
+        }
+    }
 
     let group;
     if (customer.customerGroup) {
         group = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(customer.customerGroup);
     }
-    console.log("promotion cua nhom");
-    console.log(group.promotions);
-    
-    
-    if (group.promotions) {
+
+    // Lấy khuyến mại áp dụng với nhóm mà khách hàng nằm trong nhóm đó (lấy những khuyến mãi mà khách hàng chưa sử dụng)
+    if (group && group.promotions) {
         const groupPromotions = group.promotions;
+
         groupPromotions.forEach(x => {
-            if (!x.exceptCustomer ) {                    
+            if (!x.exceptCustomer && !x.customerUsed ) {   
+                // Trường hợp khuyến mãi ko có khách hàng ngoại lệ và chưa từng được khách hàng nào sử dụng                 
                 promotions = [...promotions, x];
             } else {
-                let check = true;
-                x.exceptCustomer.map((o) => {
-                    if (o._id == customer._id) check = false;                    
-                })
-                if (check) promotions = [...promotions, x];             
+                let checkExcept = true; // Kiểm tra xem khách hàng có thuộc ngoại lệ hay ko
+                                        // true -> ko thuộc ngoại lệ 
+                let checkUsed = true; // Kiểm tra xem khách hàng đã từng sử dụng khuyến mại chưa 
+                                       // true -> chưa từng
+                
+                if (x.exceptCustomer) {
+                    x.exceptCustomer.map((o) => {
+                        if (o.toString() === customer._id.toString()) checkExcept = false;                    
+                    })
+                }
+                
+                if (x.customerUsed) {
+                    x.customerUsed.map((o) => {
+                        if (o.toString() === customer._id.toString()) {
+                            checkUsed = false;    
+                        }                
+                    })
+                }
+                
+                if (checkExcept && checkUsed ) promotions = [...promotions, x];  
+                          
             }
         })
     }
-    console.log("ket qua tra ve");
-    console.log(promotions);
+
     return promotions;
 
 }
@@ -514,25 +542,60 @@ exports.deletePromotion = async (portal, companyId, customerId, data, userId) =>
 }
 
 exports.usePromotion = async (portal, companyId, customerId, data, userId) => {
-    let { promoIndex } = data;
+    let { code } = data;
+    //console.log("du lieu dau vao");
+    //console.log(code);
+    //console.log(customerId);
+    
     let customer = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
-    if (promoIndex < 0) return customer;
-    let promotions = customer.promotions.map(x => x);
+    //console.log(customer);
 
-    let promotionUsed = promotions[promoIndex];
-    console.log('promotionUsed ban dau-----------------', promotionUsed)
-    promotionUsed = { ...promotionUsed.toObject(), status: 0 };
-    console.log('promo lúc sau -----------------', promotionUsed)
+    if (code.includes("KMN")) {
+        //console.log("Truong hop la khuyen mai nhom");
 
-    promotions.splice(promoIndex, 1);
-    promotions.push(promotionUsed);
+        let group = await CustomerGroup(connect(DB_CONNECTION, portal)).findById(customer.customerGroup);
+        let promotions = [];
+        if (group.promotions)  {
+            let listPromotions = group.promotions;
+            listPromotions.forEach(x => {
+                if (x.code == code) {
+                    let customerUsed = x.customerUsed;
+                    customerUsed = [...customerUsed, customerId];
+                    x.customerUsed = customerUsed;
+                    promotions = [...promotions, x];
+                } else {
+                    promotions = [...promotions, x];
+                }
+            })
+        }
+        group.promotions = promotions;
+        //console.log("thong tin nhom sau khi sua doi");
+        //console.log(group);
+        await CustomerGroup(connect(DB_CONNECTION, portal)).findByIdAndUpdate(group._id,{
+            $set: group
+        }, { new: true });
 
-    customer = { ...customer.toObject(), promotions };
-    console.log(customer)
-    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
-        $set: customer
-    }, { new: true });
+    } else {
+        //console.log("Truong hop la khuyen mai ca nhan");
 
+        let promotions = [];
+        if (customer.promotions) {
+            const listPromotions = customer.promotions;
+            listPromotions.forEach(x => {
+                if (x.code == code) { 
+                    x.status = 0;
+                    promotions = [...promotions, x];
+                } else promotions =  [...promotions, x ];
+            })
+        }
+        customer.promotions = promotions; 
+
+        //console.log("thong tin khach hang sau khi sua doi");
+        //console.log(customer);
+        return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(customerId, {
+            $set: customer
+        }, { new: true });
+    }
 }
 
 // Chỉnh sửa khuyến mãi của khách hàng
@@ -554,5 +617,3 @@ exports.editPromotion = async (portal, companyId, customerId, data, userId) => {
     }, { new: true });
 
 }
-
-/* Thêm từ 42 -> 60 , 408-> 411, 414, Sửa 405, 417 */ 

@@ -79,7 +79,7 @@ const BillSchema = new Schema({
             ref: "User"
         },
 
-        status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
+        status: { // Trạng thái kiểm định 1. Chưa kiểm định xong, 2. Đã kiểm định xong
             type: Number
         },
 

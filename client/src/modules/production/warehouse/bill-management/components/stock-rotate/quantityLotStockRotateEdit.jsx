@@ -9,6 +9,7 @@ function QuantityLotStockRotateEdit(props) {
         quantity: '',
         returnQuantity: '',
         damagedQuantity: '',
+        realQuantity: '',
         note: ''
     }
 

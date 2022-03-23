@@ -1,4 +1,4 @@
-import React, { useState ,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from "react-redux";
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from "../../../../../../common-components";
@@ -11,8 +11,9 @@ import { GoodActions } from "../../../../common-production/good-management/redux
 function GoodIssueCreateForm(props) {
     const EMPTY_GOOD = {
         good: "",
-        quantity: "",
-        returnQuantity: "",
+        quantity: 0,
+        returnQuantity: 0,
+        realQuantity: 0,
         description: "",
         lots: [],
     };
@@ -478,11 +479,9 @@ function GoodIssueCreateForm(props) {
         if (listGood) {
             newListGood = listGood.filter((item, x) => index !== x);
         }
-        await setState((state) => {
-            return {
-                ...state,
-                listGood: newListGood,
-            };
+        await setState({
+            ...state,
+            listGood: newListGood,
         });
     };
 
@@ -529,11 +528,11 @@ function GoodIssueCreateForm(props) {
         });
     }
 
-     //---Kết thúc phần lập phiếu từ đơn bán hàng---
+    //---Kết thúc phần lập phiếu từ đơn bán hàng---
 
-        //---Lập phiếu xuất nguyên vật liệu từ lệnh sản xuất---
+    //---Lập phiếu xuất nguyên vật liệu từ lệnh sản xuất---
 
-        //---Kế thúc lập phiếu xuất nguyên liệu từ lệnh sản xuất---
+    //---Kế thúc lập phiếu xuất nguyên liệu từ lệnh sản xuất---
 
     if (props.group !== state.group) {
         setState({
@@ -817,14 +816,12 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.name")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.phone")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="number" className="form-control" onChange={handlePhoneChange} />
                                 </div>
@@ -833,14 +830,12 @@ function GoodIssueCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.email")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.address")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
@@ -964,11 +959,11 @@ function GoodIssueCreateForm(props) {
                                                     <td>{x.good.name}</td>
                                                     <td>{x.good.baseUnit}</td>
                                                     <td>{x.quantity}</td>
-                                                    <td>{x.lots.map((lot, index) => 
+                                                    <td>{x.lots.map((lot, index) =>
                                                         <div key={index}>
                                                             <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                         </div>)}
-                                                    </td> 
+                                                    </td>
                                                     <td>{x.description}</td>
                                                     <td>
                                                         <a

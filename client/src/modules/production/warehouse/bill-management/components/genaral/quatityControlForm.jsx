@@ -6,9 +6,11 @@ import { DialogModal, SelectBox, UploadFile } from '../../../../../../common-com
 
 function QualityControlForm(props) {
     const [state, setState] = useState({
-
+        quantityPassedTest: [],
     })
 
+    const { translate, bills, listGoods } = props;
+    const { status, content, code } = state;
     const handleStatusChange = (value) => {
         const status = value[0];
         setState({
@@ -25,6 +27,16 @@ function QualityControlForm(props) {
         });
     }
 
+    const handleQualityControlEachProduct = (index, value) => {
+        const data = [...listGoods];
+        data[index].realQuantity = value.toString();
+        setState({
+            ...state,
+            listGoods: data
+        });
+        checkLots(data[index].quantity, index);
+    }
+
     if (props.billId !== state.billId) {
         setState({
             ...state,
@@ -35,6 +47,16 @@ function QualityControlForm(props) {
         })
     }
 
+    const isFormValidated = () => {
+        let count = 0;
+        state.listGoods && state.listGoods.forEach(item => {
+            if (item.realQuantity === '' || parseInt(item.realQuantity) > item.quantity || parseInt(item.realQuantity) < 0) {
+                count++;
+            }
+        })
+        return count === 0;
+    }
+
     const save = () => {
         const userId = localStorage.getItem("userId");
         const data = {
@@ -42,13 +64,19 @@ function QualityControlForm(props) {
                 staff: userId,
                 status: state.status !== "" ? state.status : 1,
                 content: state.content,
-            }
+            },
+            goods: state.listGoods,
         }
         props.editBill(state.billId, data);
     }
 
-    const { translate, bills } = props;
-    const { status, content, code } = state;
+    const checkLots = (quantity, index) => {
+        if (listGoods[index].realQuantity > quantity || listGoods[index].realQuantity < 0 || listGoods[index].realQuantity === "") {
+            return [false, "Số lượng kiểm định phải nhỏ hơn số lượng gốc và lớn hơn 0, không được để trống"];
+        }
+        return [true, ""];
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -58,9 +86,9 @@ function QualityControlForm(props) {
                 msg_success={translate('manage_warehouse.bill_management.edit_successfully')}
                 msg_failure={translate('manage_warehouse.bill_management.edit_failed')}
                 func={save}
-                // disableSubmit={!this.isFormValidated()}
+                disableSubmit={!isFormValidated()}
                 size={50}
-                maxWidth={500}
+                maxWidth={700}
             >
                 <form id="form-quality-control-bill">
                     <div className="form-group">
@@ -78,12 +106,58 @@ function QualityControlForm(props) {
                                 value: 1, text: translate('manufacturing.command.qc_status.1.content')
                             }, {
                                 value: 2, text: translate('manufacturing.command.qc_status.2.content')
-                            }, {
-                                value: 3, text: translate('manufacturing.command.qc_status.3.content')
-                            }]}
+                            }
+                                // , {
+                                //     value: 3, text: translate('manufacturing.command.qc_status.3.content')
+                                // }
+                            ]}
                             onChange={handleStatusChange}
                             multiple={false}
                         />
+                    </div>
+                    <div className={`form-group`}>
+                        <label>{translate('manage_warehouse.bill_management.quality_control_of_each_goods')}<span className="text-red">*</span></label>
+                        <fieldset className="scheduler-border">
+                            {/* Bảng thông tin chi tiết */}
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                        <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
+                                        <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
+                                        <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
+                                        <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                        <th title={translate('manage_warehouse.bill_management.quantity_passed_test')}>{translate('manage_warehouse.bill_management.quantity_passed_test')}</th>
+                                        <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id={`good-bill-edit`}>
+                                    {
+                                        (typeof listGoods === 'undefined' || listGoods.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                            listGoods.map((x, index) =>
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{x.good.code}</td>
+                                                    <td>{x.good.name}</td>
+                                                    <td>{x.good.baseUnit}</td>
+                                                    <td>{x.quantity}</td>
+                                                    <td>
+                                                        {(checkLots(x.quantity, index))[0] ?
+                                                            <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'green 1px solid', 'width': '30%' }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
+                                                            :
+                                                            <div className="tooltip-abc">
+                                                                <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'red 1px solid', 'paddingBottom': '15px', 'color': "red", 'width': '30%' }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
+                                                                <span className="tooltiptext"><p style={{ color: "white" }}>{checkLots(x.quantity, index)[1]}</p></span>
+                                                            </div>}
+                                                    </td>
+                                                    <td>{x.description}</td>
+                                                </tr>
+                                            )
+                                    }
+                                </tbody>
+                            </table>
+                        </fieldset>
                     </div>
                 </form>
                 <form id="form-quality-control-bill">

@@ -101,12 +101,12 @@ function GoodReturnCreateForm(props) {
     //     return CustomerArr;
     // }
 
-        // const handleSupplierChange = (value) => {
+    // const handleSupplierChange = (value) => {
     //     let supplier = value[0];
     //     validateSupplier(supplier, true);
     // }
 
-     // const handlePartnerChange = (value) => {
+    // const handlePartnerChange = (value) => {
     //     let partner = value[0];
     //     validatePartner(partner, true);
     // }
@@ -218,13 +218,13 @@ function GoodReturnCreateForm(props) {
     const handleTypeChange = async (value) => {
         let type = value[0];
         await validateType(type, true);
-        
+
         let group = type === '13' ? '2' : '1';
         let status = '2';
         if (type && state.fromStock) {
             await props.getBillsByStatus({ group, status, type, fromStock: state.fromStock });
         } else {
-            await props.getBillsByStatus({ group, status, type: null,  fromStock: null });
+            await props.getBillsByStatus({ group, status, type: null, fromStock: null });
         }
     }
 
@@ -579,7 +579,7 @@ function GoodReturnCreateForm(props) {
         })
     }
 
-    const { translate, group, bills } = props;
+    const { translate, group, bills, isHideButtonCreate, size } = props;
     const { lots, listGood, good, code, approver, accountables, responsibles, qualityControlStaffs, status, fromStock, type, name, phone, email, address,
         errorStock, errorType, errorApprover, errorBill, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
     const dataApprover = getApprover();
@@ -589,7 +589,7 @@ function GoodReturnCreateForm(props) {
 
     return (
         <React.Fragment>
-            <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
+            {!isHideButtonCreate && <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />}
 
             <DialogModal
                 modalID={`modal-create-bill-return`}
@@ -746,21 +746,21 @@ function GoodReturnCreateForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -784,7 +784,7 @@ function GoodReturnCreateForm(props) {
                                                 <div className="form-group">
                                                     <label>{translate('manage_warehouse.bill_management.quantity_return')}</label>
                                                     <div style={{ display: "flex" }}>
-                                                        <input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={handleQuantityChange} type="number" disabled/>
+                                                        <input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={handleQuantityChange} type="number" disabled />
                                                     </div>
                                                 </div>
                                             </div>
@@ -795,7 +795,7 @@ function GoodReturnCreateForm(props) {
                                                 </div>
                                             </div>
                                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                            <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>
+                                                <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>
                                                 {state.editInfo &&
                                                     <React.Fragment>
                                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -833,11 +833,11 @@ function GoodReturnCreateForm(props) {
                                                             <td>{x.good.baseUnit}</td>
                                                             <td>{x.quantity}</td>
                                                             <td>{x.returnQuantity}</td>
-                                                            <td>{x.lots.map((lot, index) => 
+                                                            <td>{x.lots.map((lot, index) =>
                                                                 <div key={index}>
                                                                     <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                                 </div>)}
-                                                            </td> 
+                                                            </td>
                                                             <td>{x.description}</td>
                                                             <td>
                                                                 <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

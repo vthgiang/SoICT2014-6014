@@ -5,7 +5,7 @@ import StockManagementTable from './stockManagementTable';
 
 function StockManagement(props) {
     const [state, setState] = useState({
-        
+
     })
     return (
         <div className="box-body" style={{ minHeight: "450px" }}>

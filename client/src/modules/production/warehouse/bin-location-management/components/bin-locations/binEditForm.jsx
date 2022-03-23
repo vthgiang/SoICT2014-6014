@@ -19,27 +19,29 @@ function BinEditForm(props) {
         editInfo: false,
     })
 
-    if (props.binId !== state.binId) {
-        setState({
-            ...state,
-            binId: props.binId,
-            binParent: props.binParent,
-            binCode: props.binCode,
-            binName: props.binName,
-            binStatus: props.binStatus,
-            binUnit: props.binUnit,
-            binUsers: props.binUsers,
-            binPath: props.binPath,
-            binContained: props.binContained,
-            binCapacity: props.binCapacity,
-            binDescription: props.binDescription,
-            binDepartment: props.binDepartment,
-            binEnableGoods: props.binEnableGoods,
-            binStock: props.binStock,
-            errorName: undefined,
-            errorCode: undefined
-        })
-    }
+    useEffect(() => {
+        if (props.binId !== state.binId) {
+            setState({
+                ...state,
+                binId: props.binId,
+                binParent: props.binParent,
+                binCode: props.binCode,
+                binName: props.binName,
+                binStatus: props.binStatus,
+                binUnit: props.binUnit,
+                binUsers: props.binUsers,
+                binPath: props.binPath,
+                binContained: props.binContained,
+                binCapacity: props.binCapacity,
+                binDescription: props.binDescription,
+                binDepartment: props.binDepartment,
+                binEnableGoods: props.binEnableGoods,
+                binStock: props.binStock,
+                errorName: undefined,
+                errorCode: undefined
+            })
+        }
+    }, [props.binId])
 
     const getAllDepartment = () => {
         let { translate, department } = props;
@@ -220,6 +222,14 @@ function BinEditForm(props) {
         })
     }
 
+    const handleCodeChange = (e) => {
+        let value = e.target.value;
+        setState({
+            ...state,
+            binCode: value
+        })
+    }
+
     const handleNameChange = (e) => {
         let value = e.target.value;
         validateName(value, true);
@@ -329,150 +339,147 @@ function BinEditForm(props) {
     const dataDepartment = getAllDepartment();
     const dataGoods = getAllGoods();
     const listUsers = list;
-
     return (
         <div id="edit-bin-location">
-            <div className="scroll-row">
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                    <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.code')}<span className="text-red"> * </span></label>
-                        {/* <input type="text" className="form-control" value={binCode} disabled onChange={handleCodeChange} /> */}
-                    </div>
-                    <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.status')}<span className="text-red"> * </span></label>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div className={`form-group`}>
+                    <label>{translate('manage_warehouse.bin_location_management.code')}<span className="text-red"> * </span></label>
+                    <input type="text" className="form-control" value={binCode ? binCode : ''} onChange={handleCodeChange} />
+                </div>
+                <div className={`form-group`}>
+                    <label>{translate('manage_warehouse.bin_location_management.status')}<span className="text-red"> * </span></label>
+                    <SelectBox
+                        id={`select-status-bin-location`}
+                        className="form-control select2"
+                        style={{ width: "100%" }}
+                        value={binStatus}
+                        items={[
+                            { value: '1', text: translate('manage_warehouse.bin_location_management.1.status') },
+                            { value: '2', text: translate('manage_warehouse.bin_location_management.2.status') },
+                            { value: '3', text: translate('manage_warehouse.bin_location_management.3.status') },
+                            { value: '4', text: translate('manage_warehouse.bin_location_management.4.status') },
+                            { value: '5', text: translate('manage_warehouse.bin_location_management.5.status') },
+                        ]}
+                        onChange={handleStatusChange}
+                        multiple={false}
+                    />
+                </div>
+                <div className={`form-group`}>
+                    <label>{translate('manage_warehouse.bin_location_management.department')}<span className="text-red"> * </span></label>
+                    <SelectBox
+                        id={`select-department-bin`}
+                        className="form-control select2"
+                        style={{ width: "100%" }}
+                        value={binDepartment ? binDepartment : { value: '', text: translate('manage_warehouse.bin_location_management.choose_department') }}
+                        items={dataDepartment}
+                        onChange={handleDepartmentChange}
+                        multiple={false}
+                    />
+                </div>
+                <div className={`form-group`}>
+                    <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="text-red"> * </span></label>
+                    <input type="text" className="form-control" value={binUnit ? binUnit : ''} onChange={handleUnitChange} />
+                </div>
+            </div>
+            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div className={`form-group ${!errorName ? "" : "has-error"}`}>
+                    <label>{translate('manage_warehouse.bin_location_management.name')}<span className="text-red"> * </span></label>
+                    <input type="text" className="form-control" value={binName ? binName : ''} onChange={handleNameChange} />
+                    <ErrorLabel content={errorName} />
+                </div>
+                <div className="form-group">
+                    <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="text-red"> * </span></label>
+                    <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={handleCapacityTotalChange} />
+                </div>
+                <div className={`form-group`}>
+                    <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="text-red"> * </span></label>
+                    <SelectBox
+                        id={`select-management-location-stock`}
+                        className="form-control select2"
+                        style={{ width: "100%" }}
+                        value={binUsers ? binUsers : []}
+                        items={user.list.map(x => { return { value: x.id, text: x.name } })}
+                        onChange={handleManagementLocationtChange}
+                        multiple={true}
+                    />
+                </div>
+                <div className={`form-group`}>
+                    <label>{translate('manage_warehouse.bin_location_management.parent')}</label>
+                    <TreeSelect data={list} value={binParent ? [binParent] : ""} handleChange={handleParent} mode="radioSelect" />
+                </div>
+            </div>
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div className="form-group">
+                    <label>{translate('manage_warehouse.bin_location_management.description')}</label>
+                    <textarea type="text" className="form-control" value={binDescription} onChange={handleDescriptionChange} />
+                </div>
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">{translate('manage_warehouse.bin_location_management.enable_good')}</legend>
+
+                    <div className={`form-group ${!errorGood ? "" : "has-error"}`}>
+                        <label>{translate('manage_warehouse.good_management.good')}</label>
                         <SelectBox
-                            id={`select-status-bin-location`}
+                            id={`select-good-by-bin`}
                             className="form-control select2"
                             style={{ width: "100%" }}
-                            value={binStatus}
-                            items={[
-                                { value: '1', text: translate('manage_warehouse.bin_location_management.1.status') },
-                                { value: '2', text: translate('manage_warehouse.bin_location_management.2.status') },
-                                { value: '3', text: translate('manage_warehouse.bin_location_management.3.status') },
-                                { value: '4', text: translate('manage_warehouse.bin_location_management.4.status') },
-                                { value: '5', text: translate('manage_warehouse.bin_location_management.5.status') },
-                            ]}
-                            onChange={handleStatusChange}
+                            value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
+                            items={dataGoods}
+                            onChange={handleGoodChange}
                             multiple={false}
                         />
+                        <ErrorLabel content={errorGood} />
                     </div>
                     <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.department')}<span className="text-red"> * </span></label>
-                        <SelectBox
-                            id={`select-department-bin`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={binDepartment ? binDepartment : { value: '', text: translate('manage_warehouse.bin_location_management.choose_department')}}
-                            items={dataDepartment}
-                            onChange={handleDepartmentChange}    
-                            multiple={false}
-                        />
+                        <label className="control-label">{translate('manage_warehouse.bin_location_management.contained')}</label>
+                        <div>
+                            <input type="number" className="form-control" value={good.contained} disabled placeholder={translate('manage_warehouse.good_management.contained')} onChange={handleContainedChange} />
+                        </div>
                     </div>
-                    <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="text-red"> * </span></label>
-                        <input type="text" className="form-control" value={binUnit} onChange={handleUnitChange} />
+                    <div className={`form-group ${!errorCapacity ? "" : "has-error"}`}>
+                        <label className="control-label">{translate('manage_warehouse.bin_location_management.max_quantity')}</label>
+                        <div>
+                            <input type="number" className="form-control" value={good.capacity} placeholder={translate('manage_warehouse.good_management.max_quantity')} onChange={handleCapacityChange} />
+                        </div>
+                        <ErrorLabel content={errorCapacity} />
                     </div>
-                </div>
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                    <div className={`form-group ${!errorName ? "" : "has-error"}`}>
-                        <label>{translate('manage_warehouse.bin_location_management.name')}<span className="text-red"> * </span></label>
-                        <input type="text" className="form-control" value={binName} onChange={handleNameChange} />
-                        <ErrorLabel content={errorName} />
-                    </div>
-                    <div className="form-group">
-                        <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="text-red"> * </span></label>
-                        <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={handleCapacityTotalChange} />
-                    </div>
-                    <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="text-red"> * </span></label>
-                        <SelectBox
-                            id={`select-management-location-stock`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={binUsers ? binUsers : []}
-                            items={listUsers.map(x => { return { value: x.id, text: x.name } })}
-                            onChange={handleManagementLocationtChange}    
-                            multiple={true}
-                        />
-                    </div>
-                    <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bin_location_management.parent')}</label>
-                        <TreeSelect data={list} value={binParent ? [binParent] : ""} handleChange={handleParent} mode="radioSelect" />
-                    </div>
-                </div>
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="form-group">
-                        <label>{translate('manage_warehouse.bin_location_management.description')}</label>
-                        <textarea type="text" className="form-control" value={binDescription} onChange={handleDescriptionChange} />
-                    </div>
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate('manage_warehouse.bin_location_management.enable_good')}</legend>
 
-                        <div className={`form-group ${!errorGood ? "" : "has-error"}`}>
-                            <label>{translate('manage_warehouse.good_management.good')}</label>
-                            <SelectBox
-                                id={`select-good-by-bin`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
-                                items={dataGoods}
-                                onChange={handleGoodChange}
-                                multiple={false}
-                            />
-                            <ErrorLabel content={errorGood} />
-                        </div>
-                        <div className={`form-group`}>
-                            <label className="control-label">{translate('manage_warehouse.bin_location_management.contained')}</label>
-                            <div>
-                                <input type="number" className="form-control" value={good.contained} disabled placeholder={translate('manage_warehouse.good_management.contained')} onChange={handleContainedChange} />
-                            </div>
-                        </div>
-                        <div className={`form-group ${!errorCapacity ? "" : "has-error"}`}>
-                            <label className="control-label">{translate('manage_warehouse.bin_location_management.max_quantity')}</label>
-                            <div>
-                                <input type="number" className="form-control" value={good.capacity} placeholder={translate('manage_warehouse.good_management.max_quantity')} onChange={handleCapacityChange} />
-                            </div>
-                            <ErrorLabel content={errorCapacity} />
-                        </div>
+                    <div className="pull-right" style={{ marginBottom: "10px" }}>
+                        {state.editInfo ?
+                            <React.Fragment>
+                                <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                <button className="btn btn-success" disabled={!isGoodsValidated()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                            </React.Fragment> :
+                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isGoodsValidated()} onClick={handleAddGood}>{translate('task_template.add')}</button>
+                        }
+                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>{translate('task_template.delete')}</button>
+                    </div>
 
-                        <div className="pull-right" style={{ marginBottom: "10px" }}>
-                            {state.editInfo ?
-                                <React.Fragment>
-                                    <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                    <button className="btn btn-success" disabled={!isGoodsValidated()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                </React.Fragment> :
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isGoodsValidated()} onClick={handleAddGood}>{translate('task_template.add')}</button>
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th title={translate('manage_warehouse.bin_location_management.good')}>{translate('manage_warehouse.bin_location_management.good')}</th>
+                                <th title={translate('manage_warehouse.bin_location_management.contained')}>{translate('manage_warehouse.bin_location_management.contained')}</th>
+                                <th title={translate('manage_warehouse.bin_location_management.max_quantity')}>{translate('manage_warehouse.bin_location_management.max_quantity')}</th>
+                                <th>{translate('task_template.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody id={`good-manage-by-stock`}>
+                            {(typeof binEnableGoods === 'undefined' || binEnableGoods.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                binEnableGoods.map((x, index) =>
+                                    <tr key={index}>
+                                        <td>{x.good.name}</td>
+                                        <td>{x.contained}</td>
+                                        <td>{x.capacity}</td>
+                                        <td>
+                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>
+                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                )
                             }
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>{translate('task_template.delete')}</button>
-                        </div>
-
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th title={translate('manage_warehouse.bin_location_management.good')}>{translate('manage_warehouse.bin_location_management.good')}</th>
-                                    <th title={translate('manage_warehouse.bin_location_management.contained')}>{translate('manage_warehouse.bin_location_management.contained')}</th>
-                                    <th title={translate('manage_warehouse.bin_location_management.max_quantity')}>{translate('manage_warehouse.bin_location_management.max_quantity')}</th>
-                                    <th>{translate('task_template.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody id={`good-manage-by-stock`}>
-                                {(typeof binEnableGoods === 'undefined' || binEnableGoods.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                    binEnableGoods.map((x, index) =>
-                                        <tr key={index}>
-                                            <td>{x.good.name}</td>
-                                            <td>{x.contained}</td>
-                                            <td>{x.capacity}</td>
-                                            <td>
-                                                <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>
-                                                <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteGood(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </div>
+                        </tbody>
+                    </table>
+                </fieldset>
             </div>
             <div className="form-group">
                 <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={save}>{translate('form.save')}</button>

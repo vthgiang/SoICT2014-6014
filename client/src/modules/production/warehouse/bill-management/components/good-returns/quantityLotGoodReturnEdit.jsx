@@ -9,6 +9,7 @@ function QuantityLotGoodReturnEdit(props) {
         quantity: 0,
         returnQuantity: 0,
         damagedQuantity: 0,
+        realQuantity: 0,
         note: ''
     }
 
@@ -182,7 +183,7 @@ function QuantityLotGoodReturnEdit(props) {
     const save = () => {
         props.onDataChange(state.lots);
     }
-    
+
     const { translate, group, good } = props;
     const { errorLot, lot, errorQuantity, lots } = state;
     const dataLots = getLotsByGood();
