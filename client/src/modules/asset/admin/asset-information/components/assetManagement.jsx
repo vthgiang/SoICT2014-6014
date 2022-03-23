@@ -311,11 +311,8 @@ function AssetManagement(props) {
     }
 
     // Function lưu giá trị lô tài sản vào state khi thay đổi
-    const handleAssetLotChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        }
-
+    const handleAssetLotChange = (event) => {
+        const { value } = event.target;
         setState({
             ...state,
             assetLot: value
@@ -843,7 +840,6 @@ function AssetManagement(props) {
     var assettypelist = assetType.listAssetTypes;
     let typeArr = getAssetTypes();
     let dataSelectBox = getDepartment();
-    let dataLotSelectBox = getAssetLot();
     let assetTypeName = state.assetType ? state.assetType : [];
 
     if (assetsManager.isLoading === false) {
@@ -950,7 +946,7 @@ function AssetManagement(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
                         <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                            value={status}
+                            //value={status}
                             options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                             onChange={handleStatusChange}
                             value={status ? status : []}
@@ -1068,7 +1064,7 @@ function AssetManagement(props) {
                     {/* lô tài sản */}
                     <div className="form-group">
                         <label>{translate('asset.general_information.asset_lot')}</label>
-                        <SelectMulti
+                        {/* <SelectMulti
                             id={`assetLotSearchInManagement`}
                             multiple="multiple"
                             options={{
@@ -1079,7 +1075,9 @@ function AssetManagement(props) {
                             style={{ width: "100%" }}
                             items={dataLotSelectBox}
                             onChange={handleAssetLotChange}
-                        />
+                        /> */}
+                        <input type="text" className="form-control" name="assetLot" onChange={handleAssetLotChange} placeholder={translate('asset.general_information.asset_lot')} autoComplete="off" />
+
                     </div>
 
                     {/* Nút tìm kiếm */}

@@ -49,7 +49,7 @@ const SuppliesPurchaseRequestSchema = new Schema({
     },
     total: {
         //số lượng
-        type: String,
+        type: Number,
     },
     unit: {
         //đơn vị tính
@@ -57,7 +57,7 @@ const SuppliesPurchaseRequestSchema = new Schema({
     },
     estimatePrice: {
         //Giá trị dự tính
-        type: String,
+        type: Number,
     },
     note: {
         //ghi chú

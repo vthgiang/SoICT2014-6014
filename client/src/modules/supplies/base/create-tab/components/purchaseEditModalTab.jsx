@@ -176,7 +176,7 @@ function PurchaseEditModal(props) {
             <DialogModal
                 size='75' modalID={`modal-edit-invoice-${id}`} isLoading={false}
                 formID={`form-edit-invoice-${id}`}
-                title={translate('asset.asset_info.edit_maintenance_card')}
+                title={translate('supplies.general_information.edit_purchase_invoice')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >

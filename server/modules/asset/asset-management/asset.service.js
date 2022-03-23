@@ -4,7 +4,7 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
 const { freshObject } = require(`../../../helpers/functionHelper`);
 
-const { Asset, User, Role, Link, Privilege, UserRole, AssetType } = Models;
+const { Asset, User, Role, Link, Privilege, UserRole, AssetType, AssetLot} = Models;
 
 /**
  * Gửi email khi báo cáo sự cố
@@ -129,11 +129,24 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     }
 
     // Thêm key tìm kiếm tài sản theo mã lô tài sản
+    // if (params.assetLot) {
+    //     keySearch = {
+    //         ...keySearch,
+    //         assetLot: { $in: params.assetLot },
+    //     };
+    // }
+
     if (params.assetLot) {
-        keySearch = {
-            ...keySearch,
-            assetLot: { $in: params.assetLot },
-        };
+        let lots = await AssetLot(connect(DB_CONNECTION, portal))
+            .find({
+                code: { $in: params.assetLot }
+            })
+            .select("_id");
+        let lotIds = [];
+        lots.map((x) => {
+            lotIds.push(x._id);
+        });
+        keySearch = { ...keySearch, assetLot: { $in: lotIds } };
     }
 
     // Thêm key tìm kiếm tài sản theo người sử dụng (email hoặc name) -> handoverUser ?? không thấy thuộc tính này trong model Asset - thuộc tính cũ nhưng chưa sửa tên lại cho khớp (assignedToUser) với model?

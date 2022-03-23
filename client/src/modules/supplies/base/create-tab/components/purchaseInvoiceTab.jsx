@@ -150,7 +150,7 @@ function PurchaseInvoiceTab(props) {
                 {/* </fieldset> */}
             </div>
 
-            {/* Form chỉnh sửa phiếu bảo trì */}
+            {/* Form chỉnh sửa hóa đơn */}
             {
                 currentRow &&
                 <PurchaseEditModal

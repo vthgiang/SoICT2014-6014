@@ -12,7 +12,7 @@ const AllocationHistorySchema = new Schema({
         ref: "Supplies",
     },
     quantity: { //số lượng đã cấp
-        type: String,
+        type: Number, //sửa thành number
         require: true
     },
     allocationToOrganizationalUnit: { //đơn vị được cấp

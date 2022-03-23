@@ -6,7 +6,7 @@ import { SuppliesDashboard } from './suppliesDashboard';
 function ManageSuppliesDashboard(props) {
     return (
         <React.Fragment>
-          <h1>Dashboard vật tư</h1>
+          {/* <h1>Dashboard vật tư</h1> */}
           <SuppliesDashboard>
 
           </SuppliesDashboard>

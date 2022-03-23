@@ -178,7 +178,7 @@ function PurchaseAddModal(props) {
             <DialogModal
                 size='75' modalID={`modal-create-invoice-${id}`} isLoading={false}
                 formID={`form-create-invoice-${id}`}
-                title={translate('asset.asset_info.add_maintenance_card')}
+                title={translate('supplies.general_information.add_purchase_invoice')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >

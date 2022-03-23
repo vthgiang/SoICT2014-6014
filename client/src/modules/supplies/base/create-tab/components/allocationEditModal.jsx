@@ -163,7 +163,7 @@ function AllocationEditModal(props) {
             <DialogModal
                 size='75' modalID={`modal-edit-allocation-${id}`} isLoading={false}
                 formID={`form-edit-allocation-${id}`}
-                title={translate('asset.asset_info.edit_maintenance_card')}
+                title={translate('supplies.general_information.edit_allocation')}
                 func={save}
                 disableSubmit={!isFormValidated()}
             >
