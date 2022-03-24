@@ -826,7 +826,7 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    const { translate, group, sourceType, actionAddLotOrEdit } = props;
+    const { translate, group, sourceType, actionAddLots } = props;
     const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
         qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
         errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
@@ -838,14 +838,15 @@ function GoodReceiptEditForm(props) {
     const dataType = getType();
     const dataStatus = getStatus();
     // const checkApprove = checkApproved(approvers, listQualityControlStaffs);
-
+    console.log(lots);
+    console.log(state.good.lots, props.listCreateOrEdit);
     return (
         <React.Fragment>
 
             <DialogModal
                 modalID={`modal-edit-bill-receipt`}
                 formID={`form-edit-bill-receipt`}
-                title={actionAddLotOrEdit === '1' ? translate(`manage_warehouse.bill_management.edit_title.${group}`) : translate(`manage_warehouse.inventory_management.add_lot`)}
+                title={actionAddLots === '1' ? translate(`manage_warehouse.bill_management.edit_title.${group}`) : translate(`manage_warehouse.inventory_management.add_lot`)}
                 msg_success={translate('manage_warehouse.bill_management.add_success')}
                 msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                 disableSubmit={!isFormValidated()}
@@ -854,7 +855,7 @@ function GoodReceiptEditForm(props) {
             >
                 <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-receipt`}>
-                    {actionAddLotOrEdit === '1' &&
+                    {actionAddLots === '1' &&
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
@@ -958,7 +959,7 @@ function GoodReceiptEditForm(props) {
                             </div>
                         </fieldset>
                     </div>}
-                    {actionAddLotOrEdit === '1' && state.userId === state.creator &&
+                    {actionAddLots === '1' && state.userId === state.creator &&
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
@@ -1021,7 +1022,7 @@ function GoodReceiptEditForm(props) {
                             </fieldset>
                         </div>
                     }
-                    {actionAddLotOrEdit === '1' &&
+                    {actionAddLots === '1' &&
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>

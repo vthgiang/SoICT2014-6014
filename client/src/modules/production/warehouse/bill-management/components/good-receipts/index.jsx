@@ -25,13 +25,13 @@ function ReceiptManagement(props) {
         page: 1,
         group: '1',
         tableId,
-        actionAddLotOrEdit: '1',
+        actionAddLots: '1', // 1: edit bill, 2: add lot in index screen, 3: add lot to damaged goods in detail screen
     })
 
-    const { translate, bills, stocks, user } = props;
+    const { translate, bills, stocks, user, lots } = props;
     const { listPaginate, totalPages, page } = bills;
     const { listStocks } = stocks;
-    const { startDate, endDate, group, currentRow, actionAddLotOrEdit } = state;
+    const { startDate, endDate, group, currentRow, actionAddLots } = state;
     const dataPartner = props.getPartner();
     const userId = localStorage.getItem("userId");
 
@@ -39,7 +39,7 @@ function ReceiptManagement(props) {
         await setState({
             ...state,
             currentRow: bill,
-            actionAddLotOrEdit: '1',
+            actionAddLots: '1',
         })
 
         window.$('#modal-edit-bill-receipt').modal('show');
@@ -49,7 +49,7 @@ function ReceiptManagement(props) {
         await setState({
             ...state,
             currentRow: bill,
-            actionAddLotOrEdit: '2',
+            actionAddLots: '2',
         })
 
         window.$('#modal-edit-bill-receipt').modal('show');
@@ -106,34 +106,53 @@ function ReceiptManagement(props) {
             if (element.realQuantity < element.quantity) {
                 countReturnGood++
             }
-            if (checkLots(element.lots, element.realQuantity)) {
-                countInventory++
-            }
+            element.lots.forEach((lot, index) => {
+                if (lot.lot && checkQuantity(lot.lot.stocks)) {
+                    countInventory++
+                }
+            });
         });
-        return text = text + (countReturnGood > 0 ? `Có hàng hóa không đạt kiểm định, cần trả hàng.\n` : "") + (countInventory > 0 ? `Có hàng hóa chưa xếp vào kho, cần xếp vào kho. ` : "");
+        return text = text + (countReturnGood > 0 ? `Có hàng hóa không đạt kiểm định.\n` : "") + (countInventory > 0 ? `Có hàng hóa chưa xếp vào kho. ` : "");
     }
 
-    const checkLots = (lots, quantity) => {
-        if (lots.length === 0) {
-            return false;
-        } else {
-            let totalQuantity = 0;
-            for (let i = 0; i < lots.length; i++) {
-                totalQuantity += Number(lots[i].quantity);
+    const checkQuantity = (stock) => {
+        const { stocks } = props;
+        var check = 1;
+        stock.map(x => {
+            if (stocks.listStocks.length > 0) {
+                for (let i = 0; i < stocks.listStocks.length; i++) {
+                    if (x.stock === stocks.listStocks[i]._id) {
+                        if (x.binLocations.length === 0) {
+                            check = 0;
+                        } else {
+                            let totalQuantity = x.binLocations.reduce(function (accumulator, currentValue) {
+                                return Number(accumulator) + Number(currentValue.quantity);
+                            }, 0);
+                            if (x.quantity === totalQuantity) {
+                                check = 1;
+                            }
+                        }
+                    }
+                }
             }
-            if (Number(quantity) !== Number(totalQuantity)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    const handleShowGoodDetail = async (bill) => {
-        await setState({
-            ...state,
-            currentBill: bill,
         })
-        window.$('#modal-good-detail').modal('show');
+
+        if (check === 1) {
+            return false
+        }
+        return true
+    }
+
+    const handleShowGoodDetail = (bill) => {
+        console.log(bill);
+        if (props.checkRoleCanEdit(bill)) {
+            setState({
+                ...state,
+                currentBill: bill,
+                actionAddLots: '3',
+            })
+            window.$('#modal-good-detail').modal('show');
+        }
     }
 
     return (
@@ -154,8 +173,11 @@ function ReceiptManagement(props) {
                     state.currentBill &&
                     <GoodDetailModal
                         billId={state.currentBill._id}
+                        bill={state.currentBill}
                         code={state.currentBill.code}
                         listGoods={state.currentBill.goods}
+                        stocks={stocks}
+                        lots={lots}
                     />
                 }
                 <div className="form-inline">
@@ -272,7 +294,7 @@ function ReceiptManagement(props) {
                         code={currentRow.code}
                         group={currentRow.group}
                         type={currentRow.type}
-                        status={actionAddLotOrEdit === '2' ? '2' : currentRow.status}
+                        status={actionAddLots === '2' ? '2' : currentRow.status}
                         oldStatus={currentRow.status}
                         users={currentRow.users}
                         approvers={currentRow.approvers ? currentRow.approvers : []}
@@ -289,7 +311,7 @@ function ReceiptManagement(props) {
                         listGood={currentRow.goods}
                         creator={currentRow.creator ? currentRow.creator._id : ''}
                         sourceType={currentRow.sourceType}
-                        actionAddLotOrEdit={actionAddLotOrEdit}
+                        actionAddLots={actionAddLots}
                     />
                 }
 
@@ -340,7 +362,7 @@ function ReceiptManagement(props) {
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     {x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
                                     {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
-                                    <td><a onClick={() => handleShowGoodDetail(x)}> <p className='text-red' style={{whiteSpace: 'pre-wrap'}}>{x.status === '2' && checkGoods(x.goods)}</p></a></td>
+                                    <td><a onClick={() => handleShowGoodDetail(x)}> <p className='text-red' style={{ whiteSpace: 'pre-wrap' }}>{x.status === '2' && checkGoods(x.goods)}</p></a></td>
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>

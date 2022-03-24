@@ -4832,6 +4832,7 @@ export default {
                 lot_with_unit: "Lot (Lot code/ Quantity)",
                 quantity_passed_test: "Quantity passed test",
                 quantity_return_supplier: "Quantity returned to supplier",
+                process_not_passed_goods: "Process not passed goods",
                 rfid_code: "RFID code",
                 rfid_quantity: "Number products / 1 RFID",
                 create_rfid_code: "Create RFID code",
