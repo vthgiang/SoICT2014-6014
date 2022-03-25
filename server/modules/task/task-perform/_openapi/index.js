@@ -4,11 +4,12 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Get TaskPerform by id",
             "operationId": "getTaskPerformById",
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "taskId",
                     "in": "path",
                     "description": "Nhập id công việc",
                     "required": true,
@@ -60,6 +61,7 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Lấy trạng thái bấm giờ hiện tại",
             "operationId": "getTask-timesheet-logs",
             "parameters": [
@@ -119,6 +121,7 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Lấy lịch sử bấm giờ",
             "operationId": "get-timesheet-logs",
             "parameters": [
@@ -187,6 +190,7 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Bắt đầu bấm giờ",
             "operationId": "start-timer",
             "parameters": [
@@ -261,6 +265,7 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Kết thúc bấm giờ",
             "operationId": "start-timer",
             "parameters": [
@@ -335,6 +340,7 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Update TaskPerform",
             "description": "update taskPerform",
             "operationId": "TaskPerform",
@@ -421,6 +427,7 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Delete TaskPerform ",
             "description": "delete taskperform",
             "operationId": "deletetaskperform",
@@ -492,6 +499,7 @@ const openapi_taskPerformRoute = {
             "tags": [
                 "TaskPerform"
             ],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Thêm mới bình luận cho hành động",
             "operationId": "CreateCommentOfTaskAction",
             "parameters": [
