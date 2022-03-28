@@ -14,6 +14,7 @@ exports.createPolicy = async (req, res) => {
             content: newPolicy
         });
     } catch (error) {
+        console.log(error)
         await Log.error(req.user.email, "CREATED_NEW_POLICY", req.portal);
 
         res.status(400).json({

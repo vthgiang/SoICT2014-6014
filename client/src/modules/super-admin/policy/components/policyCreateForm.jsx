@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { ButtonModal, DialogModal, ErrorLabel, AttributeTable } from '../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
+import { GeneralTab } from "./generalTab";
+import { SubjectTab } from "./subjectTab";
+import { ResourceTab } from "./resourceTab";
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { AttributeActions } from '../../attribute/redux/actions';
@@ -13,90 +16,63 @@ function PolicyCreateForm(props) {
     const [state, setState] = useState({
         policyName: "",
         description: "",
-        policyNameError: {
-            message: undefined,
-            status: true
-        },
         userAttributes: [],
         roleAttributes: [],
         resourceAttributes: [],
-        rules:
-        {
-            subject: [
+        userRule: "",
+        roleRule: "",
+        resourceRule: "",
+        subject: {
+            user: {
+                userAttributes: [
+                    {
+                        attributeId: '623949d57486a13b2c35bff9',
+                        name: 'projectA', // tên thuộc tính
+                        value: 'testUA', //giá trị
+                    },
+                    {
+                        attributeId: '62396cbaf93ca054c485d967',
+                        name: 'projectB', // tên thuộc tính
+                        value: 'testUA', //giá trị
+                    }
+                ],
+                userRule: 'CONTAINS'
+            },
+            role: {
+                roleAttributes: [
+                    {
+                        attributeId: '623949d57486a13b2c35bff9',
+                        name: 'projectA', // tên thuộc tính
+                        value: 'testRoA', //giá trị
+                    },
+                    {
+                        attributeId: '62396cc2f93ca054c485d979',
+                        name: 'projectC', // tên thuộc tính
+                        value: 'testRoA', //giá trị
+                    }
+                ],
+                roleRule: 'BELONGS'
+            },
+        },
+        resource: {
+            resourceAttributes: [
                 {
-                    userAttributes: [
-                        {
-                            attributeId: '623949d57486a13b2c35bff9',
-                            name: 'projectA', // tên thuộc tính
-                            value: 'testUA', //giá trị
-                        },
-                        {
-                            attributeId: '62396cbaf93ca054c485d967',
-                            name: 'projectB', // tên thuộc tính
-                            value: 'testUA', //giá trị
-                        }
-                    ],
-                    roleAttributes: [
-                        {
-                            attributeId: '623949d57486a13b2c35bff9',
-                            name: 'projectA', // tên thuộc tính
-                            value: 'testRoA', //giá trị
-                        }
-                    ]
+                    attributeId: '623949d57486a13b2c35bff9',
+                    name: 'projectA', // tên thuộc tính
+                    value: 'testReA', //giá trị
                 },
                 {
-                    userAttributes: [
-                        {
-                            attributeId: '62396cbaf93ca054c485d967',
-                            name: 'projectB', // tên thuộc tính
-                            value: 'testUA', //giá trị
-                        }
-                    ],
-                    roleAttributes: [
-                        {
-                            attributeId: '62396cbaf93ca054c485d967',
-                            name: 'projectB', // tên thuộc tính
-                            value: 'testRoA', //giá trị
-                        },
-                        {
-                            attributeId: '62396cc2f93ca054c485d979',
-                            name: 'projectC', // tên thuộc tính
-                            value: 'testRoA', //giá trị
-                        }
-                    ]
+                    attributeId: '62396cc2f93ca054c485d979',
+                    name: 'projectC', // tên thuộc tính
+                    value: 'testReA', //giá trị
                 }
             ],
-            resource: [
-                {
-                    resourceAttributes: [
-                        {
-                            attributeId: '623949d57486a13b2c35bff9',
-                            name: 'projectA', // tên thuộc tính
-                            value: 'testReA', //giá trị
-                        },
-                        {
-                            attributeId: '62396cc2f93ca054c485d979',
-                            name: 'projectC', // tên thuộc tính
-                            value: 'testReA', //giá trị
-                        }
-                    ]
-                },
-                {
-                    resourceAttributes: [
-                        {
-                            attributeId: '62396cbaf93ca054c485d967',
-                            name: 'projectB', // tên thuộc tính
-                            value: 'testReA', //giá trị
-                        }
-                    ]
-                }
-            ]
+            resourceRule: 'EQUALS'
         }
-
     })
 
     const { translate, policy, page, perPage } = props;
-    const { policyName, description, policyNameError, rules, userAttributes, roleAttributes, resourceAttributes } = state;
+    const { policyName, description, userRule, roleRule, resourceRule, userAttributes, roleAttributes, resourceAttributes, subject, resource } = state;
 
     const handleChange = (name, value) => {
         setState({
@@ -105,6 +81,7 @@ function PolicyCreateForm(props) {
         });
     }
 
+    console.log(state)
     const handleChangeAddRowAttribute = (name, value) => {
         props.handleChangeAddRowAttribute(name, value)
     }
@@ -116,54 +93,86 @@ function PolicyCreateForm(props) {
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
-        if (!policyNameError.status) {
+        if (!ValidationHelper.validateName(translate, policyName, 6, 255).status || !validateRoleAttributes() || !validateUserAttributes() || !validateResourceAttributes()) {
             return false;
         }
         return true;
     }
 
+    const validateRoleAttributes = () => {
+        var roleAttributes = state.roleAttributes;
+        let result = true;
+
+        if (roleAttributes.length !== 0) {
+
+            for (let n in roleAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, roleAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, roleAttributes[n].value).status) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    const validateUserAttributes = () => {
+        var userAttributes = state.userAttributes;
+        let result = true;
+
+        if (userAttributes.length !== 0) {
+
+            for (let n in userAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, userAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, userAttributes[n].value).status) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    const validateResourceAttributes = () => {
+        var resourceAttributes = state.resourceAttributes;
+        let result = true;
+
+        if (resourceAttributes.length !== 0) {
+
+            for (let n in resourceAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, resourceAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, resourceAttributes[n].value).status) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 
     /**
      * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
      */
     const save = () => {
-        if (isFormValidated() && policyName) {
-            props.createPolicy([{ policyName, description, rules }]);
-            // props.getPolicies({
-            //     policyName: "",
-            //     page: page,
-            //     perPage: perPage
-            // });
+        const data = {
+            policyName: policyName,
+            description: description,
+            subject: {
+                user: {
+                    userAttributes: userAttributes,
+                    userRule: userRule,
+                },
+                role: {
+                    roleAttributes: roleAttributes,
+                    roleRule: roleRule,
+                }
+            },
+            resource: {
+                resourceAttributes: resourceAttributes,
+                resourceRule: resourceRule,
+            }
         }
-    }
+        if (isFormValidated() && policyName) {
+            console.log("alo")
+            props.createPolicy([data]);
 
-
-    /**
-     * Hàm xử lý khi tên ví dụ thay đổi
-     * @param {*} e 
-     */
-    const handlePolicyName = (e) => {
-        const { value } = e.target;
-        let result = ValidationHelper.validateName(translate, value, 6, 255);
-
-        setState({
-            ...state,
-            policyName: value,
-            policyNameError: result
-        })
-    }
-
-
-    /**
-     * Hàm xử lý khi mô tả ví dụ thay đổi
-     * @param {*} e 
-     */
-    const handlePolicyDescription = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            description: value
-        });
+        }
     }
 
 
@@ -190,70 +199,26 @@ function PolicyCreateForm(props) {
 
                     <div className="tab-content">
                         {/* Thông tin chung */}
-                        {/* <GeneralTab
+                        <GeneralTab
                             id={`create_general`}
-                            img={img}
-                            avatar={avatar}
                             handleChange={handleChange}
-                            handleUpload={handleUpload}
-                            assignedToUser={asset.assignedToUser}
-                            assignedToOrganizationalUnit={asset.assignedToOrganizationalUnit}
-                            usageLogs={usageLogs}
-                            status={asset.status}
-                            asset={asset}
-                            detailInfo={asset.detailInfo}
-                        /> */}
-                        <div id="create_general" className="tab-pane active">
+                        />
 
-                            <form id="form-create-policy-hooks" onSubmit={() => save(translate('manage_policy.add_success'))}>
-                                {/* Tên ví dụ */}
-                                <div className={`form-group ${policyNameError.status ? "" : "has-error"}`}>
-                                    <label>{translate('manage_policy.policyName')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={policyName} onChange={handlePolicyName}></input>
-                                    <ErrorLabel content={policyNameError.message} />
-                                </div>
+                        {/* Thông tin thuộc tính subject */}
+                        <SubjectTab
+                            id={`subject`}
+                            handleChange={handleChange}
+                            i={props.i}
+                            handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                        />
 
-                                {/* Mô tả ví dụ */}
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_policy.policy_description')}</label>
-                                    <input type="text" className="form-control" value={description} onChange={handlePolicyDescription}></input>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div id="subject" className="tab-pane">
-                            <AttributeTable
-                                attributes={userAttributes}
-                                handleChange={handleChange}
-                                attributeOwner={'userAttributes'}
-                                translation={'manage_policy.user'}
-                                noDescription={true}
-                                handleChangeAddRowAttribute={handleChangeAddRowAttribute}
-                                i={props.i}
-                            />
-
-                            <AttributeTable
-                                attributes={roleAttributes}
-                                handleChange={handleChange}
-                                attributeOwner={'roleAttributes'}
-                                translation={'manage_policy.role'}
-                                noDescription={true}
-                                handleChangeAddRowAttribute={handleChangeAddRowAttribute}
-                                i={props.i}
-                            />
-                        </div>
-
-                        <div id="resource" className="tab-pane">
-                            <AttributeTable
-                                attributes={resourceAttributes}
-                                handleChange={handleChange}
-                                attributeOwner={'resourceAttributes'}
-                                translation={'manage_policy.resource'}
-                                noDescription={true}
-                                handleChangeAddRowAttribute={handleChangeAddRowAttribute}
-                                i={props.i}
-                            />
-                        </div>
+                        {/* Thông tin thuộc tính resource */}
+                        <ResourceTab
+                            id={`resource`}
+                            handleChange={handleChange}
+                            i={props.i}
+                            handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                        />
                     </div>
                 </div>
 

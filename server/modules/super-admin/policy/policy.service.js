@@ -1,5 +1,6 @@
 const {
-    Policy
+    Policy,
+    Attribute
 } = require('../../../models');
 
 const {
@@ -14,7 +15,7 @@ exports.createPolicy = async (portal, data) => {
     const filterValidPolicyArray = async (array) => {
         let resArray = [];
         if (array.length > 0) {
-            
+
             for (let i = 0; i < array.length; i++) {
                 const checkPolicyCreated = await Policy(connect(DB_CONNECTION, portal)).findOne({ policyName: array[i].policyName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
                 if (checkPolicyCreated) {
@@ -28,18 +29,67 @@ exports.createPolicy = async (portal, data) => {
             return [];
         }
     }
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName };
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+    const filterValidAttributeData = async (array) => {
+        const attrArray = await filterValidAttributeArray(array);
+        const dataAttr = attrArray.map(attr => {
+            return {
+                attributeId: attr.attributeId,
+                name: attr.name.trim(),
+                value: attr.value.trim(),
+            }
+        });
+        return dataAttr
+    }
 
     const polArray = await filterValidPolicyArray(data);
-    
+    console.log(data)
     if (polArray && polArray.length !== 0) {
         for (let i = 0; i < polArray.length; i++) {
+            const userDataAttr = await filterValidAttributeData(polArray[i].subject.user.userAttributes);
+            const roleDataAttr = await filterValidAttributeData(polArray[i].subject.role.roleAttributes);
+            const resourceDataAttr = await filterValidAttributeData(polArray[i].resource.resourceAttributes);
+
             newPolicy = await Policy(connect(DB_CONNECTION, portal)).create({
                 policyName: polArray[i].policyName.trim(),
                 description: polArray[i].description.trim(),
-                rules: polArray[i].rules
+                subject: {
+                    user: {
+                        userAttributes: userDataAttr,
+                        userRule: polArray[i].subject.user.userRule
+                    },
+                    role: {
+                        roleAttributes: roleDataAttr,
+                        roleRule: polArray[i].subject.role.roleRule
+                    }
+                },
+                resource: {
+                    resourceAttributes: resourceDataAttr,
+                    resourceRule: polArray[i].resource.resourceRule
+                },
             });
         }
-        
+
     }
 
     let policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: newPolicy._id });;
@@ -67,9 +117,9 @@ exports.getPolicies = async (portal, data) => {
         .skip((page - 1) * perPage)
         .limit(perPage);
 
-    return { 
-        data: policies, 
-        totalList 
+    return {
+        data: policies,
+        totalList
     }
 }
 
@@ -94,9 +144,9 @@ exports.getOnlyPolicyName = async (portal, data) => {
         .skip((page - 1) * perPage)
         .limit(perPage);
 
-    return { 
+    return {
         data: PolicyCollection,
-        totalList 
+        totalList
     }
 }
 

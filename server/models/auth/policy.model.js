@@ -13,48 +13,54 @@ const PolicySchema = new Schema({
     description: { // Mô tả Ví dụ
         type: String
     },
-    rules: {
-            subject: [
+    subject: {
+        user: {
+            userAttributes: [
                 {
-                    userAttributes: [
-                        {
-                            attributeId: {
-                                type: Schema.Types.ObjectId,
-                                ref: "Attribute"
-                            },
-                            name: String, // tên thuộc tính
-                            value: String, //giá trị
-                        }
-                    ],
-                    roleAttributes: [
-                        {
-                            attributeId: {
-                                type: Schema.Types.ObjectId,
-                                ref: "Attribute"
-                            },
-                            name: String, // tên thuộc tính
-                            value: String, //giá trị
-                        }
-                    ]
+                    attributeId: {
+                        type: Schema.Types.ObjectId,
+                        ref: "Attribute"
+                    },
+                    name: String, // tên thuộc tính
+                    value: String, //giá trị
                 }
             ],
-            resource: [
-                {
-                    resourceAttributes: [
-                        {
-                            attributeId: {
-                                type: Schema.Types.ObjectId,
-                                ref: "Attribute"
-                            },
-                            name: String, // tên thuộc tính
-                            value: String, //giá trị
-                        }
-                    ]
-                }
-            ]
+            userRule: {
+                type: String
+            }
         },
-    
-},{
+        role: {
+            roleAttributes: [
+                {
+                    attributeId: {
+                        type: Schema.Types.ObjectId,
+                        ref: "Attribute"
+                    },
+                    name: String, // tên thuộc tính
+                    value: String, //giá trị
+                }
+            ],
+            roleRule: {
+                type: String
+            }
+        }
+    },
+    resource: {
+        resourceAttributes: [
+            {
+                attributeId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Attribute"
+                },
+                name: String, // tên thuộc tính
+                value: String, //giá trị
+            }
+        ],
+        resourceRule: {
+            type: String
+        }
+    }
+}, {
     timestamps: true,
     toJSON: { virtuals: true }
 });
@@ -62,7 +68,7 @@ const PolicySchema = new Schema({
 PolicySchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Policy)
+    if (!db.models.Policy)
         return db.model('Policy', PolicySchema);
     return db.models.Policy;
 }

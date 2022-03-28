@@ -16,3 +16,8 @@ export const ROOT_ROLE = {
     EMPLOYEE: 'Employee',
 }
 
+export const POLICY_ATTRIBUTE_RULE_CHECK = [
+    { name: "BELONGS", value: "BELONGS" },
+    { name: "EQUALS", value: "EQUALS" },
+    { name: "CONTAINS", value: "CONTAINS" }
+]
