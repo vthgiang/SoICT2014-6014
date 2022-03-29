@@ -200,6 +200,36 @@ const BillSchema = new Schema({
                 type: String
             }
         }],
+        unpassed_quality_control_lots: [{
+            // LSX
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+            // LSX
+            quantity: {
+                type: Number,
+                default: 0
+            },
+
+            returnQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            damagedQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            realQuantity: {
+                type: Number
+            },
+
+            note: {
+                type: String
+            }
+        }],
 
         description: {
             type: String

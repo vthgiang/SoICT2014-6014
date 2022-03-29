@@ -36,6 +36,7 @@ exports.getBillsByType = async (query, userId, portal) => {
                 { path: 'supplier' },
                 { path: 'bill' },
                 { path: 'goods.lots.lot' },
+                { path: 'goods.unpassed_quality_control_lots.lot' },
                 { path: 'goods.good' },
                 { path: 'logs.creator' }
             ])
@@ -162,6 +163,7 @@ exports.getBillsByType = async (query, userId, portal) => {
                     { path: 'supplier' },
                     { path: 'bill' },
                     { path: 'goods.lots.lot' },
+                    { path: 'goods.unpassed_quality_control_lots.lot' },
                     { path: 'goods.good' },
                     { path: 'logs.creator', select: "_id name email avatar" }
                 ],
@@ -240,6 +242,7 @@ exports.getDetailBill = async (id, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
@@ -262,6 +265,7 @@ exports.getBillsByStatus = async (query, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
@@ -372,6 +376,7 @@ exports.createBill = async (userId, data, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
@@ -445,7 +450,17 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                     realQuantity: x.realQuantity,
                     note: x.note
                 }
-            })
+            }),
+            unpassed_quality_control_lots: item.unpassed_quality_control_lots ? item.unpassed_quality_control_lots.map(x => {
+                return {
+                    lot: x.lot,
+                    quantity: x.quantity,
+                    returnQuantity: x.returnQuantity,
+                    damagedQuantity: x.damagedQuantity,
+                    realQuantity: x.realQuantity,
+                    note: x.note
+                }
+            }) : []
         }
     }) : bill.goods;
 
@@ -920,6 +935,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
@@ -945,6 +961,7 @@ exports.getBillsByCommand = async (query, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
