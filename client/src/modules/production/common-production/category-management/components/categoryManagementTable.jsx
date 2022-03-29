@@ -72,7 +72,7 @@ function CategoryManagementTable(props) {
             key: state.option,
             value: state.value
         };
-        await props.getCategories(data);
+        await props.getCategoriesByType(data);
     }
 
     const handleEdit = async (categories) => {
@@ -106,29 +106,6 @@ function CategoryManagementTable(props) {
         }
         return name;
     }
-
-    const EMPTY_ROLE = {
-        role: '',
-        managementGood: []
-    }
-
-    const handleSaveEdit = async (e) => {
-        e.preventDefault();
-        const { indexInfoRole, managementLocation } = state;
-        let newManagementLocation;
-        if (managementLocation) {
-            newManagementLocation = managementLocation.map((item, index) => {
-                return (index === indexInfoRole) ? state.role : item;
-            })
-        }
-        await setState({
-            ...state,
-            editInfoRole: false,
-            managementLocation: newManagementLocation,
-            role: Object.assign({}, EMPTY_ROLE)
-        })
-    }
-
 
     const { categories, translate } = props;
     const { listPaginate, totalPages, page, categoryToTree } = categories;
@@ -248,7 +225,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getCategories: CategoryActions.getCategories,
+    getCategories:CategoryActions.getCategories,
+    getCategoriesByType: CategoryActions.getCategoriesByType,
     getCategoryToTree: CategoryActions.getCategoryToTree,
     getAllGoodsByCategory: GoodActions.getAllGoodsByCategory,
     deleteCategory: CategoryActions.deleteCategory

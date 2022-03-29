@@ -4346,7 +4346,7 @@ export default {
                 edit_faile: "Edit failed",
                 name: "Category name",
                 code: "Category code",
-                type: "Parent directroy",
+                type: "Parent directoy",
                 good: "commodity",
                 address: "Address",
                 description: "Description",

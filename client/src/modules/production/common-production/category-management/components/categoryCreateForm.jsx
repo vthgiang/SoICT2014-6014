@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, TreeSelect  } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 
 import { CategoryActions } from '../redux/actions';
 function CategoryCreateForm(props) {
@@ -55,12 +55,12 @@ function CategoryCreateForm(props) {
         return msg === undefined;
     }
 
-    const handleParent = (value) => {
+    const handleTypeChange = (value) => {
         setState({
             ...state,
-            parent: value[0]
+            type: value[0]
         });
-    };
+    }
 
     const handleDescriptionChange = (e) => {
         let value = e.target.value;
@@ -73,27 +73,18 @@ function CategoryCreateForm(props) {
     const isFormValidated = () => {
         let result =
             validateName(state.name, false) &&
-            validateCode(state.code, false) 
+            validateCode(state.code, false)
         return result;
     }
 
     const save = () => {
-        console.log(state);
         if (isFormValidated()) {
             props.createCategory(state);
         }
     }
 
-    if (props.categoryParent !== state.categoryParent && props.categoryParent && props.categoryParent.length) {
-        setState({
-            ...state,
-            categoryParent: props.categoryParent,
-        })
-    }
-
     const { translate, categories } = props;
-    const { list } = categories.categoryToTree;
-    const { errorOnName, errorOnCode, id, code, name, type, description, parent } = state;
+    const { errorOnName, errorOnCode, id, code, name, type, description } = state;
     return (
         <React.Fragment>
             <ButtonModal modalID="modal-create-category" button_name={translate('manage_warehouse.category_management.add')} title={translate('manage_warehouse.category_management.add_title')} />
@@ -120,9 +111,21 @@ function CategoryCreateForm(props) {
                         <input type="text" className="form-control" value={name} onChange={handleNameChange} />
                         <ErrorLabel content={errorOnName} />
                     </div>
-                    <div className=' form-group' >
-                        <label>{translate('manage_warehouse.category_management.type')}</label>
-                        <TreeSelect data={list} value={!parent ? "" : [parent]} handleChange={handleParent} mode="radioSelect" />
+                    <div className="form-group">
+                        <label>{translate('manage_warehouse.category_management.type')}<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`type${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={type}
+                            items={[{ value: "product", text: translate('manage_warehouse.category_management.product') },
+                            { value: "material", text: translate('manage_warehouse.category_management.material') },
+                            { value: "equipment", text: translate('manage_warehouse.category_management.equipment') },
+                            { value: "waste", text: translate('manage_warehouse.category_management.waste') }
+                            ]}
+                            onChange={handleTypeChange}
+                            multiple={false}
+                        />
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.description')}</label>
