@@ -13,7 +13,7 @@ const AttributeDetailInfo = (props) => {
     const { attributeID } = state;
 
     // Nhận giá trị từ component cha
-    if (props.attributeID !== attributeID) {
+    if (props.attributeID !== attributeID || props.attributeName !== state.attributeName || props.description !== state.description) {
         setState({
             ...state,
             attributeID: props.attributeID,

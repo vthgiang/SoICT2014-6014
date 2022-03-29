@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ErrorLabel, AttributeTable } from '../../../../common-components';
 import { AttributeAddForm } from "./attributeAddForm";
-// import { AttributeEditForm } from "./attributeEditForm";
+import './policyAttributeTable.css'
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 function SubjectTab(props) {
@@ -13,6 +13,19 @@ function SubjectTab(props) {
         userRule: "",
         roleRule: "",
     })
+
+    useEffect(() => {
+        if (props.policyID !== state.policyID) {
+            setState({
+                ...state,
+                policyID: props.policyID,
+                userAttributes: props.userAttributes,
+                roleAttributes: props.roleAttributes,
+                userRule: props.userRule,
+                roleRule: props.roleRule,
+            })
+        }
+    }, [props.policyID])
 
     const handleChange = (name, value) => {
         setState({
@@ -39,23 +52,29 @@ function SubjectTab(props) {
                 handleChange={handleChange}
                 handleChangeAddRowAttribute={handleChangeAddRowAttribute}
                 i={props.i}
-                id={`user`}
+                id={`${props.id}-user`}
                 attributeOwner={'userAttributes'}
                 ruleOwner={'userRule'}
                 translation={'manage_policy.user'}
+                policyID={state.policyID}
+                attributes={state.userAttributes}
+                rule={state.userRule}
             />
 
             <AttributeAddForm
                 handleChange={handleChange}
                 handleChangeAddRowAttribute={handleChangeAddRowAttribute}
                 i={props.i}
-                id={`role`}
+                id={`${props.id}-role`}
                 attributeOwner={'roleAttributes'}
                 ruleOwner={'roleRule'}
                 translation={'manage_policy.role'}
+                policyID={state.policyID}
+                attributes={state.roleAttributes}
+                rule={state.roleRule}
             />
 
-            <table className="table table-hover table-bordered">
+            <table className="table table-hover table-bordered policy-attribute-table not-sort">
                 <thead>
                     <tr>
                         <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_owner_table')}</label></th>
@@ -86,9 +105,9 @@ function SubjectTab(props) {
                         <td rowSpan={(!userAttributes || userAttributes.length == 0) ? 1 : userAttributes.length}>
                             {
                                 (!userAttributes || userAttributes.length == 0) ?
-                                    <a href="#add-attributes" className="text-green" onClick={() => window.$('#modal-add-attribute-user').modal('show')} title={translate('manage_policy.add_user_attribute')}><i className="material-icons">add_box</i></a>
+                                    <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-user`).modal('show')} title={translate('manage_policy.add_user_attribute')}><i className="material-icons">add_box</i></a>
                                     :
-                                    <a onClick={() => window.$('#modal-add-attribute-user').modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_user_attribute')}>
+                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-user`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_user_attribute')}>
                                         <i className="material-icons">edit</i>
                                     </a>}
                         </td>
@@ -127,9 +146,9 @@ function SubjectTab(props) {
                         <td rowSpan={(!roleAttributes || roleAttributes.length == 0) ? 1 : roleAttributes.length}>
                             {
                                 (!roleAttributes || roleAttributes.length == 0) ?
-                                    <a href="#add-attributes" className="text-green" onClick={() => window.$('#modal-add-attribute-role').modal('show')} title={translate('manage_policy.add_role_attribute')}><i className="material-icons">add_box</i></a>
+                                    <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-role`).modal('show')} title={translate('manage_policy.add_role_attribute')}><i className="material-icons">add_box</i></a>
                                     :
-                                    <a onClick={() => window.$('#modal-add-attribute-role').modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_user_attribute')}>
+                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-role`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_user_attribute')}>
                                         <i className="material-icons">edit</i>
                                     </a>}
                         </td>

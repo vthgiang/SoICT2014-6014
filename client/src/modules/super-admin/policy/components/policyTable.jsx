@@ -172,12 +172,27 @@ function PolicyTable(props) {
                 policyID={currentRow && currentRow._id}
                 policyName={currentRow && currentRow.policyName}
                 description={currentRow && currentRow.description}
+                userAttributes={currentRow && currentRow.subject.user.userAttributes}
+                roleAttributes={currentRow && currentRow.subject.role.roleAttributes}
+                resourceAttributes={currentRow && currentRow.resource.resourceAttributes}
+                userRule={currentRow && currentRow.subject.user.userRule}
+                roleRule={currentRow && currentRow.subject.role.roleRule}
+                resourceRule={currentRow && currentRow.resource.resourceRule}
+                i={state.i}
+                handleChangeAddRowAttribute={handleChangeAddRowAttribute}
             />
 
             <PolicyDetailInfo
                 policyID={curentRowDetail && curentRowDetail._id}
                 policyName={curentRowDetail && curentRowDetail.policyName}
                 description={curentRowDetail && curentRowDetail.description}
+                userAttributes={curentRowDetail && curentRowDetail.subject.user.userAttributes}
+                roleAttributes={curentRowDetail && curentRowDetail.subject.role.roleAttributes}
+                resourceAttributes={curentRowDetail && curentRowDetail.resource.resourceAttributes}
+                userRule={curentRowDetail && curentRowDetail.subject.user.userRule}
+                roleRule={curentRowDetail && curentRowDetail.subject.role.roleRule}
+                resourceRule={curentRowDetail && curentRowDetail.resource.resourceRule}
+                curentRowDetail={curentRowDetail}
             />
 
             <PolicyCreateForm
@@ -198,10 +213,10 @@ function PolicyTable(props) {
                     <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
                         <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_policy.add_title')} >{translate('manage_policy.add')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-policy-hooks').modal('show')} title={translate('manage_policy.add_multi_policy')}>
-                                {translate('human_resource.salary.add_import')}</a></li>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-policy-hooks').modal('show')} title={translate('manage_policy.add_one_policy')}>
                                 {translate('manage_policy.add_policy')}</a></li>
+                            {/* <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-policy-hooks').modal('show')} title={translate('manage_policy.add_multi_policy')}>
+                                {translate('human_resource.salary.add_import')}</a></li> */}
                         </ul>
                     </div>
                     {selectedData?.length > 0 && <button type="button" className="btn btn-danger pull-right" title={translate('general.delete_option')} onClick={() => handleDeleteOptions()}>{translate("general.delete_option")}</button>}

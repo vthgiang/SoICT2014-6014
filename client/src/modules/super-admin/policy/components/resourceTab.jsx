@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ErrorLabel, AttributeTable } from '../../../../common-components';
 import { AttributeAddForm } from "./attributeAddForm";
-// import { AttributeEditForm } from "./attributeEditForm";
+import './policyAttributeTable.css'
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 function ResourceTab(props) {
@@ -11,6 +11,17 @@ function ResourceTab(props) {
         resourceAttributes: [],
         resourceRule: ""
     })
+
+    useEffect(() => {
+        if (props.policyID !== state.policyID) {
+            setState({
+                ...state,
+                policyID: props.policyID,
+                resourceAttributes: props.resourceAttributes,
+                resourceRule: props.resourceRule
+            })
+        }
+    }, [props.policyID])
 
     const handleChange = (name, value) => {
         setState({
@@ -37,13 +48,16 @@ function ResourceTab(props) {
                 handleChange={handleChange}
                 handleChangeAddRowAttribute={handleChangeAddRowAttribute}
                 i={props.i}
-                id={`resource`}
+                id={`${props.id}-resource`}
                 attributeOwner={'resourceAttributes'}
                 ruleOwner={'resourceRule'}
                 translation={'manage_policy.resource'}
+                policyID={state.policyID}
+                attributes={state.resourceAttributes}
+                rule={state.resourceRule}
             />
 
-            <table className="table table-hover table-bordered">
+            <table className="table table-hover table-bordered policy-attribute-table not-sort">
                 <thead>
                     <tr>
                         <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_owner_table')}</label></th>
@@ -74,9 +88,9 @@ function ResourceTab(props) {
                         <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length}>
                             {
                                 (!resourceAttributes || resourceAttributes.length == 0) ?
-                                    <a href="#add-attributes" className="text-green" onClick={() => window.$('#modal-add-attribute-resource').modal('show')} title={translate('manage_policy.add_resource_attribute')}><i className="material-icons">add_box</i></a>
+                                    <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-resource`).modal('show')} title={translate('manage_policy.add_resource_attribute')}><i className="material-icons">add_box</i></a>
                                     :
-                                    <a onClick={() => window.$('#modal-add-attribute-resource').modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_resource_attribute')}>
+                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-resource`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_resource_attribute')}>
                                         <i className="material-icons">edit</i>
                                     </a>}
                         </td>

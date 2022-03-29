@@ -171,8 +171,67 @@ exports.editPolicy = async (portal, id, data) => {
         if (check) throw ['policy_name_exist'];
     }
 
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    array[i] = { ...array[i], name: attribute.attributeName };
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+    const filterValidAttributeData = async (array) => {
+        const attrArray = await filterValidAttributeArray(array);
+        const dataAttr = attrArray.map(attr => {
+            return {
+                attributeId: attr.attributeId,
+                name: attr.name.trim(),
+                value: attr.value.trim(),
+            }
+        });
+        return dataAttr
+    }
+
+    const userDataAttr = await filterValidAttributeData(data.subject.user.userAttributes);
+    const roleDataAttr = await filterValidAttributeData(data.subject.role.roleAttributes);
+    const resourceDataAttr = await filterValidAttributeData(data.resource.resourceAttributes);
+
+    await Policy(connect(DB_CONNECTION, portal)).update({ _id: id }, {
+        $set: {
+            policyName: data.policyName.trim(),
+            description: data.description.trim(),
+            subject: {
+                user: {
+                    userAttributes: userDataAttr,
+                    userRule: data.subject.user.userRule
+                },
+                role: {
+                    roleAttributes: roleDataAttr,
+                    roleRule: data.subject.role.roleRule
+                }
+            },
+            resource: {
+                resourceAttributes: resourceDataAttr,
+                resourceRule: data.resource.resourceRule
+            },
+        }
+    });
+
+
     // Cach 2 de update
-    await Policy(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    // await Policy(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
     let policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: oldPolicy._id });
 
     return policy;

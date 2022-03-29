@@ -11,6 +11,16 @@ function AttributeAddForm(props) {
         attributes: []
     })
 
+    useEffect(() => {
+        if (props.policyID !== state.policyID) {
+            setState({
+                ...state,
+                attributes: props.attributes,
+                rule: props.rule,
+            })
+        }
+    }, [props.policyID])
+
     const handleChangeAttributeRule = (e) => {
         validateAttributeRule(e[0]);
     }
@@ -31,9 +41,7 @@ function AttributeAddForm(props) {
                     rule: rule
                 }
             });
-            if (attributes.length > 0) {
-                props.handleChange(props.ruleOwner, rule);
-            }
+            props.handleChange(props.ruleOwner, rule);
         }
         return msg === undefined;
     }

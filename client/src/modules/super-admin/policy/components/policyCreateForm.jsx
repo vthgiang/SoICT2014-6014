@@ -21,58 +21,11 @@ function PolicyCreateForm(props) {
         resourceAttributes: [],
         userRule: "",
         roleRule: "",
-        resourceRule: "",
-        subject: {
-            user: {
-                userAttributes: [
-                    {
-                        attributeId: '623949d57486a13b2c35bff9',
-                        name: 'projectA', // tên thuộc tính
-                        value: 'testUA', //giá trị
-                    },
-                    {
-                        attributeId: '62396cbaf93ca054c485d967',
-                        name: 'projectB', // tên thuộc tính
-                        value: 'testUA', //giá trị
-                    }
-                ],
-                userRule: 'CONTAINS'
-            },
-            role: {
-                roleAttributes: [
-                    {
-                        attributeId: '623949d57486a13b2c35bff9',
-                        name: 'projectA', // tên thuộc tính
-                        value: 'testRoA', //giá trị
-                    },
-                    {
-                        attributeId: '62396cc2f93ca054c485d979',
-                        name: 'projectC', // tên thuộc tính
-                        value: 'testRoA', //giá trị
-                    }
-                ],
-                roleRule: 'BELONGS'
-            },
-        },
-        resource: {
-            resourceAttributes: [
-                {
-                    attributeId: '623949d57486a13b2c35bff9',
-                    name: 'projectA', // tên thuộc tính
-                    value: 'testReA', //giá trị
-                },
-                {
-                    attributeId: '62396cc2f93ca054c485d979',
-                    name: 'projectC', // tên thuộc tính
-                    value: 'testReA', //giá trị
-                }
-            ],
-            resourceRule: 'EQUALS'
-        }
+        resourceRule: ""
     })
 
     const { translate, policy, page, perPage } = props;
-    const { policyName, description, userRule, roleRule, resourceRule, userAttributes, roleAttributes, resourceAttributes, subject, resource } = state;
+    const { policyName, description, userRule, roleRule, resourceRule, userAttributes, roleAttributes, resourceAttributes } = state;
 
     const handleChange = (name, value) => {
         setState({
@@ -156,20 +109,19 @@ function PolicyCreateForm(props) {
             subject: {
                 user: {
                     userAttributes: userAttributes,
-                    userRule: userRule,
+                    userRule: userAttributes.length > 0 ? userRule : "",
                 },
                 role: {
                     roleAttributes: roleAttributes,
-                    roleRule: roleRule,
+                    roleRule: roleAttributes.length > 0 ? roleRule : "",
                 }
             },
             resource: {
                 resourceAttributes: resourceAttributes,
-                resourceRule: resourceRule,
+                resourceRule: resourceAttributes.length > 0 ? resourceRule : "",
             }
         }
         if (isFormValidated() && policyName) {
-            console.log("alo")
             props.createPolicy([data]);
 
         }
@@ -193,8 +145,8 @@ function PolicyCreateForm(props) {
                     {/* Nav-tabs */}
                     <ul className="nav nav-tabs">
                         <li className="active"><a title={translate('manage_policy.general_information')} data-toggle="tab" href={`#create_general`}>{translate('manage_policy.general_information')}</a></li>
-                        <li><a title={translate('manage_policy.subject_information')} data-toggle="tab" href={`#subject`}>{translate('manage_policy.subject_information')}</a></li>
-                        <li><a title={translate('manage_policy.resource_information')} data-toggle="tab" href={`#resource`}>{translate('manage_policy.resource_information')}</a></li>
+                        <li><a title={translate('manage_policy.subject_information')} data-toggle="tab" href={`#create_subject`}>{translate('manage_policy.subject_information')}</a></li>
+                        <li><a title={translate('manage_policy.resource_information')} data-toggle="tab" href={`#create_resource`}>{translate('manage_policy.resource_information')}</a></li>
                     </ul>
 
                     <div className="tab-content">
@@ -206,7 +158,7 @@ function PolicyCreateForm(props) {
 
                         {/* Thông tin thuộc tính subject */}
                         <SubjectTab
-                            id={`subject`}
+                            id={`create_subject`}
                             handleChange={handleChange}
                             i={props.i}
                             handleChangeAddRowAttribute={handleChangeAddRowAttribute}
@@ -214,7 +166,7 @@ function PolicyCreateForm(props) {
 
                         {/* Thông tin thuộc tính resource */}
                         <ResourceTab
-                            id={`resource`}
+                            id={`create_resource`}
                             handleChange={handleChange}
                             i={props.i}
                             handleChangeAddRowAttribute={handleChangeAddRowAttribute}
@@ -234,7 +186,6 @@ function mapState(state) {
 
 const actions = {
     createPolicy: PolicyActions.createPolicy,
-    getPolicies: PolicyActions.getPolicies,
     getAttribute: AttributeActions.getAttributes
 }
 

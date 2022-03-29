@@ -14,6 +14,18 @@ function GeneralTab(props) {
         },
     })
 
+    // setState từ props mới
+    useEffect(() => {
+        if (props.policyID !== state.policyID) {
+            setState({
+                ...state,
+                policyID: props.policyID,
+                policyName: props.policyName,
+                description: props.description,
+            })
+        }
+    }, [props.policyID])
+
     /**
      * Hàm xử lý khi tên ví dụ thay đổi
      * @param {*} e 
