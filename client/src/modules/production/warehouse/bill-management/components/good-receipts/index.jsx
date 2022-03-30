@@ -12,6 +12,7 @@ import QualityControlForm from '../genaral/quatityControlForm';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 import Swal from "sweetalert2";
 import { UserGuideCreateBillReceipt } from '../config.js';
+import "../bill.css";
 
 function ReceiptManagement(props) {
 
@@ -31,7 +32,7 @@ function ReceiptManagement(props) {
     const { translate, bills, stocks, user, lots } = props;
     const { listPaginate, totalPages, page } = bills;
     const { listStocks } = stocks;
-    const { startDate, endDate, group, currentRow, actionAddLots } = state;
+    const { startDate, endDate, group, currentRow, actionAddLots, billStatusState } = state;
     const dataPartner = props.getPartner();
     const userId = localStorage.getItem("userId");
 
@@ -40,6 +41,7 @@ function ReceiptManagement(props) {
             ...state,
             currentRow: bill,
             actionAddLots: '1',
+            billStatusState: handleBillStatus(bill),
         })
 
         window.$('#modal-edit-bill-receipt').modal('show');
@@ -50,6 +52,7 @@ function ReceiptManagement(props) {
             ...state,
             currentRow: bill,
             actionAddLots: '2',
+            billStatusState: handleBillStatus(bill),
         })
 
         window.$('#modal-edit-bill-receipt').modal('show');
@@ -98,21 +101,26 @@ function ReceiptManagement(props) {
         window.$('#modal-quality-control-bill').modal('show');
     }
 
-    const checkGoods = (goods) => {
-        let text = "";
-        let countReturnGood = 0;
+    const checkGoodsHaveBeenPlacedInTheWarehouse = (goods) => {
         let countInventory = 0;
-        goods.forEach((element, index) => {
-            if (element.realQuantity < element.quantity) {
-                countReturnGood++
-            }
-            element.lots.forEach((lot, index) => {
+        goods.forEach((element) => {
+            element.lots.forEach((lot) => {
                 if (lot.lot && checkQuantity(lot.lot.stocks)) {
                     countInventory++
                 }
             });
         });
-        return text = text + (countReturnGood > 0 ? `Có hàng hóa không đạt kiểm định.\n` : "") + (countInventory > 0 ? `Có hàng hóa chưa xếp vào kho. ` : "");
+        return countInventory === 0;
+    }
+
+    const checkGoodsPassedQualityControl = (goods) => {
+        let checkPassedQuality = 0;
+        goods.forEach((element) => {
+            if (element.realQuantity < element.quantity) {
+                checkPassedQuality++
+            }
+        });
+        return checkPassedQuality === 0;
     }
 
     const checkQuantity = (stock) => {
@@ -153,6 +161,17 @@ function ReceiptManagement(props) {
             })
             window.$('#modal-good-detail').modal('show');
         }
+    }
+
+    const handleBillStatus = (bill) => {
+        let billStatus;
+        if (bill.status === '1') billStatus = 1;
+        if (bill.status === '3') billStatus = 2;
+        if (bill.status === '5' || bill.status === '2') billStatus = 3;
+        if (!props.checkRoleQualityControlStaffs(bill)) billStatus = 4;
+        if (bill.status === '2') billStatus = 5;
+        if (checkGoodsHaveBeenPlacedInTheWarehouse(bill.goods)) billStatus = 6;
+        return billStatus;
     }
 
     return (
@@ -312,6 +331,7 @@ function ReceiptManagement(props) {
                         creator={currentRow.creator ? currentRow.creator._id : ''}
                         sourceType={currentRow.sourceType}
                         actionAddLots={actionAddLots}
+                        billStatus={billStatusState}
                     />
                 }
 
@@ -362,7 +382,52 @@ function ReceiptManagement(props) {
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     {x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
                                     {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
-                                    <td><a onClick={() => handleShowGoodDetail(x)}> <p className='text-red' style={{ whiteSpace: 'pre-wrap' }}>{x.status === '2' && checkGoods(x.goods)}</p></a></td>
+                                    <td>
+                                        <div className="timeline-index">
+                                            <div className="timeline-progress" style={{ width: (handleBillStatus(x) - 1) / 5 * 100 + "%" }}></div>
+                                            <div className="timeline-items">
+                                                <div className="tooltip-abc-completed">
+                                                    <div className={"timeline-item active"} >
+                                                    </div>
+                                                    <span className="tooltiptext-completed"><p style={{ color: "white" }}>Tạo phiếu thành công</p></span>
+                                                </div>
+                                                <div className={`tooltip-abc${x.status === '1' ? "" : "-completed"}`}>
+                                                    <div className={`timeline-item ${x.status === '1' ? "" : "active"}`}>
+                                                    </div>
+                                                    <span className={`tooltiptext${x.status === '1' ? "" : "-completed"}`}><p style={{ color: "white" }}>{x.status === '1' ? 'Cần tiến hành phê duyệt phiếu' : 'Đã phê duyệt phiếu'}</p></span>
+                                                </div>
+                                                <div className={`tooltip-abc${x.status === '5' || x.status === '2' ? "-completed" : ""}`}>
+                                                    <div className={`timeline-item ${x.status === '5' || x.status === '2' ? "active" : ""}`}>
+                                                    </div>
+                                                    {(x.status === '5' || x.status === '2') && <span className="tooltiptext-completed" ><p style={{ color: "white" }}>{'Phiếu đang trong quá trình thực hiện'}</p></span>}
+                                                    {(x.status === '3' || x.status === '1') && <span className="tooltiptext" ><p style={{ color: "white" }}>{'Phiếu chưa thực hiện'}</p></span>}
+
+                                                </div>
+
+                                                <div className={`tooltip-abc${props.checkRoleQualityControlStaffs(x) ? "" : "-completed"}`}>
+                                                    <div className={`timeline-item ${props.checkRoleQualityControlStaffs(x) ? "" : "active"}`}>
+                                                    </div>
+                                                    <span className={`tooltiptext${props.checkRoleQualityControlStaffs(x) ? "" : "-completed"}`}><p style={{ color: "white" }}>{props.checkRoleQualityControlStaffs(x) ? 'Chưa kiểm định chất lượng hàng hóa' : 'Kiểm định chất lượng xong'}</p></span>
+                                                </div>
+                                                <div className={`tooltip-abc${x.status !== '2' ? "" : "-completed"}`}>
+                                                    <div className={`timeline-item ${x.status !== '2' ? "" : "active"}`}>
+                                                    </div>
+                                                    <span className={`tooltiptext${x.status !== '2' ? "" : "-completed"}`}><p style={{ color: "white" }}>{x.status !== '2' ? 'Chưa đánh lô hàng hóa' : 'Đánh lô hàng hóa xong'}</p></span>
+                                                </div>
+                                                <div className={`tooltip-abc${(x.status === '2' && checkGoodsHaveBeenPlacedInTheWarehouse(x.goods)) ? "-completed" : ""}`}>
+                                                    <div className={`timeline-item ${(x.status === '2' && checkGoodsHaveBeenPlacedInTheWarehouse(x.goods)) ? "active" : ""}`}>
+                                                    </div>
+                                                    <span className={`tooltiptext${(x.status === '2' && checkGoodsHaveBeenPlacedInTheWarehouse(x.goods)) ? "-completed" : ""}`}><p style={{ color: "white" }}>{(x.status === '2' && checkGoodsHaveBeenPlacedInTheWarehouse(x.goods)) ? 'Đã xếp hết hàng vào kho' : 'Chưa xếp hết hàng hóa vào kho'}</p></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <a onClick={() => handleShowGoodDetail(x)}> 
+                                            <p className='text-red' style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }}>
+                                                {x.status === '2' && (checkGoodsHaveBeenPlacedInTheWarehouse(x.goods) ? "" : "Có hàng hóa chưa xếp vào kho.\n") + (checkGoodsPassedQualityControl(x.goods) ? "" : 'Có hàng hóa không đạt kiểm định.')}
+                                            </p>
+                                        </a>
+                                    </td>
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>

@@ -826,7 +826,8 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    const { translate, group, sourceType, actionAddLots } = props;
+    const { translate, group, sourceType, actionAddLots, billStatus } = props;
+    console.log(billStatus);
     const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
         qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
         errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
@@ -838,8 +839,15 @@ function GoodReceiptEditForm(props) {
     const dataType = getType();
     const dataStatus = getStatus();
     // const checkApprove = checkApproved(approvers, listQualityControlStaffs);
-    console.log(lots);
-    console.log(state.good.lots, props.listCreateOrEdit);
+    const timelineTextArr = [
+        {text: "Tạo phiếu"},
+        {text: "Phê duyệt phiếu"},
+        {text: "Thực hiện phiếu"},
+        {text: "Kiểm định chất lượng"},
+        {text: "Đánh lô hàng hóa"},
+        {text: "Xếp hàng vào kho"}
+    ]
+
     return (
         <React.Fragment>
 
@@ -855,110 +863,122 @@ function GoodReceiptEditForm(props) {
             >
                 <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-receipt`}>
+                    <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width: (billStatus - 1) /5 *100 + "%" }}></div>
+                        <div className="timeline-items">
+                        {timelineTextArr.map((item, index) => (
+                            <div className={`timeline-item ${index < billStatus ? "active" : ""}`} key={index} >
+                                <div className={`timeline-contain`}>
+                                    {item.text}
+                                </div>
+                            </div>
+                            ))}
+                        </div>
+                    </div>
                     {actionAddLots === '1' &&
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                    <input type="text" className="form-control" value={code ? code : ''} disabled />
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.code')}</label>
+                                        <input type="text" className="form-control" value={code ? code : ''} disabled />
+                                    </div>
+                                    <div className={`form-group ${!errorType ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
+                                        <SelectBox
+                                            id={`select-type-receipt-edit-${billId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={type}
+                                            items={dataType}
+                                            onChange={handleTypeChange}
+                                            multiple={false}
+                                            disabled={status === "1" ? false : true}
+                                        />
+                                        <ErrorLabel content={errorType} />
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.status')}</label>
+                                        <SelectBox
+                                            id={`select-status-receipt-edit-${billId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={status}
+                                            items={dataStatus}
+                                            onChange={handleStatusChange}
+                                            multiple={false}
+                                        // disabled={checkApprove}
+                                        />
+                                    </div>
                                 </div>
-                                <div className={`form-group ${!errorType ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.type')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-type-receipt-edit-${billId}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={type}
-                                        items={dataType}
-                                        onChange={handleTypeChange}
-                                        multiple={false}
-                                        disabled={status === "1" ? false : true}
-                                    />
-                                    <ErrorLabel content={errorType} />
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.stock')}<span className="text-red"> * </span></label>
+                                        <SelectBox
+                                            id={`select-stock-bill-receipt-edit-${billId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={fromStock}
+                                            items={dataStock}
+                                            onChange={handleStockChange}
+                                            multiple={false}
+                                            disabled={status === "1" ? false : true}
+                                        />
+                                        <ErrorLabel content={errorStock} />
+                                    </div>
+                                    <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                                        <span className="text-red"> * </span>
+                                        <SelectBox
+                                            id={`select-source-type-${dataSource.value}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={sourceType}
+                                            items={dataSource}
+                                            onChange={handleSourceChange}
+                                            multiple={false}
+                                            disabled={status === "1" ? false : true}
+                                        />
+                                        <ErrorLabel content={errorOnSourceProduct} />
+                                    </div>
+                                    {isSeflProduced === false ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.supplier')}<span className="text-red"> * </span></label>
+                                        <SelectBox
+                                            id={`select-supplier-receipt-edit-${billId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={supplier}
+                                            items={dataCustomer}
+                                            onChange={handlePartnerChange}
+                                            multiple={false}
+                                            disabled={status === "1" ? false : true}
+                                        />
+                                        <ErrorLabel content={errorCustomer} />
+                                    </div>) : null}
+                                    {isSeflProduced === true ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.mill')}<span className="text-red"> * </span></label>
+                                        <SelectBox
+                                            id={`select-mill-receipt-edit-${billId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={manufacturingMill}
+                                            items={dataMills}
+                                            onChange={handlePartnerChange}
+                                            multiple={false}
+                                            disabled={status === "1" ? false : true}
+                                        />
+                                        <ErrorLabel content={errorCustomer} />
+                                    </div>) : null}
                                 </div>
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.status')}</label>
-                                    <SelectBox
-                                        id={`select-status-receipt-edit-${billId}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={status}
-                                        items={dataStatus}
-                                        onChange={handleStatusChange}
-                                        multiple={false}
-                                    // disabled={checkApprove}
-                                    />
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div className="form-group">
+                                        <label>{translate('manage_warehouse.bill_management.description')}</label>
+                                        <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.stock')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-stock-bill-receipt-edit-${billId}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={fromStock}
-                                        items={dataStock}
-                                        onChange={handleStockChange}
-                                        multiple={false}
-                                        disabled={status === "1" ? false : true}
-                                    />
-                                    <ErrorLabel content={errorStock} />
-                                </div>
-                                <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.good_management.good_source')}</label>
-                                    <span className="text-red"> * </span>
-                                    <SelectBox
-                                        id={`select-source-type-${dataSource.value}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={sourceType}
-                                        items={dataSource}
-                                        onChange={handleSourceChange}
-                                        multiple={false}
-                                        disabled={status === "1" ? false : true}
-                                    />
-                                    <ErrorLabel content={errorOnSourceProduct} />
-                                </div>
-                                {isSeflProduced === false ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.supplier')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-supplier-receipt-edit-${billId}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={supplier}
-                                        items={dataCustomer}
-                                        onChange={handlePartnerChange}
-                                        multiple={false}
-                                        disabled={status === "1" ? false : true}
-                                    />
-                                    <ErrorLabel content={errorCustomer} />
-                                </div>) : null}
-                                {isSeflProduced === true ? (<div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.mill')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-mill-receipt-edit-${billId}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={manufacturingMill}
-                                        items={dataMills}
-                                        onChange={handlePartnerChange}
-                                        multiple={false}
-                                        disabled={status === "1" ? false : true}
-                                    />
-                                    <ErrorLabel content={errorCustomer} />
-                                </div>) : null}
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
-                                    <label>{translate('manage_warehouse.bill_management.description')}</label>
-                                    <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>}
+                            </fieldset>
+                        </div>}
                     {actionAddLots === '1' && state.userId === state.creator &&
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
@@ -1023,31 +1043,31 @@ function GoodReceiptEditForm(props) {
                         </div>
                     }
                     {actionAddLots === '1' &&
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
-                                    <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.name')}</label>
+                                        <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.phone')}</label>
+                                        <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
+                                    </div>
                                 </div>
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
-                                    <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.email')}</label>
+                                        <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.address')}</label>
+                                        <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
-                                    <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
-                                    <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>}
+                            </fieldset>
+                        </div>}
 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
@@ -1068,7 +1088,7 @@ function GoodReceiptEditForm(props) {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
-                                    {good.good && status === '2'&&  <label>{translate('manage_warehouse.bill_management.number_passed')}</label>}
+                                    {good.good && status === '2' && <label>{translate('manage_warehouse.bill_management.number_passed')}</label>}
                                     {(!good.good || status !== '2') && <label>{translate('manage_warehouse.bill_management.number')}</label>}
                                     <div style={{ display: "flex" }}>
                                         <input className="form-control" value={(good.good && status === '2') ? good.realQuantity : good.quantity} onChange={handleQuantityChange} type="number" />

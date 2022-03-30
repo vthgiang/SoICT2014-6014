@@ -1,0 +1,127 @@
+/* css timeline customer status */
+.timeline-index {
+    margin: 2em auto 2em auto;
+    height: 5px;
+    background-color: #ccc;
+    width: 80%;
+}
+
+.timeline-create {
+    margin: 4.5em auto 4em auto;
+    height: 5px;
+    background-color: #ccc;
+    width: 80%;
+}
+
+.timeline-create:before {
+    content: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    left: 31px;
+    margin: 0;
+    border-radius: 2px;
+}
+
+.timeline-progress {
+    width: 33%;
+    height: 100%;
+    background-color: #28A745;
+    transition: all ease 0.9s;
+}
+
+.timeline-items {
+    margin-left: -5px;
+    margin-right: -5px;
+    margin-top: -12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.timeline-item {
+    position: relative;
+}
+
+.timeline-item::before {
+    content: " ";
+    width: 20px;
+    height: 20px;
+    background-color: #ccc;
+    display: block;
+    border-radius: 100%;
+}
+
+.timeline-contain {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ddd;
+    width: 10em;
+    padding: 5px 10px;
+    border-radius: 15px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.timeline-contain::before {
+    content: " ";
+    width: 10px;
+    height: 10px;
+    background-color: #ddd;
+    display: block;
+    position: absolute;
+    top: 20px;
+    margin-left: -2px;
+    left: 50%;
+    transform: rotate(-45deg) translateX(-50%);
+}
+
+.timeline-item.active::before {
+    background-color: #28A745;
+}
+
+.timeline-item.active .timeline-contain {
+    color: #fff;
+    background-color: #28A745;
+}
+
+.timeline-item.active .timeline-contain::before {
+    background-color: #28A745;
+}
+
+.tooltip-abc-completed {
+    position: relative;
+}
+
+.tooltip-abc-completed .tooltiptext-completed {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    white-space: nowrap;
+    margin-bottom: 10px;
+}
+
+.tooltip-abc-completed .tooltiptext-completed::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 5%;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #28A745 transparent transparent transparent;
+}
+.tooltip-abc-completed:hover .tooltiptext-completed {
+    visibility: visible;
+    background-color: #28A745;
+}
+.vertical-align-middle {
+    vertical-align: middle;
+};
