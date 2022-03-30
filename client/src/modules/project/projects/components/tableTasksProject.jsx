@@ -21,7 +21,7 @@ const TableTasksProject = (props) => {
         taskName: "",
         // page: 1,
         // perPage: 6,
-        currentTaskId: null,
+        currentTaskId: '',
     })
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(6);
@@ -36,6 +36,10 @@ const TableTasksProject = (props) => {
         props.getTasksByProject(currentProjectId, page, perPage);
         props.getAllUserInAllUnitsOfCompany();
     }, [])
+
+    useEffect(() => {
+        window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+    }, [currentTaskId])
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
@@ -74,12 +78,12 @@ const TableTasksProject = (props) => {
     }
 
     const handleShowDetailInfo = (id) => {
-        setState({
+        setState(state => {
+            return{
+                ...state,
             currentTaskId: id
+            }
         })
-        setTimeout(() => {
-            window.$(`#modelPerformTask${id}`).modal('show');
-        }, 10);
     }
 
     const processPreceedingTasks = (preceedingTasks) => {

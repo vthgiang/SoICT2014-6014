@@ -13,7 +13,7 @@ const moment = require('moment');
  */
 exports.getTaskById = async (req, res) => {
     try {
-        var task = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        var task = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id, req.thirdParty? true : false);
         await Logger.info(req.user.email, ` get task by id `, req.portal);
         res.status(200).json({
             success: true,

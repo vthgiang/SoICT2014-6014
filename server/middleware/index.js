@@ -31,10 +31,6 @@ exports.authFunc = (checkPage = true) => {
              */
 
             const token = req.header("utk"); //JWT nhận từ người dùng
-
-            /**
-             * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập/không có token để sử dụng previlegeAPI
-             */
             if (!token) throw ["access_denied_4001"];
 
             /**

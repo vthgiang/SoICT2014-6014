@@ -817,7 +817,7 @@ function AddTaskForm(props) {
                         {props.parentTask || props.task ? // modal tạo subtask và modal copytask
                             <div className="form-group">
                                 <label>{translate('task.task_management.add_parent_task')}</label>
-                                <input className="form-control" value={listParentTask.find(x => newTask?.parent === x?.value)?.text} disabled />
+                                <input className="form-control" value={listParentTask?.find(x => newTask?.parent === x?.value)?.text || '' } disabled />
 
                             </div>
                             :
