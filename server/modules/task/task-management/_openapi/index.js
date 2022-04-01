@@ -5,18 +5,18 @@ const openapi_taskManagementRoute = {
             "tags": [apiTagNames.TASK_MANAGEMENT],
             "security": [{ ApiKeyAuth: [] }],
             "description": "1. Lấy các công việc sắp hết hạn và quá hạn của nhân viên {type = 'all_by_user'}\n" +
-                           "2. Lấy công việc theo vai trò người thực hiện chính {type = 'responsible'} ('perPage','number','user', 'unit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'startDateAfter', 'endDateBefore')\n" +
-                           "3. Lấy công việc theo vai trò người tư vấn {type = 'consulted'} ('perPage','number','user', 'unit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'startDateAfter', 'endDateBefore')\n" +
-                           "4. Lấy công việc theo vai trò người quan sát {type = 'informed'} ('perPage','number','user', 'unit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'startDateAfter', 'endDateBefore')\n" +
-                           "5. Lấy công việc theo vai trò người tạo {type = 'creator'} ('perPage','number','user', 'unit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'startDateAfter', 'endDateBefore')\n" +
-                           "6. Lấy công việc theo vai trò người phê duyệt {type = 'accountable'} ('perPage','number','user', 'unit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'startDateAfter', 'endDateBefore')\n" +
+                           "2. Lấy công việc theo vai trò người thực hiện chính {type = 'responsible'}\n" +
+                           "3. Lấy công việc theo vai trò người tư vấn {type = 'consulted'}\n" +
+                           "4. Lấy công việc theo vai trò người quan sát {type = 'informed'}\n" +
+                           "5. Lấy công việc theo vai trò người tạo {type = 'creator'}\n" +
+                           "6. Lấy công việc theo vai trò người phê duyệt {type = 'accountable'}\n" +
                            "7. Lấy công việc chọn theo user {type = 'all_role'}\n" +
                            "8. Lấy công việc chọn nhiều role  {type = 'choose_multi_role'} ('perPage','number','user','role', 'organizationalUnit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'responsibleEmployees', 'accountableEmployees', 'creatorEmployees','creatorTime', 'projectSearch','tags')\n" +
-                           "9. Tìm kiếm đơn vị theo 1 roleId  {type = 'paginated_task_by_unit'} ('perPage','number','user', 'unit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'responsibleEmployees', 'accountableEmployees', 'creatorEmployees','isAssigned','organizationalUnitRole')\n" +
-                           "10. Lấy tất cả task của organizationalUnit theo tháng hiện tại  {type = 'get_all_task_of_organizational_unit'} (roleId,organizationalUnitId, month )\n" +
-                           "11. Lấy tất cả task của organizationalUnit trong một khoảng thời gian  {type = 'task_in_unit'} (organizationUnitId, startDateAfter, endDateBefore )\n" +
-                           "12. Lấy tất cả task của các đơn vị con của đơn vị hiện tại  {type = 'get_all_task_of_children_organizational_unit'} (roleId, month,organizationalUnitId )\n" +
-                           "13. Lấy tất cả task khẩn cấp + task cần làm  {type = 'priority'} (organizationUnitId, date)\n" +
+                           "9. Tìm kiếm đơn vị theo 1 roleId  {type = 'paginated_task_by_unit'}\n" +
+                           "10. Lấy tất cả task của organizationalUnit theo tháng hiện tại  {type = 'get_all_task_of_organizational_unit'}\n" +
+                           "11. Lấy tất cả task của organizationalUnit trong một khoảng thời gian  {type = 'task_in_unit'}\n" +
+                           "12. Lấy tất cả task của các đơn vị con của đơn vị hiện tại  {type = 'get_all_task_of_children_organizational_unit'}\n" +
+                           "13. Lấy tất cả task khẩn cấp + task cần làm  {type = 'priority'}\n" +
                            "14. Lấy các công việc theo project  {type = 'project'}\n",
             "operationId": "getTasks",
             "parameters": [   
@@ -160,29 +160,6 @@ const openapi_taskManagementRoute = {
                     "name": "projectSearch",
                     "description": "Tên project",
                     "schema": {"type": "string"}
-                },
-                {
-                    "in": "query",
-                    "name": "isAssigned",
-                    "description": "isAssigned",
-                    "schema": {"type": "string"},
-                },
-                {
-                    "in": "query",
-                    "name": "organizationalUnitRole",
-                    "description": "organizationalUnitRole ('management', 'collabration')",
-                    "schema": {"type": "string"},
-                },
-                {
-                    "in": "query",
-                    "name": "unit",
-                    "description": "Id các đơn vị",
-                    "schema": {
-                        "type": "array",
-                        "items": {
-                            "type" : "string"
-                        }
-                    }
                 },
             ],
             "responses": {

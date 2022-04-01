@@ -1,19 +1,43 @@
-const apiTagNames = require("../../../../api-docs/apiTagName");
 const openapi_taskPerformRoute = {
-    "/performtask/tasks/{taskId}/": {
+    "/performtask/tasks/{taskId}": {
         "get": { // Lấy chi tiết công việc bằng id
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Get TaskPerform by id",
             "operationId": "getTaskPerformById",
             "parameters": [
                 {
-                    "name": "taskId",
+                    "name": "id",
                     "in": "path",
                     "description": "Nhập id công việc",
                     "required": true,
                     "schema": {"type": "string"}
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {"type": "string"},
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {"type": "string"},
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {"type": "string"},
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {"type": "string"},
+                    "require": true
+                }
             ],
             "responses": {
                 "200": {
@@ -33,11 +57,44 @@ const openapi_taskPerformRoute = {
     },
     "performtask/task-timesheet-logs": {
         "get": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Lấy trạng thái bấm giờ hiện tại",
             "operationId": "getTask-timesheet-logs",
             "parameters": [
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "responses": {
                 "200": {
@@ -59,8 +116,9 @@ const openapi_taskPerformRoute = {
     },
     "/performtask/tasks/{taskId}/timesheet-logs": {
         "get": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Lấy lịch sử bấm giờ",
             "operationId": "get-timesheet-logs",
             "parameters": [
@@ -73,6 +131,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "responses": {
                 "200": {
@@ -94,8 +184,9 @@ const openapi_taskPerformRoute = {
     },
     "/performtask/tasks/{taskId}/timesheet-logs/start-timer": {
         "post": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Bắt đầu bấm giờ",
             "operationId": "start-timer",
             "parameters": [
@@ -108,6 +199,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin bấm giờ",
@@ -135,10 +258,11 @@ const openapi_taskPerformRoute = {
     },
     "/performtask/tasks/{taskId}/timesheet-logs/stop-timer": {
         "post": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Kết thúc bấm giờ",
-            "operationId": "stop-timer",
+            "operationId": "start-timer",
             "parameters": [
                 {
                     "name": "id",
@@ -149,6 +273,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin kết thúc bấm giờ",
@@ -176,8 +332,9 @@ const openapi_taskPerformRoute = {
     },
     "/performtask/tasks/{taskId}/task-actions/{actionId}": {
         "patch": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Update TaskPerform",
             "description": "update taskPerform",
             "operationId": "TaskPerform",
@@ -200,6 +357,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin hoạt động",
@@ -229,8 +418,9 @@ const openapi_taskPerformRoute = {
             "x-codegen-request-body-name": "body"
         },
         "delete": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Delete TaskPerform ",
             "description": "delete taskperform",
             "operationId": "deletetaskperform",
@@ -253,6 +443,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "responses": {
                 "200": {
@@ -267,8 +489,9 @@ const openapi_taskPerformRoute = {
     },
     "/performtask/tasks/{taskId}/task-actions/{actionId}/comments": {
         "post": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Thêm mới bình luận cho hành động",
             "operationId": "CreateCommentOfTaskAction",
             "parameters": [
@@ -290,6 +513,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin bình luận cho hoạt động",
@@ -319,10 +574,11 @@ const openapi_taskPerformRoute = {
             "x-codegen-request-body-name": "body"
         }
     },
-    "/performtask/tasks/{taskId}/timesheet-logs/{timesheetlogId}": {
+    "/performtask/tasks/:taskId/timesheet-logs/:timesheetlogId": {
         "patch": { // Sửa lịch sửa bấm giờ
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Sửa lịch sửa bấm giờ",
             "operationId": "EditTimesheetLog",
             "parameters": [
@@ -344,6 +600,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin bấm giờ (acceptLog)",
@@ -378,10 +666,11 @@ const openapi_taskPerformRoute = {
             "x-codegen-request-body-name": "body"
         },
     },
-    "/performtask/tasks/{taskId}/logs": {
+    "/performtask/tasks/:taskId/logs": {
         "get": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Lấy lịch sử log task",
             "operationId": "getTaskLog",
             "parameters": [
@@ -394,6 +683,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "responses": {
                 "200": {
@@ -413,8 +734,9 @@ const openapi_taskPerformRoute = {
             }
         },
         "post": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Thêm mới lịch sử chỉnh sửa task",
             "operationId": "addTaskLog",
             "parameters": [
@@ -427,6 +749,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin lịch sử hoạt động (creator, title, description, createdAt)",
@@ -456,10 +810,11 @@ const openapi_taskPerformRoute = {
             "x-codegen-request-body-name": "body"
         }
     },
-    "/performtask/tasks/{taskId}/files": {
+    "/performtask/tasks/:taskId/files": {
         "post": {
-           "tags": [apiTagNames.TASK_PERFORM],
-            "security": [{ ApiKeyAuth: [] }],
+            "tags": [
+                "TaskPerform"
+            ],
             "description": "Upload tài liệu công việc",
             "operationId": "uploadFile",
             "parameters": [
@@ -472,6 +827,38 @@ const openapi_taskPerformRoute = {
                         "type": "string"
                     }
                 },
+                {
+                    "in": "header",
+                    "name": "auth-token",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "fingerprint",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-role",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                },
+                {
+                    "in": "header",
+                    "name": "current-page",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "require": true
+                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin file (creator, description)",

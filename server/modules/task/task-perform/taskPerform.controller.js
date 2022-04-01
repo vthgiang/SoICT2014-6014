@@ -185,8 +185,7 @@ exports.createTaskAction = async (req, res) => {
 
             })
         }
-        console.log("req.params", req.params)
-        console.log("req.body", req.body)
+
         let task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
         let taskAction = task.taskActions;
         let tasks = task.tasks;
@@ -248,7 +247,6 @@ exports.createTaskAction = async (req, res) => {
             content: taskAction
         })
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, ` create task action  `, req.portal)
         res.status(400).json({
             success: false,
@@ -811,7 +809,6 @@ exports.getTaskLog = async (req, res) => {
             content: taskLog
         });
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, ` GET_TASK_LOG  `, req.portal);
         res.status(400).json({
             success: false,
