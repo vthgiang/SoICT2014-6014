@@ -766,6 +766,629 @@ const openapi_taskPerformRoute = {
             "x-codegen-request-body-name": "body"
         }
     },
+    "/performtask/tasks/{taskId}/task-actions/{actionId}": {
+        "delete": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Xóa 1 hoạt động",
+            "operationId": "deleteTaskAction",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "actionId",
+                    "in": "path",
+                    "description": "Nhập id hoạt động công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            
+            "responses": {
+                "200": {
+                    "description": "delete_task_action_success"
+                },
+                "400": {
+                    "description": "delete_task_action_fail",
+                    "content": {}
+                }
+            },
+        }
+    },
+    "/performtask/tasks/{taskId}/task-actions/{actionId}/evaluation/{evaluationId}": {
+        "delete": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Xoá đánh giá hoạt động",
+            "operationId": "deleteActionEvaluation",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "actionId",
+                    "in": "path",
+                    "description": "Nhập id hoạt động công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "evaluationId",
+                    "in": "path",
+                    "description": "Nhập id đánh giá",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            
+            "responses": {
+                "200": {
+                    "description": "delete_task_action_success"
+                },
+                "400": {
+                    "description": "delete_task_action_fail",
+                    "content": {}
+                }
+            },
+        }
+    },
+    "/performtask/tasks/{taskId}/task-actions/{actionId}/comments": {
+        "post": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Tạo bình luận cho hoạt động",
+            "operationId": "createCommentOfTaskAction",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "actionId",
+                    "in": "path",
+                    "description": "Nhập id hoạt động công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "create_comment_task_action_success"
+                },
+                "400": {
+                    "description": "create_comment_task_action_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-actions/{actionId}/comments/{commentId}": {
+        "patch": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Chỉnh sửa bình luận cho hoạt động",
+            "operationId": "editCommentOfTaskAction",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "actionId",
+                    "in": "path",
+                    "description": "Nhập id hoạt động công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "description": "Nhập id bình luận hoạt động",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "edit_comment_task_action_success"
+                },
+                "400": {
+                    "description": "edit_comment_task_action_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-actions/{actionId}/comments/{commentId}": {
+        "delete": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Xóa bình luận của hoạt động",
+            "operationId": "deleteCommentOfTaskAction",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "actionId",
+                    "in": "path",
+                    "description": "Nhập id hoạt động công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "description": "Nhập id bình luận hoạt động",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            
+            "responses": {
+                "200": {
+                    "description": "delete_comment_task_action_success"
+                },
+                "400": {
+                    "description": "delete_comment_task_action_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-comments": {
+        "post": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Tạo bình luận của công việc",
+            "operationId": "createTaskComment",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "create_task_comment_success"
+                },
+                "400": {
+                    "description": "create_task_comment_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-comments/{commentId}": {
+        "patch": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Chỉnh sửa bình luận của công việc",
+            "operationId": "editTaskComment",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "description": "Nhập id bình luận hoạt động",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "edit_task_comment_success"
+                },
+                "400": {
+                    "description": "edit_task_comment_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-comments/{commentId}": {
+        "delete": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Xóa bình luận của công việc",
+            "operationId": "deleteTaskComment",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "description": "Nhập id bình luận hoạt động",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+           
+            "responses": {
+                "200": {
+                    "description": "delete_task_comment_success"
+                },
+                "400": {
+                    "description": "delele_task_comment_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-comments/{commentId}/comments": {
+        "post": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Tạo bình luận của bình luận công việc",
+            "operationId": "createCommentOfTaskComment",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "description": "Nhập id bình luận hoạt động",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "create_comment_of_task_comment_success"
+                },
+                "400": {
+                    "description": "create_comment_of_task_comment_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-comments/comments/{commentId}": {
+        "patch": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Chỉnh sửa bình luận của bình luận công việc",
+            "operationId": "editCommentOfTaskComment",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "description": "Nhập id bình luận hoạt động",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "edit_comment_of_task_comment_success"
+                },
+                "400": {
+                    "description": "edit_comment_of_task_comment_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-comments/comments/{commentId}": {
+        "delete": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Xóa bình luận của bình luận công việc",
+            "operationId": "deleteCommentOfTaskComment",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "description": "Nhập id bình luận hoạt động",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+           
+            "responses": {
+                "200": {
+                    "description": "delete_comment_of_task_comment_success"
+                },
+                "400": {
+                    "description": "delele_comment_of_task_comment_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/task-informations": {
+        "post": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Chỉnh sửa taskInformation của task ",
+            "operationId": "editTaskInformation",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "edit_task_information_success"
+                },
+                "400": {
+                    "description": "edit_task_information_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/evaluate": {
+        "post": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "đánh giá công việc",
+            "operationId": "evaluateTask",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            "requestBody": {
+                "description": "Nhập thông tin ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                        }
+                    },
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "evaluate_task_success"
+                },
+                "400": {
+                    "description": "evaluate_task_fail",
+                    "content": {}
+                }
+            },
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/performtask/tasks/{taskId}/evaluations/{evaluationId}": {
+        "delete": {
+           "tags": [apiTagNames.TASK_PERFORM],
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Delete evaluation by id",
+            "operationId": "deleteEvaluation",
+            "parameters": [
+                {
+                    "name": "taskId",
+                    "in": "path",
+                    "description": "Nhập id công việc",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "evaluationId",
+                    "in": "path",
+                    "description": "Nhập id đánh giá",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+            ],
+            
+            "responses": {
+                "200": {
+                    "description": "delete_evaluation_success"
+                },
+                "400": {
+                    "description": "delete_evaluation_fail",
+                    "content": {}
+                }
+            },
+        }
+    },
 }
 
 module.exports = openapi_taskPerformRoute;
