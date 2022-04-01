@@ -15,30 +15,6 @@ const openapi_taskPerformRoute = {
                     "required": true,
                     "schema": {"type": "string"}
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -56,7 +32,7 @@ const openapi_taskPerformRoute = {
             }
         }
     },
-    "performtask/task-timesheet-logs": {
+    "/performtask/task-timesheet-logs": {
         "get": {
             "tags": [
                 "TaskPerform"
