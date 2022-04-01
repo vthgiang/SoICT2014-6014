@@ -11,7 +11,7 @@ const openapi_taskManagementRoute = {
                            "5. Lấy công việc theo vai trò người tạo {type = 'creator'}\n" +
                            "6. Lấy công việc theo vai trò người phê duyệt {type = 'accountable'}\n" +
                            "7. Lấy công việc chọn theo user {type = 'all_role'}\n" +
-                           "8. Lấy công việc chọn nhiều role  {type = 'choose_multi_role'}\n" +
+                           "8. Lấy công việc chọn nhiều role  {type = 'choose_multi_role'} ('perPage','number','user','role', 'organizationalUnit','status', 'priority','special', 'name', 'startDate', 'endDate','aPeriodOfTime', 'responsibleEmployees', 'accountableEmployees', 'creatorEmployees','creatorTime', 'projectSearch','tags')\n" +
                            "9. Tìm kiếm đơn vị theo 1 roleId  {type = 'paginated_task_by_unit'}\n" +
                            "10. Lấy tất cả task của organizationalUnit theo tháng hiện tại  {type = 'get_all_task_of_organizational_unit'}\n" +
                            "11. Lấy tất cả task của organizationalUnit trong một khoảng thời gian  {type = 'task_in_unit'}\n" +
@@ -19,36 +19,146 @@ const openapi_taskManagementRoute = {
                            "13. Lấy tất cả task khẩn cấp + task cần làm  {type = 'priority'}\n" +
                            "14. Lấy các công việc theo project  {type = 'project'}\n",
             "operationId": "getTasks",
-            "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+            "parameters": [   
                 {
                     "in": "query",
                     "name": "type",
                     "description": "Kiểu gọi api",
                     "required": true,
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "perPage",
+                    "description": "Số hàng trong 1 trang",
+                    "schema": {"type": "number"}
+                },
+                {
+                    "in": "query",
+                    "name": "number",
+                    "description": "Số trang",
+                    "schema": {"type": "number"}
+                },
+                {
+                    "in": "query",
+                    "name": "user",
+                    "description": "User ID",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "role",
+                    "description": "Tên role (responsible, accoutable, consulted, informed, creator)",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type" : "string"
+                        }
+                    }
+                },
+                {
+                    "in": "query",
+                    "name": "organizationalUnit",
+                    "description": "Id các đơn vị",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type" : "string"
+                        }
+                    }
+                },
+                {
+                    "in": "query",
+                    "name": "status",
+                    "description": "Trạng thái công việc (inprocess, wait_for_approval,finished,delayed,canceled )",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type" : "string"
+                        }
+                    }
+                },
+                {
+                    "in": "query",
+                    "name": "priority",
+                    "description": "Độ ưu tiên (1,2,3,4,5)",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type" : "string"
+                        }
+                    }
+                },
+                {
+                    "in": "query",
+                    "name": "special",
+                    "description": "Đặc tính (stored, currentMonth, request_to_close)",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type" : "string"
+                        }
+                    }
+                },
+                {
+                    "in": "query",
+                    "name": "name",
+                    "description": "tên công việc",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "startDate",
+                    "description": "Ngày bắt đầu(YYYY-MM)",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "endDate",
+                    "description": "Ngày kết thúc(YYYY-MM)",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "aPeriodOfTime",
+                    "description": "aPeriodOfTime",
+                    "schema": {"type": "string"},
+                    "default": "false"
+                },
+                {
+                    "in": "query",
+                    "name": "responsibleEmployees",
+                    "description": "Tên người phụ trách",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "accountableEmployees",
+                    "description": "Tên người phê duyệt",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "creatorEmployees",
+                    "description": "Tên người tạo công việc",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "creatorTime",
+                    "description": "Thời gian tạo (currentMonth, currentWeek)",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "tags",
+                    "description": "Tên tag",
+                    "schema": {"type": "string"}
+                },
+                {
+                    "in": "query",
+                    "name": "projectSearch",
+                    "description": "Tên project",
                     "schema": {"type": "string"}
                 },
             ],
@@ -69,33 +179,11 @@ const openapi_taskManagementRoute = {
         },
         "post": { // Tạo công việc mới
             "tags": [apiTagNames.TASK_MANAGEMENT],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Tạo công việc mới",
             "operationId": "createTask",
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+                
             ],
             "requestBody": {
                 "description": "Nhập thông tin công việc",
@@ -129,33 +217,11 @@ const openapi_taskManagementRoute = {
     "/task/tasks/{taskId}/sub-tasks": {
         "get": { // Lấy ra công việc con
             "tags": [apiTagNames.TASK_MANAGEMENT],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Lấy ra công việc con",
             "operationId": "getSubTasks",
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+                
                 {
                     "in": "path",
                     "name": "taskId",
@@ -183,33 +249,11 @@ const openapi_taskManagementRoute = {
     "/task/tasks/{taskId}": {
         "delete": { // Xóa một hoặc nhiều công việc đã thiết lập
             "tags": [apiTagNames.TASK_MANAGEMENT],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Xóa một hoặc nhiều công việc đã thiết lập",
             "operationId": "deleteTask",
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+                
                 {
                     "in": "path",
                     "name": "taskId",
@@ -232,33 +276,11 @@ const openapi_taskManagementRoute = {
     "/task/task-evaluations": {
         "get": { // Lấy tất cả đánh giá công việc 
             "tags": [apiTagNames.TASK_MANAGEMENT],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Lấy tất cả đánh giá công việc ",
             "operationId": "getTaskEvaluations",
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+                
                 {
                     "in": "query",
                     "name": "organizationalUnit",
@@ -325,132 +347,15 @@ const openapi_taskManagementRoute = {
             }
         }
     },
-    "/task/import": {
-        "post": { // Lấy tất cả đánh giá công việc 
-            "tags": [apiTagNames.TASK_MANAGEMENT],
-            "description": "Lấy tất cả đánh giá công việc ",
-            "operationId": "importTasks",
-            "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "query",
-                    "name": "organizationalUnit",
-                    "description": "Id đơn vị",
-                    "required": true,
-                    "schema": {"type": "string"}
-                },
-                {
-                    "in": "query",
-                    "name": "taskTemplate",
-                    "description": "Id mẫu công việc",
-                    "required": true,
-                    "schema": {"type": "string"}
-                },
-                {
-                    "in": "query",
-                    "name": "status",
-                    "description": "Trạng thái công việc",
-                    "required": true,
-                    "schema": {"type": "string"}
-                },
-                {
-                    "in": "query",
-                    "name": "startDate",
-                    "description": "Ngày bắt đầu",
-                    "required": true,
-                    "schema": {"type": "string"}
-                },
-                {
-                    "in": "query",
-                    "name": "startDate",
-                    "description": "Ngày kết thúc",
-                    "required": true,
-                    "schema": {"type": "string"}
-                },
-                {
-                    "in": "query",
-                    "name": "responsibleEmployees",
-                    "description": "Danh sách người thực hiện",
-                    "required": true,
-                    "schema": {"type": "array","items": {"type": "string"}}
-                },
-                {
-                    "in": "query",
-                    "name": "accountableEmployees",
-                    "description": "Danh sách người phê duyệt",
-                    "required": true,
-                    "schema": {"type": "array","items": {"type": "string"}}
-                },
-            ],
-            "responses": {
-                "200": {
-                    "description": "get_task_evaluation_success",
-                    "content": {
-                        "application/json": {
-                            "schema": { "type": "object","$ref": "#/components/schemas/Task" }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "get_task_evaluation_failed",
-                    "content": {}
-                }
-            }
-        }
-    },
+    
     "/task/analyse/user/{userId}": {
         "get": { // Lấy thông tin thống kê công việc của người dùng theo vai trò
             "tags": [apiTagNames.TASK_MANAGEMENT],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Lấy thông tin thống kê công việc của người dùng theo vai trò",
             "operationId": "getTaskAnalyseOfUser",
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+                
                 {
                     "in": "query",
                     "name": "userId",
@@ -489,145 +394,96 @@ const openapi_taskManagementRoute = {
     "/task/organization-task-dashboard-chart-data": {
         "get": { // Lấy ra dữ liệu của các chart trong dashboard công việc đơn vị
             "tags": [apiTagNames.TASK_MANAGEMENT],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "Lấy ra dữ liệu của các chart trong dashboard công việc đơn vị",
             "operationId": "getOrganizationTaskDashboardChartData",
             "parameters": [
                 {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
                     "in": "query",
-                    "name": "general-task-chart",
-                    "description": "Tổng quan công việc",
-                    "schema": {"type": "object"}
-                },
-                {
-                    "in": "query",
-                    "name": "gantt-chart",
-                    "description": "Gantt chart",
-                    "schema": {
-                        "type": "object", 
-                        "properties": {
-                            "status": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
+                    "name": "query",
+                    "description": "Các tham số của chart",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "general-task-chart": {
+                                        "type": "object",
+                                    },
+                                    "gantt-chart": {
+                                        "type": "object", 
+                                        "properties": {
+                                            "status": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                        }
+                                    },
+                                    "employee-distribution-chart": {
+                                        "type": "object", 
+                                        "properties": {
+                                            "status": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                        }
+                                    },
+                                    "in-process-unit-chart": {
+                                        "type": "object",
+                                    },
+                                    "task-results-domain-chart": {
+                                        "type": "object", 
+                                        "properties": {
+                                            "typePoint": {
+                                                "type": "number",
+                                                "default": 0
+                                            },
+                                        }
+                                    },
+                                    "task-status-chart": {
+                                        "type": "object"
+                                    },
+                                    "average-results-chart": {
+                                        "type": "object", 
+                                        "properties": {
+                                            "typePoint": {
+                                                "type": "number",
+                                                "default": 0
+                                            },
+                                            "criteria": {
+                                                "type": "number",
+                                                "default": 0
+                                            },
+                                        }
+                                    },
+                                    "load-task-organization-chart": {
+                                        "type": "object"
+                                    },
+                                    "all-time-sheet-log-by-unit": {
+                                        "type": "object"
+                                    },
+                                    "common-params": {
+                                        "type": "object", 
+                                        "properties": {
+                                            "organizationalUnitId": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "startMonth": {"type": "string"},
+                                            "endMonth": {"type": "string"}
+                                        }
+                                    }
                                 }
-                            },
+                            }
                         }
                     }
-                },
-                {
-                    "in": "query",
-                    "name": "employee-distribution-chart",
-                    "description": "Đóng góp công việc",
-                    "schema":  {
-                        "type": "object", 
-                        "properties": {
-                            "status": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                        }
-                    }
-                },
-                {
-                    "in": "query",
-                    "name": "in-process-unit-chart",
-                    "description": "Tiến độ công việc",
-                    "schema": {"type": "object"}
-                },
-                {
-                    "in": "query",
-                    "name": "task-results-domain-chart",
-                    "description": "Miền kết quả công việc",
-                    "schema":  {
-                        "type": "object", 
-                        "properties": {
-                            "typePoint": {
-                                "type": "number",
-                                "default": 0
-                            },
-                        }
-                    }
-                },
-                {
-                    "in": "query",
-                    "name": "task-status-chart",
-                    "description": "Trạng thái công việc",
-                    "schema": {"type": "object"}
-                },
-                {
-                    "in": "query",
-                    "name": "average-results-chart",
-                    "description": "Kết quả trung bình công việc",
-                    "schema": {
-                        "type": "object", 
-                        "properties": {
-                            "typePoint": {
-                                "type": "number",
-                                "default": 0
-                            },
-                            "criteria": {
-                                "type": "number",
-                                "default": 0
-                            },
-                        }
-                    }
-                },
-                {
-                    "in": "query",
-                    "name": "load-task-organization-chart",
-                    "description": "Tải công việc đơn vị",
-                    "schema": {"type": "object"}
-                },
-                {
-                    "in": "query",
-                    "name": "all-time-sheet-log-by-unit",
-                    "description": "Thống kê bấm giờ",
-                    "schema": {"type": "object"}
-                },
-                {
-                    "in": "query",
-                    "name": "common-params",
-                    "description": "Các params chung",
-                    "required": true,
-                    "schema": {
-                        "type": "object", 
-                        "properties": {
-                            "organizationalUnitId": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "startMonth": {"type": "string"},
-                            "endMonth": {"type": "string"}
-                        }
-                    }
+                    
                 },
             ],
             "responses": {
@@ -652,36 +508,13 @@ const openapi_taskManagementRoute = {
         }
     },
     "/task/time-sheet": {
-        "get": { // Lấy ra dữ liệu của các chart trong dashboard công việc đơn vị
+        "get": { // Lấy lịch sử bấm giờ làm việc
             "tags": [apiTagNames.TASK_MANAGEMENT],
-            "description": "Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm hoặc\n" +
-                           "Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống (lấy thóng kê tổng số bấm giờ hợp lệ)",
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm",
             "operationId": "getUserTimeSheet",
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+                
                 {
                     "in": "query",
                     "name": "month",
@@ -725,36 +558,13 @@ const openapi_taskManagementRoute = {
         }
     },
     "/task/time-sheet/all": {
-        "get": { // Lấy ra dữ liệu của các chart trong dashboard công việc đơn vị
+        "get": { // Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống
             "tags": [apiTagNames.TASK_MANAGEMENT],
-            "description": "Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm hoặc\n" +
-                           "Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống (lấy thóng kê tổng số bấm giờ hợp lệ)",
-            "operationId": "getUserTimeSheet",
+            "security": [{ ApiKeyAuth: [] }],
+            "description": "Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống (lấy thóng kê tổng số bấm giờ hợp lệ)",
+            "operationId": "getAllUserTimeSheet",
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {"type": "string"},
-                    "require": true
-                },
+                
                 {
                     "in": "query",
                     "name": "month",
