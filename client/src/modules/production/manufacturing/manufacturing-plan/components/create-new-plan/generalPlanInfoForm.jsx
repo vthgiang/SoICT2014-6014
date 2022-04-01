@@ -123,7 +123,7 @@ class PlanInfoForm extends Component {
         if (listApprovers) {
             listApprovers.map(approver => {
                 listUsersArr.push({
-                    value: approver._id,
+                    value: approver.userId._id,
                     text: approver.userId.name + " - " + approver.userId.email
                 })
             })
@@ -373,11 +373,13 @@ class PlanInfoForm extends Component {
         await this.props.getSalesOrderDetail(data._id);
         await window.$("#modal-detail-sales-order-2").modal("show");
     }
+    
 
     render() {
         const { translate, code, salesOrderIds, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
         const { good, errorGood, errorQuantity, approvers, errorApprovers, startDateError, endDateError } = this.state;
         let listSalesOrdersChoosed = [];
+        console.log(approvers);
         listSalesOrdersChoosed = this.getListSalesOrdersChoosed(salesOrderIds);
 
         const dataStatus = [
