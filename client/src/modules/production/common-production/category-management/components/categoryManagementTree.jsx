@@ -122,7 +122,7 @@ function CategoryManagementTree(props) {
                             data={dataTree}
                         />
                     </div>
-                    <SlimScroll outerComponentId="category-tree" innerComponentId="tree-qlcv-category-good" innerComponentWidth={"100%"} activate={true} />
+                    {/* <SlimScroll outerComponentId="category-tree" innerComponentId="tree-qlcv-category-good" innerComponentWidth={"100%"} activate={true} /> */}
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     {

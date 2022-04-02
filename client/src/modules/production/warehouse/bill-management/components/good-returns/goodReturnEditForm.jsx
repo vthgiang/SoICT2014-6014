@@ -104,7 +104,7 @@ function GoodReturnEditForm(props) {
     //     return CustomerArr;
     // }
 
-        // const handlePartnerChange = (value) => {
+    // const handlePartnerChange = (value) => {
     //     let partner = value[0];
     //     validatePartner(partner, true);
     // }
@@ -226,7 +226,7 @@ function GoodReturnEditForm(props) {
         if (type && state.fromStock) {
             await props.getBillsByStatus({ group, status, type, fromStock: state.fromStock });
         } else {
-            await props.getBillsByStatus({ group, status, type: null,  fromStock: null });
+            await props.getBillsByStatus({ group, status, type: null, fromStock: null });
         }
     }
 
@@ -589,31 +589,31 @@ function GoodReturnEditForm(props) {
                 for (let i = 0; i < props.approvers.length; i++) {
                     approver = [...approver, props.approvers[i].approver._id];
                 }
-    
+
             }
-    
+
             if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
                 for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
                     qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
                 }
-    
+
             }
-    
+
             if (props.responsibles && props.responsibles.length > 0) {
                 for (let i = 0; i < props.responsibles.length; i++) {
                     responsibles = [...responsibles, props.responsibles[i]._id];
                 }
-    
+
             }
-    
+
             if (props.accountables && props.accountables.length > 0) {
                 for (let i = 0; i < props.accountables.length; i++) {
                     accountables = [...accountables, props.accountables[i]._id];
                 }
-    
+
             }
-    
-            setState ({
+
+            setState({
                 ...state,
                 editInfo: false,
                 billId: props.billId,
@@ -648,7 +648,7 @@ function GoodReturnEditForm(props) {
                 errorQualityControlStaffs: undefined,
                 errorAccountables: undefined,
                 errorResponsibles: undefined
-    
+
             })
         }
     }, [props.billId, props.oldStatus])
@@ -687,7 +687,7 @@ function GoodReturnEditForm(props) {
     const dataApprover = getApprover();
     const dataStock = getStock();
     const dataType = getType();
-    const dataBill =[{ value: billId, text: bill }];
+    const dataBill = [{ value: billId, text: bill }];
     const dataStatus = getStatus();
     // const checkApproved = checkApproved(approvers, listQualityControlStaffs)
 
@@ -901,7 +901,7 @@ function GoodReturnEditForm(props) {
                                             </div>
                                         </div>
                                         <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                        <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>
+                                            <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.select_lot')}</p>
                                             {state.editInfo &&
                                                 <React.Fragment>
                                                     <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
@@ -924,7 +924,7 @@ function GoodReturnEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>
                                             <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>
                                             <th title={translate('manage_warehouse.bill_management.lot_with_unit')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
-                                                <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
                                         </tr>
                                     </thead>
@@ -939,7 +939,7 @@ function GoodReturnEditForm(props) {
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
                                                         <td>{x.returnQuantity}</td>
-                                                        <td>{x.lots.map((lot, index) => 
+                                                        <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
                                                                 <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                             </div>)}

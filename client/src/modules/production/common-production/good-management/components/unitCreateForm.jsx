@@ -41,62 +41,62 @@ function UnitCreateForm(props) {
         return listUnitArray;
     }
 
-    const handleSelectMultiBaseUnit = (value) => {
-        if (value.length == 0) {
-            value = null;
-        }
-        validateMultiBaseUnit(value, true)
-    }
+    // const handleSelectMultiBaseUnit = (value) => {
+    //     if (value.length == 0) {
+    //         value = null;
+    //     }
+    //     validateMultiBaseUnit(value, true)
+    // }
 
-    const validateMultiBaseUnit = (value, willUpdateState) => {
-        let msg = undefined;
+    // const validateMultiBaseUnit = (value, willUpdateState) => {
+    //     let msg = undefined;
 
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.good_management.choose_base_unit')
-        }
-        if (willUpdateState) {
-            let packingRule = "";
-            if (value) {
-                packingRule = convertToPackingRule(value);
-            }
-            if (packingRule !== "") {
-                setState({
-                    ...state,
-                    packingRule: packingRule,
-                    listUnitSelected: value,
-                    errorOnBaseUnit: msg
-                });
-            } else {
-                setState({
-                    ...state,
-                    listUnitSelected: value,
-                    packingRule: packingRule,
-                    errorOnBaseUnit: value ? translate("manage_warehouse.good_management.error_packing_rule") : msg
-                })
-            }
+    //     const { translate } = props;
+    //     if (!value) {
+    //         msg = translate('manage_warehouse.good_management.choose_base_unit')
+    //     }
+    //     if (willUpdateState) {
+    //         let packingRule = "";
+    //         if (value) {
+    //             packingRule = convertToPackingRule(value);
+    //         }
+    //         if (packingRule !== "") {
+    //             setState({
+    //                 ...state,
+    //                 packingRule: packingRule,
+    //                 listUnitSelected: value,
+    //                 errorOnBaseUnit: msg
+    //             });
+    //         } else {
+    //             setState({
+    //                 ...state,
+    //                 listUnitSelected: value,
+    //                 packingRule: packingRule,
+    //                 errorOnBaseUnit: value ? translate("manage_warehouse.good_management.error_packing_rule") : msg
+    //             })
+    //         }
 
-            props.onDataChange(state.listUnit);
-            // props.onDataChange(state.listUnit, state.packingRule);
+    //         props.onDataChange(state.listUnit);
+    //         // props.onDataChange(state.listUnit, state.packingRule);
 
-        }
+    //     }
 
-        return msg
-    }
+    //     return msg
+    // }
 
     // Hàm sắp xếp subListUnitArray theo thứ tự conversion rate tăng dần
-    const sortListUnitArray = (array) => {
-        for (let i = 0; i < array.length; i++) {
-            for (let j = i + 1; j < array.length; j++) {
-                if (array[i].conversionRate > array[j].conversionRate) {
-                    let tmp = array[i];
-                    array[i] = array[j];
-                    array[j] = tmp
-                }
-            }
-        }
-        return array;
-    }
+    // const sortListUnitArray = (array) => {
+    //     for (let i = 0; i < array.length; i++) {
+    //         for (let j = i + 1; j < array.length; j++) {
+    //             if (array[i].conversionRate > array[j].conversionRate) {
+    //                 let tmp = array[i];
+    //                 array[i] = array[j];
+    //                 array[j] = tmp
+    //             }
+    //         }
+    //     }
+    //     return array;
+    // }
 
     // Hàm này validate xem list unit có hợp lệ để tạo thành một packingRule hay không
     // Input là 1 array chứa các phần tử có conversion rate tăng dần
@@ -111,33 +111,33 @@ function UnitCreateForm(props) {
     }
 
 
-    const convertToPackingRule = (value) => {
-        let packingRule = '';
-        let listUnitArray = getListUnitArray();
-        let subListUnitArray = [];
-        for (let i = 0; i < listUnitArray.length; i++) {
-            for (let j = 0; j < value.length; j++) {
-                if (listUnitArray[i].value == value[j]) {
-                    subListUnitArray.push(listUnitArray[i]);
-                    break;
-                }
-            }
-        }
-        let sortListUnitArray = sortListUnitArray(subListUnitArray);
-        let resultValidate = validateListUnitArray(sortListUnitArray);
-        // Nếu chuỗi tạo thành được 1 packingRule
-        if (resultValidate) {
-            let maxIndexOfArray = sortListUnitArray.length - 1;
-            packingRule += sortListUnitArray[maxIndexOfArray].text;
-            if (maxIndexOfArray > 0) {
-                for (let i = maxIndexOfArray - 1; i >= 0; i--) {
-                    packingRule += " x " + (sortListUnitArray[i + 1].conversionRate / sortListUnitArray[i].conversionRate) + sortListUnitArray[i].text
-                }
+    // const convertToPackingRule = (value) => {
+    //     let packingRule = '';
+    //     let listUnitArray = getListUnitArray();
+    //     let subListUnitArray = [];
+    //     for (let i = 0; i < listUnitArray.length; i++) {
+    //         for (let j = 0; j < value.length; j++) {
+    //             if (listUnitArray[i].value == value[j]) {
+    //                 subListUnitArray.push(listUnitArray[i]);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     let sortListUnitArray = sortListUnitArray(subListUnitArray);
+    //     let resultValidate = validateListUnitArray(sortListUnitArray);
+    //     // Nếu chuỗi tạo thành được 1 packingRule
+    //     if (resultValidate) {
+    //         let maxIndexOfArray = sortListUnitArray.length - 1;
+    //         packingRule += sortListUnitArray[maxIndexOfArray].text;
+    //         if (maxIndexOfArray > 0) {
+    //             for (let i = maxIndexOfArray - 1; i >= 0; i--) {
+    //                 packingRule += " x " + (sortListUnitArray[i + 1].conversionRate / sortListUnitArray[i].conversionRate) + sortListUnitArray[i].text
+    //             }
 
-            }
-        }
-        return packingRule;
-    }
+    //         }
+    //     }
+    //     return packingRule;
+    // }
 
     if (props.id !== state.id || props.baseUnit !== state.baseUnit) {
         setState({
@@ -283,7 +283,7 @@ function UnitCreateForm(props) {
             <p>Ví dụ : đơn vị tính cơ bản chiếc
             Đơn vị quy đổi : Hộp
             1 Hộp = 20 chiếc.</b></p>`,
-            width: "50%", 
+            width: "50%",
         })
     };
 

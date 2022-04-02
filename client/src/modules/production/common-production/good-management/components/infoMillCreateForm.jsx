@@ -195,7 +195,7 @@ function InfoMillCreateForm(props) {
     }
 
     if (props.id !== state.id) {
-        setState ({
+        setState({
             ...state,
             id: props.id,
             listManufacturingMills: props.initialData

@@ -116,6 +116,7 @@ function deletePromotion(id, data) {
         dispatch({ type: CrmGroupConstants.DELETE_CRM_GROUP_PROMOTION_REQUEST });
         CrmGroupServices.deletePromotion(id, data)
             .then(res => {
+                console.log(res);
                 dispatch({
                     type: CrmGroupConstants.DELETE_CRM_GROUP_PROMOTION_SUCCESS,
                     payload: res.data.content

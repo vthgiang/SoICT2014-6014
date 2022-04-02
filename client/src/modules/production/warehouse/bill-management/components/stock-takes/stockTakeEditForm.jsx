@@ -486,7 +486,7 @@ function StockTakeEditForm(props) {
         state.good.description = '';
         state.good.realQuantity = 0;
         state.good.lots = [];
-        setState ({
+        setState({
             ...state,
             billId: props.billId,
             code: props.code,
@@ -770,11 +770,11 @@ function StockTakeEditForm(props) {
                                                         <td>{x.quantity}</td>
                                                         <td>{x.realQuantity}</td>
                                                         <td>{x.damagedQuantity ? x.damagedQuantity : 0}</td>
-                                                        <td>{x.lots.map((lot, index) => 
+                                                        <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
                                                                 <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                             </div>)}
-                                                        </td> 
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

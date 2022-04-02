@@ -22,6 +22,7 @@ dayjs.extend(isSameOrAfter)
 
 exports.getTaskEvaluations = async (portal, data) => {
     // Lấy data tu client gui trong body
+    console.log("data", data)
     let {
         organizationalUnit,
         taskTemplate,
@@ -2123,7 +2124,7 @@ exports.createTask = async (portal, task) => {
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
-        taskProject,
+        taskProject: taskProject,
         tags: task.tags
     });
 
@@ -2341,6 +2342,7 @@ exports.getSubTask = async (portal, taskId) => {
 
 exports.getTasksByUser = async (portal, data) => {
     var tasks = [];
+    console.log("data", Object.keys(data), data)
     if (data.data == "user") {
         tasks = await Task(connect(DB_CONNECTION, portal)).find({
             $or: [
@@ -3595,14 +3597,21 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
     console.log("DONE_IMPORT_TIME_SHEET!!!")
 
 }
-
+/**
+ * Lấy ra dữ liệu của các chart trong dashboard công việc đơn vị
+ * @param {*} query 
+ * @param {*} portal 
+ * @param {*} user 
+ * @returns 
+ */
 exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
-
+    console.log("query", typeof query, query)
     Object.keys(query).forEach((key) => {
         query[key] = JSON.parse(query[key])
     });
-    const data = query;
-    console.log("quere", data);
+    
+    const data = query["query"] ? query["query"] : query ;
+    console.log("data", data);
     const chartArr = Object.keys(data);
     let result = {};
     const { organizationalUnitId, startMonth, endMonth } = data["common-params"]

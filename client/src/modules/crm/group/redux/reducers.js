@@ -101,7 +101,7 @@ export function groups(state = initState, action) {
         case CrmGroupConstants.DELETE_CRM_GROUP_PROMOTION_SUCCESS:
             return {
                 ...state,                    
-                groupById :action.payload,
+                groupById: action.payload,
                 isLoading: false
             };
             

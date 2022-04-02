@@ -9,7 +9,8 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from '../../task-management/redux/actions';
-
+import { getProjectName } from '../../../../helpers/taskModuleHelpers';
+import { ProjectActions } from "../../../project/projects/redux/actions";
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
 import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
 
@@ -44,6 +45,7 @@ function ModalEditTaskByAccountableEmployee(props) {
         let parentTask = task && task.parent;
         let taskProject = task && task.taskProject;
         let info = {}, taskInfo = task && task.taskInformations;
+        console.log(task);
         for (let i in taskInfo) {
             if (taskInfo[i].type === "date") {
                 if (taskInfo[i].value) {
@@ -158,6 +160,7 @@ function ModalEditTaskByAccountableEmployee(props) {
     useEffect(() => {
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null
         props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
+        props.getProjectsDispatch({ calledId: "" });
     }, [])
 
     if (props.id !== state.id) {
@@ -864,13 +867,13 @@ function ModalEditTaskByAccountableEmployee(props) {
         props.editTaskByAccountableEmployees(data, taskId);
     }
 
-    const handleTaskProject = (value) => {
-        value = value.toString();
-        setState({
-            ...state,
-            taskProjectName: value
-        })
-    }
+    // const handleTaskProject = (value) => {
+    //     value = value.toString();
+    //        setState({
+    //            ...state,
+    //            taskProjectName: value
+    //    })
+    // }
 
     const handleTaskTags = (value) => {
         setState({
@@ -1027,7 +1030,7 @@ function ModalEditTaskByAccountableEmployee(props) {
                                     />
                                 </div>
 
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>
                                         {translate('task.task_management.project')}
                                     </label>
@@ -1038,7 +1041,7 @@ function ModalEditTaskByAccountableEmployee(props) {
                                         handleChange={handleTaskProject}
                                         value={[taskProjectName]}
                                     />
-                                </div>
+                                </div> */}
 
                                 <div className="form-group">
                                     <label>Tags</label>
@@ -1331,6 +1334,7 @@ function mapStateToProps(state) {
 const actionGetState = { //dispatchActionToProps
     editTaskByAccountableEmployees: performTaskAction.editTaskByAccountableEmployees,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
 }
 
 const modalEditTaskByAccountableEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByAccountableEmployee));

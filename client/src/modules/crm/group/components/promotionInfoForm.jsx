@@ -6,26 +6,33 @@ import { formatFunction } from '../../common';
 import PromotionAddForm from './promotionAddForm';
 import PromotionEditForm from './promotionEditForm';
 import { CrmGroupActions } from '../redux/actions';
+import {useSelector} from 'react-redux'
 
 function GroupPromotionInfoForm (props) {
     const { groupPromotionId, crm } = props;
     const [groupPromotionEdit, setGroupPromotionEdit] = useState();
     
+    // Gọi API lấy thông tin group, trong đó có promotion của group đó
     useEffect(()=> {
-        props.getGroupById(groupPromotionId);
-    },[groupPromotionId]);
+        groupPromotionId && props.getGroupById(groupPromotionId);
+    },[props.groupPromotionId]);
 
+    // Gọi Api lấy danh sách các thành viên trong group đó
     useEffect(() => {
-        props.getMembersGroup(groupPromotionId);
+        groupPromotionId && props.getMembersGroup(groupPromotionId);
     },[groupPromotionId]);
 
     let group;
-    if (crm && crm.groups && crm.groups.groupById) group = crm.groups.groupById.groupById;
-    if (group && group._id != groupPromotionId) {
-        group._id = groupPromotionId;
-        props.getGroupById(groupPromotionId);
+    // Lấy thông tin group từ Store sau khi api trả về bỏ vào store
+    if (crm && crm.groups && crm.groups.groupById) {
+        if (crm.groups.groupById.groupById) {
+            group = crm.groups.groupById.groupById;
+        } else {
+            group = crm.groups.groupById;
+        }
     }
 
+    // Đối với từng khuyến mãi của nhóm -> Tạo danh sách các khách hàng ko được hưởng khuyến mãi
     if (group && group.promotions) {
         group.promotions = group.promotions.map((o) => {
             let listExceptCustomer = "";                    
@@ -49,15 +56,14 @@ function GroupPromotionInfoForm (props) {
         props.getGroupById(groupPromotionId);
     }
 
-    return (
+    return ( 
         <DialogModal
-            modalID="modal-group-promotion-info" isLoading={crm.groups.isLoading}
+            modalID="modal-group-promotion-info-1" isLoading={crm.groups.isLoading}
             formID="form-group-promotion-info"
             title={`Danh sách khuyến mãi của nhóm khách hàng`}
             size={75}
             disableSubmit={true}
         >    
-        {/*<a>{console.log("chay modal")}</a>*/}
         {group && <PromotionAddForm groupId={group._id} getRefreshData={() => getRefreshData()}/>}
         {group && groupPromotionEdit && <PromotionEditForm groupId={group._id} groupPromotionEdit={groupPromotionEdit} getRefreshData={() => getRefreshData()}/>}
         {/** Bảng hiển thị khuyến mãi nhóm */} 
@@ -137,8 +143,16 @@ const mapDispatchToProps = {
     getMembersGroup: CrmGroupActions.getMembersGroup
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GroupPromotionInfoForm));
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(withTranslate(GroupPromotionInfoForm)));
 
 
 /* add 1-> 51 */
 
+/*if (group && group._id != groupPromotionId) {
+        group._id = groupPromotionId;
+        props.getGroupById(groupPromotionId);
+    }*/
+
+    
+
+    

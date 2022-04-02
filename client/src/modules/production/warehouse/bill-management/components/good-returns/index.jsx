@@ -10,6 +10,9 @@ import QualityControlForm from '../genaral/quatityControlForm';
 
 import { BillActions } from '../../redux/actions';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
+import Swal from "sweetalert2";
+import { UserGuideCreateBillReturn } from '../config.js';
+
 function ReturnManagement(props) {
     const tableId = "return-management-table";
     const defaultConfig = { limit: 5 }
@@ -58,11 +61,31 @@ function ReturnManagement(props) {
         window.$('#modal-quality-control-bill').modal('show');
     }
 
+    const showFilePreview = (data) => {
+        const link = process.env.REACT_APP_SERVER + data[0].url;
+        Swal.fire({
+            html: ` 
+            <h4>${data[0].pageName}</h4>
+            <div style="margin:0px;padding:0px;overflow:hidden">
+               <iframe  frameborder="0" style="overflow:hidden;height:90vh;width:100%" height="100vh" width="100%"
+                        src= ${link}
+                    />
+            </div>`,
+            width: "100%",
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: true,
+            focusConfirm: false,
+
+        })
+    }
+
     const { translate, bills, stocks, user } = props;
     const { listPaginate, totalPages, page } = bills;
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow } = state;
     const dataPartner = props.getPartner();
+    const userId = localStorage.getItem("userId");
     return (
         <div id="bill-good-returns">
             <div className="box-body qlcv">
@@ -101,6 +124,9 @@ function ReturnManagement(props) {
                             onChange={props.handleCreatorChange}
                         />
                     </div>
+                    <a href="#show-detail" onClick={() => showFilePreview(UserGuideCreateBillReturn)}>
+                        <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px', fontSize: '20px' }} />
+                    </a>
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
@@ -257,11 +283,14 @@ function ReturnManagement(props) {
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     <td>{x.customer ? x.customer.name : translate(`manage_warehouse.bill_management.goods_returned_to_the_factory`)}</td>
-                                    <td>{x.manufacturingMill ? x.manufacturingMill.name : translate(`manage_warehouse.bill_management.goods_returned_to_the_supplier`)}</td>
+                                    <td>{x.manufacturingMill ? x.manufacturingMill.name : (x.type === "12" ? translate(`manage_warehouse.bill_management.goods_returned_to_the_supplier`) : translate(`manage_warehouse.bill_management.goods_returned_to_the_stock`))}</td>
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
+                                        {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                        {/*Chỉnh sửa phiếu */}
                                         {props.checkRoleCanEdit(x) && <a onClick={() => handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                        {/*Phê duyệt phiếu*/}
                                         {
                                             props.checkRoleApprovers(x) && x.status === '1' &&
                                             <ConfirmNotification
@@ -273,9 +302,48 @@ function ReturnManagement(props) {
                                                 func={() => props.handleFinishedApproval(x)}
                                             />
                                         }
+                                        {/*Chuyển sang trạng thái đang thực hiện*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.status === '3' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.in_processing')}
+                                                content={translate('manage_warehouse.bill_management.in_processing') + " " + x.code}
+                                                name="business_center"
+                                                className="text-violet"
+                                                func={() => props.handleInProcessingStatus(x)}
+                                            />
+                                        }
+                                        {/*Kiểm định chất lượng*/}
                                         {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
                                             <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
+                                        }
+                                        {/*Hoàn thành phiếu*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].time !== null
+                                            && (x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 2 || x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 3)
+                                            && x.status === '5' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.complete_bill')}
+                                                content={translate('manage_warehouse.bill_management.complete_bill') + " " + x.code}
+                                                name="assignment_turned_in"
+                                                className="text-green"
+                                                func={() => props.handleCompleteBill(x)}
+                                            />
+                                        }
+                                        {/*Chuyển phiếu sang trạng thái đã hủy*/}
+                                        {
+                                            props.checkRoleCanEdit(x) && x.status !== '4' &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.cancel_bill')}
+                                                content={translate('manage_warehouse.bill_management.cancel_bill') + " " + x.code}
+                                                name="cancel"
+                                                className="text-red"
+                                                func={() => props.handleCancelBill(x)}
+                                            />
                                         }
                                     </td>
                                 </tr>

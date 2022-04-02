@@ -506,40 +506,40 @@ function GoodIssueEditForm(props) {
                 for (let i = 0; i < props.approvers.length; i++) {
                     approver = [...approver, props.approvers[i].approver._id];
                 }
-    
+
             }
-    
+
             if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
                 for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
                     qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
                 }
-    
+
             }
-    
+
             if (props.responsibles && props.responsibles.length > 0) {
                 for (let i = 0; i < props.responsibles.length; i++) {
                     responsibles = [...responsibles, props.responsibles[i]._id];
                 }
-    
+
             }
-    
+
             if (props.accountables && props.accountables.length > 0) {
                 for (let i = 0; i < props.accountables.length; i++) {
                     accountables = [...accountables, props.accountables[i]._id];
                 }
-    
+
             }
             state.good.quantity = 0;
             state.good.good = '';
             state.good.description = '';
             state.good.lots = [];
-    
+
             if (props.type === "3") {
                 props.getGoodsByType({ type: "material" });
             } else if (props.type === "4") {
                 props.getGoodsByType({ type: "product" });
             }
-    
+
             setState({
                 ...state,
                 billId: props.billId,
@@ -573,11 +573,11 @@ function GoodIssueEditForm(props) {
                 errorQualityControlStaffs: undefined,
                 errorAccountables: undefined,
                 errorResponsibles: undefined
-    
+
             })
         }
     }, [props.billId, props.oldStatus])
-    
+
 
     const save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier,
@@ -662,7 +662,7 @@ function GoodIssueEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -676,7 +676,7 @@ function GoodIssueEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        // disabled={checkApproved}
+                                    // disabled={checkApproved}
                                     />
                                 </div>
                             </div>
@@ -691,7 +691,7 @@ function GoodIssueEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
@@ -871,11 +871,11 @@ function GoodIssueEditForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
-                                                        <td>{x.lots.map((lot, index) => 
+                                                        <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
                                                                 <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
                                                             </div>)}
-                                                        </td> 
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

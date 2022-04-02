@@ -241,13 +241,13 @@ function PurchaseOrderTable(props) {
                 <div className="form-inline">
                     {/*Chọn cách thêm đơn mua nguyên vật liệu*/}
                     {/* Button dropdown thêm mới đơn mua nguyên vật liệu */}
-                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                    <div className="dropdown pull-right" style={{ marginTop: 5 }}>
                         <button
                             type="button"
                             className="btn btn-success dropdown-toggle pull-right"
                             data-toggle="dropdown"
                             aria-expanded="true"
-                            title={"Thêm mới đơn mu nguyên vật liệu"}
+                            title={"Thêm mới đơn mua nguyên vật liệu"}
                             onClick={handleClickCreateCode}
                         >
                             Thêm đơn
@@ -328,11 +328,11 @@ function PurchaseOrderTable(props) {
                     <div className="form-group">
                         <label className="form-control-static">Nhà cung cấp</label>
                         <SelectMulti
-                            id={`selectMulti-filter-suppliet-purchase-order`}
+                            id={`selectMulti-filter-supplier-purchase-order`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={
-                                props.customers.list
+                                props.customers.list.length !== 0
                                     ? props.customers.list.map((customerItem) => {
                                         return {
                                             value: customerItem._id,

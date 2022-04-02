@@ -946,7 +946,6 @@ function AssetManagement(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
                         <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                            //value={status}
                             options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                             onChange={handleStatusChange}
                             value={status ? status : []}

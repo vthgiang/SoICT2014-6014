@@ -70,8 +70,11 @@ function BillManagement(props) {
         }
     }
 
-    const setPage = (page) => {
-        setState({ page });
+    const setPage = async (page) => {
+        setState({
+            ...state,
+            page: page
+        });
         const data = {
             limit: state.limit,
             managementLocation: state.currentRole,
@@ -91,11 +94,15 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        props.getBillsByType(data);
+        console.log(state.currentRole, data);
+        await props.getBillsByType(data);
     }
 
-    const setLimit = (number) => {
-        setState({ limit: number });
+    const setLimit = async (number) => {
+        setState({
+            ...state,
+            limit: number
+        });
         const data = {
             limit: number,
             page: state.page,
@@ -115,7 +122,8 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        props.getBillsByType(data);
+        console.log(state.currentRole);
+        await props.getBillsByType(data);
     }
 
     const handleStockChange = (value) => {
@@ -329,6 +337,30 @@ function BillManagement(props) {
         props.editBill(bill._id, data);
     }
 
+    const handleInProcessingStatus = (bill) => {
+        const data = {
+            status: '5',
+            oldStatus: bill.status,
+        }
+        props.editBill(bill._id, data);
+    }
+
+    const handleCancelBill = (bill) => {
+        const data = {
+            status: '4',
+            oldStatus: bill.status,
+        }
+        props.editBill(bill._id, data);
+    }
+
+    const handleCompleteBill = (bill) => {
+        const data = {
+            status: '2',
+            oldStatus: bill.status,
+        }
+        props.editBill(bill._id, data);
+    }
+    
     const checkRoleQualityControlStaffs = (bill) => {
         const { qualityControlStaffs } = bill;
         const userId = localStorage.getItem("userId");
@@ -405,6 +437,9 @@ function BillManagement(props) {
                         handleChangeEndDate={handleChangeEndDate}
                         getPartner={getPartner}
                         handleShowDetailInfo={handleShowDetailInfo}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
 
                     />
                 }
@@ -431,7 +466,9 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
-
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
                     />
                 }
 
@@ -457,6 +494,9 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
                     />
                 }
 
@@ -482,6 +522,9 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
                     />
                 }
 
@@ -507,6 +550,9 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
                     />
                 }
 
@@ -532,6 +578,9 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
                     />
                 }
             </div>

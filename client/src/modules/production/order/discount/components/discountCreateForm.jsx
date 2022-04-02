@@ -253,6 +253,7 @@ function DiscountCreateForm(props) {
                 button_name={"Thêm mới"}
                 title={"Thêm khuyến mãi"}
                 onButtonCallBack={handleClickCreateCode}
+                style={{ marginTop: 15 }}
             />
             <DialogModal
                 modalID={`modal-create-discount`}
