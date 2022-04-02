@@ -1,0 +1,1 @@
+Chức năng quản lý lô tài sản

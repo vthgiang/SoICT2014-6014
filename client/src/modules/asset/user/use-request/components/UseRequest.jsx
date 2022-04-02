@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -10,10 +10,11 @@ import { AssetManagerActions } from "../../../admin/asset-information/redux/acti
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { RecommendDistributeActions } from '../redux/actions';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { taskManagementActions } from '../../../../task/task-management/redux/actions';
 
 function UseRequest(props) {
     const { translate, recommendDistribute, auth } = props;
-   
+
     const tableId_constructor = "table-use-request";
     const defaultConfig = { limit: 10 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
@@ -23,15 +24,15 @@ function UseRequest(props) {
         reqUseStatus: null,
         page: 0,
         limit: limit_constructor,
-        reqUseEmployee:auth.user.email
+        reqUseEmployee: auth.user.email
     })
     const { page, limit, currentRowEdit, tableId } = state;
-    
+
     useEffect(() => {
-        props.searchRecommendDistributes({...state});
+        props.searchRecommendDistributes({ ...state });
         props.getUser();
     }, [])
- 
+
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đăng ký cấp phát
     const handleEdit = async (value) => {
@@ -118,8 +119,8 @@ function UseRequest(props) {
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
     const handleRecommendNumberChange = (event) => {
         const { name, value } = event.target;
-        setState(state =>{
-            return{ 
+        setState(state => {
+            return {
                 ...state,
                 [name]: value
             }
@@ -129,8 +130,8 @@ function UseRequest(props) {
 
     // Function lưu giá trị tháng vào state khi thay đổi
     const handleMonthChange = (value) => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 createReceiptsDate: value
             }
@@ -143,8 +144,8 @@ function UseRequest(props) {
             value = null
         };
 
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 reqUseStatus: value
             }
@@ -158,25 +159,25 @@ function UseRequest(props) {
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     const setLimit = async (number) => {
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 limit: parseInt(number),
             }
         });
-        props.searchRecommendDistributes({...state, limit: parseInt(number)});
+        props.searchRecommendDistributes({ ...state, limit: parseInt(number) });
     }
 
     // Bắt sự kiện chuyển trang
     const setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * state.limit;
-        await setState(state =>{
-            return{
+        await setState(state => {
+            return {
                 ...state,
                 page: parseInt(page),
             }
         });
-        props.searchRecommendDistributes({...state, page: parseInt(page)});
+        props.searchRecommendDistributes({ ...state, page: parseInt(page) });
     }
 
     const formatStatus = (status) => {
@@ -190,20 +191,20 @@ function UseRequest(props) {
         }
     }
 
-        
 
-        var listRecommendDistributes = "";
 
-        if (recommendDistribute.isLoading === false) {
-            listRecommendDistributes = recommendDistribute.listRecommendDistributes;
-        }
+    var listRecommendDistributes = "";
+
+    if (recommendDistribute.isLoading === false) {
+        listRecommendDistributes = recommendDistribute.listRecommendDistributes;
+    }
 
     var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
         parseInt(recommendDistribute.totalList / limit) :
         parseInt((recommendDistribute.totalList / limit) + 1);
 
     var currentPage = parseInt((page / limit) + 1);
-    
+
     return (
         <div id="recommenddistribute" className="tab-pane">
             <div className="box-body qlcv">
@@ -261,6 +262,7 @@ function UseRequest(props) {
                             <th style={{ width: "15%" }}>{translate('asset.general_information.asset_name')}</th>
                             <th style={{ width: "17%" }}>{translate('asset.general_information.handover_from_date')}</th>
                             <th style={{ width: "17%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                            <th style={{ width: "17%" }}>{translate('asset.usage.task_in_use_request')}</th>
                             <th style={{ width: "17%" }}>{translate('asset.usage.accountable')}</th>
                             <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
@@ -274,6 +276,7 @@ function UseRequest(props) {
                                         translate('asset.general_information.asset_name'),
                                         translate('asset.general_information.handover_from_date'),
                                         translate('asset.general_information.handover_to_date'),
+                                        translate('asset.usage.task_in_use_request'),
                                         translate('asset.usage.accountable'),
                                         translate('asset.general_information.status'),
                                     ]}
@@ -294,6 +297,7 @@ function UseRequest(props) {
                                         <td>{x.asset ? x.asset.assetName : ''}</td>
                                         <td>{x.asset ? formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse) : ''}</td>
                                         <td>{x.asset && x.dateEndUse ? formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse) : ''}</td>
+                                        <td>{x.task ? x.task.name : ''}</td>
                                         <td>{x.approver ? x.approver.email : ''}</td>
                                         <td>{formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -321,11 +325,11 @@ function UseRequest(props) {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar 
+                <PaginateBar
                     display={recommendDistribute.listRecommendDistributes?.length}
                     total={recommendDistribute.totalList}
-                    pageTotal={pageTotal ? pageTotal : 0} 
-                    currentPage={currentPage} 
+                    pageTotal={pageTotal ? pageTotal : 0}
+                    currentPage={currentPage}
                     func={setPage} />
             </div>
 
@@ -339,6 +343,7 @@ function UseRequest(props) {
                     proponent={currentRowEdit.proponent}
                     reqContent={currentRowEdit.reqContent}
                     asset={currentRowEdit.asset}
+                    task={currentRowEdit.task}
                     dateStartUse={currentRowEdit.dateStartUse}
                     dateEndUse={currentRowEdit.dateEndUse}
                     status={currentRowEdit.status}

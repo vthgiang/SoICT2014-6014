@@ -4,7 +4,7 @@ const { connect } = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
 const { freshObject } = require(`../../../helpers/functionHelper`);
 
-const { Asset, User, Role, Link, Privilege, UserRole, AssetType } = Models;
+const { Asset, User, Role, Link, Privilege, UserRole, AssetType, AssetLot} = Models;
 
 /**
  * Gửi email khi báo cáo sự cố
@@ -79,7 +79,6 @@ exports.searchAssetProfiles = async (portal, company, params) => {
             assetName: { $regex: params.assetName, $options: "i" },
         };
     }
-
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.status) {
         keySearch = { ...keySearch, status: { $in: params.status } };
@@ -127,6 +126,27 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     // Thêm key tìm kiếm tài sản theo vị trí
     if (params.location) {
         keySearch = { ...keySearch, location: params.location };
+    }
+
+    // Thêm key tìm kiếm tài sản theo mã lô tài sản
+    // if (params.assetLot) {
+    //     keySearch = {
+    //         ...keySearch,
+    //         assetLot: { $in: params.assetLot },
+    //     };
+    // }
+
+    if (params.assetLot) {
+        let lots = await AssetLot(connect(DB_CONNECTION, portal))
+            .find({
+                code: { $in: params.assetLot }
+            })
+            .select("_id");
+        let lotIds = [];
+        lots.map((x) => {
+            lotIds.push(x._id);
+        });
+        keySearch = { ...keySearch, assetLot: { $in: lotIds } };
     }
 
     // Thêm key tìm kiếm tài sản theo người sử dụng (email hoặc name) -> handoverUser ?? không thấy thuộc tính này trong model Asset - thuộc tính cũ nhưng chưa sửa tên lại cho khớp (assignedToUser) với model?
@@ -198,10 +218,10 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     }
 
     //Trường hợp chỉ có ngày bắt đầu
-    if(params.purchaseDateStart && !params.purchaseDateEnd){
+    if (params.purchaseDateStart && !params.purchaseDateEnd) {
         let date = params.purchaseDateStart.split("-");
         let start = new Date(date[2], date[1] - 1, date[0]);
-        
+
         keySearch = {
             ...keySearch,
             purchaseDate: {
@@ -211,20 +231,20 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     }
 
     //Trường hợp chỉ có ngày kết thúc
-    if(!params.purchaseDateStart && params.purchaseDateEnd){
+    if (!params.purchaseDateStart && params.purchaseDateEnd) {
         let date = params.purchaseDateEnd.split("-");
         let end = new Date(date[2], date[1] - 1, date[0]);
-        
+
         keySearch = {
             ...keySearch,
             purchaseDate: {
                 $lte: end,
             },
         };
-    } 
+    }
 
     //
-    if(params.purchaseDateStart && params.purchaseDateEnd){
+    if (params.purchaseDateStart && params.purchaseDateEnd) {
         let dateStart = params.purchaseDateStart.split("-");
         let dateEnd = params.purchaseDateEnd.split("-");
 
@@ -238,7 +258,9 @@ exports.searchAssetProfiles = async (portal, company, params) => {
                 $lte: end,
             },
         };
-    } 
+
+        console.log("ngày bắt đầu và kết thúc", start, end);
+    }
 
 
     // Thêm key tìm kiếm tài sản theo ngày thanh lý tài sản
@@ -358,14 +380,16 @@ exports.searchAssetProfiles = async (portal, company, params) => {
                 { startDepreciation: { $ne: null } },
             ],
         };
+
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(
             keySearch
         );
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                { path: "assetType assignedToOrganizationalUnit" },
-                { path: "managedBy", select: "_id name email avatar" }
+                { path: "assetType assignedToOrganizationalUnit assetLot" },
+                { path: "managedBy", select: "_id name email avatar" },
+
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)
@@ -377,8 +401,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate([
-                { path: "assetType assignedToOrganizationalUnit" },
-                { path: "managedBy", select: "_id name email avatar" }
+                { path: "assetType assignedToOrganizationalUnit assetLot" },
+                { path: "managedBy", select: "_id name email avatar" },
             ])
             .sort({ createdAt: "desc" })
             .skip(params.page)
@@ -463,6 +487,8 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
 
     if (checkAsset.length === 0) {
         for (let i = 0; i < data.length; i++) {
+            fileInfo = fileInfo ? fileInfo : { avatar: "", file: "" };
+
             let avatar =
                 fileInfo && fileInfo.avatar === ""
                     ? data[i].avatar
@@ -477,7 +503,6 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
             } = data[i];
 
             files = files && this.mergeUrlFileToObject(file, files);
-
             data[i].purchaseDate =
                 data[i].purchaseDate && new Date(data[i].purchaseDate);
 
@@ -535,6 +560,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                 serial: data[i].serial,
                 group: data[i].group ? data[i].group : undefined,
                 assetType: data[i].assetType,
+                assetLot: data[i].assetLot,
                 readByRoles: data[i].readByRoles,
                 purchaseDate: data[i].purchaseDate
                     ? data[i].purchaseDate
@@ -919,6 +945,7 @@ exports.updateAssetInformation = async (
         deleteFiles,
     } = data;
 
+    fileInfo = fileInfo ? fileInfo : { avatar: "", file: "" };
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset(connect(DB_CONNECTION, portal)).findById(id);
@@ -1026,16 +1053,6 @@ exports.updateAssetInformation = async (
     oldAsset.depreciationType = data.depreciationType
         ? data.depreciationType
         : "none";
-    // oldAsset.estimatedTotalProduction = data.estimatedTotalProduction;
-    //     oldAsset.unitsProducedDuringTheYears = data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
-    //     let time = x.month.split("-");
-    //     let date = new Date(time[1], time[0], 0)
-
-    //     return ({
-    //         month: date,
-    //         unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
-    //     })
-    // });
 
     // Thanh lý
     oldAsset.disposalDate = data.disposalDate;
@@ -1638,10 +1655,10 @@ exports.deleteIncident = async (portal, incidentIds) => {
 }
 
 
-exports.chartAssetGroupData = async (portal, company,time) => {
-    
+exports.chartAssetGroupData = async (portal, company, time) => {
+
     let result
-    
+
 
     let chartAssets = await Asset(connect(DB_CONNECTION, portal)).find({}).select("group cost assetType depreciationType usefulLife estimatedTotalProduction unitsProducedDuringTheYears startDepreciation status assetName purchaseDate disposalDate disposalCost incidentLogs maintainanceLogs")
     let listType = await AssetType(connect(DB_CONNECTION, portal)).find({}).sort({ 'createDate': 'desc' }).populate({ path: 'parent' });

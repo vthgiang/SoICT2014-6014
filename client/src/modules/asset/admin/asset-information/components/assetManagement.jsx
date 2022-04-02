@@ -15,6 +15,7 @@ import qs from 'qs';
 import { getFormatDateFromTime, getPropertyOfValue } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import Swal from 'sweetalert2';
+import { AssetLotManagerActions } from '../../asset-lot/redux/actions';
 
 const getAssetName = (listAsset, idAsset) => {
     let assetName;
@@ -50,7 +51,8 @@ function AssetManagement(props) {
         typeRegisterForUse: ["1", "2", "3"],
         page: 0,
         limit: limit_constructor,
-        managedBy: props.managedBy ? props.managedBy : ''
+        managedBy: props.managedBy ? props.managedBy : '',
+        assetLot: "",
     })
 
     const [advancedSearch, setAdvancedSearch] = useState(false)
@@ -62,7 +64,6 @@ function AssetManagement(props) {
     }
 
     const handleDeleteOptions = () => {
-        console.log('selectedData', selectedData)
         const shortTitle = `<h4 style="color: red"><div>${translate('asset.general_information.delete_info')} "${selectedData?.length && selectedData.length === 1 ? getAssetName(props.assetsManager?.listAssets, selectedData[0]) : ""}" ?</div></h4>`;
         const longTitle = `<h4 style="color: red"><div>Xóa thông tin ${selectedData?.length > 1 ? selectedData.length : ""} tài sản ?</div></h4>`;
 
@@ -90,9 +91,9 @@ function AssetManagement(props) {
         });
     }
 
-    const { assetsManager, assetType, translate, user, isActive, department } = props;
+    const { assetsManager, assetType, translate, user, isActive, department, assetLotManager } = props;
     const { page, limit, currentRowView, status, currentRow, purchaseDateStart, purchaseDateEnd, purchaseDate, disposalDate, managedBy, location, tableId, group, typeRegisterForUse } = state;
-
+    const getAll = true;
     useEffect(() => {
         props.getAllAsset(state);
         props.getAssetTypes();
@@ -100,6 +101,7 @@ function AssetManagement(props) {
         props.getUser();
         props.getAllDepartments();
         props.getAllRoles();
+        props.getAllAssetLots(getAll);
     }, [])
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -305,6 +307,15 @@ function AssetManagement(props) {
         setState({
             ...state,
             handoverUnit: value
+        })
+    }
+
+    // Function lưu giá trị lô tài sản vào state khi thay đổi
+    const handleAssetLotChange = (event) => {
+        const { value } = event.target;
+        setState({
+            ...state,
+            assetLot: value
         })
     }
 
@@ -754,6 +765,23 @@ function AssetManagement(props) {
         return unitArr;
     }
 
+    const getAssetLot = () => {
+        let { assetLotManager } = props;
+        let listLot = assetLotManager && assetLotManager.listAssetLots;
+        let lotArr = [];
+
+        listLot.map(item => {
+            lotArr.push({
+                value: item._id,
+                text: item.assetLotName
+            })
+        })
+
+        return lotArr;
+    }
+
+
+
     const convertGroupAsset = (group) => {
         const { translate } = props;
         if (group === 'building') {
@@ -808,7 +836,7 @@ function AssetManagement(props) {
 
 
     var lists = "", exportData;
-    var userlist = user.list, departmentlist = department.list;
+    var userlist = user.list, departmentlist = department.list, assetLotList = assetLotManager.listAssetLots;
     var assettypelist = assetType.listAssetTypes;
     let typeArr = getAssetTypes();
     let dataSelectBox = getDepartment();
@@ -878,7 +906,7 @@ function AssetManagement(props) {
                         <input type="text" className="form-control" name="assetName" onChange={handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                     </div>
 
-                    <a style={{ cursor: "pointer" }} title = "Tìm kiếm nâng cao"><i className="fa fa-filter fa-2x" style={{ marginLeft: 20 }}onClick={handleAdvancedSearch} /></a>
+                    <a style={{ cursor: "pointer" }} title="Tìm kiếm nâng cao"><i className="fa fa-filter fa-2x" style={{ marginLeft: 20 }} onClick={handleAdvancedSearch} /></a>
                 </div>
 
                 <div className="form-inline">
@@ -918,7 +946,7 @@ function AssetManagement(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
                         <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                            value={status}
+                            //value={status}
                             options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                             onChange={handleStatusChange}
                             value={status ? status : []}
@@ -962,44 +990,44 @@ function AssetManagement(props) {
                         <input type="text" className="form-control" name="handoverUser" onChange={handleHandoverUserChange} placeholder={translate('asset.general_information.user')} autoComplete="off" />
                     </div>
                 </div>
-                 { advancedSearch &&
-                <div className="form-inline">
-                    {/* Ngày nhập từ*/}
-                    <div className="form-group">
-                        <label className="form-control-static">{translate('asset.general_information.purchase_date_start')}</label>
-                        <DatePicker
-                            id="purchase-month-start"
-                            dateFormat="day-month-year"
-                            value={purchaseDateStart}
-                            onChange={handlePurchaseMonthStartChange}
-                        />
-                    </div>
+                {advancedSearch &&
+                    <div className="form-inline">
+                        {/* Ngày nhập từ*/}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('asset.general_information.purchase_date_start')}</label>
+                            <DatePicker
+                                id="purchase-month-start"
+                                dateFormat="day-month-year"
+                                value={purchaseDateStart}
+                                onChange={handlePurchaseMonthStartChange}
+                            />
+                        </div>
 
-                    {/* Ngày nhập đến*/}
-                    <div className="form-group">
-                        <label className="form-control-static" style={{ padding: 0 }}>{translate('asset.general_information.purchase_date_end')}</label>
-                        <DatePicker
-                            id="disposal-month-end"
-                            dateFormat="day-month-year"
-                            value={purchaseDateEnd}
-                            onChange={handlePurchaseMonthEndChange}
-                        />
+                        {/* Ngày nhập đến*/}
+                        <div className="form-group">
+                            <label className="form-control-static" style={{ padding: 0 }}>{translate('asset.general_information.purchase_date_end')}</label>
+                            <DatePicker
+                                id="disposal-month-end"
+                                dateFormat="day-month-year"
+                                value={purchaseDateEnd}
+                                onChange={handlePurchaseMonthEndChange}
+                            />
+                        </div>
                     </div>
-                </div>
                 }
 
                 <div className="form-inline">
                     {/* Ngày nhập */}
-                    { !advancedSearch &&
-                    <div className="form-group">
-                        <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
-                        <DatePicker
-                            id="purchase-month"
-                            dateFormat="month-year"
-                            value={purchaseDate}
-                            onChange={handlePurchaseMonthChange}
-                        />
-                    </div>
+                    {!advancedSearch &&
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
+                            <DatePicker
+                                id="purchase-month"
+                                dateFormat="month-year"
+                                value={purchaseDate}
+                                onChange={handlePurchaseMonthChange}
+                            />
+                        </div>
                     }
 
                     {/* Ngày Thanh lý */}
@@ -1033,6 +1061,25 @@ function AssetManagement(props) {
                             onChange={handleTypeRegisterForUseChange}
                         />
                     </div>
+                    {/* lô tài sản */}
+                    <div className="form-group">
+                        <label>{translate('asset.general_information.asset_lot')}</label>
+                        {/* <SelectMulti
+                            id={`assetLotSearchInManagement`}
+                            multiple="multiple"
+                            options={{
+                                nonSelectedText: translate('asset.general_information.select_asset_lot'),
+                                allSelectedText: translate('asset.general_information.select_all_asset_lot')
+                            }}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={dataLotSelectBox}
+                            onChange={handleAssetLotChange}
+                        /> */}
+                        <input type="text" className="form-control" name="assetLot" onChange={handleAssetLotChange} placeholder={translate('asset.general_information.asset_lot')} autoComplete="off" />
+
+                    </div>
+
                     {/* Nút tìm kiếm */}
                     <div className="form-group">
                         <label></label>
@@ -1064,6 +1111,7 @@ function AssetManagement(props) {
                         assetType: translate('asset.general_information.asset_type'),
                         assetPurchaseDate: translate('asset.general_information.purchase_date'),
                         assetManager: translate('asset.general_information.manager'),
+                        assetLot: translate('asset.general_information.asset_lot'),
                         assetUser: translate('asset.general_information.user'),
                         assetOrganizationUnit: translate('asset.general_information.organization_unit'),
                         assetStatus: translate('asset.general_information.status'),
@@ -1077,6 +1125,7 @@ function AssetManagement(props) {
                         assetType: <th>{translate('asset.general_information.asset_type')}</th>,
                         assetPurchaseDate: <th>{translate('asset.general_information.purchase_date')}</th>,
                         assetManager: <th>{translate('asset.general_information.manager')}</th>,
+                        assetLot: <th>{translate('asset.general_information.asset_lot')}</th>,
                         assetUser: <th>{translate('asset.general_information.user')}</th>,
                         assetOrganizationUnit: <th>{translate('asset.general_information.organization_unit')}</th>,
                         assetStatus: <th>{translate('asset.general_information.status')}</th>,
@@ -1093,6 +1142,7 @@ function AssetManagement(props) {
                             assetType: <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>,
                             assetPurchaseDate: <td>{formatDate(x.purchaseDate)}</td>,
                             assetManager: <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>,
+                            assetLot: <td>{getPropertyOfValue(x.assetLot, 'assetLotName', false, assetLotList)}</td>,
                             assetUser: <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>,
                             assetOrganizationUnit: <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>,
                             assetStatus: <td>{formatStatus(x.status)}</td>,
@@ -1234,8 +1284,8 @@ function AssetManagement(props) {
 };
 
 function mapState(state) {
-    const { assetsManager, assetType, user, role, department, auth } = state;
-    return { assetsManager, assetType, user, role, department, auth };
+    const { assetsManager, assetType, user, role, department, auth, assetLotManager, } = state;
+    return { assetsManager, assetType, user, role, department, auth, assetLotManager, };
 };
 
 const actionCreators = {
@@ -1246,6 +1296,7 @@ const actionCreators = {
     getUser: UserActions.get,
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
+    getAllAssetLots: AssetLotManagerActions.getAllAssetLots,
 };
 
 const assetManagement = connect(mapState, actionCreators)(withTranslate(AssetManagement));

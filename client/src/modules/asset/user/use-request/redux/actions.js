@@ -56,53 +56,51 @@ function createRecommendDistribute(data) {
 }
 
 // cập nhật thông tin phiếu đăng ký sử dụng
-function updateRecommendDistribute(id, infoRecommendDistribute ,managedBy="") {
+function updateRecommendDistribute(id, infoRecommendDistribute, managedBy = "") {
     return async dispatch => {
         try {
             dispatch({
                 type: RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_REQUEST
             });
             const response = await RecommendDistributeService.updateRecommendDistribute(id, infoRecommendDistribute)
-            
-            if(managedBy==="")
-            {
-                dispatch(searchRecommendDistributes({
-                    recommendNumber: "",
-                    month: "",
-                    status: "",
-                    page: 0,
-                    limit: 5,
-                }));
-                dispatch(AssetManagerActions.getAllAsset({
-                    code: "",
-                    assetName: "",
-                    month: "",
-                    type: null,
-                    page: 0,
-                    limit: 5,
-                }));
-            }
-            else
-            {
-                dispatch(searchRecommendDistributes({
-                    recommendNumber: "",
-                    month: "",
-                    status: "",
-                    page: 0,
-                    limit: 5,
-                    managedBy:managedBy
-                }));
-                dispatch(AssetManagerActions.getAllAsset({
-                    code: "",
-                    assetName: "",
-                    month: "",
-                    type: null,
-                    page: 0,
-                    limit: 5,
-                    managedBy:managedBy
-                }));
-            }
-            
+
+            // if (managedBy === "") {
+            //     dispatch(searchRecommendDistributes({
+            //         recommendNumber: "",
+            //         month: "",
+            //         status: "",
+            //         page: 0,
+            //         limit: 5,
+            //     }));
+            //     dispatch(AssetManagerActions.getAllAsset({
+            //         code: "",
+            //         assetName: "",
+            //         month: "",
+            //         type: null,
+            //         page: 0,
+            //         limit: 5,
+            //     }));
+            // }
+            // else {
+            //     dispatch(searchRecommendDistributes({
+            //         recommendNumber: "",
+            //         month: "",
+            //         status: "",
+            //         page: 0,
+            //         limit: 5,
+            //         managedBy: managedBy
+            //     }));
+            //     dispatch(AssetManagerActions.getAllAsset({
+            //         code: "",
+            //         assetName: "",
+            //         month: "",
+            //         type: null,
+            //         page: 0,
+            //         limit: 5,
+            //         managedBy: managedBy
+            //     }));
+            // }
+
             dispatch({
                 type: RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_SUCCESS,
                 payload: response.data.content

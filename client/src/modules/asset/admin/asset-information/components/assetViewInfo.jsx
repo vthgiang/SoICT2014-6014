@@ -28,7 +28,7 @@ function AssetViewInfo(props) {
     //     isChange =1;
     //     }
     // }
-    console.log(props)
+    //console.log(props)
     if(state._id !== props._id || !_isEqual(state.files, props.files)){
         setState({
             ...state,

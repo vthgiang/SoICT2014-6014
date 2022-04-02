@@ -106,8 +106,23 @@ router.use("/course", require("./modules/trainning/course/course.route"));
 
 router.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
 router.use("/asset", require("./modules/asset/asset-management/asset.route"));
-router.use("/purchase-request", require("./modules/asset/purchase-request/purchase-request.route"));
-router.use("/use-request", require("./modules/asset/use-request/use-request.route"));
+//asset lot
+router.use("/assetlot",require("./modules/asset/asset-lot-management/asset-lot.route"));
+
+router.use(
+    "/purchase-request",
+    require("./modules/asset/purchase-request/purchase-request.route")
+);
+router.use(
+    "/use-request",
+    require("./modules/asset/use-request/use-request.route")
+);
+
+//supplies
+router.use("/supplies", require("./modules/supplies/supplies-management/supplies.route"));
+router.use("/allocation-supplies", require("./modules/supplies/allocation-management/allocation-history.route"));
+router.use("/purchase-invoice", require("./modules/supplies/purchase-invoice-management/purchase-invoice.route"));
+router.use("/supplies-request", require("./modules/supplies/purchase-request/purchase-request.route"));
 
 
 // Task report
