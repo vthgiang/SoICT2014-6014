@@ -139,7 +139,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     if (params.assetLot) {
         let lots = await AssetLot(connect(DB_CONNECTION, portal))
             .find({
-                code: { $in: params.assetLot }
+                code: { $regex: params.assetLot, $options: "i" }
             })
             .select("_id");
         let lotIds = [];
