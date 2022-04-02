@@ -207,7 +207,7 @@ changePassword2 = async (req, res) => {
 }
 exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
-        const data = await AuthService.getLinksThatRoleCanAccess(req.portal, req.params.roleId);
+        const data = await AuthService.getLinksThatRoleCanAccess(req.portal, req.params.roleId, req.query.userId);
 
         await Logger.info(req.user.email, 'get_links_of_role_success', req.portal);
         res.status(200).json({
@@ -216,7 +216,7 @@ exports.getLinksThatRoleCanAccess = async (req, res) => {
             content: data
         });
     } catch (error) {
-
+        console.log(error)
         await Logger.error(req.user.email, 'get_links_of_role_faile', req.portal);
         res.status(400).json({
             success: false,

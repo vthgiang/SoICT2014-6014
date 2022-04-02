@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
 const Models = require('../../models');
-const { Privilege, Role, User, Company, Employee } = Models;
+const { Privilege, Role, User, Company, Employee, UserRole } = Models;
 const fs = require("fs");
 const { connect, initModels } = require(`../../helpers/dbHelper`);
 const { sendEmail } = require("../../helpers/emailHelper");
@@ -72,7 +72,7 @@ exports.login = async (fingerprint, data) => {
 
     let tokenArr = [];
     let userParse = user.toObject();
-    
+
     if (userParse?.tokens?.length === 10) { // nếu mảng tokens đã có 10 token thì thay thế token đầu tiên trong mảng tokens thành  requestToken user vừa gừi lên
         tokenArr = [...userParse.tokens, token]
         tokenArr.shift();
@@ -449,7 +449,7 @@ exports.changePassword2 = async (portal, userId, body) => {
  * Lấy ra các trang mà người dùng có quyền truy cập
  * @param {*} roleId : id role người dùng
  */
-exports.getLinksThatRoleCanAccess = async (portal, roleId) => {
+exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
     const role = await Role(connect(DB_CONNECTION, portal)).findById(roleId); //lay duoc role hien tai
     let roles = [role._id, ...role.parents];
     const privilege = await Privilege(connect(DB_CONNECTION, portal))
@@ -458,9 +458,24 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId) => {
             resourceType: "Link",
         })
         .populate({ path: "resourceId" });
-    const links = await privilege
-        .filter((pri) => pri.resourceId.deleteSoft === false)
+    const userrole = await UserRole(connect(DB_CONNECTION, portal)).findOne({ userId, roleId: role._id });
+
+
+    // Lấy ds các link theo RBAC original và ko có policy
+    let links = await privilege
+        .filter((pri) => pri.resourceId.deleteSoft === false && pri.policies.length == 0)
         .map((pri) => pri.resourceId);
+
+    // Gán thêm các link được phân quyền theo policy với những user có UserRole và Privilege khớp policy
+    privilege.forEach(pri => {
+        if (pri.policies.length > 0) {
+            if (userrole.policies.length > 0) {
+                if (pri.policies.some(policy => userrole.policies.includes(policy)) && pri.resourceId.deleteSoft === false) {
+                    links = links.concat(pri.resourceId)
+                }
+            }
+        }
+    })
 
     return links;
 };

@@ -166,8 +166,16 @@ exports.authFunc = (checkPage = true) => {
                                 resourceType: "Link",
                                 roleId: {
                                     $in: roleArr,
-                                },
+                                }
                             });
+                            // Kiểm tra nếu privilege có policy thì phải có policy map ở bên userrole thì mới được phép truy cập trang đó
+                            // Nếu không tồn tại map thì không được truy cập
+                            if (privilege.policies.length > 0) {
+                                if (userrole.policies.length > 0) {
+                                    if (!privilege.policies.some(policy => userrole.policies.includes(policy))) throw ["page_access_denied"]
+                                }
+                                else throw ["page_access_denied"]
+                            }
                             if (privilege === null) throw ["page_access_denied"];
                         }
 
@@ -232,7 +240,7 @@ exports.authFunc = (checkPage = true) => {
                 // };
 
                 req.user.company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                    .findOne({company: verified.company});
+                    .findOne({ company: verified.company });
 
                 console.log('### THIRD PARTY ARE AUTHORIZED');
             }

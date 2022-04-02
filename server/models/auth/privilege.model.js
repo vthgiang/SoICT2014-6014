@@ -16,6 +16,10 @@ const PrivilegeSchema = new Schema({
         ref: 'Role',
         required: true
     },
+    policies: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Policy',
+    }],
     actions: [{
         type: String,
         enum: ['see', 'open', 'edit', 'delete'],
@@ -23,7 +27,7 @@ const PrivilegeSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.Privilege) 
+    if (!db.models.Privilege)
         return db.model('Privilege', PrivilegeSchema);
     return db.models.Privilege;
 }

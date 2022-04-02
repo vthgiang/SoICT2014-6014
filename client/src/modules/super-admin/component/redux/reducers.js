@@ -38,11 +38,18 @@ export function component(state = initState, action) {
         case ComponentConstants.CREATE_COMPONENT_REQUEST:
         case ComponentConstants.EDIT_COMPONENT_REQUEST:
         case ComponentConstants.DELETE_COMPONENT_REQUEST:
+        case ComponentConstants.CREATE_COMPONENT_ATTRIBUTE_REQUEST:
+
             return {
                 ...state,
                 isLoading: true
             };
 
+        case ComponentConstants.CREATE_COMPONENT_ATTRIBUTE_FAILE:
+            return {
+                ...state,
+                isLoading: false,
+            }
         case ComponentConstants.GET_COMPONENTS_SUCCESS:
             return {
                 ...state,
@@ -120,7 +127,27 @@ export function component(state = initState, action) {
                 ...state,
                 isLoading: false
             };
+        case ComponentConstants.CREATE_COMPONENT_ATTRIBUTE_SUCCESS:
+            console.log(action.payload)
+            action.payload.forEach(x => {
+                index = findIndex(state.list, x._id);
+                indexPaginate = findIndex(state.listPaginate, x._id);
+                console.log(index); console.log(indexPaginate)
+                if (index !== -1) {
+                    state.list[index] = x;
+                }
 
+                if (indexPaginate !== -1) {
+
+                    state.listPaginate[indexPaginate] = x;
+                }
+
+            })
+            console.log("done")
+            return {
+                ...state,
+                isLoading: false
+            };
         case 'LOGOUT':
             return initState;
 

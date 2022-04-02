@@ -13,5 +13,6 @@ router.patch("/components/:id", auth, ComponentController.editComponent);
 router.delete("/components/:id", auth, ComponentController.deleteComponent);
 
 router.patch("/components/company/update", auth, ComponentController.updateCompanyComponents);
+router.post("/components/attributes", auth, ComponentController.createComponentAttribute);
 
 module.exports = router;

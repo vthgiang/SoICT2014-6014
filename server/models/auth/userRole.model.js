@@ -12,10 +12,14 @@ const UserRoleSchema = new Schema({ // Liên kết nhiều nhiều giữa User v
         ref: 'Role',
         required: true
     },
+    policies: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Policy'
+    }]
 });
 
 module.exports = (db) => {
-    if(!db.models.UserRole)
+    if (!db.models.UserRole)
         return db.model('UserRole', UserRoleSchema);
     return db.models.UserRole;
 }

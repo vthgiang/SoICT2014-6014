@@ -7,8 +7,11 @@ import { PaginateBar, DataTableSetting, SearchBar, ToolTip } from '../../../../c
 import { ComponentActions } from '../redux/actions';
 import { LinkActions } from '../../link/redux/actions';
 import { RoleActions } from '../../role/redux/actions';
+import { AttributeActions } from '../../attribute/redux/actions';
 
 import ComponentInfoForm from './componentInfoForm';
+import ComponentAttributeCreateForm from './componentAttributeCreateForm'
+
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 function TableComponent(props) {
@@ -21,7 +24,8 @@ function TableComponent(props) {
         limit: limit,
         page: 1,
         option: 'name', // Mặc định tìm kiếm theo tên
-        value: ''
+        value: '',
+        i: 0
     })
 
     useEffect(() => {
@@ -30,6 +34,7 @@ function TableComponent(props) {
         props.get({ type: "active" });
         props.get({ type: "active", page, limit });
         props.getRoles();
+        props.getAttribute();
     }, [])
 
     const setOption = (title, option) => {
@@ -83,6 +88,20 @@ function TableComponent(props) {
         props.get(params);
     }
 
+    const handleChange = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
+    const handleChangeAddRowAttribute = (name, value) => {
+        setState({
+            ...state,
+            [name]: value
+        });
+    }
+
     // Cac ham xu ly du lieu voi modal
     const handleEdit = async (component) => {
         await setState({
@@ -106,8 +125,15 @@ function TableComponent(props) {
                     componentLink={currentRow.links.map(link => link._id)}
                     componentDescription={currentRow.description}
                     componentRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
+                    componentAttributes={currentRow.attributes}
+                    handleChange={handleChange}
+                    handleChangeAddRowAttribute={handleChangeAddRowAttribute}
+                    i={state.i}
                 />
             }
+
+            {/* Form thêm thuộc tính cho trang */}
+            <ComponentAttributeCreateForm handleChange={handleChange} handleChangeAddRowAttribute={handleChangeAddRowAttribute} i={state.i} />
 
             {/* Thanh tìm kiếm */}
             <SearchBar
@@ -182,6 +208,7 @@ const getState = {
     destroy: ComponentActions.destroy,
     getLinks: LinkActions.get,
     getRoles: RoleActions.get,
+    getAttribute: AttributeActions.getAttributes
 }
 
 export default connect(mapState, getState)(withTranslate(TableComponent));

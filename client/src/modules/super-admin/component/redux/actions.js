@@ -11,13 +11,14 @@ export const ComponentActions = {
     edit,
     create,
     destroy,
+    createComponentAttribute
 }
 
 /**
  * Lấy danh sách các component của công ty
  */
 function get(params) {
-    if(params.page !== undefined && params.limit !== undefined) {
+    if (params.page !== undefined && params.limit !== undefined) {
         return dispatch => {
             dispatch({
                 type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST
@@ -94,7 +95,7 @@ function create(component) {
                     payload: res.data.content
                 })
             })
-            .catch(err => {})
+            .catch(err => { })
 
     }
 }
@@ -116,7 +117,7 @@ function edit(id, component) {
                     payload: res.data.content
                 });
             })
-            .catch(err => {})
+            .catch(err => { })
     }
 }
 
@@ -136,6 +137,27 @@ function destroy(id, component) {
                     payload: id
                 })
             })
-            .catch(err => {})
+            .catch(err => { })
+    }
+}
+
+function createComponentAttribute(data) {
+    return dispatch => {
+        dispatch({
+            type: ComponentConstants.CREATE_COMPONENT_ATTRIBUTE_REQUEST
+        });
+        ComponentServices
+            .createComponentAttribute(data)
+            .then(res => {
+                dispatch({
+                    type: ComponentConstants.CREATE_COMPONENT_ATTRIBUTE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: ComponentConstants.CREATE_COMPONENT_ATTRIBUTE_FAILE
+                });
+            })
     }
 }

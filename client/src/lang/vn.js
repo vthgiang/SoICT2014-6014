@@ -872,6 +872,8 @@ export default {
                 edit_component_success: "Chỉnh sửa component thành công",
 
                 component_name_exist: "Tên của component đã được sử dụng",
+                create_component_attribute_success: "Thêm thuộc tính component thành công",
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau"
             },
         },
 
@@ -1616,7 +1618,7 @@ export default {
             add_rule: "Rule kiểm tra",
             duplicate_attribute: "Thuộc tính trùng lặp! Vui lòng chọn thuộc tính khác",
             rule: {
-                EQUALS: "Tập Thuộc tính giống với tập thuộc tính trong chính sách",
+                EQUALS: "Tập thuộc tính giống với tập thuộc tính trong chính sách",
                 CONTAINS: "Tập Thuộc tính bao gồm tập thuộc tính trong chính sách",
                 BELONGS: "Tập Thuộc tính nằm trong tập thuộc tính trong chính sách",
             },
@@ -1684,6 +1686,19 @@ export default {
             add_faile: "Thêm mới thất bại",
             edit_success: "Chỉnh sửa thành công",
             edit_faile: "Chỉnh sửa thất bại",
+            add_attribute: "Thêm thuộc tính",
+            add_component_attribute: "Thêm thuộc tính component",
+            attributes: "Các thuộc tính của component",
+            attribute_name: "Tên thuộc tính",
+            attribute_value: "Giá trị",
+            attribute_description: "Mô tả",
+            attribute_name_example: "VD: Project A",
+            attribute_value_example: "VD: ComponentProjectA",
+            attribute_description_example: "VD: Button dự án A",
+            add_attribute_title: "Thêm thuộc tính cho component",
+            components_add_attribute: "Các component thêm thuộc tính",
+            attribute_select: "Chọn thuộc tính",
+            attribute_not_selected: "Chưa chọn thuộc tính",
         },
 
         // Modules cấu hình các chức năng

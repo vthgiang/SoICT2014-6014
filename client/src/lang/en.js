@@ -811,6 +811,8 @@ export default {
                 edit_component_success: "Edit component successfully",
 
                 component_name_exist: "Component name already exists",
+                create_component_attribute_success: "Add component attributes successfully",
+                attribute_selected_duplicate: "Selected attribute names are duplicated"
             },
         },
 
@@ -1588,6 +1590,19 @@ export default {
             add_faile: "Add falied!",
             edit_success: "Edit successfully!",
             edit_faile: "Edit failed!",
+            add_attribute: "Add attribute",
+            add_component_attribute: "Add component attribute",
+            attributes: "Link attributes",
+            attribute_name: "Attribute name",
+            attribute_value: "Attribute value",
+            attribute_description: "Attribute description",
+            attribute_name_example: "VD: Project A",
+            attribute_value_example: "VD: PageProjectA",
+            attribute_description_example: "VD: Page for project A",
+            add_attribute_title: "Add component attribute",
+            components_add_attribute: "Attributes of components",
+            attribute_select: "Select attribute",
+            attribute_not_selected: "Attribute not selected",
         },
 
         // Modules cấu hình các chức năng

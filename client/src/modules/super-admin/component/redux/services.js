@@ -1,16 +1,17 @@
-import {sendRequest} from '../../../../helpers/requestHelper';
+import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const ComponentServices = {
     get,
     show,
     create,
     edit,
-    destroy
+    destroy,
+    createComponentAttribute
 };
 
 function get(params) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/component/components`,
+        url: `${process.env.REACT_APP_SERVER}/component/components`,
         method: 'GET',
         params
     }, false, true, 'super_admin.component');
@@ -18,14 +19,14 @@ function get(params) {
 
 function show(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/component/components/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/component/components/${id}`,
         method: 'GET',
     }, false, true, 'super_admin.component');
 }
 
 function create(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/component/components`,
+        url: `${process.env.REACT_APP_SERVER}/component/components`,
         method: 'POST',
         data,
     }, true, 'super_admin.component');
@@ -33,7 +34,7 @@ function create(data) {
 
 function edit(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/component/components/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/component/components/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'super_admin.component');
@@ -41,7 +42,15 @@ function edit(id, data) {
 
 function destroy(id, component) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/component/components/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/component/components/${id}`,
         method: 'DELETE',
+    }, true, true, 'super_admin.component');
+}
+
+function createComponentAttribute(component) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/component/components/attributes`,
+        method: 'POST',
+        data: component,
     }, true, true, 'super_admin.component');
 }
