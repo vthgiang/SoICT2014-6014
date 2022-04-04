@@ -154,7 +154,8 @@ function CategoryManagementTree(props) {
 
     const { categoryParent, deleteNode, currentCategory } = state;
     const { translate, categories } = props;
-    const { list, tree } = categories.categoryToTree;
+    const { list,  tree } = categories.categoryToTree;
+    console.log(categories);
 
     const dataTree = list ? list.map(node => {
         return {

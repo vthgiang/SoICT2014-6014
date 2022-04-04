@@ -40,6 +40,7 @@ export function categories(state = initState, action){
         case CategoryConstants.GETALL_CATEGORY_REQUEST:
         case CategoryConstants.CREATE_CATEGORY_REQUEST:
         case CategoryConstants.UPDATE_CATEGORY_REQUEST:
+        case CategoryConstants.IMPORT_CATEGORY_REQUEST:
         case CategoryConstants.DELETE_CATEGORY_REQUEST:
             return {
                 ...state,
@@ -67,6 +68,7 @@ export function categories(state = initState, action){
             }
         
         case CategoryConstants.CREATE_CATEGORY_SUCCESS:
+        case CategoryConstants.IMPORT_CATEGORY_SUCCESS:
             return {
                 ...state,
                 categoryToTree: action.payload,
@@ -96,6 +98,7 @@ export function categories(state = initState, action){
         case CategoryConstants.GETALL_CATEGORY_FAILURE:
         case CategoryConstants.CREATE_CATEGORY_FAILURE:
         case CategoryConstants.UPDATE_CATEGORY_FAILURE:
+        case CategoryConstants.IMPORT_CATEGORY_FAILURE:
         case CategoryConstants.DELETE_CATEGORY_FAILURE:
             return {
                 ...state,

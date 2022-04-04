@@ -8,6 +8,7 @@ export const CategoryActions = {
     editCategory,
     deleteCategory,
     getCategories,
+    importCategory,
 }
 
 function getCategoryToTree() {
@@ -155,5 +156,25 @@ function deleteCategory(data, type = "single") {
             }) 
         }
         
+    }
+}
+
+function importCategory(data) {
+    return dispatch => {
+        dispatch({
+            type: CategoryConstants.IMPORT_CATEGORY_REQUEST,
+        });
+        CategoryServices.importCategory(data)
+            .then(res => {
+                dispatch({
+                    type: CategoryConstants.IMPORT_CATEGORY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CategoryConstants.IMPORT_CATEGORY_FAILURE,
+                });
+            })
     }
 }

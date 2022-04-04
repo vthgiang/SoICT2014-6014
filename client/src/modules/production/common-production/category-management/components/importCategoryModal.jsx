@@ -67,7 +67,7 @@ function ImportCategoryModal(props) {
 
 
     const handleImportExcel = (value, checkFileImport) => {
-        const { list } = props.Category.administration.types;
+        const { list } = props;
         let values = [], valueShow = [], index = -1;
 
         for (let i = 0; i < value.length; i++) {
@@ -80,14 +80,12 @@ function ImportCategoryModal(props) {
                     "name": valueTemporary.name,
                     "parent": valueTemporary.parent,
                     "description": valueTemporary.description,
-                    "information": valueTemporary.information
                 }];
                 valueShow = [...valueShow, {
-                    "typeNumber": valueTemporary.code,
-                    "typeName": valueTemporary.name,
+                    "code": valueTemporary.code,
+                    "name": valueTemporary.name,
                     "parent": valueTemporary.parent,
                     "description": valueTemporary.description,
-                    "defaultInformation": [{ nameField: valueTemporary.information }]
                 }];
             } else {
                 if (index >= 0) {
@@ -97,7 +95,6 @@ function ImportCategoryModal(props) {
                         "name": "",
                         "parent": "",
                         "description": "",
-                        "information": "",
                     }
 
                     if (valueTemporary.information) {
