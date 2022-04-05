@@ -478,7 +478,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             }
         });
         if (quantityApproved) {
-            bill.status = 3;
+            bill.status = 2;
         }
     }
     else {
@@ -516,7 +516,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     await bill.save();
 
     //--------------------PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG------------------------
-    if (parseInt(bill.status) === 2) {//Nếu bill đã hoàn thành
+    if (parseInt(bill.status) === 5) {//Nếu bill đã hoàn thành
         let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findOne({ bill: bill._id.toString() })
         if (purchaseOrder) {
             purchaseOrder.status = 4;
@@ -546,7 +546,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                 await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.allCoin + customerPoint.point }, userId)
             }
         }
-    } else if (parseInt(bill.status) === 4) {//Nếu bill bị hủy
+    } else if (parseInt(bill.status) === 7) {//Nếu bill bị hủy
         let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findOne({ bill: bill._id.toString() })
         if (purchaseOrder) {
             purchaseOrder.status = 5;
@@ -571,7 +571,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     //------------------KẾT THÚC PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG-----------------
 
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
-    if (data.oldStatus === '5' && data.status === '2') {
+    if (data.oldStatus === '4' && data.status === '5') {
         //Nếu là phiếu xuất kho hệ thống cập nhật lại số lượng tồn kho
         if (data.group === '2') {
             if (data.goods && data.goods.length > 0) {
@@ -605,34 +605,34 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             }
         }
 
-        // if (data.group === '1' && data.type === '1') {
-        //     if (data.goods && data.goods.length > 0) {
-        //         for (let i = 0; i < data.goods.length; i++) {
-        //             if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-        //                 for (let j = 0; j < data.goods[i].lots.length; j++) {
-        //                     var quantity = data.goods[i].lots[j].quantity;
-        //                     let lotId = data.goods[i].lots[j].lot;
-        //                     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-        //                     let stock = {};
-        //                     stock.stock = data.fromStock;
-        //                     stock.quantity = quantity;
-        //                     stock.binLocation = [];
-        //                     lot.stocks = [...lot.stocks, stock];
-        //                     let lotLog = {};
-        //                     lotLog.bill = bill._id;
-        //                     lotLog.quantity = quantity;
-        //                     lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-        //                     lotLog.type = bill.type;
-        //                     lotLog.createdAt = bill.updatedAt;
-        //                     lotLog.stock = data.fromStock;
-        //                     lot.lotLogs = [...lot.lotLogs, lotLog];
-        //                     await lot.save();
-        //                 }
-        //             }
-        //         }
-        //     }
+        if (data.group === '1' && data.type === '1') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            var quantity = data.goods[i].lots[j].quantity;
+                            let lotId = data.goods[i].lots[j].lot;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            let stock = {};
+                            stock.stock = data.fromStock;
+                            stock.quantity = quantity;
+                            stock.binLocation = [];
+                            lot.stocks = [...lot.stocks, stock];
+                            let lotLog = {};
+                            lotLog.bill = bill._id;
+                            lotLog.quantity = quantity;
+                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+                            lotLog.type = bill.type;
+                            lotLog.createdAt = bill.updatedAt;
+                            lotLog.stock = data.fromStock;
+                            lot.lotLogs = [...lot.lotLogs, lotLog];
+                            await lot.save();
+                        }
+                    }
+                }
+            }
 
-        // }
+        }
 
         //Nếu là phiếu trả hàng
         if (data.group === '3') {
@@ -706,7 +706,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     }
 
     // Nếu trạng thái đơn chuyển từ đã hoàn thành sang đã hủy
-    if (data.oldStatus === '2' && data.status === '4') {
+    if (data.oldStatus === '5' && data.status === '7') {
         //Phiếu xuất kho
         if (data.group === '2') {
             if (data.oldGoods && data.oldGoods.length > 0) {
@@ -791,7 +791,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     if (data.group === '5') {
         //chuyển trạng thái từ đã phê duyệt sang thực hiện
         //Thực hiện việc xuất kho của kho xuất
-        if (data.oldStatus === '3' && data.status === '5') {
+        if (data.oldStatus === '2' && data.status === '3') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
                     if (data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -815,7 +815,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         }
         // chuyển trạng thái từ đang thực hiện sang đã hoàn thành
         // thực hiện việc nhập kho và lưu thông tin
-        if (data.oldStatus === '5' && data.status === '2') {
+        if (data.oldStatus === '4' && data.status === '5') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
                     if (data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -857,7 +857,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
 
         //chuyển trạng thái từ đang thực hiện sang trạng thái đã hủy
         // Thực hiện lại việc nhập kho, trả lại thông tin cho từng lô hàng
-        if (data.oldStatus === '5' && data.status === '4') {
+        if (data.oldStatus === '3' && data.status === '7') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
                     if (data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -884,7 +884,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
     //Thay đổi trạng thái lô sản xuất thành đã nhập kho
     if (data.group === '1') {
-        if (data.oldStatus === '5' && data.status === '2') {
+        if (data.oldStatus === '4' && data.status === '5') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
                     if (data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -905,7 +905,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
 
     //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
     if (data.group === '1') {
-        if (data.oldStatus === '2' && data.status === '4') {
+        if (data.oldStatus === '5' && data.status === '7') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
                     if (data.goods[i].lots && data.goods[i].lots.length > 0) {

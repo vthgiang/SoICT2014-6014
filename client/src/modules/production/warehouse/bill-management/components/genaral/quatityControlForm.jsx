@@ -66,6 +66,8 @@ function QualityControlForm(props) {
                 content: state.content,
             },
             goods: state.listGoods,
+            status: (state.status !== "" || state.status === 1) ? "4" : "3",
+            oldStatus: "3",
         }
         props.editBill(state.billId, data);
     }

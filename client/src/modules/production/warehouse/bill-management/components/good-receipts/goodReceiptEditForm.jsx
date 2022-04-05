@@ -616,35 +616,35 @@ function GoodReceiptEditForm(props) {
         let statusArr = [];
         if (oldStatus === '1') {
             statusArr = [
-                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
-            ]
-        }
-        if (oldStatus === '2') {
-            statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
-            ]
-        }
-        if (oldStatus === '3') {
-            statusArr = [
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
+                { value: '1', text: translate('manage_warehouse.bill_management.bill_receipt_status.1') },
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_receipt_status.2') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_receipt_status.7') }
             ]
         }
         if (oldStatus === '5') {
             statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_receipt_status.5') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_receipt_status.7') }
+            ]
+        }
+        if (oldStatus === '2') {
+            statusArr = [
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_receipt_status.2') },
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_receipt_status.3') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_receipt_status.7') },
+            ]
+        }
+        if (oldStatus === '3') {
+            statusArr = [
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_receipt_status.5') },
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_receipt_status.3') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_receipt_status.7') },
             ]
         }
 
-        if (oldStatus === '4') {
+        if (oldStatus === '7') {
             statusArr = [
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_receipt_status.7') }
             ]
         }
 
@@ -826,8 +826,7 @@ function GoodReceiptEditForm(props) {
         return false;
     }
 
-    const { translate, group, sourceType, actionAddLots, billStatus } = props;
-    console.log(billStatus);
+    const { translate, group, sourceType, actionAddLots } = props;
     const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
         qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorOnSourceProduct, manufacturingMill,
         errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles, isSeflProduced } = state;
@@ -840,13 +839,14 @@ function GoodReceiptEditForm(props) {
     const dataStatus = getStatus();
     // const checkApprove = checkApproved(approvers, listQualityControlStaffs);
     const timelineTextArr = [
-        {text: "Tạo phiếu"},
-        {text: "Phê duyệt phiếu"},
-        {text: "Thực hiện phiếu"},
-        {text: "Kiểm định chất lượng"},
-        {text: "Đánh lô hàng hóa"},
-        {text: "Xếp hàng vào kho"}
+        { text: "Tạo phiếu" },
+        { text: "Phê duyệt phiếu" },
+        { text: "Thực hiện phiếu" },
+        { text: "Kiểm định chất lượng" },
+        { text: "Đánh lô hàng hóa" },
+        { text: "Xếp hàng vào kho" }
     ]
+    console.log(status);
 
     return (
         <React.Fragment>
@@ -863,18 +863,28 @@ function GoodReceiptEditForm(props) {
             >
                 <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-receipt`}>
-                    <div className="timeline-create">
-                        <div className="timeline-progress" style={{ width: (billStatus - 1) /5 *100 + "%" }}></div>
+                    {status !== '7' && <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width: (parseInt(status - 1)) / 5 * 100 + "%" }}></div>
                         <div className="timeline-items">
-                        {timelineTextArr.map((item, index) => (
-                            <div className={`timeline-item ${index < billStatus ? "active" : ""}`} key={index} >
-                                <div className={`timeline-contain`}>
-                                    {item.text}
+                            {timelineTextArr.map((item, index) => (
+                                <div className={`timeline-item ${index < parseInt(status) ? "active" : ""}`} key={index} >
+                                    <div className={`timeline-contain`}>
+                                        {item.text}
+                                    </div>
                                 </div>
-                            </div>
                             ))}
                         </div>
-                    </div>
+                    </div>}
+                    {status === '7' && <div className="timeline-create" style={{ width: "0%" }}>
+                        <div className="timeline-progress"></div>
+                        <div className="timeline-items">
+                            <div className={`timeline-item cancel`}>
+                                <div className={`timeline-contain`}>
+                                    {"Phiếu đã hủy"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
                     {actionAddLots === '1' &&
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
@@ -1102,7 +1112,7 @@ function GoodReceiptEditForm(props) {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {good.good && status === '2' && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.add_lot')}</p>)}
+                                {good.good && status === '5' && (<p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => addQuantity()}>{translate('manage_warehouse.inventory_management.add_lot')}</p>)}
                                 {state.editInfo ?
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
