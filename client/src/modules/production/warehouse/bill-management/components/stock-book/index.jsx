@@ -181,11 +181,11 @@ function BookManagement(props) {
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                    { x.group === '1' && x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
-                                    { x.group === '1' && x.type === '2' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMillId is deleted'}</td>}
-                                    { (x.group === '2' || x.group === '3') && <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>}
-                                    { (x.group === '4') && <td></td>}
-                                    { (x.group === '5') && <td>{x.toStock ? x.toStock.name : 'Stock is deleted'}</td>}
+                                    {x.group === '1' && x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
+                                    {x.group === '1' && x.type === '2' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMillId is deleted'}</td>}
+                                    {(x.group === '2' || x.group === '3') && <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>}
+                                    {(x.group === '4') && <td></td>}
+                                    {(x.group === '5') && <td>{x.toStock ? x.toStock.name : 'Stock is deleted'}</td>}
                                     <td>{x.description}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>

@@ -158,7 +158,7 @@ const CustomerSchema = new Schema({
         type: String,
     }
     ,
-    promotions: [{// danh sach khuyen mai cua khach hang 
+    promotions: [{// tat ca danh sach khuyen mai cua khach hang 
         code: { // Mã ưu đãi, cái này mới thêm khi làm chức năng thêm mã khuyến mãi cho nhóm KH, vì liên quan đến nhiều phần khác chưa sửa nên tạm thời để require = false
             type: String,
             require: false 
@@ -169,6 +169,26 @@ const CustomerSchema = new Schema({
         promotionalValueMax: { type: Number },
         expirationDate:{type:Date},
         status:{type:Number}
+    }],
+    canUsedPromotions: [{// danh sach khuyen mai con hieu luc, chua su dung cua khach hang 
+        code: { 
+            type: String,
+            require: false 
+        },
+        value: { type: Number },
+        description: { type: String },
+        minimumOrderValue: { type: Number },
+        promotionalValueMax: { type: Number },
+        expirationDate:{type:Date},
+        exceptCustomer: [{
+            type: Schema.Types.ObjectId,
+            ref: "Customer"
+        }],
+        status:{type:Number},
+        customerUsed: [{
+            type: Schema.Types.ObjectId,
+            ref: "Customer"
+        }]
     }],
     customerCareUnit: {// đơn vị CSKH
         type: Schema.Types.ObjectId,

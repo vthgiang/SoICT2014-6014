@@ -152,15 +152,15 @@ function QuantityLotGoodReceipt(props) {
 
     const isRfidCodeValidate = () => {
         let result =
-        validateQuantity(state.lot.quantity, false) &&
-        validateRfidQuantity(state.lot.rfidQuantity, false)
+            validateQuantity(state.lot.quantity, false) &&
+            validateRfidQuantity(state.lot.rfidQuantity, false)
         return result
     }
 
     const validateRfidQuantity = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
-        if(!value || Number(value) > Number(state.lot.quantity) || Number(value) < 0) {
+        if (!value || Number(value) > Number(state.lot.quantity) || Number(value) < 0) {
             msg = translate('manage_warehouse.bill_management.validate_quantity_rfid');
         }
         if (willUpdateState) {
@@ -205,7 +205,7 @@ function QuantityLotGoodReceipt(props) {
         }
         state.lot.rfidCode = [];
         for (let i = 0; i < numberRfid; i++) {
-            let code = generateCode("RFID") + "-" + String(i+1);
+            let code = generateCode("RFID") + "-" + String(i + 1);
             state.lot.rfidCode.push(code);
         }
     }
@@ -432,7 +432,7 @@ function QuantityLotGoodReceipt(props) {
                                                 <td>{x.quantity}</td>
                                                 <td>{x.note}</td>
                                                 <td>{x.expirationDate}</td>
-                                                <td>{x.rfidCode ? x.rfidCode.map((rfid, index) => 
+                                                <td>{x.rfidCode ? x.rfidCode.map((rfid, index) =>
                                                     <div key={index}>
                                                         <p>{rfid}<br></br></p>
                                                     </div>) : ''}

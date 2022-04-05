@@ -71,8 +71,8 @@ function LotDetailForm(props) {
                                     </div>
                                     <div className="form-group">
                                         <strong>{translate('manage_warehouse.inventory_management.stock')}:&emsp;</strong>
-                                    Tất cả kho
-                                </div>
+                                        Tất cả kho
+                                    </div>
                                     <div className="form-group">
                                         <strong>{translate('manage_warehouse.inventory_management.from_to')}:&emsp;</strong>
                                         {lotDetail.manufacturingCommand ? <a href="#">{lotDetail.manufacturingCommand.code}</a> : "Lô hàng nhập từ nhà cung cấp"}

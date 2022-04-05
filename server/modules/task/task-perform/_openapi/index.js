@@ -1,6 +1,6 @@
 const openapi_taskPerformRoute = {
     "/performtask/tasks/{taskId}": {
-        "get": {
+        "get": { // Lấy chi tiết công việc bằng id
             "tags": [
                 "TaskPerform"
             ],
@@ -12,40 +12,30 @@ const openapi_taskPerformRoute = {
                     "in": "path",
                     "description": "Nhập id công việc",
                     "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
+                    "schema": {"type": "string"}
                 },
                 {
                     "in": "header",
                     "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
+                    "schema": {"type": "string"},
                     "require": true
                 },
                 {
                     "in": "header",
                     "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
+                    "schema": {"type": "string"},
                     "require": true
                 },
                 {
                     "in": "header",
                     "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
+                    "schema": {"type": "string"},
                     "require": true
                 },
                 {
                     "in": "header",
                     "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
+                    "schema": {"type": "string"},
                     "require": true
                 }
             ],
@@ -54,9 +44,7 @@ const openapi_taskPerformRoute = {
                     "description": "get_task_by_id_success",
                     "content": {
                         "application/json": {
-                            "schema": {
-                                "type": "object"
-                            }
+                            "schema": { "type": "object" }
                         }
                     }
                 },

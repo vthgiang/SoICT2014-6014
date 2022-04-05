@@ -4,12 +4,12 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { ButtonModal, DatePicker, SelectBox, DialogModal } from '../../../../common-components';
 import { CrmGroupActions } from '../redux/actions';
 
-
 function PromotionAddForm(props) {
     const { translate, groupId, crm } = props;
     const { group } = crm;
-    const [promotion,setPromotion] = useState(() => initState());
 
+    const [promotion,setPromotion] = useState(() => initState());
+    // Hàm khởi tạo giá trị ban đầu cho promotion -> cái này là đề phòng người dùng ko nhập -> nó sẽ thành undefined chứ ko phải mảng rỗng 
     function initState() {
         return {
             promotion: {
@@ -18,21 +18,25 @@ function PromotionAddForm(props) {
         }
     }
 
+    // Lấy danh sách thành viên trong nhóm ở store
     let allMembersGroup;
     if ( crm?.groups?.membersInGroup ) {
         allMembersGroup = crm.groups.membersInGroup;
     };
 
-    allMembersGroup = allMembersGroup.map((e) => {
-        return {
-            value: e._id,
-            text: e.name
+    // Viết lại danh sách nhóm cho đúng định dạng để biểu diễn
+    if (allMembersGroup) {
+        allMembersGroup = allMembersGroup.map((e) => {
+             return {
+                 value: e._id,
+                 text: e.name
+                }
+            });
         }
-    });
-    //console.log(allMembersGroup);
 
     let i = 0;
 
+    // Các hàm thay đổi giá trị các trường thông tin
     const handleChangeValue = async (e) => {
         const value = e.target.value;
         await setPromotion({ ...promotion, value: value});
@@ -63,10 +67,12 @@ function PromotionAddForm(props) {
         await setPromotion({...promotion, exceptCustomer: value});
     }
 
+    // Hàm lưu
     const save = async () => {
         if (promotion) {
             console.log(promotion);
             await props.addPromotion(groupId, promotion);
+            // Gọi api để load lại dữ liệu của component cha
             await props.getRefreshData();
         }
     }

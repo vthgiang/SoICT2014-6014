@@ -36,6 +36,7 @@ exports.getBillsByType = async (query, userId, portal) => {
                 { path: 'supplier' },
                 { path: 'bill' },
                 { path: 'goods.lots.lot' },
+                { path: 'goods.unpassed_quality_control_lots.lot' },
                 { path: 'goods.good' },
                 { path: 'logs.creator' }
             ])
@@ -162,6 +163,7 @@ exports.getBillsByType = async (query, userId, portal) => {
                     { path: 'supplier' },
                     { path: 'bill' },
                     { path: 'goods.lots.lot' },
+                    { path: 'goods.unpassed_quality_control_lots.lot' },
                     { path: 'goods.good' },
                     { path: 'logs.creator', select: "_id name email avatar" }
                 ],
@@ -240,6 +242,7 @@ exports.getDetailBill = async (id, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
@@ -247,11 +250,9 @@ exports.getDetailBill = async (id, portal) => {
 
 
 exports.getBillsByStatus = async (query, portal) => {
-    console.log(query);
     const { group, status, fromStock, type } = query;
     let sourceType = type !== '13' ? (type === '11' ? '1' : '2') : null;
     let qualityControlStaffsStatus = type !== '13' ? "3" : '2';
-    console.log(qualityControlStaffsStatus, sourceType);
     return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock, sourceType, "qualityControlStaffs.status": qualityControlStaffsStatus })
         .populate([
             { path: 'creator', select: "_id name email avatar" },
@@ -264,13 +265,13 @@ exports.getBillsByStatus = async (query, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
 }
 
 exports.createBill = async (userId, data, portal) => {
-    console.log(data);
     var logs = [];
     let log = {};
     log.creator = userId;
@@ -375,6 +376,7 @@ exports.createBill = async (userId, data, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
@@ -437,7 +439,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             quantity: item.quantity,
             returnQuantity: item.returnQuantity,
             realQuantity: item.realQuantity,
-            damagedQuantity: item.damagedQuantity,
+            damagedQuantity: item.quantity - item.realQuantity,
             description: item.description,
             lots: item.lots.map(x => {
                 return {
@@ -448,7 +450,17 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                     realQuantity: x.realQuantity,
                     note: x.note
                 }
-            })
+            }),
+            unpassed_quality_control_lots: item.unpassed_quality_control_lots ? item.unpassed_quality_control_lots.map(x => {
+                return {
+                    lot: x.lot,
+                    quantity: x.quantity,
+                    returnQuantity: x.returnQuantity,
+                    damagedQuantity: x.damagedQuantity,
+                    realQuantity: x.realQuantity,
+                    note: x.note
+                }
+            }) : []
         }
     }) : bill.goods;
 
@@ -574,6 +586,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                                 for (let k = 0; k < lot.stocks.length; k++) {
                                     if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
                                         lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
+                                        lot.stocks[k].binLocations = [];
                                     }
                                 }
                             }
@@ -592,34 +605,34 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             }
         }
 
-        if (data.group === '1' && data.type === '2') {
-            if (data.goods && data.goods.length > 0) {
-                for (let i = 0; i < data.goods.length; i++) {
-                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                        for (let j = 0; j < data.goods[i].lots.length; j++) {
-                            var quantity = data.goods[i].lots[j].quantity;
-                            let lotId = data.goods[i].lots[j].lot;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            let stock = {};
-                            stock.stock = data.fromStock;
-                            stock.quantity = quantity;
-                            stock.binLocation = [];
-                            lot.stocks = [...lot.stocks, stock];
-                            let lotLog = {};
-                            lotLog.bill = bill._id;
-                            lotLog.quantity = quantity;
-                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-                            lotLog.type = bill.type;
-                            lotLog.createdAt = bill.updatedAt;
-                            lotLog.stock = data.fromStock;
-                            lot.lotLogs = [...lot.lotLogs, lotLog];
-                            await lot.save();
-                        }
-                    }
-                }
-            }
+        // if (data.group === '1' && data.type === '1') {
+        //     if (data.goods && data.goods.length > 0) {
+        //         for (let i = 0; i < data.goods.length; i++) {
+        //             if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+        //                 for (let j = 0; j < data.goods[i].lots.length; j++) {
+        //                     var quantity = data.goods[i].lots[j].quantity;
+        //                     let lotId = data.goods[i].lots[j].lot;
+        //                     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+        //                     let stock = {};
+        //                     stock.stock = data.fromStock;
+        //                     stock.quantity = quantity;
+        //                     stock.binLocation = [];
+        //                     lot.stocks = [...lot.stocks, stock];
+        //                     let lotLog = {};
+        //                     lotLog.bill = bill._id;
+        //                     lotLog.quantity = quantity;
+        //                     lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+        //                     lotLog.type = bill.type;
+        //                     lotLog.createdAt = bill.updatedAt;
+        //                     lotLog.stock = data.fromStock;
+        //                     lot.lotLogs = [...lot.lotLogs, lotLog];
+        //                     await lot.save();
+        //                 }
+        //             }
+        //         }
+        //     }
 
-        }
+        // }
 
         //Nếu là phiếu trả hàng
         if (data.group === '3') {
@@ -636,6 +649,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                                     for (let k = 0; k < lot.stocks.length; k++) {
                                         if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
                                             lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(returnQuantity);
+                                            lot.stocks[k].binLocations = [];
                                         }
                                     }
                                 }
@@ -921,6 +935,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])
@@ -946,6 +961,7 @@ exports.getBillsByCommand = async (query, portal) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])

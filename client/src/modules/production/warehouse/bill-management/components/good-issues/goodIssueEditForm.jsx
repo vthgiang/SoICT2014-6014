@@ -506,40 +506,40 @@ function GoodIssueEditForm(props) {
                 for (let i = 0; i < props.approvers.length; i++) {
                     approver = [...approver, props.approvers[i].approver._id];
                 }
-    
+
             }
-    
+
             if (props.listQualityControlStaffs && props.listQualityControlStaffs.length > 0) {
                 for (let i = 0; i < props.listQualityControlStaffs.length; i++) {
                     qualityControlStaffs = [...qualityControlStaffs, props.listQualityControlStaffs[i].staff._id];
                 }
-    
+
             }
-    
+
             if (props.responsibles && props.responsibles.length > 0) {
                 for (let i = 0; i < props.responsibles.length; i++) {
                     responsibles = [...responsibles, props.responsibles[i]._id];
                 }
-    
+
             }
-    
+
             if (props.accountables && props.accountables.length > 0) {
                 for (let i = 0; i < props.accountables.length; i++) {
                     accountables = [...accountables, props.accountables[i]._id];
                 }
-    
+
             }
             state.good.quantity = 0;
             state.good.good = '';
             state.good.description = '';
             state.good.lots = [];
-    
+
             if (props.type === "3") {
                 props.getGoodsByType({ type: "material" });
             } else if (props.type === "4") {
                 props.getGoodsByType({ type: "product" });
             }
-    
+
             setState({
                 ...state,
                 billId: props.billId,
@@ -573,11 +573,11 @@ function GoodIssueEditForm(props) {
                 errorQualityControlStaffs: undefined,
                 errorAccountables: undefined,
                 errorResponsibles: undefined
-    
+
             })
         }
     }, [props.billId, props.oldStatus])
-    
+
 
     const save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier,
@@ -662,7 +662,7 @@ function GoodIssueEditForm(props) {
                                         items={dataType}
                                         onChange={handleTypeChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -676,7 +676,7 @@ function GoodIssueEditForm(props) {
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
-                                        // disabled={checkApproved}
+                                    // disabled={checkApproved}
                                     />
                                 </div>
                             </div>
@@ -691,7 +691,7 @@ function GoodIssueEditForm(props) {
                                         items={dataStock}
                                         onChange={handleStockChange}
                                         multiple={false}
-                                        disabled={status === "1" ? false :true}
+                                        disabled={status === "1" ? false : true}
                                     />
                                     <ErrorLabel content={errorStock} />
                                 </div>
@@ -785,21 +785,21 @@ function GoodIssueEditForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -856,6 +856,7 @@ function GoodIssueEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.number_passed')}>{translate('manage_warehouse.bill_management.number_passed')}</th>
                                             <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
@@ -871,11 +872,12 @@ function GoodIssueEditForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
-                                                        <td>{x.lots.map((lot, index) => 
+                                                        <td>{x.realQuantity}</td>
+                                                        <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
-                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                             </div>)}
-                                                        </td> 
+                                                        </td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditGood(x, index)}><i className="material-icons"></i></a>

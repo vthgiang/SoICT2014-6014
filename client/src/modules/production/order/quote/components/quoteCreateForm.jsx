@@ -85,7 +85,7 @@ function QuoteCreateForm(props) {
     const handleCustomerChange = (value) => {
         if (value[0] !== "title") {
             let customerInfo = props.customers.list.filter((item) => item._id === value[0]);
-            let customerPromotions = customerInfo[0].promotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status == 1);
+            let customerPromotions = customerInfo[0].canUsedPromotions.map((promo) => ({ ...promo, checked: false, disabled: false })).filter((item) => item.status == 1);
             if (customerInfo.length) {
                 setState({
                     ...state,
@@ -612,7 +612,9 @@ function QuoteCreateForm(props) {
             };
 
             await props.createNewQuote(data);
-
+            let usedCustomerPromotions = customerPromotions.filter((promo) => promo.checked);
+            await props.usePromotion(customer, { code: usedCustomerPromotions[0].code });;
+            
             setState((state) => {
                 return {
                     ...state,
@@ -923,6 +925,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getCustomers: CrmCustomerActions.getCustomers,
     createNewQuote: QuoteActions.createNewQuote,
+    usePromotion: CrmCustomerActions.usePromotion
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreateForm));

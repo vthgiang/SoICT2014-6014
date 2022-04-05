@@ -12,6 +12,8 @@ function GoodReceiptCreateForm(props) {
         good: "",
         quantity: 0,
         returnQuantity: 0,
+        damagedQuantity: 0,
+        realQuantity: 0,
         description: "",
         lots: [],
     };
@@ -165,7 +167,7 @@ function GoodReceiptCreateForm(props) {
 
     const getSupplier = () => {
         const { crm, translate } = props;
-        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_customer") }];
+        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_supplier") }];
 
         crm.customers.list.map((item) => {
             supplierArr.push({
@@ -574,7 +576,7 @@ function GoodReceiptCreateForm(props) {
         purchaseOrderAddBill.code !== "" &&
         purchaseOrderAddBill.code !== state.purchaseOrderCode
     ) {
-        setState ({
+        setState({
             ...state,
             group: props.group,
             code: props.billCode,
@@ -658,7 +660,7 @@ function GoodReceiptCreateForm(props) {
             description: description,
             goods: listGood,
             purchaseOrderId,
-            sourceType : sourceType,
+            sourceType: sourceType,
             manufacturingMill: manufacturingMills,
         });
 
@@ -777,7 +779,7 @@ function GoodReceiptCreateForm(props) {
                                     />
                                     <ErrorLabel content={errorOnSourceProduct} />
                                 </div>
-                                {sourceType === "2" ? 
+                                {sourceType === "2" ?
                                     (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
                                         <label>
                                             {translate("manage_warehouse.bill_management.supplier")}
@@ -793,9 +795,9 @@ function GoodReceiptCreateForm(props) {
                                             multiple={false}
                                         />
                                         <ErrorLabel content={errorSupplier} />
-                                    </div>) 
-                                : null}
-                                {sourceType === "1" ? 
+                                    </div>)
+                                    : null}
+                                {sourceType === "1" ?
                                     (<div className={`form-group ${!errorManufacturingMills ? "" : "has-error"}`}>
                                         <label>
                                             {translate("manage_warehouse.bill_management.mill")}
@@ -811,8 +813,8 @@ function GoodReceiptCreateForm(props) {
                                             multiple={false}
                                         />
                                         <ErrorLabel content={errorManufacturingMills} />
-                                    </div>) 
-                                : null}
+                                    </div>)
+                                    : null}
                             </div>
                         </fieldset>
                     </div>
@@ -896,14 +898,12 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.name")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.phone")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
@@ -912,14 +912,12 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.email")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.address")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>

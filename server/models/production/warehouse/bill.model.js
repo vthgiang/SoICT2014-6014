@@ -79,7 +79,7 @@ const BillSchema = new Schema({
             ref: "User"
         },
 
-        status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
+        status: { // Trạng thái kiểm định 1. Chưa kiểm định xong, 2. Đã kiểm định xong
             type: Number
         },
 
@@ -171,6 +171,36 @@ const BillSchema = new Schema({
         },
 
         lots: [{
+            // LSX
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+            // LSX
+            quantity: {
+                type: Number,
+                default: 0
+            },
+
+            returnQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            damagedQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            realQuantity: {
+                type: Number
+            },
+
+            note: {
+                type: String
+            }
+        }],
+        unpassed_quality_control_lots: [{
             // LSX
             lot: {
                 type: Schema.Types.ObjectId,
