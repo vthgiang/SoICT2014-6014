@@ -4,12 +4,12 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AssetManagement } from './combinedContent';
 
 function AssetManager(props) {
-    const [state, setState] =useState({})
-        return (
-            <React.Fragment>
-                <AssetManagement />
-            </React.Fragment>
-        );
+    const [state, setState] = useState({})
+    return (
+        <React.Fragment>
+            <AssetManagement />
+        </React.Fragment>
+    );
 }
 
-export default connect(null, null)(withTranslate(AssetManager)); 
+export default connect(null, null)(withTranslate(AssetManager));

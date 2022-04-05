@@ -82,6 +82,18 @@ const ManagerRecommendDistribute = lazy(() => import("../modules/asset/admin/use
 const ManagerAssetType = lazy(() => import("../modules/asset/admin/asset-type/components"))
 const MaintainanceManager = lazy(() => import("../modules/asset/admin/maintainance/components"))
 
+//asset lot
+const AssetLotManager = lazy(() => import("../modules/asset/admin/asset-lot/components"))
+
+
+//supplies
+const ManageSupplies = lazy(() => import("../modules/supplies/admin/supplies/components"))
+const ManageSupplieDashboard = lazy(() => import("../modules/supplies/admin/supplies-dashboard/components"))
+const ManagePurchaseInvoice = lazy(() => import("../modules/supplies/admin/purchase-invoice/components"))
+const ManageAllocationHistory = lazy(() => import("../modules/supplies/admin/allocation-history/components"))
+const ManagePurchaseRequest = lazy(() => import("../modules/supplies/admin/purchase-request/components"))
+const UserPurchaseRequest = lazy(() => import("../modules/supplies/user/purchase-request/components"))
+
 // import UsageManager from "../modules/asset/admin/usage/components";
 const IncidentManager = lazy(() => import("../modules/asset/admin/incident/components"))
 const ManagerDepreciation = lazy(() => import("../modules/asset/admin/depreciation/components"))
@@ -133,9 +145,12 @@ const PlanManagement = lazy(() => import("../modules/plan/components"))
 // Example
 const ExampleManagement1 = lazy(() => import("../modules/example/example1/components"))
 const ExampleManagement2 = lazy(() => import("../modules/example/example2/components"))
+const ExampleManagement3 = lazy(() => import("../modules/example/example3/components"))
 
 const ExampleManagementHooks1 = lazy(() => import("../modules/example/example1/components-hooks"))
 const ExampleManagementHooks2 = lazy(() => import("../modules/example/example2/components-hooks"))
+const ExampleManagementHooks3 = lazy(() => import("../modules/example/example3/components-hooks"))
+
 
 // Manufacturing Managements
 
@@ -196,7 +211,7 @@ class Routes extends Component {
             employeesManager,
         } = this.props;
         return (
-            <Suspense fallback={<Layout/>}>
+            <Suspense fallback={<Layout />}>
                 <Switch>
                     <AuthRoute
                         exact
@@ -1083,7 +1098,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={CourseOfUser}
                     />
-                    
+
 
                     {/* kpi - routes */}
                     <PrivateRoute
@@ -1649,6 +1664,26 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
+                        isLoading={this.props.assetLotManager.isLoading}
+                        key={"manage-info-asset-lot"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-info-asset-lot",
+                                name: "manage_info_asset_lot",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-info-asset-lot"}
+                        path={"/manage-info-asset-lot"}
+                        pageName={"manage_info_asset_lot"}
+                        layout={Layout}
+                        component={AssetLotManager}
+                    />
+
+                    <PrivateRoute
                         isLoading={false}
                         key={"manage-maintainance-asset"}
                         arrPage={[
@@ -1763,6 +1798,129 @@ class Routes extends Component {
                         layout={Layout}
                         component={ManagerRecommendDistribute}
                     />
+
+
+                    {/* Supplies */}
+                    <PrivateRoute
+                        isLoading={this.props.suppliesDashboardReducer.isLoading}
+                        key={"dashboard-supplies"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/dashboard-supplies",
+                                name: "dashboard_supplies",
+                                icon: "fa fa-dashboard",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/dashboard-supplies"}
+                        path={"/dashboard-supplies"}
+                        pageName={"dashboard_supplies"}
+                        layout={Layout}
+                        component={ManageSupplieDashboard}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.suppliesReducer.isLoading}
+                        key={"manage-supplies"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-supplies",
+                                name: "manage_supplies",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-supplies"}
+                        path={"/manage-supplies"}
+                        pageName={"manage_supplies"}
+                        layout={Layout}
+                        component={ManageSupplies}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.purchaseInvoiceReducer.isLoading}
+                        key={"manage-purchase-invoice"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-supplies",
+                                name: "manage_purchase_invoice",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-purchase-invoice"}
+                        path={"/manage-purchase-invoice"}
+                        pageName={"manage_purchase_invoice"}
+                        layout={Layout}
+                        component={ManagePurchaseInvoice}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.allocationHistoryReducer.isLoading}
+                        key={"manage-allocation-history"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-allocation-history",
+                                name: "manage_allocation_history",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-allocation-history"}
+                        path={"/manage-allocation-history"}
+                        pageName={"manage_allocation_history"}
+                        layout={Layout}
+                        component={ManageAllocationHistory}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.purchaseRequest.isLoading}
+                        key={"manage-supplies-request"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-supplies-request",
+                                name: "manage_supplies_purchase_request",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-supplies-request"}
+                        path={"/manage-supplies-request"}
+                        pageName={"manage_supplies_purchase_request"}
+                        layout={Layout}
+                        component={ManagePurchaseRequest}
+                    />
+
+
+                    <PrivateRoute
+                        isLoading={this.props.purchaseRequest.isLoading}
+                        key={"supplies-purchase-request"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/supplies-purchase-request",
+                                name: "recommend_supplies_procurement",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/supplies-purchase-request"}
+                        path={"/supplies-purchase-request"}
+                        pageName={"recommend_supplies_procurement"}
+                        layout={Layout}
+                        component={UserPurchaseRequest}
+                    />
+
+
 
                     <PrivateRoute
                         isLoading={this.props.reports.isLoading}
@@ -2109,7 +2267,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={GeneralConfiguration}
                     />
-                   <PrivateRoute
+                    <PrivateRoute
                         isLoading={false}
                         key={"crmUnitConfiguration"}
                         arrPage={[
@@ -2433,6 +2591,46 @@ class Routes extends Component {
                         layout={Layout}
                         component={ExampleManagementHooks2}
                     />
+                    {/* example 3 */}
+                    <PrivateRoute
+                        isLoading={this.props.example3.isLoading}
+                        key={"manage-examples-3"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-3",
+                                name: "manage_examples_3",
+                                icon: "fa fa-adjust",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-3"}
+                        path={"/manage-examples-3"}
+                        pageName={"manage_examples_3"}
+                        layout={Layout}
+                        component={ExampleManagement3}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.example3.isLoading}
+                        key={"manage-examples-3"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-hooks-3",
+                                name: "manage_examples_hooks_3",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-hooks-3"}
+                        path={"/manage-examples-hooks-3"}
+                        pageName={"manage_examples_hooks_3"}
+                        layout={Layout}
+                        component={ExampleManagementHooks3}
+                    />
 
                     {/* Manufacturing-management */}
 
@@ -2711,7 +2909,7 @@ class Routes extends Component {
                         pageName={"manage_transport_route"}
                         layout={Layout}
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
-                    />                    
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"manage-transport-department"}
@@ -2749,7 +2947,7 @@ class Routes extends Component {
                         pageName={"carrier_today_transport_mission"}
                         layout={Layout}
                         component={CarrierTodayTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"carrier-all-times-transport-mission"}
@@ -2768,7 +2966,7 @@ class Routes extends Component {
                         pageName={"carrier_all_times_transport_mission"}
                         layout={Layout}
                         component={CarrierAllTimesTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
+                    />
 
 
                     {/* Quản lý dự án */}

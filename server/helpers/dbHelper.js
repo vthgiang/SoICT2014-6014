@@ -1,6 +1,7 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 const {checkOS} = require("./osHelper");
+const models = require('../models')
 
 const versionName = () => {
     const time = new Date(),
@@ -36,9 +37,12 @@ const checkDirectory = (path) => {
  */
 exports.connect = (db, portal) => {
     if (db.name !== portal) {
-        return db.useDb(portal, { useCache: true });
+      const newDb = db.useDb(portal, { useCache: true });
+      for (const [key, model] of Object.entries(models)) { model(newDb) }
+
+      return newDb;
     } else {
-        return db;
+      return db;
     }
 }
 

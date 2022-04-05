@@ -522,6 +522,7 @@ class CommandCreateForm extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorApprovers ? "" : "has-error"}`}>
                                         <label>{translate('manufacturing.command.approvers')}<span className="attention"> * </span></label>
+                                        <a style={{ cursor: "pointer" }} title = {translate('manufacturing.command.approver_description')}><i className="fa fa-question-circle" style={{ marginLeft: 5 }} /></a>
                                         <SelectBox
                                             id={`select-approvers-command-create`}
                                             className="form-control select2"
@@ -551,6 +552,7 @@ class CommandCreateForm extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                         <label>{translate('manufacturing.plan.accountables')}<span className="attention"> * </span></label>
+                                        <a style={{ cursor: "pointer" }} title = {translate('manufacturing.plan.accountable_description')}><i className="fa fa-question-circle" style={{ marginLeft: 5 }} /></a>
                                         <SelectBox
                                             id={`select-accoutables-command-create`}
                                             className="form-control select2"

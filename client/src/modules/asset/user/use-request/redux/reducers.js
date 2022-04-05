@@ -3,9 +3,9 @@ const initState = {
     isLoading: false,
     listRecommendDistributes: [],
     totalList: "",
-    error:"",
+    error: "",
 }
-export function recommendDistribute(state =initState, action) {
+export function recommendDistribute(state = initState, action) {
     switch (action.type) {
         case RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_REQUEST:
         case RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_REQUEST:
@@ -15,7 +15,7 @@ export function recommendDistribute(state =initState, action) {
                 ...state,
                 isLoading: true,
             };
-        
+
         case RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_SUCCESS:
             return {
                 ...state,
@@ -23,21 +23,22 @@ export function recommendDistribute(state =initState, action) {
                 listRecommendDistributes: action.payload.listRecommendDistributes,
                 totalList: action.payload.totalList,
             };
-        
+
         case RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listRecommendDistributes: [...state.listRecommendDistributes, action.payload],
             };
-        
+
         case RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listRecommendDistributes: state.listRecommendDistributes.map(recommendDistribute => recommendDistribute._id === action.payload._id ? action.payload : recommendDistribute),
+                listRecommendDistributes: [action.payload,
+                    ...state.listRecommendDistributes.filter(item => item._id !== action.payload._id)]
             };
-        
+
         case RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS:
 
             return {
@@ -62,7 +63,7 @@ export function recommendDistribute(state =initState, action) {
                 isLoading: false,
                 error: action.error.message
             };
-        
+
         default:
             return state
     }

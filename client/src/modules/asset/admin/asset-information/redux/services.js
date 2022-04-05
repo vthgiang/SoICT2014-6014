@@ -19,7 +19,7 @@ export const AssetService = {
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAll(data) {
-    console.log("res",data)
+    //console.log("res",data)
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/asset/assets`,
@@ -30,6 +30,7 @@ function getAll(data) {
                 status: data ? data.status : data,
                 group: data ? data.group : data,
                 assetType: data ? data.assetType : data,
+                assetLot: data ? data.assetLot : data,
                 purchaseDate: data ? data.purchaseDate : data,
                 disposalDate: data ? data.disposalDate : data,
                 purchaseDateStart: data ? data.purchaseDateStart : data,

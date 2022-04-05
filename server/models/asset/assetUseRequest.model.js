@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// tạo bảng csdl Đề nghị cấp phát thiết bị
+// tạo bảng csdl Đề nghị cấp phát tài sản
 const AssetUseRequestSchema = new Schema({
     company: {
         //thuộc công ty nào
@@ -53,6 +53,11 @@ const AssetUseRequestSchema = new Schema({
         type: String,
         enum: ["approved", "waiting_for_approval", "disapproved"],
     },
+    task: {
+        //yêu cầu sử dụng tài sản cho công việc gì
+        type: Schema.Types.ObjectId,
+        ref: "Task",
+    }
 });
 
 module.exports = (db) => {

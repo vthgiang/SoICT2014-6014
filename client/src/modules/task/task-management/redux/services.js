@@ -344,7 +344,8 @@ function getPaginateTasks(data) {
             startDateAfter: data?.startDateAfter,
             endDateBefore: data?.endDateBefore,
             aPeriodOfTime: data?.aPeriodOfTime,
-            tags: data?.tags
+            tags: data?.tags,
+            getAll: data?.getAll,
         }
     }, false, true, 'task.task_management');
 }
