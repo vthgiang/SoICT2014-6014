@@ -22,6 +22,7 @@ dayjs.extend(isSameOrAfter)
 
 exports.getTaskEvaluations = async (portal, data) => {
     // Lấy data tu client gui trong body
+    console.log("data", data)
     let {
         organizationalUnit,
         taskTemplate,
@@ -259,10 +260,19 @@ exports.getTaskEvaluations = async (portal, data) => {
 exports.getPaginatedTasks = async (portal, task) => {
     let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
         startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees,
-        accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags } = task;
-    let taskList;
-    perPage = Number(perPage);
-    let page = Number(number);
+        accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags, getAll } = task;
+    let taskList, page;
+    if (perPage) {
+        perPage = Number(perPage);
+    } else {
+        perPage = 5;
+    }
+    if (number) {
+        page = Number(number);
+    } else {
+        page = 0;
+    }
+
     let roleArr = [];
     if (Array.isArray(role) && role.length > 0) {
         for (let i in role) {
@@ -281,8 +291,6 @@ exports.getPaginatedTasks = async (portal, task) => {
             { creator: { $in: [user] } },
         ];
     }
-
-
     let keySearch = {
         $or: roleArr,
         isArchived: false
@@ -559,7 +567,6 @@ exports.getPaginatedTasks = async (portal, task) => {
             $text: { $search: textSearch.trim() }
         }
     }
-
     let optionQuery = {
         $and: [
             keySearch,
@@ -569,16 +576,20 @@ exports.getPaginatedTasks = async (portal, task) => {
         ]
     }
 
-    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
-        .skip(perPage * (page - 1)).limit(perPage).populate([
-            { path: "organizationalUnit parent" },
-            { path: 'creator', select: "_id name email avatar" },
-            { path: 'responsibleEmployees', select: "_id name email avatar" },
-            { path: 'accountableEmployees', select: "_id name email avatar" },
-            { path: 'consultedEmployees', select: "_id name email avatar" },
-            { path: 'informedEmployees', select: "_id name email avatar" },
-            { path: "timesheetLogs.creator", select: "name" },
-        ]);
+    if (getAll === 'true') {
+        taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 });
+    } else {
+        taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
+            .skip(perPage * (page - 1)).limit(perPage).populate([
+                { path: "organizationalUnit parent" },
+                { path: 'creator', select: "_id name email avatar" },
+                { path: 'responsibleEmployees', select: "_id name email avatar" },
+                { path: 'accountableEmployees', select: "_id name email avatar" },
+                { path: 'consultedEmployees', select: "_id name email avatar" },
+                { path: 'informedEmployees', select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name" },
+            ]);
+    }
 
     let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
     let totalPages = Math.ceil(totalCount / perPage);
@@ -2331,6 +2342,7 @@ exports.getSubTask = async (portal, taskId) => {
 
 exports.getTasksByUser = async (portal, data) => {
     var tasks = [];
+    console.log("data", Object.keys(data), data)
     if (data.data == "user") {
         tasks = await Task(connect(DB_CONNECTION, portal)).find({
             $or: [
@@ -3585,14 +3597,21 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
     console.log("DONE_IMPORT_TIME_SHEET!!!")
 
 }
-
+/**
+ * Lấy ra dữ liệu của các chart trong dashboard công việc đơn vị
+ * @param {*} query 
+ * @param {*} portal 
+ * @param {*} user 
+ * @returns 
+ */
 exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
-
+    console.log("query", typeof query, query)
     Object.keys(query).forEach((key) => {
         query[key] = JSON.parse(query[key])
     });
-    const data = query;
-    console.log("quere", data);
+    
+    const data = query["query"] ? query["query"] : query ;
+    console.log("data", data);
     const chartArr = Object.keys(data);
     let result = {};
     const { organizationalUnitId, startMonth, endMonth } = data["common-params"]

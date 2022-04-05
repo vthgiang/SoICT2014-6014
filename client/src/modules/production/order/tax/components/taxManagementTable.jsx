@@ -126,7 +126,7 @@ function TaxManagementTable(props) {
     const { code, name, tableId } = state;
     return (
         <React.Fragment>
-            <TaxDetailForm taxId={state.taxId} />
+            {state.taxId && <TaxDetailForm taxId={state.taxId}/>}
             {state.currentRow && <TaxEditForm taxEdit={state.currentRow} />}
             <div className="box-body qlcv">
                 <TaxCreateForm reloadState={() => props.getAllTaxs({ limit: state.limit, page: state.page })} />

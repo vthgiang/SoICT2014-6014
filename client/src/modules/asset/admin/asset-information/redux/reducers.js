@@ -31,7 +31,7 @@ export function assetsManager(state = initState, action) {
             };
 
         case AssetConstants.GETALL_SUCCESS:
-            if (action.payload.totalList !== undefined) {
+            if (action.payload !== undefined) {
                 return {
                     ...state,
                     listAssets: action.payload.data,

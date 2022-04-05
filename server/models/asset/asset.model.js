@@ -45,6 +45,14 @@ const AssetSchema = new Schema({
         },
     ],
 
+    /***************************************************************************************************
+     * mã lô của tài sản
+     */
+    assetLot: {
+        type: Schema.Types.ObjectId,
+        ref: "AssetLot",
+    },
+
     purchaseDate: {
         //6.ngày nhập, ngày mua
         type: Date,
@@ -395,6 +403,7 @@ const AssetSchema = new Schema({
             ],
         },
     ],
+    
 },{
     timestamps: true,
     toJSON: { virtuals: true },

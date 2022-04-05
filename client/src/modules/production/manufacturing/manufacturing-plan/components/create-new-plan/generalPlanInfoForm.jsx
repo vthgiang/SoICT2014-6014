@@ -116,21 +116,21 @@ class PlanInfoForm extends Component {
         return result;
     };
 
-    // getListApproversArr = () => {
-    //     const { manufacturingPlan } = this.props;
-    //     let listUsersArr = [];
-    //     const { listApprovers } = manufacturingPlan;
-    //     if (listApprovers) {
-    //         listApprovers.map(approver => {
-    //             listUsersArr.push({
-    //                 value: approver._id,
-    //                 text: approver.userId.name + " - " + approver.userId.email
-    //             })
-    //         })
-    //     }
+    getListApproversArr = () => {
+        const { manufacturingPlan } = this.props;
+        let listUsersArr = [];
+        const { listApprovers } = manufacturingPlan;
+        if (listApprovers) {
+            listApprovers.map(approver => {
+                listUsersArr.push({
+                    value: approver.userId._id,
+                    text: approver.userId.name + " - " + approver.userId.email
+                })
+            })
+        }
 
-    //     return listUsersArr;
-    // }
+        return listUsersArr;
+    }
 
     getUserArray = () => {
         const { user } = this.props;
@@ -373,11 +373,13 @@ class PlanInfoForm extends Component {
         await this.props.getSalesOrderDetail(data._id);
         await window.$("#modal-detail-sales-order-2").modal("show");
     }
+    
 
     render() {
         const { translate, code, salesOrderIds, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
         const { good, errorGood, errorQuantity, approvers, errorApprovers, startDateError, endDateError } = this.state;
         let listSalesOrdersChoosed = [];
+        console.log(approvers);
         listSalesOrdersChoosed = this.getListSalesOrdersChoosed(salesOrderIds);
 
         const dataStatus = [
@@ -476,7 +478,7 @@ class PlanInfoForm extends Component {
                                 id="select-approvers-of-plan"
                                 className="form-control select"
                                 style={{ width: "100%" }}
-                                items={this.getUserArray()}
+                                items={this.getListApproversArr()}
                                 disabled={false}
                                 onChange={this.handleApproversChange}
                                 value={approvers}
