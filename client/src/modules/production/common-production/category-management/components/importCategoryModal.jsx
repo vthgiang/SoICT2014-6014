@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {CategoryActions} from '../redux/actions';
+import { CategoryActions } from '../redux/actions';
 import { configCategory, importCategoryTemplate } from './fileConfigurationImportCategory';
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 
@@ -16,7 +16,6 @@ function ImportCategoryModal(props) {
 
     const { translate } = props;
     const { configData, importData, rowError, checkFileImport, limit, page } = state;
-
     const save = () => {
         const { importShowData } = state;
         props.importCategory(importShowData);
@@ -43,8 +42,7 @@ function ImportCategoryModal(props) {
                         code: dataTemporary.code,
                         name: dataTemporary.name,
                         parent: dataTemporary.parent,
-                        description: dataTemporary.description,
-                        information: dataTemporary.information
+                        description: dataTemporary.description
                     }
                     datas = [...datas, out];
                 }
@@ -59,7 +57,7 @@ function ImportCategoryModal(props) {
     const checkCategoryCode = (code, list) => {
         let checkCode;
         if (list?.length) {
-            checkCode = list.filter(o => o?.typeNumber === code?.toString()?.trim())
+            checkCode = list.filter(o => o?.code === code?.toString()?.trim())
         }
         if (checkCode?.length)
             return -1;
@@ -96,14 +94,6 @@ function ImportCategoryModal(props) {
                         "parent": "",
                         "description": "",
                     }
-
-                    if (valueTemporary.information) {
-                        out.information = valueTemporary.information;
-                    }
-                    if (valueTemporary.information && valueShow[index]) {
-                        valueShow[index].defaultInformation = [...valueShow[index].defaultInformation, { nameField: valueTemporary.information }];
-                    }
-
                     values = [...values, out];
                 }
             }
@@ -212,4 +202,3 @@ const actions = {
 };
 
 export default connect(mapState, actions)(withTranslate(ImportCategoryModal))
-

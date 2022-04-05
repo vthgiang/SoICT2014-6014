@@ -20,18 +20,13 @@ export const configCategory = {
     parent: {
         columnName: "Tên danh mục cha",
         description: "Tên tiêu đề ứng với tên danh mục cha",
-        value: "Tên loại danh mục cha"
+        value: "Tên danh mục cha"
     },
     description: {
         columnName: "Mô tả",
         description: "Tên tiêu đề ứng với mô tả",
         value: "Mô tả"
     },
-    information: {
-        columnName: "Thuộc tính mặc định",
-        description: "Tên tiêu đề ứng với thuộc tính mặc định",
-        value: "Thuộc tính mặc định"
-    }
 }
 
 
@@ -47,7 +42,6 @@ export const importCategoryTemplate = {
                 { key: "name", value: "Tên danh mục" },
                 { key: "parent", value:"Tên danh mục cha"},
                 { key: "description", value: "Mô tả" },
-                { key: "information", value: "Thuộc tính mặc định" }
             ],
             data: [
                 {
@@ -55,21 +49,18 @@ export const importCategoryTemplate = {
                     name: "Sản phẩm",
                     parent: null,
                     description: "Những mặt hàng được sản xuất xong",
-                    information: null,
                 },
                 {
                     code: "CT002",
                     name: "Công cụ dụng cụ",
                     parent:null,
-                    description: "Những mặt hàng chỉ mới hoàn thành một giai đoạn sản xuất",
-                    information: null,
+                    description: "Công cụ, dụng cụ",
                 },
                 {
                     code: "GHCTP001",
                     name: "Dạng bột",
                     parent:"Sản phẩm",
                     description: "Thuốc dạng bột",
-                    information: null,
                 }
             ]
         }]

@@ -155,7 +155,6 @@ function CategoryManagementTree(props) {
     const { categoryParent, deleteNode, currentCategory } = state;
     const { translate, categories } = props;
     const { list,  tree } = categories.categoryToTree;
-    console.log(categories);
 
     const dataTree = list ? list.map(node => {
         return {
@@ -203,7 +202,6 @@ function CategoryManagementTree(props) {
                             data={dataTree}
                         />
                     </div>
-                    <SlimScroll outerComponentId="category-tree" innerComponentId="tree-qlcv-category-good" innerComponentWidth={"100%"} activate={true} />
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     {

@@ -72,38 +72,28 @@ exports.getCategoryToTree = async (portal) => {
 }
 
 exports.getCategoriesByType = async (query, portal) => {
-    console.log( query,portal)
     var { page, limit,} = query;
     if (!page || !limit){
         return await Category(connect(DB_CONNECTION, portal))
         .find( options )
-        .populate([
-            { path: 'goods.good', select: 'id name'},
-            { path: 'managementLocation.role', select: 'id name'}
-        ])
     } else {
-
-        
-       
-        if (query.code) {
-            option.code = query.code
+        let option = {};
+        if (query.key == 'code') {
+            option.code = new RegExp(query.value, "i")
         }
 
-        else if (query.name) {
-            option.name = query.name
+        else if (query.key == 'name') {
+            option.name = new RegExp(query.value, "i")
         }
 
-        else if (query.parent) {
-            option.parent = query.parent
-        }
+        // else if (query.key == 'parent') {
+        //     option.parent = new RegExp(query.value, "i")
+        // }
 
         return await Category(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 page,
-                limit,
-                key,
-                value,
-                sort: { 'updatedAt': 'desc' }
+                limit
             })
     }       
 }
@@ -151,25 +141,23 @@ exports.deleteManyCategories = async (array, portal) => {
     return await this.getCategoryToTree(portal);
 }
 
-exports.importCategory = async (portal, query, data) => {
+exports.importCategory = async (portal, data) => {
     if (data?.length) {
         const dataLength = data.length;
         for (let i = 0; i < dataLength; i++){
             if (data[i].parent) {
-                const getCategoryParent = await Category(connect(DB_CONNECTION, portal)).findOne({ Name: data[i]?.parent?.trim() });
+                const getCategoryParent = await Category(connect(DB_CONNECTION, portal)).findOne({ name: data[i]?.parent?.trim() });
                 data[i].parent = getCategoryParent?._id;
             } else {
                 data[i].parent = null;
             }
             await Category(connect(DB_CONNECTION, portal)).create({
-                query: query,
                 code: data[i].code,
-                Name: data[i]?.Name?.trim(),
+                name: data[i]?.name?.trim(),
                 description: data[i].description,
                 parent: data[i].parent
             });
         }
-        console.log('dataa', data);
     }
-    return await this.getCategory(portal, query, {});
+    return await this.getCategoryToTree(portal);
 }

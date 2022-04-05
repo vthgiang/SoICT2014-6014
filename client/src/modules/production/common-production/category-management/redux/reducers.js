@@ -57,7 +57,7 @@ export function categories(state = initState, action){
         case CategoryConstants.GETALL_CATEGORY_BY_TYPE_SUCCESS:
             return {
                 ...state,
-                listCategoriesByType: action.payload ? action.payload : [],
+                listPaginate: action.payload.docs ? action.payload.docs : [],
                 isLoading: false
             };
         case CategoryConstants.GETALL_CATEGORY_SUCCESS:

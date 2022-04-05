@@ -88,7 +88,6 @@ function CategoryEditTree(props) {
         let result =
             validateName(state.categoryName, false) &&
             validateCode(state.categoryCode, false)
-            console.log(result);
         return result;
     }
     

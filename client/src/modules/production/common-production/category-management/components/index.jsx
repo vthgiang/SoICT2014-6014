@@ -20,7 +20,8 @@ function CategoryManagement(props) {
     };
 
     const updateCategoryTable = async () => {
-        await props.getCategories();
+        let { page, limit, currentRole } = state;
+        await props.getCategories({ page, limit, managementLocation: currentRole });
         forceCheckOrVisible(true, false);
     };
 

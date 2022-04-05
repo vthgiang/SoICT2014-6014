@@ -32,7 +32,6 @@ function CategoryDetailForm(props) {
     const { translate, categories, goods, parentName} = props;
     const { code, name, type, description, } = state;
     const { listGoodsByCategory } = goods;
-    console.log(state);
     return (
         <React.Fragment>
 
