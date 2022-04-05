@@ -124,7 +124,7 @@ function TableComponent(props) {
                     componentName={currentRow.name}
                     componentLink={currentRow.links.map(link => link._id)}
                     componentDescription={currentRow.description}
-                    componentRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
+                    componentRoles={currentRow.roles.filter(role => role && role.roleId && (!role.policies || role.policies.length == 0)).map(role => role.roleId._id)}
                     componentAttributes={currentRow.attributes}
                     handleChange={handleChange}
                     handleChangeAddRowAttribute={handleChangeAddRowAttribute}
@@ -177,7 +177,7 @@ function TableComponent(props) {
                                 <td>{component.name}</td>
                                 <td>{component.links.map(link => `${link.url} `)}</td>
                                 <td>{component.description}</td>
-                                <td><ToolTip dataTooltip={component.roles.map(role => role && role.roleId ? role.roleId.name : "")} /></td>
+                                <td><ToolTip dataTooltip={component.roles.filter(role => role && role.roleId && (!role.policies || role.policies.length == 0)).map(role => role.roleId.name)} /></td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" onClick={() => handleEdit(component)}><i className="material-icons">edit</i></a>
                                 </td>

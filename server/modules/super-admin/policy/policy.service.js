@@ -405,6 +405,7 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
                     policies: ur.policies.splice(ur.policies.indexOf(policyId), 1)
                 }
             });
+            console.log("ur", ur)
         })
     }
 

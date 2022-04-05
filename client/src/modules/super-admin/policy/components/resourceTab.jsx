@@ -57,7 +57,7 @@ function ResourceTab(props) {
                 rule={state.resourceRule}
             />
 
-            <table className="table table-hover table-bordered policy-attribute-table not-sort">
+            <table className="table table-bordered policy-attribute-table not-sort">
                 <thead>
                     <tr>
                         <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_owner_table')}</label></th>

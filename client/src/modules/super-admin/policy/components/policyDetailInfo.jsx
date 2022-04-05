@@ -71,7 +71,7 @@ const PolicyDetailInfo = (props) => {
                         <tbody>
 
                             <tr>
-                                <td rowSpan={(!userAttributes || userAttributes.length == 0) ? 1 : userAttributes.length}>
+                                <td rowSpan={(!userAttributes || userAttributes.length == 0) ? 1 : userAttributes.length + 1}>
                                     {translate('manage_policy.user_table')}
                                 </td>
                                 {
@@ -80,17 +80,16 @@ const PolicyDetailInfo = (props) => {
                                             <center> {translate('table.no_data')}</center>
                                         </td> :
                                         <React.Fragment>
-                                            <td rowSpan={userAttributes.length}>{userRule}</td>
-                                            <td>{attribute.lists.map(a => a._id == userAttributes[0].attributeId ? a.attributeName : "")}</td>
-                                            <td>{userAttributes[0].value}</td>
+                                            <td rowSpan={userAttributes.length + 1}>{userRule}</td>
+
                                         </React.Fragment>
 
                                 }
 
                             </tr>
                             {
-                                (!userAttributes || userAttributes.length <= 1) ? null :
-                                    userAttributes.slice(1).map((attr, index) => {
+                                (!userAttributes || userAttributes.length <= 0) ? null :
+                                    userAttributes.map((attr, index) => {
                                         return <tr key={index}>
                                             <td>
                                                 {attribute.lists.map(a => a._id == attr.attributeId ? a.attributeName : "")}
@@ -104,7 +103,7 @@ const PolicyDetailInfo = (props) => {
                             }
 
                             <tr>
-                                <td rowSpan={(!roleAttributes || roleAttributes.length == 0) ? 1 : roleAttributes.length}>
+                                <td rowSpan={(!roleAttributes || roleAttributes.length == 0) ? 1 : roleAttributes.length + 1}>
                                     {translate('manage_policy.role_table')}
                                 </td>
                                 {
@@ -113,17 +112,16 @@ const PolicyDetailInfo = (props) => {
                                             <center> {translate('table.no_data')}</center>
                                         </td> :
                                         <React.Fragment>
-                                            <td rowSpan={roleAttributes.length}>{roleRule}</td>
-                                            <td>{attribute.lists.map(a => a._id == roleAttributes[0].attributeId ? a.attributeName : "")}</td>
-                                            <td>{roleAttributes[0].value}</td>
+                                            <td rowSpan={roleAttributes.length + 1}>{roleRule}</td>
+
                                         </React.Fragment>
 
                                 }
 
                             </tr>
                             {
-                                (!roleAttributes || roleAttributes.length <= 1) ? null :
-                                    roleAttributes.slice(1).map((attr, index) => {
+                                (!roleAttributes || roleAttributes.length <= 0) ? null :
+                                    roleAttributes.map((attr, index) => {
                                         return <tr key={index}>
                                             <td>
                                                 {attribute.lists.map(a => a._id == attr.attributeId ? a.attributeName : "")}
@@ -153,7 +151,7 @@ const PolicyDetailInfo = (props) => {
                         <tbody>
 
                             <tr>
-                                <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length}>
+                                <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length + 1}>
                                     {translate('manage_policy.resource_table')}
                                 </td>
                                 {
@@ -162,17 +160,16 @@ const PolicyDetailInfo = (props) => {
                                             <center> {translate('table.no_data')}</center>
                                         </td> :
                                         <React.Fragment>
-                                            <td rowSpan={resourceAttributes.length}>{resourceRule}</td>
-                                            <td>{attribute.lists.map(a => a._id == resourceAttributes[0].attributeId ? a.attributeName : "")}</td>
-                                            <td>{resourceAttributes[0].value}</td>
+                                            <td rowSpan={resourceAttributes.length + 1}>{resourceRule}</td>
+
                                         </React.Fragment>
 
                                 }
 
                             </tr>
                             {
-                                (!resourceAttributes || resourceAttributes.length <= 1) ? null :
-                                    resourceAttributes.slice(1).map((attr, index) => {
+                                (!resourceAttributes || resourceAttributes.length <= 0) ? null :
+                                    resourceAttributes.map((attr, index) => {
                                         return <tr key={index}>
                                             <td>
                                                 {attribute.lists.map(a => a._id == attr.attributeId ? a.attributeName : "")}

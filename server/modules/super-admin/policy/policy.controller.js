@@ -5,6 +5,7 @@ const Log = require(`../../../logs`);
 exports.createPolicy = async (req, res) => {
     try {
         const newPolicy = await PolicyService.createPolicy(req.portal, req.body);
+        await PolicyService.addPolicyToRelationship(req.portal, newPolicy._id)
 
         await Log.info(req.user.email, 'CREATED_NEW_POLICY', req.portal);
 

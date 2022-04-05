@@ -152,7 +152,8 @@ function ManageLink(props) {
                             linkId={currentRow._id}
                             linkUrl={currentRow.url}
                             linkDescription={currentRow.description}
-                            linkRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
+                            linkRoles={currentRow.roles.filter(role => role && role.roleId && (!role.policies || role.policies.length == 0)).map(role => role.roleId._id)}
+                            // linkRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
                             linkAttributes={currentRow.attributes}
                             handleChange={handleChange}
                             handleChangeAddRowAttribute={handleChangeAddRowAttribute}
@@ -203,7 +204,7 @@ function ManageLink(props) {
                                         <td>{link.url}</td>
                                         <td>{link.category}</td>
                                         <td>{link.description}</td>
-                                        <td><ToolTip dataTooltip={link.roles.map(role => role && role.roleId ? role.roleId.name : "")} /></td>
+                                        <td><ToolTip dataTooltip={link.roles.filter(role => role && role.roleId && (!role.policies || role.policies.length == 0)).map(role => role.roleId.name)} /></td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a className="edit" onClick={() => handleEdit(link)}><i className="material-icons">edit</i></a>
                                         </td>
