@@ -487,7 +487,7 @@ function StockTakeCreateForm(props) {
         errorStock, errorType, errorApprover, errorUsers, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
     const listGoods = getAllGoods();
     const dataApprover = getApprover();
-
+    console.log(good, listGoods);
     const dataStock = getStock();
     const dataType = getType();
     let quantity = 0;

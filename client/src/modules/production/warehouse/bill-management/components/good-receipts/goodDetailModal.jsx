@@ -38,31 +38,35 @@ function GoodDetailModal(props) {
     }
 
     const checkQuantity = (stock) => {
-        const { stocks } = props;
-        var check = 1;
-        stock.map(x => {
-            if (stocks.listStocks.length > 0) {
-                for (let i = 0; i < stocks.listStocks.length; i++) {
-                    if (x.stock === stocks.listStocks[i]._id) {
-                        if (x.binLocations.length === 0) {
-                            check = 0;
-                        } else {
-                            let totalQuantity = x.binLocations.reduce(function (accumulator, currentValue) {
-                                return Number(accumulator) + Number(currentValue.quantity);
-                            }, 0);
-                            if (x.quantity === totalQuantity) {
-                                check = 1;
+        if (stock) {
+            const { stocks } = props;
+            var check = 1;
+            stock.map(x => {
+                if (stocks.listStocks.length > 0) {
+                    for (let i = 0; i < stocks.listStocks.length; i++) {
+                        if (x.stock === stocks.listStocks[i]._id) {
+                            if (x.binLocations.length === 0) {
+                                check = 0;
+                            } else {
+                                let totalQuantity = x.binLocations.reduce(function (accumulator, currentValue) {
+                                    return Number(accumulator) + Number(currentValue.quantity);
+                                }, 0);
+                                if (x.quantity === totalQuantity) {
+                                    check = 1;
+                                }
                             }
                         }
                     }
                 }
-            }
-        })
+            })
 
-        if (check === 1) {
-            return false
+            if (check === 1) {
+                return false
+            }
+            return true
         }
-        return true
+        return false;
+
     }
 
     const checkLots = (lots, quantity) => {
@@ -163,9 +167,9 @@ function GoodDetailModal(props) {
                                                 </td>
                                                 <td>{x.lots.map((lot, index) =>
                                                     <div key={index}>
-                                                        {(lot.lot && !checkQuantity(lot.lot.stocks)) ? <div>{lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit} <a onClick={() => handleEdit(lot.lot._id)} href={`#${lot.lot._id}`} className="text-green"><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons">precision_manufacturing</i></a></p>}</div> :
+                                                        {(lot.lot && !checkQuantity(lot.lot.stocks)) ? <div>{lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit} <a onClick={() => handleEdit(lot.lot._id)} href={`#${lot.lot._id}`} className="text-green"><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons vertical-align-middle">precision_manufacturing</i></a></p>}</div> :
                                                             <div className="tooltip-abc">
-                                                                {lot.lot.code && <span style={{ color: "red" }}>{lot.lot.code}/{lot.quantity} {x.good.baseUnit} <a onClick={() => handleEdit(lot.lot._id)} href={`#${lot.lot._id}`} className="text-green"><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons">precision_manufacturing</i></a></span>}
+                                                                {lot.lot.code && <span style={{ color: "red" }}>{lot.lot.code}/{lot.quantity} {x.good.baseUnit} <a onClick={() => handleEdit(lot.lot._id)} href={`#${lot.lot._id}`} className="text-green"><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons vertical-align-middle">precision_manufacturing</i></a></span>}
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.inventory_management.text')}</p></span>
                                                             </div>
                                                         }
@@ -173,19 +177,38 @@ function GoodDetailModal(props) {
                                                 </td>
                                                 <td>
                                                     {x.unpassed_quality_control_lots.length === 0 && x.damagedQuantity !== 0 && <div className="tooltip-abc">
-                                                        <span className={checkLots(x.unpassed_quality_control_lots, x.damagedQuantity) ? 'text-green' : 'text-red'}>{x.damagedQuantity}/{x.good.baseUnit}<a onClick={() => handleCreateBillReturn()} className="text-red"><i title={translate('manage_warehouse.bill_management.good_return')} className="material-icons">assignment_returned</i></a></span>
-                                                        <a className="text-green" onClick={() => handleAddLot(x)} ><i title={translate('manage_warehouse.inventory_management.add_lot')} className="material-icons">add_box</i></a>
-                                                        <a className="text-green" ><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons">precision_manufacturing</i></a>
-                                                        {!checkLots(x.unpassed_quality_control_lots, x.damagedQuantity) && <span className="tooltiptext" style={{ right: "80%", bottom: "-100%", textAlign: "left", padding: "5px 0 5px 5px", width: "200px" }}><p style={{ whiteSpace: 'pre-wrap', color: "white" }}>{translate('manage_warehouse.bill_management.process_not_passed_goods')}</p></span>}
+                                                        <span className={checkLots(x.unpassed_quality_control_lots, x.damagedQuantity) ? 'text-green' : 'text-red'}>{x.damagedQuantity}/{x.good.baseUnit}</span>
+                                                        <a className="text-green" onClick={() => handleAddLot(x)} ><i title={translate('manage_warehouse.inventory_management.add_lot')} className="material-icons vertical-align-middle">add_box</i></a>
+                                                        <a className="text-green" ><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons vertical-align-middle">precision_manufacturing</i></a>
+                                                        {!checkLots(x.unpassed_quality_control_lots, x.damagedQuantity) &&
+                                                            <span className="tooltiptext" style={{ right: "80%", bottom: "-100%", textAlign: "left", padding: "5px 0 5px 5px", width: "200px" }}>
+                                                                <p style={{ whiteSpace: 'pre-wrap', color: "white" }}>{translate('manage_warehouse.bill_management.process_not_passed_goods')}</p>
+                                                            </span>}
                                                     </div>}
                                                     {x.unpassed_quality_control_lots.length !== 0 &&
                                                         x.unpassed_quality_control_lots.map((unpassed_quality_control_lot, index) =>
                                                             <div key={index}>
-                                                                {unpassed_quality_control_lot.lot && ((!checkQuantity(unpassed_quality_control_lot.lot.stocks)) ? <div>{unpassed_quality_control_lot.lot.code && <p>{unpassed_quality_control_lot.lot.code}/{unpassed_quality_control_lot.quantity} {x.good.baseUnit} <a onClick={() => handleEdit(unpassed_quality_control_lot.lot._id)} href={`#${unpassed_quality_control_lot.lot._id}`} className="text-green"><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons">precision_manufacturing</i></a></p>}</div> :
+                                                                {unpassed_quality_control_lot.lot && ((!checkQuantity(unpassed_quality_control_lot.lot.stocks)) ?
+                                                                    <div>
+                                                                        {unpassed_quality_control_lot.lot.code &&
+                                                                            <p>
+                                                                                {unpassed_quality_control_lot.lot.code}/{unpassed_quality_control_lot.quantity} {x.good.baseUnit}
+                                                                                {/* <a onClick={() => handleEdit(unpassed_quality_control_lot.lot._id)} href={`#${unpassed_quality_control_lot.lot._id}`} className="text-green">
+                                                                                    <i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons vertical-align-middle">precision_manufacturing</i>
+                                                                                </a> */}
+                                                                                <a onClick={() => handleCreateBillReturn()} className="text-red">
+                                                                                    <i title={translate('manage_warehouse.bill_management.good_return')} className="material-icons vertical-align-middle">assignment_returned</i>
+                                                                                </a>
+                                                                            </p>}
+                                                                    </div> :
                                                                     <div className="tooltip-abc">
-                                                                        {unpassed_quality_control_lot.lot.code && <span style={{ color: "red" }}>{unpassed_quality_control_lot.lot.code}/{unpassed_quality_control_lot.quantity} {x.good.baseUnit} <a onClick={() => handleEdit(unpassed_quality_control_lot.lot._id)} href={`#${unpassed_quality_control_lot.lot._id}`} className="text-green"><i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons">precision_manufacturing</i></a></span>}
-                                                                        <a className="text-green" onClick={() => handleAddLot(x)} ><i title={translate('manage_warehouse.inventory_management.add_lot')} className="material-icons">add_box</i></a>
-                                                                        <a onClick={() => handleCreateBillReturn()} className="text-red"><i title={translate('manage_warehouse.bill_management.good_return')} className="material-icons">assignment_returned</i></a>
+                                                                        {unpassed_quality_control_lot.lot.code &&
+                                                                            <span style={{ color: "red" }}>
+                                                                                {unpassed_quality_control_lot.lot.code}/{unpassed_quality_control_lot.quantity} {x.good.baseUnit}
+                                                                                <a onClick={() => handleEdit(unpassed_quality_control_lot.lot._id)} href={`#${unpassed_quality_control_lot.lot._id}`} className="text-green">
+                                                                                    <i title={translate('manage_warehouse.bill_management.arrange_goods_into_the_warehouse')} className="material-icons vertical-align-middle">precision_manufacturing</i>
+                                                                                </a>
+                                                                            </span>}
                                                                         <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.inventory_management.text')}</p></span>
                                                                     </div>)
                                                                 }

@@ -3,6 +3,7 @@ const openapi_taskManagementRoute = {
     "/task/tasks": {
         "get": { // Lấy công việc theo tùy chọn
             "tags": [apiTagNames.TASK_MANAGEMENT],
+            "security": [{ ApiKeyAuth: [] }],
             "description": "1. Lấy các công việc sắp hết hạn và quá hạn của nhân viên {type = 'all_by_user'}\n" +
                            "2. Lấy công việc theo vai trò người thực hiện chính {type = 'responsible'}\n" +
                            "3. Lấy công việc theo vai trò người tư vấn {type = 'consulted'}\n" +

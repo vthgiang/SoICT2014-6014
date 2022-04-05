@@ -536,34 +536,34 @@ function GoodReturnEditForm(props) {
         if (oldStatus === '1') {
             statusArr = [
                 { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') }
+            ]
+        }
+        if (oldStatus === '5') {
+            statusArr = [
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') }
             ]
         }
         if (oldStatus === '2') {
             statusArr = [
                 { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') },
             ]
         }
         if (oldStatus === '3') {
             statusArr = [
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
                 { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
-            ]
-        }
-        if (oldStatus === '5') {
-            statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') },
             ]
         }
 
-        if (oldStatus === '4') {
+        if (oldStatus === '7') {
             statusArr = [
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') }
             ]
         }
 

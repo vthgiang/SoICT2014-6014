@@ -66,6 +66,8 @@ function QualityControlForm(props) {
                 content: state.content,
             },
             goods: state.listGoods,
+            status: (state.status !== "" || state.status === 1) ? "4" : "3",
+            oldStatus: "3",
         }
         props.editBill(state.billId, data);
     }
@@ -144,10 +146,10 @@ function QualityControlForm(props) {
                                                     <td>{x.quantity}</td>
                                                     <td>
                                                         {(checkLots(x.quantity, index))[0] ?
-                                                            <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'green 1px solid', 'width': '30%' }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
+                                                            <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'green 1px solid' }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
                                                             :
                                                             <div className="tooltip-abc">
-                                                                <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'red 1px solid', 'paddingBottom': '15px', 'color': "red", 'width': '30%' }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
+                                                                <input placeholder='Nhập số lượng đạt kiểm định' style={{ 'border': 'red 1px solid', 'paddingBottom': '15px', 'color': "red" }} type="number" value={x.realQuantity} className="form-control" onChange={(e) => handleQualityControlEachProduct(index, e.target.value)} />
                                                                 <span className="tooltiptext"><p style={{ color: "white" }}>{checkLots(x.quantity, index)[1]}</p></span>
                                                             </div>}
                                                     </td>

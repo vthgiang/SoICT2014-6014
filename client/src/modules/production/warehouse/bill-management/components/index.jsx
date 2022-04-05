@@ -181,7 +181,7 @@ function BillManagement(props) {
         })
     }
 
-    const handleSubmitSearch = () => {
+    const handleSubmitSearch = (value) => {
         let data = {
             page: '1',
             limit: state.limit,
@@ -337,7 +337,7 @@ function BillManagement(props) {
 
     const handleInProcessingStatus = (bill) => {
         const data = {
-            status: '5',
+            status: '3',
             oldStatus: bill.status,
         }
         props.editBill(bill._id, data);
@@ -345,7 +345,7 @@ function BillManagement(props) {
 
     const handleCancelBill = (bill) => {
         const data = {
-            status: '4',
+            status: '7',
             oldStatus: bill.status,
         }
         props.editBill(bill._id, data);
@@ -353,7 +353,7 @@ function BillManagement(props) {
 
     const handleCompleteBill = (bill) => {
         const data = {
-            status: '2',
+            status: '5',
             oldStatus: bill.status,
         }
         props.editBill(bill._id, data);
