@@ -12,7 +12,7 @@ function CategoryDetailForm(props) {
     })
 
     useEffect(() => {
-        if(props.categoryId !== state.categoryId){
+        if (props.categoryId !== state.categoryId) {
             setState({
                 ...state,
                 categoryId: props.categoryId,
@@ -29,7 +29,7 @@ function CategoryDetailForm(props) {
     }, [props.categoryId])
 
 
-    const { translate, categories, goods, parentName} = props;
+    const { translate, categories, goods, parentName } = props;
     const { code, name, type, description, } = state;
     const { listGoodsByCategory } = goods;
     return (
@@ -67,10 +67,10 @@ function CategoryDetailForm(props) {
                             {description}
                         </div>
                     </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <strong>{translate('manage_warehouse.category_management.good')}:&emsp; </strong>
-                            <div style={{ marginLeft: "20%" }}>{listGoodsByCategory.map((x, index) => <p key={index}>{x.name}</p>)}</div>
-                        </div>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <strong>{translate('manage_warehouse.category_management.good')}:&emsp; </strong>
+                        <div style={{ marginLeft: "20%" }}>{listGoodsByCategory.map((x, index) => <p key={index}>{x.name}</p>)}</div>
+                    </div>
                 </form>
             </DialogModal>
         </React.Fragment>

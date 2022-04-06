@@ -47,7 +47,7 @@ function CategoryEditTree(props) {
             msg = translate('document.no_blank_name');
         }
         if (willUpdateState) {
-             setState({
+            setState({
                 ...state,
                 categoryName: value,
                 errorName: msg
@@ -90,7 +90,7 @@ function CategoryEditTree(props) {
             validateCode(state.categoryCode, false)
         return result;
     }
-    
+
 
     const save = () => {
         const { categoryId, categoryName, categoryDescription, categoryParent, categoryCode } = state;

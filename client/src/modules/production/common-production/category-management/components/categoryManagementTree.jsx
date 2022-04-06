@@ -104,7 +104,7 @@ function CategoryManagementTree(props) {
 
     const changeParentName = (parentId) => {
         let name = "Danh mục cấp 1";
-        if (parentId){
+        if (parentId) {
             list.forEach((item) => {
                 if (item._id === parentId) {
                     name = item.name;
@@ -123,7 +123,7 @@ function CategoryManagementTree(props) {
                 code: item.code,
                 name: item.name,
                 description: item.description,
-                parent: changeParentName (item.parent), 
+                parent: changeParentName(item.parent),
             }
         })
         let exportData = {
@@ -154,7 +154,7 @@ function CategoryManagementTree(props) {
 
     const { categoryParent, deleteNode, currentCategory } = state;
     const { translate, categories } = props;
-    const { list,  tree } = categories.categoryToTree;
+    const { list, tree } = categories.categoryToTree;
 
     const dataTree = list ? list.map(node => {
         return {
@@ -174,10 +174,10 @@ function CategoryManagementTree(props) {
 
             <div className="form-inline">
                 <div className="dropdown pull-right">
-                        {/* Xuất báo cáo */}
+                    {/* Xuất báo cáo */}
                     <ExportExcel id="export-asset-type" exportData={exportData} style={{ marginLeft: '5px' }} />
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_warehouse.category_management.add')}
-                        disabled={categoryParent.length > 1 ? true : false }  onClick={handleSave} >{translate('manage_warehouse.category_management.add')}</button>
+                        disabled={categoryParent.length > 1 ? true : false} onClick={handleSave} >{translate('manage_warehouse.category_management.add')}</button>
                     <ul className="dropdown-menu pull-right">
                         <li><a href="#modal-create-category-good" title="Add category" onClick={(event) => { handleAddCategory(event) }}>{translate('manage_warehouse.category_management.add')}</a></li>
                         {/* <li><a href="#modal_import_file_category_good" title="ImportForm" onClick={(event) => { handImportFile(event) }}>ImportFile</a></li> */}

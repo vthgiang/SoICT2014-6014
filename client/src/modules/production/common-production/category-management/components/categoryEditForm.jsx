@@ -88,22 +88,15 @@ function CategoryEditForm(props) {
         }
     }
 
-    if (props.categoryParent !== state.categoryParent && props.categoryParent && props.categoryParent.length) {
-        setState({
-            ...state,
-            categoryParent: props.categoryParent,
-        })
-    }
-
     useEffect(() => {
-        if(props.categoryId !== state.categoryId){
+        if (props.categoryId !== state.categoryId) {
             setState({
                 ...state,
                 categoryId: props.categoryId,
                 code: props.code,
                 name: props.name,
                 type: props.type,
-                goods: props.goods,
+                parent: props.parent,
                 description: props.description,
                 errorOnCode: undefined,
                 errorOnName: undefined
@@ -140,7 +133,7 @@ function CategoryEditForm(props) {
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.type')}<span className="text-red">*</span></label>
-                        <TreeSelect data={list} value={!parent ? "" : [parent]} handleChange={handleParent} mode="radioSelect" />
+                        <TreeSelect data={list} value={parent} handleChange={handleParent} mode="radioSelect" />
                     </div>
                     {/* <div className="form-group">
                             <label>{translate('manage_warehouse.category_management.good')}</label>
