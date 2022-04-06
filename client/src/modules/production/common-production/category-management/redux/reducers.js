@@ -80,6 +80,7 @@ export function categories(state = initState, action){
 
             if(index !== -1){
                 state.categoryToTree.list[index] = action.payload;
+                state.listPaginate[index] = action.payload;
             }
             return {
                 ...state,

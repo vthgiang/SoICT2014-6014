@@ -53,12 +53,12 @@ function CategoryEditForm(props) {
         return msg === undefined;
     }
 
-    const handleTypeChange = (value) => {
-        setState({
-            ...state,
-            type: value[0]
-        })
-    }
+    // const handleTypeChange = (value) => {
+    //     setState({
+    //         ...state,
+    //         type: value[0]
+    //     })
+    // }
 
     const handleDescriptionChange = (e) => {
         let value = e.target.value;
@@ -88,21 +88,19 @@ function CategoryEditForm(props) {
         }
     }
 
-    useEffect(() => {
-        if (props.categoryId !== state.categoryId) {
-            setState({
-                ...state,
-                categoryId: props.categoryId,
-                code: props.code,
-                name: props.name,
-                type: props.type,
-                parent: props.parent,
-                description: props.description,
-                errorOnCode: undefined,
-                errorOnName: undefined
-            })
-        }
-    }, [props.categoryId])
+    if (props.categoryId !== state.categoryId) {
+        setState({
+            ...state,
+            categoryId: props.categoryId,
+            code: props.code,
+            name: props.name,
+            type: props.type,
+            parent: props.parent,
+            description: props.description,
+            errorOnCode: undefined,
+            errorOnName: undefined
+        })
+    }
 
     const { translate, categories } = props;
     const { list } = categories.categoryToTree;
@@ -133,20 +131,8 @@ function CategoryEditForm(props) {
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.type')}<span className="text-red">*</span></label>
-                        <TreeSelect data={list} value={parent} handleChange={handleParent} mode="radioSelect" />
+                        <TreeSelect data={list} value={parent ? parent : ''} handleChange={handleParent} mode="radioSelect" />
                     </div>
-                    {/* <div className="form-group">
-                            <label>{translate('manage_warehouse.category_management.good')}</label>
-                            <SelectBox
-                                    id={`select-edit-category-goods${id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={goods}
-                                    items= {dataSelectBox}
-                                    onChange={handleGoodsChange}
-                                    multiple={true}
-                                />
-                        </div> */}
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.description')}</label>
                         <textarea type="text" className="form-control" value={description ? description : ''} onChange={handleDescriptionChange} />
