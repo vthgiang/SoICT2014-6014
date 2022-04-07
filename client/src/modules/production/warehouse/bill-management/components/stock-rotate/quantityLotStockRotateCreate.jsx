@@ -9,6 +9,7 @@ function QuantityLotStockRotateCreate(props) {
         quantity: '',
         returnQuantity: '',
         damagedQuantity: '',
+        realQuantity: '',
         note: ''
     }
 

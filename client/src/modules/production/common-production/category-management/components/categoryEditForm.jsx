@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
 
 import { CategoryActions } from '../redux/actions';
 function CategoryEditForm(props) {
@@ -53,12 +53,12 @@ function CategoryEditForm(props) {
         return msg === undefined;
     }
 
-    const handleTypeChange = (value) => {
-        setState({
-            ...state,
-            type: value[0]
-        })
-    }
+    // const handleTypeChange = (value) => {
+    //     setState({
+    //         ...state,
+    //         type: value[0]
+    //     })
+    // }
 
     const handleDescriptionChange = (e) => {
         let value = e.target.value;
@@ -75,33 +75,38 @@ function CategoryEditForm(props) {
         return result;
     }
 
+    const handleParent = (value) => {
+        setState({
+            ...state,
+            parent: value[0]
+        });
+    };
+
     const save = () => {
         if (isFormValidated()) {
             props.editCategory(props.categoryId, state);
         }
     }
 
-    useEffect(() => {
-        if(props.categoryId !== state.categoryId){
-            setState({
-                ...state,
-                categoryId: props.categoryId,
-                code: props.code,
-                name: props.name,
-                type: props.type,
-                goods: props.goods,
-                description: props.description,
-                errorOnCode: undefined,
-                errorOnName: undefined
-            })
-        }
-    }, [props.categoryId])
+    if (props.categoryId !== state.categoryId) {
+        setState({
+            ...state,
+            categoryId: props.categoryId,
+            code: props.code,
+            name: props.name,
+            type: props.type,
+            parent: props.parent,
+            description: props.description,
+            errorOnCode: undefined,
+            errorOnName: undefined
+        })
+    }
 
     const { translate, categories } = props;
-    const { errorOnName, errorOnCode, id, code, name, type, description } = state;
+    const { list } = categories.categoryToTree;
+    const { errorOnName, errorOnCode, id, code, name, type, description, parent } = state;
     return (
         <React.Fragment>
-
             <DialogModal
                 modalID="modal-edit-category" isLoading={categories.isLoading}
                 formID="form-edit-category"
@@ -126,32 +131,8 @@ function CategoryEditForm(props) {
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.type')}<span className="text-red">*</span></label>
-                        <SelectBox
-                            id={`select-edit-category-type${id}`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={type ? type : ''}
-                            items={[{ value: "product", text: translate('manage_warehouse.category_management.product') },
-                            { value: "material", text: translate('manage_warehouse.category_management.material') },
-                            { value: "equipment", text: translate('manage_warehouse.category_management.equipment') },
-                            { value: "waste", text: translate('manage_warehouse.category_management.waste') }
-                            ]}
-                            onChange={(e) => { handleTypeChange(e) }}
-                            multiple={false}
-                        />
+                        <TreeSelect data={list} value={parent ? parent : ''} handleChange={handleParent} mode="radioSelect" />
                     </div>
-                    {/* <div className="form-group">
-                            <label>{translate('manage_warehouse.category_management.good')}</label>
-                            <SelectBox
-                                    id={`select-edit-category-goods${id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={goods}
-                                    items= {dataSelectBox}
-                                    onChange={handleGoodsChange}
-                                    multiple={true}
-                                />
-                        </div> */}
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.description')}</label>
                         <textarea type="text" className="form-control" value={description ? description : ''} onChange={handleDescriptionChange} />

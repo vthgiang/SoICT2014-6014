@@ -72,8 +72,30 @@ exports.getCategoryToTree = async (portal) => {
 }
 
 exports.getCategoriesByType = async (query, portal) => {
-    let { type } = query;
-    return await Category(connect(DB_CONNECTION, portal)).find({ type: type });
+    var { page, limit,} = query;
+    if (!page || !limit){
+        return await Category(connect(DB_CONNECTION, portal))
+        .find( options )
+    } else {
+        let option = {};
+        if (query.key == 'code') {
+            option.code = new RegExp(query.value, "i")
+        }
+
+        else if (query.key == 'name') {
+            option.name = new RegExp(query.value, "i")
+        }
+
+        // else if (query.key == 'parent') {
+        //     option.parent = new RegExp(query.value, "i")
+        // }
+
+        return await Category(connect(DB_CONNECTION, portal))
+            .paginate(option, {
+                page,
+                limit
+            })
+    }       
 }
 
 exports.createCategory = async (data, portal) => {
@@ -116,5 +138,26 @@ exports.deleteManyCategories = async (array, portal) => {
         await deleteNode(array[i], portal);
     }
     
+    return await this.getCategoryToTree(portal);
+}
+
+exports.importCategory = async (portal, data) => {
+    if (data?.length) {
+        const dataLength = data.length;
+        for (let i = 0; i < dataLength; i++){
+            if (data[i].parent) {
+                const getCategoryParent = await Category(connect(DB_CONNECTION, portal)).findOne({ name: data[i]?.parent?.trim() });
+                data[i].parent = getCategoryParent?._id;
+            } else {
+                data[i].parent = null;
+            }
+            await Category(connect(DB_CONNECTION, portal)).create({
+                code: data[i].code,
+                name: data[i]?.name?.trim(),
+                description: data[i].description,
+                parent: data[i].parent
+            });
+        }
+    }
     return await this.getCategoryToTree(portal);
 }

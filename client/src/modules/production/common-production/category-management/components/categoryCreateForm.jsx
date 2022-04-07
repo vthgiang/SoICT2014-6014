@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
 
 import { CategoryActions } from '../redux/actions';
 function CategoryCreateForm(props) {
@@ -55,12 +55,12 @@ function CategoryCreateForm(props) {
         return msg === undefined;
     }
 
-    const handleTypeChange = (value) => {
+    const handleParent = (value) => {
         setState({
             ...state,
-            type: value[0]
+            categoryParent: value[0]
         });
-    }
+    };
 
     const handleDescriptionChange = (e) => {
         let value = e.target.value;
@@ -84,7 +84,8 @@ function CategoryCreateForm(props) {
     }
 
     const { translate, categories } = props;
-    const { errorOnName, errorOnCode, id, code, name, type, description } = state;
+    const { errorOnName, errorOnCode, code, name, description, parent } = state;
+    const { list } = categories.categoryToTree;
     return (
         <React.Fragment>
             <ButtonModal modalID="modal-create-category" button_name={translate('manage_warehouse.category_management.add')} title={translate('manage_warehouse.category_management.add_title')} />
@@ -112,20 +113,8 @@ function CategoryCreateForm(props) {
                         <ErrorLabel content={errorOnName} />
                     </div>
                     <div className="form-group">
-                        <label>{translate('manage_warehouse.category_management.type')}<span className="text-red">*</span></label>
-                        <SelectBox
-                            id={`type${id}`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={type}
-                            items={[{ value: "product", text: translate('manage_warehouse.category_management.product') },
-                            { value: "material", text: translate('manage_warehouse.category_management.material') },
-                            { value: "equipment", text: translate('manage_warehouse.category_management.equipment') },
-                            { value: "waste", text: translate('manage_warehouse.category_management.waste') }
-                            ]}
-                            onChange={handleTypeChange}
-                            multiple={false}
-                        />
+                        <label>{translate('document.administration.archives.parent')}</label>
+                        <TreeSelect data={list} value={parent ? parent : ''} handleChange={handleParent} mode="radioSelect" />
                     </div>
                     <div className="form-group">
                         <label>{translate('manage_warehouse.category_management.description')}</label>
