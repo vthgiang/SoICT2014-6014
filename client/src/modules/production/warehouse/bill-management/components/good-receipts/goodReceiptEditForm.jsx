@@ -846,7 +846,6 @@ function GoodReceiptEditForm(props) {
         { text: "Đánh lô hàng hóa" },
         { text: "Xếp hàng vào kho" }
     ]
-    console.log(status);
 
     return (
         <React.Fragment>

@@ -385,7 +385,7 @@ function IssueManagement(props) {
                                         }
                                         {/*Chuyển phiếu sang trạng thái đã hủy*/}
                                         {
-                                            props.checkRoleCanEdit(x) && x.status !== '7' &&
+                                            props.checkRoleCanEdit(x) && (x.status === '5' || x.status === '3') &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.cancel_bill')}

@@ -3,6 +3,7 @@ import { BillConstants } from './constants';
 
 export const BillActions = {
     getBillsByType,
+    getAllBillsByGroup,
     getBillByGood,
     getDetailBill,
     createBill,
@@ -48,6 +49,27 @@ function getBillsByType(data) {
             .catch(err => {
                 dispatch({
                     type: BillConstants.GET_BILL_BY_TYPE_FAILURE,
+                    error: err
+                })
+            })
+    }
+}
+
+function getAllBillsByGroup(data) {
+    return dispatch => {
+        dispatch({
+            type: BillConstants.GET_ALL_BILLS_BY_GROUP_REQUEST
+        })
+        BillServices.getAllBillsByGroup(data)
+            .then(res => {
+                dispatch({
+                    type: BillConstants.GET_ALL_BILLS_BY_GROUP_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: BillConstants.GET_ALL_BILLS_BY_GROUP_FAILURE,
                     error: err
                 })
             })
@@ -206,17 +228,17 @@ function getNumberBills(data) {
             type: BillConstants.GET_NUMBER_BILL_REQUEST,
         })
         BillServices.getNumberBills(data)
-        .then(res => {
-            dispatch({
-                type: BillConstants.GET_NUMBER_BILL_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: BillConstants.GET_NUMBER_BILL_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(error => {
-            dispatch({
-                type: BillConstants.GET_NUMBER_BILL_FAILURE,
-                error
+            .catch(error => {
+                dispatch({
+                    type: BillConstants.GET_NUMBER_BILL_FAILURE,
+                    error
+                })
             })
-        })
     }
 }

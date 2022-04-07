@@ -560,6 +560,13 @@ function StockTakeEditForm(props) {
     const dataType = getType();
     const dataStatus = getStatus();
     // const checkApproved = checkApproved(approvers, listQualityControlStaffs)
+    const timelineTextArr = [
+        { text: "Tạo phiếu" },
+        { text: "Phê duyệt phiếu" },
+        { text: "Thực hiện phiếu" },
+        { text: "Kiểm định chất lượng" },
+        { text: "Hoàn thành" },
+    ]
 
     return (
         <React.Fragment>
@@ -576,6 +583,28 @@ function StockTakeEditForm(props) {
             >
                 <QuantityLotStockTakeEdit group={group} good={good} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-take`}>
+                {status !== '7' && <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width: (parseInt(status - 1)) / 4 * 100 + "%" }}></div>
+                        <div className="timeline-items">
+                            {timelineTextArr.map((item, index) => (
+                                <div className={`timeline-item ${index < parseInt(status) ? "active" : ""}`} key={index} >
+                                    <div className={`timeline-contain`}>
+                                        {item.text}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>}
+                    {status === '7' && <div className="timeline-create" style={{ width: "0%" }}>
+                        <div className="timeline-progress"></div>
+                        <div className="timeline-items">
+                            <div className={`timeline-item cancel`}>
+                                <div className={`timeline-contain`}>
+                                    {"Phiếu đã hủy"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>

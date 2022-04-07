@@ -2,6 +2,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const BillServices = {
     getBillsByType,
+    getAllBillsByGroup,
     getBillByGood,
     getDetailBill,
     createBill,
@@ -15,6 +16,14 @@ export const BillServices = {
 function getBillsByType(params) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/bills`,
+        method: 'GET',
+        params
+    }, false, true, 'manage_warehouse.bill_management')
+}
+
+function getAllBillsByGroup(params) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/bills/get-all-bills-by-group`,
         method: 'GET',
         params
     }, false, true, 'manage_warehouse.bill_management')

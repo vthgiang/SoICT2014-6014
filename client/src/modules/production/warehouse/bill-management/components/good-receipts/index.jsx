@@ -30,7 +30,7 @@ function ReceiptManagement(props) {
     })
 
     const { translate, bills, stocks, user, lots } = props;
-    const { listPaginate, totalPages, page } = bills;
+    const { listPaginate, totalPages, page, listBillByGroup} = bills;
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow, actionAddLots, billStatusState } = state;
     const dataPartner = props.getPartner();
@@ -156,6 +156,10 @@ function ReceiptManagement(props) {
             actionAddLots: '3',
         })
         window.$('#modal-good-detail').modal('show');
+    }
+
+    const handleSearchByStatus = (status) => {
+        props.handleSearchByStatus(status);
     }
 
     return (
@@ -289,15 +293,25 @@ function ReceiptManagement(props) {
                         <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={props.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                     </div>
                 </div>
-                <div className="box-body" style={{width: "40%"}}>
+                <div className="box-body row" style={{display: 'flex', width: "70%", marginLeft: "5%"}}>
                         <ul className="todo-list">
                             <li>
-                                <span className="text"><a  href='/good-management'>Tổng số  trong kho</a></span>
-                                <span className="label label-info" style={{ fontSize: '11px' }}>adas asdasd adas</span>
+                                <span className="text" style={{cursor: "pointer"}}><a onClick={() => handleSearchByStatus('1')}>Số lượng phiếu chờ phê duyệt</a></span>
+                                <span className="label label-info" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '1').length} Phiếu</span>
+                            </li>
+                            <li> 
+                                <span className="text" style={{cursor: "pointer"}}><a onClick={() => handleSearchByStatus('2')}>Số lượng phiếu chờ thực hiện </a></span>
+                                <span className="label label-warning" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '2').length} Phiếu</span>
+                            </li>
+                        </ul>
+                        <ul className="todo-list">
+                            <li>
+                                <span className="text" style={{cursor: "pointer"}}><a  onClick={() => handleSearchByStatus('3')}>Số lượng phiếu chờ kiểm định chất lượng</a></span>
+                                <span className="label label-info" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '3').length} Phiếu</span>
                             </li>
                             <li>
-                                <span className="text"><a href="#">Tổng số lô hàng của </a></span>
-                                <span className="label label-warning" style={{ fontSize: '11px' }}>{translate('manage_warehouse.inventory_management.lots')}</span>
+                                <span className="text" style={{cursor: "pointer"}}><a onClick={() => handleSearchByStatus('5')}>Số lượng phiếu đã hoàn thành </a></span>
+                                <span className="label label-warning" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '5').length} Phiếu</span>
                             </li>
                         </ul>
                     </div>
@@ -490,7 +504,7 @@ function ReceiptManagement(props) {
                                         }
                                         {/*Chuyển phiếu sang trạng thái đã hủy*/}
                                         {
-                                            props.checkRoleCanEdit(x) && x.status !== '7' &&
+                                            props.checkRoleCanEdit(x) && (x.status === '5' || x.status === '3') &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.cancel_bill')}
@@ -519,7 +533,7 @@ function ReceiptManagement(props) {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    editBill: BillActions.editBill
+    editBill: BillActions.editBill,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ReceiptManagement));

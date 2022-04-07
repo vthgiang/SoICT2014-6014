@@ -117,26 +117,26 @@ function QualityControlForm(props) {
                             multiple={false}
                         />
                     </div>
-                    <div className={`form-group`}>
-                        <label>{translate('manage_warehouse.bill_management.quality_control_of_each_goods')}<span className="text-red">*</span></label>
-                        <fieldset className="scheduler-border">
-                            {/* Bảng thông tin chi tiết */}
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.quantity_passed_test')}>{translate('manage_warehouse.bill_management.quantity_passed_test')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
-                                    </tr>
-                                </thead>
+                    {(typeof listGoods === 'undefined' || listGoods.length === 0) ? '' :
+                        <div className={`form-group`}>
+                            <label>{translate('manage_warehouse.bill_management.quality_control_of_each_goods')}<span className="text-red">*</span></label>
+                            <fieldset className="scheduler-border">
+                                {/* Bảng thông tin chi tiết */}
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.quantity_passed_test')}>{translate('manage_warehouse.bill_management.quantity_passed_test')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.description')}</th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody id={`good-bill-edit`}>
-                                    {
-                                        (typeof listGoods === 'undefined' || listGoods.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                    <tbody id={`good-bill-edit`}>
+                                        {
                                             listGoods.map((x, index) =>
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
@@ -156,11 +156,12 @@ function QualityControlForm(props) {
                                                     <td>{x.description}</td>
                                                 </tr>
                                             )
-                                    }
-                                </tbody>
-                            </table>
-                        </fieldset>
-                    </div>
+                                        }
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    }
                 </form>
                 <form id="form-quality-control-bill">
                     <div className="form-group">

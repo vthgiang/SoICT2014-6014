@@ -23,7 +23,6 @@ function BookManagement(props) {
     const { listStocks } = stocks;
     const { startDate, endDate, group, currentRow } = state;
     const dataPartner = props.getPartner();
-    console.log(listPaginate);
     return (
         <div id="bill-stock-book">
             <div className="box-body qlcv">

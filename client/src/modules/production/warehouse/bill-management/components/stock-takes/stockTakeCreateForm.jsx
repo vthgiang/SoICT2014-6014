@@ -501,6 +501,13 @@ function StockTakeCreateForm(props) {
         })
     }
     good.quantity = quantity;
+    const timelineTextArr = [
+        {text: "Tạo phiếu"},
+        {text: "Phê duyệt phiếu"},
+        {text: "Thực hiện phiếu"},
+        {text: "Kiểm định chất lượng"},
+        {text: "Hoàn thành"},
+    ]
 
     return (
         <React.Fragment>
@@ -518,6 +525,18 @@ function StockTakeCreateForm(props) {
             >
                 {/* <QuantityCreateForm group={group} good={good} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} /> */}
                 <form id={`form-create-bill-take`}>
+                <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width: "0%" }}></div>
+                        <div className="timeline-items">
+                            {timelineTextArr.map((item, index) => (
+                                <div className={`timeline-item ${index === 0 ? "active" : ""}`} key={index} >
+                                    <div className={`timeline-contain`}>
+                                        {item.text}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
