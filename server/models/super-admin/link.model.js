@@ -24,7 +24,7 @@ const LinkSchema = new Schema({
                 ref: "Attribute"
             },
             // thuộc tính của role
-            name: String, // tên thuộc tính
+            // name: String, // tên thuộc tính
             value: String, //giá trị
             description: String // mô tả
         },
@@ -37,7 +37,7 @@ const LinkSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Company'
     },
-},{
+}, {
     timestamps: true,
     toJSON: { virtuals: true }
 });
@@ -51,7 +51,7 @@ LinkSchema.virtual('roles', {
 LinkSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Link)
+    if (!db.models.Link)
         return db.model('Link', LinkSchema);
     return db.models.Link;
 }

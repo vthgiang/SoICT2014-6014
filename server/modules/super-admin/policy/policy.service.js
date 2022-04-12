@@ -44,9 +44,9 @@ exports.createPolicy = async (portal, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName };
+                    // array[i] = { ...array[i], name: attribute.attributeName };
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -61,7 +61,7 @@ exports.createPolicy = async (portal, data) => {
         const dataAttr = attrArray.map(attr => {
             return {
                 attributeId: attr.attributeId,
-                name: attr.name.trim(),
+                // name: attr.name.trim(),
                 value: attr.value.trim(),
             }
         });
@@ -186,9 +186,9 @@ exports.editPolicy = async (portal, id, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName };
+                    // array[i] = { ...array[i], name: attribute.attributeName };
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -203,7 +203,7 @@ exports.editPolicy = async (portal, id, data) => {
         const dataAttr = attrArray.map(attr => {
             return {
                 attributeId: attr.attributeId,
-                name: attr.name.trim(),
+                // name: attr.name.trim(),
                 value: attr.value.trim(),
             }
         });
@@ -248,32 +248,20 @@ exports.deletePolicies = async (portal, policyIds) => {
     let policies = await Policy(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: policyIds.map(item => mongoose.Types.ObjectId(item)) } });
 
+    policyIds.forEach(async policyId => {
+        await this.cleanPolicy(portal, policyId)
+    })
+
     return policies;
 }
 
+
 /**
- * Thêm policy cho quan hệ cho role và link thỏa mãn
- * @portal portal của db
- * @policyId id của link
+ * Lấy ra danh sách thỏa mãn rule check thuộc tính
+ * @input array đầu vào
+ * @policyAttributes thuộc tính set trong policy
+ * @policyRule rule check set trong policy
  */
-exports.relationshipLinkRole = async (portal, linkId, roleArr) => {
-    await Privilege(connect(DB_CONNECTION, portal))
-        .deleteMany({
-            resourceId: linkId,
-            resourceType: 'Link'
-        });
-    let data = roleArr.map(role => {
-        return {
-            resourceId: linkId,
-            resourceType: 'Link',
-            roleId: role
-        };
-    });
-    let privilege = await Privilege(connect(DB_CONNECTION, portal)).insertMany(data);
-
-    return privilege;
-}
-
 exports.ruleCheck = (input, policyAttributes, policyRule) => {
     let satisfied = [];
     let count = 0;
@@ -362,6 +350,60 @@ exports.ruleCheck = (input, policyAttributes, policyRule) => {
     return satisfied;
 }
 
+/**
+ * Xóa policyId khỏi các privielges và userroles hiện có policyId
+ * @portal portal của db
+ * @policyId id của policy
+ */
+exports.cleanPolicy = async (portal, policyId) => {
+    // xóa các privilege có only policyId hoặc remove policyId khỏi Privilege nếu policies > 1
+    let currentPrivilegesHaveThisPolicy = await Privilege(connect(DB_CONNECTION, portal))
+        .find({ policies: policyId });
+    if (currentPrivilegesHaveThisPolicy.length > 0) {
+        console.log('currentPrivilegesHaveThisPolicy', currentPrivilegesHaveThisPolicy)
+
+        currentPrivilegesHaveThisPolicy.forEach(async p => {
+            if (p.policies.length == 1) {
+                await Privilege(connect(DB_CONNECTION, portal)).deleteOne({ _id: p._id })
+            }
+            else {
+                p.policies.splice(p.policies.indexOf(policyId), 1)
+                p.save()
+            }
+        })
+    }
+
+    // Xóa policyId khỏi UserRole policies
+    let currentUserRoleHaveThisPolicy = await UserRole(connect(DB_CONNECTION, portal)).find({ policies: policyId });
+    if (currentUserRoleHaveThisPolicy.length > 0) {
+        console.log('currentUserRoleHaveThisPolicy', currentUserRoleHaveThisPolicy)
+        currentUserRoleHaveThisPolicy.forEach(async ur => {
+            // await UserRole(connect(DB_CONNECTION, portal)).updateOne({ _id: ur._id }, {
+            //     $set: {
+            //         policies: ur.policies.splice(ur.policies.indexOf(policyId), 1)
+            //     }
+            // });
+            // let urr = await UserRole(connect(DB_CONNECTION, portal)).find({ _id: ur.id })
+            ur.policies.splice(ur.policies.indexOf(policyId), 1)
+            ur.save()
+            // console.log("urr", urr)
+        })
+    }
+}
+
+exports.checkAllPolicies = async (portal) => {
+    const allPolicies = await Policy(connect(DB_CONNECTION, portal)).find();
+    allPolicies.map(p => p._id).forEach(async policyId => {
+        await this.cleanPolicy(portal, policyId)
+        await this.addPolicyToRelationship(portal, policyId)
+    })
+}
+
+/**
+ * Thêm policy cho quan hệ cho userrole và privilege thỏa mãn
+ * @portal portal của db
+ * @policyId id của policy
+ */
 exports.addPolicyToRelationship = async (portal, policyId) => {
     const policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: policyId });
     const users = await User(connect(DB_CONNECTION, portal)).find().populate(
@@ -375,39 +417,6 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
     const links = await Link(connect(DB_CONNECTION, portal)).find().populate([{ path: 'roles', populate: { path: 'roleId' } }, { path: 'components' }]);
     const components = await Component(connect(DB_CONNECTION, portal)).find().populate([{ path: 'roles', populate: { path: 'roleId' } }, { path: 'links' }]);
 
-    // xóa các privilege có only policyId hoặc remove policyId khỏi Privilege nếu policies > 1
-    let currentPrivilegesHaveThisPolicy = await Privilege(connect(DB_CONNECTION, portal))
-        .find({ policies: policyId });
-    if (currentPrivilegesHaveThisPolicy) {
-        console.log('currentPrivilegesHaveThisPolicy', currentPrivilegesHaveThisPolicy)
-
-        currentPrivilegesHaveThisPolicy.forEach(async p => {
-            if (p.policies.length == 1) {
-                await Privilege(connect(DB_CONNECTION, portal)).deleteOne({ _id: p._id })
-            }
-            else {
-                await Privilege(connect(DB_CONNECTION, portal)).updateOne({ _id: p._id }, {
-                    $set: {
-                        policies: p.policies.splice(p.policies.indexOf(policyId), 1)
-                    }
-                });
-            }
-        })
-    }
-
-    // Xóa policyId khỏi UserRole policies
-    let currentUserRoleHaveThisPolicy = await UserRole(connect(DB_CONNECTION, portal)).find({ policies: policyId });
-    if (currentUserRoleHaveThisPolicy.length > 0) {
-        console.log('currentUserRoleHaveThisPolicy', currentUserRoleHaveThisPolicy)
-        currentUserRoleHaveThisPolicy.forEach(async ur => {
-            await UserRole(connect(DB_CONNECTION, portal)).updateOne({ _id: ur._id }, {
-                $set: {
-                    policies: ur.policies.splice(ur.policies.indexOf(policyId), 1)
-                }
-            });
-            console.log("ur", ur)
-        })
-    }
 
     let satisfiedSubjects = [];
     let satisfiedUsers = [];
@@ -445,13 +454,13 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
             //         roleId: role,
             //     }
             // ]
-            const userRole = await UserRole(connect(DB_CONNECTION, portal)).findOne({
+            let userRole = await UserRole(connect(DB_CONNECTION, portal)).findOne({
                 userId: subject.user,
                 roleId: role,
             });
-            // console.log(userRole)
+            console.log("userRole", userRole)
             userRole.policies.indexOf(policyId) === -1 ? userRole.policies.push(policyId) : null
-            await userRole.save();
+            userRole.save();
         })
 
     });
@@ -512,6 +521,7 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
                 },
                 resourceId: component._id
             })
+            // Kiểm tra được phép truy cập link chứa component và chưa tồn tại privilege componnt-role thì mới thêm mới privilege
             if (hasPrivilegeToComponentLink && !existPrivilegeComponent) {
                 newPrivilegeComponent = await Privilege(connect(DB_CONNECTION, portal)).create({
                     roleId: role._id,
@@ -530,5 +540,5 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
 
 
 
-    return satisfiedSubjects;
+    return policy;
 }

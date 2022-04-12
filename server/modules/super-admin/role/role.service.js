@@ -111,9 +111,9 @@ exports.createRole = async (portal, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName};
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -128,7 +128,7 @@ exports.createRole = async (portal, data) => {
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
-            name: attr.name.trim(),
+            // name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
         }
@@ -159,9 +159,9 @@ exports.createRoleAttribute = async (portal, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName };
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -176,7 +176,7 @@ exports.createRoleAttribute = async (portal, data) => {
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
-            name: attr.name.trim(),
+            // name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
         }
@@ -355,9 +355,9 @@ exports.editRole = async (portal, id, data = {}) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName };
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -384,7 +384,7 @@ exports.editRole = async (portal, id, data = {}) => {
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
-            name: attr.name.trim(),
+            // name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description?.trim(),
         }

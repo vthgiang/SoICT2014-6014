@@ -119,9 +119,9 @@ exports.createComponentAttribute = async (portal, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName };
+                    // array[i] = { ...array[i], name: attribute.attributeName };
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -136,7 +136,7 @@ exports.createComponentAttribute = async (portal, data) => {
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
-            name: attr.name.trim(),
+            // name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
         }
@@ -151,7 +151,7 @@ exports.createComponentAttribute = async (portal, data) => {
 
     // Thêm - cập nhật thuộc tính
     componentAddAttribute.forEach(async (component) => {
-        // Kiểm tra trùng thuộc tính thì không têm mới mà chỉ cập nhật value và description
+        // Kiểm tra trùng thuộc tính thì không tên mới mà chỉ cập nhật value và description
         component.attributes.forEach((attr) => {
             dataAttr.forEach((inputAttr) => {
                 if (attr.attributeId == inputAttr.attributeId) {
@@ -267,7 +267,8 @@ exports.relationshipComponentRole = async (portal, componentId, roleArr) => {
     await Privilege(connect(DB_CONNECTION, portal))
         .deleteMany({
             resourceId: componentId,
-            resourceType: 'Component'
+            resourceType: 'Component',
+            policies: { $in: [[], undefined] }
         });
 
     let data = roleArr.map(role => {

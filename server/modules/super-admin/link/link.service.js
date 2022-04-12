@@ -107,9 +107,9 @@ exports.editLink = async (portal, id, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName };
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -124,12 +124,12 @@ exports.editLink = async (portal, id, data) => {
         const dataAttr = attrArray.map(attr => {
             return {
                 attributeId: attr.attributeId,
-                name: attr.name.trim(),
+                // name: attr.name.trim(),
                 value: attr.value.trim(),
                 description: attr.description?.trim(),
             }
         });
-    
+
         link.attributes = dataAttr;
     }
 
@@ -172,7 +172,8 @@ exports.relationshipLinkRole = async (portal, linkId, roleArr) => {
     await Privilege(connect(DB_CONNECTION, portal))
         .deleteMany({
             resourceId: linkId,
-            resourceType: 'Link'
+            resourceType: 'Link',
+            policies: { $in: [[], undefined] }
         });
     let data = roleArr.map(role => {
         return {
@@ -216,9 +217,9 @@ exports.createLinkAttribute = async (portal, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName };
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -233,7 +234,7 @@ exports.createLinkAttribute = async (portal, data) => {
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
-            name: attr.name.trim(),
+            // name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
         }

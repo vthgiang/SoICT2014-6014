@@ -82,6 +82,8 @@ exports.editPolicy = async (req, res) => {
         let { id } = req.params;
         let data = req.body;
         let updatedPolicy = await PolicyService.editPolicy(req.portal, id, data);
+        // await PolicyService.checkPolicy(req.portal)
+        await PolicyService.cleanPolicy(req.portal, id)
         await PolicyService.addPolicyToRelationship(req.portal, id)
         if (updatedPolicy !== -1) {
             await Log.info(req.user.email, "UPDATED_POLICY", req.portal);

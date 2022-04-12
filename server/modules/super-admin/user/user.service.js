@@ -458,9 +458,9 @@ exports.createUser = async (portal, data, company) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName};
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -475,7 +475,7 @@ exports.createUser = async (portal, data, company) => {
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
-            name: attr.name.trim(),
+            // name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
         }
@@ -507,9 +507,9 @@ exports.createUserAttribute = async (portal, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName};
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -524,7 +524,7 @@ exports.createUserAttribute = async (portal, data) => {
     const dataAttr = attrArray.map(attr => {
         return {
             attributeId: attr.attributeId,
-            name: attr.name.trim(),
+            // name: attr.name.trim(),
             value: attr.value.trim(),
             description: attr.description.trim()
         }
@@ -780,9 +780,9 @@ exports.editUser = async (portal, id, data) => {
             }
 
             for (let i = 0; i < array.length; i++) {
-                const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
                 if (array[i]) {
-                    array[i] = { ...array[i], name: attribute.attributeName};
+                    // array[i] = { ...array[i], name: attribute.attributeName};
                     resArray = [...resArray, array[i]];
                 }
             }
@@ -798,12 +798,12 @@ exports.editUser = async (portal, id, data) => {
         const dataAttr = attrArray.map(attr => {
             return {
                 attributeId: attr.attributeId,
-                name: attr.name.trim(),
+                // name: attr.name.trim(),
                 value: attr.value.trim(),
                 description: attr.description?.trim(),
             }
         });
-    
+
         user.attributes = dataAttr;
     }
 

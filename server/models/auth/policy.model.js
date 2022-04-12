@@ -21,7 +21,7 @@ const PolicySchema = new Schema({
                         type: Schema.Types.ObjectId,
                         ref: "Attribute"
                     },
-                    name: String, // tên thuộc tính
+                    // name: String, // tên thuộc tính
                     value: String, //giá trị
                 }
             ],
@@ -36,7 +36,7 @@ const PolicySchema = new Schema({
                         type: Schema.Types.ObjectId,
                         ref: "Attribute"
                     },
-                    name: String, // tên thuộc tính
+                    // name: String, // tên thuộc tính
                     value: String, //giá trị
                 }
             ],
@@ -52,7 +52,7 @@ const PolicySchema = new Schema({
                     type: Schema.Types.ObjectId,
                     ref: "Attribute"
                 },
-                name: String, // tên thuộc tính
+                // name: String, // tên thuộc tính
                 value: String, //giá trị
             }
         ],

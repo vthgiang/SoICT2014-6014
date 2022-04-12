@@ -32,7 +32,7 @@ const RoleSchema = new Schema(
                     ref: "Attribute"
                 },
                 // thuộc tính của role
-                name: String, // tên thuộc tính
+                // name: String, // tên thuộc tính
                 value: String, //giá trị
                 description: String // mô tả
             },

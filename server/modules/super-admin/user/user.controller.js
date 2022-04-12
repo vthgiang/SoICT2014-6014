@@ -1,5 +1,6 @@
 const { User } = require('../../../models');
 const UserService = require('./user.service');
+const PolicyService = require(`../../super-admin/policy/policy.service`);
 const Logger = require(`../../../logs`);
 
 exports.getUsers = async (req, res) => {
@@ -43,7 +44,7 @@ getAllEmployeeOfUnitByRole = async (req, res) => {
             content: employees
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, `get_all_employee_fail`, req.portal);
         res.status(400).json({
             messages: ['get_all_employee_fail'],
@@ -140,6 +141,7 @@ exports.editUser = async (req, res) => {
     try {
         var user = await UserService.editUser(req.portal, req.params.id, req.body);
         await UserService.editRolesForUser(req.portal, user._id, req.body.roles);
+        await PolicyService.checkAllPolicies(req.portal);
         var result = await UserService.getUser(req.portal, user._id);
 
         Logger.info(req.user.email, 'edit_user_success', req.portal);
@@ -149,7 +151,7 @@ exports.editUser = async (req, res) => {
             content: result
         });
     } catch (error) {
-       
+
         Logger.error(req.user.email, 'edit_user_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -203,14 +205,14 @@ exports.getAllUsersWithRole = async (req, res) => {
 
 exports.importUsers = async (req, res) => {
     try {
-        if(Array.isArray(req.body.data)) {
-            for(let i=0; i<req.body.data.length; i++) {
+        if (Array.isArray(req.body.data)) {
+            for (let i = 0; i < req.body.data.length; i++) {
                 let dataUser = req.body.data[i];
                 let user = await UserService.createUser(req.portal, dataUser, req.user.company._id);
                 await UserService.addRolesForUser(req.portal, user._id, dataUser.roles);
             }
         }
-        let userlist = await UserService.getUsers(req.portal, req.user.company._id, {limit: req.query.limit ? req.query.limit : 5, page: 1});
+        let userlist = await UserService.getUsers(req.portal, req.user.company._id, { limit: req.query.limit ? req.query.limit : 5, page: 1 });
 
         Logger.info(req.user.email, 'import_users_success', req.portal);
         res.status(200).json({
@@ -229,7 +231,7 @@ exports.importUsers = async (req, res) => {
     }
 }
 
-exports.sendEmailResetPasswordUser = async(req, res) => {
+exports.sendEmailResetPasswordUser = async (req, res) => {
     try {
         let requestReset = await UserService.sendEmailResetPasswordUser(req.portal, req.body.email);
 

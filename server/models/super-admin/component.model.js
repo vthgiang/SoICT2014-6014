@@ -29,12 +29,12 @@ const ComponentSchema = new Schema({
                 ref: "Attribute"
             },
             // thuộc tính của role
-            name: String, // tên thuộc tính
+            // name: String, // tên thuộc tính
             value: String, //giá trị
             description: String // mô tả
         },
     ],
-},{
+}, {
     timestamps: true,
     toJSON: { virtuals: true }
 });
@@ -48,7 +48,7 @@ ComponentSchema.virtual('roles', {
 ComponentSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Component)
+    if (!db.models.Component)
         return db.model('Component', ComponentSchema);
     return db.models.Component;
 }
