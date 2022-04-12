@@ -6,39 +6,8 @@ const openapi_user = {
             ],
             "description": "Get all user",
             "operationId": "getUser",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -77,40 +46,8 @@ const openapi_user = {
             ],
             "description": "Create a new User",
             "operationId": "CreateUser",
-            "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
-            ],
+            "security": [{ ApiKeyAuth: [] }],
+            "parameters": [ ],
             "requestBody": {
                 "description": "Nhập thông tin người dùng",
                 "content": {
@@ -146,6 +83,7 @@ const openapi_user = {
             ],
             "description": "Get user by id",
             "operationId": "getUserById",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -156,38 +94,7 @@ const openapi_user = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
+                
             ],
             "responses": {
                 "200": {
@@ -213,6 +120,7 @@ const openapi_user = {
             "description": "Update User by ID",
             "description": "Cập nhật thông tin người dùng",
             "operationId": "updateUser",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -223,38 +131,6 @@ const openapi_user = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin người dùng",
@@ -290,6 +166,7 @@ const openapi_user = {
             "description": "Delete User ",
             "description": "Xóa thông tin người dùng",
             "operationId": "deleteUser",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -300,38 +177,6 @@ const openapi_user = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
