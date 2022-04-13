@@ -2,6 +2,7 @@ const apiTagNames = require('./apiTagName');
 
 const openApi_documentScheme = require('../models/document/_openapi');
 const openApi_taskScheme = require('../models/task/_openapi');
+const openApi_orderSchema= require('../models/production/order/_openapi');
 
 const openApi_systemAdminManagementRoute = require('../modules/system-admin/system-api/system-api-management/_openapi');
 const openapi_documentRoute = require("../modules/document/_openapi");
@@ -11,6 +12,7 @@ const openapi_organizationalUnit = require('../modules/super-admin/organizationa
 const openapi_user = require('../modules/super-admin/user/_openapi');
 const openapi_assetManagementRoute = require('../modules/asset/asset-management/_openapi');
 const openapi_systemApiPrivilege = require('../modules/system-admin/system-api/system-api-privilege/_openapi');
+const openapi_orderBankAccountRoute = require('../modules/production/order/bank-account/_openapi');
 
 const allAppRouteSpec = {
     ...openApi_systemAdminManagementRoute,
@@ -21,6 +23,7 @@ const allAppRouteSpec = {
     ...openapi_user,
     ...openapi_assetManagementRoute,
     ...openapi_systemApiPrivilege,
+    ...openapi_orderBankAccountRoute
 }
 
 const openApiData = {
@@ -58,6 +61,7 @@ const openApiData = {
         schemas: {
             ...openApi_documentScheme,
             ...openApi_taskScheme,
+            ...openApi_orderSchema
         },
         securitySchemes: {
             bearerAuth: {

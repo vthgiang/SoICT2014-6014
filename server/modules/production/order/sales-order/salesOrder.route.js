@@ -10,9 +10,16 @@ router.patch('/:id', auth, SalesOrderController.editSalesOrder);
 router.patch('/approve/:id', auth, SalesOrderController.approveSalesOrder);
 router.patch('/add-manufacturing-plan/:id', auth, SalesOrderController.addManufacturingPlanForGood)
 router.get('/get-for-payment', auth, SalesOrderController.getSalesOrdersForPayment)
+
+/** Dashboard: Số đơn kinh doanh và doanh số*/
 router.get('/count', auth, SalesOrderController.countSalesOrder);
+
+/** Dashboard: Top sản phẩm bán chạy theo số lượng */
 router.get('/get-top-good-sold', auth, SalesOrderController.getTopGoodsSold);
+
+/** Dashboard: Doanh số bán hàng từng đơn vị */
 router.get('/get-sales-for-departments', auth, SalesOrderController.getSalesForDepartments);
+
 router.get('/:id', auth, SalesOrderController.getSalesOrderDetail);
 router.get('/', auth, SalesOrderController.getAllSalesOrders);
 
