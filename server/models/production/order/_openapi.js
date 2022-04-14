@@ -179,12 +179,182 @@ const Discount = {
 
 const Payment = {
     type: "object",
-    properties: {}
+    properties: {
+        code: {
+            type: 'string'
+        },
+        type: { //1. Thu tiền bán hàng, 2: Chi tiền mua nguyên vật liệu
+            type: 'number',
+            enum: [1, 2],
+        },
+        paymentType: {// 1: Tiền mặt, 2: Chuyển khoản
+            type: 'number',
+            enum: [1, 2],
+            // required: true
+        },
+        customer: {
+            type: 'string'
+        },
+        supplier: {//Tạm thời chưa có quản lý nhà cung cấp nên ref đến Customer
+            type: 'string',
+        },
+        curator: { //Người phụ trách
+            type: 'string'
+            // required: true
+        },
+        bankAccountReceived: {// Tài khoản của công ty
+            type: 'string'
+        },
+        bankAccountPartner: {// Tài khoản của đối tác (nhà cung cấp)
+            type: 'string',
+        },
+        salesOrders: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    salesOrder: {//Thanh toán cho đơn bán hàng nào
+                        type: 'string'
+                    },
+                    money: {//Số tiền thu, chi cho từng đơn
+                        type: 'string',
+                        // required: true
+                    },
+                }
+            }
+        },
+        purchaseOrders: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    purchaseOrder: {//Than toán cho những đơn mua hàng nào
+                        type: 'string'
+                    },
+                    money: {//Số tiền thu, chi cho từng đơn
+                        type: 'number',
+                        // required: true
+                    },
+                }
+            }
+        },
+        paymentAt: {
+            type: 'string',
+            format: 'date'
+        },
+    }
+}
+
+const PurchaseOrder = {
+    type: 'object',
+    properties: {
+        code: {
+            type: 'string',
+            required: true
+        },
+        status: {//1. Chờ phê duyệt, 2. Đã phê duyệt, 3.Yêu cầu nhập kho, 4. Đã nhập kho, 5. Đã hủy
+            type: 'number',
+            enum: [1, 2, 3, 4, 5],
+            default: 1
+        },
+        creator: { // Người tạo
+            type: 'string',
+            required: true
+        },
+        materials: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    material: { // Nguyên vật liệu
+                        type: 'string'
+                    },
+                    quantity: { // Số lượng
+                        type: 'number'
+                    },
+                    price: {
+                        type: 'number'
+                    }
+                }
+            }
+        },
+        intendReceiveTime: { // Thời gian dự kiến nhận
+            type: 'string',
+            format: 'date'
+        },
+        stock: {//Nhập về kho
+            type: 'string'
+        },
+        approvers: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    approver: {
+                        type: 'string'
+                    },
+                    approveAt: {
+                        type: 'string',
+                        require: true
+                    },
+                    status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+                        type: 'number',
+                        enum: [1, 2, 3],
+                        default: 1
+                    },
+                    note: {
+                        type: 'string'
+                    }
+                }
+            }
+        },
+        supplier: {//Đối tác, tạm thời chưa có quản lý đối tác kinh doanh nên lấy Customer
+            type: 'string'
+        },
+        discount: {
+            type: 'number'
+        },
+        desciption: {
+            type: 'number'
+        },
+        purchasingRequest: {
+            type: 'string'
+        },
+        bill: {//Phiếu đề nghị nhập kho nguyên vật liệu
+            type: 'string'
+        },
+        paymentAmount: {
+            type: 'number'
+        }
+    }
+}
+
+const Approvers = {
+    type: 'object',
+    properties: {
+        approver: {
+            type: 'string'
+        },
+        approveAt: {
+            type: 'string',
+            require: true
+        },
+        status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+            type: 'number',
+            enum: [1, 2, 3],
+            default: 1
+        },
+        note: {
+            type: 'string'
+        }
+    }
 }
 module.exports = {
     BankAccount,
     BusinessDepartment,
     CoinRule,
     Discount,
-    Payment
+    Payment,
+    PurchaseOrder,
+    Approvers
 }
