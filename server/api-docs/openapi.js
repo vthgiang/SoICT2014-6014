@@ -13,6 +13,10 @@ const openapi_user = require('../modules/super-admin/user/_openapi');
 const openapi_assetManagementRoute = require('../modules/asset/asset-management/_openapi');
 const openapi_systemApiPrivilege = require('../modules/system-admin/system-api/system-api-privilege/_openapi');
 const openapi_orderBankAccountRoute = require('../modules/production/order/bank-account/_openapi');
+const openapi_orderBusinessDepartmentRoute = require("../modules/production/order/business-department/_openapi");
+const openapi_orderCoinRuleRoute = require("../modules/production/order/coin-rule/_openapi");
+const openapi_orderDiscountRoute = require("../modules/production/order/discount/_openapi");
+const openapi_orderPaymentRoute = require("../modules/production/order/payment/_openapi");
 
 const allAppRouteSpec = {
     ...openApi_systemAdminManagementRoute,
@@ -23,7 +27,11 @@ const allAppRouteSpec = {
     ...openapi_user,
     ...openapi_assetManagementRoute,
     ...openapi_systemApiPrivilege,
-    ...openapi_orderBankAccountRoute
+    ...openapi_orderBankAccountRoute,
+    ...openapi_orderBusinessDepartmentRoute,
+    ...openapi_orderCoinRuleRoute,
+    ...openapi_orderDiscountRoute,
+    // ...openapi_orderPaymentRoute
 }
 
 const openApiData = {
@@ -56,6 +64,7 @@ const openApiData = {
         { name: apiTagNames.ORGANIZATIONAL, description: "Api module organizational" },
         { name: apiTagNames.SYSTEM_API, description: "Manage system api" },
         { name: apiTagNames.SYSTEM_PRIVILEGE_API, description: "Manage system privilege api" },
+        { name: apiTagNames.ORDER, description: "Manage order api" },
     ],
     components: {
         schemas: {

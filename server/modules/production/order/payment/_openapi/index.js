@@ -1,15 +1,15 @@
 const apiTagNames = require("../../../../../api-docs/apiTagName");
 
-const openapi_orderBankAccountRoute = {
-    "/bank-account": {
+const openapi_orderPaymentRoute = {
+    "/payment": {
         "get": {
             "tags": [apiTagNames.ORDER],
-            "description": "Get all back accounts",
-            "operationId": "getOrderBankAccount",
+            "description": "Get all payment",
+            "operationId": "getPayments",
             "parameters": [
                 {
                     "in": "query",
-                    "name": "account",
+                    "name": "type",
                     "schema": {
                         "type": "string"
                     },
@@ -17,7 +17,7 @@ const openapi_orderBankAccountRoute = {
                 },
                 {
                     "in": "query",
-                    "name": "bankName",
+                    "name": "code",
                     "schema": {
                         "type": "string"
                     },
@@ -25,7 +25,7 @@ const openapi_orderBankAccountRoute = {
                 },
                 {
                     "in": "query",
-                    "name": "bankAcronym",
+                    "name": "customer",
                     "schema": {
                         "type": "string"
                     },
@@ -33,11 +33,10 @@ const openapi_orderBankAccountRoute = {
                 },
                 {
                     "in": "query",
-                    "name": "status",
+                    "name": "supplier",
                     "schema": {
                         "type": "string"
                     },
-                    "required": "true"
                 },
                 {
                     "in": "query",
@@ -73,17 +72,17 @@ const openapi_orderBankAccountRoute = {
         },
         "post": {
             "tags": [apiTagNames.ORDER],
-            "description": "create back accounts",
-            "operationId": "createOrderBankAccount",
+            "description": "create new payment",
+            "operationId": "createNewPayment",
             "parameters": [],
             "requestBody": {
-                "description": "Nhập thông tin bank account",
+                "description": "Nhập thông tin payment",
                 "content": {
                     "application/json": {
-                        "schema": {"$ref": "#components/schemas/BankAccount"}
+                        "schema": {"$ref": "#components/schemas/Payment"}
                     },
                     "application/xml": {
-                        "schema": {"$ref": "#components/schemas/BankAccount"}
+                        "schema": {"$ref": "#components/schemas/Payment"}
                     },
                     "required": true
                 }
@@ -93,7 +92,7 @@ const openapi_orderBankAccountRoute = {
                     "description": "create_successfully",
                     "content": {
                         "application/json": {
-                            "schema": {"$ref": "#/components/schemas/BankAccount"}
+                            "schema": {"$ref": "#/components/schemas/Payment"}
                         }
                     }
                 },
@@ -104,51 +103,7 @@ const openapi_orderBankAccountRoute = {
             },
             "x-codegen-request-body-name": "body"
         },
-    },
-    "/bank-account/{bankAccountId}": {
-            "patch": {
-                "tags": [apiTagNames.ORDER],
-                "description": "Update a bank account",
-                "operationId": "UpdateBankAccount",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "require": true
-                    },
-                ],
-                "requestBody": {
-                    "description": "Nhập thông tin công việc",
-                    "content": {
-                        "application/json": {
-                            "schema": {"$ref": "#components/schemas/BankAccount"}
-                        },
-                        "application/xml": {
-                            "schema": {"$ref": "#components/schemas/BankAccount"}
-                        },
-                        "required": true
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "edit_successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {"$ref": "#/components/schemas/BankAccount"}
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "edit_failed",
-                        "content": {}
-                    }
-                },
-                "x-codegen-request-body-name": "body"
-            }
-        }
+    }
 }
 
-module.exports = openapi_orderBankAccountRoute;
+module.exports = openapi_orderPaymentRoute;
