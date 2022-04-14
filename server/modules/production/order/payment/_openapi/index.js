@@ -103,7 +103,83 @@ const openapi_orderPaymentRoute = {
             },
             "x-codegen-request-body-name": "body"
         },
-    }
+    },
+    "/payment/{paymentId}": {
+        "get": {
+            "tags": [apiTagNames.ORDER],
+            "description": "Get payment detail",
+            "operationId": "getPaymentDetail",
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": "true"
+                },
+            ],
+            "responses": {
+                "200": {
+                    "description": "get_payment_detail_successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "get_payment_detail_failed",
+                    "content": {}
+                }
+            }
+        },
+
+    },
+    "/payment/get-for-order": {
+        "get": {
+            "tags": [apiTagNames.ORDER],
+            "description": "Get payment for order",
+            "operationId": "getPaymentForOrder",
+            "parameters": [
+                {
+                    "in": "query",
+                    "name": "orderId",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": "true"
+                },
+                {
+                    "in": "query",
+                    "name": "orderType",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": "true"
+                },
+            ],
+            "responses": {
+                "200": {
+                    "description": "get_payment_for_order_successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "get_payment_for_order_failed",
+                    "content": {}
+                }
+            }
+        },
+
+    },
 }
 
 module.exports = openapi_orderPaymentRoute;
