@@ -7,6 +7,7 @@ const { auth } = require(`../../../../middleware`);
 router.get('/get-number-works-sales-order', auth, SalesOrderController.getNumberWorksSalesOrder);
 router.post('/', auth, SalesOrderController.createNewSalesOrder);
 router.patch('/:id', auth, SalesOrderController.editSalesOrder);
+router.get('/:id', auth, SalesOrderController.getSalesOrderDetail);
 router.patch('/approve/:id', auth, SalesOrderController.approveSalesOrder);
 router.patch('/add-manufacturing-plan/:id', auth, SalesOrderController.addManufacturingPlanForGood)
 router.get('/get-for-payment', auth, SalesOrderController.getSalesOrdersForPayment)
@@ -20,7 +21,6 @@ router.get('/get-top-good-sold', auth, SalesOrderController.getTopGoodsSold);
 /** Dashboard: Doanh số bán hàng từng đơn vị */
 router.get('/get-sales-for-departments', auth, SalesOrderController.getSalesForDepartments);
 
-router.get('/:id', auth, SalesOrderController.getSalesOrderDetail);
 router.get('/', auth, SalesOrderController.getAllSalesOrders);
 
 // API get all đơn kinh doanh phục vụ việc lập kế hoạch

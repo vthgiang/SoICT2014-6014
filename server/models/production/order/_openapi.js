@@ -666,6 +666,358 @@ const Quote = {
         }
     }
 }
+
+const SaleOrder = {
+    type: 'object',
+    properties: {
+        code: {
+            type: 'string',
+            // required: true
+        },
+        status: { //1: Chờ phê duyệt (bộ phận Sales Admin và bộ phận kế toán xác nhận)
+            //2: Đã phê duyệt
+            //3: Yêu cầu sản xuất,
+            //4: Đã lập kế hoạch sản xuất
+            //5: Đã yêu cầu sản xuất
+            //6: Đang giao hàng , 7: Đã giao hàng,
+            //8: Đã hủy
+            type: 'number',
+            enum: [1, 2, 3, 4, 5, 6, 7, 8],
+            // required: true,
+            default: 1
+        },
+        creator: {
+            type: 'string'
+            // required: true
+        },
+        //Khách hàng
+        customer: {
+            type: 'string'
+            // required: true
+        },
+        customerPhone: {
+            type: 'string',
+            // required: true
+        },
+        customerAddress: {
+            type: 'string',
+            // required: true
+        },
+        customerRepresent: { //người đại diện
+            type: 'string'
+        },
+        customerEmail: {
+            type: 'string'
+        },
+        approvers: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    approver: {
+                        type: 'string',
+                        // required: true
+                    },
+                    approveAt: {
+                        type: 'string',
+                        format: 'date'
+                    },
+                    status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+                        type: 'number',
+                        default: 1,
+                        enum: [1, 2, 3],
+                    },
+                    note: {
+                        type: 'string'
+                    }
+                }
+            }
+        },
+        organizationalUnit: {//Đơn vị quản lý đơn
+            type: 'string'
+        },
+        priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
+            type: 'number',
+            enum: [1, 2, 3, 4],
+            // required: true
+        },
+        goods: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    good: {
+                        type: 'string',
+                        // required: true
+                    },
+                    pricePerBaseUnit: {
+                        type: 'number',
+                        // required: true
+                    },
+                    pricePerBaseUnitOrigin: {
+                        type: 'number',
+                    },
+                    salesPriceVariance: {
+                        type: 'number'
+                    },
+                    quantity: {
+                        type: 'number',
+                        // required: true
+                    },
+                    manufacturingWorks: {
+                        type: 'string'
+                    },
+                    manufacturingPlan: {//Lấy trạng thái từ kế hoạch SX
+                        type: 'string'
+                    },
+                    //service level agreement
+                    serviceLevelAgreements: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                _id: {
+                                    type: 'string'
+                                },
+                                title: {
+                                    type: 'string'
+                                },
+                                descriptions: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'string'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    taxs: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                _id: {
+                                    type: 'string'
+                                },
+                                code: {
+                                    type: 'string'
+                                },
+                                name: {
+                                    type: 'string'
+                                },
+                                description: {
+                                    type: 'string'
+                                },
+                                percent: {
+                                    type: 'number'
+                                }
+                            }
+                        }
+                    },
+                    discounts: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                _id: {
+                                    type: 'string'
+                                },
+                                code: {
+                                    type: 'string'
+                                },
+                                type: {
+                                    type: 'string'
+                                },
+                                formality: {
+                                    type: 'string'
+                                },
+                                name: {
+                                    type: 'string'
+                                },
+                                effectiveDate: {
+                                    type: 'string',
+                                    format: 'date'
+                                },
+                                expirationDate: {
+                                    type: 'string',
+                                    format: 'date'
+                                },
+                                discountedCash: {
+                                    type: 'number'
+                                },
+                                discountedPercentage: {
+                                    type: 'number'
+                                },
+                                loyaltyCoin: {
+                                    type: 'number'
+                                },
+                                bonusGoods: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            good: {
+                                                type: 'sting'
+                                            },
+                                            expirationDateOfGoodBonus: {
+                                                type: 'string',
+                                                format: 'date'
+                                            },
+                                            quantityOfBonusGood: {
+                                                type: 'number'
+                                            }
+                                        }
+                                    }
+                                },
+                                discountOnGoods: {
+                                    type: 'object',
+                                    properties: {
+                                        good: {
+                                            type: 'string'
+                                        },
+                                        expirationDate: {
+                                            type: 'string',
+                                            format: 'date'
+                                        },
+                                        discountedPrice: {
+                                            type: 'number'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    note: {
+                        type: 'string',
+                    },
+                    amount: { //Tổng tiền hàng nguyên bản
+                        type: 'number'
+                    },
+                    amountAfterDiscount: {// Tổng tiền hàng sau khi áp dụng khuyến mãi
+                        type: 'number'
+                    },
+                    amountAfterTax: {// Tổng tiền hàng sau khi áp dụng thuế
+                        type: 'number'
+                    }
+                }
+            }
+        },
+        discounts: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    _id: {
+                        type: 'string'
+                    },
+                    code: {
+                        type: 'string'
+                    },
+                    type: {
+                        type: 'string'
+                    },
+                    formality: {
+                        type: 'string'
+                    },
+                    name: {
+                        type: 'string'
+                    },
+                    effectiveDate: {
+                        type: 'string',
+                        format: 'date'
+                    },
+                    expirationDate: {
+                        type: 'string',
+                        format: 'date'
+                    },
+                    discountedCash: {
+                        type: 'number'
+                    },
+                    discountedPercentage: {
+                        type: 'number'
+                    },
+                    loyaltyCoin: {
+                        type: 'number'
+                    },
+                    maximumFreeShippingCost: {
+                        type: 'number'
+                    },
+                    bonusGoods: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                good: {
+                                    type: 'string'
+                                },
+                                expirationDateOfGoodBonus: {
+                                    type: 'string',
+                                    format: 'date'
+                                },
+                                quantityOfBonusGood: {
+                                    type: 'number'
+                                }
+                            }
+                        }
+                    },
+                }
+            }
+        },
+        //Phí giao hàng
+        shippingFee: {
+            type: 'number'
+        },
+        //Thời gian giao hàng dự kiến
+        deliveryTime: {
+            type: 'string',
+            format: 'date'
+        },
+        //Giao hàng lúc
+        deliveryAt: {
+            type: 'string',
+            format: 'date'
+        },
+        //Số coin trừ vào đơn hàng, lúc thanh toán sẽ check, nếu đủ thì trừ, không thì thôi
+        coin: {
+            type: 'number'
+        },
+        //Số xu được cộng vào sau khi hoàn thành đơn
+        allCoin: {
+            type: 'number'
+        },
+        //Tổng thuế cho toàn đơn
+        totalTax: {
+            type: 'number',
+        },
+        paymentAmount: { //Tổng tiền thanh toán cho toàn đơn
+            type: 'number',
+        },
+        note: {
+            type: 'string'
+        },
+        bill: {//Phiếu đề nghị xuất kho
+            type: 'string',
+        },
+        invoice: {// Xuất hóa đơn
+            type: 'object',
+            properties: {
+                creator: {
+                    type: 'string'
+                },
+                status: {// Xem đã xuất hóa đơn hay chưa
+                    type: 'boolean',
+                    default: false,
+                    require: true
+                }
+            }
+        },
+        quote: { //Được lập từ báo giá nếu có
+            type: 'string',
+        }
+    }
+}
+
+
 module.exports = {
     BankAccount,
     BusinessDepartment,
@@ -674,5 +1026,6 @@ module.exports = {
     Payment,
     PurchaseOrder,
     Approvers,
-    Quote
+    Quote,
+    SaleOrder
 }

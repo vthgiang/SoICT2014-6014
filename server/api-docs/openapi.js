@@ -19,6 +19,7 @@ const openapi_orderDiscountRoute = require("../modules/production/order/discount
 const openapi_orderPaymentRoute = require("../modules/production/order/payment/_openapi");
 const openapi_orderPurchaseOrderRoute = require("../modules/production/order/purchase-order/_openapi");
 const openapi_orderQuoteRoute = require("../modules/production/order/quote/_openapi");
+const openapi_orderSaleOrderRoute = require("../modules/production/order/sales-order/_openapi");
 
 const allAppRouteSpec = {
     ...openApi_systemAdminManagementRoute,
@@ -35,7 +36,8 @@ const allAppRouteSpec = {
     ...openapi_orderDiscountRoute,
     ...openapi_orderPaymentRoute,
     ...openapi_orderPurchaseOrderRoute,
-    ...openapi_orderQuoteRoute
+    ...openapi_orderQuoteRoute,
+    ...openapi_orderSaleOrderRoute
 }
 
 const openApiData = {
