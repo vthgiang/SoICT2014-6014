@@ -1017,6 +1017,54 @@ const SaleOrder = {
     }
 }
 
+const ServiceLevelAgreement = {
+    type: 'object',
+    properties: {
+        code: {
+            type: 'string',
+            required: true
+        },
+        goods: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    type: 'string',
+                    required: true
+                }
+            }
+        },
+        title: {
+            type: 'string',
+            required: true
+        },
+        descriptions: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    type: 'string'
+                }
+            }
+        },
+        creator: {
+            type: 'string',
+            required: true
+        },
+        version: {
+            type: 'number',
+            required: true
+        },
+        status: {
+            type: 'boolean',
+            required: true
+        },
+        lastVersion: {
+            type: 'boolean',
+            required: true
+        },
+    }
+}
 
 module.exports = {
     BankAccount,
@@ -1027,5 +1075,6 @@ module.exports = {
     PurchaseOrder,
     Approvers,
     Quote,
-    SaleOrder
+    SaleOrder,
+    ServiceLevelAgreement
 }
