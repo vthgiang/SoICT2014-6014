@@ -1066,6 +1066,54 @@ const ServiceLevelAgreement = {
     }
 }
 
+const Tax = {
+    type: 'object',
+    properties: {
+        code: {
+            type: 'string',
+            required: true
+        },
+        name: {
+            type: 'string',
+            required: true
+        },
+        description: {
+            type: 'string'
+        },
+        creator: {
+            type: 'string',
+            required: true
+        },
+        goods: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    good: {
+                        type: 'string'
+                    },
+                    percent: {
+                        type: 'number'
+                    }
+                }
+            }
+        },
+        version: {
+            type: 'number',
+            required: true
+        },
+        lastVersion: {
+            type: 'boolean',
+            required: true
+        },
+        status: {
+            type: 'boolean',
+            required: true
+        }
+    }
+}
+
+
 module.exports = {
     BankAccount,
     BusinessDepartment,
@@ -1076,5 +1124,6 @@ module.exports = {
     Approvers,
     Quote,
     SaleOrder,
-    ServiceLevelAgreement
+    ServiceLevelAgreement,
+    Tax
 }
