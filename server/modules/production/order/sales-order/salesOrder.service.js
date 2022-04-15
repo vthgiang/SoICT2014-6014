@@ -599,6 +599,7 @@ exports.countSalesOrder = async (userId, query, portal) => {
     let totalNumberWithStauts = [0, 0, 0, 0, 0, 0, 0, 0, 0]; //Lấy số lượng đơn theo trạng thái
     let totalMoney = 0;
 
+    // Note: cần tìm hiểu về tính tổng tiền tại sao lại là 0
     for (let index = 0; index < allSalesOrders.length; index++) {
         totalMoneyWithStatus[allSalesOrders[index].status] += allSalesOrders[index].paymentAmount;
         totalNumberWithStauts[allSalesOrders[index].status] += 1;

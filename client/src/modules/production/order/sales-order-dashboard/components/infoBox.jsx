@@ -11,6 +11,8 @@ function InfoBox(props) {
         salesOrdersCounter = props.salesOrders.salesOrdersCounter;
     }
 
+    console.log('sale order ', salesOrdersCounter)
+
     let quoteCounter = {};
 
     if (props.quotes) {
@@ -27,7 +29,7 @@ function InfoBox(props) {
                     <div className="info-box-content" title="Số báo giá">
                         <span className="info-box-text">Số báo giá</span>
                         <span className="info-box-number">{quoteCounter ? quoteCounter.count : 0} báo giá</span>
-                        <a href={`/manage-purchase-order`} target="_blank">
+                        <a href={`/manage-quote`} target="_blank">
                             Xem thêm <i className="fa fa-arrow-circle-right"></i>
                         </a>
                     </div>
@@ -55,7 +57,7 @@ function InfoBox(props) {
                     <div className="info-box-content" title="Tổng tiền mua hàng">
                         <span className="info-box-text">Doanh số</span>
                         <span className="info-box-number">{formatCurrency(salesOrdersCounter ? salesOrdersCounter.totalMoney : "")} vnđ</span>
-                        <a href={`/manage-sales-order`} target="_blank">
+                        <a href={`/manage-payment`} target="_blank">
                             Xem thêm <i className="fa fa-arrow-circle-right"></i>
                         </a>
                     </div>

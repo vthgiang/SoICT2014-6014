@@ -10,6 +10,7 @@ const apiTagNames = {
     ORGANIZATIONAL: "Organizational",
     SYSTEM_API: "System api",
     SYSTEM_PRIVILEGE_API: "System privilege api",
+    ORDER: "Order api"
 };
 
 module.exports = apiTagNames;
