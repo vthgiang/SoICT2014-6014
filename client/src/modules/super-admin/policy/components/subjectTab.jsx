@@ -148,7 +148,7 @@ function SubjectTab(props) {
                                 (!roleAttributes || roleAttributes.length == 0) ?
                                     <a href="#add-attributes" className="text-green" onClick={() => window.$(`#modal-add-attribute-${props.id}-role`).modal('show')} title={translate('manage_policy.add_role_attribute')}><i className="material-icons">add_box</i></a>
                                     :
-                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-role`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_user_attribute')}>
+                                    <a onClick={() => window.$(`#modal-add-attribute-${props.id}-role`).modal('show')} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit_role_attribute')}>
                                         <i className="material-icons">edit</i>
                                     </a>}
                         </td>

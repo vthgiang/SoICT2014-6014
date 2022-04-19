@@ -1,4 +1,6 @@
 const RoleService = require('./role.service');
+const PolicyService = require(`../../super-admin/policy/policy.service`);
+const { differenceAttributes } = require('../../../helpers/functionHelper');
 const Logger = require(`../../../logs`);
 
 exports.getRoles = async (req, res) => {
@@ -48,6 +50,10 @@ exports.createRole = async (req, res) => {
         var role = await RoleService.createRole(req.portal, req.body);
         await RoleService.editRelationshipUserRole(req.portal, role._id, req.body.users);
         var data = await RoleService.getRole(req.portal, role._id);
+        // Nếu add role có attributes thì kiểm tra policies
+        if (data.attributes || data.attributes.length > 0) {
+            await PolicyService.checkAllPolicies(req.portal);
+        }
 
         Logger.info(req.user.email, 'create_role_success', req.portal);
         res.status(200).json({
@@ -70,6 +76,8 @@ exports.createRoleAttribute = async (req, res) => {
     try {
         const roleAttr = await RoleService.createRoleAttribute(req.portal, req.body);
 
+        await PolicyService.checkAllPolicies(req.portal);
+
         Logger.info(req.user.email, 'create_role_attribute_success', req.portal);
         res.status(200).json({
             success: true,
@@ -90,9 +98,16 @@ exports.createRoleAttribute = async (req, res) => {
 exports.editRole = async (req, res) => {
     try {
         let { notEditRoleInfo } = req.query;
+        var roleBeforeEditing = await RoleService.getRole(req.portal, req.params.id);
         await RoleService.editRelationshipUserRole(req.portal, req.params.id, req.body.users);
         if (!notEditRoleInfo) await RoleService.editRole(req.portal, req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
         let data = await RoleService.getRole(req.portal, req.params.id);
+
+        // Nếu attributes thay đổi thì check lại tất cả policies
+        if (differenceAttributes(roleBeforeEditing.attributes, data.attributes).length > 0) {
+            await PolicyService.checkAllPolicies(req.portal);
+            // console.log("diff", differenceAttributes(roleBeforeEditing.attributes, data.attributes))
+        }
 
         Logger.info(req.user.email, 'edit_role_success', req.portal);
         res.status(200).json({

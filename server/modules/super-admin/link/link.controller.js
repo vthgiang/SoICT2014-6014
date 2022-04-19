@@ -1,4 +1,6 @@
 const LinkService = require('./link.service');
+const PolicyService = require(`../../super-admin/policy/policy.service`);
+const { differenceAttributes } = require('../../../helpers/functionHelper');
 const Logger = require(`../../../logs`);
 
 /**
@@ -76,6 +78,8 @@ exports.createLinkAttribute = async (req, res) => {
     try {
         const linkAttr = await LinkService.createLinkAttribute(req.portal, req.body);
 
+        await PolicyService.checkAllPolicies(req.portal);
+
         Logger.info(req.user.email, 'create_link_attribute_success', req.portal);
         res.status(200).json({
             success: true,
@@ -95,9 +99,16 @@ exports.createLinkAttribute = async (req, res) => {
 
 exports.editLink = async (req, res) => {
     try {
+        var linkBeforeEditing = await LinkService.getLink(req.portal, req.params.id);
         await LinkService.relationshipLinkRole(req.portal, req.params.id, req.body.roles);
         let link = await LinkService.editLink(req.portal, req.params.id, req.body);
         let data = await LinkService.getLink(req.portal, link._id);
+
+        // Nếu attributes thay đổi thì check lại tất cả policies
+        if (differenceAttributes(linkBeforeEditing.attributes, data.attributes).length > 0) {
+            await PolicyService.checkAllPolicies(req.portal);
+            // console.log("diff", differenceAttributes(linkBeforeEditing.attributes, data.attributes))
+        }
 
         await Logger.info(req.user.email, 'edit_link_success', req.portal);
         res.status(200).json({

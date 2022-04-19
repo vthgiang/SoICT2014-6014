@@ -1,6 +1,7 @@
 const { User } = require('../../../models');
 const UserService = require('./user.service');
 const PolicyService = require(`../../super-admin/policy/policy.service`);
+const { differenceAttributes } = require('../../../helpers/functionHelper');
 const Logger = require(`../../../logs`);
 
 exports.getUsers = async (req, res) => {
@@ -120,6 +121,11 @@ exports.createUser = async (req, res) => {
         await UserService.addRolesForUser(req.portal, user._id, req.body.roles);
         var result = await UserService.getUser(req.portal, user._id);
 
+        // Nếu add user có attributes thì kiểm tra policies
+        if (result.attributes || result.attributes.length > 0) {
+            await PolicyService.checkAllPolicies(req.portal);
+        }
+
         Logger.info(req.user.email, 'create_user_success', req.portal);
         res.status(200).json({
             success: true,
@@ -139,10 +145,16 @@ exports.createUser = async (req, res) => {
 
 exports.editUser = async (req, res) => {
     try {
+        var userBeforeEditing = await UserService.getUser(req.portal, req.params.id);
         var user = await UserService.editUser(req.portal, req.params.id, req.body);
         await UserService.editRolesForUser(req.portal, user._id, req.body.roles);
-        await PolicyService.checkAllPolicies(req.portal);
         var result = await UserService.getUser(req.portal, user._id);
+
+        // Nếu attributes thay đổi thì check lại tất cả policies
+        if (differenceAttributes(userBeforeEditing.attributes, result.attributes).length > 0) {
+            await PolicyService.checkAllPolicies(req.portal);
+        }
+
 
         Logger.info(req.user.email, 'edit_user_success', req.portal);
         res.status(200).json({
@@ -151,7 +163,7 @@ exports.editUser = async (req, res) => {
             content: result
         });
     } catch (error) {
-
+        console.log(error)
         Logger.error(req.user.email, 'edit_user_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -255,6 +267,8 @@ exports.sendEmailResetPasswordUser = async (req, res) => {
 exports.createUserAttribute = async (req, res) => {
     try {
         const userAttr = await UserService.createUserAttribute(req.portal, req.body);
+
+        await PolicyService.checkAllPolicies(req.portal);
 
         Logger.info(req.user.email, 'create_user_attribute_success', req.portal);
         res.status(200).json({

@@ -1,4 +1,6 @@
 const ComponentService = require('./component.service');
+const PolicyService = require(`../../super-admin/policy/policy.service`);
+const { differenceAttributes } = require('../../../helpers/functionHelper');
 const Logger = require(`../../../logs`);
 
 /**
@@ -78,6 +80,8 @@ exports.createComponentAttribute = async (req, res) => {
     try {
         const componentAttr = await ComponentService.createComponentAttribute(req.portal, req.body);
 
+        await PolicyService.checkAllPolicies(req.portal);
+
         Logger.info(req.user.email, 'create_component_attribute_success', req.portal);
         res.status(200).json({
             success: true,
@@ -98,9 +102,16 @@ exports.createComponentAttribute = async (req, res) => {
 exports.editComponent = async (req, res) => {
     try {
         let portal = !req.query.portal ? req.portal : req.query.portal;
+        var componentBeforeEditing = await ComponentService.getComponent(portal, req.params.id);
         await ComponentService.relationshipComponentRole(portal, req.params.id, req.body.roles);
         let component = await ComponentService.editComponent(portal, req.params.id, req.body);
         let resComponent = await ComponentService.getComponent(portal, component._id);
+
+        // Nếu attributes thay đổi thì check lại tất cả policies
+        if (differenceAttributes(componentBeforeEditing.attributes, resComponent.attributes).length > 0) {
+            await PolicyService.checkAllPolicies(portal);
+            // console.log("diff", differenceAttributes(componentBeforeEditing.attributes, resComponent.attributes))
+        }
 
         await Logger.info(req.user.email, 'edit_component_success', req.portal);
         res.status(200).json({

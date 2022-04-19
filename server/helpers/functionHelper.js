@@ -91,3 +91,20 @@ exports.filterImageUrlInString = (text) => {
 
     return urls
 }
+
+// Hàm lọc ra các object khác trong 2 array of objects
+exports.getDifferenceObjects = (array1, array2) => {
+    return array1.filter(object1 => {
+        return !array2.some(object2 => {
+            return object1.attributeId.equals(object2.attributeId) && object1.value == object2.value;
+        });
+    });
+}
+
+exports.differenceAttributes = (array1, array2) => {
+    var difference = [
+        ...this.getDifferenceObjects(array1, array2),
+        ...this.getDifferenceObjects(array2, array1)
+    ];
+    return difference
+}
