@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+
+// New
 // Bảng đề nghị mua sắm vật tư
 const SuppliesPurchaseRequestSchema = new Schema({
     company: {

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+
+// New
 const AssetLotSchema = new Schema({
 
     code: { //1. Mã lô tài sản

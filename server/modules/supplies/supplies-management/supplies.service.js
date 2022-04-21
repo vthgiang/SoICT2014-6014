@@ -85,7 +85,7 @@ exports.createSupplies = async (portal, company, data) => {
     }
 
 
-    if (checkSuppliesCode.length === 0 && checkInvoice.length === 0) {//thỏa mã code ko bị trùng
+    if (checkSuppliesCode.length === 0 && checkInvoice.length === 0) {//thỏa mãn code ko bị trùng
         var createSupplies = await Supplies(
             connect(DB_CONNECTION, portal)
         ).create({

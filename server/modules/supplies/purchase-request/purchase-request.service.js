@@ -138,9 +138,14 @@ exports.searchUserApprover = async (portal, company) => {
 
     return manager;
 };
+
 /**
  * Gửi email khi đăng ký sử dụng tài sản
  * @param {*} portal id công ty
+ * @param suppliesName
+ * @param approver
+ * @param userId
+ * @param type
  */
 exports.sendEmailToManager = async (portal, suppliesName, approver, userId, type) => {
     let idManager = [], privilege, roleIds = [], userRoles, email = [];
@@ -200,6 +205,7 @@ exports.getUrl = (destination, filename) => {
     let url = `${destination}/${filename}`;
     return url.substr(1, url.length);
 }
+
 /**
  * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị

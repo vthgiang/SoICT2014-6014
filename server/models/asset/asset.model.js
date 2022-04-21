@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// Updated
 const AssetSchema = new Schema({
     company: {
         //thuộc công ty nào
