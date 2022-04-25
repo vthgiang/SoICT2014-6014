@@ -160,7 +160,7 @@ function getAllAssetGroup(data) {
                     type: AssetConstants.GET_ASSET_GROUP_SUCCESS,
                     payload: res.data.content,
                 });
-                /* console.log("res",res.data) */
+                console.log("res",res.data)
             })
             .catch((err) => {
                 dispatch({

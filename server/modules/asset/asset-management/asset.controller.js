@@ -516,6 +516,8 @@ exports.getAssetGroupChart = async (req, res) => {
         let result = {}
         let numberOfAsset, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOther = 0;
         let assetChart = chartAssetChart.chartAssets
+        const listAssetOfTypes = chartAssetChart.listType;
+        //console.log("listAssetOfTypes",listAssetOfTypes)
         if (chartAssetChart) {
             chartAssetChart.chartAssets.map(asset => {
                 switch (asset.group) {
@@ -712,6 +714,655 @@ exports.getAssetGroupChart = async (req, res) => {
             dataChartType: dataChartType
         }
 
+        // getAssetPurchaseChart
+
+
+        let year = 0
+        let startMonth = 0, endMonth = 0, startYear = 0;
+
+        if (req.query.time) {
+
+            let item1 = JSON.parse(req.query.time)
+            if (item1.name = 'purchase-date-data') {
+                let stD = new Date(item1.startTime)
+                let endD = new Date(item1.endTime)
+
+                year = endD.getFullYear()
+                if (endD.getMonth() + 1 < 10) {
+                    endMonth = '0' + (endD.getMonth() + 1);
+                } else {
+                    endMonth = endD.getMonth() + 1;
+                }
+                startYear = stD.getFullYear()
+                if (stD.getMonth() + 1 < 10) {
+                    startMonth = '0' + (stD.getMonth() + 1);
+                } else {
+                    startMonth = stD.getMonth() + 1;
+                }
+            }
+
+
+        } else {
+            let d = new Date();
+            month = d.getMonth() + 1;
+            year = d.getFullYear();
+            if (month > 3) {
+                startMonth = month - 3;
+                startYear = year;
+            } else {
+                startMonth = month - 3 + 12;
+                startYear = year - 1;
+            }
+            if (startMonth < 10)
+                startMonth = '0' + startMonth;
+            if (month < 10) {
+                endMonth = '0' + month;
+            } else {
+                endMonth = month;
+            }
+
+
+        }
+        let purchaseDateAfter = [startYear, startMonth].join('-')
+        let purchaseDateBefore = [year, endMonth].join('-')
+        let startDate = new Date(purchaseDateAfter);
+        let endDate = new Date(purchaseDateBefore);
+
+        let period = Math.round((endDate - startDate) / 2592000000) + 1;
+        let listMonth = [], value = [], countAsset = [], category = [], arr = [];
+        let m = purchaseDateAfter.slice(5, 7);
+        let y = purchaseDateAfter.slice(0, 4);
+        for (let i = 0; i <= period; i++) {
+            if (m > 12) {
+                m = 1;
+                y++;
+            }
+            if (m < 10) {
+                m = '0' + m;
+            }
+            category.push([m, y].join('-'));
+            listMonth.push([y, m].join(','));
+            m++;
+
+        }
+
+        let countType = [], valueType = []
+        if (assetChart) {
+            for (let i = 0; i < listMonth.length - 1; i++) {
+                let cnt = 0, val = 0;
+                let minDate = new Date(listMonth[i]).getTime();
+                let maxDate = new Date(listMonth[i + 1]).getTime();
+                let countAssetcount = [], valueAsset = [], idAssetTypePurchase = [], idAssetTypeTestPurchase = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcount[j] = 0;
+                    valueAsset[j] = 0;
+                    idAssetTypePurchase.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestPurchase.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+                        for (let j in asset.assetType) {
+                            let index = idAssetTypeTestPurchase.indexOf(JSON.stringify(asset.assetType[j]._id));
+
+                            if (new Date(asset.purchaseDate).getTime() < maxDate && new Date(asset.purchaseDate).getTime() >= minDate) {
+                                countAssetcount[index]++
+                                valueAsset[index] += asset.cost / 1000000;
+                                cnt++;
+                                val += asset.cost / 1000000;
+                            }
+                        }
+
+                    })
+                }
+                countType.push({ xType: category[i], countAssetcount: countAssetcount, valueAsset: valueAsset, idAssetTypeTestPurchase: idAssetTypeTestPurchase, idAssetTypePurchase: idAssetTypePurchase })
+                countAsset.push(cnt);
+                value.push(val);
+
+            }
+
+        }
+        result = {
+            ...result,
+            purchaseChart: countType
+        }
+
+
+        let startDateYear = purchaseDateAfter.slice(0, 4);
+        let endDateYear = purchaseDateBefore.slice(0, 4);
+        let periodYear = endDateYear - startDateYear + 1;
+        let valueYear = [], countAssetYear = [], categoryYear = [], arrYear = [];
+        for (let i = 0; i < periodYear; i++) {
+            categoryYear.push(parseInt(startDateYear) + i);
+        }
+        let countTypeYear = []
+        if (assetChart) {
+            for (let i = 0; i < categoryYear.length; i++) {
+                let cntYear = 0, valYear = 0;
+                let countAssetcountYear = [], valueAssetYear = [], idAssetTypePurchaseYear = [], idAssetTypeTestPurchaseYear = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcountYear[j] = 0;
+                    valueAssetYear[j] = 0;
+                    idAssetTypePurchaseYear.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestPurchaseYear.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+                        for (let j in asset.assetType) {
+                            let index = idAssetTypeTestPurchaseYear.indexOf(JSON.stringify(asset.assetType[j]._id));
+                            if (new Date(asset.purchaseDate).getFullYear() == categoryYear[i]) {
+                                countAssetcountYear[index]++
+                                valueAssetYear[index] += asset.cost / 1000000;
+                                cntYear++;
+                                valYear += asset.cost / 1000000;
+                            }
+                        }
+                    })
+                }
+
+                countTypeYear.push({ xType: categoryYear[i], countAssetcountYear: countAssetcountYear, valueAssetYear: valueAssetYear, idAssetTypeTestPurchaseYear: idAssetTypeTestPurchaseYear, idAssetTypePurchaseYear: idAssetTypePurchaseYear })
+                countAssetYear.push(cntYear);
+                valueYear.push(valYear);
+
+            }
+        }
+        result = {
+            ...result,
+            purchaseChartYear: countTypeYear
+        }
+
+
+        // Disposalchart
+        let listMonthDisposal = [], valueDisposal = [], countAssetDisposal = [], categoryDisposal = [], arrDisposal = [];
+        if (req.query.time) {
+            let item1 = JSON.parse(req.query.time)
+            if (item1.name = 'disposal-date-data') {
+                let stD = new Date(item1.startTimeDisposal)
+                let endD = new Date(item1.endTimeDisposal)
+                year = endD.getFullYear()
+                if (endD.getMonth() + 1 < 10) {
+                    endMonth = '0' + (endD.getMonth() + 1);
+                } else {
+                    endMonth = endD.getMonth() + 1;
+                }
+                startYear = stD.getFullYear()
+                if (stD.getMonth() + 1 < 10) {
+                    startMonth = '0' + (stD.getMonth() + 1);
+                } else {
+                    startMonth = stD.getMonth() + 1;
+                }
+            }
+
+        } else {
+            let d = new Date();
+            month = d.getMonth() + 1;
+            year = d.getFullYear();
+            if (month > 3) {
+                startMonth = month - 3;
+                startYear = year;
+            } else {
+                startMonth = month - 3 + 12;
+                startYear = year - 1;
+            }
+            if (startMonth < 10)
+                startMonth = '0' + startMonth;
+            if (month < 10) {
+                endMonth = '0' + month;
+            } else {
+                endMonth = month;
+            }
+
+        }
+        let disposalDateAfter = [startYear, startMonth].join('-')
+        let disposalDateBefore = [year, endMonth].join('-')
+
+        let startDateDisposal = new Date(disposalDateAfter);
+        let endDateDisposal = new Date(disposalDateBefore);
+
+        let periodDisposal = Math.round((endDateDisposal - startDateDisposal) / 2592000000) + 1;
+
+        let mDisposal = disposalDateAfter.slice(5, 7);
+        let yDisposal = disposalDateAfter.slice(0, 4);
+
+        for (let k = 0; k <= periodDisposal; k++) {
+            if (mDisposal > 12) {
+                mDisposal = 1;
+                yDisposal++;
+            }
+            if (mDisposal < 10) {
+                mDisposal = '0' + mDisposal;
+            }
+            categoryDisposal.push([mDisposal, yDisposal].join('-'));
+            listMonthDisposal.push([yDisposal, mDisposal].join(','));
+            mDisposal++;
+        }
+        let countTypeDisposal = [], valueTypeDisposal = []
+
+        if (assetChart) {
+            for (let i = 0; i < listMonthDisposal.length - 1; i++) {
+                let cnt = 0, val = 0;
+                let minDate = new Date(listMonthDisposal[i]).getTime();
+                let maxDate = new Date(listMonthDisposal[i + 1]).getTime();
+                let countAssetcount = [], valueAsset = [], idAssetTypeDisposal = [], idAssetTypeTestDisposal = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcount[j] = 0;
+                    valueAsset[j] = 0;
+                    idAssetTypeDisposal.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestDisposal.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+
+                        for (let j in asset.assetType) {
+                            let index = idAssetTypeTestDisposal.indexOf(JSON.stringify(asset.assetType[j]._id));
+                            if (asset.status === "disposed") {
+                                if (new Date(asset.disposalDate).getTime() < maxDate && new Date(asset.disposalDate).getTime() >= minDate) {
+                                    countAssetcount[index]++
+                                    valueAsset[index] += asset.disposalCost / 1000000;
+                                    cnt++;
+                                    val += asset.disposalCost / 1000000;
+                                }
+                            }
+
+                        }
+
+
+                    })
+                }
+                countTypeDisposal.push({ xTypeDipsosal: categoryDisposal[i], countAssetcount: countAssetcount, valueAsset: valueAsset, idAssetTypeTestDisposal: idAssetTypeTestDisposal, idAssetTypeDisposal: idAssetTypeDisposal })
+                countAssetDisposal.push(cnt);
+
+                valueDisposal.push(val);
+
+            }
+
+        }
+        result = {
+            ...result,
+            disposalChart: countTypeDisposal
+        }
+
+
+        // disposal chart year 
+
+        let startDateYearDisposal = disposalDateAfter.slice(0, 4);
+        let endDateYearDisposal = disposalDateBefore.slice(0, 4);
+
+        let periodYearDisposal = endDateYearDisposal - startDateYearDisposal + 1;
+        let valueYearDisposal = [], countAssetYearDisposal = [], categoryYearDisposal = [], arrYearDisposal = [];
+
+        for (let i = 0; i < periodYearDisposal; i++) {
+            categoryYearDisposal.push(parseInt(startDateYearDisposal) + i);
+        }
+
+        let countTypeYearDisposal = []
+
+        if (assetChart) {
+            for (let i = 0; i < categoryYearDisposal.length; i++) {
+                let cntYear = 0, valYear = 0;
+                let countAssetcountYear = [], valueAssetYear = [], idAssetTypeDisposalYear = [], idAssetTypeTestDisposalYear = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcountYear[j] = 0;
+                    valueAssetYear[j] = 0;
+                    idAssetTypeDisposalYear.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestDisposalYear.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+                        if (asset.status === "disposed") {
+                            for (let j in asset.assetType) {
+                                let index = idAssetTypeTestDisposalYear.indexOf(JSON.stringify(asset.assetType[j]._id));
+                                if (new Date(asset.disposalDate).getFullYear() == categoryYear[i]) {
+                                    countAssetcountYear[index]++
+                                    valueAssetYear[index] += asset.disposalCost / 1000000;
+                                    cntYear++;
+                                    valYear += asset.disposalCost / 1000000;
+                                }
+                            }
+                        }
+
+                    })
+                }
+
+                countTypeYearDisposal.push({ xType: categoryYearDisposal[i], countAssetcountYear: countAssetcountYear, valueAssetYear: valueAssetYear, idAssetTypeTestDisposalYear: idAssetTypeTestDisposalYear, idAssetTypeDisposalYear: idAssetTypeDisposalYear })
+                countAssetYearDisposal.push(cntYear);
+                valueYearDisposal.push(valYear);
+
+            }
+        }
+        result = {
+            ...result,
+            disposalChartYear: countTypeYearDisposal
+        }
+
+
+        //IncidentChart
+
+        if (req.query.time) {
+            let item1 = JSON.parse(req.query.time)
+            if (item1.name = 'incident-date-data') {
+                let stD = new Date(item1.startTimeIncident)
+                let endD = new Date(item1.endTimeIncident)
+                year = endD.getFullYear()
+                if (endD.getMonth() + 1 < 10) {
+                    endMonth = '0' + (endD.getMonth() + 1);
+                } else {
+                    endMonth = endD.getMonth() + 1;
+                }
+                startYear = stD.getFullYear()
+                if (stD.getMonth() + 1 < 10) {
+                    startMonth = '0' + (stD.getMonth() + 1);
+                } else {
+                    startMonth = stD.getMonth() + 1;
+                }
+            }
+
+        }   else {
+            let d = new Date();
+            month = d.getMonth() + 1;
+            year = d.getFullYear();
+            if (month > 3) {
+                startMonth = month - 3;
+                startYear = year;
+            } else {
+                startMonth = month - 3 + 12;
+                startYear = year - 1;
+            }
+            if (startMonth < 10)
+                startMonth = '0' + startMonth;
+            if (month < 10) {
+                endMonth = '0' + month;
+            } else {
+                endMonth = month;
+            }
+            
+        }
+        let incidentDateAfter = [startYear, startMonth].join('-')
+        let incidentDateBefore = [year, endMonth].join('-')
+
+        let startDateIncident = new Date(incidentDateAfter);
+        let endDateIncident = new Date(incidentDateBefore);
+        
+        let periodIncident = Math.round((endDateIncident - startDateIncident) / 2592000000) + 1;
+        let listMonthIncident = [], countAssetIncident = [], categoryIncident = [], arrIncident = [];
+        let mIncident = incidentDateAfter.slice(5, 7);
+        let yIncident = incidentDateAfter.slice(0, 4);
+        
+        for (let i = 0; i <= periodIncident; i++) {
+            if (mIncident > 12) {
+                mIncident = 1;
+                yIncident++;
+            }
+            if (mIncident < 10) {
+                mIncident = '0' + mIncident;
+            }
+            categoryIncident.push([mIncident, yIncident].join('-'));
+            listMonthIncident.push([yIncident, mIncident].join(','));
+            mIncident++;
+
+        }
+        let countTypeIncident = []
+
+        if (assetChart) {
+            for (let i = 0; i < listMonthIncident.length - 1; i++) {
+                let cnt = 0, val = 0;
+                let minDate = new Date(listMonthIncident[i]).getTime();
+                let maxDate = new Date(listMonthIncident[i + 1]).getTime();
+                let countAssetcount = [], idAssetTypeIncident = [], idAssetTypeTestIncident = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcount[j] = 0;
+                    idAssetTypeIncident.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestIncident.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+                
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+                        for (let j in asset.assetType) {
+                            let index = idAssetTypeTestIncident.indexOf(JSON.stringify(asset.assetType[j]._id));
+                            let incidentLog = asset.incidentLogs
+                            if (incidentLog.length) {
+                                incidentLog.forEach(e => {
+                                    let date1 = new Date(e.dateOfIncident).getTime()
+                                    if (new Date(e.dateOfIncident).getTime() >= minDate && new Date(e.dateOfIncident).getTime() < maxDate) {
+                                        cnt++;
+                                        countAssetcount[index]++;
+
+                                    }
+
+                                })
+
+                            }
+                        }
+                    })
+                }
+                countTypeIncident.push({ xType: categoryIncident[i], countAssetcount: countAssetcount, idAssetTypeTestIncident: idAssetTypeTestIncident, idAssetTypeIncident: idAssetTypeIncident })
+
+            }
+
+        }
+        result = {
+            ...result,
+            incidentChart: countTypeIncident
+        }
+        // Incident chart year
+        let startDateYearIncident = incidentDateAfter.slice(0, 4);
+        let endDateYearIncident = incidentDateBefore.slice(0, 4);
+        
+        let periodYearIncident = endDateYearIncident - startDateYearIncident + 1;
+        let valueYearIncident = [], countAssetYearIncident = [], categoryYearIncident = [], arrYearIncident = [];
+        for (let i = 0; i < periodYearIncident; i++) {
+            categoryYearIncident.push(parseInt(startDateYearIncident) + i);
+        }
+        let countTypeYearIncident = []
+        
+        if (assetChart) {
+            for (let i = 0; i < categoryYearIncident.length; i++) {
+                let cntYear = 0, valYear = 0;
+                let countAssetcountYear = [], valueAssetYear = [], idAssetTypeIncidentYear = [], idAssetTypeTestIncidentYear = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcountYear[j] = 0;
+                    valueAssetYear[j] = 0;
+                    idAssetTypeIncidentYear.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestIncidentYear.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+                
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+                        for (let j in asset.assetType) {
+                            let index = idAssetTypeTestIncidentYear.indexOf(JSON.stringify(asset.assetType[j]._id));
+                            let incidentLog = asset.incidentLogs
+                            if (incidentLog.length) {
+                                incidentLog.forEach(e => {
+                                    let date1 = new Date(e.dateOfIncident).getTime()
+                                    if (new Date(e.dateOfIncident).getFullYear() == categoryYear[i]) {
+                                        cntYear++;
+                                        countAssetcountYear[index]++;
+                                        //console.log(cntYear)
+                                    }
+
+                                })
+
+                            }
+                        }
+                    })
+                }
+                
+                countTypeYearIncident.push({ xType: categoryYearIncident[i], countAssetcountYear: countAssetcountYear, idAssetTypeTestIncidentYear: idAssetTypeTestIncidentYear, idAssetTypeIncidentYear: idAssetTypeIncidentYear })
+
+
+            }
+        }
+        result = {
+            ...result,
+            incidentChartYear: countTypeYearIncident
+        }
+        // maintaince chart
+
+
+        if (req.query.time) {
+            let item1 = JSON.parse(req.query.time)
+            if (item1.name = 'maintenance-date-data') {
+                let stD = new Date(item1.startTimeMaintenance)
+                let endD = new Date(item1.endTimeMaintenance)
+                year = endD.getFullYear()
+                if (endD.getMonth() + 1 < 10) {
+                    endMonth = '0' + (endD.getMonth() + 1);
+                } else {
+                    endMonth = endD.getMonth() + 1;
+                }
+                startYear = stD.getFullYear()
+                if (stD.getMonth() + 1 < 10) {
+                    startMonth = '0' + (stD.getMonth() + 1);
+                } else {
+                    startMonth = stD.getMonth() + 1;
+                }
+            }
+        }   else {
+            let d = new Date();
+            month = d.getMonth() + 1;
+            year = d.getFullYear();
+            if (month > 3) {
+                startMonth = month - 3;
+                startYear = year;
+            } else {
+                startMonth = month - 3 + 12;
+                startYear = year - 1;
+            }
+            if (startMonth < 10)
+                startMonth = '0' + startMonth;
+            if (month < 10) {
+                endMonth = '0' + month;
+            } else {
+                endMonth = month;
+            }
+
+        }
+
+        let maintenanceDateAfter = [startYear, startMonth].join('-')
+        let maintenanceDateBefore = [year, endMonth].join('-')
+
+        let startDateMaintenance = new Date(maintenanceDateAfter);
+        let endDateMaintenance = new Date(maintenanceDateBefore);
+        
+        let periodMaintenance = Math.round((endDateMaintenance - startDateMaintenance) / 2592000000) + 1;
+        let listMonthMaintenance = [], countAssetMaintenance = [], categoryMaintenance = [], arrMaintenance = [];
+        let mMaintenance = maintenanceDateAfter.slice(5, 7);
+        let yMaintenance = maintenanceDateAfter.slice(0, 4);
+
+        for (let i = 0; i <= periodMaintenance; i++) {
+            if (mMaintenance > 12) {
+                mMaintenance = 1;
+                yMaintenance++;
+            }
+            if (mMaintenance < 10) {
+                mMaintenance = '0' + mMaintenance;
+            }
+            categoryMaintenance.push([mMaintenance, yMaintenance].join('-'));
+            listMonthMaintenance.push([yMaintenance, mMaintenance].join(','));
+            mMaintenance++;
+
+        }
+        let countTypeMaintenance = []
+        
+        if (assetChart) {
+            for (let i = 0; i < listMonthMaintenance.length - 1; i++) {
+                let cnt = 0, val = 0;
+                let minDate = new Date(listMonthMaintenance[i]).getTime();
+                let maxDate = new Date(listMonthMaintenance[i + 1]).getTime();
+                let countAssetcount = [], valueAsset = [], idAssetTypeMaintenance = [], idAssetTypeTestMaintenance = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcount[j] = 0;
+                    valueAsset[j] = 0;
+                    idAssetTypeMaintenance.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestMaintenance.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+                
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+
+                        for (let j in asset.assetType) {
+                            let index = idAssetTypeTestMaintenance.indexOf(JSON.stringify(asset.assetType[j]._id));
+                            let maintenanceLog = asset.maintainanceLogs
+                            if (maintenanceLog.length) {
+                                maintenanceLog.forEach(e => {
+                                    if (new Date(e.createDate).getTime() >= minDate && new Date(e.createDate).getTime() < maxDate) {
+                                        cnt++;
+                                        countAssetcount[index]++;
+                                        valueAsset[index] += e.expense / 1000000;
+                                    }
+
+                                })
+
+                            }
+                        }
+
+                    })
+                }
+               
+                countTypeMaintenance.push({ xType: categoryMaintenance[i], countAssetcount: countAssetcount, valueAsset: valueAsset, idAssetTypeTestMaintenance: idAssetTypeTestMaintenance, idAssetTypeMaintenance: idAssetTypeMaintenance })
+                
+            }
+
+        }
+        result = {
+            ...result,
+            maintenanceChart: countTypeMaintenance
+        }
+        
+        let startDateYearMaintenance = maintenanceDateAfter.slice(0, 4);
+        let endDateYearMaintenance = maintenanceDateBefore.slice(0, 4);
+        let periodYearMaintenance = endDateYearMaintenance - startDateYearMaintenance + 1;
+        let valueYearMaintenance = [], countAssetYearMaintenance = [], categoryYearMaintenance = [], arrYearMaintenance = [];
+        for (let i = 0; i < periodYearMaintenance; i++) {
+            categoryYearMaintenance.push(parseInt(startDateYearMaintenance) + i);
+        }
+        let countTypeYearMaintenance = []
+        
+        if (assetChart) {
+            for (let i = 0; i < categoryYearMaintenance.length; i++) {
+                let cntYear = 0, valYear = 0;
+                let countAssetcountYear = [], valueAssetYear = [], idAssetTypeMaintenanceYear = [], idAssetTypeTestMaintenanceYear = [];
+                for (let j in listAssetOfTypes) {
+                    countAssetcountYear[j] = 0;
+                    valueAssetYear[j] = 0;
+                    idAssetTypeMaintenanceYear.push(listAssetOfTypes[j]._id)
+                    idAssetTypeTestMaintenanceYear.push(JSON.stringify(listAssetOfTypes[j]._id))
+                }
+                
+                if (assetChart) {
+                    assetChart.forEach(asset => {
+                        for (let j in asset.assetType) {
+                            let index = idAssetTypeTestMaintenanceYear.indexOf(JSON.stringify(asset.assetType[j]._id));
+                            let maintenanceLog = asset.maintainanceLogs
+                            if (maintenanceLog.length) {
+                                maintenanceLog.forEach(e => {
+                                    let date1 = new Date(e.dateOfIncident).getTime()
+                                    if (new Date(e.createDate).getFullYear() == categoryYear[i]) {
+                                        cntYear++;
+                                        countAssetcountYear[index]++;
+                                        valueAssetYear[index] += e.expense / 1000000;
+
+                                    }
+
+                                })
+
+                            }
+                        }
+                    })
+                }
+                
+                countTypeYearMaintenance.push({ xType: categoryYearMaintenance[i], countAssetcountYear: countAssetcountYear, valueAssetYear: valueAssetYear, idAssetTypeTestMaintenanceYear: idAssetTypeTestMaintenanceYear, idAssetTypeMaintenanceYear: idAssetTypeMaintenanceYear })
+                
+
+            }
+        }
+        result = {
+            ...result,
+            maintenanceYearChart: countTypeYearMaintenance
+        }
+
+       
         res.status(200).json({
             success: true,
             messages: ["get_asset_group_success"],
@@ -938,712 +1589,6 @@ exports.getAssetStatisticChart = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ["get_asset_statistic_fail"],
-            content: { error: error }
-        });
-    }
-}
-
-exports.getAssetPurchaseChart = async (req, res) => {
-    try {
-
-        let AssetPurchaseChart
-
-        AssetPurchaseChart = await AssetService.chartAssetGroupData(req.portal, req.user.company._id);
-
-        let result = {}
-        let purchaseChartdata = AssetPurchaseChart.result
-
-        let purchaseChart = purchaseChartdata.chartAssets
-
-        const listAssetPurchaseTypes = purchaseChartdata.listType;
-
-        let year = 0
-        let startMonth = 0, endMonth = 0, startYear = 0;
-        if (req.query.time) {
-            let item1 = JSON.parse(req.query.time)
-            let stD = new Date(item1.startTime)
-            let endD = new Date(item1.endTime)
-            year = endD.getFullYear()
-            if (endD.getMonth() + 1 < 10) {
-                endMonth = '0' + (endD.getMonth() + 1);
-            } else {
-                endMonth = endD.getMonth() + 1;
-            }
-            startYear = stD.getFullYear()
-            if (stD.getMonth() + 1 < 10) {
-                startMonth = '0' + (stD.getMonth() + 1);
-            } else {
-                startMonth = stD.getMonth() + 1;
-            }
-            //console.log(item1,year,startMonth,endMonth,startYear)
-        } else {
-            let d = new Date();
-            month = d.getMonth() + 1;
-            year = d.getFullYear();
-            if (month > 3) {
-                startMonth = month - 3;
-                startYear = year;
-            } else {
-                startMonth = month - 3 + 12;
-                startYear = year - 1;
-            }
-            if (startMonth < 10)
-                startMonth = '0' + startMonth;
-            if (month < 10) {
-                endMonth = '0' + month;
-            } else {
-                endMonth = month;
-            }
-            //console.log(year,startMonth,endMonth,startYear)
-        }
-
-
-        let purchaseDateAfter = [startYear, startMonth].join('-')
-        let purchaseDateBefore = [year, endMonth].join('-')
-        let startDate = new Date(purchaseDateAfter);
-        let endDate = new Date(purchaseDateBefore);
-        // console.log(purchaseDateAfter,purchaseDateBefore,startDate,endDate)
-        let period = Math.round((endDate - startDate) / 2592000000) + 1;
-        let listMonth = [], value = [], countAsset = [], category = [], arr = [];
-        let m = purchaseDateAfter.slice(5, 7);
-        let y = purchaseDateAfter.slice(0, 4);
-        for (let i = 0; i <= period; i++) {
-            if (m > 12) {
-                m = 1;
-                y++;
-            }
-            if (m < 10) {
-                m = '0' + m;
-            }
-            category.push([m, y].join('-'));
-            listMonth.push([y, m].join(','));
-            m++;
-        }
-        console.log(listMonth);
-        let countType = [], valueType = []
-        if (purchaseChart) {
-            for (let i = 0; i < listMonth.length - 1; i++) {
-                let cnt = 0, val = 0;
-                let minDate = new Date(listMonth[i]).getTime();
-                let maxDate = new Date(listMonth[i + 1]).getTime();
-                let countAssetcount = [], valueAsset = [], idAssetTypePurchase = [], idAssetTypeTestPurchase = [];
-                for (let j in listAssetPurchaseTypes) {
-                    countAssetcount[j] = 0;
-                    valueAsset[j] = 0;
-                    idAssetTypePurchase.push(listAssetPurchaseTypes[j]._id)
-                    idAssetTypeTestPurchase.push(JSON.stringify(listAssetPurchaseTypes[j]._id))
-                }
-                if (purchaseChart) {
-                    purchaseChart.forEach(asset => {
-                        for (let j in asset.assetType) {
-                            let index = idAssetTypeTestPurchase.indexOf(JSON.stringify(asset.assetType[j]._id));
-
-                            if (new Date(asset.purchaseDate).getTime() < maxDate && new Date(asset.purchaseDate).getTime() >= minDate) {
-                                countAssetcount[index]++
-                                valueAsset[index] += asset.cost / 1000000;
-                                cnt++;
-                                val += asset.cost / 1000000;
-                            }
-                        }
-
-                    })
-                }
-                countType.push({ xType: category[i], countAssetcount: countAssetcount, valueAsset: valueAsset, idAssetTypeTestPurchase: idAssetTypeTestPurchase, idAssetTypePurchase: idAssetTypePurchase })
-                countAsset.push(cnt);
-                value.push(val);
-
-            }
-
-        }
-        result = { ...result, purchaseChart: countType }
-
-        let startDateYear = purchaseDateAfter.slice(0, 4);
-        let endDateYear = purchaseDateBefore.slice(0, 4);
-        let periodYear = endDateYear - startDateYear + 1;
-        let valueYear = [], countAssetYear = [], categoryYear = [], arrYear = [];
-        for (let i = 0; i < periodYear; i++) {
-            categoryYear.push(parseInt(startDateYear) + i);
-        }
-        let countTypeYear = []
-        if (purchaseChart) {
-            for (let i = 0; i < categoryYear.length; i++) {
-                let cntYear = 0, valYear = 0;
-                let countAssetcountYear = [], valueAssetYear = [], idAssetTypePurchaseYear = [], idAssetTypeTestPurchaseYear = [];
-                for (let j in listAssetPurchaseTypes) {
-                    countAssetcountYear[j] = 0;
-                    valueAssetYear[j] = 0;
-                    idAssetTypePurchaseYear.push(listAssetPurchaseTypes[j]._id)
-                    idAssetTypeTestPurchaseYear.push(JSON.stringify(listAssetPurchaseTypes[j]._id))
-                }
-                if (purchaseChart) {
-                    purchaseChart.forEach(asset => {
-                        for (let j in asset.assetType) {
-                            let index = idAssetTypeTestPurchaseYear.indexOf(JSON.stringify(asset.assetType[j]._id));
-                            if (new Date(asset.purchaseDate).getFullYear() == categoryYear[i]) {
-                                countAssetcountYear[index]++
-                                valueAssetYear[index] += asset.cost / 1000000;
-                                cntYear++;
-                                valYear += asset.cost / 1000000;
-                            }
-                        }
-                    })
-                }
-
-                countTypeYear.push({ xType: categoryYear[i], countAssetcountYear: countAssetcountYear, valueAssetYear: valueAssetYear, idAssetTypeTestPurchaseYear: idAssetTypeTestPurchaseYear, idAssetTypePurchaseYear: idAssetTypePurchaseYear })
-                countAssetYear.push(cntYear);
-                valueYear.push(valYear);
-
-            }
-        }
-        result = { ...result, purchaseChartYear: countTypeYear }
-
-        res.status(200).json({
-            success: true,
-            messages: ["get_asset_purchase_success"],
-            content: result
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            messages: ["get_asset_purchase_fail"],
-            content: { error: error }
-        });
-    }
-}
-
-exports.getAssetDisposalChart = async (req, res) => {
-    try {
-        let AssetDisposalChart
-        AssetDisposalChart = await AssetService.chartAssetGroupData(req.portal, req.user.company._id);
-        let result = {}
-        let disposalChartdata = AssetDisposalChart.result
-        let disposalChart = disposalChartdata.chartAssets
-        const listAssetDisposalTypes = disposalChartdata.listType; 
-        let year = 0
-        let startMonth = 0, endMonth = 0, startYear = 0;
-        let listMonthDisposal = [], value = [], countAsset = [], categoryDisposal = [], arr = [];
-        if (req.query.time) {
-            
-            let item1 = JSON.parse(req.query.time)
-            let stD = new Date(item1.startTimeDisposal)
-            let endD = new Date(item1.endTimeDisposal)
-            year = endD.getFullYear()
-            if (endD.getMonth() + 1 < 10) {
-                endMonth = '0' + (endD.getMonth() + 1);
-            } else {
-                endMonth = endD.getMonth() + 1;
-            }
-            startYear = stD.getFullYear()
-            if (stD.getMonth() + 1 < 10) {
-                startMonth = '0' + (stD.getMonth() + 1);
-            } else {
-                startMonth = stD.getMonth() + 1;
-            }
-
-        } else {
-            let d = new Date();
-            month = d.getMonth() + 1;
-            year = d.getFullYear();
-            if (month > 3) {
-                startMonth = month - 3;
-                startYear = year;
-            } else {
-                startMonth = month - 3 + 12;
-                startYear = year - 1;
-            }
-            if (startMonth < 10)
-                startMonth = '0' + startMonth;
-            if (month < 10) {
-                endMonth = '0' + month;
-            } else {
-                endMonth = month;
-            }
-            
-        }
-
-        let disposalDateAfter = [startYear, startMonth].join('-')
-        let disposalDateBefore = [year, endMonth].join('-')
-        
-        let startDate = new Date(disposalDateAfter);
-        let endDate = new Date(disposalDateBefore);
-
-        let period = Math.round((endDate - startDate) / 2592000000) + 1;
-        
-        let m = disposalDateAfter.slice(5, 7);
-        let y = disposalDateAfter.slice(0, 4);
-        
-        for (let k = 0; k <= period; k++) {
-            if (m > 12) {
-                m = 1;
-                y++;
-            }
-            if (m < 10) {
-                m = '0' + m;
-            }
-            categoryDisposal.push([m, y].join('-'));
-            listMonthDisposal.push([y, m].join(','));
-            m++;
-        }
-        //console.log("categoryDisposal",categoryDisposal)
-        let countType = [], valueType = []
-
-        if (disposalChart) {
-            for (let i = 0; i < listMonthDisposal.length - 1; i++) {
-                let cnt = 0, val = 0;
-                let minDate = new Date(listMonthDisposal[i]).getTime();
-                let maxDate = new Date(listMonthDisposal[i + 1]).getTime();
-                let countAssetcount = [], valueAsset = [], idAssetTypeDisposal = [], idAssetTypeTestDisposal = [];
-                for (let j in listAssetDisposalTypes) {
-                    countAssetcount[j] = 0;
-                    valueAsset[j] = 0;
-                    idAssetTypeDisposal.push(listAssetDisposalTypes[j]._id)
-                    idAssetTypeTestDisposal.push(JSON.stringify(listAssetDisposalTypes[j]._id))
-                }
-                if (disposalChart) {
-                    disposalChart.forEach(asset => {
-                        
-                            for (let j in asset.assetType) {
-                                let index = idAssetTypeTestDisposal.indexOf(JSON.stringify(asset.assetType[j]._id));
-                                if (asset.status === "disposed"){
-                                    if (new Date(asset.disposalDate).getTime() < maxDate && new Date(asset.disposalDate).getTime() >= minDate) {
-                                        countAssetcount[index]++
-                                        valueAsset[index] += asset.disposalCost / 1000000;
-                                        cnt++;
-                                        val += asset.disposalCost / 1000000;
-                                    }
-                                }
-                                
-                            }
-                        
-
-                    })
-                }
-                countType.push({ xTypeDipsosal: categoryDisposal[i], countAssetcount: countAssetcount, valueAsset: valueAsset, idAssetTypeTestDisposal: idAssetTypeTestDisposal, idAssetTypeDisposal: idAssetTypeDisposal })
-                countAsset.push(cnt);
-
-                value.push(val);
-
-            }
-
-        }
-
-        result = { ...result, disposalChart: countType }
-
-
-        let startDateYear = disposalDateAfter.slice(0, 4);
-        let endDateYear = disposalDateBefore.slice(0, 4);
-        let periodYear = endDateYear - startDateYear + 1;
-        let valueYear = [], countAssetYear = [], categoryYear = [], arrYear = [];
-        for (let i = 0; i < periodYear; i++) {
-            categoryYear.push(parseInt(startDateYear) + i);
-        }
-        let countTypeYear = []
-        if (disposalChart) {
-            for (let i = 0; i < categoryYear.length; i++) {
-                let cntYear = 0, valYear = 0;
-                let countAssetcountYear = [], valueAssetYear = [], idAssetTypeDisposalYear = [], idAssetTypeTestDisposalYear = [];
-                for (let j in listAssetDisposalTypes) {
-                    countAssetcountYear[j] = 0;
-                    valueAssetYear[j] = 0;
-                    idAssetTypeDisposalYear.push(listAssetDisposalTypes[j]._id)
-                    idAssetTypeTestDisposalYear.push(JSON.stringify(listAssetDisposalTypes[j]._id))
-                }
-                if (disposalChart) {
-                    disposalChart.forEach(asset => {
-                        if (asset.status === "disposed") {
-                            for (let j in asset.assetType) {
-                                let index = idAssetTypeTestDisposalYear.indexOf(JSON.stringify(asset.assetType[j]._id));
-                                if (new Date(asset.disposalDate).getFullYear() == categoryYear[i]) {
-                                    countAssetcountYear[index]++
-                                    valueAssetYear[index] += asset.disposalCost / 1000000;
-                                    cntYear++;
-                                    valYear += asset.disposalCost / 1000000;
-                                }
-                            }
-                        }
-
-                    })
-                }
-
-                countTypeYear.push({ xType: categoryYear[i], countAssetcountYear: countAssetcountYear, valueAssetYear: valueAssetYear, idAssetTypeTestDisposalYear: idAssetTypeTestDisposalYear, idAssetTypeDisposalYear: idAssetTypeDisposalYear })
-                countAssetYear.push(cntYear);
-                valueYear.push(valYear);
-
-            }
-        }
-        result = { ...result, disposalChartYear: countTypeYear }
-
-        res.status(200).json({
-            success: true,
-            messages: ["get_asset_disposal_success"],
-            content: result
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            messages: ["get_asset_disposal_fail"],
-            content: { error: error }
-        });
-    }
-}
-
-exports.getAssetIncidentChart = async (req, res) => {
-    try {
-        let AssetIncidentChart
-
-        AssetIncidentChart = await AssetService.chartAssetGroupData(req.portal, req.user.company._id);
-        let result = {}
-        let incidentChartdata = AssetIncidentChart.result
-
-        let incidentChart = incidentChartdata.chartAssets
-
-        const listAssetIncidentTypes = incidentChartdata.listType;
-
-
-        let year = 0
-        let startMonth = 0, endMonth = 0, startYear = 0;
-        //console.log("req.query.time",req.query.time)
-        if (req.query.time) {
-            let item1 = JSON.parse(req.query.time)
-            let stD = new Date(item1.startTimeIncident)
-            let endD = new Date(item1.endTimeIncident)
-            console.log(req.query.time)
-            year = endD.getFullYear()
-            if (endD.getMonth() + 1 < 10) {
-                endMonth = '0' + (endD.getMonth() + 1);
-            } else {
-                endMonth = endD.getMonth() + 1;
-            }
-            startYear = stD.getFullYear()
-            if (stD.getMonth() + 1 < 10) {
-                startMonth = '0' + (stD.getMonth() + 1);
-            } else {
-                startMonth = stD.getMonth() + 1;
-            }
-
-        } else {
-            let d = new Date();
-            month = d.getMonth() + 1;
-            year = d.getFullYear();
-            if (month > 3) {
-                startMonth = month - 3;
-                startYear = year;
-            } else {
-                startMonth = month - 3 + 12;
-                startYear = year - 1;
-            }
-            if (startMonth < 10)
-                startMonth = '0' + startMonth;
-            if (month < 10) {
-                endMonth = '0' + month;
-            } else {
-                endMonth = month;
-            }
-            //console.log(year,startMonth,endMonth,startYear)
-        }
-
-        let incidentDateAfter = [startYear, startMonth].join('-')
-        let incidentDateBefore = [year, endMonth].join('-')
-
-        let startDate = new Date(incidentDateAfter);
-        let endDate = new Date(incidentDateBefore);
-        
-        let period = Math.round((endDate - startDate) / 2592000000) + 1;
-        let listMonth = [], countAsset = [], category = [], arr = [];
-        let m = incidentDateAfter.slice(5, 7);
-        let y = incidentDateAfter.slice(0, 4);
-        
-
-        for (let i = 0; i <= period; i++) {
-            if (m > 12) {
-                m = 1;
-                y++;
-            }
-            if (m < 10) {
-                m = '0' + m;
-            }
-            category.push([m, y].join('-'));
-            listMonth.push([y, m].join(','));
-            m++;
-            
-        }
-        let countType = []
-        
-        if (incidentChart) {
-            for (let i = 0; i < listMonth.length - 1; i++) {
-                let cnt = 0, val = 0;
-                let minDate = new Date(listMonth[i]).getTime();
-                let maxDate = new Date(listMonth[i + 1]).getTime();
-                let countAssetcount = [], idAssetTypeIncident = [], idAssetTypeTestIncident = [];
-                for (let j in listAssetIncidentTypes) {
-                    countAssetcount[j] = 0;
-                    idAssetTypeIncident.push(listAssetIncidentTypes[j]._id)
-                    idAssetTypeTestIncident.push(JSON.stringify(listAssetIncidentTypes[j]._id))
-                }
-                if (incidentChart) {
-                    incidentChart.forEach(asset => {
-                        for (let j in asset.assetType) {
-                            let index = idAssetTypeTestIncident.indexOf(JSON.stringify(asset.assetType[j]._id));
-                            let incidentLog = asset.incidentLogs 
-                            if (incidentLog.length){
-                                incidentLog.forEach(e =>{
-                                    let date1 = new Date(e.dateOfIncident).getTime()
-                                    if (new Date(e.dateOfIncident).getTime() >= minDate && new Date(e.dateOfIncident).getTime() <maxDate ){
-                                        cnt++;
-                                        countAssetcount[index]++;
-                                        
-                                    }
-                                    
-                                })
-                                
-                            }
-                        }
-                    })
-                }
-                countType.push({ xType: category[i], countAssetcount: countAssetcount, idAssetTypeTestIncident: idAssetTypeTestIncident, idAssetTypeIncident: idAssetTypeIncident })
-
-            }
-
-        }
-        result = { ...result, incidentChart: countType }
-        
-
-        let startDateYear = incidentDateAfter.slice(0, 4);
-        let endDateYear = incidentDateBefore.slice(0, 4);
-        let periodYear = endDateYear - startDateYear + 1;
-        let valueYear = [], countAssetYear = [], categoryYear = [], arrYear = [];
-        for (let i = 0; i < periodYear; i++) {
-            categoryYear.push(parseInt(startDateYear) + i);
-        }
-        let countTypeYear = []
-        
-        if (incidentChart) {
-            for (let i = 0; i < categoryYear.length; i++) {
-                let cntYear = 0, valYear = 0;
-                let countAssetcountYear = [], valueAssetYear = [], idAssetTypeIncidentYear = [], idAssetTypeTestIncidentYear = [];
-                for (let j in listAssetIncidentTypes) {
-                    countAssetcountYear[j] = 0;
-                    valueAssetYear[j] = 0;
-                    idAssetTypeIncidentYear.push(listAssetIncidentTypes[j]._id)
-                    idAssetTypeTestIncidentYear.push(JSON.stringify(listAssetIncidentTypes[j]._id))
-                }
-                if (incidentChart) {
-                    incidentChart.forEach(asset => {
-                        for (let j in asset.assetType) {
-                            let index = idAssetTypeTestIncidentYear.indexOf(JSON.stringify(asset.assetType[j]._id));
-                            let incidentLog = asset.incidentLogs 
-                            if (incidentLog.length){
-                                incidentLog.forEach(e =>{
-                                    let date1 = new Date(e.dateOfIncident).getTime()
-                                    if (new Date(e.dateOfIncident).getFullYear() == categoryYear[i]){
-                                        cntYear++;
-                                        countAssetcountYear[index]++;
-                                        //console.log(cntYear)
-                                    }
-                                    
-                                })
-                                
-                            }
-                        }
-                    })
-                }
-                
-                countTypeYear.push({ xType: categoryYear[i], countAssetcountYear: countAssetcountYear,  idAssetTypeTestIncidentYear: idAssetTypeTestIncidentYear, idAssetTypeIncidentYear: idAssetTypeIncidentYear })
-                
-
-            }
-        }
-        result = { ...result, incidentChartYear: countTypeYear }
-        
-        res.status(200).json({
-            success: true,
-            messages: ["get_asset_incident_success"],
-            content: result
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            messages: ["get_asset_incident_fail"],
-            content: { error: error }
-        });
-    }
-}
-
-exports.getAssetMaintenanceChart = async (req, res) => {
-    try {
-        let AssetMaintenanceChart
-
-        AssetMaintenanceChart = await AssetService.chartAssetGroupData(req.portal, req.user.company._id);
-        let result = {}
-        let maintenanceChartdata = AssetMaintenanceChart.result
-
-        let maintenanceChart = maintenanceChartdata.chartAssets
-
-        const listAssetMaintenanceTypes = maintenanceChartdata.listType;
-        let year = 0
-        let startMonth = 0, endMonth = 0, startYear = 0;
-        if (req.query.time) {
-            let item1 = JSON.parse(req.query.time)
-            let stD = new Date(item1.startTimeMaintenance)
-            let endD = new Date(item1.endTimeMaintenance)
-            year = endD.getFullYear()
-            if (endD.getMonth() + 1 < 10) {
-                endMonth = '0' + (endD.getMonth() + 1);
-            } else {
-                endMonth = endD.getMonth() + 1;
-            }
-            startYear = stD.getFullYear()
-            if (stD.getMonth() + 1 < 10) {
-                startMonth = '0' + (stD.getMonth() + 1);
-            } else {
-                startMonth = stD.getMonth() + 1;
-            }
-
-        } else {
-            let d = new Date();
-            month = d.getMonth() + 1;
-            year = d.getFullYear();
-            if (month > 3) {
-                startMonth = month - 3;
-                startYear = year;
-            } else {
-                startMonth = month - 3 + 12;
-                startYear = year - 1;
-            }
-            if (startMonth < 10)
-                startMonth = '0' + startMonth;
-            if (month < 10) {
-                endMonth = '0' + month;
-            } else {
-                endMonth = month;
-            }
-            
-        }
-        let maintenanceDateAfter = [startYear, startMonth].join('-')
-        let maintenanceDateBefore = [year, endMonth].join('-')
-
-        let startDate = new Date(maintenanceDateAfter);
-        let endDate = new Date(maintenanceDateBefore);
-        
-        let period = Math.round((endDate - startDate) / 2592000000) + 1;
-        let listMonth = [], countAsset = [], category = [], arr = [];
-        let m = maintenanceDateAfter.slice(5, 7);
-        let y = maintenanceDateAfter.slice(0, 4);
-
-        for (let i = 0; i <= period; i++) {
-            if (m > 12) {
-                m = 1;
-                y++;
-            }
-            if (m < 10) {
-                m = '0' + m;
-            }
-            category.push([m, y].join('-'));
-            listMonth.push([y, m].join(','));
-            m++;
-            
-        }
-        let countType = []
-
-        if (maintenanceChart) {
-            for (let i = 0; i < listMonth.length - 1; i++) {
-                let cnt = 0, val = 0;
-                let minDate = new Date(listMonth[i]).getTime();
-                let maxDate = new Date(listMonth[i + 1]).getTime();
-                let countAssetcount = [],valueAsset = [], idAssetTypeMaintenance = [], idAssetTypeTestMaintenance = [];
-                for (let j in listAssetMaintenanceTypes) {
-                    countAssetcount[j] = 0;
-                    valueAsset[j] = 0;
-                    idAssetTypeMaintenance.push(listAssetMaintenanceTypes[j]._id)
-                    idAssetTypeTestMaintenance.push(JSON.stringify(listAssetMaintenanceTypes[j]._id))
-                }
-                
-                if (maintenanceChart) {
-                    maintenanceChart.forEach(asset => {
-                        
-                        for (let j in asset.assetType) {
-                            let index = idAssetTypeTestMaintenance.indexOf(JSON.stringify(asset.assetType[j]._id));
-                            let maintenanceLog = asset.maintainanceLogs 
-                            if (maintenanceLog.length){
-                                maintenanceLog.forEach(e =>{
-                                    if (new Date(e.createDate).getTime() >= minDate && new Date(e.createDate).getTime() <maxDate ){
-                                        cnt++;
-                                        countAssetcount[index]++;
-                                        valueAsset[index] += e.expense / 1000000;
-                                    }
-                                    
-                                })
-                                
-                            }
-                        }
-                        
-                    })
-                }
-                
-                countType.push({ xType: category[i], countAssetcount: countAssetcount,valueAsset: valueAsset, idAssetTypeTestMaintenance: idAssetTypeTestMaintenance, idAssetTypeMaintenance: idAssetTypeMaintenance })
-
-            }
-
-        }
-        result = { ...result, maintenanceChart: countType }
-        
-        let startDateYear = maintenanceDateAfter.slice(0, 4);
-        let endDateYear = maintenanceDateBefore.slice(0, 4);
-        let periodYear = endDateYear - startDateYear + 1;
-        let valueYear = [], countAssetYear = [], categoryYear = [], arrYear = [];
-        for (let i = 0; i < periodYear; i++) {
-            categoryYear.push(parseInt(startDateYear) + i);
-        }
-        let countTypeYear = []
-
-        if (maintenanceChart) {
-            for (let i = 0; i < categoryYear.length; i++) {
-                let cntYear = 0, valYear = 0;
-                let countAssetcountYear = [], valueAssetYear = [], idAssetTypeMaintenanceYear = [], idAssetTypeTestMaintenanceYear = [];
-                for (let j in listAssetMaintenanceTypes) {
-                    countAssetcountYear[j] = 0;
-                    valueAssetYear[j] = 0;
-                    idAssetTypeMaintenanceYear.push(listAssetMaintenanceTypes[j]._id)
-                    idAssetTypeTestMaintenanceYear.push(JSON.stringify(listAssetMaintenanceTypes[j]._id))
-                }
-                if (maintenanceChart) {
-                    maintenanceChart.forEach(asset => {
-                        for (let j in asset.assetType) {
-                            let index = idAssetTypeTestMaintenanceYear.indexOf(JSON.stringify(asset.assetType[j]._id));
-                            let maintenanceLog = asset.maintainanceLogs 
-                            if (maintenanceLog.length){
-                                maintenanceLog.forEach(e =>{
-                                    let date1 = new Date(e.dateOfIncident).getTime()
-                                    if (new Date(e.createDate).getFullYear() == categoryYear[i]){
-                                        cntYear++;
-                                        countAssetcountYear[index]++;
-                                        valueAssetYear[index] += e.expense / 1000000;
-                                        
-                                    }
-                                    
-                                })
-                                
-                            }
-                        }
-                    })
-                }
-                
-                countTypeYear.push({ xType: categoryYear[i], countAssetcountYear: countAssetcountYear,valueAssetYear:valueAssetYear,  idAssetTypeTestMaintenanceYear: idAssetTypeTestMaintenanceYear, idAssetTypeMaintenanceYear: idAssetTypeMaintenanceYear })
-                console.log(countTypeYear)
-
-            }
-        }
-        result = { ...result, maintenanceYearChart: countTypeYear }
-        
-        res.status(200).json({
-            success: true,
-            messages: ["get_asset_maintenance_success"],
-            content: result
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            messages: ["get_asset_maintenance_fail"],
             content: { error: error }
         });
     }
