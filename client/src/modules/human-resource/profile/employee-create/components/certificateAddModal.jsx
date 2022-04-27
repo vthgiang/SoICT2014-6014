@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile, SelectBox } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -30,6 +31,7 @@ function CertificateAddModal(props) {
     }
 
     const [state, setState] = useState({
+        certificate: "",
         startDate: formatDate(Date.now()),
         endDate: "",
         name: "",
@@ -43,7 +45,11 @@ function CertificateAddModal(props) {
 
     const { id } = props;
 
-    const { name, issuedBy, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
+    const { issuedBy, endDate, startDate, files, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate, certificate } = state;
+    let listFields = props.field.listFields;
+    let listMajor = props.major.listMajor;
+    let listCertificates = props.certificate.listCertificate;
+
 
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
@@ -51,6 +57,7 @@ function CertificateAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: value,
                     file: value[0].fileName,
                     urlFile: value[0].urlFile,
                     fileUpload: value[0].fileUpload
@@ -60,6 +67,7 @@ function CertificateAddModal(props) {
             setState(state => {
                 return {
                     ...state,
+                    files: undefined,
                     file: "",
                     urlFile: "",
                     fileUpload: ""
@@ -68,13 +76,15 @@ function CertificateAddModal(props) {
         }
     }
 
-    /** Bắt sự kiên thay đổi tên chứng chỉ */
-    const handleNameChange = (e) => {
-        let { value } = e.target;
-        validateNameCertificate(value, true);
+    /** Bắt sự kiên thay đổi chứng chỉ */
+    const handleCertificateChange = (value) => {
+        setState({
+            ...state,
+            certificate: value[0]
+        });
     }
 
-    const validateNameCertificate = (value, willUpdateState = true) => {
+    const validateCertificate = (value, willUpdateState = true) => {
         const { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
@@ -176,8 +186,8 @@ function CertificateAddModal(props) {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
-        const { name, issuedBy, startDate, endDate } = state;
-        let result = validateNameCertificate(name, false) && validateIssuedByCertificate(issuedBy, false);
+        const { certificate, issuedBy, startDate, endDate } = state;
+        let result = validateCertificate(certificate, false) && validateIssuedByCertificate(issuedBy, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         if (endDate) {
@@ -214,14 +224,36 @@ function CertificateAddModal(props) {
                 formID={`form-create-certificateShort-${id}`}
                 title={translate('human_resource.profile.add_certificate')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    certificate: '',
+                    startDate: formatDate(Date.now()),
+                    endDate: "",
+                    name: "",
+                    issuedBy: "",
+                    files: undefined,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-create-certificateShort-${id}`}>
-                    {/* Tên chứng chỉ */}
+                    {/* Chọn chứng chỉ */}
                     <div className={`form-group ${errorOnName && "has-error"}`}>
-                        <label>{translate('human_resource.profile.name_certificate')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" name="name" value={name} onChange={handleNameChange} autoComplete="off" />
-                        <ErrorLabel content={errorOnName} />
+                        <label>Chọn chứng chỉ<span className="text-red">*</span>
+                            <a href='/hr-list-certificate' target="_blank"> (Quản lý) </a>
+                        </label>
+                        <SelectBox
+                            id={`create-degree-field${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={certificate}
+                            items={[{ value: '', text: 'Chọn chứng chỉ' }, ...listCertificates.map(y => { return { value: y._id, text: y.name + " (" + y.abbreviation + ")" } })]}
+                            onChange={handleCertificateChange}
+                        />
                     </div>
                     {/* Nơi cấp */}
                     <div className={`form-group ${errorOnUnit && "has-error"}`}>
@@ -256,7 +288,7 @@ function CertificateAddModal(props) {
                     {/* File đính kèm */}
                     <div className="form-group">
                         <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                        <UploadFile onChange={handleChangeFile} />
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
                     </div>
                 </form>
             </DialogModal>
@@ -264,5 +296,10 @@ function CertificateAddModal(props) {
     );
 };
 
-const addModal = connect(null, null)(withTranslate(CertificateAddModal));
+function mapState(state) {
+    const { field, major, certificate } = state;
+    return { field, major, certificate };
+};
+
+const addModal = connect(mapState, null)(withTranslate(CertificateAddModal));
 export { addModal as CertificateAddModal };

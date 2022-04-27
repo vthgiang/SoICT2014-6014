@@ -13,6 +13,10 @@ import {
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
 
 const initMember = {
     name: '',
@@ -58,6 +62,7 @@ const EmployeeEditFrom = (props) => {
         roles: [],
         experiences: [],
         workProcess: [],
+        careerPositions: [],
         socialInsuranceDetails: [],
         courses: [],
         degrees: [],
@@ -67,8 +72,6 @@ const EmployeeEditFrom = (props) => {
         disciplines: [],
         commendations: [],
         annualLeaves: [],
-        // major: [],
-        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -92,6 +95,7 @@ const EmployeeEditFrom = (props) => {
         editSocialInsuranceDetails: [],
         editExperiences: [],
         editWorkProcess: [],
+        editCareerPosition: [],
         editFiles: [],
         deleteAnnualLeaves: [],
         deleteCertificates: [],
@@ -103,6 +107,7 @@ const EmployeeEditFrom = (props) => {
         deleteSocialInsuranceDetails: [],
         deleteExperiences: [],
         deleteWorkProcess: [],
+        deleteCareerPosition: [],
         deleteFiles: []
     })
 
@@ -121,9 +126,8 @@ const EmployeeEditFrom = (props) => {
                     employee: '',
                     experiences: [],
                     degrees: [],
+                    careerPositions: [],
                     certificates: [],
-                    // career: [],
-                    // major: [],
                     contracts: [],
                     files: [],
                     socialInsuranceDetails: [],
@@ -155,10 +159,9 @@ const EmployeeEditFrom = (props) => {
                     employee: props.employeesInfo.employees?.[0],
                     experiences: props.employeesInfo.employees?.[0]?.experiences,
                     workProcess: props.employeesInfo.employees?.[0]?.workProcess,
+                    careerPositions: props.employeesInfo.employees?.[0]?.careerPositions,
                     degrees: props.employeesInfo.employees?.[0]?.degrees,
                     certificates: props.employeesInfo.employees?.[0]?.certificates,
-                    // career: props.employeesInfo.employees?.[0]?.career,
-                    // major: props.employeesInfo.employees?.[0]?.major,
                     contracts: props.employeesInfo?.employees?.[0]?.contracts,
                     files: props.employeesInfo?.employees?.[0]?.files,
                     socialInsuranceDetails: props.employeesInfo?.employees?.[0]?.socialInsuranceDetails,
@@ -178,12 +181,12 @@ const EmployeeEditFrom = (props) => {
         }
     }, [props._id, props.employeesInfo.isLoading, state.dataStatus]);
 
-    const { translate, employeesInfo } = props;
+    const { translate, employeesInfo, career, major, certificate} = props;
 
-    let { _id, img, employee, experiences, workProcess, degrees, certificates, socialInsuranceDetails, contracts, courses,
+    
+    let { _id, img, employee, experiences, careerPositions, degrees, certificates, socialInsuranceDetails, contracts, courses,
         organizationalUnits, roles, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
-
-
+        
 
     /**
      * Function upload avatar 
@@ -206,7 +209,7 @@ const EmployeeEditFrom = (props) => {
     const handleChange = (name, value) => {
         const { employee } = state;
         if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate'
-            || name === 'contractEndDate') {
+            || name === 'contractEndDate' || name === 'biddingPackageEndDate') {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -338,113 +341,6 @@ const EmployeeEditFrom = (props) => {
             })
         }
     }
-
-    // /**
-    //  * Function thêm thông tin chuyên ngành tuowg đương
-    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
-    //  * @param {*} addData : Chuyên ngành tuowg đương muốn thêm 
-    //  */
-    // const handleAddMajor = (data, addData) => {
-    //     setState({
-    //         ...state,
-    //         major: data
-    //     })
-    // }
-
-    // /**
-    //  * Function chỉnh sửa thông tin chuyên ngành tuowg đương
-    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
-    //  * @param {*} editData : chuyên ngành tuowg đương muốn chỉnh sửa
-    //  */
-    // const handleEditMajor = (data, editData) => {
-    //     const { editMajor } = state;
-    //     if (editData._id) {
-    //         setState({
-    //             ...state,
-    //             editMajor: [...editMajor, editData]
-    //         })
-    //     } else {
-    //         setState({
-    //             ...state,
-    //             major: data
-    //         })
-    //     }
-    // }
-
-    // /**
-    //  * Function xoá thông tin chuyên ngành tuowg đương
-    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
-    //  * @param {*} deleteData : chuyên ngành tuowg đương muốn xoá
-    //  */
-    // const handleDeleteMajor = (data, deleteData) => {
-    //     const { deleteMajor, editMajor } = state;
-    //     if (deleteData._id) {
-    //         setState({
-    //             ...state,
-    //             deleteMajor: [...deleteMajor, deleteData],
-    //             editMajor: editMajor.filter(x => x._id !== deleteData._id)
-    //         })
-    //     } else {
-    //         setState({
-    //             ...state,
-    //             major: data
-    //         })
-    //     }
-    // }
-
-    // /**
-    //  * Function thêm thông tin Công việc đương tương
-    //  * @param {*} data : Dữ liệu thông tin Công việc đương tương
-    //  * @param {*} addData : Công việc đương tương muốn thêm 
-    //  */
-    // const handleAddCareer = (data, addData) => {
-    //     setState({
-    //         ...state,
-    //         career: data
-    //     })
-    // }
-
-    // /**
-    //  * Function chỉnh sửa thông tin bằng cấp
-    //  * @param {*} data : Dữ liệu thông tin bằng cấp
-    //  * @param {*} editData : bằng cấp muốn chỉnh sửa
-    //  */
-    // const handleEditCareer = (data, editData) => {
-    //     const { editCareer } = state;
-    //     if (editData._id) {
-    //         setState({
-    //             ...state,
-    //             editCareer: [...editCareer, editData]
-    //         })
-    //     } else {
-    //         setState({
-    //             ...state,
-    //             career: data
-    //         })
-    //     }
-    // }
-
-    // /**
-    //  * Function xoá thông tin Công việc đương tương
-    //  * @param {*} data : Dữ liệu thông tin Công việc đương tương
-    //  * @param {*} deleteData : Công việc đương tương muốn xoá
-    //  */
-    // const handleDeleteCareer = (data, deleteData) => {
-    //     const { deleteCareer, editCareer } = state;
-    //     if (deleteData._id) {
-    //         setState({
-    //             ...state,
-    //             deleteCareer: [...deleteCareer, deleteData],
-    //             editCareer: editCareer.filter(x => x._id !== deleteData._id)
-    //         })
-    //     } else {
-    //         setState({
-    //             ...state,
-    //             career: data
-    //         })
-    //     }
-    // }
-
 
     /**
      * Function thêm thông tin chứng chỉ
@@ -878,40 +774,40 @@ const EmployeeEditFrom = (props) => {
     }
 
 
-    const handleCreateWorkProcess = (data, addData) => {
+    const handleCreateCareerPosition = (data, addData) => {
         setState({
             ...state,
-            workProcess: [...workProcess, addData]
+            careerPositions: [...careerPositions, addData]
         })
     }
 
-    const handleEditWorkProcess = (data, editData) => {
-        const { editWorkProcess } = state;
+    const handleEditCareerPosition = (data, editData) => {
+        const { editCareerPosition } = state;
         if (editData._id) {
             setState({
                 ...state,
-                editWorkProcess: [...editWorkProcess, editData]
+                editCareerPosition: [...editCareerPosition, editData]
             })
         } else {
             setState({
                 ...state,
-                workProcess: data
+                careerPositions: data
             })
         }
     }
 
-    const handleDeleteWorkProcess = (data, deleteData) => {
-        const { deleteWorkProcess, editWorkProcess } = state;
+    const handleDeleteCareerPosition = (data, deleteData) => {
+        const { deleteCareerPosition, editCareerPosition } = state;
         if (deleteData._id) {
             setState({
                 ...state,
-                deleteWorkProcess: [...deleteWorkProcess, deleteData],
-                editWorkProcess: editWorkProcess.filter(x => x._id !== deleteData._id)
+                deleteCareerPosition: [...deleteCareerPosition, deleteData],
+                editCareerPosition: editCareerPosition.filter(x => x._id !== deleteData._id)
             })
         } else {
             setState({
                 ...state,
-                workProcess: data
+                careerPositions: data
             })
         }
     }
@@ -956,7 +852,7 @@ const EmployeeEditFrom = (props) => {
     }
 
     const save = async () => {
-        let { _id, experiences, workProcess, degrees, certificates, contracts, files, avatar,
+        let { _id, experiences, careerPositions, degrees, certificates, contracts, files, avatar,
             disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = state;
 
         let degreesConvert = [];
@@ -975,11 +871,9 @@ const EmployeeEditFrom = (props) => {
         let formData = convertJsonObjectToFormData({
             ...state,
             createExperiences: experiences.filter(x => x._id === undefined),
-            createWorkProcess: workProcess.filter(x => x._id === undefined),
+            createCareerPosition: careerPositions.filter(x => x._id === undefined),
             createDegrees: degreesConvert,
             createCertificates: certificates.filter(x => x._id === undefined),
-            // createCareer: career.filter(x => x._id === undefined),
-            // createMajor: major.filter(x => x._id === undefined),
             createContracts: contracts.filter(x => x._id === undefined),
             createDisciplines: disciplines.filter(x => x._id === undefined),
             createCommendations: commendations.filter(x => x._id === undefined),
@@ -988,6 +882,12 @@ const EmployeeEditFrom = (props) => {
             createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
             createFiles: files.filter(x => x._id === undefined),
         });
+        experiences.forEach(x => {
+            formData.append("fileExperience", x.fileUpload);
+        })
+        careerPositions.forEach(x => {
+            formData.append("fileCareerPosition", x.fileUpload);
+        })
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
@@ -1220,14 +1120,17 @@ const EmployeeEditFrom = (props) => {
                                 id={`edit_experience${_id}`}
                                 employee={employee}
                                 handleChange={handleChange}
+                                major={major?.listMajor}
+                                certificate={certificate?.listMajor}
+                                listPosition={career?.listPosition}
 
                                 handleAddExperience={handleCreateExperiences}
                                 handleEditExperience={handleEditExperiences}
                                 handleDeleteExperience={handleDeleteExperiences}
 
-                                handleAddWorkProcess={handleCreateWorkProcess}
-                                handleDeleteWorkProcess={handleDeleteWorkProcess}
-                                handleEditWorkProcess={handleEditWorkProcess}
+                                handleAddCareerPosition={handleCreateCareerPosition}
+                                handleEditCareerPosition={handleEditCareerPosition}
+                                handleDeleteCareerPosition={handleDeleteCareerPosition}
                             />
                             {/* Tab bằng cấp - chứng chỉ */}
                             <CertificateTab
@@ -1235,6 +1138,9 @@ const EmployeeEditFrom = (props) => {
                                 degrees={degrees}
                                 certificates={certificates}
                                 employee={employee}
+                                listMajors={major?.listMajor}
+                                listCertificates={certificate?.listCertificate}
+                                listPositions={career?.listPosition}
                                 handleAddDegree={handleCreateDegree}
                                 handleEditDegree={handleEditDegree}
                                 handleDeleteDegree={handleDeleteDegree}
@@ -1340,13 +1246,17 @@ const EmployeeEditFrom = (props) => {
 };
 
 function mapState(state) {
-    const { employeesInfo, employeesManager } = state;
-    return { employeesInfo, employeesManager };
+    const { employeesInfo, employeesManager, major, career, certificate, biddingPackagesManager } = state;
+    return { employeesInfo, employeesManager, major, career, certificate, biddingPackagesManager };
 };
 
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getListBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage
 };
 
 const editFrom = connect(mapState, actionCreators)(withTranslate(EmployeeEditFrom));

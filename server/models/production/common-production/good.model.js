@@ -34,6 +34,7 @@ const GoodSchema = new Schema({
     // sourceType = 2 when goods are imported from suppliers
     sourceType: {
         type: String,
+        default: '1',
         required: true
     },
 

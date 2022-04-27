@@ -30,6 +30,13 @@ import { discipline } from '../modules/human-resource/commendation-discipline/re
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers';
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
+
+import { career } from '../modules/human-resource/career/redux/reducers';
+import { major } from '../modules/human-resource/major/redux/reducers';
+import { certificate } from '../modules/human-resource/certificate/redux/reducers';
+import { biddingPackageInfo } from '../modules/human-resource/bidding-package/redux/reducers';
+import { biddingPackagesManager } from '../modules/human-resource/bidding-package/biddingPackageManagement/redux/reducers';
+
 import { employeeDashboardData } from '../modules/human-resource/employee-dashboard/redux/reducers'
 
 import { notifications } from '../modules/notification/redux/reducers';
@@ -186,6 +193,13 @@ const appReducer = combineReducers({
     timesheets,
     field,
     employeeDashboardData,
+
+    // gói thầu
+    career,
+    major,
+    certificate,
+    biddingPackageInfo,
+    biddingPackagesManager,
 
     // hr-tranning
     education,

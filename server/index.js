@@ -49,11 +49,19 @@ router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets
 
 router.use("/get-employee-dashboard-data", require("./modules/human-resource/get-employee-dashboard-chart/get-data.route"));
 
-// router.use("/majors", require("./modules/human-resource/major/major.route"));
-// router.use(
-//     "/career-positions",
-//     require("./modules/human-resource/career-position/careerPosition.route")
-// );
+router.use("/majors", require("./modules/human-resource/major/major.route"));
+router.use(
+    "/career-positions",
+    require("./modules/human-resource/career-position/careerPosition.route")
+);
+router.use(
+    "/bidding-package",
+    require("./modules/human-resource/bidding-package/biddingPackage.route")
+);
+router.use(
+    "/certificates",
+    require("./modules/human-resource/certificate/certificate.route")
+);
 
 // Router KPI
 router.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));

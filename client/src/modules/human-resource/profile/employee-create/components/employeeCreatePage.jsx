@@ -9,6 +9,10 @@ import FamilyMemberTab from './familyMemberTab';
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { generateCode } from "../../../../../helpers/generateCode";
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
 
 const initMember = {
     name: '',
@@ -89,31 +93,26 @@ function EmployeeCreatePage(props) {
             identityCardAddress: "",
             roles: [],
             phoneNumber: "",
-            experiences: [],
             workProcess: [],
             socialInsuranceDetails: [],
-            degrees: [],
-            certificates: [],
             contracts: [],
             files: [],
             disciplines: [],
             commendations: [],
             annualLeaves: [],
             courses: [],
-            // career:[],
-            // major:[],
             houseHold: {}
         },
         courses: [],
         degrees: [],
         certificates: [],
+        experiences: [],
+        careerPositions: [],
         contracts: [],
         files: [],
         disciplines: [],
         commendations: [],
         annualLeaves: [],
-        // major: [],
-        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -129,7 +128,7 @@ function EmployeeCreatePage(props) {
         editMember: initMember,
     });
 
-    const { img, avatar, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, houseHold, editMember } = state;
+    const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, editMember } = state;
 
     useEffect(() => {
         props.getDepartment();
@@ -139,7 +138,8 @@ function EmployeeCreatePage(props) {
         regenerateCode();
     }, [])
 
-    const { translate } = props;
+    const { translate, career, major, certificate, biddingPackagesManager } = props;
+    console.log("propsss", career, major, certificate, biddingPackagesManager)
 
     /**
      * Function upload avatar
@@ -202,16 +202,17 @@ function EmployeeCreatePage(props) {
      * @param {*} addData : Kinh nghiệm làm việc muốn thêm
      */
     const handleChangeExperience = (data, addData) => {
-        const { employee } = state;
-        setState(state => {
-            return {
-                ...state,
-                employee: {
-                    ...employee,
-                    experiences: [...data]
-                }
-            }
-        })
+        setState(state => ({
+            ...state,
+            experiences: data
+        }))
+    }
+
+    const handleChangeCareerPosition = (data, addData) => {
+        setState(state => ({
+            ...state,
+            careerPositions: data
+        }))
     }
 
     const handleChangeWorkProcess = (data, addData) => {
@@ -359,60 +360,43 @@ function EmployeeCreatePage(props) {
         })
     }
 
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
-    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
-    //  * @param {*} addData : Chuyên ngành tương đương muốn thêm
-    //  */
-    // const handleChangeMajor = (data, addData) => {
-    //     setState(state => {
-    //         return {
-    //             ...state,
-    //             major: data
-    //         }
-    //     })
-    // }
-
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin công việc tương đương
-    //  * @param {*} data : Dữ liệu thông tin công việc tương đương
-    //  * @param {*} addData : Công việc tương đương muốn thêm
-    //  */
-    // const handleChangeCareer = (data, addData) => {
-    //     setState(state => {
-    //         return {
-    //             ...state,
-    //             career: data
-    //         }
-    //     })
-    // }
-
     /**
      * Function thêm mới thông tin nhân viên
      */
     const handleSubmit = async () => {
-        setState({
+
+        let { employee, degrees, experiences, certificates, contracts, files, avatar, careerPositions, disciplines, commendations, annualLeaves, courses, houseHold } = state;
+
+        await setState({
             ...state,
             employee: {
                 ...employee,
-                degrees: [...state.degrees],
-                certificates: [...state.certificates],
-                contracts: [...state.contracts],
-                files: [...state.files],
-                disciplines: [...state.disciplines],
-                commendations: [...state.commendations],
-                annualLeaves: [...state.annualLeaves],
-                courses: [...state.courses],
-                // career,
-                // major,
-                houseHold: { ...state.houseHold },
+                degrees,
+                certificates,
+                contracts,
+                files,
+                disciplines,
+                commendations,
+                annualLeaves,
+                courses,
+                careerPositions,
+                experiences,
+                houseHold,
             }
         })
+
+        const degreesConvert = state?.degrees?.length ? state.degrees.map(x => {
+            const splitDate = x?.year ? x.year.split("-") : x.year;
+            return {
+                ...x,
+                year: [splitDate[2], splitDate[1], splitDate[0]].join("-")
+            }
+        }) : [];
 
 
         let formData = convertJsonObjectToFormData({
             ...employee,
-            degrees: [...state.degrees],
+            degrees: degreesConvert,
             certificates: [...state.certificates],
             contracts: [...state.contracts],
             files: [...state.files],
@@ -420,8 +404,8 @@ function EmployeeCreatePage(props) {
             commendations: [...state.commendations],
             annualLeaves: [...state.annualLeaves],
             courses: [...state.courses],
-            // career,
-            // major,
+            careerPositions:  [...state.careerPositions],
+            experiences:  [...state.experiences],
             houseHold: { ...state.houseHold },
         });
         degrees.forEach(x => {
@@ -434,25 +418,26 @@ function EmployeeCreatePage(props) {
             })
         }
 
+        careerPositions.forEach(x => {
+            formData.append("fileCareerPosition", x.fileUpload);
+        })
+
+        experiences.forEach(x => {
+            formData.append("fileExperience", x.fileUpload);
+        })
+
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
-        // major.forEach(x => {
-        //     formData.append("fileMajor", x.fileUpload);
-        // })
-        // career.forEach(x => {
-        //     formData.append("fileCareer", x.fileUpload);
-        // })
         formData.append("fileAvatar", avatar);
         employee && employee.healthInsuranceAttachment && employee.healthInsuranceAttachment.forEach(x => {
             formData.append('healthInsuranceAttachment', x.fileUpload)
         })
         props.addNewEmployee(formData);
         // console.log(...formData);
-        // console.log(employee);
     }
 
     const _fm_saveMember = (data) => {
@@ -612,7 +597,7 @@ function EmployeeCreatePage(props) {
             }
         })
     }
-    // console.log(state);
+    console.log("stateeeee", state);
 
     return (
         <div className=" qlcv">
@@ -652,20 +637,26 @@ function EmployeeCreatePage(props) {
                         id="kinhnghiem"
                         employee={employee}
                         handleChange={handleChange}
+                        major={major?.listMajor}
+                        certificate={certificate?.listMajor}
+                        careerPosition={career?.listPosition}
 
                         handleAddExperience={handleChangeExperience}
                         handleEditExperience={handleChangeExperience}
                         handleDeleteExperience={handleChangeExperience}
 
-                        handleAddWorkProcess={handleChangeWorkProcess}
-                        handleEditWorkProcess={handleChangeWorkProcess}
-                        handleDeleteWorkProcess={handleChangeWorkProcess}
+                        handleAddCareerPosition={handleChangeCareerPosition}
+                        handleEditCareerPosition={handleChangeCareerPosition}
+                        handleDeleteCareerPosition={handleChangeCareerPosition}
                     />
                     {/* Tab bằng cấp - chứng chỉ */}
                     <CertificateTab
                         id="bangcap"
                         degrees={degrees}
                         certificates={certificates}
+                        listMajors={major?.listMajor}
+                        listCertificates={certificate?.listCertificate}
+                        listPositions={career?.listPosition}
                         handleAddDegree={handleChangeDegree}
                         handleEditDegree={handleChangeDegree}
                         handleDeleteDegree={handleChangeDegree}
@@ -772,13 +763,17 @@ function EmployeeCreatePage(props) {
 };
 
 function mapState(state) {
-    const { employeesManager, } = state;
-    return { employeesManager };
+    const { employeesManager, biddingPackagesManager, major, career, certificate } = state;
+    return { employeesManager, biddingPackagesManager, major, career, certificate };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
     getDepartment: DepartmentActions.get,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 };
 
 const createPage = connect(mapState, actionCreators)(withTranslate(EmployeeCreatePage));

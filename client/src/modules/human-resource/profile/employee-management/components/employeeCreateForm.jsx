@@ -10,6 +10,11 @@ import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, Experienc
 import { EmployeeManagerActions } from '../redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
 import { generateCode } from "../../../../../helpers/generateCode";
+import { EmployeeInfoActions } from '../../employee-info/redux/actions';
+import { MajorActions } from '../../../major/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
 
 
 const initMember = {
@@ -74,19 +79,18 @@ const EmployeeCreateForm = (props) => {
             birthdate: formatDate2(Date.now()),
             roles: [],
             workProcess: [],
-            experiences: [],
             socialInsuranceDetails: [],
         },
         courses: [],
         degrees: [],
         certificates: [],
+        careerPositions: [],
+        experiences: [],
         contracts: [],
         files: [],
         disciplines: [],
         commendations: [],
         annualLeaves: [],
-        // major: [],
-        // career: [],
         houseHold: {
             headHouseHoldName: '',
             documentType: '',
@@ -100,7 +104,6 @@ const EmployeeCreateForm = (props) => {
             familyMembers: []
         },
         editMember: initMember
-
     })
 
 
@@ -159,13 +162,16 @@ const EmployeeCreateForm = (props) => {
      * @param {*} addData : Kinh nghiệm làm việc muốn thêm
      */
     const handleChangeExperience = (data, addData) => {
-        const { employee } = state;
         setState(state => ({
             ...state,
-            employee: {
-                ...employee,
-                experiences: data
-            }
+            experiences: data
+        }))
+    }
+
+    const handleChangeCareerPosition = (data, addData) => {
+        setState(state => ({
+            ...state,
+            careerPositions: data
         }))
     }
 
@@ -205,30 +211,6 @@ const EmployeeCreateForm = (props) => {
             certificates: data
         }))
     }
-
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
-    //  * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
-    //  * @param {*} addData : Chuyên ngành tương đương muốn thêm
-    //  */
-    // const handleChangeMajor = (data, addData) => {
-    //     setState(state => ({
-    //         ...state,
-    //         major: data
-    //     }))
-    // }
-
-    // /**
-    //  * Function thêm, chỉnh sửa thông tin công việc tương đương
-    //  * @param {*} data : Dữ liệu thông tin công việc tương đương
-    //  * @param {*} addData : Công việc tương đương muốn thêm
-    //  */
-    // const handleChangeCareer = (data, addData) => {
-    //     setState(state => ({
-    //         ...state,
-    //         career: data
-    //     }))
-    // }
 
     /**
      * Function thêm, chỉnh sửa thông tin quá trình đóng BHXH
@@ -354,7 +336,7 @@ const EmployeeCreateForm = (props) => {
 
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
-        let { employee, degrees, certificates, contracts, files, avatar,
+        let { employee, degrees, experiences, certificates, contracts, files, avatar, careerPositions,
             disciplines, commendations, annualLeaves, courses, houseHold } = state;
 
         await setState(state => ({
@@ -369,8 +351,8 @@ const EmployeeCreateForm = (props) => {
                 commendations,
                 annualLeaves,
                 courses,
-                // career,
-                // major,
+                careerPositions,
+                experiences,
                 houseHold
             }
         }))
@@ -393,8 +375,8 @@ const EmployeeCreateForm = (props) => {
             commendations: [...state.commendations],
             annualLeaves: [...state.annualLeaves],
             courses: [...state.courses],
-            // career,
-            // major,
+            careerPositions:  [...state.careerPositions],
+            experiences:  [...state.experiences],
             houseHold: { ...state.houseHold },
         });
         degrees.forEach(x => {
@@ -403,12 +385,12 @@ const EmployeeCreateForm = (props) => {
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
         })
-        // major.forEach(x => {
-        //     formData.append("fileMajor", x.fileUpload);
-        // })
-        // career.forEach(x => {
-        //     formData.append("fileCareer", x.fileUpload);
-        // })
+        experiences.forEach(x => {
+            formData.append("fileExperience", x.fileUpload);
+        })
+        careerPositions.forEach(x => {
+            formData.append("fileCareerPosition", x.fileUpload);
+        })
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
         })
@@ -419,8 +401,14 @@ const EmployeeCreateForm = (props) => {
         employee && employee.healthInsuranceAttachment && employee.healthInsuranceAttachment.forEach(x => {
             formData.append('healthInsuranceAttachment', x.fileUpload)
         })
+
+        console.log("xxxxxxxxxxxxxxxxxxxx", formData)
         props.addNewEmployee(formData);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                 // End save                                */
+    /* -------------------------------------------------------------------------- */
 
     const _fm_saveMember = (data) => {
         setState(prev => ({
@@ -578,7 +566,7 @@ const EmployeeCreateForm = (props) => {
         })
     }
 
-    const { translate, employeesManager } = props;
+    const { translate, employeesManager, employeesInfo, career, major, certificate } = props;
     const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, editMember } = state;
 
     return (
@@ -631,15 +619,18 @@ const EmployeeCreateForm = (props) => {
                             handleEditExperience={handleChangeExperience}
                             handleDeleteExperience={handleChangeExperience}
 
-                            handleAddWorkProcess={handleChangeWorkProcess}
-                            handleDeleteWorkProcess={handleChangeWorkProcess}
-                            handleEditWorkProcess={handleChangeWorkProcess}
+                            handleAddCareerPosition={handleChangeCareerPosition}
+                            handleEditCareerPosition={handleChangeCareerPosition}
+                            handleDeleteCareerPosition={handleChangeCareerPosition}
                         />
                         {/* Tab bằng cấp - chứng chỉ */}
                         <CertificateTab
                             id="diploma"
                             degrees={degrees}
                             certificates={certificates}
+                            listMajors={major?.listMajor}
+                            listCertificates={certificate?.listCertificate}
+                            listPositions={career?.listPosition}
 
                             handleAddDegree={handleChangeDegree}
                             handleEditDegree={handleChangeDegree}
@@ -746,12 +737,17 @@ const EmployeeCreateForm = (props) => {
 };
 
 function mapState(state) {
-    const { employeesManager } = state;
-    return { employeesManager };
+    const { employeesManager, employeesInfo, major, career, certificate, biddingPackagesManager } = state;
+    return { employeesManager, employeesInfo, major, career, certificate, biddingPackagesManager };
 };
 
 const actionCreators = {
     addNewEmployee: EmployeeManagerActions.addNewEmployee,
+    getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getListBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(EmployeeCreateForm));

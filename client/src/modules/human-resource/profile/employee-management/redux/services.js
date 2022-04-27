@@ -8,6 +8,7 @@ export const EmployeeService = {
     updateInformationEmployee,
     deleteEmployee,
     importEmployees,
+    searchForPackage
 }
 /**
  * Lấy danh sách nhân viên
@@ -47,7 +48,7 @@ function getAll(data) {
  */
 function searchForPackage(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/employee/employees`,
+        url: `${ process.env.REACT_APP_SERVER }/employee/employees/search-for-package`,
         method: 'GET',
         params: data,
     }, false, true, 'human_resource.profile.employee_management');

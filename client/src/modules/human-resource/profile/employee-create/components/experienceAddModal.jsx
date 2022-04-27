@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
+import { UploadFileHook } from '../../../../../common-components/src/upload-file/uploadFileHook';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -38,13 +39,17 @@ function ModalAddExperience(props) {
         customer: "",
         address: "",
         jobDescription: "",
+        files: undefined,
+        file: "",
+        urlFile: "",
+        fileUpload: ""
     })
 
     const { translate } = props;
 
     const { id } = props;
 
-    const { company, position, project, address, customer, startDate, endDate, jobDescription, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = state;
+    const { company, position, files, project, address, customer, startDate, endDate, jobDescription, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition, career, careerPosition } = state;
 
     /** Bắt sự kiện thay đổi đơn vị công tác */
     const handleUnitChange = (e) => {
@@ -179,6 +184,35 @@ function ModalAddExperience(props) {
         })
     }
 
+    // console.log("aaaaaaaaaaaa", state)
+
+    
+    /** Bắt sự kiện thay đổi file đính kèm */
+    const handleChangeFile = (value) => {
+        console.log(value)
+        if (value.length !== 0) {
+            setState(state => {
+                return {
+                    ...state,
+                    files: value,
+                    file: value[0].fileName,
+                    urlFile: value[0].urlFile,
+                    fileUpload: value[0].fileUpload
+                }
+            })
+        } else {
+            setState(state => {
+                return {
+                    ...state,
+                    files: undefined,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }
+            })
+        }
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
         const { position, company, startDate, endDate } = state;
@@ -206,12 +240,29 @@ function ModalAddExperience(props) {
 
     return (
         <React.Fragment>
-            <ButtonModal modalID={`modal-create-experience-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_experience')} />
+            <ButtonModal modalID={`modal-create-experience-${id}-${new Date().getMilliseconds()}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_experience')} />
             <DialogModal
-                size='50' modalID={`modal-create-experience-${id}`} isLoading={false}
+                size='50' modalID={`modal-create-experience-${id}-${new Date().getMilliseconds()}`} isLoading={false}
                 formID={`form-create-experience-${id}`}
                 title={translate('human_resource.profile.add_experience')}
                 func={save}
+                resetOnSave={true}
+                resetOnClose={true}
+                afterClose={()=>{setState(state => ({
+                    ...state,
+                    company: "",
+                    startDate: formatDate(Date.now()),
+                    endDate: formatDate(Date.now()),
+                    position: "",
+                    project: "",
+                    customer: "",
+                    address: "",
+                    jobDescription: "",
+                    files: undefined,
+                    file: "",
+                    urlFile: "",
+                    fileUpload: ""
+                }))}}
                 disableSubmit={!isFormValidated()}
             >
                 <form className="form-group" id={`form-create-experience-${id}`}>
@@ -249,27 +300,9 @@ function ModalAddExperience(props) {
                     </div>
                     {/* Chức vụ */}
                     <div className={`form-group ${errorOnPosition && "has-error"}`}>
-                        <label>{translate('human_resource.profile.position_in_task')}<span className="text-red">*</span></label>
+                        <label>{translate('table.position')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" name="position" value={position} onChange={handlePositionChange} autoComplete="off" />
                         <ErrorLabel content={errorOnPosition} />
-                    </div>
-
-                    {/* Dự án */}
-                    <div className="form-group">
-                        <label>{translate('human_resource.profile.project')}</label>
-                        <input type="text" className="form-control" name="position" value={project} onChange={handleProjectChange} autoComplete="off" />
-                    </div>
-
-                    {/* Khách hàng */}
-                    <div className="form-group">
-                        <label>{translate('human_resource.profile.customer')}</label>
-                        <input type="text" className="form-control" name="position" value={customer} onChange={handleCustomerChange} autoComplete="off" />
-                    </div>
-
-                    {/* Địa chỉ */}
-                    <div className="form-group">
-                        <label>{translate('human_resource.profile.address')}</label>
-                        <input type="text" className="form-control" name="position" value={address} onChange={handleAddessChange} autoComplete="off" />
                     </div>
 
                     {/* Các công việc đã làm */}
@@ -277,11 +310,22 @@ function ModalAddExperience(props) {
                         <label>{translate('human_resource.profile.job_description')}</label>
                         <textarea style={{ minHeight: '100px' }} type="text" value={jobDescription} className="form-control" onChange={handleJobDescription} />
                     </div>
+
+                    {/* File đính kèm */}
+                    <div className="form-group">
+                        <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
+                        <UploadFileHook value={files} onChange={handleChangeFile} deleteValue={true} />
+                    </div>
                 </form>
             </DialogModal>
         </React.Fragment>
     );
 };
 
-const addExperience = connect(null, null)(withTranslate(ModalAddExperience));
+function mapState(state) {
+    const { field, career, careerPosition } = state;
+    return { field, career, careerPosition };
+};
+
+const addExperience = connect(mapState, null)(withTranslate(ModalAddExperience));
 export { addExperience as ModalAddExperience };
