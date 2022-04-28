@@ -7,7 +7,8 @@ export const CategoryServices = {
     createCategory,
     editCategory,
     deleteCategory,
-    deleteManyCategories
+    deleteManyCategories,
+    importCategory,
 }
 
 function getCategories(params){
@@ -62,4 +63,12 @@ function deleteManyCategories(array) {
         method: 'POST',
         data: { array }
     }, true, true, 'manage_warehouse.category_management')
+}
+
+function importCategory(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/categories/imports`,
+        method: 'POST',
+        data,
+    }, true, true, 'manage_warehouse.category_management');
 }

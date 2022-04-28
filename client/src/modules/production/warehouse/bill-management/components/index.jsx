@@ -26,9 +26,9 @@ function BillManagement(props) {
     })
 
     useEffect(() => {
-        const { limit, page, currentRole } = state;
+        const { limit, page, currentRole, group } = state;
         props.getBillsByType({ page, limit, managementLocation: currentRole });
-        props.getBillsByType({ managementLocation: currentRole });
+        props.getAllBillsByGroup({ group, managementLocation: currentRole });
         props.getAllStocks({ managementLocation: currentRole });
         props.getUser();
         props.getAllGoods();
@@ -94,7 +94,6 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        console.log(state.currentRole, data);
         await props.getBillsByType(data);
     }
 
@@ -122,7 +121,6 @@ function BillManagement(props) {
         if (group !== '') {
             data.group = group;
         }
-        console.log(state.currentRole);
         await props.getBillsByType(data);
     }
 
@@ -167,6 +165,14 @@ function BillManagement(props) {
             ...state,
             status: value
         })
+    }
+
+    const handleSearchByStatus = async (value) => {
+        setState({
+            ...state,
+            status: value
+        })
+        await handleSubmitSearch();
     }
 
     const handlePartnerChange = (value) => {
@@ -237,6 +243,7 @@ function BillManagement(props) {
             group: group
         })
         const { limit } = state;
+        await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
         await props.getBillsByType({ page, limit, managementLocation: state.currentRole })
     }
 
@@ -249,7 +256,7 @@ function BillManagement(props) {
             group: group,
             page: page
         })
-
+        await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
         await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
@@ -262,7 +269,7 @@ function BillManagement(props) {
             group: group,
             page: page
         })
-
+        await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
         await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
@@ -275,7 +282,7 @@ function BillManagement(props) {
             group: group,
             page: page
         })
-
+        await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
         await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
@@ -288,7 +295,7 @@ function BillManagement(props) {
             group: group,
             page: page
         })
-
+        await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
         await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
@@ -301,7 +308,7 @@ function BillManagement(props) {
             group: group,
             page: page
         })
-
+        await props.getAllBillsByGroup({ group, managementLocation: state.currentRole });
         await props.getBillsByType({ page, limit, group, managementLocation: state.currentRole })
     }
 
@@ -337,6 +344,81 @@ function BillManagement(props) {
         props.editBill(bill._id, data);
     }
 
+    const handleInProcessingStatus = (bill) => {
+        const data = {
+            status: '3',
+            oldStatus: bill.status,
+            group: bill.group,
+            fromStock: bill.fromStock,
+            code: bill.code,
+            type: bill.type,
+            group: bill.group,
+            users: bill.users,
+            approvers: bill.approvers,
+            qualityControlStaffs: bill.listQualityControlStaffs,
+            responsibles: bill.responsibles,
+            accountables: bill.accountables,
+            customer: bill.customer,
+            phone: bill.phone,
+            email: bill.email,
+            address: bill.address,
+            description: bill.description,
+            goods: bill.goods,
+            oldGoods: bill.goods
+        }
+        props.editBill(bill._id, data);
+    }
+
+    const handleCancelBill = (bill) => {
+        const data = {
+            status: '7',
+            oldStatus: bill.status,
+            group: bill.group,
+            fromStock: bill.fromStock,
+            code: bill.code,
+            type: bill.type,
+            group: bill.group,
+            users: bill.users,
+            approvers: bill.approvers,
+            qualityControlStaffs: bill.listQualityControlStaffs,
+            responsibles: bill.responsibles,
+            accountables: bill.accountables,
+            customer: bill.customer,
+            phone: bill.phone,
+            email: bill.email,
+            address: bill.address,
+            description: bill.description,
+            goods: bill.goods,
+            oldGoods: bill.goods
+        }
+        props.editBill(bill._id, data);
+    }
+
+    const handleCompleteBill = (bill) => {
+        const data = {
+            status: '5',
+            oldStatus: bill.status,
+            group: bill.group,
+            fromStock: bill.fromStock,
+            code: bill.code,
+            type: bill.type,
+            group: bill.group,
+            users: bill.users,
+            approvers: bill.approvers,
+            qualityControlStaffs: bill.listQualityControlStaffs,
+            responsibles: bill.responsibles,
+            accountables: bill.accountables,
+            customer: bill.customer,
+            phone: bill.phone,
+            email: bill.email,
+            address: bill.address,
+            description: bill.description,
+            goods: bill.goods,
+            oldGoods: bill.goods
+        }
+        props.editBill(bill._id, data);
+    }
+    
     const checkRoleQualityControlStaffs = (bill) => {
         const { qualityControlStaffs } = bill;
         const userId = localStorage.getItem("userId");
@@ -381,18 +463,17 @@ function BillManagement(props) {
     }
 
 
-    const { translate, bills, stocks } = props;
+    const { translate, bills } = props;
     const { group } = state;
-
     return (
         <div className="nav-tabs-custom">
             <ul className="nav nav-tabs">
-                <li className="active"><a href="#bill-stock-book" data-toggle="tab" onClick={() => handleStockBook()}>{translate('manage_warehouse.bill_management.stock_book')}</a></li>
-                <li><a href="#bill-good-receipts" data-toggle="tab" onClick={() => handleGoodReceipt()}>{translate('manage_warehouse.bill_management.good_receipt')}</a></li>
-                <li><a href="#bill-good-issues" data-toggle="tab" onClick={() => handleGoodIssue()}>{translate('manage_warehouse.bill_management.good_issue')}</a></li>
-                <li><a href="#bill-good-returns" data-toggle="tab" onClick={() => handleGoodReturn()}>{translate('manage_warehouse.bill_management.good_return')}</a></li>
-                <li><a href="#bill-stock-takes" data-toggle="tab" onClick={() => handleStockTake()}>{translate('manage_warehouse.bill_management.stock_take')}</a></li>
-                <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')}</a></li>
+                <li className="active"><a href="#bill-stock-book" data-toggle="tab" onClick={() => handleStockBook()}>{translate('manage_warehouse.bill_management.stock_book')} &nbsp;({bills.listBillByGroup.length})</a></li>
+                <li><a href="#bill-good-receipts" data-toggle="tab" onClick={() => handleGoodReceipt()}>{translate('manage_warehouse.bill_management.good_receipt')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '1').length})</a></li>
+                <li><a href="#bill-good-issues" data-toggle="tab" onClick={() => handleGoodIssue()}>{translate('manage_warehouse.bill_management.good_issue')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '2').length})</a></li>
+                <li><a href="#bill-good-returns" data-toggle="tab" onClick={() => handleGoodReturn()}>{translate('manage_warehouse.bill_management.good_return')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '3').length})</a></li>
+                <li><a href="#bill-stock-takes" data-toggle="tab" onClick={() => handleStockTake()}>{translate('manage_warehouse.bill_management.stock_take')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '4').length})</a></li>
+                <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '5').length})</a></li>
             </ul>
             <div className="tab-content">
 
@@ -413,6 +494,10 @@ function BillManagement(props) {
                         handleChangeEndDate={handleChangeEndDate}
                         getPartner={getPartner}
                         handleShowDetailInfo={handleShowDetailInfo}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
+                        handleSearchByStatus={handleSearchByStatus}
 
                     />
                 }
@@ -439,7 +524,10 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
-
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
+                        handleSearchByStatus={handleSearchByStatus}
                     />
                 }
 
@@ -465,6 +553,11 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
+                        handleSearchByStatus={handleSearchByStatus}
+
                     />
                 }
 
@@ -490,6 +583,11 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
+                        handleSearchByStatus={handleSearchByStatus}
+
                     />
                 }
 
@@ -515,6 +613,11 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
+                        handleSearchByStatus={handleSearchByStatus}
+
                     />
                 }
 
@@ -540,6 +643,11 @@ function BillManagement(props) {
                         checkRoleQualityControlStaffs={checkRoleQualityControlStaffs}
                         handleFinishedQualityControlStaff={handleFinishedQualityControlStaff}
                         checkRoleCanEdit={checkRoleCanEdit}
+                        handleInProcessingStatus={handleInProcessingStatus}
+                        handleCancelBill={handleCancelBill}
+                        handleCompleteBill={handleCompleteBill}
+                        handleSearchByStatus={handleSearchByStatus}
+
                     />
                 }
             </div>
@@ -552,6 +660,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getBillsByType: BillActions.getBillsByType,
+    getAllBillsByGroup: BillActions.getAllBillsByGroup,
     getDetailBill: BillActions.getDetailBill,
     getAllStocks: StockActions.getAllStocks,
     getUser: UserActions.get,

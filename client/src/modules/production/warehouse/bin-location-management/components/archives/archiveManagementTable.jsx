@@ -109,11 +109,21 @@ function ArchiveManagementTable(props) {
         props.getChildBinLocations(data);
     }
 
+    const handleEnableGood = (enableGoods) => {
+        enableGoods.sort((a, b) => b.contained - a.contained);
+        if (enableGoods[0].contained === 0) {
+            return null;
+        } else if (enableGoods.length > 3) {
+            return enableGoods.slice(0, 2);
+        } else {
+            return enableGoods.slice(0, 3);
+        }
+    }
+
     const { translate, binLocations, stocks } = props;
     const { listStocks } = stocks;
     const { listPaginate, totalPages, page } = binLocations;
     const { currentRow } = state;
-    console.log(listPaginate);
     return (
         <div className="box-body qlcv">
             <div className="form-inline">
@@ -205,8 +215,14 @@ function ArchiveManagementTable(props) {
                                 <td>{x.path}</td>
                                 <td style={{ color: translate(`manage_warehouse.bin_location_management.${x.status}.color`) }}>{translate(`manage_warehouse.bin_location_management.${x.status}.status`)}</td>
                                 <td>{x.capacity ? x.capacity : 0} {x.unit}</td>
-                                <td>{x.contained ? x.contained : 0} {x.unit}</td>
-                                <td>{(x.enableGoods && x.enableGoods.length > 0) && x.enableGoods.map((x, i) => { return <p key={i}>{x.good.name}({x.contained}{x.good.baseUnit})</p> })}</td>
+                                <td> 
+                                    {x.contained > 0 && (x.contained + ' ' + x.unit)}
+                                    {x.contained <= 0 && translate('manage_warehouse.bin_location_management.empty_stock')}
+                                </td>
+                                <td>
+                                    {(x.enableGoods && x.enableGoods.length > 0) && (handleEnableGood(x.enableGoods) !== null ? handleEnableGood(x.enableGoods).map((x, i) => { return <p key={i}>{x.good.name} ({x.contained} {x.good.baseUnit})</p> }) : translate('manage_warehouse.bin_location_management.empty_stock'))}
+                                    {handleEnableGood(x.enableGoods) !== null && handleEnableGood(x.enableGoods).length == 2 && <a onClick={() => handleShowDetailInfo(x)}><p>......</p></a>}
+                                </td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a onClick={() => handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
                                     <a onClick={() => handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>

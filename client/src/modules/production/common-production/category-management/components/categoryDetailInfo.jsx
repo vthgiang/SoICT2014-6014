@@ -12,13 +12,14 @@ function CategoryDetailForm(props) {
     })
 
     useEffect(() => {
-        if(props.categoryId !== state.categoryId){
+        if (props.categoryId !== state.categoryId) {
             setState({
                 ...state,
                 categoryId: props.categoryId,
                 code: props.code,
                 name: props.name,
                 type: props.type,
+                parent: props.parent,
                 goods: props.goods,
                 description: props.description,
                 errorOnCode: undefined,
@@ -27,8 +28,9 @@ function CategoryDetailForm(props) {
         }
     }, [props.categoryId])
 
-    const { translate, categories, goods } = props;
-    const { code, name, type, description } = state;
+
+    const { translate, categories, goods, parentName } = props;
+    const { code, name, type, description, } = state;
     const { listGoodsByCategory } = goods;
     return (
         <React.Fragment>
@@ -45,25 +47,29 @@ function CategoryDetailForm(props) {
                 hasNote={false}
             >
                 <form id="form-detail-category">
-                    <div className="form-group">
-                        <strong>{translate('manage_warehouse.category_management.code')}:&emsp; </strong>
-                        {code}
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className="form-group">
+                            <strong>{translate('manage_warehouse.category_management.code')}:&emsp; </strong>
+                            {code}
+                        </div>
+                        <div className="form-group">
+                            <strong>{translate('manage_warehouse.category_management.name')}:&emsp; </strong>
+                            {name}
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <strong>{translate('manage_warehouse.category_management.name')}:&emsp; </strong>
-                        {name}
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className="form-group">
+                            <strong>{translate('manage_warehouse.category_management.type')}:&emsp;</strong>
+                            {parentName}
+                        </div>
+                        <div className="form-group">
+                            <strong>{translate('manage_warehouse.category_management.description')}:&emsp; </strong>
+                            {description}
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <strong>{translate('manage_warehouse.category_management.type')}:&emsp; </strong>
-                        {translate(`manage_warehouse.category_management.${type}`)}
-                    </div>
-                    <div className="form-group">
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <strong>{translate('manage_warehouse.category_management.good')}:&emsp; </strong>
-                        <div style={{ marginLeft: "15%" }}>{listGoodsByCategory.map((x, index) => <p key={index}>{x.name}</p>)}</div>
-                    </div>
-                    <div className="form-group">
-                        <strong>{translate('manage_warehouse.category_management.description')}:&emsp; </strong>
-                        {description}
+                        <div style={{ marginLeft: "20%" }}>{listGoodsByCategory.map((x, index) => <p key={index}>{x.name}</p>)}</div>
                     </div>
                 </form>
             </DialogModal>

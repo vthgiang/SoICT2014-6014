@@ -299,21 +299,28 @@ exports.getAllManufacturingPlans = async (query, portal) => {
 // Lấy ra danh sách người dùng duyệt kế hoạch theo roleId của người hiện tại tạo kế hoạch
 
 exports.getApproversOfPlan = async (portal, currentRole) => {
-    // Lấy ra danh sách các nhà máy mà người này là quản đốc
+    
     if (!currentRole) {
         throw Error("Role is not defined")
     }
 
-    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
     // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
     let role = [currentRole];
     const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
-    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+    let listManufacturingWorksByManager = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         organizationalUnit: {
             $in: organizationalUnitId
         }
     });
+     // Lấy ra list các nhà máy currentRole là role quản lý khác
+    let listManufacturingWorksByManagerRoles = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    });
+    let listManufacturingWorks = [...listManufacturingWorksByManager, ...listManufacturingWorksByManagerRoles];
+
 
     // Lấy ra tất cả các manageRoles của các nhà máy này push vào mảng roles;
     let roles = [];
@@ -323,6 +330,33 @@ exports.getApproversOfPlan = async (portal, currentRole) => {
             for (let j = 0; j < manageRoles.length; j++) {
                 if (!roles.includes(manageRoles[j])) {
                     roles.push(manageRoles[j])
+                }
+            }
+        }
+    }
+
+    // Lấy ra tất cả các manage, deputymanager của các nhà máy này push vào mảng roles;
+    const listOrganizationalUnitId = []
+    listManufacturingWorks.map(work =>{
+        listOrganizationalUnitId.push(work.organizationalUnit)
+    })
+    const listOrganizationalUnit = 
+        await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ '_id': { $in: listOrganizationalUnitId } });
+    for(let i = 0; i < listOrganizationalUnit.length; i++){
+        const managerRoles = listOrganizationalUnit[i].managers;
+        if (managerRoles.length) {
+            for (let j = 0; j < managerRoles.length; j++) {
+                if (!roles.includes(managerRoles[j])) {
+                    roles.push(managerRoles[j])
+                }
+            }
+        }
+
+        const deputyManagerRoles = listOrganizationalUnit[i].deputyManagers;
+        if (deputyManagerRoles.length) {
+            for (let j = 0; j < deputyManagerRoles.length; j++) {
+                if (!roles.includes(deputyManagerRoles[j])) {
+                    roles.push(deputyManagerRoles[j])
                 }
             }
         }

@@ -3,6 +3,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 import QuantityLotGoodReturn from './quantityLotGoodReturn';
+import ModalSelectIssueBill from './modalSelectIssueBill';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
@@ -205,53 +206,54 @@ function GoodReturnCreateForm(props) {
     }
 
     const getType = () => {
-        const { group, translate } = props;
+        const { translate } = props;
         let typeArr = [
-            { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
-            { value: '11', text: translate('manage_warehouse.bill_management.billType.11') },
-            { value: '12', text: translate('manage_warehouse.bill_management.billType.12') },
+            // { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
+            // { value: '11', text: translate('manage_warehouse.bill_management.billType.11') },
+            // { value: '12', text: translate('manage_warehouse.bill_management.billType.12') },
             { value: '13', text: translate('manage_warehouse.bill_management.billType.13') },
         ];
         return typeArr;
     }
 
-    const handleTypeChange = async (value) => {
-        let type = value[0];
-        await validateType(type, true);
+    // const handleTypeChange = async (value) => {
+    //     let type = value[0];
+    //     await validateType(type, true);
 
-        let group = type === '13' ? '2' : '1';
-        let status = '2';
-        if (type && state.fromStock) {
-            await props.getBillsByStatus({ group, status, type, fromStock: state.fromStock });
-        } else {
-            await props.getBillsByStatus({ group, status, type: null, fromStock: null });
-        }
-    }
+    //     let group = type === '13' ? '2' : '1';
+    //     let status = '5';
+    //     if (type && state.fromStock) {
+    //         await props.getBillsByStatus({ group, status, type, fromStock: state.fromStock });
+    //     } else {
+    //         await props.getBillsByStatus({ group, status, type: null, fromStock: null });
+    //     }
+    // }
 
-    const validateType = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.bill_management.validate_type')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                type: value,
-                errorType: msg,
-            })
-        }
-        return msg === undefined;
-    }
+    // const validateType = (value, willUpdateState = true) => {
+    //     let msg = undefined;
+    //     const { translate } = props;
+    //     if (!value) {
+    //         msg = translate('manage_warehouse.bill_management.validate_type')
+    //     }
+    //     if (willUpdateState) {
+    //         setState({
+    //             ...state,
+    //             type: value,
+    //             errorType: msg,
+    //         })
+    //     }
+    //     return msg === undefined;
+    // }
 
     const handleStockChange = async (value) => {
         let fromStock = value[0];
         await validateStock(fromStock, true);
-
-        let group = state.type === '13' ? '2' : '1';
-        let status = '2';
-        if (fromStock && state.type) {
-            await props.getBillsByStatus({ group, status, type: state.type, fromStock });
+        // let group = state.type === '13' ? '2' : '1';
+        let group = '2';
+        let status = '5';
+        let type = '13';
+        if (fromStock) {
+            await props.getBillsByStatus({ group, status, type: type, fromStock });
         } else {
             await props.getBillsByStatus({ group, status, type: null, fromStock: null });
         }
@@ -419,7 +421,7 @@ function GoodReturnCreateForm(props) {
 
     const isFormValidated = () => {
         let result =
-            validateType(state.type, false) &&
+            // validateType(state.type, false) &&
             validateStock(state.fromStock, false) &&
             validateApprover(state.approver, false) &&
             validateAccountables(state.accountables, false) &&
@@ -513,7 +515,7 @@ function GoodReturnCreateForm(props) {
     }
 
     const handleBillChange = async (value) => {
-        let bill = value[0];
+        let bill = value;
         state.listGood = [];
         if (bill) {
             await setState({
@@ -521,7 +523,7 @@ function GoodReturnCreateForm(props) {
                 bill: bill,
                 getGoodInfo: true
             })
-            await props.getDetailBill(bill);
+            await props.getDetailBill(bill._id);
         } else {
             let msg = translate('manage_warehouse.bill_management.validate_bill')
             setState({
@@ -542,6 +544,18 @@ function GoodReturnCreateForm(props) {
         return false;
     }
 
+    const selectBill = () => {
+        window.$("#modal-select-bill-issue").modal("show");
+    };
+
+    const handleBillIssueChange = async (data) => {
+        await setState({
+            ...state,
+            billSelected: data.code + " -- " + formatDate(data.createdAt)
+        })
+        handleBillChange(data);
+    };
+
     useEffect(() => {
         state.listGood = props.bills.billDetail.goods;
         state.billDetail = props.bills.billDetail;
@@ -559,7 +573,7 @@ function GoodReturnCreateForm(props) {
             fromStock: fromStock,
             bill: bill,
             code: code,
-            type: type,
+            type: '13',
             group: group,
             status: status,
             users: users,
@@ -579,17 +593,24 @@ function GoodReturnCreateForm(props) {
         })
     }
 
-    const { translate, group, bills } = props;
+    const { translate, group, bills, isHideButtonCreate, size } = props;
     const { lots, listGood, good, code, approver, accountables, responsibles, qualityControlStaffs, status, fromStock, type, name, phone, email, address,
-        errorStock, errorType, errorApprover, errorBill, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
+        errorStock, errorType, errorApprover, errorBill, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles, billSelected } = state;
     const dataApprover = getApprover();
     const dataStock = getStock();
     const dataType = getType();
     const dataBill = getBillByStatus();
+    const timelineTextArr = [
+        {text: "Tạo phiếu"},
+        {text: "Phê duyệt phiếu"},
+        {text: "Thực hiện phiếu"},
+        {text: "Kiểm định chất lượng"},
+        {text: "Hoàn thành"},
+    ]
 
     return (
         <React.Fragment>
-            <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
+            {!isHideButtonCreate && <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />}
 
             <DialogModal
                 modalID={`modal-create-bill-return`}
@@ -601,8 +622,21 @@ function GoodReturnCreateForm(props) {
                 func={save}
                 size={75}
             >
+                <ModalSelectIssueBill listBills={bills.listBillByStatus} onDataChange={handleBillIssueChange} />
                 <QuantityLotGoodReturn group={group} good={good} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-create-bill-return`}>
+                    <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width: "0%" }}></div>
+                        <div className="timeline-items">
+                            {timelineTextArr.map((item, index) => (
+                                <div className={`timeline-item ${index === 0 ? "active" : ""}`} key={index} >
+                                    <div className={`timeline-contain`}>
+                                        {item.text}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
@@ -619,8 +653,9 @@ function GoodReturnCreateForm(props) {
                                         style={{ width: "100%" }}
                                         value={type}
                                         items={dataType}
-                                        onChange={handleTypeChange}
+                                        // onChange={handleTypeChange}
                                         multiple={false}
+                                        disabled={true}
                                     />
                                     <ErrorLabel content={errorType} />
                                 </div>
@@ -660,15 +695,14 @@ function GoodReturnCreateForm(props) {
                                 </div>
                                 <div className={`form-group ${!errorBill ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bill_management.choose_bill')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-bill-return-create`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={bill}
-                                        items={dataBill}
-                                        onChange={handleBillChange}
-                                        multiple={false}
-                                    />
+                                    <div>
+                                        <div className="col-lg-8" style={{ padding: 0 }}>
+                                            <input type="text" className="form-control" value={billSelected} onChange={handleBillChange} />
+                                        </div>
+                                        <div className="col-lg-4">
+                                            <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => selectBill()}>{translate('manage_warehouse.bill_management.choose_bill')}</p>
+                                        </div>
+                                    </div>
                                     <ErrorLabel content={errorBill} />
                                 </div>
                             </div>
@@ -746,21 +780,21 @@ function GoodReturnCreateForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" onChange={handleAddressChange} />
                                 </div>
                             </div>

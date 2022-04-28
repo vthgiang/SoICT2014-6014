@@ -107,6 +107,7 @@ const ProjectCreateForm = (props) => {
         if (responsibleEmployeesWithUnit.list.length === 0) return false;
         if (startDate.length === 0) return false;
         if (endDate.length === 0) return false;
+        if (startDate > endDate) return false;
         return true;
     }
 

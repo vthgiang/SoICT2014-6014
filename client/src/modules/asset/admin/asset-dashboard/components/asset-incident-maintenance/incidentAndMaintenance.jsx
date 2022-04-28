@@ -39,8 +39,9 @@ class IncidentAndMaintenance extends Component {
         }).catch(err => {
             console.log(err);
         });
-        this.props.getAllAssetIncident()
-        this.props.getAllAssetMaintenance()
+        
+        
+        this.props.getAllAssetGroup()
         AssetTypeService.getAssetTypes().then(res => {
             if (res.data.success) {
                 this.setState({ assetType: res.data.content.list })
@@ -146,14 +147,12 @@ class IncidentAndMaintenance extends Component {
     }
 }
 function mapState(state) {
-    const { listAssets,incidentAsset,maintenanceAsset } = state.assetsManager;
+    const { listAssets,chartAsset } = state.assetsManager;
     const { assetType } = state;
-    return { listAssets, assetType ,incidentAsset,maintenanceAsset};
+    return { listAssets, assetType ,chartAsset};
 }
 const mapDispatchToProps = {
-    getAllAssetIncident : AssetManagerActions.getAllAssetIncident,
-    getAllAssetMaintenance : AssetManagerActions.getAllAssetMaintenance
-    
+    getAllAssetGroup: AssetManagerActions.getAllAssetGroup
 }
 const IncidentAndMaintenanceConnect = connect(mapState,mapDispatchToProps)(withTranslate(IncidentAndMaintenance));
 export { IncidentAndMaintenanceConnect as IncidentAndMaintenance };

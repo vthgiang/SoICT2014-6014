@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,16 +9,24 @@ import { AssetManagerActions } from '../../../admin/asset-information/redux/acti
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { taskManagementActions } from '../../../../task/task-management/redux/actions';
 
 function UseRequestEditForm(props) {
-    const [state, setState]= useState({
+    const [state, setState] = useState({
         startTime: null,
         stopTime: null,
     })
     const [prevProps, setPrevProps] = useState({
-        _id : null
+        _id: null
     })
-    
+
+    const getAll = true;
+
+    useEffect(() => {
+        let data = { getAll };
+        props.getPaginateTasks(data);
+    }, [])
+
     const formatDate = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -78,8 +86,8 @@ function UseRequestEditForm(props) {
      * Bắt sự kiện thay đổi người đề nghị
      */
     const handleProponentChange = (value) => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 proponent: value[0]
             }
@@ -110,10 +118,22 @@ function UseRequestEditForm(props) {
      * Bắt sự kiện thay đổi tài sản
      */
     const handleAssetChange = (value) => {
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 asset: value[0]
+            }
+        });
+    }
+
+    /**
+     * Bắt sự kiện thay đổi công việc
+     */
+    const handleTaskChange = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                task: value[0]
             }
         });
     }
@@ -192,7 +212,7 @@ function UseRequestEditForm(props) {
     }
 
 
-    if (prevProps._id !== props._id){
+    if (prevProps._id !== props._id) {
         let startTime, stopTime;
         if (props.asset.typeRegisterForUse == 2) {
             let dateStartUse = new Date(props.dateStartUse),
@@ -214,7 +234,7 @@ function UseRequestEditForm(props) {
             stopTime = [hourEnd, minutesEnd].join(":")
         }
         setState(state => {
-            return{
+            return {
                 ...state,
                 _id: props._id,
                 recommendNumber: props.recommendNumber,
@@ -229,6 +249,7 @@ function UseRequestEditForm(props) {
                 approver: props.approver,
                 status: props.status,
                 note: props.note,
+                task: props.task ? props.task._id : "",
                 errorOnRecommendNumber: undefined,
                 errorOnDateCreate: undefined,
                 errorOnReqContent: undefined,
@@ -238,21 +259,23 @@ function UseRequestEditForm(props) {
         })
         setPrevProps(props)
     }
-    
 
-    
-        const { _id } = props;
-        const { translate, recommendDistribute, user, assetsManager, auth } = props;
-        const {
-            recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse,
-            errorOnDateEndUse, startTime, stopTime, status, note
-        } = state;
 
-        var assetlist = assetsManager.listAssets;
-        var userlist = user.list;
 
-        
+    const { _id } = props;
+    const { translate, recommendDistribute, user, assetsManager, auth, tasks } = props;
+    const {
+        recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse,
+        errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse,
+        errorOnDateEndUse, startTime, stopTime, status, note, task,
+    } = state;
+
+    var assetlist = assetsManager.listAssets;
+    var userlist = user.list;
+    var taskList = tasks.tasks && tasks.tasks.map(x => {
+        return { value: x._id, text: x.name }
+    })
+
     return (
         <React.Fragment>
             <DialogModal
@@ -316,7 +339,7 @@ function UseRequestEditForm(props) {
                             {/* Ghi chú */}
                             <div className="form-group">
                                 <label>{translate('asset.usage.note')}</label>
-                                <textarea className="form-control" rows="3" name="note" value={note}  disabled></textarea>
+                                <textarea className="form-control" rows="3" name="note" value={note} disabled></textarea>
                             </div>
                         </div>
 
@@ -380,6 +403,22 @@ function UseRequestEditForm(props) {
                                 <ErrorLabel content={errorOnDateEndUse} />
                             </div>
 
+                            {/* công việc*/}
+                            <div className="form-group">
+                                <label>{translate('asset.usage.task_in_use_request')}</label>
+                                <div id="taskCreateRequestDiv">
+                                    <SelectBox
+                                        id={`taskCreateRequestBox`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={[{ value: "", text: "Chưa chọn công việc" }, ...(taskList ? taskList : [])]}
+                                        onChange={handleTaskChange}
+                                        value={task}
+                                        multiple={false}
+                                    />
+                                </div>
+                            </div>
+
                             {/* Trạng thái */}
                             <div className="form-group">
                                 <label>{translate('asset.general_information.status')}</label>
@@ -405,14 +444,15 @@ function UseRequestEditForm(props) {
 };
 
 function mapState(state) {
-    const { recommendDistribute, auth, user, assetsManager } = state;
-    return { recommendDistribute, auth, user, assetsManager };
+    const { recommendDistribute, auth, user, assetsManager, tasks } = state;
+    return { recommendDistribute, auth, user, assetsManager, tasks };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
+    getPaginateTasks: taskManagementActions.getPaginateTasks,
 };
 
 const editRecommendDistribute = connect(mapState, actionCreators)(withTranslate(UseRequestEditForm));

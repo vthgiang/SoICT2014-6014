@@ -9,6 +9,8 @@ function UsageLogTab(props) {
     const [state, setState] =useState({
         assignedToUser: props.assignedToUser,
         assignedToOrganizationalUnit: props.assignedToOrganizationalUnit,
+
+        usageLogs: [],
     })
     const [prevProps, setPrevProps] = useState({
         id: null,
@@ -112,7 +114,13 @@ function UsageLogTab(props) {
 
     // Function thêm thông tin phiếu
     const handleAddUsage = async (data) => {
-        const { usageLogs } = state
+        //const { usageLogs } = props.usageLogs;
+        let {usageLogs} = state;
+        //console.log("hang usageLogs",usageLogs);
+        if(usageLogs === undefined){
+            usageLogs = [];
+        }
+        
         let assignedToUser, assignedToOrganizationalUnit;
         if (data && data.calendar) {
             usageLogs.push(data.newUsage);
@@ -159,6 +167,9 @@ function UsageLogTab(props) {
     // Function chỉnh sửa thông tin phiếu
     const handleEditUsage = async (data) => {
         const { usageLogs } = state;
+        if(usageLogs === undefined){
+            usageLogs = [];
+        }
         let assignedToUser, assignedToOrganizationalUnit, updateUsage;
         usageLogs[data.index] = data;
         if (data.index == (usageLogs.length - 1) && (state.assignedToUser || state.assignedToOrganizationalUnit)) {
@@ -203,6 +214,9 @@ function UsageLogTab(props) {
     // Function bắt sự kiện xoá thông tin phiếu
     const handleDeleteUsage = async (index) => {
         var { usageLogs } = state;
+        if(usageLogs === undefined){
+            usageLogs = [];
+        }
         var data = usageLogs[index];
         usageLogs.splice(index, 1);
         await setState(state =>{

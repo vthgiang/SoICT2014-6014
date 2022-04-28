@@ -433,6 +433,12 @@ exports.links = [{
             { path: '/assettype/asset-types', method: 'DELETE' },
 
 
+            //Asset-lot
+            {path: '/assetlot/asset-lots', method:'GET'},
+            {path: '/assetlot/asset-lots', method:'POST'},
+            {path: '/assetlot/asset-lots/:id', method:'PATCH'},
+            {path: '/assetlot/asset-lots', method:'DELETE'},
+            {path: '/assetlot/asset-lots/:id', method:'GET'},
 
 
             // Asset
@@ -464,6 +470,35 @@ exports.links = [{
             { path: '/asset/assets/:id/incident-logs', method: 'POST' },
             { path: '/asset/assets/:id/incident-logs', method: 'PATCH' },
             { path: '/asset/assets/:id/incident-logs', method: 'DELETE' },
+
+
+
+            //Supplies
+            {path: '/supplies/supplies', method: 'GET'},
+            {path: '/supplies/supplies', method: 'POST'},
+            {path: '/supplies/supplies/:id', method: 'PATCH'},
+            {path: '/supplies/supplies', method: 'DELETE'},
+            {path: '/supplies/supplies/:id', method: 'GET'},
+            //supplies allocation history
+            {path: '/allocation-supplies/allocation', method: 'GET'},
+            {path: '/allocation-supplies/allocation', method: 'POST'},
+            {path: '/allocation-supplies/allocation/:id', method: 'PATCH'},
+            {path: '/allocation-supplies/allocation', method: 'DELETE'},
+            {path: '/allocation-supplies/allocation/:id', method: 'GET'},
+            //purchase invoice
+            {path: '/purchase-invoice/purchase-invoice', method: 'GET'},
+            {path: '/purchase-invoice/purchase-invoice', method: 'POST'},
+            {path: '/purchase-invoice/purchase-invoice/:id', method: 'PATCH'},
+            {path: '/purchase-invoice/purchase-invoice', method: 'DELETE'},
+            {path: '/purchase-invoice/purchase-invoice/:id', method: 'GET'},
+            //supplies purchase request
+            { path: '/supplies-request/purchase-request', method: 'GET' },
+            { path: '/supplies-request/use-approver', method: 'GET' },
+            { path: '/supplies-request/purchase-request', method: 'POST' },
+            { path: '/supplies-request/purchase-request/:id', method: 'PUT' },
+            { path: '/supplies-request/purchase-request/:id', method: 'DELETE' },
+            //supplies dashboard 
+            { path: '/supplies/dashboard-supplies', method: 'GET' },
 
             // Recommend-procure
             { path: '/purchase-request/purchase-request', method: 'GET' },
@@ -822,6 +857,9 @@ exports.links = [{
         url: '/manage-info-asset',
         apis: ['@all']
     }, {
+        url: '/manage-info-asset-lot',
+        apis: ['@all']
+    }, {
         url: '/manage-maintainance-asset',
         apis: ['@all']
     }, {
@@ -857,7 +895,37 @@ exports.links = [{
     }, {
         url: '/view-building-list',
         apis: ['@all']
-    }, {
+    },
+
+
+    {
+        url: '/dashboard-supplies',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-supplies',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-purchase-invoice',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-allocation-history',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-supplies-request',
+        apis: ['@all']
+    },
+    {
+        url: '/supplies-purchase-request',
+        apis: ['@all']
+    },
+    
+    
+    
+    {
         url: '/task-report',
         apis: ['@all']
     }, {
@@ -962,6 +1030,13 @@ exports.links = [{
         apis: ['@all']
     }, {
         url: '/manage-examples-hooks-2',
+        apis: ['@all']
+    }
+    , {
+        url: '/manage-examples-3',
+        apis: ['@all']
+    }, {
+        url: '/manage-examples-hooks-3',
         apis: ['@all']
     }, {
         url: '/manage-manufacturing-plan',

@@ -29,7 +29,6 @@ function AssetDetailForm(props) {
         }
     }
     
-    
     if (isChange ===1) {
         setState({
             ...state,

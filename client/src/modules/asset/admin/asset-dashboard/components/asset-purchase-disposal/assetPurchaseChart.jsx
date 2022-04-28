@@ -49,11 +49,11 @@ class AssetPurchaseChart extends Component {
     }
 
     setDataColumnChartForMonth = (type) => {
-        const { translate, getPurchaseData, purchaseAsset } = this.props;
+        const { translate, getPurchaseData, chartAsset } = this.props;
         let category1 = ['x'], count1 = ['Số lượng'], value1 = ['Giá trị'], yValue1 = [], max = []
         const maxVa = (a, b) => Math.max(a, b)
-        if (purchaseAsset.purchaseChart) {
-            purchaseAsset.purchaseChart.forEach(element => {
+        if (chartAsset.purchaseChart) {
+            chartAsset.purchaseChart.forEach(element => {
                 if (type.length !== 0) {
                     let sumCate = 0, sumValue = 0
                     type.forEach(value => {
@@ -87,19 +87,19 @@ class AssetPurchaseChart extends Component {
             yValues: yValue1
         };
 
-        if (getPurchaseData && purchaseAsset) {
+        if (getPurchaseData && chartAsset) {
             getPurchaseData(dataColumnChart);
         }
         return dataColumnChart;
     }
 
     setDataColumnChartForYear = (type) => {
-        const { translate, getPurchaseData, purchaseAsset } = this.props;
+        const { translate, getPurchaseData, chartAsset } = this.props;
         let category1 = ['x'], count1 = ['Số lượng'], value1 = ['Giá trị'], yValue1 = [], max = []
 
         const maxVa = (a, b) => Math.max(a, b)
-        if (purchaseAsset.purchaseChartYear) {
-            purchaseAsset.purchaseChartYear.forEach(element => {
+        if (chartAsset.purchaseChartYear) {
+            chartAsset.purchaseChartYear.forEach(element => {
                 if (type.length !== 0) {
                     let sumCate = 0, sumValue = 0
                     type.forEach(value => {
@@ -135,14 +135,14 @@ class AssetPurchaseChart extends Component {
             yValues: yValue1
         };
 
-        if (getPurchaseData && purchaseAsset) {
+        if (getPurchaseData && chartAsset) {
             getPurchaseData(dataColumnChart);
         }
         return dataColumnChart;
     }
 
     columnChart = () => {
-        let { translate, listAssets, purchaseAsset } = this.props;
+        let { translate, listAssets, chartAsset } = this.props;
         let { year, type } = this.state;
         let filterAsset = [];
 
@@ -305,7 +305,7 @@ class AssetPurchaseChart extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            this.props.getAllAssetPurchase({ name: "purchase-date-data", endTime: purchaseDateBefore, startTime: purchaseDateAfter })
+            this.props.getAllAssetGroup([{ name: "purchase-date-data", endTime: purchaseDateBefore, startTime: purchaseDateAfter }])
         }
     }
 
@@ -400,11 +400,11 @@ class AssetPurchaseChart extends Component {
     }
 }
 function mapState(state) {
-    const { purchaseAsset } = state.assetsManager;
-    return { purchaseAsset };
+    const { chartAsset } = state.assetsManager;
+    return { chartAsset };
 }
 const mapDispatchToProps = {
-    getAllAssetPurchase: AssetManagerActions.getAllAssetPurchase
+    getAllAssetGroup: AssetManagerActions.getAllAssetGroup
 }
 const AssetPurchaseChartConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetPurchaseChart));
 

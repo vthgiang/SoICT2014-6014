@@ -12,6 +12,8 @@ function GoodReceiptCreateForm(props) {
         good: "",
         quantity: 0,
         returnQuantity: 0,
+        damagedQuantity: 0,
+        realQuantity: 0,
         description: "",
         lots: [],
     };
@@ -165,7 +167,7 @@ function GoodReceiptCreateForm(props) {
 
     const getSupplier = () => {
         const { crm, translate } = props;
-        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_customer") }];
+        let supplierArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_supplier") }];
 
         crm.customers.list.map((item) => {
             supplierArr.push({
@@ -673,6 +675,14 @@ function GoodReceiptCreateForm(props) {
     const dataManufacturingMills = getManufacturingMills();
     const dataStock = getStock();
     const dataType = getType();
+    const timelineTextArr = [
+        {text: "Tạo phiếu"},
+        {text: "Phê duyệt phiếu"},
+        {text: "Thực hiện phiếu"},
+        {text: "Kiểm định chất lượng"},
+        {text: "Đánh lô hàng hóa"},
+        {text: "Xếp hàng vào kho"}
+    ]
 
     return (
         <React.Fragment>
@@ -698,6 +708,18 @@ function GoodReceiptCreateForm(props) {
                 size={75}
             >
                 <form id={`form-create-bill-receipt`}>
+                    <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width: "0%" }}></div>
+                        <div className="timeline-items">
+                        {timelineTextArr.map((item, index) => (
+                            <div className={`timeline-item ${index === 0 ? "active" : ""}`} key={index} >
+                                <div className={`timeline-contain`}>
+                                    {item.text}
+                                </div>
+                            </div>
+                            ))}
+                        </div>
+                    </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate("manage_warehouse.bill_management.infor")}</legend>
@@ -896,14 +918,12 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.name")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.phone")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
@@ -912,14 +932,12 @@ function GoodReceiptCreateForm(props) {
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.email")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
                                     <label>
                                         {translate("manage_warehouse.bill_management.address")}
-                                        <span className="text-red"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>

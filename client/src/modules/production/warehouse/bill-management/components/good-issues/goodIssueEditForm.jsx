@@ -455,35 +455,35 @@ function GoodIssueEditForm(props) {
         let statusArr = [];
         if (oldStatus === '1') {
             statusArr = [
-                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
-            ]
-        }
-        if (oldStatus === '2') {
-            statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
-            ]
-        }
-        if (oldStatus === '3') {
-            statusArr = [
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
+                { value: '1', text: translate('manage_warehouse.bill_management.bill_issue_status.1') },
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_issue_status.2') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_issue_status.7') }
             ]
         }
         if (oldStatus === '5') {
             statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_issue_status.5') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_issue_status.7') }
+            ]
+        }
+        if (oldStatus === '2') {
+            statusArr = [
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_issue_status.2') },
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_issue_status.3') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_issue_status.7') },
+            ]
+        }
+        if (oldStatus === '3') {
+            statusArr = [
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_issue_status.5') },
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_issue_status.3') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_issue_status.7') },
             ]
         }
 
-        if (oldStatus === '4') {
+        if (oldStatus === '7') {
             statusArr = [
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_issue_status.7') }
             ]
         }
 
@@ -606,18 +606,18 @@ function GoodIssueEditForm(props) {
         })
     }
 
-    const checkIsApproved = (approvers, listQualityControlStaffs) => {
-        let quantityApproved = 1;
-        approvers.forEach((element) => {
-            if (element.approvedTime == null) {
-                quantityApproved = 0;
-            }
-        });
-        if (quantityApproved === 0) {
-            return true;
-        }
-        return false;
-    }
+    // const checkIsApproved = (approvers, listQualityControlStaffs) => {
+    //     let quantityApproved = 1;
+    //     approvers.forEach((element) => {
+    //         if (element.approvedTime == null) {
+    //             quantityApproved = 0;
+    //         }
+    //     });
+    //     if (quantityApproved === 0) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     const { translate, group } = props;
     const { billId, lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, qualityControlStaffs, status, customer, fromStock, type, name, phone, email, address, description, errorStock, errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = state;
@@ -628,6 +628,12 @@ function GoodIssueEditForm(props) {
     const dataType = getType();
     const dataStatus = getStatus();
     // const checkApproved = checkIsApproved(approvers, listQualityControlStaffs);
+    const timelineTextArr = [
+        { text: "Tạo phiếu" },
+        { text: "Phê duyệt phiếu" },
+        { text: "Thực hiện phiếu" },
+        { text: "Hoàn thành phiếu" }
+    ]
 
     return (
         <React.Fragment>
@@ -644,6 +650,28 @@ function GoodIssueEditForm(props) {
             >
                 <QuantityLotGoodIssueEdit group={group} good={good} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-issue`}>
+                    {status !== '7' && <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width:(parseInt(status) -1) / 3 * 100 > 100 ? "100%" : (parseInt(status) -1) / 3 * 100 + "%" }}></div>
+                        <div className="timeline-items">
+                            {timelineTextArr.map((item, index) => (
+                                <div className={`timeline-item ${index < parseInt(status) ? "active" : ""}`} key={index} >
+                                    <div className={`timeline-contain`}>
+                                        {item.text}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>}
+                    {status === '7' && <div className="timeline-create" style={{ width: "0%" }}>
+                        <div className="timeline-progress"></div>
+                        <div className="timeline-items">
+                            <div className={`timeline-item cancel`}>
+                                <div className={`timeline-contain`}>
+                                    {"Phiếu đã hủy"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
@@ -785,21 +813,21 @@ function GoodIssueEditForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -856,6 +884,7 @@ function GoodIssueEditForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                            <th title={translate('manage_warehouse.bill_management.number_passed')}>{translate('manage_warehouse.bill_management.number_passed')}</th>
                                             <th title={translate('manage_warehouse.bill_management.lot')}>{translate('manage_warehouse.bill_management.lot_with_unit')}</th>
                                             <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                             <th>{translate('task_template.action')}</th>
@@ -871,9 +900,10 @@ function GoodIssueEditForm(props) {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
+                                                        <td>{x.realQuantity}</td>
                                                         <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
-                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                             </div>)}
                                                         </td>
                                                         <td>{x.description}</td>

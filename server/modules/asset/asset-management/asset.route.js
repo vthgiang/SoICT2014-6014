@@ -16,14 +16,10 @@ const data = [{
 /* Tài sản */
 router.get('/assets', auth, AssetController.searchAssetProfiles);
 router.get('/assets-group', auth, AssetController.getAssetGroupChart);
-router.get('/assets-statistic', auth, AssetController.getAssetStatisticChart);
-router.get('/assets-purchase', auth, AssetController.getAssetPurchaseChart);
-router.get('/assets-disposal', auth, AssetController.getAssetDisposalChart);
-router.get('/assets-incident', auth, AssetController.getAssetIncidentChart);
-router.get('/assets-maintenance', auth, AssetController.getAssetMaintenanceChart);
 router.post('/assets', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 router.patch('/assets/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
 router.delete('/assets', auth, AssetController.deleteAsset);
+
 
 
 /* Tab khấu hao */
@@ -43,7 +39,7 @@ router.get('/assets/maintainance-logs', auth, AssetController.getMaintainances);
 router.post('/assets/:id/maintainance-logs', auth, AssetController.createMaintainance);
 router.patch('/assets/:id/maintainance-logs', auth, AssetController.updateMaintainance);
 router.delete('/assets/:id/maintainance-logs', auth, AssetController.deleteMaintainance);
-
+router.get('/assets-statistic', auth, AssetController.getAssetStatisticChart);
 
 
 /* Tab sự cố */
