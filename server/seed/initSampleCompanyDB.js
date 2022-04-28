@@ -23,7 +23,6 @@ const {
 
   Major,
   Certificate,
-  Course,
   Employee,
   Salary,
   AnnualLeave,
