@@ -9,6 +9,7 @@ import ComponentCreateForm from "./componentCreateForm";
 import InfoMillCreateForm from "./infoMillCreateForm";
 import { generateCode } from "../../../../../helpers/generateCode";
 import Swal from "sweetalert2";
+import VariantCreateForm from "./variantCreateForm";
 
 function GoodCreateForm(props) {
     const [state, setState] = useState({
@@ -450,6 +451,7 @@ function GoodCreateForm(props) {
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
+                            <VariantCreateForm />
 
                             <React.Fragment>
                                 {(type === "product" && sourceType === "1") ? (
