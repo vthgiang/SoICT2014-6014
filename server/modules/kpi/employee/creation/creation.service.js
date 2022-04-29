@@ -9,7 +9,7 @@ const NotificationServices = require(`../../../notification/notification.service
 const NewsFeedService = require('../../../news-feed/newsFeed.service')
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
-/*Lấy tập KPI cá nhân hiện tại theo người dùng */
+/* Lấy tập KPI cá nhân hiện tại theo người dùng */
 exports.getEmployeeKpiSet = async (portal, data) => {
 
     let month, nextMonth;
