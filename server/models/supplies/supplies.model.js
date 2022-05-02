@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+
+// New
 const SuppliesSchema = new Schema({
     company: {
         //thuộc công ty nào

@@ -12,7 +12,7 @@ var findIndex = (array, id) => {
 
 const initialState = {
     lists: [],
-    isLoading: true,
+    isLoading: false,
     error: null,
     totalList: 0,
 }
@@ -33,7 +33,6 @@ export function example3(state = initialState, action) {
         case exampleConstants.DELETE_EXAMPLE_FAILURE:
         case exampleConstants.CREATE_EXAMPLE_FAILURE:
         case exampleConstants.EDIT_EXAMPLE_FAILURE:
-        case exampleConstants.GET_ALL_ONLY_EXAMPLE_NAME_FAILURE:
             return {
                 ...state,
                 isLoading: false,

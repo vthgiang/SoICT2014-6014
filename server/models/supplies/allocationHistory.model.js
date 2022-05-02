@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
+// New
 const AllocationHistorySchema = new Schema({
     date: {//ngày cấp phát
         type: Date,

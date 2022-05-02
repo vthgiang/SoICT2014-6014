@@ -6,39 +6,8 @@ const openapi_organizationalUnit = {
             "tags": [apiTagNames.ORGANIZATIONAL],
             "description": "Get all organizational",
             "operationId": "getOrganizational",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -75,40 +44,8 @@ const openapi_organizationalUnit = {
             "tags": [apiTagNames.ORGANIZATIONAL],
             "description": "Create a new organizational",
             "operationId": "CreateOrganizational",
-            "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
-            ],
+            "security": [{ ApiKeyAuth: [] }],
+            "parameters": [ ],
             "requestBody": {
                 "description": "Nhập thông tin đơn vị",
                 "content": {
@@ -142,6 +79,7 @@ const openapi_organizationalUnit = {
             "tags": [apiTagNames.ORGANIZATIONAL],
             "description": "Get organizational by id",
             "operationId": "getOrganizationalById",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -152,38 +90,6 @@ const openapi_organizationalUnit = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -207,6 +113,7 @@ const openapi_organizationalUnit = {
             "description": "Update organizational by ID",
             "description": "Cập nhật thông tin đơn vị",
             "operationId": "updateOrganizational",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -217,38 +124,6 @@ const openapi_organizationalUnit = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin đơn vị",
@@ -282,6 +157,7 @@ const openapi_organizationalUnit = {
             "description": "Delete organizational ",
             "description": "Xóa thông tin đơn vị",
             "operationId": "deleteOrganizational",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -292,38 +168,6 @@ const openapi_organizationalUnit = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {

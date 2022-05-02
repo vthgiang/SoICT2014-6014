@@ -48,11 +48,11 @@ class AssetDisposalChart extends Component {
     }
     // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo tháng
     setDataColumnChartForMonth = (type) => {
-        const { getDisposalData, translate, disposalAsset } = this.props;
+        const { getDisposalData, translate, chartAsset } = this.props;
         let category1 = ['x'], count1 = ['Số lượng'], value1 = ['Giá trị'], yValue1 = [], max = []
         const maxVa = (a, b) => Math.max(a, b)
-        if (disposalAsset.disposalChart) {
-            disposalAsset.disposalChart.forEach(element => {
+        if (chartAsset.disposalChart) {
+            chartAsset.disposalChart.forEach(element => {
                 if (type.length !== 0) {
                     let sumCate = 0, sumValue = 0
                     type.forEach(value => {
@@ -87,7 +87,7 @@ class AssetDisposalChart extends Component {
             yValues: yValue1
         };
 
-        if (getDisposalData && disposalAsset) {
+        if (getDisposalData && chartAsset) {
             getDisposalData(dataColumnChart);
         }
 
@@ -96,11 +96,11 @@ class AssetDisposalChart extends Component {
 
     // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo năm
     setDataColumnChartForYear = (type) => {
-        const { getDisposalData, translate ,disposalAsset } = this.props;
+        const { getDisposalData, translate ,chartAsset } = this.props;
         let category1=['x'],count1=['Số lượng'], value1 = ['Giá trị'],yValue1=[] , max = []
         const maxVa = (a,b) =>  Math.max(a,b)
-        if (disposalAsset.disposalChartYear){
-            disposalAsset.disposalChartYear.forEach(element => {
+        if (chartAsset.disposalChartYear){
+            chartAsset.disposalChartYear.forEach(element => {
                 if (type.length !==0){
                     let sumCate = 0, sumValue = 0
                     type.forEach(value=>{
@@ -137,7 +137,7 @@ class AssetDisposalChart extends Component {
             yValues: yValue1
         };
 
-        if (getDisposalData && disposalAsset) {
+        if (getDisposalData && chartAsset) {
             getDisposalData(dataColumnChart);
         }
 
@@ -301,7 +301,7 @@ class AssetDisposalChart extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            this.props.getAllAssetDisposal({ name: "disposal-date-data", endTimeDisposal: disposalDateBefore, startTimeDisposal: disposalDateAfter })
+            this.props.getAllAssetGroup([{ name: "disposal-date-data", endTimeDisposal: disposalDateBefore, startTimeDisposal: disposalDateAfter }])
 
         }
     }
@@ -407,12 +407,13 @@ class AssetDisposalChart extends Component {
     }
 }
 function mapState(state) {
-    const { disposalAsset } = state.assetsManager;
-    return { disposalAsset };
+    const { chartAsset } = state.assetsManager;
+    return { chartAsset };
 }
 
 const mapDispatchToProps = {
-    getAllAssetDisposal: AssetManagerActions.getAllAssetDisposal
+    
+    getAllAssetGroup: AssetManagerActions.getAllAssetGroup
 }
 
 const AssetDisposalChartConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetDisposalChart));

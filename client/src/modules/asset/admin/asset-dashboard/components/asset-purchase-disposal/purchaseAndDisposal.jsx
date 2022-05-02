@@ -40,8 +40,10 @@ class PurchaseAndDisposal extends Component {
         }).catch(err => {
             console.log(err);
         });
-        this.props.getAllAssetPurchase()
-        this.props.getAllAssetDisposal()
+        //this.props.getAllAssetPurchase()
+        
+        this.props.getAllAssetGroup()
+        
         AssetTypeService.getAssetTypes().then(res => {
             if (res.data.success) {
                 this.setState({ assetType: res.data.content.list })
@@ -77,9 +79,9 @@ class PurchaseAndDisposal extends Component {
     }
 
     render() {
-        const { translate ,purchaseAsset} = this.props;
+        const { translate ,chartAsset} = this.props;
         const { listAssets, assetType } = this.state;
-        console.log("purchaseAsset",purchaseAsset)
+        console.log("chartAsset",chartAsset)
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -127,13 +129,13 @@ class PurchaseAndDisposal extends Component {
     }
 }
 function mapState(state) {
-    const { listAssets,purchaseAsset } = state.assetsManager;
+    const { listAssets,chartAsset } = state.assetsManager;
     const { assetType } = state;
-    return { listAssets, assetType ,purchaseAsset};
+    return { listAssets, assetType ,chartAsset};
 }
 const mapDispatchToProps = {
-    getAllAssetPurchase : AssetManagerActions.getAllAssetPurchase,
-    getAllAssetDisposal : AssetManagerActions.getAllAssetDisposal
+    
+    getAllAssetGroup: AssetManagerActions.getAllAssetGroup
 }
 const PurchaseAndDisposalConnect = connect(mapState,mapDispatchToProps)(withTranslate(PurchaseAndDisposal));
 export { PurchaseAndDisposalConnect as PurchaseAndDisposal };

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+
+// New
 const PurchaseInvoiceSchema = new Schema({
     codeInvoice: {
         type: String,
