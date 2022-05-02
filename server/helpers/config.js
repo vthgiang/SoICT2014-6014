@@ -118,6 +118,10 @@ const LINK_CATEGORY = {
     USERGUIDE: {
         name: "user_guide",
         description: "Hướng dẫn sử dụng",
+    },
+    DELEGATION: {
+        name: "delegation-management",
+        description: "Quản lý ủy quyền",
     }
 };
 
@@ -419,9 +423,19 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/components-management')
 },
-
-
-
+{
+    url: '/delegation-list',
+    description: 'Danh sách ủy quyền',
+    category: LINK_CATEGORY.DELEGATION.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER,
+        ROOT_ROLES.DEPUTY_MANAGER,
+        ROOT_ROLES.EMPLOYEE,
+    ],
+    components: getComponentsInLink('/delegation-list')
+},
 {
     url: '/documents-management',
     description: 'Quản lý tài liệu biểu mẫu',
@@ -680,7 +694,7 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ],
     component: getComponentsInLink('/hr-list-education')
-}, 
+},
 {
     url: "/time-sheet-log/all",
     description: "Thống kê thời gian số lượng công việc và thời gian bấm giờ của toàn bộ nhân viên",

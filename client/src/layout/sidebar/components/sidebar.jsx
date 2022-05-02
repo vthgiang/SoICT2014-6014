@@ -388,7 +388,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all"},
+                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all" },
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
@@ -482,6 +482,26 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Quản lý ủy quyền */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_delegation",
+                                    icon: "fa fa-paper-plane",
+                                    list: [
+                                        {
+                                            name: "menu.delegation_list",
+                                            icon: "fa fa-circle-o",
+                                            path: "/delegation-list",
+                                        },
+                                        {
+                                            name: "menu.delegation_receive",
+                                            icon: "fa fa-circle",
+                                            path: "/delegation-receive",
+                                        },
+
+                                    ],
+                                }}
+                            />
 
                             {/* Quản lý tài liệu */}
                             <Item

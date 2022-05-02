@@ -95,7 +95,8 @@ router.use("/system-admin/root-role", require("./modules/system-admin/root-role/
 router.use("/system-admin/system-setting", require("./modules/system-admin/system-setting/systemSetting.route"));
 router.use("/system-admin/system-page", require("./modules/system-admin/system-page/systemPage.route"));
 
-
+// Router Quản lý ủy quyền
+router.use("/delegation", require("./modules/delegation/delegation.route"));
 
 router.use("/task", require("./modules/task/task-management/task.route"));
 router.use("/performtask", require("./modules/task/task-perform/taskPerform.route"));

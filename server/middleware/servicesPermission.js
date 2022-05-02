@@ -138,14 +138,21 @@ exports.links = [
             { path: '/privilege/privileges/:id', method: 'DELETE' },
             { path: '/privilege/roles/:idRole/privileges', method: 'GET' },
 
+            { path: '/delegation/delegations', method: 'GET' },
+            { path: '/delegation/delegations', method: 'POST' },
+            { path: '/delegation/delegations/paginate', method: 'POST' },
+            { path: '/delegation/delegations/:id', method: 'GET' },
+            { path: '/delegation/delegations/:id', method: 'PATCH' },
+            { path: '/delegation/delegations/:id', method: 'DELETE' },
+
             { path: '/educationProgram/educationPrograms', method: 'GET' },
             { path: '/educationProgram/educationPrograms', method: 'POST' },
             { path: '/educationProgram/educationPrograms/:id', method: 'DELETE' },
             { path: '/educationProgram/educationPrograms/:id', method: 'PATCH' },
 
             // Dashboard unit
-            { path: '/dashboard-unit/all-unit-dashboard-data',method: 'GET' },
-            
+            { path: '/dashboard-unit/all-unit-dashboard-data', method: 'GET' },
+
             { path: '/course/courses', method: 'GET' },
             { path: '/course/courses', method: 'POST' },
             { path: '/course/courses/:id', method: 'DELETE' },
@@ -672,7 +679,7 @@ exports.links = [
     }, {
         url: '/policies-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/apis-management',
         apis: ['@all']
     }, {
@@ -683,6 +690,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/components-management',
+        apis: ['@all']
+    }, {
+        url: '/delegation-list',
         apis: ['@all']
     }, {
         url: '/documents-management',
@@ -812,7 +822,7 @@ exports.links = [
     }, {
         url: '/task-process-template',
         apis: ['@all']
-    },  {
+    }, {
         url: '/process-template',
         apis: ['@all']
     }, {

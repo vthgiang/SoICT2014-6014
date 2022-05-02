@@ -139,6 +139,9 @@ const ExampleManagement2 = lazy(() => import("../modules/example/example2/compon
 const ExampleManagementHooks1 = lazy(() => import("../modules/example/example1/components-hooks"))
 const ExampleManagementHooks2 = lazy(() => import("../modules/example/example2/components-hooks"))
 
+// Delegation
+const ManageDelegation = lazy(() => import("../modules/delegation/delegation-list/components"))
+
 // Manufacturing Managements
 
 const ManufacturingPlan = lazy(() => import("../modules/production/manufacturing/manufacturing-plan/components"))
@@ -198,7 +201,7 @@ class Routes extends Component {
             employeesManager,
         } = this.props;
         return (
-            <Suspense fallback={<Layout/>}>
+            <Suspense fallback={<Layout />}>
                 <Switch>
                     <AuthRoute
                         exact
@@ -1131,7 +1134,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={CourseOfUser}
                     />
-                    
+
 
                     {/* kpi - routes */}
                     <PrivateRoute
@@ -2157,7 +2160,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={GeneralConfiguration}
                     />
-                   <PrivateRoute
+                    <PrivateRoute
                         isLoading={false}
                         key={"crmUnitConfiguration"}
                         arrPage={[
@@ -2482,6 +2485,27 @@ class Routes extends Component {
                         component={ExampleManagementHooks2}
                     />
 
+                    {/* Delegation Management */}
+                    <PrivateRoute
+                        isLoading={this.props.delegation.isLoading}
+                        key={"delegation-list"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/delegation-list",
+                                name: "delegation_list",
+                                icon: "fa fa-circle-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/delegation-list"}
+                        path={"/delegation-list"}
+                        pageName={"delegation_list"}
+                        layout={Layout}
+                        component={ManageDelegation}
+                    />
+
                     {/* Manufacturing-management */}
 
                     <PrivateRoute
@@ -2759,7 +2783,7 @@ class Routes extends Component {
                         pageName={"manage_transport_route"}
                         layout={Layout}
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
-                    />                    
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"manage-transport-department"}
@@ -2797,7 +2821,7 @@ class Routes extends Component {
                         pageName={"carrier_today_transport_mission"}
                         layout={Layout}
                         component={CarrierTodayTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"carrier-all-times-transport-mission"}
@@ -2816,7 +2840,7 @@ class Routes extends Component {
                         pageName={"carrier_all_times_transport_mission"}
                         layout={Layout}
                         component={CarrierAllTimesTransportMission} // component ứng với trang, tạo ở bước 1
-                    /> 
+                    />
 
 
                     {/* Quản lý dự án */}
