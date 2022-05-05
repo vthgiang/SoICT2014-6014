@@ -424,6 +424,11 @@ class SideBar extends Component {
                                             path: "/manage-info-asset",
                                         },
                                         {
+                                            name: "menu.manage_info_asset_lot",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-info-asset-lot",
+                                        },
+                                        {
                                             name: "menu.manage_depreciation_asset",
                                             icon: "fa fa-balance-scale",
                                             path: "/manage-depreciation-asset",
@@ -497,6 +502,47 @@ class SideBar extends Component {
                                             name: "menu.delegation_receive",
                                             icon: "fa fa-circle",
                                             path: "/delegation-receive",
+                                        },
+
+                                    ],
+                                }}
+                            />
+
+                            {/* Quản lý vật tư tiêu hao */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_supplies",
+                                    icon: "fa fa-address-book",
+                                    list: [
+                                        {
+                                            name: "menu.dashboard_supplies",
+                                            icon: "fa fa-dashboard",
+                                            path: "/dashboard-supplies",
+                                        },
+                                        {
+                                            name: "menu.manage_supplies_infor",
+                                            icon: "fa fa-dashboard",
+                                            path: "/manage-supplies",
+                                        },
+                                        {
+                                            name: "menu.manage_purchase_invoice",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-purchase-invoice",
+                                        },
+                                        {
+                                            name: "menu.manage_allocation_history",
+                                            icon: "fa fa-balance-scale",
+                                            path: "/manage-allocation-history",
+                                        },
+                                        {
+                                            name: "menu.manage_supplies_purchase_request",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-supplies-request",
+                                        },
+                                        {
+                                            name: "menu.recommend_supplies_procurement",
+                                            icon: "fa fa-calendar",
+                                            path: "/supplies-purchase-request",
                                         },
 
                                     ],
@@ -879,6 +925,16 @@ class SideBar extends Component {
                                             icon: "fa fa-adjust",
                                             path: "/manage-examples-hooks-2",
                                         },
+                                        {
+                                            name: "menu.manage_examples_3",
+                                            icon: "fa fa-adjust",
+                                            path: "/manage-examples-3",
+                                        },
+                                        {
+                                            name: "menu.manage_examples_hooks_3",
+                                            icon: "fa fa-adjust",
+                                            path: "/manage-examples-hooks-3",
+                                        }
                                     ],
                                 }}
                             />

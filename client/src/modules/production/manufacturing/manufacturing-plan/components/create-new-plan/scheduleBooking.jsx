@@ -363,7 +363,7 @@ class ScheduleBooking extends Component {
                                                         <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.plan.schedule_booking')}
                                                             onClick={() => this.handleBookingCommand(command, index)}
                                                         >
-                                                            <i className="material-icons">edit</i>
+                                                            <i className="material-icons">date_range</i>
                                                         </a>
                                                     </td>
                                                 </tr>

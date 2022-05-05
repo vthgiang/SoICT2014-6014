@@ -232,20 +232,41 @@ export default {
             dashboard_asset: "DashBoard quản lý tài sản",
             manage_type_asset: "Quản lý loại tài sản",
             manage_info_asset: "Quản lý thông tin tài sản",
+            manage_info_asset_lot: "Quản lý thông tin lô tài sản",
             manage_maintainance_asset: "Quản lý bảo trì-sửa chữa",
             manage_depreciation_asset: "Quản lý khấu hao tài sản",
             manage_incident_asset: "Quản lý sự cố tài sản",
             manage_recommend_procure: "Quản lý đề nghị mua sắm",
             manage_recommend_distribute_asset: "Quản lý đăng ký sử dụng",
             employee_manage_asset_info: "Tài sản quản lý",
+            //loo tai san
+            add_asset_lot: "Thêm mới lô tài sản",
+            add_asset_lot_title: "Thêm mới lô tài sản - Cập nhật lô tài sản",
+            add_update_asset_lot: "Thêm - Cập nhật lô tài sản",
 
             view_building_list: "Xem danh sách mặt bằng",
 
             // NHÂN VIÊN
-            recommend_equipment_procurement: "Đăng ký mua sắm thiết bị",
-            recommend_distribute_asset: "Đăng ký sử dụng thiết bị",
+            recommend_equipment_procurement: "Đăng ký mua sắm tài sản",
+            recommend_distribute_asset: "Đăng ký sử dụng tài sản",
             manage_assigned_asset: "Tài sản sử dụng",
             //******END */
+
+            /**Quản lý vật tư */
+            manage_supplies: "Quản lý vật tư",
+            dashboard_supplies: "Dashboard quản lý vật tư",
+            manage_supplies_infor: "Quản lý thông tin vật tư",
+            manage_supplies_purchase_request: "Quản lý yêu cầu mua vật tư",
+            manage_allocation_history: "Quản lý lịch sử cấp phát",
+            manage_purchase_invoice: "Quản lý hóa đơn mua vật tư",
+            recommend_supplies_procurement: "Đăng kí cấp vật tư",
+
+            add_supplies: "Thêm mới vật tư",
+            add_purchase_invoice: "Thêm mới hóa đơn",
+            add_allocation: "Thêm lịch sử cấp phát",
+
+
+
 
             // QUẢN LÝ BÁO CÁO
             report_management: "Quản lý báo cáo",
@@ -272,6 +293,8 @@ export default {
             manage_examples_2: "CRUD theo mô hình số 2",
             manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
             manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
+            manage_examples_3: "CRUD theo mô hình số 3",
+            manage_examples_hooks_3: "CRUD Hooks theo mô hình 3",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -964,6 +987,7 @@ export default {
             no_version: "Không có phiên bản nào khác",
             no_blank_description: "Mô tả không được để trống",
             no_blank_name: "Tên không được để trống",
+            no_blank_code: "Mã danh mục không được để trống",
             infomation_docs: "Thông tin tài liệu",
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
             statistical_document: "Thống kê các loại tài liệu",
@@ -2863,6 +2887,7 @@ export default {
                 select_all_register: "Chọn tất cả quyền đăng ký",
                 can_register: "Được phép đăng ký sử dụng",
                 cant_register: "Không được phép đăng ký sử dụng",
+                select_asset_lot: "Chọn lô tài sản",
 
                 asset_code: "Mã tài sản",
                 asset_name: "Tên tài sản",
@@ -2885,6 +2910,8 @@ export default {
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
                 not_disposal_date: "Chưa nhập ngày thanh lý",
+                asset_lot: "Lô tài sản",
+                select_all_asset_lot: "Chọn tất cả lô tài sản",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2933,7 +2960,7 @@ export default {
                 number: "Số lượng",
                 attached_file: "File đính kèm",
 
-                select_role_to_use: "Chọn loại sử dụng",
+                select_role_to_use: "Chọn quyền đăng ký sử dụng",
                 select_all_roles_to_use: "Chọn tất cả loại sử dụng",
                 not_for_registering: "Không được đăng ký sử dụng",
                 register_by_hour: "Đăng ký sử dụng theo giờ",
@@ -3068,6 +3095,41 @@ export default {
                 asset_code_exist: "Mã tài sản đã tồn tại",
             },
 
+
+            //Quản lý lô tài sản
+            asset_lot: {
+                asset_lot_code: "Mã lô tài sản",
+                asset_lot_name: "Tên lô tài sản",
+                supplier: "Nhà cung cấp",
+                asset_lot_price: "Giá tiền",
+                asset_lot_total: "Số lượng ban đầu",
+                rule_generate_code: "Quy tắc đánh mã tài sản trong lô",
+                start_number: "Ký tự bắt đầu",
+                step_number: "Số tự tăng",
+                generate_code: "Sinh tài sản",
+                generate_asset_lot_code: "Sinh mã",
+
+                view: "Xem thông tin lô tài sản",
+                edit_info: "Chỉnh sửa thông tin lô tài sản",
+                delete_info: "Xóa thông tin lô tài sản",
+
+                //thông điệp trả về từ server
+                create_asset_lot_success: "Thêm lô tài sản thành công",
+                create_asset_lot_failed: "Thêm lô tài sản thất bại",
+                asset_code_lot_exist: "Mã lô đã tồn tại",
+                get_list_asset_lot_success: "Lấy danh sách lô tài sản thành công",
+                get_list_asset_lot_false: "Lấy danh sách lô tài sản thất bại",
+                update_asset_lot_success: "Cập nhật thông tin lô tài sản thành công",
+                update_asset_lot_failed: "Cập nhật thông tin lô tài sản thất bại",
+                delete_asset_lot_success: "Xóa lô tài sản thành công",
+                delete_asset_lot_false: "Xóa lô tài sản thất bại",
+                get_asset_lot_by_id_success: "Lấy thông tin lô tài sản thành công",
+                get_asset_lot_by_id_false: "Lấy thông tin lô tài sản thất bại",
+
+
+                assets_information: "Thông tin các tài sản trong lô"
+            },
+
             // Quản lý bảo trì
             maintainance: {
                 total_cost: "Tổng chi phí",
@@ -3102,6 +3164,7 @@ export default {
                 accountable: "Người phê duyệt",
                 note: "Ghi chú",
                 time_created: "Thời gian lập phiếu",
+                task_in_use_request: "Công việc sử dụng tài sản",
 
                 //Thông điệp trả về từ server
                 get_usage_success: "Lấy thông tin sử dụng thành công",
@@ -3171,10 +3234,10 @@ export default {
                     "Chỉnh sửa thông tin sự cố tài sản thất bại",
             },
 
-            // Quản lý đề nghị mua sắm thiết bị
+            // Quản lý đề nghị mua sắm tài sản
             manage_recommend_procure: {
-                asset_recommend: "Thiết bị đề nghị mua sắm",
-                equipment_description: "Mô tả thiết bị",
+                asset_recommend: "Tài sản đề nghị mua sắm",
+                equipment_description: "Mô tả tài sản",
                 add_recommend_card: "Thêm mới phiếu đề nghị mua sắm tài sản",
                 view_recommend_card:
                     "Xem thông tin phiếu đề nghị mua sắm tài sản",
@@ -3205,7 +3268,7 @@ export default {
                 edit_use_request_failure: "Chỉnh sửa thông tin phiếu thất bại",
             },
 
-            // Đăng ký mua sắm thiết bị
+            // Đăng ký mua sắm tài sản
             purchase_request: {
                 //Thông điệp trả về từ server
                 get_purchase_request_success:
@@ -3248,6 +3311,149 @@ export default {
                 recommendNumber_exists: "Mã phiếu đăng kí sử dụng tài sản đã tồn tại",
                 dayUse_exists: "Thời gian sử dụng tài sản đã tồn tại",
             },
+        },
+
+        //Modules Quản lý vật tư tiêu hao
+        supplies: {
+            general_information: {
+                add_supplies: "Thêm vật tư",
+                edit_supplies: "Sửa vật tư",
+                delete_supplies: "Xóa vật tư",
+                view_supplies: "Thông tin vật tư",
+
+                add_purchase_invoice: "Thêm hóa đơn",
+                edit_purchase_invoice: "Sửa hóa đơn",
+                delete_purchase_invoice: "Xóa hóa đơn",
+                view_purchase_invoice: "Thông tin hóa đơn",
+
+                add_allocation: "Thêm lịch sử cấp phát",
+                edit_allocation: "Sửa lịch sử cấp phát",
+                delete_allocation: "Xóa lịch sử cấp phát",
+                view_allocation: "Thông tin lịch sử cấp phát",
+
+                delete_recommend_card: "Xóa phiếu",
+                edit_recommend_card: "Chỉnh sửa thông tin phiếu",
+                view_recommend_card: "Thông tin chi tiết phiếu yêu cầu",
+                add_recommend_card: "Thêm phiếu yêu cầu",
+
+                supplies_information: "Thông tin vật tư",
+                invoice_information: "Thông tin hóa đơn mua",
+                allocation_information: "Thông tin lịch sử cấp phát",
+                invoice_history_information: "Lịch sử chỉnh sửa",
+                none_description: "Không có mô tả",
+
+                //button
+                add: "Thêm",
+                select_approver: "Chọn người phê duyệt",
+                search: "Tìm kiếm",
+                select_supplies: "Chọn vật tư",
+                select_all_supplies: "Chọn tất cả vật tư",
+
+            },
+            supplies_management: {
+                code: "Mã vật tư",
+                suppliesName: "Tên vật tư",
+                totalPurchase: "Số lượng đã mua",
+                totalAllocation: "Số lượng đã cấp phát",
+                price: "Giá tham khảo",
+
+                search_supplies_success: "Lấy danh sách vật tư thành công",
+                search_supplies_failed: "Lấy danh sách vật tư thất bại",
+                create_supplies_success: "Thêm vật tư thành công",
+                supplies_code_exist: "Mã vật tư đã tồn tại",
+                create_supplies_failed: "Thêm vật tư thất bại",
+                update_supplies_success: "Cập nhật vật tư thành công",
+                update_supplies_failed: "Cập nhật vật tư thất bại",
+                delete_supplies_success: "Xóa vật tư thành công",
+                delete_supplies_failed: "Xóa vật tư thất bại",
+                get_supplies_by_id_success: "Lấy thông tin vật tư thành công",
+                get_supplies_by_id_failed: "Lấy thông tin vật tư thất bại",
+
+                delete_info: "Xóa thông tin vật tư",
+            },
+            allocation_management: {
+                date: "Ngày cấp phát",
+                supplies: "Vật tư",
+                quantity: "Số lượng đã cấp",
+                allocationToOrganizationalUnit: "Đơn vị được cấp phát",
+                allocationToUser: "Người dùng được cấp phát",
+
+                search_allocation_success: "Lấy danh sách lịch sử cấp phát thành công",
+                search_allocation_failed: "Lấy danh sách lịch sử cấp phát thất bại",
+                create_allocations_success: "Thêm lịch sử cấp phát thành công",
+                allocation_code_exist: "Mã lịch sử cấp phát đã tồn tại",
+                create_allocations_failed: "Thêm lịch sử cấp phát thất bại",
+                update_allocation_success: "Cập nhật lịch sử cấp phát thành công",
+                update_allocation_failed: "Cập nhật lịch sử cấp phát thất bại",
+                delete_allocations_success: "Xóa lịch sử cấp phát thành công",
+                delete_allocations_failed: "Xóa lịch sử cấp phát thất bại",
+                get_allocation_by_id_success: "Lấy thông tin lịch sử cấp phát thành công",
+                get_allocation_by_id_failed: "Lấy thông tin lịch sử cấp phát thất bại",
+
+                delete_info: "Xóa thông tin cấp phát",
+            },
+            invoice_management: {
+                codeInvoice: "Mã hóa đơn",
+                supplies: "Vật tư",
+                date: "Ngày mua",
+                quantity: "Số lượng đã mua",
+                price: "Giá mua",
+                supplier: "Nhà cung cấp",
+
+                search_purchase_invoice_success: "Lấy danh sách hóa đơn thành công",
+                search_purchase_invoice_failed: "Lấy danh sách hóa đơn thất bại",
+                create_purchase_invoices_success: "Thêm hóa đơn thành công",
+                purchase_invoice_code_exist: "Mã hóa đơn đã tồn tại",
+                create_purchase_invoices_failed: "Thêm hóa đơn thất bại",
+                update_purchase_invoice_success: "Cập nhật hóa đơn thành công",
+                update_purchase_invoice_failed: "Cập nhật hóa đơn thất bại",
+                delete_purchase_invoices_success: "Xóa hóa đơn thành công",
+                delete_purchase_invoices_failed: "Xóa hóa đơn thất bại",
+                get_purchase_invoice_by_id_success: "Lấy thông tin hóa đơn thành công",
+                get_purchase_invoice_by_id_failed: "Lấy thông tin hóa đơn thất bại",
+
+                delete_info: "Xóa thông tin hóa đơn",
+            },
+            purchase_request: {
+                recommendNumber: "Mã phiếu",
+                dateCreate: "Ngày tạo phiếu",
+                proponent: "Người đề nghị",
+                suppliesName: "Tên vật tư",
+                suppliesDescription: "Mô tả",
+                supplier: "Nhà cung cấp",
+                approver: "Người phê duyệt",
+                total: "Số lượng",
+                unit: "Đơn vị tính",
+                estimatePrice: "Giá ước tính",
+                note: "Ghi chú",
+                status: "Trạng thái",
+                files: "Tài liệu đính kèm",
+                recommendUnits: "Đơn vị đề nghị",
+
+                get_purchase_request_success:
+                    "Lấy thông tin đề nghị mua sắm thiết bị thành công",
+                get_purchase_request_failure:
+                    "Lấy thông tin đề nghị mua sắm thiết bị thất bại",
+                create_purchase_request_success:
+                    "Thêm phiếu đề nghị mua sắm thiết bị thành công",
+                create_purchase_request_failure:
+                    "Thêm phiếu đề nghị mua sắm thiết bị thất bại",
+                delete_purchase_request_success:
+                    "Xoá phiếu đề nghị mua sắm thiết bị thành công",
+                delete_purchase_request_failure:
+                    "Xoá phiếu đề nghị mua sắm thiết bị thất bại",
+                edit_purchase_request_success:
+                    "Chỉnh sửa thông tin phiếu thành công",
+                edit_purchase_request_failure:
+                    "Chỉnh sửa thông tin phiếu thất bại",
+                recommend_number_exist: "Mã phiếu đăng ký đã tồn tại",
+            },
+
+            dashboard: {
+                valueInvoice: "Số tiền mua",
+                countInvoice: "Số lượng mua",
+                countAllocation: "Số lượng cung cấp",
+            }
         },
 
         // Task template
@@ -4828,7 +5034,7 @@ export default {
                 edit_faile: "Chỉnh sửa thất bại",
                 name: "Tên danh mục",
                 code: "Mã danh mục",
-                type: "Kiểu danh mục",
+                type: "Danh mục cha",
                 good: "Hàng hóa",
                 address: "Địa chỉ",
                 description: "Mô tả",
@@ -5076,6 +5282,7 @@ export default {
             },
             bill_management: {
                 text: "Chưa đánh lô cho hàng hóa",
+
                 billType: {
                     1: "Nhập nguyên vật liệu",
                     2: "Nhập thành phẩm",
@@ -5110,17 +5317,44 @@ export default {
                 },
                 bill_color: {
                     1: "green",
-                    2: "blue",
+                    2: "green",
                     3: "violet",
-                    4: "red",
+                    4: "green",
                     5: "blue",
+                    6: "violet",
+                    7: "red",
                 },
                 bill_status: {
                     1: "Chờ phê duyệt",
-                    2: "Đã hoàn thành",
-                    3: "Đã phê duyệt",
-                    4: "Đã hủy",
-                    5: "Đang thực hiện",
+                    2: "Đã phê duyệt",
+                    3: "Đang thực hiện",
+                    4: "Đã kiểm định chất lượng xong",
+                    5: "Đã hoàn thành",
+                    7: "Đã hủy",
+                },
+                bill_receipt_status: {
+                    1: "Chờ phê duyệt",
+                    2: "Chờ thực hiện",
+                    3: "Chờ kiểm định chất lượng",
+                    4: "Chờ đánh lô hàng hóa",
+                    5: "Đã hoàn thành phiếu \nChờ xếp hàng vào kho",
+                    6: "Đã xếp hàng vào kho",
+                    7: "Đã hủy",
+                },
+                bill_issue_status: {
+                    1: "Chờ phê duyệt",
+                    2: "Chờ thực hiện",
+                    3: "Đang thực hiện",
+                    5: "Đã hoàn thành",
+                    7: "Đã hủy",
+                },
+                bill_return_status: {
+                    1: "Chờ phê duyệt",
+                    2: "Đã phê duyệt",
+                    3: "Đang thực hiện",
+                    4: "Đã kiểm định chất lượng xong",
+                    5: "Đã hoàn thành",
+                    7: "Đã hủy",
                 },
                 stock_book: "Sổ kho",
                 good_receipt: "Nhập kho",
@@ -5133,6 +5367,7 @@ export default {
                 creator: "Người tạo",
                 date: "Ngày tạo",
                 description: "Mô tả",
+                infor_of_goods: "Thông tin hàng hóa",
                 stock: "Kho",
                 rotate_stock: "Kho nhập",
                 from_date: "Từ ngày",
@@ -5160,6 +5395,7 @@ export default {
                 approved_time: "Thời gian phê duyệt",
                 time: "Thời gian kiểm định",
                 goods: "Danh sách hàng hóa",
+                quality_control_of_each_goods: "Kiểm định chất lượng từng mặt hàng (Nhập số lượng đạt kiểm định vào cột số lượng đạt kiểm định)",
                 good_name: "Tên hàng hóa",
                 approved_true: "Phê duyệt phiếu",
                 in_processing: "Chuyển trạng thái đang thực hiện",
@@ -5168,6 +5404,7 @@ export default {
                 staff_true: "Kiểm định chất lượng hàng hóa",
                 good_code: "Mã hàng hóa",
                 number: "Số lượng",
+                number_passed: "Số lượng đạt kiểm định",
                 unit: "Đơn vị tính",
                 note: "Ghi chú",
                 issued_quantity: "Số lượng xuất",
@@ -5216,11 +5453,11 @@ export default {
                 qc_status: {
                     1: {
                         color: "orange",
-                        content: "Chưa kiểm định",
+                        content: "Chưa kiểm định xong",
                     },
                     2: {
                         color: "green",
-                        content: "Đạt kiểm định",
+                        content: "Đã kiểm định xong",
                     },
                     3: {
                         color: "red",
@@ -5310,12 +5547,18 @@ export default {
                 mill_request: "Xưởng yêu cầu",
                 quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!",
                 lot_with_unit: "Lô hàng (Mã lô/ Số lượng)",
+                quantity_passed_test: "Số lượng đạt kiểm định",
+                quantity_return_supplier: "Số lượng không đạt kiểm định",
+                process_not_passed_goods: "Hàng hóa không đạt kiểm định:\n1. Đánh lô để xếp hàng vào kho \n2. Tiến hành trả hàng",
                 rfid_code: "Mã RFID",
                 rfid_quantity: "Số lượng mã sản phẩm / 1 mã  RFID",
                 create_rfid_code: "Thêm mã RFID",
                 goods_returned_to_the_factory: "Hàng trả về xưởng",
                 goods_returned_to_the_supplier: "Hàng trả về nhà cung cấp",
                 goods_returned_to_the_stock: "Hàng trả kho",
+                action: "Hành động",
+                arrange_goods_into_the_warehouse: "Sắp xếp hàng vào kho",
+                good_detail: "Chi tiết hàng hóa",
             },
             inventory_management: {
                 product: "Sản phẩm",
@@ -5813,11 +6056,11 @@ export default {
                 sales_order_code: "Mã đơn kinh doanh",
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày dự kiến hoàn thành",
-                approvers: "Người phụ trách nguyên vật liệu",
+                approvers: "Người phê duyệt",
                 description: "Mô tả",
                 list_commands: "Danh sách lệnh sản xuất",
                 approve_plan: "Phê duyệt kế hoạch",
-                approver: "Người phê duyệtNgười phụ trách nguyên vật liệu",
+                approver: "Người phụ trách nguyên vật liệu",
                 created_at: "Ngày tạo",
                 manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
@@ -5924,6 +6167,7 @@ export default {
                 approvers: "Người phê duyệt",
                 qualityControlStaffs: "Người kiểm định chất lượng",
                 accountables: "Người giám sát",
+                accountable_description: "Người đổi trạng thái của lệnh sang thực hiện và kết thúc lệnh",
                 command_code: "Mã lệnh",
                 created_all_command: "Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất",
                 command_quantity: "Số lượng",
@@ -6015,7 +6259,8 @@ export default {
                 creator: "Người tạo",
                 quantity: "Số lượng",
                 description: "Mô tả",
-                approvers: "Người phê duyệt lệnh sản xuất",
+                approvers: "Người phụ trách nguyên vật liệu",
+                approver_description: "Người tạo phiếu xuất kho nguyên vật liệu ",
                 good_info: "Thông tin sản phẩm",
                 good_code: "Mã sản phẩm",
                 good_name: "Tên sản phẩm",
@@ -6106,7 +6351,7 @@ export default {
                 },
                 create_purchasing_request: "Tạo phiếu đề nghị mua hàng",
                 approver_command: "Duyệt lệnh",
-                approver_ccommand: "Người phê duyệt",
+                approver_ccommand: "Người phụ trách nguyên vật liệu",
                 cancel_command: "Hủy lệnh sản xuất",
                 command_number_status: "Số lượng lệnh sản xuất theo trạng thái",
 

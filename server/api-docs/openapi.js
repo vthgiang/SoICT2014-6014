@@ -2,6 +2,7 @@ const apiTagNames = require('./apiTagName');
 
 const openApi_documentScheme = require('../models/document/_openapi');
 const openApi_taskScheme = require('../models/task/_openapi');
+const openApi_orderSchema= require('../models/production/order/_openapi');
 
 const openApi_systemAdminManagementRoute = require('../modules/system-admin/system-api/system-api-management/_openapi');
 const openapi_documentRoute = require("../modules/document/_openapi");
@@ -11,6 +12,16 @@ const openapi_organizationalUnit = require('../modules/super-admin/organizationa
 const openapi_user = require('../modules/super-admin/user/_openapi');
 const openapi_assetManagementRoute = require('../modules/asset/asset-management/_openapi');
 const openapi_systemApiPrivilege = require('../modules/system-admin/system-api/system-api-privilege/_openapi');
+const openapi_orderBankAccountRoute = require('../modules/production/order/bank-account/_openapi');
+const openapi_orderBusinessDepartmentRoute = require("../modules/production/order/business-department/_openapi");
+const openapi_orderCoinRuleRoute = require("../modules/production/order/coin-rule/_openapi");
+const openapi_orderDiscountRoute = require("../modules/production/order/discount/_openapi");
+const openapi_orderPaymentRoute = require("../modules/production/order/payment/_openapi");
+const openapi_orderPurchaseOrderRoute = require("../modules/production/order/purchase-order/_openapi");
+const openapi_orderQuoteRoute = require("../modules/production/order/quote/_openapi");
+const openapi_orderSaleOrderRoute = require("../modules/production/order/sales-order/_openapi");
+const openapi_orderSlaRoute = require("../modules/production/order/sla/_openapi");
+const openapi_orderTaxRoute = require("../modules/production/order/tax/_openapi");
 
 const allAppRouteSpec = {
     ...openApi_systemAdminManagementRoute,
@@ -21,6 +32,16 @@ const allAppRouteSpec = {
     ...openapi_user,
     ...openapi_assetManagementRoute,
     ...openapi_systemApiPrivilege,
+    ...openapi_orderBankAccountRoute,
+    ...openapi_orderBusinessDepartmentRoute,
+    ...openapi_orderCoinRuleRoute,
+    ...openapi_orderDiscountRoute,
+    ...openapi_orderPaymentRoute,
+    ...openapi_orderPurchaseOrderRoute,
+    ...openapi_orderQuoteRoute,
+    ...openapi_orderSaleOrderRoute,
+    ...openapi_orderSlaRoute,
+    ...openapi_orderTaxRoute
 }
 
 const openApiData = {
@@ -53,11 +74,13 @@ const openApiData = {
         { name: apiTagNames.ORGANIZATIONAL, description: "Api module organizational" },
         { name: apiTagNames.SYSTEM_API, description: "Manage system api" },
         { name: apiTagNames.SYSTEM_PRIVILEGE_API, description: "Manage system privilege api" },
+        { name: apiTagNames.ORDER, description: "Manage order api" },
     ],
     components: {
         schemas: {
             ...openApi_documentScheme,
             ...openApi_taskScheme,
+            ...openApi_orderSchema
         },
         securitySchemes: {
             bearerAuth: {

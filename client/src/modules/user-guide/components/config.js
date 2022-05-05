@@ -92,12 +92,12 @@ export const UserGuideAsset = {
             url: '/upload/user-guide/asset/taisanquanly.pdf',
         },
         {
-            pageName: "Đăng ký sử dụng thiết bị",
+            pageName: "Đăng ký sử dụng tài sản",
             fileName: 'dangkisudungtb.pdf',
             url: '/upload/user-guide/asset/dangkisudungtb.pdf',
         },
         {
-            pageName: "Đăng ký mua sắm thiết bị",
+            pageName: "Đăng ký mua sắm tài sản",
             fileName: 'dangkimuasamtb.pdf',
             url: '/upload/user-guide/asset/dangkimuasamtb.pdf',
         },

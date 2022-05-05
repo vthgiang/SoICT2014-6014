@@ -240,6 +240,7 @@ function BillDetailForm(props) {
                                             <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                             <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                             {billDetail.group !== '3' && <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>}
+                                            {billDetail.group !== '3' && <th title={translate('manage_warehouse.bill_management.number_passed')}>{translate('manage_warehouse.bill_management.number_passed')}</th>}
                                             {billDetail.group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>}
                                             {billDetail.group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>}
                                             {billDetail.group === '4' && <th title={translate('manage_warehouse.bill_management.real_quantity')}>{translate('manage_warehouse.bill_management.real_quantity')}</th>}
@@ -256,14 +257,15 @@ function BillDetailForm(props) {
                                                     <td>{x.good ? x.good.code : ''}</td>
                                                     <td>{x.good ? x.good.name : ''}</td>
                                                     <td>{x.good ? x.good.baseUnit : ''}</td>
-                                                    {billDetail.group !== '3' && <td>{x.quantity} <a href="#" onClick={() => handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
+                                                    {billDetail.group !== '3' && <td>{x.quantity}</td>}
+                                                    {billDetail.group !== '3' && <td>{x.realQuantity} <a href="#" onClick={() => handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
                                                     {billDetail.group === '3' && <td>{x.quantity}</td>}
                                                     {billDetail.group === '3' && <td>{x.returnQuantity} <a href="#" onClick={() => handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
                                                     {billDetail.group === '4' && <td>{x.realQuantity}</td>}
                                                     {billDetail.group === '4' && <td>{x.damagedQuantity}</td>}
                                                     <td>{x.lots.map((lot, index) =>
                                                         <div key={index}>
-                                                            {lot.lot.code} ? <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p> : ''
+                                                            {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                         </div>)}
                                                     </td>
                                                     <td>{x.description}</td>

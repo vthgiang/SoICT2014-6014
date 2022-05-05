@@ -309,7 +309,7 @@ function SalesOrderTable(props) {
                     <div className="form-inline">
                         {/*Chọn cách thêm đơn hàng*/}
                         {/* Button dropdown thêm mới đơn bán hàng */}
-                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <div className="dropdown pull-right" style={{ marginTop: 5 }}>
                             <button
                                 type="button"
                                 className="btn btn-success dropdown-toggle pull-right"

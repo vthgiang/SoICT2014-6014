@@ -20,6 +20,5 @@ router.get('/organization-task-dashboard-chart-data', auth, TaskManagementContro
 
 
 router.get('/time-sheet', auth, TaskManagementController.getUserTimeSheet);
-router.get('/time-sheet/all', auth, TaskManagementController.getAllUserTimeSheet);
 
 module.exports = router;

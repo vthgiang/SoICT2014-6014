@@ -27,7 +27,7 @@ exports.createNewSLA = async (req, res) => {
 exports.editSLAByCode = async (req, res) => {
     try {
         let id = req.params.id;
-        data = req.body;
+        let data = req.body;
         let sla = await SLAServices.editSLAByCode(req.user._id, id, data, req.portal);
 
         await Log.info(req.user.email, "EDIT_SLA", req.portal);

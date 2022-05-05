@@ -89,7 +89,7 @@ function ReturnManagement(props) {
     return (
         <div id="bill-good-returns">
             <div className="box-body qlcv">
-                <GoodReturnCreateForm group={group} />
+                <GoodReturnCreateForm group={group} isHideButtonCreate={false}/>
                 {
                     state.currentControl &&
                     <QualityControlForm
@@ -97,6 +97,7 @@ function ReturnManagement(props) {
                         code={state.currentControl.code}
                         status={state.qcStatus}
                         content={state.qcContent}
+                        listGoods={state.currentControl.goods}
                     />
                 }
                 <div className="form-inline">
@@ -190,11 +191,11 @@ function ReturnManagement(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
-                                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
+                                { value: '1', text: translate('manage_warehouse.bill_management.bill_return_status.1') },
+                                { value: '2', text: translate('manage_warehouse.bill_management.bill_return_status.2') },
+                                { value: '3', text: translate('manage_warehouse.bill_management.bill_return_status.3') },
+                                { value: '4', text: translate('manage_warehouse.bill_management.bill_return_status.4') },
+                                { value: '5', text: translate('manage_warehouse.bill_management.bill_return_status.5') },
                             ]}
                             onChange={props.handleStatusChange}
                         />
@@ -246,7 +247,7 @@ function ReturnManagement(props) {
                             <th>{translate('manage_warehouse.bill_management.stock')}</th>
                             <th>{translate('manage_warehouse.bill_management.customer')}</th>
                             <th>{translate('manage_warehouse.bill_management.mill')}</th>
-                            <th>{translate('manage_warehouse.bill_management.description')}</th>
+                            <th>{translate('manage_warehouse.bill_management.infor_of_goods')}</th>
                             <th style={{ width: '120px' }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
@@ -262,7 +263,7 @@ function ReturnManagement(props) {
                                         translate('manage_warehouse.bill_management.stock'),
                                         translate('manage_warehouse.bill_management.customer'),
                                         translate('manage_warehouse.bill_management.mill'),
-                                        translate('manage_warehouse.bill_management.description')
+                                        translate('manage_warehouse.bill_management.infor_of_goods')
                                     ]}
                                     setLimit={props.setLimit}
                                 />
@@ -277,14 +278,57 @@ function ReturnManagement(props) {
                                     <td>{x.code}</td>
                                     <td><a href="#" onClick={() => props.handleShowDetailInfo(x.bill ? x.bill._id : '')}>{x.bill ? x.bill.code : ''}</a></td>
                                     <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
-                                    <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
+                                    <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_return_status.${x.status}`)}</td>
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     <td>{x.customer ? x.customer.name : translate(`manage_warehouse.bill_management.goods_returned_to_the_factory`)}</td>
                                     <td>{x.manufacturingMill ? x.manufacturingMill.name : (x.type === "12" ? translate(`manage_warehouse.bill_management.goods_returned_to_the_supplier`) : translate(`manage_warehouse.bill_management.goods_returned_to_the_stock`))}</td>
-                                    <td>{x.description}</td>
+                                    <td>
+                                    {x.status !== '7' &&
+                                            <div>
+                                                <div className="timeline-index">
+                                                    <div className="timeline-progress" style={{ width: (parseInt(x.status) -1) / 4 * 100 + "%" }}></div>
+                                                    <div className="timeline-items">
+                                                        <div className="tooltip-abc-completed">
+                                                            <div className={"timeline-item active"} >
+                                                            </div>
+                                                            <span className="tooltiptext-completed"><p style={{ color: "white" }}>Tạo phiếu thành công</p></span>
+                                                        </div>
+                                                        <div className={`tooltip-abc${x.status === '1' ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${x.status === '1' ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${x.status === '1' ? "" : "-completed"}`}><p style={{ color: "white" }}>{x.status === '1' ? 'Cần tiến hành phê duyệt phiếu' : 'Đã phê duyệt phiếu'}</p></span>
+                                                        </div>
+                                                        <div className={`tooltip-abc${x.status === '3' || x.status === '4' || x.status === '5' ? "-completed" : ""}`}>
+                                                            <div className={`timeline-item ${x.status === '3' || x.status === '4' || x.status === '5' ? "active" : ""}`}>
+                                                            </div>
+                                                            {(x.status === '3' || x.status === '4' || x.status === '5') && <span className="tooltiptext-completed" ><p style={{ color: "white" }}>{'Phiếu đang trong quá trình thực hiện'}</p></span>}
+                                                            {(x.status === '2' || x.status === '1') && <span className="tooltiptext" ><p style={{ color: "white" }}>{'Phiếu chưa thực hiện'}</p></span>}
+
+                                                        </div>
+
+                                                        <div className={`tooltip-abc${props.checkRoleQualityControlStaffs(x) ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${props.checkRoleQualityControlStaffs(x) ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${props.checkRoleQualityControlStaffs(x) ? "" : "-completed"}`}><p style={{ color: "white" }}>{props.checkRoleQualityControlStaffs(x) ? 'Chưa kiểm định chất lượng hàng hóa' : 'Kiểm định chất lượng xong'}</p></span>
+                                                        </div>
+                                                        <div className={`tooltip-abc${x.status !== '5' ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${x.status !== '5' ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${x.status !== '5' ? "" : "-completed"}`}><p style={{ color: "white" }}>{x.status !== '5' ? 'Chưa đánh lô hàng hóa' : 'Đánh lô hàng hóa xong'}</p></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a>
+                                                    <p className='text-green' style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }}>
+                                                        {x.status === '5' &&  "Hàng hóa trả lại đã được xếp lại vào kho."}
+                                                    </p>
+                                                </a>
+                                            </div>
+                                        }
+                                    </td>
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
@@ -304,7 +348,7 @@ function ReturnManagement(props) {
                                         }
                                         {/*Chuyển sang trạng thái đang thực hiện*/}
                                         {
-                                            props.checkRoleCanEdit(x) && x.status === '3' &&
+                                            props.checkRoleCanEdit(x) && x.status === '2' &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.in_processing')}
@@ -316,14 +360,13 @@ function ReturnManagement(props) {
                                         }
                                         {/*Kiểm định chất lượng*/}
                                         {
-                                            props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
+                                            props.checkRoleQualityControlStaffs(x) && x.status === '3' &&
                                             <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
                                         }
                                         {/*Hoàn thành phiếu*/}
-                                        {
-                                            props.checkRoleCanEdit(x) && x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].time !== null
-                                            && (x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 2 || x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 3)
-                                            && x.status === '5' &&
+                                         {
+                                            props.checkRoleCanEdit(x)
+                                            && x.status === '4' &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.complete_bill')}
@@ -335,7 +378,7 @@ function ReturnManagement(props) {
                                         }
                                         {/*Chuyển phiếu sang trạng thái đã hủy*/}
                                         {
-                                            props.checkRoleCanEdit(x) && x.status !== '4' &&
+                                            props.checkRoleCanEdit(x) && (x.status === '5' || x.status === '3') &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.cancel_bill')}

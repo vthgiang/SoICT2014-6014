@@ -344,7 +344,8 @@ function getPaginateTasks(data) {
             startDateAfter: data?.startDateAfter,
             endDateBefore: data?.endDateBefore,
             aPeriodOfTime: data?.aPeriodOfTime,
-            tags: data?.tags
+            tags: data?.tags,
+            getAll: data?.getAll,
         }
     }, false, true, 'task.task_management');
 }
@@ -471,11 +472,11 @@ function getTimeSheetOfUser(userId, month, year, requireActions) {
 }
 
 
-function getAllUserTimeSheet(month, year, rowLimit, page, timeLimit) {
+function getAllUserTimeSheet(month, year, rowLimit, page, timeLimit, unitArray, sortType) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/time-sheet/all`,
+        url: `${process.env.REACT_APP_SERVER}/task/time-sheet`,
         method: 'GET',
-        params: { month, year, rowLimit, page, timeLimit }
+        params: { month, year, rowLimit, page, timeLimit, unitArray, sortType }
     }, false, true, 'task.task_management');
 }
 
@@ -501,7 +502,6 @@ function getTasksByProject(projectId, page = undefined, perPage = undefined) {
 }
 
 function importTasks(data) {
-    console.log('data', data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/import`,
         method: 'POST',

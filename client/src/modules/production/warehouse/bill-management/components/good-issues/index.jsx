@@ -13,6 +13,7 @@ import { TransportRequirementsCreateForm } from '../../../../transport/transport
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 import Swal from "sweetalert2";
 import { UserGuideCreateBillIssue } from '../config.js';
+import "../bill.css";
 
 function IssueManagement(props) {
     const tableId = "issue-manager-table";
@@ -23,7 +24,9 @@ function IssueManagement(props) {
         limit: limit,
         page: 1,
         group: '2',
-        tableId
+        tableId,
+        realQuantity: '',
+        quantity: '',
     })
 
     const { translate, bills, stocks, user } = props;
@@ -74,30 +77,32 @@ function IssueManagement(props) {
     // <TransportRequirementsCreateForm 
     //                      billFromStockModules={this.state.billTransport}
 
-    const findIndexOfStaff = (array, id) => {
-        let result = -1;
-        array.forEach((element, index) => {
-            if (element.staff._id === id) {
-                result = index;
-            }
-        });
-        return result;
-    }
+    // const findIndexOfStaff = (array, id) => {
+    //     let result = -1;
+    //     array.forEach((element, index) => {
+    //         if (element.staff._id === id) {
+    //             result = index;
+    //         }
+    //     });
+    //     return result;
+    // }
 
-    const handleFinishedQualityControlStaff = async (bill) => {
-        const userId = localStorage.getItem("userId");
-        let index = findIndexOfStaff(bill.qualityControlStaffs, userId);
-        let qcStatus = bill.qualityControlStaffs[index].status ? bill.qualityControlStaffs.status : "";
-        let qcContent = bill.qualityControlStaffs[index].content ? bill.qualityControlStaffs[index].content : "";
-        await setState({
-            ...state,
-            currentControl: bill,
-            qcStatus: qcStatus,
-            qcContent: qcContent
-        })
-        window.$('#modal-quality-control-bill').modal('show');
-    }
+    // const handleFinishedQualityControlStaff = async (bill) => {
+    //     const userId = localStorage.getItem("userId");
+    //     let index = findIndexOfStaff(bill.qualityControlStaffs, userId);
+    //     let qcStatus = bill.qualityControlStaffs[index].status ? bill.qualityControlStaffs.status : "";
+    //     let qcContent = bill.qualityControlStaffs[index].content ? bill.qualityControlStaffs[index].content : "";
+    //     console.log(bill);
+    //     await setState({
+    //         ...state,
+    //         currentControl: bill,
+    //         qcStatus: qcStatus,
+    //         qcContent: qcContent
+    //     })
+    //     window.$('#modal-quality-control-bill').modal('show');
+    // }
 
+    console.log(listPaginate);
     return (
         <div id="bill-good-issues">
             <div className="box-body qlcv">
@@ -109,6 +114,7 @@ function IssueManagement(props) {
                         code={state.currentControl.code}
                         status={state.qcStatus}
                         content={state.qcContent}
+                        listGoods={state.currentControl.goods}
                     />
                 }
                 <div className="form-inline">
@@ -203,10 +209,11 @@ function IssueManagement(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
-                                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                                { value: '1', text: translate('manage_warehouse.bill_management.bill_issue_status.1') },
+                                { value: '2', text: translate('manage_warehouse.bill_management.bill_issue_status.2') },
+                                { value: '3', text: translate('manage_warehouse.bill_management.bill_issue_status.3') },
+                                { value: '5', text: translate('manage_warehouse.bill_management.bill_issue_status.5') },
+                                { value: '7', text: translate('manage_warehouse.bill_management.bill_issue_status.7') },
                             ]}
                             onChange={props.handleStatusChange}
                         />
@@ -254,7 +261,7 @@ function IssueManagement(props) {
                             <th>{translate('manage_warehouse.bill_management.date')}</th>
                             <th>{translate('manage_warehouse.bill_management.stock')}</th>
                             <th>{translate('manage_warehouse.bill_management.customer')}</th>
-                            <th>{translate('manage_warehouse.bill_management.description')}</th>
+                            <th>{translate('manage_warehouse.bill_management.infor_of_goods')}</th>
                             <th style={{ width: '120px' }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
@@ -268,7 +275,7 @@ function IssueManagement(props) {
                                         translate('manage_warehouse.bill_management.date'),
                                         translate('manage_warehouse.bill_management.stock'),
                                         translate('manage_warehouse.bill_management.customer'),
-                                        translate('manage_warehouse.bill_management.description')
+                                        translate('manage_warehouse.bill_management.infor_of_goods')
                                     ]}
                                     limit={state.limit}
                                     setLimit={props.setLimit}
@@ -284,13 +291,49 @@ function IssueManagement(props) {
                                     <td>{index + 1}</td>
                                     <td>{x.code}</td>
                                     <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
-                                    <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
+                                    <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_issue_status.${x.status}`)}</td>
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     <td>{x.customer ? x.customer.name : 'Partner is deleted'}</td>
-                                    <td>{x.description}</td>
+                                    <td>
+                                        {x.status !== '7' &&
+                                            <div>
+                                                <div className="timeline-index">
+                                                    <div className="timeline-progress" style={{ width: (parseInt(x.status) -1) / 3 * 100 > 100 ? "100%" : (parseInt(x.status) -1) / 3 * 100 + "%" }}></div>
+                                                    <div className="timeline-items">
+                                                        <div className="tooltip-abc-completed">
+                                                            <div className={"timeline-item active"} >
+                                                            </div>
+                                                            <span className="tooltiptext-completed"><p style={{ color: "white" }}>Tạo phiếu thành công</p></span>
+                                                        </div>
+                                                        <div className={`tooltip-abc${x.status === '1' ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${x.status === '1' ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${x.status === '1' ? "" : "-completed"}`}><p style={{ color: "white" }}>{x.status === '1' ? 'Cần tiến hành phê duyệt phiếu' : 'Đã phê duyệt phiếu'}</p></span>
+                                                        </div>
+                                                        <div className={`tooltip-abc${x.status === '3' || x.status === '4' || x.status === '5' ? "-completed" : ""}`}>
+                                                            <div className={`timeline-item ${x.status === '3' || x.status === '4' || x.status === '5' ? "active" : ""}`}>
+                                                            </div>
+                                                            {(x.status === '3' || x.status === '4' || x.status === '5') && <span className="tooltiptext-completed" ><p style={{ color: "white" }}>{'Phiếu đang trong quá trình thực hiện'}</p></span>}
+                                                            {(x.status === '2' || x.status === '1') && <span className="tooltiptext" ><p style={{ color: "white" }}>{'Phiếu chưa thực hiện'}</p></span>}
+                                                        </div>
+                                                        <div className={`tooltip-abc${x.status !== '5' ? "" : "-completed"}`}>
+                                                            <div className={`timeline-item ${x.status !== '5' ? "" : "active"}`}>
+                                                            </div>
+                                                            <span className={`tooltiptext${x.status !== '5' ? "" : "-completed"}`}><p style={{ color: "white" }}>{x.status !== '5' ? 'Chưa hoàn thành phiếu' : 'Đã hoàn thành phiếu'}</p></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a>
+                                                    <p className='text-green' style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }}>
+                                                        {x.status === '5' && 'Hàng hóa đã được xuất kho'}
+                                                    </p>
+                                                </a>
+                                            </div>
+                                        }
+                                    </td>
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
@@ -310,7 +353,7 @@ function IssueManagement(props) {
                                         }
                                         {/*Chuyển sang trạng thái đang thực hiện*/}
                                         {
-                                            props.checkRoleCanEdit(x) && x.status === '3' &&
+                                            props.checkRoleCanEdit(x) && x.status === '2' &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.in_processing')}
@@ -321,15 +364,16 @@ function IssueManagement(props) {
                                             />
                                         }
                                         {/*Kiểm định chất lượng*/}
-                                        {
-                                            props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
+                                        {/* {
+                                            props.checkRoleQualityControlStaffs(x) && x.status === '3' &&
                                             <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
-                                        }
+                                        } */}
                                         {/*Hoàn thành phiếu*/}
                                         {
-                                            props.checkRoleCanEdit(x) && x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].time !== null
-                                            && (x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 2 || x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 3)
-                                            && x.status === '5' &&
+                                            props.checkRoleCanEdit(x)
+                                            // && x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].time !== null
+                                            // && (x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 2 || x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 3)
+                                            && x.status === '3' &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.complete_bill')}
@@ -341,7 +385,7 @@ function IssueManagement(props) {
                                         }
                                         {/*Chuyển phiếu sang trạng thái đã hủy*/}
                                         {
-                                            props.checkRoleCanEdit(x) && x.status !== '4' &&
+                                            props.checkRoleCanEdit(x) && (x.status === '5' || x.status === '3') &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('manage_warehouse.bill_management.cancel_bill')}

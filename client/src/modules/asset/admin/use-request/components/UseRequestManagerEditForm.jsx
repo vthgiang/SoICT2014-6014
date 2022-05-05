@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -12,9 +12,9 @@ import { AssetManagerActions } from '../../asset-information/redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { formatDate2 } from '../../../../../helpers/assetHelper.js';
 function UseRequestManagerEditForm(props) {
-    const [state, setState] =  useState({
+    const [state, setState] = useState({
         status: "waiting_approval",
-        managedBy: props.employeeId ? props.employeeId : '', 
+        managedBy: props.employeeId ? props.employeeId : '',
 
     })
     const [prevProps, setPrevProps] = useState({
@@ -69,8 +69,8 @@ function UseRequestManagerEditForm(props) {
                 endDate = null;
             }
         }
-        setState(state =>{
-            return{
+        setState(state => {
+            return {
                 ...state,
                 _id: props._id,
                 recommendNumber: props.recommendNumber,
@@ -83,6 +83,7 @@ function UseRequestManagerEditForm(props) {
                 startTime: props.asset && props.asset.typeRegisterForUse == 2 ? startTime : null,
                 stopTime: props.asset && props.asset.typeRegisterForUse == 2 ? stopTime : null,
                 approver: props.approver,
+                task: props.task ? props.task._id : "",
                 status: props.status,
                 note: props.note,
                 errorOnRecommendNumber: undefined,
@@ -93,14 +94,14 @@ function UseRequestManagerEditForm(props) {
             }
         })
         setPrevProps(props)
-            
+
     }
-    
+
 
     useEffect(() => {
-        if(state.status == "approved")
-            setState(state =>{
-                return{
+        if (state.status == "approved")
+            setState(state => {
+                return {
                     ...state,
                     createUsage: true
                 }
@@ -110,7 +111,7 @@ function UseRequestManagerEditForm(props) {
     const { _id } = props;
     const { translate, recommendDistribute, user, assetsManager, auth } = props;
     const {
-        recommendNumber, dateCreate, proponent, reqContent, asset, dateStartUse, dateEndUse, approver, status, note, startTime, stopTime,
+        recommendNumber, dateCreate, proponent, reqContent, asset, dateStartUse, dateEndUse, task, approver, status, note, startTime, stopTime,
         errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, typeRegisterForUse
     } = state;
 
@@ -161,11 +162,21 @@ function UseRequestManagerEditForm(props) {
      * Bắt sự kiện thay đổi người đề nghị
      */
     const handleProponentChange = (value) => {
-        setState(state =>{
+        setState(state => {
             return {
                 ...state,
                 proponent: value[0]
             }
+        });
+    }
+
+    /**
+    * Bắt sự kiện thay đổi công việc
+    */
+    const handleTaskChange = (value) => {
+        setState({
+            ...state,
+            task: value[0]
         });
     }
 
@@ -193,7 +204,7 @@ function UseRequestManagerEditForm(props) {
      * Bắt sự kiện thay đổi tài sản
      */
     const handleAssetChange = (value) => {
-        setState(state =>{
+        setState(state => {
             return {
                 ...state,
                 asset: value[0]
@@ -249,7 +260,7 @@ function UseRequestManagerEditForm(props) {
 
     // Bắt sự kiện thay đổi "Trạng thái"
     const handleStatusChange = (value) => {
-        setState(state =>{
+        setState(state => {
             return {
                 ...state,
                 status: value[0]
@@ -300,9 +311,9 @@ function UseRequestManagerEditForm(props) {
         let result = validateDateCreate(state.dateCreate, false) &&
             validateReqContent(state.reqContent, false) &&
             validateDateStartUse(state.dateStartUse, false)
-            console.log("date create", validateDateCreate(state.dateCreate, false))
-            console.log("req content", validateReqContent(state.reqContent, false))
-            console.log("date start", validateDateStartUse(state.dateStartUse, false))
+        console.log("date create", validateDateCreate(state.dateCreate, false))
+        console.log("req content", validateReqContent(state.reqContent, false))
+        console.log("date start", validateDateStartUse(state.dateStartUse, false))
         console.log(result)
         return result;
     }
@@ -323,6 +334,7 @@ function UseRequestManagerEditForm(props) {
                 dateEndUse: dataToSubmit.dateEndUse,
                 approver: dataToSubmit.approver, // Người phê duyệt
                 note: dataToSubmit.note ? dataToSubmit.note : null,
+                task: dataToSubmit.task,
                 stopTime: dataToSubmit.stopTime,
                 startTime: dataToSubmit.startTime
             }
@@ -378,6 +390,14 @@ function UseRequestManagerEditForm(props) {
             return props.updateRecommendDistribute(state._id, data, managedBy);
         }
     }
+
+    var taskList = props.task && props.task._id !== "" ? [{
+        value: props.task._id,
+        text: props.task.name
+    }] : [{
+        value: "",
+        text: "Không có công việc được chọn"
+    }];
 
     console.log(state)
     return (
@@ -501,6 +521,23 @@ function UseRequestManagerEditForm(props) {
                                 <ErrorLabel content={errorOnDateEndUse} />
                             </div>
 
+                            {/* công việc */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.usage.proponent')}</label>
+                                <div id="taskEditUseBox">
+                                    <SelectBox
+                                        id={`taskEditUseBox${_id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={taskList}
+                                        onChange={handleTaskChange}
+                                        value={task ? task : ""}
+                                        multiple={false}
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+
                             {/* Người phê duyệt */}
                             <div className={`form-group`}>
                                 <label>{translate('asset.usage.accountable')}</label>
@@ -514,7 +551,7 @@ function UseRequestManagerEditForm(props) {
                                                 return { value: x._id, text: x.name + " - " + x.email }
                                             })}
                                             onChange={handleApproverChange}
-                                            value={approver ? approver._id : null}
+                                            value={approver ? approver._id : props.auth.user._id}
                                             multiple={false}
                                             disabled
                                         />

@@ -451,34 +451,34 @@ function StockRotateEditForm(props) {
         if (oldStatus === '1') {
             statusArr = [
                 { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') }
+            ]
+        }
+        if (oldStatus === '5') {
+            statusArr = [
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') }
             ]
         }
         if (oldStatus === '2') {
             statusArr = [
                 { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') },
             ]
         }
         if (oldStatus === '3') {
             statusArr = [
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
                 { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
-            ]
-        }
-        if (oldStatus === '5') {
-            statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') },
             ]
         }
 
-        if (oldStatus === '4') {
+        if (oldStatus === '7') {
             statusArr = [
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
+                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') }
             ]
         }
 
@@ -661,13 +661,13 @@ function StockRotateEditForm(props) {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={status}
-                                        items={[
-                                            { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
-                                            { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
-                                            { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
-                                            { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
-                                            { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
-                                        ]}
+                                        // items={[
+                                        //     { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
+                                        //     { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                                        //     { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                                        //     { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
+                                        //     { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
+                                        // ]}
                                         items={dataStatus}
                                         onChange={handleStatusChange}
                                         multiple={false}
@@ -779,21 +779,21 @@ function StockRotateEditForm(props) {
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.name')}</label>
                                     <input type="text" className="form-control" value={name ? name : ''} onChange={handleNameChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}</label>
                                     <input type="number" className="form-control" value={phone ? phone : ''} onChange={handlePhoneChange} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.email')}</label>
                                     <input type="text" className="form-control" value={email ? email : ''} onChange={handleEmailChange} />
                                 </div>
                                 <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="text-red"> * </span></label>
+                                    <label>{translate('manage_warehouse.bill_management.address')}</label>
                                     <input type="text" className="form-control" value={address ? address : ''} onChange={handleAddressChange} />
                                 </div>
                             </div>
@@ -869,7 +869,7 @@ function StockRotateEditForm(props) {
                                                         <td>{x.quantity}</td>
                                                         <td>{x.lots.map((lot, index) =>
                                                             <div key={index}>
-                                                                <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>
+                                                                {lot.lot.code && <p>{lot.lot.code}/{lot.quantity} {x.good.baseUnit}</p>}
                                                             </div>)}
                                                         </td>
                                                         <td>{x.description}</td>

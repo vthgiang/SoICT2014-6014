@@ -339,7 +339,9 @@ getPaginatedTasks = async (req, res) => {
             creatorEmployees: req.query.creatorEmployees,
             creatorTime: req.query.creatorTime,
             projectSearch: req.query.projectSearch,
-            tags: req.query.tags
+            tags: req.query.tags,
+
+            getAll: req.query.getAll,
         };
 
         let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
@@ -1011,8 +1013,15 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
 exports.getUserTimeSheet = async (req, res) => {
     try {
         let portal = req.portal;
-        let { userId, month, year, requireActions } = req.query;
-        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
+        let { userId, month, year, requireActions, rowLimit, page, timeLimit, unitArray, sortType } = req.query;
+
+        let timesheetlogs;
+
+        if (requireActions) {
+            timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
+        } else {
+            timesheetlogs = await TaskManagementService.getAllUserTimeSheetLog(portal, month, year,  rowLimit, page, timeLimit, unitArray, sortType);
+        }
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
         res.status(200).json({
@@ -1030,27 +1039,6 @@ exports.getUserTimeSheet = async (req, res) => {
     }
 }
 
-exports.getAllUserTimeSheet = async (req, res) => {
-    try {
-        let portal = req.portal;
-        let { month, year, rowLimit, page, timeLimit } = req.query;
-        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, null, month, year, false, rowLimit, page, timeLimit);
-
-        await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
-        res.status(200).json({
-            success: true,
-            messages: ['get_all_user_time_sheet_success'],
-            content: timesheetlogs
-        })
-    } catch (error) {
-        await Logger.error(req.user.email, 'get_all_user_time_sheet_failure', req.portal)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_all_user_time_sheet_failure'],
-            content: error
-        })
-    }
-}
 
 getTasksByProject = async (req, res) => {
     try {

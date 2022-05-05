@@ -67,6 +67,15 @@ import { assetType } from "../modules/asset/admin/asset-type/redux/reducers";
 import { assetsManager } from "../modules/asset/admin/asset-information/redux/reducers";
 import { incidentManager } from "../modules/asset/admin/incident/redux/reducers";
 import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/reducers";
+//asset lot
+import { assetLotManager } from "../modules/asset/admin/asset-lot/redux/reducers";
+
+//supplies 
+import { suppliesReducer} from "../modules/supplies/admin/supplies/redux/reducers";
+import { suppliesDashboardReducer} from "../modules/supplies/admin/supplies-dashboard/redux/reducers";
+import { purchaseInvoiceReducer} from "../modules/supplies/admin/purchase-invoice/redux/reducers";
+import { allocationHistoryReducer} from "../modules/supplies/admin/allocation-history/redux/reducers";
+import { purchaseRequest} from "../modules/supplies/admin/purchase-request/redux/reducers";
 
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
@@ -110,6 +119,9 @@ import { example1 } from "../modules/example/example1/redux/reducers";
 
 //example2
 import { example2 } from "../modules/example/example2/redux/reducers";
+
+//example3
+import { example3 } from "../modules/example/example3/redux/reducers";
 
 // Manufacturing
 import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
@@ -214,6 +226,15 @@ const appReducer = combineReducers({
     assetsManager,
     incidentManager,
     mintainanceManager,
+    //asset lot
+    assetLotManager,
+
+    //supplies
+    suppliesReducer,
+    suppliesDashboardReducer,
+    purchaseInvoiceReducer,
+    allocationHistoryReducer,
+    purchaseRequest,
 
     dashboardEvaluationEmployeeKpiSet,
 
@@ -255,6 +276,9 @@ const appReducer = combineReducers({
 
     //example2
     example2,
+
+    //example3
+    example3,
 
     // production - manufacturing works management
 

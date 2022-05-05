@@ -44,9 +44,13 @@ const BillSchema = new Schema({
     },
 
     // LSX 1
-    status: { //1: Chờ phê duyệt, 2: Đã hoàn thành, 3: Đã phê duyệt, 4: Đã hủy, 5: Đang thực hiện
+    // Phiếu nhập kho
+    //1: Chờ phê duyệt, 2: Chờ thực hiện, 3: Chờ kiểm định chất lượng, 4: Chờ đánh lô hàng hóa, 5: Chờ xếp hàng vào kho, 6: Đã xếp hàng vào kho, 7: Đã hủy phiếu
+    // Phiếu xuất kho
+    //1: Chờ phê duyệt, 2: Chờ thực hiện, 3: Đang thực hiện, 5: Đã hoàn thành, 7: Đã hủy phiếu
+    status: { 
         type: String,
-        enum: ["1", "2", "3", "4", "5"]
+        enum: ["1", "2", "3", "4", "5", "6", "7"]
     },
 
     users: [{
@@ -79,7 +83,7 @@ const BillSchema = new Schema({
             ref: "User"
         },
 
-        status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
+        status: { // Trạng thái kiểm định 1. Chưa kiểm định xong, 2. Đã kiểm định xong
             type: Number
         },
 
@@ -171,6 +175,36 @@ const BillSchema = new Schema({
         },
 
         lots: [{
+            // LSX
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+            // LSX
+            quantity: {
+                type: Number,
+                default: 0
+            },
+
+            returnQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            damagedQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            realQuantity: {
+                type: Number
+            },
+
+            note: {
+                type: String
+            }
+        }],
+        unpassed_quality_control_lots: [{
             // LSX
             lot: {
                 type: Schema.Types.ObjectId,

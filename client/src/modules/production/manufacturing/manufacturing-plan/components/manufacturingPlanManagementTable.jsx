@@ -380,7 +380,7 @@ function ManufacturingPlanManagementTable(props) {
                             <th>{translate('manufacturing.plan.index')}</th>
                             <th>{translate('manufacturing.plan.code')}</th>
                             <th>{translate('manufacturing.plan.creator')}</th>
-                            <th>{translate('manufacturing.plan.approver')}</th>
+                            <th>{translate('manufacturing.plan.approvers')}</th>
                             <th>{translate('manufacturing.plan.created_at')}</th>
                             <th>{translate('manufacturing.plan.start_date')}</th>
                             <th>{translate('manufacturing.plan.end_date')}</th>
@@ -392,7 +392,7 @@ function ManufacturingPlanManagementTable(props) {
                                         translate('manufacturing.plan.index'),
                                         translate('manufacturing.plan.code'),
                                         translate('manufacturing.plan.creator'),
-                                        translate('manufacturing.plan.approver'),
+                                        translate('manufacturing.plan.approvers'),
                                         translate('manufacturing.plan.created_at'),
                                         translate('manufacturing.plan.start_date'),
                                         translate('manufacturing.plan.end_date'),

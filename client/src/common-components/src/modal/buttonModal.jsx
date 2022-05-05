@@ -13,7 +13,7 @@ class ButtonModal extends Component {
     }
 
     render() {
-        const { style = { marginBottom: '10px', marginTop: '2px' }, className = "btn btn-success pull-right" } = this.props;
+        const { style = { marginBottom: '5px', marginTop: '5px' }, className = "btn btn-success pull-right" } = this.props;
         return (
             <React.Fragment>
                 {

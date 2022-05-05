@@ -58,7 +58,7 @@ class ExampleDetailInfo extends Component {
 }
 
 function mapStateToProps(state) {
-    const example = state.example2;
+    const example = state.example1;
     return { example };
 }
 
