@@ -1,0 +1,4 @@
+select#multiSelectDelegateLinks + div .multiselect-container{
+    position: inherit;
+    width: 100%
+}

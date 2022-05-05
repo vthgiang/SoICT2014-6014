@@ -15,6 +15,10 @@ const UserRoleSchema = new Schema({ // Liên kết nhiều nhiều giữa User v
     policies: [{
         type: Schema.Types.ObjectId,
         ref: 'Policy'
+    }],
+    delegations: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Delegation'
     }]
 });
 

@@ -14,11 +14,12 @@ exports.createDelegation = async (req, res) => {
             content: newDelegation
         });
     } catch (error) {
+        console.log(error)
         await Log.error(req.user.email, "CREATED_NEW_DELEGATION", req.portal);
 
         res.status(400).json({
             success: false,
-            messages: ["add_fail"],
+            messages: Array.isArray(error) ? error : ["add_fail"],
             content: error.message
         })
     }

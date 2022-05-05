@@ -562,7 +562,8 @@ function AddTaskForm(props) {
                 newTask: {
                     ...state.newTask,
                     tags: value
-            }}
+                }
+            }
         })
     }
     const uniqueArray = (arr) => {
@@ -622,7 +623,7 @@ function AddTaskForm(props) {
                     {/* Thông tin công việc */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
-                        
+
                         <div className={'row'}>
                             {/* Đơn vị quản lý công việc */}
                             <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
@@ -817,7 +818,7 @@ function AddTaskForm(props) {
                         {props.parentTask || props.task ? // modal tạo subtask và modal copytask
                             <div className="form-group">
                                 <label>{translate('task.task_management.add_parent_task')}</label>
-                                <input className="form-control" value={listParentTask?.find(x => newTask?.parent === x?.value)?.text || '' } disabled />
+                                <input className="form-control" value={listParentTask?.find(x => newTask?.parent === x?.value)?.text || ''} disabled />
 
                             </div>
                             :
@@ -871,8 +872,8 @@ function AddTaskForm(props) {
                                 <TreeSelect
                                     id={`select-task-project-task-${id}`}
                                     mode='radioSelect'
-                                    data={props.projectIdFromDetailProject ? project?.data?.list?.filter((projectItem) => projectItem._id === props.projectIdFromDetailProject ) : 
-                                        project?.data?.list?.filter((projectItem) => projectItem.projectType === 1 )}
+                                    data={props.projectIdFromDetailProject ? project?.data?.list?.filter((projectItem) => projectItem._id === props.projectIdFromDetailProject) :
+                                        project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                     handleChange={handleTaskProject}
                                     value={props.projectIdFromDetailProject || [newTask.taskProject]}
                                     action={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 ? () => { window.$('#modal-create-project').modal('show') } : null}

@@ -37,11 +37,11 @@ const DelegationSchema = new Schema({
         // 7. Mô tả
         type: String
     },
-    allPrivilege: {
+    allPrivileges: {
         // 8. Ủy quyền tất cả privilege của role
         type: Boolean,
     },
-    delegatePrivilege: [{
+    delegatePrivileges: [{
         // 9. Array các Privileges ủy quyền
         type: Schema.Types.ObjectId,
         ref: 'Privilege'
@@ -55,6 +55,7 @@ const DelegationSchema = new Schema({
         type: Date,
     },
     revokedDate: {
+        // 12. Ngày thu hồi ủy quyền thủ công
         type: Date,
     },
     status: {

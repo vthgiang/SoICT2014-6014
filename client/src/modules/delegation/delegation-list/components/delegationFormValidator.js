@@ -1,8 +1,9 @@
-export const TaskFormValidator = {
+export const DelegationFormValidator = {
     validateTaskStartDate,
     validateTaskEndDate,
     validateTimeEst,
-    validateCostEst
+    validateCostEst,
+    validateDelegationEndDate
 }
 
 
@@ -30,6 +31,22 @@ function validateTaskEndDate(startDate, endDate, translate) {
     if (endDate.trim() === "") {
         msg = translate('task.task_management.add_err_empty_end_date');
     } else if (startDate !== "") {
+        msg = _validateTaskDate(startDate, endDate, translate);
+    }
+    return msg;
+}
+
+/**
+ * @param {*} startDate Định dạng: dd-mm-yyyy
+ * @param {*} endDate Định dạng: dd-mm-yyyy
+ */
+function validateDelegationEndDate(startDate, endDate, translate) {
+    let msg = undefined;
+
+    // if (endDate.trim() === "") {
+    //     msg = translate('task.task_management.add_err_empty_end_date');
+    // } else 
+    if (startDate !== "") {
         msg = _validateTaskDate(startDate, endDate, translate);
     }
     return msg;

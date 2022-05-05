@@ -20,6 +20,10 @@ const PrivilegeSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Policy',
     }],
+    delegations: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Delegation'
+    }],
     actions: [{
         type: String,
         enum: ['see', 'open', 'edit', 'delete'],

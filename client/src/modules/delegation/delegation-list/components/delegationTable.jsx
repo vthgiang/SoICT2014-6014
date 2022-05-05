@@ -8,6 +8,9 @@ import { DelegationCreateForm } from "./delegationCreateForm";
 import { DelegationEditForm } from "./delegationEditForm";
 import { DelegationDetailInfo } from "./delegationDetailInfo";
 import { DelegationImportForm } from "./delegationImortForm";
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { LinkActions } from '../../../super-admin/link/redux/actions';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
 
 import { DelegationActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
@@ -31,6 +34,9 @@ function DelegationTable(props) {
 
     useEffect(() => {
         props.getDelegations({ delegationName, page, perPage });
+        props.getUser();
+        props.getRoles();
+        props.getLinks({ type: "active" });
     }, [])
 
     /**
@@ -185,7 +191,7 @@ function DelegationTable(props) {
                         <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_delegation.add_title')} >{translate('manage_delegation.add')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-delegation-hooks').modal('show')} title={translate('manage_delegation.add_one_delegation')}>
-                                {translate('manage_delegation.add_delegation')}</a></li>
+                                {translate('manage_delegation.add_role_delegation')}</a></li>
                             {/* <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-delegation-hooks').modal('show')} title={translate('manage_delegation.add_multi_delegation')}>
                                 {translate('human_resource.salary.add_import')}</a></li> */}
                         </ul>
@@ -264,7 +270,10 @@ function mapState(state) {
 
 const actions = {
     getDelegations: DelegationActions.getDelegations,
-    deleteDelegations: DelegationActions.deleteDelegations
+    deleteDelegations: DelegationActions.deleteDelegations,
+    getUser: UserActions.get,
+    getLinks: LinkActions.get,
+    getRoles: RoleActions.get
 }
 
 const connectedDelegationTable = connect(mapState, actions)(withTranslate(DelegationTable));
