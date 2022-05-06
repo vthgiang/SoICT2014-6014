@@ -157,3 +157,25 @@ exports.deleteManyCategories = async (req, res) => {
         })
     }
 }
+
+
+exports.importCategory = async (req, res) => {
+    try {
+        const data = await CategoryService.importCategory(req.portal, req.body);
+         
+        await Logger.info(req.user.email, 'import_category_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_category_success'],
+            content: data
+        });
+    } catch (error) {
+        console.log('eoror', error)
+        await Logger.error(req.user.email, 'import_category_failure', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_category_failure'],
+            content: error
+        });
+    }
+}

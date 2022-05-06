@@ -40,14 +40,14 @@ function CategoryEditTree(props) {
         });
     };
 
-    const validateName = async (value, willUpdateState = true) => {
+    const validateName = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
             msg = translate('document.no_blank_name');
         }
         if (willUpdateState) {
-            await setState({
+            setState({
                 ...state,
                 categoryName: value,
                 errorName: msg
@@ -57,14 +57,14 @@ function CategoryEditTree(props) {
         return msg === undefined;
     }
 
-    const validateCode = async (value, willUpdateState = true) => {
+    const validateCode = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate('document.no_blank_name');
+            msg = translate('document.no_blank_code');
         }
         if (willUpdateState) {
-            await setState({
+            setState({
                 ...state,
                 categoryCode: value,
                 errorCode: msg
@@ -75,19 +75,22 @@ function CategoryEditTree(props) {
     }
 
     const handleValidateName = (e) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         validateName(value, true);
     }
 
     const handleValidateCode = (e) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         validateCode(value, true);
     }
 
     const isValidateForm = () => {
-        return validateName(state.categoryName, false) &&
-            validateCode(state.categoryCode, false);
+        let result =
+            validateName(state.categoryName, false) &&
+            validateCode(state.categoryCode, false)
+        return result;
     }
+
 
     const save = () => {
         const { categoryId, categoryName, categoryDescription, categoryParent, categoryCode } = state;
@@ -137,7 +140,7 @@ function CategoryEditTree(props) {
                 <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={handleDescription} value={categoryDescription} />
             </div>
             <div className="form-group">
-                <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={save}>{translate('form.save')}</button>
+                <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={!isValidateForm()} onClick={save}>{translate('form.save')}</button>
                 <button className="btn btn-danger" onClick={() => {
                     window.$(`#edit-category-good`).slideUp()
                 }}>{translate('form.close')}</button>

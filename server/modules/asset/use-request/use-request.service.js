@@ -132,8 +132,9 @@ exports.searchUseRequests = async (portal, company, query) => {
     var totalList = await RecommendDistribute(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate([
-            {path: "asset" },
-            {path: "proponent approver", select: "_id name email avatar"}
+            { path: "asset" },
+            { path: "proponent approver", select: "_id name email avatar" },
+            { path: "task", select: "_id name" }
         ])
         .sort({ 'createdAt': 'desc' })
         .skip(page ? parseInt(page) : 0)
@@ -142,18 +143,19 @@ exports.searchUseRequests = async (portal, company, query) => {
     if (managedBy) {
         recommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
             .populate([
-                {path: "asset" },
-                {path: "proponent approver", select: "_id name email avatar"}
+                { path: "asset" },
+                { path: "proponent approver", select: "_id name email avatar" },
+                { path: "task", select: "_id name" }
             ])
             .sort({ 'createdAt': 'desc' });
 
         let tempListRecommendDistributes = recommendDistributes.filter(item =>
             item.asset && item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
-
         listRecommendDistributes = tempListRecommendDistributes.length && tempListRecommendDistributes.slice(parseInt(page), parseInt(page) + parseInt(limit));
         totalList = tempListRecommendDistributes.length;
     }
-    return { totalList, listRecommendDistributes};
+
+    return { totalList, listRecommendDistributes };
 }
 
 
@@ -164,9 +166,10 @@ exports.searchUseRequests = async (portal, company, query) => {
 exports.getUseRequestByAsset = async (portal, data) => {
     var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({ asset: data.assetId })
         .populate([
-                {path: "asset" },
-                {path: "proponent approver", select: "_id name email avatar"}
-            ]).sort({ 'createdAt': 'desc' });
+            { path: "asset" },
+            { path: "proponent approver", select: "_id name email avatar" },
+            { path: "task", select: "_id name" }
+        ]).sort({ 'createdAt': 'desc' });
     return listRecommendDistributes;
 }
 
@@ -202,13 +205,15 @@ exports.createUseRequest = async (portal, company, data) => {
         approver: data.approver, // Người phê duyệt
         note: data.note,
         status: data.status,
+        task: data.task && data.task !== '' ? data.task : null, //công việc thực hiện
     });
 
     const findRecommend = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({ _id: mongoose.Types.ObjectId(createRecommendDistribute._id) })
         .populate([
-            {path: "asset" },
-            {path: "proponent approver", select: "_id name email avatar"}
-            ])
+            { path: "asset" },
+            { path: "proponent approver", select: "_id name email avatar" },
+            { path: "task", select: "_id name" }
+        ])
     let asset = await Asset(connect(DB_CONNECTION, portal)).findById({
         _id: data.asset,
     }).populate({ path: 'assetType' });
@@ -249,6 +254,7 @@ exports.deleteUseRequest = async (portal, id) => {
  */
 exports.updateUseRequest = async (portal, id, data) => {
     let dateCreate, dateStartUse, dateEndUse, date, partCreate, partStart, partEnd;
+
     if (data.dateCreate) {
         partCreate = data.dateCreate.split('-');
         if (data.dateCreate.length > 12) {
@@ -284,28 +290,48 @@ exports.updateUseRequest = async (portal, id, data) => {
         date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + data.stopTime;
         dateEndUse = new Date(date);
     }
+    const oldRecommendDistribute = await RecommendDistribute(
+        connect(DB_CONNECTION, portal)
+    ).findById(id);
+    console.log(oldRecommendDistribute);
+    oldRecommendDistribute.recommendNumber = data.recommendNumber;
+    oldRecommendDistribute.dateCreate = data.dateCreate;
+    oldRecommendDistribute.proponent = data.proponent;
+    oldRecommendDistribute.reqContent = data.reqContent;
+    oldRecommendDistribute.asset = data.asset;
+    oldRecommendDistribute.dateStartUse = data.dateStartUse;
+    oldRecommendDistribute.approver = data.approver ? data.approver : null;
+    oldRecommendDistribute.note = data.note;
+    oldRecommendDistribute.status = data.status;
+    oldRecommendDistribute.task = data.task && data.task !== '' ? data.task : null;
 
-    var recommendDistributeChange = {
-        recommendNumber: data.recommendNumber,
-        dateCreate: dateCreate,
-        proponent: data.proponent, // Người đề nghị
-        reqContent: data.reqContent, // Người đề nghị
-        asset: data.asset,
-        dateStartUse: dateStartUse,
-        dateEndUse: dateEndUse,
-        approver: data.approver, // Người phê duyệt
-        note: data.note,
-        status: data.status,
-    };
+    await oldRecommendDistribute.save();
+    // var recommendDistributeChange = {
+    //     recommendNumber: data.recommendNumber,
+    //     dateCreate: data.dateCreate,
+    //     proponent: data.proponent, // Người đề nghị
+    //     reqContent: data.reqContent, // Người đề nghị
+    //     asset: data.asset,
+    //     dateStartUse: data.dateStartUse,
+    //     dateEndUse: data.dateEndUse,
+    //     approver: data.approver, // Người phê duyệt
+    //     note: data.note,
+    //     status: data.status,
+    //     task: data.task && data.task !== '' ? data.task : null,
+    // };
 
     // Cập nhật thông tin phiếu đề nghị cap phat thiết bị vào database
-    const a = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOneAndUpdate({
-        _id: id
-    }, {
-        $set: recommendDistributeChange
-    });
-    console.log("a", a)
+    // const a = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+    //     _id: id
+    // }, {
+    //     $set: recommendDistributeChange
+    // });
+
     return await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({
         _id: id
-    })
+    }).populate([
+        { path: "asset" },
+        { path: "proponent approver", select: "_id name email avatar" },
+        { path: "task", select: "_id name" }
+    ])
 }

@@ -68,6 +68,7 @@ function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds,
 
 /** Khởi tạo KPI cá nhân */  
 function createEmployeeKpiSet(newKPI) {
+    console.log(newKPI);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'POST',
@@ -84,7 +85,7 @@ function createEmployeeKpi(newTarget) {
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
-/** Chỉnh sửa thông tin chung của KPI cá nhân*/
+/** Chỉnh sửa thông tin chung của KPI cá nhân */
 function editEmployeeKpiSet(id, newTarget) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets/${id}/edit`,
@@ -95,6 +96,7 @@ function editEmployeeKpiSet(id, newTarget) {
 
 /** Chỉnh sửa trạng thái của KPI cá nhân */
 function updateEmployeeKpiSetStatus(id, status) {
+    console.log("trang thai", id, status);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets/${id}/edit`,
         method: 'POST',

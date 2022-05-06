@@ -5,7 +5,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { MaintainanceLogAddModal, MaintainanceLogEditModal } from './combinedContent';
 
 function MaintainanceLogTab(props) {
-    const [state, setState] = useState({})
+    const [state, setState] = useState({
+        maintainanceLogs: []
+    });
     const [prevProps, setPrevProps] = useState({
         id: null
     })
@@ -47,6 +49,9 @@ function MaintainanceLogTab(props) {
     // Function thêm thông tin bảo trì
     const handleAddMaintainance = async (data) => {
         let { maintainanceLogs } = state;
+        if(maintainanceLogs === undefined){
+            maintainanceLogs = [];
+        }
         const values = [...maintainanceLogs, {
             ...data
         }]
@@ -62,8 +67,10 @@ function MaintainanceLogTab(props) {
 
     // Function chỉnh sửa thông tin bảo trì
     const handleEditMaintainance = async (data) => {
-        const { maintainanceLogs } = state;
-        maintainanceLogs[data.index] = data;
+        let { maintainanceLogs } = state;
+        if(maintainanceLogs === undefined){
+            maintainanceLogs = [];
+        }        maintainanceLogs[data.index] = data;
         await setState(state => {
             return {
                 ...state,
@@ -75,8 +82,10 @@ function MaintainanceLogTab(props) {
 
     // Function bắt sự kiện xoá thông tin bảo trì
     const handleDeleteMaintainance = async (index) => {
-        var { maintainanceLogs } = state;
-        var data = maintainanceLogs[index];
+        let { maintainanceLogs } = state;
+        if(maintainanceLogs === undefined){
+            maintainanceLogs = [];
+        }        var data = maintainanceLogs[index];
         maintainanceLogs.splice(index, 1);
         await setState({
             ...state,

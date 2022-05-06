@@ -40,6 +40,10 @@ class FileTab extends Component {
             { name: "Tài liệu hướng dẫn sử dụng", description: "Tài liệu hướng dẫn sử dụng", files: [] },
         ]
 
+        if (!this.state.files) {
+            this.state.files = [];
+        }
+
         await this.setState({
             files: [...this.state.files, ...defaulteFile]
         })
@@ -61,7 +65,7 @@ class FileTab extends Component {
                 files: [...files, data]
             }
         })
-        this.props.handleAddFile([...files, data])
+        this.props.handleAddFile(this.state.files, data)
     }
 
     // Function chỉnh sửa thông tin tài liệu đính kèm

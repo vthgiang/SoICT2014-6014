@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// Updated
 const AssetSchema = new Schema({
     company: {
         //thuộc công ty nào
@@ -44,6 +45,14 @@ const AssetSchema = new Schema({
             ref: "AssetType",
         },
     ],
+
+    /***************************************************************************************************
+     * mã lô của tài sản
+     */
+    assetLot: {
+        type: Schema.Types.ObjectId,
+        ref: "AssetLot",
+    },
 
     purchaseDate: {
         //6.ngày nhập, ngày mua
@@ -395,6 +404,7 @@ const AssetSchema = new Schema({
             ],
         },
     ],
+    
 },{
     timestamps: true,
     toJSON: { virtuals: true },

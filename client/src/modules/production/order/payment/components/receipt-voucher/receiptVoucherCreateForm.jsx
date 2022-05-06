@@ -303,32 +303,29 @@ function ReceiptVoucherCreateForm(props) {
         validateMoney(value, true);
     };
 
-    const validateTotalMoney = (value, willUpdateState = true) => {
+    const handleTotalMoneyChange = (e) => {
+        let { value } = e.target;
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được bỏ trống!";
         } else if (parseInt(value) <= 0) {
             msg = "Số tiền phải lớn hơn 0!";
         }
-        if (willUpdateState) {
+        if (msg) {
             setState({
                 ...state,
-                totalMoneyError: msg,
-            });
+                totalMoneyError: msg
+            })
+        } else {
+            console.log(value)
+            setState({
+                ...state,
+                totalMoney: value,
+                salesOrder: "title",
+                money: 0,
+                totalMoneyError: ""
+            })
         }
-
-        return msg;
-    };
-
-    const handleTotalMoneyChange = (e) => {
-        let { value } = e.target;
-        setState({
-            ...state,
-            totalMoney: value,
-            salesOrder: "title",
-            money: 0,
-        });
-        validateTotalMoney(value, true);
     };
 
     const isSubmitPaymentForSalesOrderValidate = () => {

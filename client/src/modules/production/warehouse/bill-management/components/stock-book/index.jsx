@@ -126,6 +126,7 @@ function BookManagement(props) {
                                 { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
                                 { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
                                 { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
+                                { value: '7', text: translate('manage_warehouse.bill_management.bill_status.7') },
                             ]}
                             onChange={props.handleStatusChange}
                         />

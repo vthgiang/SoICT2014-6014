@@ -412,6 +412,7 @@ function UseRequestManager(props) {
                             <th style={{ width: "15%" }}>{translate('asset.general_information.asset_name')}</th>
                             <th style={{ width: "17%" }}>{translate('asset.general_information.handover_from_date')}</th>
                             <th style={{ width: "17%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                            <th style={{ width: "17%" }}>{translate('asset.usage.task_in_use_request')}</th>
                             <th style={{ width: "17%" }}>{translate('asset.usage.accountable')}</th>
                             <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
@@ -425,6 +426,7 @@ function UseRequestManager(props) {
                                         translate('asset.general_information.asset_name'),
                                         translate('asset.general_information.handover_from_date'),
                                         translate('asset.general_information.handover_to_date'),
+                                        translate('asset.usage.task_in_use_request'),
                                         translate('asset.usage.accountable'),
                                         translate('asset.general_information.status'),
                                     ]}
@@ -444,6 +446,7 @@ function UseRequestManager(props) {
                                     <td>{x.asset ? x.asset.assetName : ''}</td>
                                     <td>{formatDateTime(x.dateStartUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                     <td>{formatDateTime(x.dateEndUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
+                                    <td>{x.task ? x.task.name : ''}</td>
                                     <td>{x.approver ? x.approver.email : ''}</td>
                                     <td>{formatStatus(x.status)}</td>
                                     <td style={{ textAlign: "center" }}>
@@ -482,6 +485,7 @@ function UseRequestManager(props) {
                     proponent={currentRow.proponent}
                     reqContent={currentRow.reqContent}
                     asset={currentRow.asset}
+                    task={currentRow.task}
                     dateStartUse={currentRow.dateStartUse}
                     dateEndUse={currentRow.dateEndUse}
                     approver={currentRow.approver}

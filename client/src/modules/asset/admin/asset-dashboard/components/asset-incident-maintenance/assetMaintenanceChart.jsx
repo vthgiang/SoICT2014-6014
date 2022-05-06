@@ -48,12 +48,12 @@ class AssetMaintenanceChart extends Component {
     }
 
     setDataColumnChartForMonth = (type) => {
-        const { translate, getMaintenanceData,maintenanceAsset } = this.props;
+        const { translate, getMaintenanceData,chartAsset } = this.props;
         let category1 = ['x'], count1 = ['Số lần'], value1 = ['Giá trị'], yValue1 = [], max = []
         const maxVa = (a, b) => Math.max(a, b)
         console.log("123")
-        if (maintenanceAsset.maintenanceChart) {
-            maintenanceAsset.maintenanceChart.forEach(element => {
+        if (chartAsset.maintenanceChart) {
+            chartAsset.maintenanceChart.forEach(element => {
                 if (type.length !== 0) {
                     let sumCate = 0, sumValue = 0
                     type.forEach(value => {
@@ -87,19 +87,19 @@ class AssetMaintenanceChart extends Component {
             yValues: yValue1
         };
 
-        if (dataColumnChart && maintenanceAsset) {
+        if (dataColumnChart && chartAsset) {
             getMaintenanceData(dataColumnChart, type);
         }
         return dataColumnChart;
     }
 
     setDataColumnChartForYear = (type) => {
-        const { translate, getMaintenanceData,maintenanceAsset } = this.props;
+        const { translate, getMaintenanceData,chartAsset } = this.props;
         let category1 = ['x'], count1 = ['Số lần'], value1 = ['Giá trị'], yValue1 = [], max = []
         const maxVa = (a, b) => Math.max(a, b)
         console.log("123")
-        if (maintenanceAsset.maintenanceYearChart) {
-            maintenanceAsset.maintenanceYearChart.forEach(element => {
+        if (chartAsset.maintenanceYearChart) {
+            chartAsset.maintenanceYearChart.forEach(element => {
                 if (type.length !== 0) {
                     let sumCate = 0, sumValue = 0
                     type.forEach(value => {
@@ -134,7 +134,7 @@ class AssetMaintenanceChart extends Component {
             yValues: yValue1
         };
 
-        if (dataColumnChart && maintenanceAsset) {
+        if (dataColumnChart && chartAsset) {
             getMaintenanceData(dataColumnChart, type);
         }
         return dataColumnChart;
@@ -296,7 +296,7 @@ class AssetMaintenanceChart extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            this.props.getAllAssetMaintenance({ name: "maintenance-date-data", endTimeMaintenance: maintenanceDateBefore, startTimeMaintenance: maintenanceDateAfter })
+            this.props.getAllAssetGroup([{ name: "maintenance-date-data", endTimeMaintenance: maintenanceDateBefore, startTimeMaintenance: maintenanceDateAfter }])
         }
     }
 
@@ -406,12 +406,12 @@ class AssetMaintenanceChart extends Component {
     }
 }
 function mapState(state) {
-    const { maintenanceAsset } = state.assetsManager;
-    return { maintenanceAsset };
+    const { chartAsset } = state.assetsManager;
+    return { chartAsset };
 }
 
 const mapDispatchToProps = {
-    getAllAssetMaintenance: AssetManagerActions.getAllAssetMaintenance
+    getAllAssetGroup: AssetManagerActions.getAllAssetGroup
 }
 const AssetMaintenanceChartConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetMaintenanceChart));
 export { AssetMaintenanceChartConnect as AssetMaintenanceChart };

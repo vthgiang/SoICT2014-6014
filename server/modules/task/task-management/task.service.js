@@ -259,10 +259,19 @@ exports.getTaskEvaluations = async (portal, data) => {
 exports.getPaginatedTasks = async (portal, task) => {
     let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
         startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees,
-        accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags } = task;
-    let taskList;
-    perPage = Number(perPage);
-    let page = Number(number);
+        accountableEmployees, creatorEmployees, creatorTime, projectSearch, tags, getAll } = task;
+        let taskList, page;
+        if (perPage) {
+            perPage = Number(perPage);
+        } else {
+            perPage = 5;
+        }
+        if (number) {
+            page = Number(number);
+        } else {
+            page = 0;
+        }
+
     let roleArr = [];
     if (Array.isArray(role) && role.length > 0) {
         for (let i in role) {
@@ -281,8 +290,6 @@ exports.getPaginatedTasks = async (portal, task) => {
             { creator: { $in: [user] } },
         ];
     }
-
-
     let keySearch = {
         $or: roleArr,
         isArchived: false
@@ -559,7 +566,6 @@ exports.getPaginatedTasks = async (portal, task) => {
             $text: { $search: textSearch.trim() }
         }
     }
-
     let optionQuery = {
         $and: [
             keySearch,
@@ -569,16 +575,20 @@ exports.getPaginatedTasks = async (portal, task) => {
         ]
     }
 
-    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
-        .skip(perPage * (page - 1)).limit(perPage).populate([
-            { path: "organizationalUnit parent" },
-            { path: 'creator', select: "_id name email avatar" },
-            { path: 'responsibleEmployees', select: "_id name email avatar" },
-            { path: 'accountableEmployees', select: "_id name email avatar" },
-            { path: 'consultedEmployees', select: "_id name email avatar" },
-            { path: 'informedEmployees', select: "_id name email avatar" },
-            { path: "timesheetLogs.creator", select: "name" },
-        ]);
+    if (getAll === 'true') {
+        taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 });
+    } else {
+        taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
+            .skip(perPage * (page - 1)).limit(perPage).populate([
+                { path: "organizationalUnit parent" },
+                { path: 'creator', select: "_id name email avatar" },
+                { path: 'responsibleEmployees', select: "_id name email avatar" },
+                { path: 'accountableEmployees', select: "_id name email avatar" },
+                { path: 'consultedEmployees', select: "_id name email avatar" },
+                { path: 'informedEmployees', select: "_id name email avatar" },
+                { path: "timesheetLogs.creator", select: "name" },
+            ]);
+        }
 
     let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
     let totalPages = Math.ceil(totalCount / perPage);
@@ -2872,15 +2882,14 @@ exports.getTaskAnalyseOfUser = async (portal, userId, type, date) => {
 
 /**
  *
- * Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm hoặc
- * Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống (lấy thóng kê tổng số bấm giờ hợp lệ)
+ * Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm
  * @param {*} portal
  * @param {*} userId-(optional)
  * @param {*} month
  * @param {*} year
  * @param {*} requireActions
  */
-exports.getUserTimeSheet = async (portal, userId, month, year, requireActions, rowLimit, page, timeLimit) => {
+exports.getUserTimeSheet = async (portal, userId, month, year, requireActions) => {
     let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
     let endOfMonth = new Date(year, month); // cần chỉnh lại
     
@@ -2950,132 +2959,178 @@ exports.getUserTimeSheet = async (portal, userId, month, year, requireActions, r
         ]);
         return tsl;
     }
-    // Lấy thời gian bấm giờ và số công việc của tất cả user trong tháng
-    else {
-        let temp = await UserService.getUsers(portal, null, {limit: 1, page: 1}); // Lấy số lượng nhân viên của công ty
-        let listEmployee = await UserService.getUsers(portal, null, {limit: temp.totalDocs, page: 1});
-        let listTask = await Task(connect(DB_CONNECTION, portal)).aggregate([
-            {
-                $match: {
-                    "startDate": {$exists: true},
-                    "startDate": {$lte: endOfMonth},
-                    "endDate": {$exists: true},
-                    "endDate": {$gte: beginOfMonth}
-                }
+}
+
+/**
+ *
+ * Lấy thông tin bấm giờ, tổng số công việc của tất cả nhân viên trong tháng
+ * @param {*} portal
+ * @param {*} month
+ * @param {*} year
+ * @param {*} rowLimit
+ * @param {*} page
+ * @param {*} timeLimit
+ * @param {*} unitArray
+ */
+exports.getAllUserTimeSheetLog = async (portal, month, year, rowLimit, page, timeLimit, unitArray, sortType) => {
+    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại
+    let endOfMonth = new Date(year, month); // cần chỉnh lại
+
+    let listEmployee = await UserService.getAllEmployeeOfUnitByIds(portal, {ids: unitArray});
+    let listTask = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        {
+            $match: {
+                "startDate": {$exists: true},
+                "startDate": {$lte: endOfMonth},
+                "endDate": {$exists: true},
+                "endDate": {$gte: beginOfMonth}
             },
-            {
-                $project: {
-                    "name": 1,
-                    "responsibleEmployees": 1,
-                    "accountableEmployees": 1,
-                    "consultedEmployees": 1,
-                    "informedEmployees": 1,
-                    "timesheetLogs": 1
-                }
-            }
-        ]);
-
-        
-
-        let countResponsibleTasks = [],
-            countAccountableTasks = [],
-            countConsultedTasks = [],
-            countInformedTasks = [],
-            totalTasks = [],
-            exist = [],
-            totalDuration = [[],[],[],[]];
-
-        for (let employee of listEmployee.docs) {
-            countResponsibleTasks[employee._id.toString()] = 0;
-            countAccountableTasks[employee._id.toString()] = 0;
-            countConsultedTasks[employee._id.toString()] = 0;
-            countInformedTasks[employee._id.toString()] = 0;
-            totalTasks[employee._id.toString()] = 0;
-            totalDuration[1][employee._id.toString()] = 0;
-            totalDuration[2][employee._id.toString()] = 0;
-            totalDuration[3][employee._id.toString()] = 0;
-        }
-
-        for (let task of listTask) {
-            exist = [];
-            for (let a of task.responsibleEmployees) {
-                countResponsibleTasks[a.toString()] += 1;
-                if (!exist[a.toString()]) {
-                    totalTasks[a.toString()]+= 1;
-                }
-                exist[a.toString()] = true;
-            }
-
-            for (let a of task.accountableEmployees) {
-                countAccountableTasks[a.toString()]+= 1;
-                if (!exist[a.toString()]) {
-                    totalTasks[a.toString()]+= 1
-                }
-                exist[a.toString()] = true;
-            }
-
-            for (let a of task.consultedEmployees) {
-                countConsultedTasks[a.toString()] += 1;
-                if (!exist[a.toString()]) {
-                    totalTasks[a.toString()]+= 1
-                }
-                exist[a.toString()] = true;
-            }
-            
-            for (let a of task.informedEmployees) {
-                countInformedTasks[a.toString()]+= 1;
-                if (!exist[a.toString()]) {
-                    totalTasks[a.toString()]+= 1
-                }
-                exist[a.toString()] = true;
-            }
-
-            for (let a of task.timesheetLogs) {
-                if (a.acceptLog == true && beginOfMonth <= a.startedAt && a.startedAt <= endOfMonth ) {
-                    totalDuration[a.autoStopped][a.creator.toString()] += a.duration;
-                }
+        },
+        {
+            $project: {
+                "name": 1,
+                "responsibleEmployees": 1,
+                "accountableEmployees": 1,
+                "consultedEmployees": 1,
+                "informedEmployees": 1,
+                "timesheetLogs": 1,
+                "organizationalUnit": 1
             }
         }
+    ]);
 
+    
 
-        listEmployee.docs = listEmployee.docs.map(obj => ({
-            active: obj.active,
-            _id: obj._id,
-            name: obj.name,
-            countResponsibleTasks: 0,
-            countAccountableTasks: 0,
-            countConsultedTasks: 0,
-            countInformedTasks: 0,
-            totalTasks: 0,
-            totalDuration: [0, 0, 0, 0] // 1: Bấm giờ, 2: Bấm hẹn giờ, 3: Bấm bù giờ
-        }))
+    let countResponsibleTasks = [],
+        countAccountableTasks = [],
+        countConsultedTasks = [],
+        countInformedTasks = [],
+        totalTasks = [],
+        exist = [],
+        totalDuration = [[],[],[],[]],
+        unitDuration = new Map();
 
-        for (let employee of listEmployee.docs) {
-            employee.countResponsibleTasks = countResponsibleTasks[employee._id.toString()];
-            employee.countAccountableTasks = countAccountableTasks[employee._id.toString()];
-            employee.countConsultedTasks = countConsultedTasks[employee._id.toString()];
-            employee.countInformedTasks = countInformedTasks[employee._id.toString()];
-            employee.totalTasks = totalTasks[employee._id.toString()];
-            employee.totalDuration[1] = totalDuration[1][employee._id.toString()];
-            employee.totalDuration[2] = totalDuration[2][employee._id.toString()];
-            employee.totalDuration[3] = totalDuration[3][employee._id.toString()];
-        }
-        listEmployee.docs = listEmployee.docs.filter((employee) => {
-            return employee.totalDuration[1] + employee.totalDuration[2] + employee.totalDuration[3] >= 60 * 60 * 1000 * timeLimit
-                && employee.active == true;
-        })
-        listEmployee = {
-            ...listEmployee,
-            totalDocs: listEmployee.docs.length,
-            limit: Number(rowLimit),
-            totalPages: Math.ceil(listEmployee.docs.length / rowLimit),
-            page: Number(page),
-        }
-
-        listEmployee.docs = listEmployee.docs.slice( (page - 1) * rowLimit, page * rowLimit);
-
-        return listEmployee;
+    for (let employee of listEmployee.employees) {
+        countResponsibleTasks[employee.userId._id.toString()] = 0;
+        countAccountableTasks[employee.userId._id.toString()] = 0;
+        countConsultedTasks[employee.userId._id.toString()] = 0;
+        countInformedTasks[employee.userId._id.toString()] = 0;
+        totalTasks[employee.userId._id.toString()] = 0;
+        totalDuration[1][employee.userId._id.toString()] = 0;
+        totalDuration[2][employee.userId._id.toString()] = 0;
+        totalDuration[3][employee.userId._id.toString()] = 0;
+        unitDuration.set(employee.userId._id.toString(), new Map());
     }
+
+    for (let task of listTask) {
+        exist = [];
+        for (let a of task.responsibleEmployees) {
+            if (  !countResponsibleTasks.includes(a.toString()) ) continue;
+            countResponsibleTasks[a.toString()] += 1;
+            if (!exist[a.toString()]) {
+                totalTasks[a.toString()]+= 1;
+            }
+            exist[a.toString()] = true;
+        }
+
+        for (let a of task.accountableEmployees) {
+            if (  !countAccountableTasks.includes(a.toString())  ) continue;
+            countAccountableTasks[a.toString()]+= 1;
+            if (!exist[a.toString()]) {
+                totalTasks[a.toString()]+= 1
+            }
+            exist[a.toString()] = true;
+        }
+
+        for (let a of task.consultedEmployees) {
+            if (  !countConsultedTasks.includes(a.toString())   ) continue;
+            countConsultedTasks[a.toString()] += 1;
+            if (!exist[a.toString()]) {
+                totalTasks[a.toString()]+= 1
+            }
+            exist[a.toString()] = true;
+        }
+        
+        for (let a of task.informedEmployees) {
+            if (  !countInformedTasks.includes(a.toString())   ) continue;
+            countInformedTasks[a.toString()]+= 1;
+            if (!exist[a.toString()]) {
+                totalTasks[a.toString()]+= 1
+            }
+            exist[a.toString()] = true;
+        }
+
+        for (let a of task.timesheetLogs) {
+            if (a.acceptLog == true && beginOfMonth <= a.stoppedAt && a.stoppedAt <= endOfMonth ) {
+                if (  !unitDuration.has(a.creator.toString())  ) continue;
+                totalDuration[a.autoStopped][a.creator.toString()] += a.duration;
+                if (  unitDuration.get(a.creator.toString()).has(task.organizationalUnit)  ) {
+                    unitDuration.get(a.creator.toString())[task.organizationalUnit] += a.duration;
+                } else {
+                    unitDuration.get(a.creator.toString()).set(task.organizationalUnit, a.duration);
+                }
+            }
+        }
+    }
+
+    listEmployee.docs = listEmployee.employees.map(obj => ({
+        active: obj.userId.active,
+        _id: obj.userId._id,
+        name: obj.userId.name,
+        countResponsibleTasks: 0,
+        countAccountableTasks: 0,
+        countConsultedTasks: 0,
+        countInformedTasks: 0,
+        totalTasks: 0,
+        totalDuration: [0, 0, 0, 0], // 1: Bấm giờ, 2: Bấm hẹn giờ, 3: Bấm bù giờ
+        unitDuration: []
+    }))
+
+    delete listEmployee.employees;
+
+    for (let employee of listEmployee.docs) {
+        employee.countResponsibleTasks = countResponsibleTasks[employee._id.toString()];
+        employee.countAccountableTasks = countAccountableTasks[employee._id.toString()];
+        employee.countConsultedTasks = countConsultedTasks[employee._id.toString()];
+        employee.countInformedTasks = countInformedTasks[employee._id.toString()];
+        employee.totalTasks = totalTasks[employee._id.toString()];
+        employee.totalDuration[1] = totalDuration[1][employee._id.toString()];
+        employee.totalDuration[2] = totalDuration[2][employee._id.toString()];
+        employee.totalDuration[3] = totalDuration[3][employee._id.toString()];
+        employee.totalDuration[0] = employee.totalDuration[1] + employee.totalDuration[2] + employee.totalDuration[3];
+        employee.unitDuration = Array.from(unitDuration.get(employee._id.toString()), 
+                                            ([name, value]) => ({name, value}) );
+    }
+
+    listEmployee.docs = listEmployee.docs.filter((employee) => {
+        return employee.totalDuration[1] + employee.totalDuration[2] + employee.totalDuration[3] >= 60 * 60 * 1000 * timeLimit
+            && employee.active == true;
+    })
+
+    if (sortType != 0) {
+        listEmployee.docs.sort((a, b) => {
+            if (sortType == 1) {
+                if (a.totalDuration[0] > b.totalDuration[0]) 
+                    return 1;
+                return -1;
+            } else {
+                if (b.totalDuration[0] > a.totalDuration[0])
+                    return 1;
+                return -1;
+            }
+        })
+    }
+
+    listEmployee = {
+        ...listEmployee,
+        totalDocs: listEmployee.docs.length,
+        limit: Number(rowLimit),
+        totalPages: Math.ceil(listEmployee.docs.length / rowLimit),
+        page: Number(page),
+    }
+
+    listEmployee.docs = listEmployee.docs.slice( (page - 1) * rowLimit, page * rowLimit);
+    return listEmployee;
 }
 
 exports.getTasksByProject = async (portal, projectId, page, perPage) => {
@@ -3175,7 +3230,6 @@ exports.checkImportTasks = async (data, portal, user) => {
             dataConvert = [...dataConvert, element];
         })
 
-        console.log('rowError', rowError);
         if (rowError?.length !== 0) {
             return {
                 data: dataConvert,
@@ -3585,14 +3639,21 @@ exports.importTimeSheetLogs = async (data, portal, user) => {
     console.log("DONE_IMPORT_TIME_SHEET!!!")
 
 }
-
+/**
+ * Lấy ra dữ liệu của các chart trong dashboard công việc đơn vị
+ * @param {*} query 
+ * @param {*} portal 
+ * @param {*} user 
+ * @returns 
+ */
 exports.getOrganizationTaskDashboardChartData = async (query, portal, user) => {
 
     Object.keys(query).forEach((key) => {
         query[key] = JSON.parse(query[key])
     });
-    const data = query;
-    console.log("quere", data);
+    
+    const data = query["query"] ? query["query"] : query ;
+    console.log("data", data);
     const chartArr = Object.keys(data);
     let result = {};
     const { organizationalUnitId, startMonth, endMonth } = data["common-params"]

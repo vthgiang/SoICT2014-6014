@@ -97,8 +97,6 @@ function StatisticalAssetByType(props) {
     return (
         <div id="statisticalAssetByType"></div>
     )
-
-
 }
 
 export default connect(null, null)(withTranslate(StatisticalAssetByType));
