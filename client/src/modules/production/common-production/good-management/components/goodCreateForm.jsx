@@ -5,10 +5,13 @@ import { DialogModal, TreeSelect, ErrorLabel, ButtonModal, SelectBox } from "../
 import { GoodActions } from "../redux/actions";
 import { CategoryActions } from "../../category-management/redux/actions";
 import UnitCreateForm from "./unitCreateForm";
+import PriceCreateForm from "./priceCreateForm";
 import ComponentCreateForm from "./componentCreateForm";
 import InfoMillCreateForm from "./infoMillCreateForm";
 import { generateCode } from "../../../../../helpers/generateCode";
 import Swal from "sweetalert2";
+import VariantCreateForm from "./variantCreateForm";
+import OptionalAttributeCreateForm from "./optionalAttributeCreateForm";
 
 function GoodCreateForm(props) {
     const [state, setState] = useState({
@@ -16,6 +19,7 @@ function GoodCreateForm(props) {
         name: "",
         baseUnit: "",
         units: [],
+        prices: [],
         materials: [],
         quantity: 0,
         description: "",
@@ -25,6 +29,8 @@ function GoodCreateForm(props) {
         salesPriceVariance: "",
         numberExpirationDate: "",
         sourceType: "",
+        optionalAttributes: [],
+        variants: [],
     })
 
     let dataSource = [
@@ -206,6 +212,15 @@ function GoodCreateForm(props) {
         });
     };
 
+    const handlePriceChange = (data) => {
+        console.log(data);
+        setState({
+            ...state,
+            pricePerBaseUnit: data.defaultPrice,
+            prices: data
+        });
+    }
+
     const handleListMaterialChange = (data) => {
         setState({
             ...state,
@@ -276,8 +291,27 @@ function GoodCreateForm(props) {
 
     };
 
+    // Function lưu các trường thông tin vào state
+    const handleChangeOptionalAttribute = (data) => {
+        console.log(data);
+        setState({
+            ...state,
+            optionalAttributes: data,
+        });
+    }
+
+    const handleChangeVariant = (data) => {
+        console.log(data);
+        setState({
+            ...state,
+            variants: data,
+        });
+    }
+
     const save = () => {
+        console.log(state);
         if (isFormValidated()) {
+        console.log(state);
             props.createGoodByType(state);
         }
     };
@@ -286,10 +320,10 @@ function GoodCreateForm(props) {
         Swal.fire({
             icon: "question",
 
-            html: `<h3 style="color: red"><div>Phương sai</div> </h3>
+            html: `<h3 style="color: red"><div>Khối lượng một đơn vị tính cơ bản</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được dựa trên 1 đơn vị tính cơ bản.</p>
-            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán 1 đơn vị trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
+            <p>Đơn vị tính: Kg</p>
+            <p>Nhập vào khối lượng hàng hóa, khối lượng dùng để tính chi phí vận chuyển hàng hóa .</p>`,
             width: "50%",
         })
     };
@@ -302,6 +336,7 @@ function GoodCreateForm(props) {
         });
     };
     let listUnit = [];
+    let priceInfomation = [];
     let listMaterial = [];
     const { translate, goods, categories, type } = props;
     const {
@@ -314,6 +349,7 @@ function GoodCreateForm(props) {
         name,
         category,
         units,
+        prices,
         baseUnit,
         description,
         materials,
@@ -328,6 +364,7 @@ function GoodCreateForm(props) {
     const dataSelectBox = getAllCategory();
 
     if (units) listUnit = units;
+    if (prices) priceInfomation = prices;
     if (materials) listMaterial = materials;
     return (
         <React.Fragment>
@@ -428,7 +465,7 @@ function GoodCreateForm(props) {
                             </div>
                             <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
                                 <label>
-                                    {"Phương sai giá bán / 1 đơn vị tính cơ bản"}
+                                    {"Khối lượng một đơn vị tính cơ bản"}
                                     <span className="text-red"> </span>
                                 </label>
                                 <a onClick={() => showListExplainVariance()}>
@@ -450,6 +487,13 @@ function GoodCreateForm(props) {
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
+                            <PriceCreateForm productDefaultPrice={state.pricePerBaseUnit} initialData={priceInfomation} onDataChange={handlePriceChange} />
+                            <VariantCreateForm
+                                productCode={state.code}
+                                productWeight={state.weight}
+                                productDefaultPrice={state.pricePerBaseUnit}
+                                handleChange={handleChangeVariant} />
+                            <OptionalAttributeCreateForm handleChange={handleChangeOptionalAttribute} />
 
                             <React.Fragment>
                                 {(type === "product" && sourceType === "1") ? (

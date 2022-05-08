@@ -38,12 +38,12 @@ function QuantityLotGoodIssue(props) {
     const getLotsByGood = () => {
         const { lots, translate } = props;
         let lotArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_lot') }]
-
+        console.log(lots.listLotsByGood);
         if (lots.listLotsByGood && lots.listLotsByGood.length > 0) {
             lots.listLotsByGood.map(item => {
                 let stock = item.stocks.filter(x => x.stock._id === props.stock);
                 let quantity = stock[0] ? stock[0].quantity : 0;
-                if (quantity > 0) {
+                if (quantity > 0 && stock[0].binLocations.length > 0) {
                     lotArr.push({
                         value: item._id,
                         text: item.code + "--" + quantity + " (" + item.good.baseUnit + ")",
