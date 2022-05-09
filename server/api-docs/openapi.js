@@ -22,6 +22,15 @@ const openapi_orderQuoteRoute = require("../modules/production/order/quote/_open
 const openapi_orderSaleOrderRoute = require("../modules/production/order/sales-order/_openapi");
 const openapi_orderSlaRoute = require("../modules/production/order/sla/_openapi");
 const openapi_orderTaxRoute = require("../modules/production/order/tax/_openapi");
+const openapi_superAdminLink = require("../modules/super-admin/link/_openapi");
+const openapi_superAdminApi = require("../modules/super-admin/api/_openapi");
+const openapi_superAdminComponent = require("../modules/super-admin/component/_openapi");
+const openapi_superAdminModule = require("../modules/super-admin/module-configuration/_openapi");
+const openapi_superAdminPrivilege = require("../modules/super-admin/privilege/_openapi");
+const openapi_superAdminRole = require("../modules/super-admin/role/_openapi");
+const openapi_superAdminSystem = require("../modules/super-admin/system/_openapi");
+
+
 
 const allAppRouteSpec = {
     ...openApi_systemAdminManagementRoute,
@@ -41,7 +50,14 @@ const allAppRouteSpec = {
     ...openapi_orderQuoteRoute,
     ...openapi_orderSaleOrderRoute,
     ...openapi_orderSlaRoute,
-    ...openapi_orderTaxRoute
+    ...openapi_orderTaxRoute,
+    ...openapi_superAdminLink,
+    ...openapi_superAdminApi,
+    ...openapi_superAdminComponent,
+    ...openapi_superAdminModule,
+    ...openapi_superAdminPrivilege,
+    ...openapi_superAdminRole,
+    ...openapi_superAdminSystem,
 }
 
 const openApiData = {
@@ -75,6 +91,7 @@ const openApiData = {
         { name: apiTagNames.SYSTEM_API, description: "Manage system api" },
         { name: apiTagNames.SYSTEM_PRIVILEGE_API, description: "Manage system privilege api" },
         { name: apiTagNames.ORDER, description: "Manage order api" },
+        { name: apiTagNames.SUPER_ADMIN, description: "Api super admin"},
     ],
     components: {
         schemas: {
