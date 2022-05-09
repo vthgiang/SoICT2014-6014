@@ -56,7 +56,6 @@ const allAppRouteSpec = {
     ...openapi_orderSaleOrderRoute,
     ...openapi_orderSlaRoute,
     ...openapi_orderTaxRoute,
-<<<<<<< HEAD
     ...openapi_superAdminLink,
     ...openapi_superAdminApi,
     ...openapi_superAdminComponent,
@@ -64,14 +63,12 @@ const allAppRouteSpec = {
     ...openapi_superAdminPrivilege,
     ...openapi_superAdminRole,
     ...openapi_superAdminSystem,
-=======
     ...openapi_billRoute,
     ...openapi_binLocationRoute,
     ...openapi_inventoryRoute,
     ...openapi_stockRoute,
     ...openapi_categoryRoute
 
->>>>>>> a2b87c89789478205f755921ae3da4969cb3abff
 }
 
 const openApiData = {
@@ -105,15 +102,12 @@ const openApiData = {
         { name: apiTagNames.SYSTEM_API, description: "Manage system api" },
         { name: apiTagNames.SYSTEM_PRIVILEGE_API, description: "Manage system privilege api" },
         { name: apiTagNames.ORDER, description: "Manage order api" },
-<<<<<<< HEAD
         { name: apiTagNames.SUPER_ADMIN, description: "Api super admin"},
-=======
         { name: apiTagNames.BILL, description: "Manage bill api" },
         { name: apiTagNames.BIN_LOCATION, description: "Manage bin location api" },
         { name: apiTagNames.INVENTORY, description: "Manage inventory api" },
         { name: apiTagNames.STOCK, description: "Manage stock api" },
         { name: apiTagNames.CATEGORY, description: "Manage category api" }
->>>>>>> a2b87c89789478205f755921ae3da4969cb3abff
     ],
     components: {
         schemas: {
