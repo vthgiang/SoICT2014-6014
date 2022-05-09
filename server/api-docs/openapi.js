@@ -3,6 +3,8 @@ const apiTagNames = require('./apiTagName');
 const openApi_documentScheme = require('../models/document/_openapi');
 const openApi_taskScheme = require('../models/task/_openapi');
 const openApi_orderSchema= require('../models/production/order/_openapi');
+const openApi_productionWarehouseSchema= require('../models/production/warehouse/_openapi');
+const openApi_productionCommonSchema= require('../models/production/common-production/_openapi');
 
 const openApi_systemAdminManagementRoute = require('../modules/system-admin/system-api/system-api-management/_openapi');
 const openapi_documentRoute = require("../modules/document/_openapi");
@@ -29,8 +31,11 @@ const openapi_superAdminModule = require("../modules/super-admin/module-configur
 const openapi_superAdminPrivilege = require("../modules/super-admin/privilege/_openapi");
 const openapi_superAdminRole = require("../modules/super-admin/role/_openapi");
 const openapi_superAdminSystem = require("../modules/super-admin/system/_openapi");
-
-
+const openapi_billRoute = require("../modules/production/warehouse/bill/_openapi");
+const openapi_binLocationRoute = require("../modules/production/warehouse/bin-location/_openapi");
+const openapi_inventoryRoute = require("../modules/production/warehouse/inventory/_openapi");
+const openapi_stockRoute = require("../modules/production/warehouse/stock/_openapi");
+const openapi_categoryRoute = require("../modules/production/common-production/category/_openapi");
 
 const allAppRouteSpec = {
     ...openApi_systemAdminManagementRoute,
@@ -51,6 +56,7 @@ const allAppRouteSpec = {
     ...openapi_orderSaleOrderRoute,
     ...openapi_orderSlaRoute,
     ...openapi_orderTaxRoute,
+<<<<<<< HEAD
     ...openapi_superAdminLink,
     ...openapi_superAdminApi,
     ...openapi_superAdminComponent,
@@ -58,6 +64,14 @@ const allAppRouteSpec = {
     ...openapi_superAdminPrivilege,
     ...openapi_superAdminRole,
     ...openapi_superAdminSystem,
+=======
+    ...openapi_billRoute,
+    ...openapi_binLocationRoute,
+    ...openapi_inventoryRoute,
+    ...openapi_stockRoute,
+    ...openapi_categoryRoute
+
+>>>>>>> a2b87c89789478205f755921ae3da4969cb3abff
 }
 
 const openApiData = {
@@ -91,13 +105,23 @@ const openApiData = {
         { name: apiTagNames.SYSTEM_API, description: "Manage system api" },
         { name: apiTagNames.SYSTEM_PRIVILEGE_API, description: "Manage system privilege api" },
         { name: apiTagNames.ORDER, description: "Manage order api" },
+<<<<<<< HEAD
         { name: apiTagNames.SUPER_ADMIN, description: "Api super admin"},
+=======
+        { name: apiTagNames.BILL, description: "Manage bill api" },
+        { name: apiTagNames.BIN_LOCATION, description: "Manage bin location api" },
+        { name: apiTagNames.INVENTORY, description: "Manage inventory api" },
+        { name: apiTagNames.STOCK, description: "Manage stock api" },
+        { name: apiTagNames.CATEGORY, description: "Manage category api" }
+>>>>>>> a2b87c89789478205f755921ae3da4969cb3abff
     ],
     components: {
         schemas: {
             ...openApi_documentScheme,
             ...openApi_taskScheme,
-            ...openApi_orderSchema
+            ...openApi_orderSchema,
+            ...openApi_productionWarehouseSchema,
+            ...openApi_productionCommonSchema
         },
         securitySchemes: {
             bearerAuth: {

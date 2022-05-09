@@ -12,6 +12,12 @@ const apiTagNames = {
     SYSTEM_PRIVILEGE_API: "System privilege api",
     ORDER: "Order api",
     SUPER_ADMIN: "Super Admin",
+    STOCK: "Stock api",
+    BIN_LOCATION: "Bin location api",
+    BILL: "Bill api",
+    LOT: "Lot api",
+    CATEGORY: "Category api",
+    GOOD: "Good api",
 };
 
 module.exports = apiTagNames;

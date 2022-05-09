@@ -583,7 +583,7 @@ function StockTakeEditForm(props) {
             >
                 <QuantityLotStockTakeEdit group={group} good={good} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-edit-bill-take`}>
-                {status !== '7' && <div className="timeline-create">
+                    {status !== '7' && <div className="timeline-create">
                         <div className="timeline-progress" style={{ width: (parseInt(status - 1)) / 4 * 100 + "%" }}></div>
                         <div className="timeline-items">
                             {timelineTextArr.map((item, index) => (

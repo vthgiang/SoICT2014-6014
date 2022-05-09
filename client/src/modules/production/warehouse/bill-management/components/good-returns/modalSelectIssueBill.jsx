@@ -36,18 +36,49 @@ function ModalSelectIssueBill(props) {
     }
 
     const handleSelectBill = (value) => {
-        setState({ 
-            ...state, 
+        setState({
+            ...state,
             billSelected: value,
             checkedId: value._id,
         })
     }
-    const save =  () => {
+
+    const showGoodInformation = (bill) => {
+        let goodInfoArr = [];
+        bill.goods.forEach((good, key) => {
+            let name = good.good.name;
+            let baseUnit = good.good.baseUnit;
+            let quantity = good.realQuantity;
+            goodInfoArr.push(`${name} - ${quantity} ${baseUnit}`);
+        })
+        return goodInfoArr.join(', ');
+    }
+
+    const getListBillsIssue = (listBills) => {
+        let checkRealQuantity = 0;
+        if (listBills.length > 0) {
+            listBills.forEach((bill, key) => {
+                bill.goods.forEach((good) => {
+                    if (good.realQuantity > 0) {
+                        checkRealQuantity++;
+                    }
+                })
+                if (checkRealQuantity === 0) {
+                    listBills.splice(key, 1);
+                }
+            });
+        }
+        return listBills;
+    }
+
+    const save = () => {
         props.onDataChange(state.billSelected);
     }
 
     const { listBills, translate } = props;
-    const {checkedId} = state
+    const { checkedId } = state
+    console.log(listBills);
+    const listBillsIssue = getListBillsIssue(listBills);
 
     return (
         <React.Fragment>
@@ -59,7 +90,7 @@ function ModalSelectIssueBill(props) {
                 msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                 disableSubmit={checkedId === ''}
                 func={save}
-                size="75"
+                size="100"
             >
                 <div className={`form-group`}>
                     <fieldset className="scheduler-border">
@@ -71,36 +102,36 @@ function ModalSelectIssueBill(props) {
                                     </th>
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.status')}</th>
                                     <th>{translate('manage_warehouse.bill_management.creator')}</th>
                                     <th>{translate('manage_warehouse.bill_management.approved')}</th>
                                     <th>{translate('manage_warehouse.bill_management.date')}</th>
                                     <th>{translate('manage_warehouse.bill_management.stock')}</th>
                                     <th>{translate('manage_warehouse.bill_management.customer')}</th>
+                                    <th>{translate('manage_warehouse.bill_management.infor_of_goods')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof listBills !== undefined && listBills.length !== 0) &&
-                                    listBills.map((x, index) => (
+                                {(typeof listBillsIssue !== undefined && listBillsIssue.length !== 0) &&
+                                    listBillsIssue.map((x, index) => (
                                         <tr key={index}>
                                             <td >
                                                 <input type='checkbox' defaultChecked={false} checked={checkedId == x._id} onChange={() => handleSelectBill(x)}></input>
                                             </td>
                                             <td>{x.code}</td>
                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
-                                            <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_issue_status.${x.status}`)}</td>
                                             <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
                                             <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                             <td>{formatDate(x.updatedAt)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                             <td>{x.customer ? x.customer.name : 'Partner is deleted'}</td>
+                                            <td><p className="text-blue">{showGoodInformation(x)}</p></td>
                                         </tr>
                                     ))
                                 }
                             </tbody>
                         </table>
                         {
-                            (typeof listBills === 'undefined' || listBills.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (typeof listBillsIssue === 'undefined' || listBillsIssue.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
