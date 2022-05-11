@@ -32,12 +32,23 @@ const SuppliesSchema = new Schema({
         type: Number,
         require: true
     },
+
+    allocationHistories: [{
+        type: Schema.Types.ObjectId,
+        ref: 'AllocationHistory'
+    }],
+
+    purchaseInvoices: [{
+        type: Schema.Types.ObjectId,
+        ref: 'PurchaseInvoice'
+    }]
+
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
 });
 
-module.exports = (db) => {
+module.exports = (db, portal) => {
     if (!db.models.Supplies) return db.model("Supplies", SuppliesSchema);
     return db.models.Supplies;
 };

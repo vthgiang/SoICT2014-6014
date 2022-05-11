@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Models = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { freshObject } = require(`../../../helpers/functionHelper`);
+const {ObjectId} = require("mongodb");
 
 const { Supplies, PurchaseInvoice } = Models;
 
@@ -92,7 +93,12 @@ exports.createPurchaseInvoices = async (portal, data) => {
                 price: data[i].price,
                 supplier: data[i].supplier,
             });
-
+            const supply = await Supplies(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    { _id: ObjectId(data[i].supplies)},
+                    { $push: {purchaseInvoices: createInvoice._id}}
+                );
+            console.log('supply in create purchaseInvoice ', supply);
         }
         let purchaseInvoices;
         if (createInvoice) {
@@ -140,6 +146,13 @@ exports.updatePurchaseInvoice = async (portal, id, data) => {
     console.log("oldInvoice",oldInvoice);
 
     await oldInvoice.save();
+
+    const supply = await Supplies(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            { _id: ObjectId(data.supplies)},
+            { $push: {purchaseInvoices: oldInvoice._id}}
+        );
+    console.log('supply in update purchaseInvoice ', supply);
 
     let purchaseInvoice = await PurchaseInvoice(connect(DB_CONNECTION, portal))
         .findById({ _id: oldInvoice._id })

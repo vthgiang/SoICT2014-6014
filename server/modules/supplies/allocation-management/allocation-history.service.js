@@ -3,6 +3,7 @@ const Models = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { freshObject } = require(`../../../helpers/functionHelper`);
 const { isArray } = require("lodash");
+const {ObjectId} = require("mongodb");
 
 const { Supplies, AllocationHistory , User, } = Models;
 
@@ -99,6 +100,14 @@ exports.createAllocations = async (portal, data) => {
                 ? data[i].allocationToUser
                 : null
         });
+        if (createAllocation) {
+            const supply = await Supplies(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    { _id: ObjectId(data[i].supplies)},
+                    { $push: {allocationHistories: createAllocation._id}}
+                );
+            console.log('supply in create allocationHistory ', supply);
+        }
     }
     let allocations;
     if(createAllocation){
@@ -137,6 +146,12 @@ exports.updateAllocation = async (portal, id, data) => {
             { path: "allocationToUser", select: "_id name email" },
             { path: "allocationToOrganizationalUnit", select: "_id name" },
         ]);
+    const supply = await Supplies(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            { _id: ObjectId(data.supplies)},
+            { $push: {allocationHistories: allocation._id}}
+        );
+    console.log('supply in update allocationHistory ', supply);
     return allocation;
 };
 

@@ -127,9 +127,10 @@ exports.createSupplies = async (portal, company, data) => {
 
 /**
  * Cập nhật thông tin 1 vật tư
- * @param {*} portal 
- * @param {*} company 
- * @param {*} data 
+ * @param {*} portal
+ * @param {*} company
+ * @param {*} id
+ * @param {*} data
  */
 exports.updateSupplies = async (portal, company, id, data) => {
     let {
@@ -144,7 +145,7 @@ exports.updateSupplies = async (portal, company, id, data) => {
     let oldSupplies = await Supplies(connect(DB_CONNECTION, portal))
         .findById(id);
     if (oldSupplies.code !== suppliesUpdate.code) {
-        let checkSuppliesCode = await Supplies(connect(DB_CONNECTION), portal).findOne({
+        let checkSuppliesCode = await Supplies(connect(DB_CONNECTION, portal), portal).findOne({
             code: suppliesUpdate.code
         });
         if (checkSuppliesCode) {
@@ -246,5 +247,8 @@ exports.getDashboardSupplies = async (portal, data) => {
         .sort({ 'createDate': 'desc' });
 
     let result = { listSupplies, listInvoice, listAllocation }
+
+    // new query
+
     return result;
 }
