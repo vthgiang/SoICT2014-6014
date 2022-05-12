@@ -605,7 +605,7 @@ function ModalCreateTaskProcess(props) {
         if (!hasStart || !hasEnd) {
             check = false;
         }
-        return check && state.manager.length !== 0 && state.viewer.length !== 0 && validateTasks
+        return check && state.manager&& state.manager.length !== 0 && state.viewer && state.viewer.length !== 0 && validateTasks
             && state.processDescription.trim() !== '' && state.processName.trim() !== ''
             && state.errorOnManager === undefined && state.errorOnProcessDescription === undefined
             && state.errorOnProcessName === undefined && state.errorOnViewer === undefined;
@@ -687,7 +687,7 @@ function ModalCreateTaskProcess(props) {
                                 let outgoing = elem.businessObject.outgoing;
                                 for (let y in outgoing) {
                                     let types = outgoing[y].sourceRef.$type.split(":")
-                                    if (types[1] === 'Process'){
+                                    if (types[1] === 'SubProcess'){
                                         info[j].followingTasks.push({ // các công việc sau công việc hiện tại
                                             process: outgoing[y].targetRef.id,
                                             link: outgoing[y].name,
@@ -720,7 +720,7 @@ function ModalCreateTaskProcess(props) {
                                 for (let x in incoming) {
                                     let types = incoming[x].sourceRef.$type.split(":")
                                     // console.log(incoming[x].sourceRef.$type,types);
-                                    if (types[1] === 'Process'){
+                                    if (types[1] === 'SubProcess'){
                                         infoTemplate[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
                                             process: incoming[x].sourceRef.id,
                                             link: incoming[x].name,
@@ -739,7 +739,7 @@ function ModalCreateTaskProcess(props) {
                                 let outgoing = elem.businessObject.outgoing;
                                 for (let y in outgoing) {
                                     let types = outgoing[y].sourceRef.$type.split(":")
-                                    if (types[1] === 'Process'){
+                                    if (types[1] === 'SubProcess'){
                                         infoTemplate[j].followingTasks.push({ // các công việc sau công việc hiện tại
                                             process: outgoing[y].targetRef.id,
                                             link: outgoing[y].name,
@@ -775,27 +775,29 @@ function ModalCreateTaskProcess(props) {
             creator: getStorage("userId")
         }
         console.log(data)
-        // await props.createXmlDiagram(data)
+        await props.createXmlDiagram(data)
 
         // RESET FORM CREATE
 
-        // setState(state => {
-        // 	return {
-        // 		...state,
-        // 		indexRenderer: state.indexRenderer + 1,
-        // 		processName: null,
-        // 		processDescription: '',
-        // 		viewer: undefined,
-        // 		manager: undefined,
-        // 		save: true,
-        // 		showInfo: false,
-        // 		errorOnProcessName: undefined,
-        // 		errorOnProcessDescription: undefined,
-        // 		errorOnViewer: undefined,
-        // 		errorOnManager: undefined,
-        // 	}
-        // });
-        // modeler.importXML(initialDiagram);
+        setState(state => {
+        	return {
+        		...state,
+        		indexRenderer: state.indexRenderer + 1,
+        		processName: null,
+        		processDescription: '',
+        		viewer: undefined,
+        		manager: undefined,
+        		save: true,
+        		showInfo: false,
+                info: [],
+                infoTemplate: [],
+        		errorOnProcessName: undefined,
+        		errorOnProcessDescription: undefined,
+        		errorOnViewer: undefined,
+        		errorOnManager: undefined,
+        	}
+        });
+        modeler.importXML(initialDiagram);
     }
     
 

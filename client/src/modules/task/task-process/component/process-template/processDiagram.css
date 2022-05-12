@@ -10,7 +10,7 @@
     text-align: center;
 }
 
-#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a,#viewprocesschild > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a, #viewtaskprocesstab > div > a, #edittaskprocess > div > a {
+#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a,#viewprocesschild > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a, #viewtaskprocesstab > div > a, #edittaskprocess > div > a, #edittaskprocessnoinit > div > a  {
     visibility: hidden;
 }
 
@@ -86,6 +86,7 @@
 }
 #viewtaskprocesstab > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewtaskprocesstab > div > div > div.djs-palette.two-column.open,
 #edittaskprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #edittaskprocess > div > div > div.djs-palette.two-column.open,
+#edittaskprocessnoinit > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #edittaskprocessnoinit > div > div > div.djs-palette.two-column.open,
 #viewprocesschild > div > div > div.djs-palette.two-column.open > div.djs-palette-entries,#viewprocesschild > div > div > div.djs-palette.two-column.open
 #viewprocess > div > div > div.djs-palette.two-column.open > div.djs-palette-entries, #viewprocess > div > div > div.djs-palette.two-column.open,
 #viewtaskprocesstab > div > div > div.djs-palette.open {
@@ -95,6 +96,9 @@
 #viewprocess > div > div > div.djs-overlay-container > div > div > div,
 #viewprocesschild > div > div > div.djs-overlay-container > div > div > div,
 #edittaskprocess > div > div > div.djs-overlay-container > div > div > div {
+    display: none;
+}
+#edittaskprocessnoinit > div > div > div.djs-overlay-container > div > div > div {
     display: none;
 }
 #viewprocesschild .djs-palette {
@@ -109,7 +113,7 @@
     /* border: 1px solid black; */
     height: calc(100vh - 300px);
 }
-#viewtaskprocesstab svg, #edittaskprocess svg {
+#viewtaskprocesstab svg, #edittaskprocess svg, #edittaskprocessnoinit svg {
     /* border: 1px solid black; */
     height: calc(100vh - 200px);
 }
@@ -138,6 +142,10 @@
 }
 #viewtaskprocesstab > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2),
 #edittaskprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
+    display: none;
+}
+
+#edittaskprocessnoinit > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }
 
