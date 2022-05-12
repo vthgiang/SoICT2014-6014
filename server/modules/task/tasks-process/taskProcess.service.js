@@ -337,10 +337,28 @@ isStartTask = (task) => {
  * @param {String} processId Id của quy trình
  */
 exports.getProcessById = async(portal, params) => {
-    let data = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.ProcssId);
+    let data = await TaskProcess(connect(DB_CONNECTION, portal)).findById(params.processId);
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'creator', select: 'name' });
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'manager', select: 'name' });
     await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'viewer', select: 'name' });
+    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'tasks', populate: [
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit", },
+        { path: "collaboratedWithOrganizationalUnits", },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", select: 'name email avatar' },
+        { path: "taskActions.comments.creator", select: 'name email avatar' },
+        { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+        { path: "taskComments.creator", select: 'name email avatar' },
+        { path: "taskComments.comments.creator", select: 'name email avatar' },
+        { path: "documents.creator", select: 'name email avatar' },
+        { path: "process" },
+    ] });
+    await TaskProcess(connect(DB_CONNECTION, portal)).populate(data, { path: 'processChilds'});
     return data
 }
 /**
