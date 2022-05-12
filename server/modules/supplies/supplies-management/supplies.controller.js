@@ -128,16 +128,16 @@ exports.getSuppliesById = async (req, res) => {
 }
 
 exports.getDashboardSupplies = async (req, res) => {
+
     try {
         let suppliesChart;
-        suppliesChart = await SuppliesService.getDashboardSupplies(req.portal, req.body);
-
+        suppliesChart = await SuppliesService.getDashboardSupplies(req.portal, req.query);
         let result = {};
         const listSupplies = suppliesChart.listSupplies;
         let listInvoice = suppliesChart.listInvoice;
         let listAllocation = suppliesChart.listAllocation;
 
-        let year = 0;
+        let year = 0, month;
         let startMonth = 0, endMonth = 0, startYear = 0;
         if (req.query.time) {
             let item1 = JSON.parse(req.query.time)
@@ -207,7 +207,7 @@ exports.getDashboardSupplies = async (req, res) => {
                     if (invoice.supplies.toString() === listSupplies[i]._id.toString()
                         && new Date(invoice.date).getTime() < maxDate && new Date(invoice.date).getTime() >= minDate) {
                         countInvoice[i] += parseInt(invoice.quantity);
-                        valueInvoice[i] += parseInt(invoice.price)*parseInt(invoice.quantity);
+                        valueInvoice[i] += parseInt(invoice.price) * parseInt(invoice.quantity);
                     }
                 });
             }
@@ -232,7 +232,7 @@ exports.getDashboardSupplies = async (req, res) => {
                 code: supplies.code
             }
         });
-        result = { suppliesData, countInvoice, countAllocation, valueInvoice }
+        result = {suppliesData, countInvoice, countAllocation, valueInvoice}
         await Logger.info(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
         res.status(200).json({
             success: true,
@@ -240,6 +240,7 @@ exports.getDashboardSupplies = async (req, res) => {
             content: result
         });
     } catch (error) {
+        console.log('Error: ', error)
         await Logger.error(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
         res.status(400).json({
             success: false,

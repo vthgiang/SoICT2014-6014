@@ -7,6 +7,7 @@ const { Supplies, PurchaseInvoice, AllocationHistory } = Models;
 const PurchaseInvoiceService = require('../purchase-invoice-management/purchase-invoice.service');
 const AllocationService = require('../allocation-management/allocation-history.service');
 const { result } = require("lodash");
+const {SuppliesPurchaseRequest} = require("../../../models");
 
 
 /**
@@ -233,7 +234,7 @@ exports.getSuppliesById = async (portal, id) => {
     return { supplies, listPurchaseInvoice, listAllocation }
 };
 
-exports.getDashboardSupplies = async (portal, data) => {
+exports.getDashboardSupplies = async (portal, query) => {
     let listSupplies = await Supplies(
         connect(DB_CONNECTION, portal))
         .find({});
@@ -249,6 +250,99 @@ exports.getDashboardSupplies = async (portal, data) => {
     let result = { listSupplies, listInvoice, listAllocation }
 
     // new query
+    let { time } = query;
+    time = JSON.parse(time);
+    let startTime = new Date(time.startTime);
+    let endTime = new Date(time.endTime);
+    startTime = new Date(startTime.getFullYear(), startTime.getMonth());
+    endTime = new Date(endTime.getFullYear(), endTime.getMonth());
 
+    let supplies = await Supplies(connect(DB_CONNECTION, portal))
+        .find({})
+        .populate('allocationHistories')
+        .populate('purchaseInvoices')
+        .exec();
+    let suppliesPurchaseRequest =  await SuppliesPurchaseRequest(connect(DB_CONNECTION, portal))
+        .find({})
+        .populate('company')
+        .populate('proponent')
+        .populate('recommendUnits')
+        .populate('approver')
+        .exec();
+
+    let data = {}, suppliesPrice = 0, purchaseInvoicesPrice = 0, totalPurchaseInvoice = 0;
+    let allocationHistoryTotal = 0, allocationHistoryPrice = 0;
+    let purchaseRequest = {
+        approvedTotal: 0,
+        disapprovedTotal: 0,
+        waitingForApprovalTotal: 0
+    };
+
+    // handle supplies
+    for(let i = 0; i < supplies.length; i++) {
+        suppliesPrice += supplies[i].price;
+        //handle purchaseInvoice
+        for(let j = 0; j < supplies[i].purchaseInvoices.length; j++) {
+            let purchaseInvoiceDate = supplies[i].purchaseInvoices[j].date;
+            purchaseInvoiceDate = new Date(purchaseInvoiceDate.getFullYear(), purchaseInvoiceDate.getMonth());
+
+            console.log('purchaseInvoiceDate: ', Date.parse(purchaseInvoiceDate));
+            console.log('startTime: ', Date.parse(startTime));
+            console.log('endTime: ', Date.parse(endTime));
+
+            if (Date.parse(purchaseInvoiceDate) >= Date.parse(startTime) && Date.parse(purchaseInvoiceDate) <= Date.parse(endTime)) {
+                totalPurchaseInvoice++;
+                purchaseInvoicesPrice += Number(supplies[i].purchaseInvoices[j].price) * Number(supplies[i].purchaseInvoices[j].quantity);
+            }
+        }
+        //handle allocationHistory
+        for(let j = 0; j < supplies[i].allocationHistories.length; j++) {
+            let allocationHistoryDate = supplies[i].allocationHistories[j].date;
+            allocationHistoryDate = new Date(allocationHistoryDate.getFullYear(), allocationHistoryDate.getMonth());
+            if (Date.parse(allocationHistoryDate) >= Date.parse(startTime) && Date.parse(allocationHistoryDate) <= Date.parse(endTime)) {
+                allocationHistoryTotal++;
+                allocationHistoryPrice +=  Number(supplies[i].price) * Number(supplies[i].allocationHistories[j].quantity);
+            }
+        }
+    }
+
+    // handle supplies purchase request
+    for(let i = 0; i < suppliesPurchaseRequest.length; i++) {
+        console.log(`suppliesPurchaseRequest[${i}]: `, suppliesPurchaseRequest[i]);
+
+        switch (suppliesPurchaseRequest[i].status) {
+            case "approved":
+                purchaseRequest.approvedTotal++;
+                break;
+            case "disapproved":
+                purchaseRequest.disapprovedTotal++;
+                break;
+            case "waiting_for_approval":
+                purchaseRequest.waitingForApprovalTotal++;
+                break;
+            default:
+                throw new Error("INVALID_PURCHASE_REQUEST_STATUS");
+        }
+    }
+
+    data.numberData = {
+        supplies: {
+            totalSupplies: supplies.length,
+            suppliesPrice: suppliesPrice,
+        },
+        purchaseInvoice: {
+            totalPurchaseInvoice,
+            purchaseInvoicesPrice,
+        },
+        purchaseRequest,
+        allocationHistory: {
+            allocationHistoryTotal,
+            allocationHistoryPrice
+        }
+    }
+    console.log('supplies: ', supplies);
+    console.log('startTime: ', startTime);
+    console.log('endTime: ', endTime);
+    console.log('data: ', data);
     return result;
 }
