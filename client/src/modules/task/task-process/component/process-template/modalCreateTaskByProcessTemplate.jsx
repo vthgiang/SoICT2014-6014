@@ -161,6 +161,7 @@ function ModalCreateTaskByProcessTemplate(props) {
             for (let i in infoProcessTemplates) {
                 infoTemplate[`${infoProcessTemplates[i].code}`] = infoProcessTemplates[i];
             }
+            //console.log(infoTemplate);
             setState({
                 ...state,
                 idProcess: props.idProcess,
@@ -458,7 +459,7 @@ function ModalCreateTaskByProcessTemplate(props) {
     // Các hàm  xử lý sự kiện của bpmn
     const interactPopup = (event) => {
         var element = event.element;
-        // console.log(element, state)
+        //console.log(element, state)
         let nameStr = element.type.split(':');
         setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
@@ -731,9 +732,10 @@ function ModalCreateTaskByProcessTemplate(props) {
             endDate: endDate,
 
         }
+        
         let template;
-        // console.log(data);
-        props.createTaskByProcess(data, state.idProcess, template = true);
+        console.log(data);
+        //props.createTaskByProcess(data, state.idProcess, template = true);
         setState({
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -776,7 +778,8 @@ function ModalCreateTaskByProcessTemplate(props) {
     if (user && user.usersInUnitsOfCompany) {
         usersInUnitsOfCompany = user.usersInUnitsOfCompany;
     }
-
+    //console.log(props.data);
+    //console.log(info,id);
     let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
     let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
     return (

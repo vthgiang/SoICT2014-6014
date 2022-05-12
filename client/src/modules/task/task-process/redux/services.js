@@ -15,6 +15,7 @@ export const TaskProcessService = {
     deleteTaskProcess,
     editProcessInfo,
     importProcessTemplate,
+    getProcessById,
 };
 
 
@@ -66,6 +67,15 @@ function deleteTaskProcess(taskProcessId, pageNumber, noResultsPerPage, name) {
             noResultsPerPage: noResultsPerPage,
             name: name,
         },
+    }, false, true, 'task.task_process');
+}
+/**
+ * Lấy process theo id
+ */
+ function getProcessById(processId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process/process/${processId}`,
+        method: 'GET',
     }, false, true, 'task.task_process');
 }
 /**

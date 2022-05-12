@@ -111,7 +111,7 @@ function FormCreateTaskByProcess(props) {
                     return {
                         ...state,
                         taskItem: {
-                            ...state.newTemplate,
+                            ...state.taskItem,
                             organizationalUnit: defaultUnit._id
                         }
                     };
