@@ -668,7 +668,7 @@ function ModalCreateTaskProcess(props) {
                                 for (let x in incoming) {
                                     let types = incoming[x].sourceRef.$type.split(":")
                                     // console.log(incoming[x].sourceRef.$type,types);
-                                    if (types[1] === 'Process'){
+                                    if (types[1] === 'SubProcess'){
                                         info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
                                             process: incoming[x].sourceRef.id,
                                             link: incoming[x].name,
@@ -774,8 +774,8 @@ function ModalCreateTaskProcess(props) {
             viewer: state.viewer,
             creator: getStorage("userId")
         }
-        // console.log(data)
-        await props.createXmlDiagram(data)
+        console.log(data)
+        // await props.createXmlDiagram(data)
 
         // RESET FORM CREATE
 
