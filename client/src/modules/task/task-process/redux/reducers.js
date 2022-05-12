@@ -133,18 +133,18 @@ export function taskProcess(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
-        case TaskProcessConstants.GET_ALL_XML_PROCESS_REQUEST:
+        case TaskProcessConstants.GET_XML_PROCESS_BY_ID_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case TaskProcessConstants.GET_ALL_XML_PROCESS_SUCCESS:
+        case TaskProcessConstants.GET_XML_PROCESS_BY_ID_SUCCESS:
             return {
                 ...state,
-                listTaskProcess: action.payload.content.data,
-                totalPage: action.payload.content.pageTotal
+                taskProcessById: action.payload.content,
+                isLoading: false
             };
-        case TaskProcessConstants.GET_ALL_XML_PROCESS_FAIL:
+        case TaskProcessConstants.GET_XML_PROCESS_BY_ID_FAIL:
             return {
                 error: action.error,
                 isLoading: false

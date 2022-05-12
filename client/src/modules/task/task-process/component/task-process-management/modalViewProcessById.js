@@ -8,6 +8,7 @@ import { ModalViewTaskProcess2 } from '../process-template/modalViewTaskProcess2
 import { TaskProcessActions } from "../../redux/actions";
 import "../process-template/processDiagram.css"
 import qs from 'qs';
+import { ViewProcess } from "./viewProcess";
 var zlevel = 1;
 function areEqual(prevProps, nextProps) {
     if (JSON.stringify(prevProps.taskProcess) === JSON.stringify(nextProps.taskProcess)){
@@ -33,24 +34,24 @@ function ModalViewProcessById(props) {
     useEffect(() => {
         // console.log(props.location);
         const { processId } = qs.parse(props.location.search, { ignoreQueryPrefix: true });
-        props.getXmlDiagramById(processId)
+        props.getProcessById(processId)
     }, [JSON.stringify(props.location)])
     const { translate, role, user, taskProcess } = props;
-    const {currentDiagram} = taskProcess
-    console.log(currentDiagram);
+    const {taskProcessById} = taskProcess
+    console.log(taskProcessById);
     return (
         <React.Fragment>
             <div className="processbyid">
-            <ModalViewTaskProcess2
+            <ViewProcess
                 title={translate("task.task_process.view_process_template_modal")}
-                listOrganizationalUnit={currentDiagram ? currentDiagram.listOrganizationalUnit : ""}
-                data={currentDiagram ? currentDiagram : ""}
-                idProcess={currentDiagram ? currentDiagram._id : ""}
-                xmlDiagram={currentDiagram ? currentDiagram.xmlDiagram : ""}
-                processName={currentDiagram ? currentDiagram.processName : ""}
-                processDescription={currentDiagram ? currentDiagram.processDescription : ""}
-                infoTask={currentDiagram ? currentDiagram.tasks : ""}
-                creator={currentDiagram ? currentDiagram.creator : ""}
+                listOrganizationalUnit={taskProcessById ? taskProcessById.listOrganizationalUnit : ""}
+                data={taskProcessById ? taskProcessById : ""}
+                idProcess={taskProcessById ? taskProcessById._id : ""}
+                xmlDiagram={taskProcessById ? taskProcessById.xmlDiagram : ""}
+                processName={taskProcessById ? taskProcessById.processName : ""}
+                processDescription={taskProcessById ? taskProcessById.processDescription : ""}
+                infoTask={taskProcessById ? taskProcessById.tasks : ""}
+                creator={taskProcessById ? taskProcessById.creator : ""}
             />
             </div>
         </React.Fragment>
@@ -63,7 +64,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
+    getProcessById: TaskProcessActions.getProcessById,
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(React.memo(ModalViewProcessById,areEqual)));
 export { connectedModalAddProcess as ModalViewProcessById };
