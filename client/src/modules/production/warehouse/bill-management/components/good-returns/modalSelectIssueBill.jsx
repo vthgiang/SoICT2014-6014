@@ -77,7 +77,6 @@ function ModalSelectIssueBill(props) {
 
     const { listBills, translate } = props;
     const { checkedId } = state
-    console.log(listBills);
     const listBillsIssue = getListBillsIssue(listBills);
 
     return (

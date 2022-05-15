@@ -4713,6 +4713,8 @@ export default {
                 min_quantity: "Min quantity",
                 choose_good: "Select commodity",
                 choose_role: "Select role",
+                error_organizational_unit: "Linked organization is required",
+                list_roles: "Unit manager ",
                 validate_good: "Commodity cannot be empty",
                 detail_stock: "Warehouse detail",
                 validate_address: "Address cannot be empty",

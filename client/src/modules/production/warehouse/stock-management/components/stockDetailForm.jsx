@@ -13,7 +13,7 @@ function StockDetailForm(props) {
     useEffect(() => {
         if (props.stockId !== state.stockId || props.code !== state.code || props.name !== state.name ||
             props.status !== state.status || props.address !== state.address || props.goods !== state.goods ||
-            props.managementLocation !== state.managementLocation || props.manageDepartment !== state.manageDepartment || props.description !== state.description) {
+            props.managementLocation !== state.managementLocation || props.organizationalUnit !== state.organizationalUnit || props.description !== state.description) {
             setState({
                 ...state,
                 stockId: props.stockId,
@@ -23,7 +23,7 @@ function StockDetailForm(props) {
                 address: props.address,
                 goods: props.goodsManagement,
                 managementLocation: props.managementLocation,
-                manageDepartment: props.manageDepartment,
+                organizationalUnit: props.organizationalUnit,
                 description: props.description,
             })
         }
@@ -31,7 +31,7 @@ function StockDetailForm(props) {
     }, [props.stockId, props.code, props.name, props.status, props.address, props.goodsManagement, props.managementLocation, props.manageDepartment, props.description])
 
     const { translate, stocks, department, role } = props;
-    const { code, name, managementLocation, status, address, description, manageDepartment, goods, good } = state;
+    const { code, name, managementLocation, status, address, description, organizationalUnit, goods, good } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -71,6 +71,26 @@ function StockDetailForm(props) {
                                 <strong>{translate('manage_warehouse.stock_management.description')}:&emsp;</strong>
                                 {description}
                             </div>
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.stock_management.list_roles')}</legend>
+                                {
+                                    organizationalUnit && organizationalUnit.managers.map((role, index) => {
+                                        return (
+                                            <div className={`form-group`} key={index}>
+                                                <strong>{role.name}: &emsp;</strong>
+                                                {
+                                                    role.users.map((user, index) => {
+                                                        if (index === role.users.length - 1) {
+                                                            return user.userId.name
+                                                        }
+                                                        return user.userId.name + ", "
+                                                    })
+                                                }
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </fieldset>
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.stock_management.management_location')}</legend>
 

@@ -4962,6 +4962,8 @@ export default {
                 min_quantity: "Định mức tối thiểu (Đơn vị tính cơ bản)",
                 choose_good: "Chọn hàng hóa",
                 choose_role: "Chọn quyền quản lý",
+                error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
+                list_roles: "Chức vụ trưởng đơn vị",
                 validate_good: "Hàng hóa không được để trống",
                 detail_stock: "Xem chi tiết kho",
                 validate_address: "Địa chỉ không được bỏ trống",

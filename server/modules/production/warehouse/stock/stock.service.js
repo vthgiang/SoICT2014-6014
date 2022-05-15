@@ -35,14 +35,27 @@ exports.getAllStocks = async (company, query, portal) => {
             option.status = query.status
         }
 
-        console.log('option', option);
         return await Stock(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 page,
                 limit,
                 populate: [
                     { path: 'goods.good', select: 'id name'},
-                    { path: 'managementLocation.role', select: 'id name'}
+                    { path: 'managementLocation.role', select: 'id name'},
+                    {
+                        path: "organizationalUnit",
+                        populate: [{
+                            path: 'managers',
+                            populate: [{
+                                path: "users",
+                                populate: [{
+                                    path: "userId"
+                                }]
+                            }]
+                        },
+                        { path: 'deputyManagers' },
+                        { path: 'employees' }]
+                    }
                 ]
             })
     }
@@ -53,7 +66,21 @@ exports.getStock = async (id, portal) => {
         .findById(id)
         .populate([
             { path: 'goods.good', select: 'id name'},
-            { path: 'managementLocation.role', select: 'id name'}
+            { path: 'managementLocation.role', select: 'id name'},
+            {
+                path: "organizationalUnit",
+                populate: [{
+                    path: 'managers',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                },
+                { path: 'deputyManagers' },
+                { path: 'employees' }]
+            }
         ])
 }
 
@@ -78,12 +105,27 @@ exports.createStock = async (company, data, portal) => {
                 managementGood: item.managementGood
             }
         }) : [],
+        organizationalUnit: data.organizationalUnitValue,
     })
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(stock._id)
         .populate([
             { path: 'goods.good', select: 'id name'},
-            { path: 'managementLocation.role', select: 'id name'}
+            { path: 'managementLocation.role', select: 'id name'},
+            {
+                path: "organizationalUnit",
+                populate: [{
+                    path: 'managers',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                },
+                { path: 'deputyManagers' },
+                { path: 'employees' }]
+            }
         ])
 }
 
@@ -108,6 +150,7 @@ exports.editStock = async (id, data, portal) => {
             managementGood: item.managementGood
         }
     }) : stock.managementLocation,
+    stock.organizationalUnit = data.organizationalUnitValue ? data.organizationalUnitValue : stock.organizationalUnit,
 
     await stock.save();
 
@@ -115,7 +158,21 @@ exports.editStock = async (id, data, portal) => {
         .findById(stock._id)
         .populate([
             { path: 'goods.good', select: 'id name'},
-            { path: 'managementLocation.role', select: 'id name'}
+            { path: 'managementLocation.role', select: 'id name'},
+            {
+                path: "organizationalUnit",
+                populate: [{
+                    path: 'managers',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                },
+                { path: 'deputyManagers' },
+                { path: 'employees' }]
+            }
         ])
 }
 
