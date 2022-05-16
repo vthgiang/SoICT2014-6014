@@ -605,7 +605,7 @@ function ModalEditProcessNoInit(props) {
     // hàm lưu
     const save = async () => {
         // console.log("object");
-        let { processName, processDescription, status, startDate, endDate, viewer, info } = state;
+        let { processName, processDescription, status, startDate, endDate, viewer, info ,userId} = state;
         // console.log(state);
         let xmlStr;
         modeler.saveXML({ format: true }, function (err, xml) {
@@ -728,14 +728,13 @@ function ModalEditProcessNoInit(props) {
             status: status,
             startDate: startDate,
             endDate: endDate,
+            creator: userId,
             info: info,
             processChilds:processChilds,
             viewer: viewer,
             xmlDiagram: xmlStr,
             id: idProcess
         }  
-        console.log(data)
-
         props.editProcessInfo(idProcess, data);
 
     }
