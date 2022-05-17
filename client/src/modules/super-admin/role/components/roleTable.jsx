@@ -188,7 +188,8 @@ function RoleTable(props) {
                     roleName={currentRow.name}
                     roleType={currentRow.type ? currentRow.type.name : null}
                     roleParents={currentRow.parents.map(parent => parent ? parent._id : null)}
-                    roleUsers={currentRow.users.map(user => user && user.userId ? user.userId._id : null)}
+                    roleUsers={currentRow.users.filter(user => user && user.userId && (!user.delegation)).map(user => user.userId._id)}
+                    // roleUsers={currentRow.users.map(user => user && user.userId ? user.userId._id : null)}
                     roleAttributes={currentRow.attributes}
                     handleChange={handleChange}
                     handleChangeAddRowAttribute={handleChangeAddRowAttribute}
@@ -252,7 +253,7 @@ function RoleTable(props) {
                             <tr key={`roleList${role._id}`} style={roleDuplicateName && roleDuplicateName.includes(role.name.trim().toLowerCase().replaceAll(" ", "")) ? { color: "orangered", fontWeight: "bold" } : { color: "" }}>
                                 <td> {role.name} </td>
                                 <td><ToolTip dataTooltip={role?.parents?.length ? role.parents.map(parent => parent ? parent.name : "") : []} /></td>
-                                <td><ToolTip dataTooltip={role?.users?.length ? role.users.map(user => user && user.userId ? user.userId.name : "") : []} /></td>
+                                <td><ToolTip dataTooltip={role?.users?.length ? role.users.filter(user => user && user.userId && (!user.delegation)).map(user => user.userId.name) : []} /></td>
                                 <td style={{ textAlign: 'center' }}>
                                     <a className="edit" href={`#${role._id}`} onClick={() => handleEdit(role)}><i className="material-icons">edit</i></a>
                                     {

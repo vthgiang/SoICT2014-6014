@@ -31,6 +31,8 @@ class SelectMulti extends Component {
         options = {
             ...options,
             includeSelectAllOption: includeSelectAllOption,
+            enableFiltering: options.enableFilter,
+            filterPlaceholder: translate('general.search'),
             selectAllText: translate('general.select_all'),
             maxHeight: 200,
         }
@@ -98,15 +100,15 @@ class SelectMulti extends Component {
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>{
                     items.length !== 0 ?
-                    (<select className="form-control" style={{display: "none"}} ref="selectmulti" id={id}
-                            multiple="multiple" value={value} onChange={() => {}}>
-                        {items.map(item => {
-                            return <option key={item.value} value={item.value}
-                                           disabled={item.disabled ? true : false}>{item.text}</option>
-                        })}
-                    </select>) : (<select className="form-control" style={{display: "none"}} ref="selectmulti" id={id}
-                                 multiple="multiple" value={value} onChange={() => {}}>
-                           <option value='' disabled={true}>Empty</option>
+                        (<select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id}
+                            multiple="multiple" value={value} onChange={() => { }}>
+                            {items.map(item => {
+                                return <option key={item.value} value={item.value}
+                                    disabled={item.disabled ? true : false}>{item.text}</option>
+                            })}
+                        </select>) : (<select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id}
+                            multiple="multiple" value={value} onChange={() => { }}>
+                            <option value='' disabled={true}>Empty</option>
                             })}
                         </select>)}
                 </div>

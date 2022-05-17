@@ -1,6 +1,6 @@
 const RoleService = require('./role.service');
 const PolicyService = require(`../../super-admin/policy/policy.service`);
-const { differenceAttributes } = require('../../../helpers/functionHelper');
+const { differenceAttributes, arrayEquals } = require('../../../helpers/functionHelper');
 const Logger = require(`../../../logs`);
 
 exports.getRoles = async (req, res) => {
@@ -103,8 +103,9 @@ exports.editRole = async (req, res) => {
         if (!notEditRoleInfo) await RoleService.editRole(req.portal, req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
         let data = await RoleService.getRole(req.portal, req.params.id);
 
-        // Nếu attributes thay đổi thì check lại tất cả policies
-        if (differenceAttributes(roleBeforeEditing.attributes, data.attributes).length > 0) {
+
+        // Nếu attributes thay đổi hoặc users thay đổi thì check lại tất cả policies
+        if (differenceAttributes(roleBeforeEditing.attributes, data.attributes).length > 0 || !arrayEquals(roleBeforeEditing.users.map(user => user && user.userId ? user.userId._id : null), data.users.map(user => user && user.userId ? user.userId._id : null))) {
             await PolicyService.checkAllPolicies(req.portal);
             // console.log("diff", differenceAttributes(roleBeforeEditing.attributes, data.attributes))
         }

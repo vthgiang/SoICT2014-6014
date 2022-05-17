@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DeleteNotification, PaginateBar, SmartTable } from "../../../../common-components";
+import { RevokeNotification, DeleteNotification, PaginateBar, SmartTable, ToolTip } from "../../../../common-components";
 
 import { DelegationCreateForm } from "./delegationCreateForm";
 import { DelegationEditForm } from "./delegationEditForm";
@@ -14,6 +14,9 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 
 import { DelegationActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import dayjs from "dayjs";
+import { formatStatus } from './functionHelper';
+
 
 function DelegationTable(props) {
     const getTableId = "table-manage-delegation1-hooks";
@@ -29,7 +32,7 @@ function DelegationTable(props) {
     })
     const [selectedData, setSelectedData] = useState()
 
-    const { delegation, translate } = props;
+    const { delegation, translate, user, role, link, } = props;
     const { delegationName, page, perPage, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
@@ -37,6 +40,10 @@ function DelegationTable(props) {
         props.getUser();
         props.getRoles();
         props.getLinks({ type: "active" });
+    }, [])
+
+    useEffect(() => {
+        props.getDepartment();
     }, [])
 
     /**
@@ -119,6 +126,18 @@ function DelegationTable(props) {
         });
     }
 
+    const handleRevoke = (id) => {
+        props.revokeDelegation({
+            delegationIds: [id],
+            reason: window.$(`#revokeReason-${id}`).val()
+        });
+        props.getDelegations({
+            delegationName,
+            perPage,
+            page: delegation && delegation.lists && delegation.lists.length === 1 ? page - 1 : page
+        });
+    }
+
     const onSelectedRowsChange = (value) => {
         setSelectedData(value)
     }
@@ -159,6 +178,41 @@ function DelegationTable(props) {
     }
 
     const totalPage = delegation && Math.ceil(delegation.totalList / perPage);
+    // convert ISODate to String hh:mm AM/PM
+    const formatTime = (date) => {
+        return dayjs(date).format("DD-MM-YYYY hh:mm A")
+    }
+
+    const colorfyDelegationStatus = (delegation) => {
+        const { translate } = props;
+        let statusColor = "";
+        switch (delegation.status) {
+            case "wait_for_confirmation":
+                statusColor = "#db8b0b";
+                break;
+            case "declined":
+                statusColor = "#e86969";
+                break;
+            case "confirmed":
+                statusColor = "#31b337";
+                break;
+            case "revoked":
+                statusColor = "#385898";
+                break;
+            case "activated":
+                statusColor = "#31b337";
+                break;
+            default:
+                statusColor = "#385898";
+        }
+
+        return (
+
+            <span style={{ color: statusColor }}>{formatStatus(translate, delegation.status)}</span>
+
+        )
+
+    }
 
     return (
         <React.Fragment>
@@ -174,11 +228,11 @@ function DelegationTable(props) {
                 description={curentRowDetail && curentRowDetail.description}
             />
 
-            <DelegationCreateForm
+            {user && user.organizationalUnitsOfUser && <DelegationCreateForm
                 page={page}
                 perPage={perPage}
             />
-
+            }
             <DelegationImportForm
                 page={page}
                 perPage={perPage}
@@ -209,16 +263,29 @@ function DelegationTable(props) {
                 </div>
 
                 <SmartTable
+                    disableCheckbox={true}
                     tableId={tableId}
                     columnData={{
                         index: translate('manage_delegation.index'),
                         delegationName: translate('manage_delegation.delegationName'),
-                        description: translate('manage_delegation.description')
+                        delegateType: translate('manage_delegation.delegateType'),
+                        delegateObject: translate('manage_delegation.delegateObject'),
+                        delegatee: translate('manage_delegation.delegatee'),
+                        delegateStartDate: translate('manage_delegation.delegateStartDate'),
+                        delegateEndDate: translate('manage_delegation.delegateEndDate'),
+                        delegateStatus: translate('manage_delegation.delegateStatus'),
+                        // description: translate('manage_delegation.description')
                     }}
                     tableHeaderData={{
                         index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_delegation.index')}</th>,
                         delegationName: <th>{translate('manage_delegation.delegationName')}</th>,
-                        description: <th>{translate('manage_delegation.description')}</th>,
+                        delegateType: <th>{translate('manage_delegation.delegateType')}</th>,
+                        delegateObject: <th>{translate('manage_delegation.delegateObject')}</th>,
+                        delegatee: <th>{translate('manage_delegation.delegatee')}</th>,
+                        delegateStartDate: <th>{translate('manage_delegation.delegateStartDate')}</th>,
+                        delegateEndDate: <th>{translate('manage_delegation.delegateEndDate')}</th>,
+                        delegateStatus: <th>{translate('manage_delegation.delegateStatus')}</th>,
+                        // description: <th>{translate('manage_delegation.description')}</th>,
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                     }}
                     tableBodyData={lists?.length > 0 && lists.map((item, index) => {
@@ -226,18 +293,34 @@ function DelegationTable(props) {
                             id: item?._id,
                             index: <td>{index + 1}</td>,
                             delegationName: <td>{item?.delegationName}</td>,
-                            description: <td>{item?.description}</td>,
+                            delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
+                            delegateObject: <td>{item.delegateRole ? item.delegateRole.name : (item.delegateTasks ? <ToolTip dataTooltip={item.delegateTasks.map(task => task.name)} /> : "")}</td>,
+                            delegatee: <td>{item?.delegatee.name}</td>,
+                            delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
+                            delegateEndDate: <td>{item.endDate ? formatTime(item?.endDate) : (item.revokedDate ? formatTime(item.revokedDate) : translate("manage_delegation.end_date_tbd"))}</td>,
+                            delegateStatus: <td>{colorfyDelegationStatus(item)}</td>,
+                            // description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>
                                 <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_delegation.detail_info_delegation')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
                                 <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
-                                <DeleteNotification
-                                    content={translate('manage_delegation.delete')}
-                                    data={{
-                                        id: item._id,
-                                        info: item.delegationName
-                                    }}
-                                    func={handleDelete}
-                                />
+                                {item.status == "revoked" ?
+                                    <DeleteNotification
+                                        content={translate('manage_delegation.delete')}
+                                        data={{
+                                            id: item._id,
+                                            info: item.delegationName
+                                        }}
+                                        func={handleDelete}
+                                    /> :
+                                    <RevokeNotification
+                                        content={translate('manage_delegation.revoke_request')}
+                                        data={{
+                                            id: item._id,
+                                            info: item.delegationName
+                                        }}
+                                        func={handleRevoke}
+                                    />
+                                }
                             </td>
                         }
                     })}
@@ -264,16 +347,18 @@ function DelegationTable(props) {
 }
 
 function mapState(state) {
-    const delegation = state.delegation;
-    return { delegation }
+    const { delegation, user, role, link } = state;
+    return { delegation, user, role, link }
 }
 
 const actions = {
     getDelegations: DelegationActions.getDelegations,
     deleteDelegations: DelegationActions.deleteDelegations,
+    revokeDelegation: DelegationActions.revokeDelegation,
     getUser: UserActions.get,
     getLinks: LinkActions.get,
-    getRoles: RoleActions.get
+    getRoles: RoleActions.get,
+    getDepartment: UserActions.getDepartmentOfUser
 }
 
 const connectedDelegationTable = connect(mapState, actions)(withTranslate(DelegationTable));

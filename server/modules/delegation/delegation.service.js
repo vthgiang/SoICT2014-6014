@@ -37,28 +37,71 @@ exports.createDelegation = async (portal, data) => {
             let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({ _id: delArray[i].delegateRole });
             let delegatePrivileges = delArray[i].allPrivileges ? null : await Privilege(connect(DB_CONNECTION, portal)).find({ roleId: { $in: [delArray[i].delegateRole].concat(delegateRole.parents) }, resourceId: { $in: delArray[i].delegateLinks } })
             // console.log('delegatePrivileges', delegatePrivileges)
-            newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
-                delegationName: delArray[i].delegationName,
-                description: delArray[i].description,
+            let checkDelegationExist = await Delegation(connect(DB_CONNECTION, portal)).find({
                 delegator: delArray[i].delegator,
                 delegatee: delArray[i].delegatee,
                 delegateType: "Role",
                 delegateRole: delArray[i].delegateRole,
-                allPrivileges: delArray[i].allPrivileges,
-                delegatePrivileges: delegatePrivileges != null ? delegatePrivileges.map(p => p._id) : null,
-                startDate: delArray[i].delegationStart,
-                endDate: delArray[i].delegationEnd
-            });
-        }
+                status: {
+                    $in: [
+                        "activated", // Đang hoạt động
+                        "wait_for_confirmation", // Chờ xác nhận
+                        "confirmed" // Xác nhận
+                    ]
+                }
+            })
 
+            if (checkDelegationExist.length > 0) {
+                throw ["delegation_role_exist"];
+            }
+
+            let checkUserHaveRole = await UserRole(connect(DB_CONNECTION, portal)).find({
+                userId: delArray[i].delegatee,
+                roleId: delArray[i].delegateRole,
+                // TBD: Bỏ comment nếu enable 1 user có >1 ủy quyền từ >1 user khác nhau cho cùng 1 role
+                // delegation: { $in: [[], undefined] }
+            })
+
+            if (checkUserHaveRole.length > 0) {
+                throw ["user_role_exist"]
+            }
+
+            if (checkDelegationExist.length == 0 && checkUserHaveRole.length == 0) {
+                newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
+                    delegationName: delArray[i].delegationName,
+                    description: delArray[i].description,
+                    delegator: delArray[i].delegator,
+                    delegatee: delArray[i].delegatee,
+                    delegateType: "Role",
+                    delegateRole: delArray[i].delegateRole,
+                    allPrivileges: delArray[i].allPrivileges,
+                    delegatePrivileges: delegatePrivileges != null ? delegatePrivileges.map(p => p._id) : null,
+                    startDate: delArray[i].delegationStart,
+                    endDate: delArray[i].delegationEnd
+                });
+            }
+
+            // add delegationId to selected Privileges
+            if (delegatePrivileges != null) {
+                delegatePrivileges.forEach(async pri => {
+                    pri.delegations.indexOf(newDelegation._id) === -1 ? pri.delegations.push(newDelegation._id) : null
+                    await pri.save();
+                })
+            }
+        }
     }
 
-    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: newDelegation._id });
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: newDelegation._id }).populate([
+        { path: 'delegateRole', select: 'name' },
+        { path: 'delegateTasks' },
+        { path: 'delegatee', select: 'name' }
+    ]);
     let newUserRole = await UserRole(connect(DB_CONNECTION, portal)).create({
         userId: delegation.delegatee,
-        roleId: delegation.delegateRole
+        roleId: delegation.delegateRole,
+        delegation: delegation._id
     });
-    newUserRole.delegations.indexOf(delegation._id) === -1 ? newUserRole.delegations.push(delegation._id) : null
+    // newUserRole.delegations.indexOf(delegation._id) === -1 ? newUserRole.delegations.push(delegation._id) : null
     newUserRole.save();
 
     return delegation;
@@ -83,6 +126,11 @@ exports.getDelegations = async (portal, data) => {
 
     let totalList = await Delegation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate([
+            { path: 'delegateRole', select: 'name' },
+            { path: 'delegateTasks' },
+            { path: 'delegatee', select: 'name' }
+        ])
         .skip((page - 1) * perPage)
         .limit(perPage);
 
@@ -121,7 +169,11 @@ exports.getOnlyDelegationName = async (portal, data) => {
 
 // Lấy ra Ví dụ theo id
 exports.getDelegationById = async (portal, id) => {
-    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: id });
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: id }).populate([
+        { path: 'delegateRole', select: 'name' },
+        { path: 'delegateTasks' },
+        { path: 'delegatee', select: 'name' }
+    ]);
     if (delegation) {
         return delegation;
     }
@@ -146,8 +198,31 @@ exports.editDelegation = async (portal, id, data) => {
 exports.deleteDelegations = async (portal, delegationIds) => {
     let delegations = await Delegation(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
-    delegationIds.forEach(async delegationId => {
-        await UserRole(connect(DB_CONNECTION, portal)).deleteOne({ delegations: delegationId });
-    })
+    // delegationIds.forEach(async delegationId => {
+    //     await UserRole(connect(DB_CONNECTION, portal)).deleteOne({ delegation: delegationId });
+    // })
     return delegations;
+}
+
+exports.revokeDelegation = async (portal, delegationIds, reason) => {
+    // let delegations = await Delegation(connect(DB_CONNECTION, portal))
+    //     .deleteMany({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
+    delegationIds.forEach(async delegationId => {
+        await UserRole(connect(DB_CONNECTION, portal)).deleteOne({ delegation: delegationId });
+    })
+    let delegation = await Delegation(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
+    let result = delegation[0];
+    if (result.delegatePrivileges != null) {
+        let privileges = await Privilege(connect(DB_CONNECTION, portal)).find({ _id: { $in: result.delegatePrivileges } })
+        privileges.forEach(async pri => {
+            pri.delegations.splice(pri.delegations.indexOf(result._id), 1)
+            await pri.save()
+        })
+    }
+    console.log('delegation', delegation)
+    result.status = "revoked";
+    result.revokeReason = !reason ? null : reason;
+    result.revokedDate = new Date();
+    await result.save();
+    return delegation;
 }

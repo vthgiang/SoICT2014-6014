@@ -20,6 +20,7 @@ exports.getRoles = async (portal, query) => {
             .populate([
                 { path: 'users', populate: { path: 'userId' } },
                 { path: 'parents' },
+                { path: 'links', populate: { path: "resourceId" } },
                 { path: 'type' }
             ]);
     } else if (page && limit && !roleId) {
@@ -33,6 +34,7 @@ exports.getRoles = async (portal, query) => {
                 populate: [
                     { path: 'users', populate: { path: 'userId' } },
                     { path: 'parents' },
+                    { path: 'links', populate: { path: "resourceId" } },
                     { path: 'type' }
                 ]
             });
@@ -407,16 +409,40 @@ exports.editRelationshipUserRole = async (portal, roleId, userArr = []) => {
     const check = await Role(connect(DB_CONNECTION, portal)).findById(roleId);
     if (!check) throw ['role_not_found'];
 
-    await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
-        roleId: roleId
+    const checkDelegate = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: { $in: userArr }, roleId: roleId, delegation: { $nin: [[], undefined] } })
+    console.log('check', checkDelegate)
+    if (checkDelegate.length > 0) { throw ['user_role_exist'] }
+
+    const userRoleWithPolicies = await UserRole(connect(DB_CONNECTION, portal)).find({
+        userId: { $in: userArr },
+        roleId: roleId,
+        policies: { $nin: [[], undefined] }
     });
+    let userIdsWithPolicies = [];
+    // console.log('userRoleWithPolicies', userRoleWithPolicies)
+    if (userRoleWithPolicies.length > 0) {
+        userIdsWithPolicies = userRoleWithPolicies.map(ur => ur.userId.toString())
+    }
+    // console.log('userIdsWithPolicies', userIdsWithPolicies)
+
+
+    await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
+        roleId: roleId,
+        delegation: { $in: [[], undefined] },
+    });
+
     if (userArr.length > 0) {
         const user_role = userArr.map(user => {
+            // console.log('userRole', user)
+            // console.log("check", userIdsWithPolicies.includes(user.toString()))
+            // console.log("policies", userRoleWithPolicies.filter(ur => ur.userId.equals(user))[0].policies)
             return {
                 roleId: roleId,
-                userId: user
+                userId: user,
+                policies: userIdsWithPolicies.length > 0 && userIdsWithPolicies.includes(user.toString()) ? userRoleWithPolicies.filter(ur => ur.userId.equals(user))[0].policies : []
             };
         })
+        // console.log('user_role', user_role)
         return await UserRole(connect(DB_CONNECTION, portal)).insertMany(user_role);
     }
 }

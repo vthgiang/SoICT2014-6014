@@ -16,10 +16,10 @@ const UserRoleSchema = new Schema({ // Liên kết nhiều nhiều giữa User v
         type: Schema.Types.ObjectId,
         ref: 'Policy'
     }],
-    delegations: [{
+    delegation: {
         type: Schema.Types.ObjectId,
         ref: 'Delegation'
-    }]
+    }
 });
 
 module.exports = (db) => {

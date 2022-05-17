@@ -435,7 +435,7 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
         // lấy ds các role thỏa của các user bên trên, đẩy vào satisfiedSubjects
         satisfiedUsers.forEach((user) => {
             // nếu roleAttribute rỗng thì lấy tất cả role hiện có của satisfiedUser, nếu khỗng rỗng thì checkRule
-            satisfiedUserRoles = policy.subject.role.roleAttributes ? this.ruleCheck(user.roles.map((ur) => ur.roleId), policy.subject.role.roleAttributes, policy.subject.role.roleRule) : user.roles.map((ur) => ur.roleId)
+            satisfiedUserRoles = policy.subject.role.roleAttributes ? this.ruleCheck(user.roles.filter(r => !r.delegation).map((ur) => ur.roleId), policy.subject.role.roleAttributes, policy.subject.role.roleRule) : user.roles.filter(r => !r.delegation).map((ur) => ur.roleId)
             satisfiedRoles = satisfiedRoles.concat(satisfiedUserRoles)
             satisfiedSubjects = [...satisfiedSubjects, { user: user._id, roles: satisfiedUserRoles.map(ur => ur._id) }]
         })
@@ -456,7 +456,7 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
             // ]
             let userRole = await UserRole(connect(DB_CONNECTION, portal)).findOne({
                 userId: subject.user,
-                roleId: role,
+                roleId: role
             });
             console.log("userRole", userRole)
             userRole.policies.indexOf(policyId) === -1 ? userRole.policies.push(policyId) : null
@@ -479,6 +479,11 @@ exports.addPolicyToRelationship = async (portal, policyId) => {
 
     let newPrivilegeLink;
     let newPrivilegeComponent;
+
+    // Lấy unique role nếu duplicate
+    satisfiedRoles = satisfiedRoles.filter((value, index, self) => {
+        return self.indexOf(value) === index
+    })
 
     // Thêm privilege giữa role và link thỏa mãn nếu chưa tồn tại privilege giữa role hoặc role parents với link
     satisfiedLinks.forEach(async link => {

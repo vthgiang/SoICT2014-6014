@@ -22,6 +22,7 @@ export function delegation(state = initialState, action) {
     switch (action.type) {
         case delegationConstants.GET_ALL_DELEGATIONS_REQUEST:
         case delegationConstants.DELETE_DELEGATION_REQUEST:
+        case delegationConstants.REVOKE_DELEGATION_REQUEST:
         case delegationConstants.CREATE_DELEGATION_REQUEST:
         case delegationConstants.EDIT_DELEGATION_REQUEST:
             return {
@@ -30,6 +31,7 @@ export function delegation(state = initialState, action) {
             }
         case delegationConstants.GET_ALL_DELEGATIONS_FAILURE:
         case delegationConstants.DELETE_DELEGATION_FAILURE:
+        case delegationConstants.REVOKE_DELEGATION_FAILURE:
         case delegationConstants.CREATE_DELEGATION_FAILURE:
         case delegationConstants.EDIT_DELEGATION_FAILURE:
             return {
@@ -48,6 +50,12 @@ export function delegation(state = initialState, action) {
             return {
                 ...state,
                 lists: state.lists.filter(delegation => !action.delegationIds.includes(delegation?._id)),
+                isLoading: false
+            }
+        case delegationConstants.REVOKE_DELEGATION_SUCCESS:
+            return {
+                ...state,
+                lists: state.lists,
                 isLoading: false
             }
         case delegationConstants.CREATE_DELEGATION_SUCCESS:

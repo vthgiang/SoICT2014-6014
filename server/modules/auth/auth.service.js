@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
 const Models = require('../../models');
-const { Privilege, Role, User, Company, Employee, UserRole } = Models;
+const { Privilege, Role, User, Company, Employee, UserRole, Delegation } = Models;
 const fs = require("fs");
 const { connect, initModels } = require(`../../helpers/dbHelper`);
 const { sendEmail } = require("../../helpers/emailHelper");
@@ -31,10 +31,12 @@ exports.login = async (fingerprint, data) => {
         .populate([
             {
                 path: "roles",
-                populate: {
+                populate: [{
                     path: "roleId",
-                    populate: { path: "manageOrganizationalUnit" },
-                },
+                }, {
+                    path: "delegation",
+                    populate: { path: "delegator" }
+                }]
             },
         ]);
 
@@ -477,6 +479,21 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
         }
     })
 
+    let delegationAllowedLinks = [];
+    if (userrole.delegation) {
+        privilege.forEach(pri => {
+            if (pri.delegations.length > 0) {
+                if (userrole.delegation) {
+                    if (pri.delegations.some(delegation => userrole.delegation.toString() == delegation.toString()) && pri.resourceId.deleteSoft === false) {
+                        delegationAllowedLinks = delegationAllowedLinks.concat(pri.resourceId);
+                    }
+                }
+            }
+        })
+        links = delegationAllowedLinks.length > 0 ? links.filter(link => delegationAllowedLinks.includes(link)) : links;
+    }
+    console.log(links)
+
     return links;
 };
 
@@ -488,7 +505,7 @@ exports.getProfile = async (portal, userId) => {
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(userId)
         .select("-password -status -deleteSoft -tokens")
-        .populate([{ path: "roles", populate: { path: "roleId" } }]).lean();
+        .populate([{ path: "roles", populate: [{ path: "roleId" }, { path: "delegation", populate: { path: "delegator" } }] }]).lean();
     if (user === null) throw ["user_not_found"];
     // user = user.toObject();
     const password2Exists = user.password2 ? true : false;

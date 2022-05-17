@@ -32,7 +32,7 @@ class Roles extends Component {
     }
 
     render() {
-        const { auth } = this.props;
+        const { auth, translate } = this.props;
         const { currentRole } = this.state;
         return (
             <li style={{ marginLeft: '5px', marginRight: '5px' }}>
@@ -48,7 +48,7 @@ class Roles extends Component {
                             auth.user.roles.map(role => {
                                 return (
                                     <option key={role.roleId._id} value={role.roleId._id}>
-                                        {role.roleId.name}
+                                        {(!role.delegation) ? role.roleId.name : role.roleId.name + " (" + translate('general.delegation_role') + " " + role.delegation.delegator.name + ")"}
                                     </option>
                                 )
                             })

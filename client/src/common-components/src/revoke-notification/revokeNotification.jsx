@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class DeleteNotification extends Component {
+class RevokeNotification extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -16,7 +16,10 @@ class DeleteNotification extends Component {
         func //hàm thực hiện tương ứng
     ) => {
         Swal.fire({
-            html: `<h4 style="color: red"><div>${content}</div> ${data.info ? `<div>"${data.info}"</div>` : ""}</h4>`,
+            html: `<h4 style="color: red"><div>${content}</div> ${data.info ? `<div>"${data.info}"</div>` : ""}</h4><br> <div class="form-group">
+            <label>Lý do thu hồi</label>
+            <textarea id="revokeReason-${data.id}" class="form-control" placeholder="Nhập lý do"></textarea>
+        </div>`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -25,6 +28,7 @@ class DeleteNotification extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
+                console.log(result)
                 func(data.id);
             }
         })
@@ -42,13 +46,13 @@ class DeleteNotification extends Component {
                     func
                 )}
             >
-                <i className="material-icons">delete</i>
+                <i className="material-icons">settings_backup_restore</i>
             </a>
         );
     }
 }
 
 const mapState = state => state;
-const DeleteNotificationExport = connect(mapState, null)(withTranslate(DeleteNotification));
+const RevokeNotificationExport = connect(mapState, null)(withTranslate(RevokeNotification));
 
-export { DeleteNotificationExport as DeleteNotification }
+export { RevokeNotificationExport as RevokeNotification }

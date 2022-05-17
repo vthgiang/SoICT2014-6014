@@ -824,13 +824,30 @@ exports.editUser = async (portal, id, data) => {
  * @roleIdArr mảng id các role
  */
 exports.editRolesForUser = async (portal, userId, roleIdArr) => {
+    const check = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: userId, roleId: { $in: roleIdArr }, delegation: { $nin: [[], undefined] } })
+    console.log('check', check)
+    if (check.length > 0) { throw ['user_role_exist'] }
+
+    const userRoleWithPolicies = await UserRole(connect(DB_CONNECTION, portal)).find({
+        userId: userId,
+        roleId: { $in: roleIdArr },
+        policies: { $nin: [[], undefined] }
+    });
+
+    let roleIdsWithPolicies = [];
+    if (userRoleWithPolicies.length > 0) {
+        roleIdsWithPolicies = userRoleWithPolicies.map(ur => ur.roleId.toString())
+    }
+
     await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
-        userId,
+        userId: userId,
+        delegation: { $in: [[], undefined] }
     });
     var data = await roleIdArr.map((roleId) => {
         return {
             userId,
             roleId,
+            policies: roleIdsWithPolicies.includes(roleId.toString()) ? userRoleWithPolicies.filter(ur => ur.roleId.equals(roleId))[0].policies : []
         };
     });
     var relationship = await UserRole(
@@ -1006,6 +1023,7 @@ module.exports._getAllUsersInOrganizationalUnits = _getAllUsersInOrganizationalU
                 employees: {},
                 department: department.name,
                 id: department.id,
+                parent: department.parent_id
             };
             tmp.forEach((item) => {
                 let obj = {};

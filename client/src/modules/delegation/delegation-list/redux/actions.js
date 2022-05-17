@@ -5,7 +5,8 @@ export const DelegationActions = {
     getDelegations,
     deleteDelegations,
     createDelegation,
-    editDelegation
+    editDelegation,
+    revokeDelegation
 }
 
 function getDelegations(queryData) {
@@ -49,6 +50,31 @@ function deleteDelegations(data) {
             .catch((error) => {
                 dispatch({
                     type: delegationConstants.DELETE_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function revokeDelegation(data) {
+    return (dispatch) => {
+        dispatch({
+            type: delegationConstants.REVOKE_DELEGATION_REQUEST
+        });
+
+        delegationServices
+            .revokeDelegation(data)
+            .then((res) => {
+                dispatch({
+                    type: delegationConstants.REVOKE_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationIds: data.delegationIds,
+                    reason: data.reason
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: delegationConstants.REVOKE_DELEGATION_FAILURE,
                     error
                 });
             });

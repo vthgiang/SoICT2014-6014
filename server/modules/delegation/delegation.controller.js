@@ -127,6 +127,30 @@ exports.deleteDelegations = async (req, res) => {
     }
 }
 
+exports.revokeDelegation = async (req, res) => {
+    try {
+        let revokedDelegation = await DelegationService.revokeDelegation(req.portal, req.body.delegationIds, req.body.reason);
+        if (revokedDelegation) {
+            await Log.info(req.user.email, "REVOKED_DELEGATION", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["revoke_success"],
+                content: revokedDelegation
+            });
+        } else {
+            throw Error("Delegation is invalid");
+        }
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "REVOKED_DELEGATION", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["revoke_fail"],
+            content: error.message
+        });
+    }
+}
+
 // Lấy ra tên của tất cả các Ví dụ
 exports.getOnlyDelegationName = async (req, res) => {
     try {

@@ -70,6 +70,9 @@ const DelegationSchema = new Schema({
             "confirmed" // Xác nhận
         ],
     },
+    revokeReason: {
+        type: String
+    },
     logs: [
         {
             createdAt: {

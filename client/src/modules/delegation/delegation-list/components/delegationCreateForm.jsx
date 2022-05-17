@@ -5,10 +5,12 @@ import { ButtonModal, DialogModal, ErrorLabel, SelectBox, DatePicker, TimePicker
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { DelegationActions } from '../redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DelegationFormValidator } from './delegationFormValidator';
 import './selectLink.css'
 import dayjs from "dayjs";
 import { generateCode } from "../../../../helpers/generateCode";
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
 
 
@@ -31,25 +33,29 @@ function DelegationCreateForm(props) {
             endTime: "11:59 PM",
         },
         showChooseLinks: false,
+        showChooseRevoke: false,
         delegationStart: "",
         delegationEnd: "",
-        delegateLinks: [],
+        delegateLinks: null,
         allPrivileges: true,
-        validLinks: []
+        validLinks: [],
+        unitMembers: [],
+        selectDelegateRole: false,
+        errorOnDelegateLinks: undefined
     })
 
     console.log(state)
 
 
     const { translate, delegation, auth, user, role, link, page, perPage } = props;
-    const { delegationName, description, delegationNameError, delegateRole, delegatee, delegateDuration, showChooseLinks, errorDelegateRole, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks } = state;
+    const { delegationName, description, delegationNameError, delegateRole, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateRole, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateRole, errorOnDelegateLinks, unitMembers } = state;
 
     /**
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
         if (!delegationNameError.status || !validateDelegateRole(state.delegateRole, false) || !validateDelegatee(state.delegatee, false)
-            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status) {
+            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || (showChooseLinks && delegateLinks == null)) {
             return false;
         }
         return true;
@@ -109,8 +115,8 @@ function DelegationCreateForm(props) {
             showChooseLinks: showChooseLinks,
             delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
             delegationEnd: delegationEnd != "" ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
-            delegateLinks: delegateLinks,
-            allPrivileges: allPrivileges
+            delegateLinks: showChooseLinks ? delegateLinks.concat(validLinks.filter(link => link.url == "/home" || link.url == "/notifications").map(l => l._id)) : null,
+            allPrivileges: (!showChooseLinks) ? true : validLinks.length - 2 == delegateLinks.length
         }
         if (isFormValidated() && delegationName) {
             props.createDelegation([data]);
@@ -121,7 +127,15 @@ function DelegationCreateForm(props) {
         setState({
             ...state,
             showChooseLinks: event.target.checked,
-            allPrivileges: !event.target.checked
+            allPrivileges: !event.target.checked,
+            errorOnDelegateLinks: undefined,
+        });
+    }
+
+    const chooseRevoke = (event) => {
+        setState({
+            ...state,
+            showChooseRevoke: event.target.checked,
         });
     }
 
@@ -154,15 +168,36 @@ function DelegationCreateForm(props) {
         });
     }
 
+    // DS toàn bộ user theo cơ cấu tổ chức
+    useEffect(() => {
+        props.getAllUserInAllUnitsOfCompany();
+    }, [])
+
+    // DS toàn bộ user thuộc department và children department
+
+    let usersInUnitsOfCompany;
+    if (user && user.usersInUnitsOfCompany) {
+        console.log(user)
+        usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        if (delegateRole != "") {
+            let selectedRoleUnit = user.organizationalUnitsOfUser.find(item =>
+                item.managers.find(manager => manager === delegateRole) === delegateRole
+                || item.deputyManagers[0] === delegateRole
+                || item.employees[0] === delegateRole);
+
+            usersInUnitsOfCompany = usersInUnitsOfCompany.filter(unit => unit.id == selectedRoleUnit._id || unit.parent == selectedRoleUnit._id)
+
+        }
+
+    }
+
+    console.log(usersInUnitsOfCompany)
+    let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+    console.log(allUnitsMember)
+
 
     const handleDelegateRole = (value) => {
         validateDelegateRole(value[0], true);
-        // let currentRole = role.list.filter(role => role._id == value[0])
-        // console.log(value[0])
-        // console.log(currentRole)
-
-        // let currentRoleLinks = link.list.filter(link => link.roles.map(role => role.roleId._id) == value || currentRole.parents.map(p => p._id).contains(link.roles.map(role => role.roleId._id)))
-        // console.log(currentRoleLinks)
     }
 
     const handleDelegatee = (value) => {
@@ -172,15 +207,28 @@ function DelegationCreateForm(props) {
 
     const validateDelegateRole = (value, willUpdateState) => {
         let msg = undefined;
+
         const { translate } = props;
         if (!value) {
             msg = translate('manage_delegation.no_blank_delegate_role');
         }
         if (willUpdateState) {
+            // Array id delegate role và parents
+            let selectedRoleAndParents = role.list.filter(role => role._id == value)[0].parents.map(p => p._id).concat(value)
+
+            // console.log(role.list.filter(role => role._id == value[0]))
+            // console.log(selectedRoleAndParents)
+            // console.log(link.list.filter(link => link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r))))
+
+            let linksOfDelegateRole = link.list.filter(link => link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r)))
+
             setState({
                 ...state,
                 delegateRole: value,
                 errorDelegateRole: msg,
+                validLinks: linksOfDelegateRole.sort((a, b) => a.category > b.category ? 1 : -1),
+                // unitMembers: unitMems,
+                selectDelegateRole: true
             })
         }
         return msg === undefined;
@@ -330,15 +378,20 @@ function DelegationCreateForm(props) {
     }
 
     const handleDelegateLinksChange = (value) => {
-        if (value.length === 0) {
-            value = null
+        let msg = undefined;
+        if (showChooseLinks && value.length === 0) {
+            value = null;
+            msg = translate("manage_delegation.not_select_link")
         }
+
 
         setState({
             ...state,
-            delegateLinks: value
+            delegateLinks: value,
+            errorOnDelegateLinks: msg
         })
     }
+
 
     const convertDateTime = (date, time) => {
         let splitter = date.split("-");
@@ -371,40 +424,7 @@ function DelegationCreateForm(props) {
                 maxWidth={500}
             >
                 <form id="form-create-delegation-hooks" onSubmit={() => save(translate('manage_delegation.add_success'))}>
-                    {/* 
-                    <div className="row form-group">
-                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${delegateDuration.errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`datepicker1-${id}-${props.id}`}
-                                    dateFormat="day-month-year"
-                                    value={delegateDuration.startDate}
-                                    onChange={handleChangeTaskStartDate}
-                                />
-                                < TimePicker
-                                    id={`time-picker-1-${id}-${props.id}`}
-                                    refs={`time-picker-1-${id}-${props.id}`}
-                                    value={delegateDuration.startTime}
-                                    onChange={handleStartTimeChange}
-                                />
-                                <ErrorLabel content={delegateDuration.errorOnStartDate} />
-                            </div>
-                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${delegateDuration.errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`datepicker2-${id}-${props.id}`}
-                                    value={delegateDuration.endDate}
-                                    onChange={handleChangeTaskEndDate}
-                                />
-                                < TimePicker
-                                    id={`time-picker-2-${id}-${props.id}`}
-                                    refs={`time-picker-2-${id}-${props.id}`}
-                                    value={delegateDuration.endTime}
-                                    onChange={handleEndTimeChange}
-                                />
-                                <ErrorLabel content={delegateDuration.errorOnEndDate} />
-                            </div>
-                        </div> */}
+
                     <div className="row form-group">
                         {/* Tên ủy quyền*/}
                         <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${delegationNameError.status ? "" : "has-error"}`}>
@@ -438,26 +458,70 @@ function DelegationCreateForm(props) {
                             />
                             <ErrorLabel content={errorDelegateRole} />
                         </div>
+
                         {/* Chọn người nhận */}
                         <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${errorDelegatee === undefined ? "" : "has-error"}`}>
                             <label>{translate('manage_delegation.delegate_receiver')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id="select-delegate-receiver-create"
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    user.list.filter(user => user._id != auth.user._id).map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
-                                }
-                                onChange={handleDelegatee}
-                                multiple={false}
-                                options={{ placeholder: translate('manage_delegation.choose_delegatee') }}
-                            />
+                            {allUnitsMember &&
+                                <SelectBox
+                                    id="select-delegate-receiver-create"
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={
+                                        allUnitsMember.map(unit =>
+                                            unit = { text: unit.text, value: unit.value.filter(user => user.value != auth.user._id) }
+                                        )
+                                    }
+                                    onChange={handleDelegatee}
+                                    multiple={false}
+                                    options={{ placeholder: translate('manage_delegation.choose_delegatee') }}
+                                />
+                            }
                             <ErrorLabel content={errorDelegatee} />
                         </div>
+
                     </div>
+                    {selectDelegateRole &&
+                        <div className="row form-group">
+                            <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 ${errorOnDelegateLinks === undefined ? "" : "has-error"}`}>
+                                <div className="row">
+                                    <div className={`col-lg-6 col-md-6 col-ms-6 col-xs-6`}>
+                                        <form style={{ marginBottom: '5px' }}>
+                                            <input type="checkbox" id="delegateLinks" name="delegateLinks" onChange={chooseLinks} />
+                                            <label htmlFor="delegateLinks">&nbsp;{translate('manage_delegation.choose_links')}</label>
+                                        </form>
+                                    </div>
+                                    <div className={`col-lg-6 col-md-6 col-ms-6 col-xs-6`}>
+                                        <form style={{ marginBottom: '5px' }}>
+                                            <input type="checkbox" id="delegateRevoke" name="delegateRevoke" onChange={chooseRevoke} />
+                                            <label htmlFor="delegateRevoke">&nbsp;{translate('manage_delegation.choose_revoke')}</label>
+                                        </form>
+                                    </div>
+                                </div>
+
+
+                                {showChooseLinks &&
+
+                                    <SelectMulti id={`multiSelectDelegateLinks`} multiple="multiple"
+                                        options={{ nonSelectedText: translate('manage_delegation.choose_delegate_links'), allSelectedText: translate('manage_delegation.select_all_links'), enableFilter: true }}
+                                        onChange={handleDelegateLinksChange}
+                                        value={delegateLinks ? delegateLinks : []}
+                                        items={
+                                            validLinks.filter(link => link.url != "/home" && link.url != "/notifications").map(link => { return { value: link ? link._id : null, text: link ? `${link.category} - ${link.url} - ${link.description}` : "" } })
+                                        }
+                                    >
+                                    </SelectMulti>
+
+                                }
+                                <ErrorLabel content={errorOnDelegateLinks} />
+
+                            </div>
+                        </div>
+
+                    }
 
                     <div className="row form-group">
-                        <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnStartDate === undefined ? "" : "has-error"}`}>
+                        <div style={{ marginBottom: "0px" }} className={`${showChooseRevoke ? "col-lg-6 col-md-6" : "col-lg-12 col-md-12"} col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnStartDate === undefined ? "" : "has-error"}`}>
                             <label className="control-label">{translate('manage_delegation.start_date')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`datepicker1`}
@@ -473,59 +537,25 @@ function DelegationCreateForm(props) {
                             />
                             <ErrorLabel content={delegateDuration.errorOnStartDate} />
                         </div>
-                        <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnEndDate === undefined ? "" : "has-error"}`}>
-                            <label className="control-label">{translate('manage_delegation.end_date')}</label>
-                            <DatePicker
-                                id={`datepicker2`}
-                                value={delegateDuration.endDate}
-                                onChange={handleChangeTaskEndDate}
-                            />
-                            < TimePicker
-                                id={`time-picker-2`}
-                                refs={`time-picker-2`}
-                                value={delegateDuration.endTime}
-                                onChange={handleEndTimeChange}
-                            />
-                            <ErrorLabel content={delegateDuration.errorOnEndDate} />
-                        </div>
-                    </div>
-
-                    <div className="row form-group">
-                        <div className={`col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
-                            <form style={{ marginBottom: '5px' }}>
-                                <input type="checkbox" id="delegateLinks" name="delegateLinks" onChange={chooseLinks} />
-                                <label htmlFor="delegateLinks">&nbsp;{translate('manage_delegation.choose_links')}</label>
-                            </form>
-
-                            {showChooseLinks &&
-
-                                <SelectMulti id={`multiSelectDelegateLinks`} multiple="multiple"
-                                    options={{ nonSelectedText: translate('manage_delegation.choose_delegate_links'), allSelectedText: translate('manage_delegation.select_all_links') }}
-                                    onChange={handleDelegateLinksChange}
-                                    value={delegateLinks ? delegateLinks : []}
-                                    items={
-                                        link.list.filter().map(link => { return { value: link ? link._id : null, text: link ? `${link.url} - ${link.category} (${link.description})` : "" } })
-
-                                    }
-                                >
-                                </SelectMulti>
-
-                            }
-                        </div>
+                        {showChooseRevoke &&
+                            <div style={{ marginBottom: "0px" }} className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group ${delegateDuration.errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('manage_delegation.end_date')}</label>
+                                <DatePicker
+                                    id={`datepicker2`}
+                                    value={delegateDuration.endDate}
+                                    onChange={handleChangeTaskEndDate}
+                                />
+                                < TimePicker
+                                    id={`time-picker-2`}
+                                    refs={`time-picker-2`}
+                                    value={delegateDuration.endTime}
+                                    onChange={handleEndTimeChange}
+                                />
+                                <ErrorLabel content={delegateDuration.errorOnEndDate} />
+                            </div>}
                     </div>
 
 
-                    {/* <div className={`form-group ${delegationNameError.status ? "" : "has-error"}`}>
-                        <label>{translate('manage_delegation.delegationName')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={delegationName} onChange={handleDelegationName}></input>
-                        <ErrorLabel content={delegationNameError.message} />
-                    </div> */}
-
-                    {/* Mô tả ví dụ */}
-                    {/* <div className={`form-group`}>
-                        <label>{translate('manage_delegation.delegation_description')}</label>
-                        <input type="text" className="form-control" value={description} onChange={handleDelegationDescription}></input>
-                    </div> */}
                 </form>
             </DialogModal>
         </React.Fragment>
@@ -539,7 +569,10 @@ function mapState(state) {
 
 const actions = {
     createDelegation: DelegationActions.createDelegation,
-    getDelegations: DelegationActions.getDelegations
+    getDelegations: DelegationActions.getDelegations,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+
 }
 
 const connectedDelegationCreateForm = connect(mapState, actions)(withTranslate(DelegationCreateForm));

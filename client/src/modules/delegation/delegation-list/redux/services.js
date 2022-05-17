@@ -7,7 +7,8 @@ export const delegationServices = {
     getDelegations,
     deleteDelegations,
     createDelegation,
-    editDelegation
+    editDelegation,
+    revokeDelegation
 }
 
 function getDelegations(queryData) {
@@ -36,6 +37,22 @@ function deleteDelegations(data) {
             method: "DELETE",
             data: {
                 delegationIds: data?.delegationIds
+            }
+        },
+        true,
+        true,
+        "manage_delegation"
+    )
+}
+
+function revokeDelegation(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations`,
+            method: "PATCH",
+            data: {
+                delegationIds: data?.delegationIds,
+                reason: data?.reason
             }
         },
         true,

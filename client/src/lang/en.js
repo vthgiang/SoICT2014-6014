@@ -77,6 +77,7 @@ export default {
             detail: "Detail",
             select_all: "Select all",
             add_import: "Add data from file",
+            delegation_role: "Delegation from"
         },
 
         dashboard_unit: {
@@ -228,7 +229,7 @@ export default {
 
             view_building_list: "View building list",
 
-            
+
             // NHÂN VIÊN
             recommend_equipment_procurement: "Recommend equipment procurement",
             recommend_distribute_asset: "Recommend distribute asset",
@@ -239,7 +240,7 @@ export default {
             //Quản lý vật tư 
             manage_supplies: "Manage supplies",
             dashboard_supplies: "Dashboard manage supplies",
-            manage_supplies_infor:"Manage supplies information",
+            manage_supplies_infor: "Manage supplies information",
             manage_supplies_purchase_request: "Manage purchase request",
             manage_allocation_history: "Manage allocation history",
             manage_purchase_invoice: "Manage purchase invoice",
@@ -783,7 +784,8 @@ export default {
                 user_not_found: "User not found",
                 department_not_found: "Organizational unit of user not found",
                 create_user_attribute_success: "Add user attributes successfully",
-                attribute_selected_duplicate: "Selected attribute names are duplicated"
+                attribute_selected_duplicate: "Selected attribute names are duplicated",
+                user_role_exist: "User already has this role via delegation"
             },
             role: {
                 // Thông điệp trả về từ server
@@ -796,8 +798,8 @@ export default {
                 role_manager_exist: "Manager role name already exists",
                 role_deputy_manager_exist: "Deputy manager role name already exists",
                 role_employee_exist: "Employee role name already exists",
-                attribute_selected_duplicate: "Selected attribute names are duplicated"
-
+                attribute_selected_duplicate: "Selected attribute names are duplicated",
+                user_role_exist: "User already has this role via delegation"
             },
             link: {
                 // Thông điệp trả về từ server
@@ -926,7 +928,7 @@ export default {
             no_version: "Not have different version",
             no_blank_description: "Description should not empty",
             no_blank_name: "Name should not empty",
-            no_blank_code:"Code should not empty",
+            no_blank_code: "Code should not empty",
             infomation_docs: "Document Infomation",
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
@@ -1635,24 +1637,35 @@ export default {
 
         manage_delegation: {
             delegationName: "Delegation Name",
+            delegateType: "Delegation Type",
+            delegateObject: "Role/Task",
+            delegatee: "Delegatee",
+            delegateStartDate: "Date activated",
+            delegateEndDate: "Date revoked",
+            delegateStatus: "Status",
+            delegateTypeTask: "Task delegation",
+            delegateTypeRole: "Role delegation",
+            end_date_tbd: "To be determined",
             search: "Search",
             add_role_delegation: "Add role delegation",
             index: "Index",
             description: "Description",
             delegate_role: "Delegate role",
             delegate_receiver: "Delegatee",
-            start_date: "Start date",
+            start_date: "Activation date",
             end_date: "Revocation date",
-            choose_links: "Choose links to delegate",
-            choose_delegate_role: "Choose delegate role",
-            choose_delegatee: "Choose delegatee",
-            choose_delegate_links: "Choose links",
+            choose_links: "Select links to delegate",
+            choose_delegate_role: "Select delegate role",
+            choose_delegatee: "Select delegatee",
+            choose_delegate_links: "Select links",
+            choose_revoke: "Automatic revocation",
+            select_all_links: "Select all links",
             edit: "Edit this delegation",
             delete: "Delete this delegation",
             delete_success: "Delete delegation successfully!",
             delete_fail: "Delete delegation fail!",
             add: "Add delegation",
-            add_role_delegation_title: "Add a new role delegation",
+            add_role_delegation_title: "Add a role delegation",
             add_multi_delegation: "Add many new delegations",
             add_one_delegation: "Add 1 new delegation",
             add_success: "Add delegation successfully!",
@@ -1664,7 +1677,18 @@ export default {
             detail_info_delegation: "Detail infomation of delegation",
             no_blank_delegate_role: "Delegate role must not be empty",
             no_blank_delegatee: "Delegatee must not be empty",
-            delegation_name_exist: "Delegation name exists"
+            delegation_name_exist: "Delegation name exists",
+            delegation_role_exist: "Delegation exists",
+            not_select_link: "Delegate links not selected",
+            user_role_exist: "Delegatee already has this role",
+            wait_for_confirmation: "Pending",
+            declined: "Declined",
+            confirmed: "Confirmed",
+            revoked: "Revoked",
+            activated: "Active",
+            revoke_request: "Revoke this delegation",
+            revoke_success: "Revoke delegation successfully!",
+            revoke_fail: "Revoke delegation fail!",
         },
 
         // Modules cấu hình các chức năng

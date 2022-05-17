@@ -1,7 +1,7 @@
 const { User } = require('../../../models');
 const UserService = require('./user.service');
 const PolicyService = require(`../../super-admin/policy/policy.service`);
-const { differenceAttributes } = require('../../../helpers/functionHelper');
+const { differenceAttributes, arrayEquals } = require('../../../helpers/functionHelper');
 const Logger = require(`../../../logs`);
 
 exports.getUsers = async (req, res) => {
@@ -148,10 +148,10 @@ exports.editUser = async (req, res) => {
         var userBeforeEditing = await UserService.getUser(req.portal, req.params.id);
         var user = await UserService.editUser(req.portal, req.params.id, req.body);
         await UserService.editRolesForUser(req.portal, user._id, req.body.roles);
-        var result = await UserService.getUser(req.portal, user._id);
+        var result = await UserService.getUser(req.portal, req.params.id);
 
-        // Nếu attributes thay đổi thì check lại tất cả policies
-        if (differenceAttributes(userBeforeEditing.attributes, result.attributes).length > 0) {
+        // Nếu attributes thay đổi hoặc roles thay đổi thì check lại tất cả policies
+        if (differenceAttributes(userBeforeEditing.attributes, result.attributes).length > 0 || !arrayEquals(userBeforeEditing.roles.map(role => role && role.roleId ? role.roleId._id : null), result.roles.map(role => role && role.roleId ? role.roleId._id : null))) {
             await PolicyService.checkAllPolicies(req.portal);
         }
 

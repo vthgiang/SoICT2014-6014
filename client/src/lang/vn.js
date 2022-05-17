@@ -78,6 +78,7 @@ export default {
             detail: "Chi tiết",
             select_all: "Chọn tất cả",
             add_import: "Thêm dữ liệu từ file",
+            delegation_role: "Ủy quyền từ"
         },
 
         dashboard_unit: {
@@ -843,7 +844,8 @@ export default {
                 department_not_found:
                     "Không tìm thấy thông tin về phòng ban của user",
                 create_user_attribute_success: "Thêm thuộc tính người dùng thành công",
-                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau"
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau",
+                user_role_exist: "Người dùng đã có phân quyền qua ủy quyền vai trò"
             },
             role: {
                 // Thông điệp trả về từ server
@@ -859,7 +861,8 @@ export default {
                     "Tên cho phân quyền của phó đơn vị này đã được sử dụng",
                 role_employee_exist:
                     "Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng",
-                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau"
+                attribute_selected_duplicate: "Các thuộc tính đã chọn bị trùng với nhau",
+                user_role_exist: "Người dùng đã có phân quyền qua ủy quyền vai trò"
             },
             attribute: {
                 delete_success: "Xóa thuộc tính thành công!",
@@ -1728,25 +1731,36 @@ export default {
             attribute_not_selected: "Chưa chọn thuộc tính",
         },
         manage_delegation: {
-            delegationName: "Tên ủy quyền",
+            delegationName: "Mã ủy quyền",
+            delegateType: "Loại ủy quyền",
+            delegateObject: "Vai trò/Công việc",
+            delegatee: "Người nhận",
+            delegateStartDate: "Ngày có hiệu lực",
+            delegateEndDate: "Ngày thu hồi",
+            delegateStatus: "Trạng thái",
+            delegateTypeTask: "Ủy quyền công việc",
+            delegateTypeRole: "Ủy quyền vai trò",
+            end_date_tbd: "Chưa xác định",
             search: "Tìm kiếm",
             add_role_delegation: "Ủy quyền vai trò",
             index: "STT",
             description: "Mô tả",
             delegate_role: "Vai trò ủy quyền",
             delegate_receiver: "Người nhận ủy quyền",
-            start_date: "Ngày bắt đầu ủy quyền",
-            end_date: "Ngày thu hồi ủy quyền tự động",
-            choose_links: "Tùy chọn trang cho phép truy cập",
+            start_date: "Ủy quyền có hiệu lực",
+            end_date: "Ủy quyền được thu hồi",
+            choose_links: "Tùy chọn trang truy cập",
             choose_delegate_role: "Chọn vai trò ủy quyền",
             choose_delegatee: "Chọn người nhận ủy quyền",
             choose_delegate_links: "Chọn trang",
+            select_all_links: "Chọn tất cả trang",
+            choose_revoke: "Thu hồi ủy quyền tự động",
             edit: "Chỉnh sửa thông tin ủy quyền",
             delete: "Xóa ủy quyền",
             delete_success: "Xóa ủy quyền thành công!",
             delete_fail: "Xóa ủy quyền thất bại!",
             add: "Thêm ủy quyền",
-            add_role_delegation_title: "Thêm mới ủy quyền vai trò",
+            add_role_delegation_title: "Thêm ủy quyền vai trò",
             add_multi_delegation: "Thêm nhiều ủy quyền",
             add_one_delegation: "Thêm một ủy quyền",
             add_success: "Thêm ủy quyền thành công!",
@@ -1758,7 +1772,18 @@ export default {
             detail_info_delegation: "Thông tin chi tiết ủy quyền",
             no_blank_delegate_role: "Vai trò ủy quyền không được bỏ trống",
             no_blank_delegatee: "Người nhận ủy quyền không được bỏ trống",
-            delegation_name_exist: "Tên ủy quyền đã tồn tại"
+            delegation_name_exist: "Tên ủy quyền đã tồn tại",
+            delegation_role_exist: "Ủy quyền này đã tồn tại",
+            not_select_link: "Chưa chọn trang cho phép truy cập",
+            user_role_exist: "Người nhận ủy quyền đã có vai trò này",
+            wait_for_confirmation: "Chờ xác nhận",
+            declined: "Bị từ chối",
+            confirmed: "Đã xác nhận",
+            revoked: "Đã thu hồi",
+            activated: "Đang hoạt động",
+            revoke_request: "Thu hồi ủy quyền",
+            revoke_success: "Thu hồi ủy quyền thành công!",
+            revoke_fail: "Thu hồi ủy quyền thất bại!",
         },
         // Modules cấu hình các chức năng
         module_configuration: {

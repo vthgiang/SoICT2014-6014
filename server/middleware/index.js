@@ -172,6 +172,18 @@ exports.authFunc = (checkPage = true) => {
                                 }
                                 else throw ["page_access_denied"]
                             }
+                            if (userrole.delegation) {
+                                
+                                if (privilege.delegations.length > 0) {
+                                    
+
+                                    if (!privilege.delegations.some(delegation => userrole.delegation.toString() == delegation.toString())) {
+                                        
+                                        throw ["page_access_denied"]
+                                    }
+
+                                }
+                            }
                             if (privilege === null) throw ["page_access_denied"];
                         }
 

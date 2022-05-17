@@ -4,7 +4,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting } from '../data-table-setting/dataTableSetting'
 
 function SmartTable(props) {
-    const { tableId, tableHeaderData, tableBodyData = [], dataDependency, columnData } = props
+    const { tableId, tableHeaderData, tableBodyData = [], dataDependency, columnData, disableCheckbox } = props
     const [checkAll, setCheckAll] = useState(false)
     const lastChecked = useRef()
 
@@ -116,9 +116,11 @@ function SmartTable(props) {
             <table id={tableId} className="table table-striped table-bordered table-hover smart-table" data-toggle="checkboxes" data-range="true">
                 <thead>
                     <tr key={`smart-table-head-${tableId}`}>
-                        <th className="col-fixed not-sort" style={{ width: 45 }}>
-                            <input type='checkbox' checked={checkAll} onChange={() => handleCheckAll()}></input>
-                        </th>
+                        {!disableCheckbox &&
+                            <th className="col-fixed not-sort" style={{ width: 45 }}>
+                                <input type='checkbox' checked={checkAll} onChange={() => handleCheckAll()}></input>
+                            </th>
+                        }
                         {keys?.length > 0
                             && keys.map(item => tableHeaderData?.[item])
                         }
@@ -128,7 +130,9 @@ function SmartTable(props) {
                     {tableBodyData?.length > 0 &&
                         tableBodyData.map((data, index) => (
                             <tr key={`smart-table-${tableId}${index}`}>
-                                <td><input type='checkbox' defaultChecked={false} value={data?.id}></input></td>
+                                {!disableCheckbox &&
+                                    <td><input type='checkbox' defaultChecked={false} value={data?.id}></input></td>
+                                }
                                 {keys?.length > 0
                                     && keys.map(item => data?.[item])
                                 }

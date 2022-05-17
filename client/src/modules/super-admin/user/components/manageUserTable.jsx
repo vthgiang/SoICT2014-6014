@@ -161,7 +161,8 @@ function ManageUserTable(props) {
                     userEmail={state.currentRow.email}
                     userName={state.currentRow.name}
                     userActive={state.currentRow.active}
-                    userRoles={state.currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
+                    userRoles={state.currentRow.roles.filter(role => role && role.roleId && (!role.delegation)).map(role => role.roleId._id)}
+                    // userRoles={state.currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
                     userAvatar={state.currentRow.avatar}
                     userAttributes={state.currentRow.attributes}
                     handleChange={handleChange}
@@ -201,7 +202,7 @@ function ManageUserTable(props) {
                             >
                                 <td>{parse(u.name)}</td>
                                 <td>{u.email}</td>
-                                <td><ToolTip dataTooltip={u.roles.map(role => role && role.roleId ? role.roleId.name : "")} /></td>
+                                <td><ToolTip dataTooltip={u.roles.filter(role => role && role.roleId && (!role.delegation)).map(role => role.roleId.name)} /></td>
                                 <td>{u.active
                                     ? <p><i className="fa fa-circle text-success" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.enable')} </p>
                                     : <p><i className="fa fa-circle text-danger" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.disable')} </p>}</td>
