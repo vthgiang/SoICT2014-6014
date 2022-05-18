@@ -158,6 +158,7 @@ export default {
             training_plan: "Quản lý khoá đào tạo",
             training_plan_employee: "Thông tin đào tạo",
             list_major: "Danh sách chuyên ngành",
+            list_contract: "Danh sách hợp đồng",
             list_career_position: "Danh sách vị trí công việc",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
             list_bidding_package: "Danh sách gói thầu",
@@ -309,7 +310,9 @@ export default {
             // Quản lý dự án
             manage_project: "Quản lý dự án",
             projects_list: 'Danh sách dự án',
+            project_template_list: "Mẫu dự án",
             project_details: 'Chi tiết dự án',
+            project_template_details: 'Chi tiết mẫu dự án',
             tasks_list: 'Danh sách công việc',
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',

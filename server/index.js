@@ -49,6 +49,7 @@ router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets
 
 router.use("/get-employee-dashboard-data", require("./modules/human-resource/get-employee-dashboard-chart/get-data.route"));
 
+router.use("/contracts", require("./modules/human-resource/contract/contract.route"));
 router.use("/majors", require("./modules/human-resource/major/major.route"));
 router.use(
     "/career-positions",

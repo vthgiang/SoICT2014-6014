@@ -97,6 +97,55 @@ const BiddingPackageSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "Company",
         },
+
+        // đề xuất kỹ thuật
+        technicalProposal: [{
+            // tên công việc
+            taskName: {
+                type: String
+            },
+            // mô tả công việc
+            taskDescription: {
+                type: String
+            },
+            // // đầu mục công việc
+            // taskCategory: [{
+            //     type: String
+            // }],
+            // nhân sự trực tiếp
+            directEmployees: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            // nhân sự dự phòng
+            backupEmployees: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            //thời gian ước lượng làm của task
+            estimateTime: {
+                type: Number,
+            },
+            // Đơn vị thời gian của task
+            unitTime: {
+                // có 2 đơn vị thời gian: Giờ, Ngày, Tháng
+                type: String,
+                default: "days",
+                enum: [
+                    "hours",
+                    "days",
+                    "months",
+                ],
+            },
+
+            // file đề xuất kĩ thuật đính kèm
+            fileName: {
+                type: String,
+            },
+            fileUrl: {
+                type: String,
+            },
+        }]
     },
     {
         timestamps: true,

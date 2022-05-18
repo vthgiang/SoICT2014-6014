@@ -10,6 +10,7 @@ import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
 import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
+import { ContractTab } from "../modules/human-resource/profile/employee-info/components/contractTab";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -63,6 +64,7 @@ const CareerPosition = lazy(() => import("../modules/human-resource/career/compo
 const SearchKeyEmployee =  lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
 const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
 const Major = lazy(() => import("../modules/human-resource/major/component"))
+const Contract = lazy(() => import("../modules/human-resource/contract/component"))
 // const Major = lazy(() => import("../modules/human-resource/major/component"))
 const BiddingPackagesManagement = lazy(() => import("../modules/human-resource/bidding-package/biddingPackageManagement/components"))
 
@@ -1149,6 +1151,26 @@ class Routes extends Component {
                         pageName={"list_major"}
                         layout={Layout}
                         component={Major}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_contract"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-list-contract",
+                                name: "list_contract",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-list-contract"}
+                        path={"/hr-list-contract"}
+                        pageName={"list_contract"}
+                        layout={Layout}
+                        component={Contract}
                     />
 
                     <PrivateRoute
@@ -3163,6 +3185,49 @@ class Routes extends Component {
                         pageName={"tasks_list"}
                         layout={Layout}
                         component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/projects-template-list"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/projects-list",
+                                name: "project_template_list",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/projects-template-list"}
+                        path={"/project/projects-template-list"}
+                        pageName={"project_template_list"}
+                        layout={Layout}
+                        component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/project-template-details"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/projects-template-list",
+                                name: "projects_template_list",
+                                icon: "fa fa-folder-open",
+                            },
+                            {
+                                link: "/project/project-template-details",
+                                name: "project_details",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/project-template-details"}
+                        path={"/project/project-template-details"}
+                        pageName={"project_template_details"}
+                        layout={Layout}
+                        component={ProjectDetailPage}
                     />
                     {/* <PrivateRoute
                         isLoading={false}

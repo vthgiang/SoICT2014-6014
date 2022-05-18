@@ -789,6 +789,9 @@ exports.links = [{
     }, {
         url: '/hr-management-package',
         apis: ['@all']
+    }, {
+        url: '/hr-list-contract',
+        apis: ['@all']
     },
     {
         url: '/kpi-units/create-for-admin',
@@ -1080,6 +1083,14 @@ exports.links = [{
     },
     {
         url: '/project/project-details',
+        apis: ['@all']
+    },
+    {
+        url: '/project/projects-template-list',
+        apis: ['@all']
+    },
+    {
+        url: '/project/project-template-details',
         apis: ['@all']
     },
     {
