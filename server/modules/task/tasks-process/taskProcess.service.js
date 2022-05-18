@@ -706,7 +706,7 @@ exports.getAllTaskProcess = async (portal, query) => {
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", },
                     { path: "collaboratedWithOrganizationalUnits", },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
