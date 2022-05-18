@@ -11,6 +11,7 @@ import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
 import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
 import { ContractTab } from "../modules/human-resource/profile/employee-info/components/contractTab";
+import { ModalViewProcessById } from "../modules/task/task-process/component/task-process-management/modalViewProcessById";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -61,7 +62,7 @@ const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/stat
 const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
 const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
 // const BiddingPackage = lazy(() => import("../modules/human-resource/biddingPackage/component"))
-const SearchKeyEmployee =  lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
+const SearchKeyEmployee = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
 const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
 const Major = lazy(() => import("../modules/human-resource/major/component"))
 const Contract = lazy(() => import("../modules/human-resource/contract/component"))
@@ -1583,7 +1584,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={TaskComponent}
                     />
-                    <PrivateRoute // Trang chi tiết quy trinhf  (không có trên menu)
+                    <PrivateRoute // Trang chi tiết mẫu quy trinh  (không có trên menu)
                         isLoading={this.props.tasks.isLoading}
                         key={"task"}
                         arrPage={[
@@ -1597,6 +1598,21 @@ class Routes extends Component {
                         pageName={"process_template"}
                         layout={Layout}
                         component={ModalViewTaskProcessById}
+                    />
+                    <PrivateRoute // Trang chi tiết quy trinh  (không có trên menu)
+                        isLoading={this.props.tasks.isLoading}
+                        key={"task"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            { link: "/process-template", name: "process-template", icon: "" },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/process"}
+                        path={"/process"}
+                        pageName={"process"}
+                        layout={Layout}
+                        component={ModalViewProcessById}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}

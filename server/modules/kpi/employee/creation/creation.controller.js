@@ -8,7 +8,7 @@ const { getDataEmployeeKpiSetLog } = require('../../../../helpers/descriptionLog
 
 // Điều phối đến các hàm thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
-/** Lấy tập KPI cá hiện hiện tại */
+/** Lấy tập KPI cá nhân hiện tại */
 exports.getEmployeeKpiSet = async (req, res) => {
     if (req.query.userId && req.query.startDate && req.query.endDate) {
         this.getAllEmployeeKpiSetByMonth(req, res);
@@ -99,6 +99,8 @@ exports.createEmployeeKpiSet = async (req, res) => {
             ...req.body,
             creator: req.user._id
         }
+
+        console.log("req", data);
         let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, data);
 
         // Thêm log

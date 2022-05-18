@@ -30,9 +30,9 @@ function ReceiptManagement(props) {
     })
 
     const { translate, bills, stocks, user, lots } = props;
-    const { listPaginate, totalPages, page, listBillByGroup} = bills;
+    const { listPaginate, totalPages, page, listBillByGroup } = bills;
     const { listStocks } = stocks;
-    const { startDate, endDate, group, currentRow, actionAddLots, billStatusState } = state;
+    const { startDate, endDate, group, currentRow, actionAddLots } = state;
     const dataPartner = props.getPartner();
     const userId = localStorage.getItem("userId");
 
@@ -293,28 +293,28 @@ function ReceiptManagement(props) {
                         <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={props.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                     </div>
                 </div>
-                <div className="box-body row" style={{display: 'flex', width: "70%", marginLeft: "5%"}}>
-                        <ul className="todo-list">
-                            <li>
-                                <span className="text" style={{cursor: "pointer"}}><a onClick={() => handleSearchByStatus('1')}>Số lượng phiếu chờ phê duyệt</a></span>
-                                <span className="label label-info" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '1').length} Phiếu</span>
-                            </li>
-                            <li> 
-                                <span className="text" style={{cursor: "pointer"}}><a onClick={() => handleSearchByStatus('2')}>Số lượng phiếu chờ thực hiện </a></span>
-                                <span className="label label-warning" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '2').length} Phiếu</span>
-                            </li>
-                        </ul>
-                        <ul className="todo-list">
-                            <li>
-                                <span className="text" style={{cursor: "pointer"}}><a  onClick={() => handleSearchByStatus('3')}>Số lượng phiếu chờ kiểm định chất lượng</a></span>
-                                <span className="label label-info" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '3').length} Phiếu</span>
-                            </li>
-                            <li>
-                                <span className="text" style={{cursor: "pointer"}}><a onClick={() => handleSearchByStatus('5')}>Số lượng phiếu đã hoàn thành </a></span>
-                                <span className="label label-warning" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '5').length} Phiếu</span>
-                            </li>
-                        </ul>
-                    </div>
+                <div className="box-body row" style={{ display: 'flex', width: "70%", marginLeft: "5%" }}>
+                    <ul className="todo-list">
+                        <li>
+                            <span className="text" style={{ cursor: "pointer" }}><a onClick={() => handleSearchByStatus('1')}>Số lượng phiếu chờ phê duyệt</a></span>
+                            <span className="label label-info" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '1').length} Phiếu</span>
+                        </li>
+                        <li>
+                            <span className="text" style={{ cursor: "pointer" }}><a onClick={() => handleSearchByStatus('2')}>Số lượng phiếu chờ thực hiện </a></span>
+                            <span className="label label-warning" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '2').length} Phiếu</span>
+                        </li>
+                    </ul>
+                    <ul className="todo-list" style={{marginLeft: "20px"}}>
+                        <li>
+                            <span className="text" style={{ cursor: "pointer" }}><a onClick={() => handleSearchByStatus('3')}>Số lượng phiếu chờ kiểm định chất lượng</a></span>
+                            <span className="label label-info" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '3').length} Phiếu</span>
+                        </li>
+                        <li>
+                            <span className="text" style={{ cursor: "pointer" }}><a onClick={() => handleSearchByStatus('5')}>Số lượng phiếu đã hoàn thành </a></span>
+                            <span className="label label-warning" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '5').length} Phiếu</span>
+                        </li>
+                    </ul>
+                </div>
                 <BillDetailForm />
                 {
                     currentRow &&
@@ -342,7 +342,6 @@ function ReceiptManagement(props) {
                         creator={currentRow.creator ? currentRow.creator._id : ''}
                         sourceType={currentRow.sourceType}
                         actionAddLots={actionAddLots}
-                    // billStatus={billStatusState}
                     />
                 }
 
@@ -400,7 +399,7 @@ function ReceiptManagement(props) {
                                         {x.status !== '7' &&
                                             <div>
                                                 <div className="timeline-index">
-                                                    <div className="timeline-progress" style={{ width: (parseInt(x.status) -1) / 5 * 100 + "%" }}></div>
+                                                    <div className="timeline-progress" style={{ width:  (x.status === '5' && checkGoodsHaveBeenPlacedInTheWarehouse(x.goods)) ? "100%" : (parseInt(x.status) - 1) / 5 * 100 + "%" }}></div>
                                                     <div className="timeline-items">
                                                         <div className="tooltip-abc-completed">
                                                             <div className={"timeline-item active"} >

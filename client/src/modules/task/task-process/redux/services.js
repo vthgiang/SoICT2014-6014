@@ -15,6 +15,7 @@ export const TaskProcessService = {
     deleteTaskProcess,
     editProcessInfo,
     importProcessTemplate,
+    getProcessById,
 };
 
 
@@ -41,10 +42,12 @@ function getAllXmlDiagram(pageNumber, noResultsPerPage, name) {
  */
 function getAllTaskProcess(pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
+    let currentRole = getStorage("currentRole");
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process`,
         method: 'GET',
         params: {
+            currentRole: currentRole,
             userId: userId,
             pageNumber: pageNumber,
             noResultsPerPage: noResultsPerPage,
@@ -64,6 +67,15 @@ function deleteTaskProcess(taskProcessId, pageNumber, noResultsPerPage, name) {
             noResultsPerPage: noResultsPerPage,
             name: name,
         },
+    }, false, true, 'task.task_process');
+}
+/**
+ * Lấy process theo id
+ */
+ function getProcessById(processId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process/process/${processId}`,
+        method: 'GET',
     }, false, true, 'task.task_process');
 }
 /**

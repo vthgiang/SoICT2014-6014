@@ -8,6 +8,7 @@ import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../../commo
 import { TaskProcessActions } from '../../redux/actions';
 import { ModalViewProcess } from './modalViewProcess';
 import { ModalEditProcess } from './modalEditProcess';
+import { ModalEditProcessNoInit } from './modalEditProcessNoInit';
 import { forwardRef } from 'react';
 import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -44,6 +45,22 @@ function TaskProcessManagement(props) {
 			}
 		});
 		window.$(`#modal-edit-process-task-list`).modal("show");
+	}
+
+	const showEditProcessNoInit = async (item) => {
+		// console.log(currentRow);
+		item.xmlDiagram = item.processTemplate?.xmlDiagram
+		item.tasks = item.processTemplate?.tasks
+		item.processChilds = item.processTemplate?.processTemplates
+		//console.log(item.processTemplate);
+		// console.log("object");
+		setState(state => {
+			return {
+				...state,
+				currentRow: item,
+			}
+		});
+		window.$(`#modal-edit-process-no-init-task-list`).modal("show");
 	}
 
 	const deleteTaskProcess = async (taskProcessId) => {
@@ -102,19 +119,20 @@ function TaskProcessManagement(props) {
 	}
 
 	const isManager = (itemProcess) => {
-		let { currentUser } = state;
+		let { currentUser, currentRole } = state;
 		let check = false;
 		let manager = itemProcess.manager;
 		// console.log(manager, currentUser);
 		for (let x in manager) {
-			if (manager[x].id === currentUser) {
+			// console.log(manager[x].userId, currentUser,currentRole);
+			if (manager[x].id === currentUser || manager[x].id === currentRole) {
 				check = true;
 			}
 		}
 		return check;
 	}
 
-	
+	//console.log(listTaskProcess);
 
 	return (
 		<div className="box">
@@ -137,6 +155,20 @@ function TaskProcessManagement(props) {
 					state.currentRow !== undefined &&
 					<ModalEditProcess
 						title={'Chỉnh sửa quy trình'}
+						listOrganizationalUnit={listOrganizationalUnit}
+						data={currentRow}
+						idProcess={currentRow._id}
+						xmlDiagram={currentRow.xmlDiagram}
+						processName={currentRow.processName}
+						processDescription={currentRow.processDescription}
+						infoTask={currentRow.taskList}
+						creator={currentRow.creator}
+					/>
+				}
+				{
+					state.currentRow !== undefined &&
+					<ModalEditProcessNoInit
+						title={'Chỉnh sửa quy trình chưa khởi tạo'}
 						listOrganizationalUnit={listOrganizationalUnit}
 						data={currentRow}
 						idProcess={currentRow._id}
@@ -188,6 +220,7 @@ function TaskProcessManagement(props) {
 					<tbody className="task-table">
 						{
 							(listTaskProcess && listTaskProcess.length !== 0) ? listTaskProcess.map((item, key) => {
+								if (item.status !=="not_initialized")
 								return <tr key={key} >
 									<td>{item.processName}</td>
 									<td>{item.processDescription}</td>
@@ -200,6 +233,53 @@ function TaskProcessManagement(props) {
 										{isManager(item) &&
 											<React.Fragment>
 												<a className="edit" onClick={() => { showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
+													<i className="material-icons">edit</i>
+												</a>
+												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
+													<i className="material-icons"></i>
+												</a>
+											</React.Fragment>
+										}
+
+										{/* <a className="delete" onClick={() => { deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
+												<i className="material-icons"></i>
+											</a>
+											<a className="" style={{ color: "#28A745" }} onClick={() => { showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
+												<i className="material-icons">add_box</i>
+											</a> */}
+									</td>
+								</tr>
+							}) : null
+						}
+					</tbody>
+				</table>
+				<p>Các quy trình cần khởi tạo</p>
+				<table className="table table-bordered table-striped table-hover" id={tableId}>
+					<thead>
+						<tr>
+							<th title={translate("task.task_process.process_name")}>{translate("task.task_process.process_name")}</th>
+							<th title="Quy trình cha">Quy trình cha</th>
+							<th title={translate("task.task_process.start_date")}>{translate("task.task_process.start_date")}</th>
+							<th title={translate("task.task_process.end_date")}>{translate("task.task_process.end_date")}</th>
+							<th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+						</tr>
+					</thead>
+					<tbody className="task-table">
+						{
+							(listTaskProcess && listTaskProcess.length !== 0) ? listTaskProcess.map((item, key) => {
+								if (item.status ==="not_initialized")
+								return <tr key={key} >
+									<td>{item.processName}</td>
+									<td>{item.processParent.processName}</td>
+									<td>{item.startDate}</td>
+									<td>{item.endDate}</td>
+									<td>
+										<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+											<i className="material-icons">view_list</i>
+										</a>
+										{isManager(item) &&
+											<React.Fragment>
+												<a className="edit" onClick={() => { showEditProcessNoInit(item) }} title={translate('task_template.edit_this_task_template')}>
 													<i className="material-icons">edit</i>
 												</a>
 												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>

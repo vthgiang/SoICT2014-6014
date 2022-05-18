@@ -408,6 +408,7 @@ exports.links = [{
 
             { path: '/process', method: 'GET' },
             { path: '/process/diagrams/:diagramId', method: 'GET' },
+            { path: '/process/process/:processId', method: 'GET' },
             { path: '/process/diagrams', method: 'POST' },
             { path: '/process/diagrams/import', method: 'POST' },
             { path: '/process/diagrams/:diagramId', method: 'PATCH' },
@@ -841,7 +842,11 @@ exports.links = [{
     },  {
         url: '/process-template',
         apis: ['@all']
-    }, {
+    },  {
+        url: '/process',
+        apis: ['@all']
+    },
+    {
         url: '/task-management-dashboard',
         apis: ['@all']
     }, {
