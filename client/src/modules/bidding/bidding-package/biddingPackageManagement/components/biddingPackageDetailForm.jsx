@@ -9,9 +9,9 @@ import {
 } from '../../biddingPackageInfo/components/combinedContent';
 
 import { BiddingPackageManagerActions } from '../redux/actions';
-import { MajorActions } from '../../../major/redux/actions';
-import { CareerReduxAction } from '../../../career/redux/actions';
-import { CertificateActions } from '../../../certificate/redux/actions';
+import { MajorActions } from '../../../../human-resource/major/redux/actions';
+import { CareerReduxAction } from '../../../../human-resource/career/redux/actions';
+import { CertificateActions } from '../../../../human-resource/certificate/redux/actions';
 import { BiddingPackageReduxAction } from '../../redux/actions';
 
 const BiddingPackageDetailForm = (props) => {

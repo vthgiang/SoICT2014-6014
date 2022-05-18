@@ -33,10 +33,10 @@ import { timesheets } from '../modules/human-resource/timesheets/redux/reducers'
 
 import { career } from '../modules/human-resource/career/redux/reducers';
 import { major } from '../modules/human-resource/major/redux/reducers';
-import { contract } from '../modules/human-resource/contract/redux/reducers';
 import { certificate } from '../modules/human-resource/certificate/redux/reducers';
-import { biddingPackageInfo } from '../modules/human-resource/bidding-package/redux/reducers';
-import { biddingPackagesManager } from '../modules/human-resource/bidding-package/biddingPackageManagement/redux/reducers';
+import { biddingPackageInfo } from '../modules/bidding/bidding-package/redux/reducers';
+import { biddingPackagesManager } from '../modules/bidding/bidding-package/biddingPackageManagement/redux/reducers';
+import { biddingContract } from '../modules/bidding/bidding-contract/redux/reducers';
 
 import { employeeDashboardData } from '../modules/human-resource/employee-dashboard/redux/reducers'
 
@@ -198,7 +198,7 @@ const appReducer = combineReducers({
     // gói thầu
     career,
     major,
-    contract,
+    biddingContract,
     certificate,
     biddingPackageInfo,
     biddingPackagesManager,

@@ -156,11 +156,15 @@ export default {
             training_plan: "Manage Training Courses",
             training_plan_employee: "Training Courses",
             list_major: "Manage majors",
-            list_contract: "Manage contracts",
             list_career_position: "Manage career position",
+            list_certificate: "Manage bidding certificates",
+            
+            // đấu thầu
+            manage_bidding: "Manage bidding",
+            list_bidding_contract: "Manage bidding contracts",
+            bidding_project_template_list: "Bidding project template",
             list_search_for_package: "Search employee for package",
             list_bidding_package: "Manage bidding packages",
-            list_certificate: "Manage bidding certificates",
 
             manage_warehouse: "Manage warehouses",
             dashboard_material: "Dashboad manage materials",
@@ -295,7 +299,7 @@ export default {
             manage_project: "Manage Project",
             projects_list: 'Projects list',
             project_details: 'Projects details',
-            project_template_list: "Project template list",
+            project_template_list: "Project template",
             project_template_details: 'Project detail',
             tasks_list: 'Tasks list',
             phases_list: 'Phases list',

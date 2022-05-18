@@ -1,9 +1,9 @@
-const ContractService = require("./contract.service");
+const BiddingContractService = require("./biddingContract.service");
 
 const Log = require(`${SERVER_LOGS_DIR}`);
 
 /** Lấy danh sách các chuyên ngành */
-exports.searchContract = async (req, res) => {
+exports.searchBiddingContract = async (req, res) => {
     try {
         let data = {};
 
@@ -18,7 +18,7 @@ exports.searchContract = async (req, res) => {
     
         console.log(11, params)
 
-        data = await ContractService.searchContract(
+        data = await BiddingContractService.searchBiddingContract(
             req.portal,
             params,
             req.user.company._id
@@ -43,9 +43,9 @@ exports.searchContract = async (req, res) => {
 };
 
 /** Tạo mới chuyên ngành */
-exports.createNewContract = async (req, res) => {
+exports.createNewBiddingContract = async (req, res) => {
     try {
-        data = await ContractService.createNewContract(
+        data = await BiddingContractService.createNewBiddingContract(
             req.portal,
             req.body,
             req.user.company._id
@@ -69,9 +69,9 @@ exports.createNewContract = async (req, res) => {
 };
 
 /** Chỉnh sửa chuyên ngành */
-exports.editContract = async (req, res) => {
+exports.editBiddingContract = async (req, res) => {
     try {
-        data = await ContractService.editContract(
+        data = await BiddingContractService.editBiddingContract(
             req.portal,
             req.body,
             req.params,
@@ -98,9 +98,9 @@ exports.editContract = async (req, res) => {
 // ====================DELETE=======================
 
 /** Xóa chuyên ngành */
-exports.deleteContract = async (req, res) => {
+exports.deleteBiddingContract = async (req, res) => {
     try {
-        data = await ContractService.deleteContract(
+        data = await BiddingContractService.deleteBiddingContract(
             req.portal,
             req.body,
             req.params.id,
@@ -127,14 +127,14 @@ exports.deleteContract = async (req, res) => {
 // ====================UPLOAD FILE=======================
 
 /** up file hợp đồng */
-exports.uploadContractFile = async (req, res) => {
+exports.uploadBiddingContractFile = async (req, res) => {
     try {
-        let fileContract;
+        let fileBiddingContract;
         if (req.file) {
             let path = req.file.destination + '/' + req.file.filename;
-            fileContract = path.substr(1, path.length)
+            fileBiddingContract = path.substr(1, path.length)
         }
-        const contract = await ContractService.uploadContractFile(req.portal, req.params.id, fileContract);
+        const contract = await BiddingContractService.uploadBiddingContractFile(req.portal, req.params.id, fileContract);
 
         await Logger.info(req.user.email, 'upfile_contract_success', req.portal);
         res.status(200).json({

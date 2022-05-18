@@ -790,8 +790,21 @@ exports.links = [{
     }, {
         url: '/hr-management-package',
         apis: ['@all']
-    }, {
-        url: '/hr-list-contract',
+    },
+    {
+        url: '/bidding-list-contract',
+        apis: ['@all']
+    },{
+        url: '/bidding-search-for-package',
+        apis: ['@all']
+    },{
+        url: '/bidding-management-package',
+        apis: ['@all']
+    },{
+        url: '/bidding-list-package',
+        apis: ['@all']
+    },{
+        url: '/bidding-project-template',
         apis: ['@all']
     },
     {

@@ -15,7 +15,7 @@ import { CareerReduxAction } from "../../../career/redux/actions";
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import { CertificateActions } from '../../../certificate/redux/actions';
-import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
+import { BiddingPackageManagerActions } from '../../../../bidding/bidding-package/biddingPackageManagement/redux/actions';
 
 const EmployeeManagement = (props) => {
 

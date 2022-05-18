@@ -12,7 +12,7 @@ import { CareerReduxAction } from '../../../career/redux/actions';
 import { MajorActions } from '../../../major/redux/actions';
 import { SearchDataImportForm } from './searchDataImportForm';
 import { CertificateActions } from '../../../certificate/redux/actions';
-import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
+import { BiddingPackageManagerActions } from '../../../../bidding/bidding-package/biddingPackageManagement/redux/actions';
 import { assign } from 'lodash';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 

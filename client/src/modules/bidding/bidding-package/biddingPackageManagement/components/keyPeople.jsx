@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ConfirmNotification, DataTableSetting, DatePicker, SelectBox } from '../../../../../common-components';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
-import { EmployeeManagerActions } from '../../../profile/employee-management/redux/actions';
+import { EmployeeManagerActions } from '../../../../human-resource/profile/employee-management/redux/actions';
 import getAllEmployeeSelectBoxItems from './employeeHelper';
 
 function KeyPeople(props) {

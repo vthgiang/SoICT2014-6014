@@ -357,6 +357,20 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Quản lý đấu thầu */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_bidding",
+                                    icon: "fa fa-folder-open",
+                                    list: [
+                                        { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/bidding-list-package" },
+                                        { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/bidding-search-for-package" },
+                                        { name: "menu.list_bidding_contract", icon: "fa fa-file-text-o", path: "/bidding-list-contract" },
+                                        { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/bidding-project-template" },
+                                    ],
+                                }}
+                            />
+
 
                             {/* Quản lý dự án */}
                             <GroupItem
@@ -367,7 +381,7 @@ class SideBar extends Component {
                                         { name: "menu.projects_list", icon: "fa fa-dashboard", path: "/project/projects-list" },
                                         { name: "menu.project_report", icon: "fa fa-sitemap", path: "/project/project-report" },
                                         { name: "menu.project_evaluation", icon: "fa fa-user-plus", path: "/project/project-evaluation" },
-                                        { name: "menu.project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
+                                        // { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/project/projects-template-list" },
                                     ],
                                 }}
                             />
@@ -391,8 +405,7 @@ class SideBar extends Component {
                                         { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
                                         // nhân sự gói thầu
                                         { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/hr-search-for-package" },
-                                        { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/hr-list-bidding-package" },
-                                        { name: "menu.list_contract", icon: "fa fa-file-text-o", path: "/hr-list-contract" },
+                                        // { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/hr-list-bidding-package" },
                                         { name: "menu.list_certificate", icon: "fa fa-certificate", path: "/hr-list-certificate" },
                                         { name: "menu.list_major", icon: "fa fa-briefcase", path: "/hr-list-major" },
                                         { name: "menu.list_career_position", icon: "fa fa-handshake-o", path: "/hr-list-career-position" },

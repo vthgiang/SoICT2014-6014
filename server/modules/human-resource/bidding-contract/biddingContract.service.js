@@ -1,4 +1,4 @@
-const { Contract } = require(`${SERVER_MODELS_DIR}`);
+const { BiddingContract } = require(`${SERVER_MODELS_DIR}`);
 
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -56,7 +56,7 @@ exports.searchContract = async (portal, params, company) => {
     }
 
     if (params.limit === undefined && params.page === undefined) {
-        let data = await Contract(connect(DB_CONNECTION, portal))
+        let data = await BiddingContract(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .sort({
                 endDate: -1,
@@ -69,10 +69,10 @@ exports.searchContract = async (portal, params, company) => {
             totalList: data.length,
         };
     } else {
-        let data = await Contract(connect(DB_CONNECTION, portal)).find(
+        let data = await BiddingContract(connect(DB_CONNECTION, portal)).find(
             keySearch
         );
-        let listContract = await Contract(
+        let listContract = await BiddingContract(
             connect(DB_CONNECTION, portal)
         )
             .find(keySearch)
@@ -97,7 +97,7 @@ exports.searchContract = async (portal, params, company) => {
  *
  */
 exports.createNewContract = async (portal, data, company) => {
-    await Contract(connect(DB_CONNECTION, portal)).create(data);
+    await BiddingContract(connect(DB_CONNECTION, portal)).create(data);
 
     return await this.searchContract(portal, {}, company);
 };
@@ -108,7 +108,7 @@ exports.createNewContract = async (portal, data, company) => {
  * @data : Dữ liệu thay đổi
  */
 exports.editContract = async (portal, data, params, company) => {
-    await Contract(connect(DB_CONNECTION, portal)).updateOne(
+    await BiddingContract(connect(DB_CONNECTION, portal)).updateOne(
         { _id: params.id },
         {
             $set: {
@@ -139,7 +139,7 @@ exports.editContract = async (portal, data, params, company) => {
  * @data : list id xóa
  */
 exports.deleteContract = async (portal, data, id, company) => {
-    await Contract(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
+    await BiddingContract(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
     return await this.searchContract(portal, {}, company);
 };
 
@@ -154,7 +154,7 @@ exports.deleteContract = async (portal, data, id, company) => {
     contractId,
     file = undefined
 ) => {
-    let contract = await Contract(connect(DB_CONNECTION, portal))
+    let contract = await BiddingContract(connect(DB_CONNECTION, portal))
         .findById(contractId)
         .populate({ path: "biddingPackage"})
         .populate({ path: "project"})

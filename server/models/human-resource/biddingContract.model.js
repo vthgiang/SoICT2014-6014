@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Tạo bảng hợp đồng dùng để lưu lại thông tin hợp đồng đươc kí khi gói thầu trúng thầu
-const ContractSchema = new Schema(
+const BiddingContractSchema = new Schema(
     {
         code: {
             type: String, // mã hợp đồng
@@ -21,7 +21,7 @@ const ContractSchema = new Schema(
             type: Date, // ngày kết thúc hợp đồng
         },
         // Đơn vị thời gian của hợp đồng
-        unitTime: {
+        unitOfTime: {
             // có 2 đơn vị thời gian: Giờ, Ngày, Tháng
             type: String,
             default: "days",
@@ -36,7 +36,7 @@ const ContractSchema = new Schema(
             type: Number,
         },
         // Đơn vị tiền tệ của hợp đồng
-        unitCost: {
+        currenceUnit: {
             // có 2 đơn vị chi phÍ: VND, USD
             type: String,
             default: "VND",
@@ -59,6 +59,10 @@ const ContractSchema = new Schema(
             },
             // địa chỉ 
             address: {
+                type: String,
+            },
+            // địa chỉ email 
+            email: {
                 type: String,
             },
             // số đth
@@ -96,6 +100,10 @@ const ContractSchema = new Schema(
             },
             // địa chỉ 
             address: {
+                type: String,
+            },
+            // địa chỉ email 
+            email: {
                 type: String,
             },
             // số đth
@@ -137,12 +145,14 @@ const ContractSchema = new Schema(
         },
 
         // file hợp đồng đính kèm
-        fileName: {
-            type: String,
-        },
-        fileUrl: {
-            type: String,
-        },
+        files: [{
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+            },
+        }]
     },
     {
         timestamps: true,
@@ -150,7 +160,7 @@ const ContractSchema = new Schema(
 );
 
 module.exports = (db) => {
-    if (!db.models.Contract)
-        return db.model("Contract", ContractSchema);
-    return db.models.Contract;
+    if (!db.models.BiddingContract)
+        return db.model(" BiddingContract", BiddingContractSchema);
+    return db.models. BiddingContract;
 };

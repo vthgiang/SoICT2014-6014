@@ -32,6 +32,7 @@ exports.authFunc = (checkPage = true) => {
 
             const token = req.header("utk"); //JWT nhận từ người dùng
             if (!token) throw ["access_denied_4001"];
+            // console.log(35, token);
 
             /**
              * Giải mã token gửi lên để check dữ liệu trong token
@@ -55,6 +56,7 @@ exports.authFunc = (checkPage = true) => {
              * Nếu được gọi từ bên thứ 3: thirdParty = true
              */
 
+            // console.log(59, req);
             if (!req.thirdParty) {
                 /**
                  * 1. Trường hợp service được gọi từ ứng dụng dxclan
@@ -89,7 +91,6 @@ exports.authFunc = (checkPage = true) => {
                  * Xác định db truy vấn cho request
                  */
                 initModels(connect(DB_CONNECTION, req.portal), Models);
-
                 if (crtp !== "/") {
                     const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
                     const currentRole = crtr; // role hiện tại của người dùng
@@ -97,10 +98,12 @@ exports.authFunc = (checkPage = true) => {
                         throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
                     }
                     req.currentRole = currentRole;
+                    console.log(101);
 
                     const role = await Role(connect(DB_CONNECTION, req.portal))
                         .findById(currentRole); //current role của người dùng
                     if (role === null) throw ["role_invalid"];
+                    console.log(106);
 
                     /**
                      * So sánh  fingerprint trong token với fingerprint được gửi lên từ máy của người dùng
@@ -116,6 +119,7 @@ exports.authFunc = (checkPage = true) => {
                     const userId = req.user._id;
                     const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({ userId, roleId: role._id });
                     if (userrole === null) throw ["user_role_invalid"];
+                    console.log(122);
 
                     /**
                      * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
@@ -135,6 +139,7 @@ exports.authFunc = (checkPage = true) => {
                             throw ["service_off"];
                         }
                     }
+                    console.log(142);
 
                     /**
                      * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
@@ -156,6 +161,7 @@ exports.authFunc = (checkPage = true) => {
                                 await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
 
                             if (link === null) throw ["url_invalid"];
+                            console.log(164);
                             const roleArr = [role._id].concat(role.parents);
                             const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
                                 resourceId: link._id,
@@ -165,17 +171,22 @@ exports.authFunc = (checkPage = true) => {
                                 },
                             });
                             if (privilege === null) throw ["page_access_denied"];
+                            console.log(174);
                         }
-
+                        console.log(176);
                         /**
                         * Kiểm tra xem với trang truy cập là như trên thì trang này có được truy cập vào API này không
                         */
                         const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+                        console.log(183, links);
                         const perLink = links.find(l => l.url === url);
+                        console.log(183, apiCalled);
+                        console.log(183, perLink);
                         if (!perLink) throw ['url_invalid_permission']
                         if (perLink.apis[0] !== '@all') {
                             const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
                             if (!perAPI) throw ['api_permission_invalid'];
+                            console.log(186);
                         }
                     }
                 }

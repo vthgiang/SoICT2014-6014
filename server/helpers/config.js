@@ -123,6 +123,10 @@ const LINK_CATEGORY = {
     name: "user_guide",
     description: "Hướng dẫn sử dụng",
   },
+  BIDDING: {
+    name: "bidding-manager",
+    description: "Quản lý đấu thầu"
+  },
 };
 
 const COMPONENTS = [
@@ -542,20 +546,6 @@ const LINKS = [
     component: getComponentsInLink("/hr-list-education"),
   },
 
-  // phần link phục vụ cho hợp đồng
-  {
-    url: "/hr-list-contract",
-    description: "Danh sách hợp đồng",
-    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/hr-list-contract"),
-  },
   // phần link phục vụ cho nhân sự gói thầu
   {
     url: "/hr-list-major",
@@ -574,7 +564,13 @@ const LINKS = [
     url: "/hr-list-career-position",
     description: "Danh sách vị trí công việc",
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-    roles: [ROOT_ROLES.ADMIN.name],
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
     components: getComponentsInLink("/hr-list-career-position"),
   },
   {
@@ -622,6 +618,66 @@ const LINKS = [
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [ROOT_ROLES.ADMIN.name],
     components: getComponentsInLink("/hr-management-package"),
+  },
+
+  // module quản lý đấu thầu
+  {
+    url: "/bidding-list-contract",
+    description: "Danh sách hợp đồng",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/bidding-list-contract"),
+  },{
+    url: "/bidding-search-for-package",
+    description: "Tìm kiếm nhân sự gói thầu",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/bidding-search-for-package"),
+  },
+  {
+    url: "/bidding-management-package",
+    description: "Quản lí thông tin gói thầu",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [ROOT_ROLES.ADMIN.name],
+    components: getComponentsInLink("/bidding-management-package"),
+  },
+  {
+    url: "/bidding-list-package",
+    description: "Danh sách gói thầu",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/bidding-list-package"),
+  },
+  {
+    url: "/bidding-project-template",
+    description: "Mẫu dự án đấu thầu",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/bidding-project-template"),
   },
 
   // KPI
@@ -748,7 +804,7 @@ const LINKS = [
       ROOT_ROLES.DEPUTY_MANAGER.name,
       ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/process-template')
+    components: getComponentsInLink('/task-process-template')
 
   },
   {
@@ -1602,32 +1658,33 @@ const LINKS = [
   //     ]
   // },
   // Quan li du an
-  {
-    url: "/project/projects-template-list",
-    description: "Danh sách mẫu dự án",
-    category: LINK_CATEGORY.PROJECT.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/project/projects-template-list"),
-  },
-  {
-    url: "/project/project-template-details",
-    description: "Chi tiết mẫu dự án",
-    category: LINK_CATEGORY.PROJECT.name,
-    roles: [
-      ROOT_ROLES.SUPER_ADMIN.name,
-      ROOT_ROLES.ADMIN.name,
-      ROOT_ROLES.MANAGER.name,
-      ROOT_ROLES.DEPUTY_MANAGER.name,
-      ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink("/project/project-template-details"),
-  },
+
+  // {
+  //   url: "/project/projects-template-list",
+  //   description: "Danh sách mẫu dự án",
+  //   category: LINK_CATEGORY.PROJECT.name,
+  //   roles: [
+  //     ROOT_ROLES.SUPER_ADMIN.name,
+  //     ROOT_ROLES.ADMIN.name,
+  //     ROOT_ROLES.MANAGER.name,
+  //     ROOT_ROLES.DEPUTY_MANAGER.name,
+  //     ROOT_ROLES.EMPLOYEE.name,
+  //   ],
+  //   components: getComponentsInLink("/project/projects-template-list"),
+  // },
+  // {
+  //   url: "/project/project-template-details",
+  //   description: "Chi tiết mẫu dự án",
+  //   category: LINK_CATEGORY.PROJECT.name,
+  //   roles: [
+  //     ROOT_ROLES.SUPER_ADMIN.name,
+  //     ROOT_ROLES.ADMIN.name,
+  //     ROOT_ROLES.MANAGER.name,
+  //     ROOT_ROLES.DEPUTY_MANAGER.name,
+  //     ROOT_ROLES.EMPLOYEE.name,
+  //   ],
+  //   components: getComponentsInLink("/project/project-template-details"),
+  // },
   {
     url: "/project/projects-list",
     description: "Danh sách dự án",
@@ -1816,13 +1873,6 @@ const LINKS = [
       ROOT_ROLES.DEPUTY_MANAGER.name,
     ],
     components: getComponentsInLink("/manage-manufacturing-command"),
-  },
-  {
-    url: "/manage-work-schedule",
-    description: "Quản lý lịch sản xuất",
-    category: LINK_CATEGORY.MANUFACTURING.name,
-    roles: [ROOT_ROLES.SUPER_ADMIN.name, ROOT_ROLES.ADMIN.name],
-    components: getComponentsInLink("/manage-work-schedule"),
   },
   {
     url: "/manage-purchasing-request",

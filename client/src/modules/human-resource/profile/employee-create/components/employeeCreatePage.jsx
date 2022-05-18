@@ -12,7 +12,7 @@ import { generateCode } from "../../../../../helpers/generateCode";
 import { MajorActions } from '../../../major/redux/actions';
 import { CareerReduxAction } from '../../../career/redux/actions';
 import { CertificateActions } from '../../../certificate/redux/actions';
-import { BiddingPackageManagerActions } from '../../../bidding-package/biddingPackageManagement/redux/actions';
+import { BiddingPackageManagerActions } from '../../../../bidding/bidding-package/biddingPackageManagement/redux/actions';
 
 const initMember = {
     name: '',

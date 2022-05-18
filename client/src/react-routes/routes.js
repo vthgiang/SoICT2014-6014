@@ -10,7 +10,6 @@ import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
 import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
-import { ContractTab } from "../modules/human-resource/profile/employee-info/components/contractTab";
 import { ModalViewProcessById } from "../modules/task/task-process/component/task-process-management/modalViewProcessById";
 
 const Home = lazy(() => import("../modules/home/components"))
@@ -61,13 +60,11 @@ const StatisticsOfOrganizationalUnitKpi = lazy(() => import("../modules/kpi/stat
 
 const SearchEmployeeForPackage = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage"))
 const CareerPosition = lazy(() => import("../modules/human-resource/career/component"))
-// const BiddingPackage = lazy(() => import("../modules/human-resource/biddingPackage/component"))
 const SearchKeyEmployee = lazy(() => import("../modules/human-resource/profile/employee-management/components/searchKeyEmployees"))
 const Certificate = lazy(() => import("../modules/human-resource/certificate/component"))
 const Major = lazy(() => import("../modules/human-resource/major/component"))
-const Contract = lazy(() => import("../modules/human-resource/contract/component"))
-// const Major = lazy(() => import("../modules/human-resource/major/component"))
-const BiddingPackagesManagement = lazy(() => import("../modules/human-resource/bidding-package/biddingPackageManagement/components"))
+const Contract = lazy(() => import("../modules/bidding/bidding-contract/component"))
+const BiddingPackagesManagement = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
@@ -1156,26 +1153,6 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={this.props.course.isLoading}
-                        key={"list_contract"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/hr-list-contract",
-                                name: "list_contract",
-                                icon: "fa fa-list-alt",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/hr-list-contract"}
-                        path={"/hr-list-contract"}
-                        pageName={"list_contract"}
-                        layout={Layout}
-                        component={Contract}
-                    />
-
-                    <PrivateRoute
-                        isLoading={this.props.course.isLoading}
                         key={"list_career_position"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1254,6 +1231,83 @@ class Routes extends Component {
                         component={CourseOfUser}
                     />
 
+                    {/* bidding - routes */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_bidding_contract"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-list-contract",
+                                name: "list_bidding_contract",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-list-contract"}
+                        path={"/bidding-list-contract"}
+                        pageName={"list_bidding_contract"}
+                        layout={Layout}
+                        component={Contract}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/bidding-project-template"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/projects-list",
+                                name: "bidding_project_template_list",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-project-template"}
+                        path={"/bidding-project-template"}
+                        pageName={"bidding_project_template_list"}
+                        layout={Layout}
+                        component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_search_for_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-search-for-package",
+                                name: "list_search_for_package",
+                                icon: "fa-regular fa-file-magnifying-glass",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-search-for-package"}
+                        path={"/bidding-search-for-package"}
+                        pageName={"list_search_for_package"}
+                        layout={Layout}
+                        component={SearchKeyEmployee}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"list_bidding_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-list-package",
+                                name: "list_bidding_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-list-package"}
+                        path={"/bidding-list-package"}
+                        pageName={"list_bidding_package"}
+                        layout={Layout}
+                        component={BiddingPackagesManagement}
+                    />
 
                     {/* kpi - routes */}
                     <PrivateRoute

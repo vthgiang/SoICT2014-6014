@@ -158,11 +158,15 @@ export default {
             training_plan: "Quản lý khoá đào tạo",
             training_plan_employee: "Thông tin đào tạo",
             list_major: "Danh sách chuyên ngành",
-            list_contract: "Danh sách hợp đồng",
             list_career_position: "Danh sách vị trí công việc",
-            list_search_for_package: "Tìm kiếm nhân sự gói thầu",
-            list_bidding_package: "Danh sách gói thầu",
             list_certificate: "Bằng cấp - chứng chỉ",
+
+            // đấu thầu
+            manage_bidding: "Quản lý đấu thầu",
+            bidding_project_template_list: "Mẫu dự án đấu thầu",
+            list_bidding_contract: "Danh sách hợp đồng thầu",
+            list_bidding_package: "Danh sách gói thầu",
+            list_search_for_package: "Tìm kiếm nhân sự gói thầu",
 
             employee_unit: "Nhân sự đơn vị",
             employee_infomation: "Thông tin nhân viên",

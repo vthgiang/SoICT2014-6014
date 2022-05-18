@@ -2,20 +2,14 @@ import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DeleteNotification, ConfirmNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, DeleteNotification, ConfirmNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker, SelectBox } from '../../../../common-components';
 
-import { BiddingPackageCreateForm, BiddingPackageDetailForm, BiddingPackageEditFrom } from './combinedContent';
-// , BiddingPackageDetailForm, BiddingPackageEditFrom, BiddingPackageImportForm 
 
-import { BiddingPackageManagerActions } from '../redux/actions';
-import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { FieldsActions } from '../../../field/redux/actions';
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-import { MajorActions } from "../../../major/redux/actions";
-import { CareerReduxAction } from "../../../career/redux/actions";
-import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingContractActions } from '../redux/actions';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import CreateContract from './createContract';
 
-const BiddingPackageManagement = (props) => {
+const ContractManagement = (props) => {
 
     let search = window.location.search.split('?')
     let keySearch = 'nameSearch';
@@ -34,7 +28,7 @@ const BiddingPackageManagement = (props) => {
         }
     }, [search])
 
-    const tableId = "table-biddingPackage-management";
+    const tableId = "table-biddingContract-management--";
     const defaultConfig = { limit: 10 }
     const _limit = getTableConfiguration(tableId, defaultConfig).limit;
 
@@ -42,8 +36,8 @@ const BiddingPackageManagement = (props) => {
         tableId,
         position: null,
         gender: null,
-        status: [0,1,2,3,4],
-        type: [1,2,3,4,5],
+        status: [0, 1, 2, 3, 4],
+        type: [1, 2, 3, 4, 5],
         professionalSkills: null,
         careerFields: null,
         page: 0,
@@ -52,15 +46,9 @@ const BiddingPackageManagement = (props) => {
         currentRowView: {}
     });
 
-    useEffect(() => {
-        props.getListFields({ page: 0, limit: 10000 })
-        props.getListMajor({ name: '', page: 0, limit: 1000 });
-        props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
-        props.getListCertificate({ name: '', page: 0, limit: 1000 });
-    }, [])
 
     useEffect(() => {
-        props.getAllBiddingPackage(state);
+        props.getListBiddingContract(state);
     }, [state.limit, state.page]);
 
     /**
@@ -88,9 +76,9 @@ const BiddingPackageManagement = (props) => {
         }
     }
 
-    // Function bắt sự kiện thêm lương nhân viên bằng tay
-    const createBiddingPackage = () => {
-        window.$('#modal-create-bidding-package').modal({ backdrop: 'static', display: 'show' });
+    // Function bắt sự kiện thêm hợp đồng
+    const createContractPackage = () => {
+        window.$('#modal-create-package-biddingContract').modal({ backdrop: 'static', display: 'show' });
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng import file
@@ -133,34 +121,6 @@ const BiddingPackageManagement = (props) => {
     }
 
     /**
-     * Function lưu giá trị trạng thái vào state khi thay đổi
-     * @param {*} value : Giá trị trạng thái
-     */
-    const handleStatusChange = (value) => {
-        if (value.length === 0) {
-            value = []
-        };
-        setState(state => ({
-            ...state,
-            status: value
-        }))
-    }
-
-    /**
-     * Function lưu giá trị trạng thái vào state khi thay đổi
-     * @param {*} value : Giá trị trạng thái
-     */
-    const handleTypeChange = (value) => {
-        if (value.length === 0) {
-            value = []
-        };
-        setState(state => ({
-            ...state,
-            type: value
-        }))
-    }
-
-    /**
      * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
      * @param {*} value : Tháng hết hạn hợp đồng
      */
@@ -200,7 +160,7 @@ const BiddingPackageManagement = (props) => {
 
     /** Function bắt sự kiện tìm kiếm */
     const handleSunmitSearch = async () => {
-        props.getAllBiddingPackage(state);
+        props.getListBiddingContract(state);
     }
 
     /**
@@ -226,18 +186,18 @@ const BiddingPackageManagement = (props) => {
         }))
     }
 
-    const { biddingPackagesManager, translate } = props;
+    const { biddingContract, translate } = props;
 
     const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, status, type, isLoading } = state;
 
-    let listBiddingPackages = [];
-    if (biddingPackagesManager.listBiddingPackages) {
-        listBiddingPackages = biddingPackagesManager.listBiddingPackages;
+    let listContract = [];
+    if (biddingContract.listContract) {
+        listContract = biddingContract.listContract;
     }
 
-    let pageTotal = ((biddingPackagesManager.totalList % limit) === 0) ?
-        parseInt(biddingPackagesManager.totalList / limit) :
-        parseInt((biddingPackagesManager.totalList / limit) + 1);
+    let pageTotal = ((biddingContract.totalList % limit) === 0) ?
+        parseInt(biddingContract.totalList / limit) :
+        parseInt((biddingContract.totalList / limit) + 1);
     let currentPage = parseInt((page / limit) + 1);
 
     return (
@@ -245,72 +205,42 @@ const BiddingPackageManagement = (props) => {
             <div className="box-body qlcv">
                 <div className="row">
                     <div className="col-lg-12 col-md-12 col-sm-12">
-                        {/* Button thêm mới nhân viên */}
+                        {/* Button thêm mới hợp đồng */}
                         <div className="dropdown">
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title="Thêm gói thầu" onClick={createBiddingPackage} >Thêm gói thầu</button>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title="Thêm hợp đồng" onClick={createContractPackage} >Thêm hợp đồng</button>
                         </div>
                         {/* <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button> */}
                     </div>
                 </div>
 
                 <div className="form-inline" style={{ marginTop: '10px' }}>
-                    {/* Tên gói thầu */}
+                    {/* Tên hợp đồng */}
                     <div className="form-group">
-                        <label className="form-control-static">Tên gói thầu</label>
-                        <input type="text" className="form-control" name="nameSearch" onChange={handleChange} placeholder="Tên gói thầu" autoComplete="off" />
+                        <label className="form-control-static">Tên hợp đồng</label>
+                        <input type="text" className="form-control" name="nameSearch" onChange={handleChange} placeholder="Tên hợp đồng" autoComplete="off" />
                     </div>
-                    {/* Loại gói thầu  */}
+                    {/* Mã hợp đồng  */}
                     <div className="form-group">
-                        <label className="form-control-static">Mã gói thầu</label>
-                        <input type="text" className="form-control" name="codeSearch" onChange={handleChange} placeholder="Mã gói thầu" autoComplete="off" />
-                    </div>
-                    {/* Trạng thái */}
-                    <div className="form-group">
-                        <label className="form-control-static">{translate('page.status')}</label>
-                        <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                            options={{ nonSelectedText: 'Chọn trạng thái', allSelectedText: "Chọn tất cả" }}
-                            value={status}
-                            items={[
-                                { value: 0, text: 'Đã đóng thầu' },
-                                { value: 1, text: 'Hoạt động' },
-                                { value: 2, text: 'Chờ kết quả dự thầu' },
-                                { value: 3, text: 'Đang thực hiện' },
-                                { value: 4, text: 'Hoàn thành' },
-                            ]} onChange={handleStatusChange}>
-                        </SelectMulti>
+                        <label className="form-control-static">Mã hợp đồng</label>
+                        <input type="text" className="form-control" name="codeSearch" onChange={handleChange} placeholder="Mã hợp đồng" autoComplete="off" />
                     </div>
                 </div>
 
                 <div className="form-inline">
-                    {/* Loại gói thầu */}
+                    {/* Thời gian hợp đồng bắt đầu có hiệu lực*/}
                     <div className="form-group">
-                        <label className="form-control-static">Loại gói thầu</label>
-                        <SelectMulti id={`multiSelectType`} multiple="multiple"
-                            options={{ nonSelectedText: 'Chọn loại gói thầu', allSelectedText: "Chọn tất cả" }}
-                            value={type}
-                            items={[
-                                { value: 1, text: 'Tư vấn' },
-                                { value: 2, text: 'Phi tư vấn' },
-                                { value: 3, text: 'Hàng hóa' },
-                                { value: 4, text: 'Xây dựng' },
-                                { value: 5, text: 'Hỗn hợp' },
-                            ]} onChange={handleTypeChange}>
-                        </SelectMulti>
-                    </div>
-                    {/* Thời gian bắt đầu */}
-                    <div className="form-group">
-                        <label title="Thời gian bắt đầu" className="form-control-static">Start Date</label>
+                        <label title="Thời gian ký kết" className="form-control-static">Start Date</label>
                         <DatePicker
-                            id="month-startDate-contract"
+                            id="month-startDate-biddingContract"
                             value={startDateSearch}
                             onChange={handlestartDateSearchChange}
                         />
                     </div>
-                    {/* Thời gian kết thúc */}
+                    {/* Thời gian hết hạn hợp đồng */}
                     <div className="form-group">
-                        <label title="Thời gian kết thúc" className="form-control-static">End Date</label>
+                        <label title="Thời gian hết hạn" className="form-control-static">End Date</label>
                         <DatePicker
-                            id="month-endDate-contract"
+                            id="month-endDate-biddingContract"
                             value={endDateSearch}
                             onChange={handleendDateSearchChange}
                         />
@@ -327,34 +257,30 @@ const BiddingPackageManagement = (props) => {
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Tên gói thầu</th>
-                            <th>Mã gói thầu</th>
-                            <th>Thời gian bắt đầu</th>
-                            <th>Thời gian kết thúc</th>
-                            <th>Loại gói thầu</th>
-                            <th>Trạng thái</th>
-                            <th>Mô tả</th>
+                            <th>Tên hợp đồng</th>
+                            <th>Mã hợp đồng</th>
+                            <th>Ngày ký kết</th>
+                            <th>Ngày hết hạn</th>
+                            <th>Giá trị hợp đồng</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {listBiddingPackages && listBiddingPackages.length !== 0 &&
-                            listBiddingPackages?.map((x, index) => (
+                        {listContract && listContract.length !== 0 &&
+                            listContract?.map((x, index) => (
                                 <tr key={index}>
                                     <td style={{ textAlign: 'center' }}>{index + 1}</td>
                                     <td>{x.name}</td>
                                     <td>{x.code}</td>
                                     <td>{formatDate(x.startDate)}</td>
                                     <td>{formatDate(x.endDate)}</td>
-                                    <td>{translate(`human_resource.profile.bidding_package_management.type.${x.type}`)}</td>
-                                    <td style={{ color: x.status == 1 ? "#28A745" : (x.status == 2 ? '#f39c12' : (x.status == 0 ? '#dd4b39' : null)) }}>{translate(`human_resource.profile.bidding_package_management.status.${x.status}`)}</td>
-                                    <td style={{ color: x.status === "active" ? "#28A745" : (x.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${x.status}`)}</td>
+                                    <td>{x.budget}&bnsp;({x.unitCode})</td>
                                     <td>
                                         <a onClick={() => handleView(x)} style={{ width: '5px' }} title="detail"><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="edit"><i className="material-icons">edit</i></a>
                                         <ConfirmNotification
                                             icon="question"
-                                            title="Xóa thông tin gói thầu"
+                                            title="Xóa thông tin hợp đồng"
                                             name="delete"
                                             className="text-red"
                                             content={`<h4>Delete ${x.name + " - " + x.code}</h4>`}
@@ -367,48 +293,45 @@ const BiddingPackageManagement = (props) => {
                     </tbody>
 
                 </table>
-                {biddingPackagesManager.isLoading ?
+                {biddingContract.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    (!listBiddingPackages || listBiddingPackages.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    (!listContract || listContract.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
 
                 <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
             </div>
-            {/* From thêm mới thông tin nhân viên */}
-            <BiddingPackageCreateForm />
+            {/* From thêm mới hợp đồng */}
+            <CreateContract />
 
-            {/* From import thông tin nhân viên*/
-                // importBiddingPackage && <BiddingPackageImportForm />
-            }
+            {/* From import thông tin nhân viên */}
+            {/* {
+                importBiddingPackage && <BiddingPackageImportForm /> 
+            } */}
 
-            {/* From xem thông tin nhân viên */
+            {/* From xem thông tin nhân viên */}
+            {/* {
                 <BiddingPackageDetailForm
                     _id={currentRowView ? currentRowView._id : ""}
                 />
-            }
-            {/* From chinh sửa thông tin nhân viên */
+            } */}
+            {/* From chinh sửa thông tin nhân viên */}
+            {/* {
                 <BiddingPackageEditFrom
-                    _id={currentRow ? currentRow._id : ""} 
+                    _id={currentRow ? currentRow._id : ""}
                 />
-            }
+            } */}
         </div >
     );
 }
 
 function mapState(state) {
-    const { biddingPackagesManager, department, field, major, career, certificates } = state;
-    return { biddingPackagesManager, department, field, major, career, certificates };
+    const { biddingContract, department, field, major, career, certificates } = state;
+    return { biddingContract, department, field, major, career, certificates };
 }
 
 const actionCreators = {
-    getListFields: FieldsActions.getListFields,
-    getListMajor: MajorActions.getListMajor,
-    getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
-    getDetailBiddingPackage: BiddingPackageManagerActions.getDetailBiddingPackage,
-    deleteBiddingPackage: BiddingPackageManagerActions.deleteBiddingPackage,
-    getListCareerPosition: CareerReduxAction.getListCareerPosition,
-    getListCertificate: CertificateActions.getListCertificate,
+    getListBiddingContract: BiddingContractActions.getListBiddingContract,
 };
 
-const biddingPackageManagement = connect(mapState, actionCreators)(withTranslate(BiddingPackageManagement));
-export { biddingPackageManagement as BiddingPackageManagement };
+const biddingContractManagement = connect(mapState, actionCreators)(withTranslate(ContractManagement));
+export { biddingContractManagement as ContractManagement };

@@ -7,9 +7,9 @@ import { DialogModal } from '../../../../../common-components';
 
 import { KeyPeopleRequire, ExperienceTab, GeneralTab, KeyPeople } from './combinedContent';
 import { BiddingPackageManagerActions } from '../redux/actions';
-import { MajorActions } from '../../../major/redux/actions';
-import { CareerReduxAction } from '../../../career/redux/actions';
-import { CertificateActions } from '../../../certificate/redux/actions';
+import { MajorActions } from '../../../../human-resource/major/redux/actions';
+import { CareerReduxAction } from '../../../../human-resource/career/redux/actions';
+import { CertificateActions } from '../../../../human-resource/certificate/redux/actions';
 
 const initBiddingPackage = {
     name: "",

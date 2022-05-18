@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, DialogModal, ErrorLabel, SelectBox, UploadFile } from '../../../../common-components';
-import { ContractActions } from '../redux/actions';
+import { BiddingContractActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { BiddingPackageManagerActions } from '../../bidding-package/biddingPackageManagement/redux/actions';
-const CreateContract = (props) => {
+const CreateBiddingContract = (props) => {
 	const fakeUnitCostList = [
 		{ text: 'VND', value: 'VND' },
 		{ text: 'USD', value: 'USD' },
@@ -207,7 +207,7 @@ const CreateContract = (props) => {
 
 	const save = () => {
 		const data = {}
-		// props.createContract(data);
+		// props.createBiddingContract(data);
 		console.log(1718, state)
 	}
 
@@ -221,7 +221,7 @@ const CreateContract = (props) => {
 		return true;
 	}
 
-	const { translate, contract, biddingPackagesManager } = props;
+	const { translate, biddingContract, biddingPackagesManager } = props;
 	let files;
 	if (state.file) {
 		files = [{ fileName: state.fileName, fileUrl: state.fileUrl, fileUpload: state.fileUpload }]
@@ -232,8 +232,8 @@ const CreateContract = (props) => {
 	return (
 		<React.Fragment>
 			<DialogModal
-				modalID="modal-create-package-contract"
-				formID="form-create-contract"
+				modalID="modal-create-package-biddingContract"
+				formID="form-create-biddingContract"
 				title="Thêm hợp đồng"
 				// disableSubmit={!isFormValidated()}
 				func={save}
@@ -264,7 +264,7 @@ const CreateContract = (props) => {
 							<div className={`form-group col-md-6 col-xs-6`}>
 								<label>Đơn vị chi phí<span className="text-red">*</span></label>
 								<SelectBox
-									id={`select-unit-code-contract-`}
+									id={`select-unit-code-biddingContract-`}
 									className="form-control select2"
 									style={{ width: "100%" }}
 									items={fakeUnitCostList}
@@ -279,7 +279,7 @@ const CreateContract = (props) => {
 							<div className="form-group col-md-6">
 								<label>Ngày có hiệu lực<span className="text-red">*</span></label>
 								<DatePicker
-									id={`create-contract-start-date--`}
+									id={`create-biddingContract-start-date--`}
 									value={state.effectiveDate}
 									onChange={(e) => handleChangeForm(e, 'effectiveDate')}
 									dateFormat="day-month-year"
@@ -289,7 +289,7 @@ const CreateContract = (props) => {
 							<div className="form-group col-md-6">
 								<label>Ngày hết hạn<span className="text-red">*</span></label>
 								<DatePicker
-									id={`create-contract-end-date--`}
+									id={`create-biddingContract-end-date--`}
 									value={state.endDate}
 									onChange={(e) => handleChangeForm(e, 'endDate')}
 									dateFormat="day-month-year"
@@ -302,7 +302,7 @@ const CreateContract = (props) => {
 							<div className="form-group col-md-6">
 								<label>Đơn vị thời gian<span className="text-red">*</span></label>
 								<SelectBox
-									id={`select-contract-unitTime`}
+									id={`select-biddingContract-unitTime`}
 									className="form-control select2"
 									style={{ width: "100%" }}
 									items={fakeUnitTimeList}
@@ -446,8 +446,8 @@ const CreateContract = (props) => {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-	createContract: ContractActions.createContract,
+	createBiddingContract: BiddingContractActions.createBiddingContract,
 	getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateContract));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateBiddingContract));

@@ -127,7 +127,7 @@ const BiddingPackageSchema = new Schema(
                 type: Number,
             },
             // Đơn vị thời gian của task
-            unitTime: {
+            unitOfTime: {
                 // có 2 đơn vị thời gian: Giờ, Ngày, Tháng
                 type: String,
                 default: "days",
