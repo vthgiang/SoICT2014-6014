@@ -735,7 +735,7 @@ function ModalCreateTaskByProcessTemplate(props) {
         
         let template;
         console.log(data);
-        //props.createTaskByProcess(data, state.idProcess, template = true);
+        props.createTaskByProcess(data, state.idProcess, template = true);
         setState({
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
