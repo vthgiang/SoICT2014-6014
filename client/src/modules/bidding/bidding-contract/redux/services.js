@@ -14,14 +14,14 @@ export const BiddingContractService = {
  */
 function getListBiddingContract(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-contracts/bidding-contract`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract`,
         method: 'GET',
         params: {
             name: data.name,
             page: data.page,
             limit: data.limit
         }
-    }, false, true, 'human_resource.bidding_contract');
+    }, false, false, 'human_resource.bidding_contract');
 }
 
 /**
@@ -29,8 +29,9 @@ function getListBiddingContract(data) {
  * @data : Dữ liệu cần thêm 
  */
 function createBiddingContract(data) {
+    console.log(32, "sv client", data);
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-contracts/bidding-contract`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.bidding_contract');
@@ -44,7 +45,7 @@ function createBiddingContract(data) {
  */
 function editBiddingContract(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-contracts/bidding-contract/${data.contractId}`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract/${data.contractId}`,
         method: 'PATCH',
         data: data
     }, true, true, 'human_resource.bidding_contract');
@@ -56,9 +57,9 @@ function editBiddingContract(data) {
  * Xóa hợp đồng
  * @data : Dữ liệu xóa
  */
- function deleteBiddingContract(data) {
+function deleteBiddingContract(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-contracts/bidding-contract/${data}`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract/${data}`,
         method: 'DELETE',
         data: data
     }, true, true, 'human_resource.bidding_contract');

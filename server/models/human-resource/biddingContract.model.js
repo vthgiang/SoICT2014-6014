@@ -161,6 +161,6 @@ const BiddingContractSchema = new Schema(
 
 module.exports = (db) => {
     if (!db.models.BiddingContract)
-        return db.model(" BiddingContract", BiddingContractSchema);
-    return db.models. BiddingContract;
+        return db.model("BiddingContract", BiddingContractSchema);
+    return db.models.BiddingContract;
 };

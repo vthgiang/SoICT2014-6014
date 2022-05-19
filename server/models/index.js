@@ -25,6 +25,8 @@ module.exports = {
     CareerAction: require('./human-resource/careerAction.model'),
     BiddingPackage: require('./human-resource/biddingPackage.model'),
 
+    BiddingContract: require('./human-resource/biddingContract.model'),
+
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
@@ -93,9 +95,9 @@ module.exports = {
     ProductCategory: require('./customer-care/productCategory.model'),
     ProductDiscount: require('./customer-care/productDiscount.model'),
     CustomerCareTask: require('./customer-care/customerCareTask.model'),
-    CustomerCareTaskTemplate:require('./customer-care/customerCareTaskTemplate.model'),
-    CustomerCareUnit:require('./customer-care/customerCareUnit.model'),
-    CustomerCareUnitKPI:require('./customer-care/customerCareUnitKPI.model'),
+    CustomerCareTaskTemplate: require('./customer-care/customerCareTaskTemplate.model'),
+    CustomerCareUnit: require('./customer-care/customerCareUnit.model'),
+    CustomerCareUnitKPI: require('./customer-care/customerCareUnitKPI.model'),
     //order
     BankAccount: require('./production/order/bankAccount.model'),
     Discount: require('./production/order/discount.model'),
@@ -130,7 +132,7 @@ module.exports = {
     TransportVehicle: require('./production/transport/transportVehicle.model'),
     TransportSchedule: require('./production/transport/transportSchedule.model'),
     TransportDepartment: require('./production/transport/transportDepartment.model'),
-    
+
     // project
     Project: require('./project/project.model'),
     ProjectChangeRequest: require('./project/projectChangeRequest.model'),

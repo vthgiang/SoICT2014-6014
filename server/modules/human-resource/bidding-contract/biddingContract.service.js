@@ -1,13 +1,26 @@
-const { BiddingContract } = require(`${SERVER_MODELS_DIR}`);
+const { freshObject } = require("../../../helpers/functionHelper");
+
+const { BiddingContract } = require("../../../models");
 
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+
+/**
+ * get url for file
+ * @param {*} destination 
+ * @param {*} filename 
+ * @returns 
+ */
+exports.getUrl = (destination, filename) => {
+    let url = `${destination}/${filename}`;
+    return url.substr(1, url.length);
+}
 
 /**
  * Lấy danh sách thông tin hợp đồng
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người dùng
  */
-exports.searchContract = async (portal, params, company) => {
+exports.searchBiddingContract = async (portal, params, company) => {
     let keySearch = {};
 
     if (params?.name) {
@@ -32,7 +45,6 @@ exports.searchContract = async (portal, params, company) => {
 
     if (params.endDate) {
         let date = new Date(params.endDate);
-        console.log("aaaaaaâ", date);
 
         keySearch = {
             ...keySearch,
@@ -54,38 +66,37 @@ exports.searchContract = async (portal, params, company) => {
             },
         };
     }
-
     if (params.limit === undefined && params.page === undefined) {
         let data = await BiddingContract(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .sort({
                 endDate: -1,
             })
-            .populate({ path: "biddingPackage"})
-            .populate({ path: "project"})
-            .populate({ path: "creator"})
+            .populate({ path: "biddingPackage" })
+            .populate({ path: "project" })
+            .populate({ path: "creator" })
         return {
-            listContract: data,
+            listBiddingContract: data,
             totalList: data.length,
         };
     } else {
         let data = await BiddingContract(connect(DB_CONNECTION, portal)).find(
             keySearch
         );
-        let listContract = await BiddingContract(
+        let listBiddingContract = await BiddingContract(
             connect(DB_CONNECTION, portal)
         )
             .find(keySearch)
             .sort({
                 endDate: -1,
             })
-            .skip(params.page)
+            .skip((params.page - 1) * params.limit)
             .limit(params.limit)
-            .populate({ path: "biddingPackage"})
-            .populate({ path: "project"})
-            .populate({ path: "creator"});
+            .populate({ path: "biddingPackage" })
+            .populate({ path: "project" })
+            .populate({ path: "creator" });
         return {
-            listContract: listContract,
+            listBiddingContract: listBiddingContract,
             totalList: data.length,
         };
     }
@@ -96,10 +107,26 @@ exports.searchContract = async (portal, params, company) => {
  * @data : dữ liệu hợp đồng
  *
  */
-exports.createNewContract = async (portal, data, company) => {
+exports.createNewBiddingContract = async (portal, data, files, company) => {
+    data = freshObject(data);
+    const checkBidpackage = await BiddingContract(
+        connect(DB_CONNECTION, portal)
+    ).findOne({ biddingPackage: data.biddingPackage });
+    if (checkBidpackage) throw ["contract_for_bidding_package_exist"];
+
+    let filesConvert
+    if (files) {
+        filesConvert = files.map(obj => ({
+            name: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+    }
+
+    data.files = filesConvert
+
     await BiddingContract(connect(DB_CONNECTION, portal)).create(data);
 
-    return await this.searchContract(portal, {}, company);
+    return await this.searchBiddingContract(portal, {}, company);
 };
 
 /**
@@ -107,7 +134,7 @@ exports.createNewContract = async (portal, data, company) => {
  * @id : Id hợp đồng muốn chỉnh sửa
  * @data : Dữ liệu thay đổi
  */
-exports.editContract = async (portal, data, params, company) => {
+exports.editBiddingContract = async (portal, data, params, company) => {
     await BiddingContract(connect(DB_CONNECTION, portal)).updateOne(
         { _id: params.id },
         {
@@ -121,7 +148,7 @@ exports.editContract = async (portal, data, params, company) => {
                 unitCost: data.unitCost,
                 partyA: data.partyA,
                 partyB: data.partyB,
-                        
+
                 biddingPackage: data.biddingPackage,
                 project: data.project,
             },
@@ -129,7 +156,7 @@ exports.editContract = async (portal, data, params, company) => {
         { $new: true }
     );
 
-    return await this.searchContract(portal, {}, company);
+    return await this.searchBiddingContract(portal, {}, company);
 };
 
 // =================DELETE=====================
@@ -138,9 +165,9 @@ exports.editContract = async (portal, data, params, company) => {
  * Xoá hợp đồng
  * @data : list id xóa
  */
-exports.deleteContract = async (portal, data, id, company) => {
+exports.deleteBiddingContract = async (portal, data, id, company) => {
     await BiddingContract(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
-    return await this.searchContract(portal, {}, company);
+    return await this.searchBiddingContract(portal, {}, company);
 };
 
 
@@ -149,22 +176,22 @@ exports.deleteContract = async (portal, data, id, company) => {
  * @param {*} contractId
  * @param {*} file
  */
- exports.uploadContractFile = async (
+exports.uploadBiddingContractFile = async (
     portal,
     contractId,
     file = undefined
 ) => {
     let contract = await BiddingContract(connect(DB_CONNECTION, portal))
         .findById(contractId)
-        .populate({ path: "biddingPackage"})
-        .populate({ path: "project"})
-        .populate({ path: "creator"});
-    
+        .populate({ path: "biddingPackage" })
+        .populate({ path: "project" })
+        .populate({ path: "creator" });
+
     if (!contract) {
         throw ['contract_invalid'];
     }
 
-    
+
     let deleteFile = "." + contract.fileUrl;
     if (file) {
         if (

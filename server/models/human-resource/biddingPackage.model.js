@@ -138,13 +138,13 @@ const BiddingPackageSchema = new Schema(
                 ],
             },
 
-            // file đề xuất kĩ thuật đính kèm
-            fileName: {
-                type: String,
-            },
-            fileUrl: {
-                type: String,
-            },
+            // // file đề xuất kĩ thuật đính kèm
+            // fileName: {
+            //     type: String,
+            // },
+            // fileUrl: {
+            //     type: String,
+            // },
         }]
     },
     {

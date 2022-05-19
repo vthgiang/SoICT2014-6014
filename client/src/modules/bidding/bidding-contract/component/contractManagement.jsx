@@ -40,7 +40,7 @@ const ContractManagement = (props) => {
         type: [1, 2, 3, 4, 5],
         professionalSkills: null,
         careerFields: null,
-        page: 0,
+        page: 1,
         limit: _limit,
         currentRow: {},
         currentRowView: {}
@@ -179,7 +179,7 @@ const ContractManagement = (props) => {
      * @param {*} pageNumber : Số trang muốn xem
      */
     const setPage = async (pageNumber) => {
-        let page = (pageNumber - 1) * (state.limit);
+        let page = pageNumber;
         await setState(state => ({
             ...state,
             page: parseInt(page)
@@ -191,14 +191,14 @@ const ContractManagement = (props) => {
     const { limit, page, startDateSearch, endDateSearch, currentRow, currentRowView, status, type, isLoading } = state;
 
     let listContract = [];
-    if (biddingContract.listContract) {
-        listContract = biddingContract.listContract;
+    if (biddingContract.listBiddingContract) {
+        listContract = biddingContract.listBiddingContract;
     }
 
     let pageTotal = ((biddingContract.totalList % limit) === 0) ?
         parseInt(biddingContract.totalList / limit) :
         parseInt((biddingContract.totalList / limit) + 1);
-    let currentPage = parseInt((page / limit) + 1);
+    let currentPage = page;
 
     return (
         <div className="box">
@@ -229,7 +229,7 @@ const ContractManagement = (props) => {
                 <div className="form-inline">
                     {/* Thời gian hợp đồng bắt đầu có hiệu lực*/}
                     <div className="form-group">
-                        <label title="Thời gian ký kết" className="form-control-static">Start Date</label>
+                        <label title="Ngày có hiệu lực" className="form-control-static">Ngày có hiệu lực</label>
                         <DatePicker
                             id="month-startDate-biddingContract"
                             value={startDateSearch}
@@ -238,7 +238,7 @@ const ContractManagement = (props) => {
                     </div>
                     {/* Thời gian hết hạn hợp đồng */}
                     <div className="form-group">
-                        <label title="Thời gian hết hạn" className="form-control-static">End Date</label>
+                        <label title="Thời gian hết hạn" className="form-control-static">Ngày hết hạn</label>
                         <DatePicker
                             id="month-endDate-biddingContract"
                             value={endDateSearch}
@@ -259,6 +259,7 @@ const ContractManagement = (props) => {
                             <th>STT</th>
                             <th>Tên hợp đồng</th>
                             <th>Mã hợp đồng</th>
+                            <th>Gói thầu</th>
                             <th>Ngày ký kết</th>
                             <th>Ngày hết hạn</th>
                             <th>Giá trị hợp đồng</th>
@@ -272,9 +273,10 @@ const ContractManagement = (props) => {
                                     <td style={{ textAlign: 'center' }}>{index + 1}</td>
                                     <td>{x.name}</td>
                                     <td>{x.code}</td>
-                                    <td>{formatDate(x.startDate)}</td>
+                                    <td>{x.biddingPackage?.name}</td>
+                                    <td>{formatDate(x.effectiveDate)}</td>
                                     <td>{formatDate(x.endDate)}</td>
-                                    <td>{x.budget}&bnsp;({x.unitCode})</td>
+                                    <td>{x.budget}({x.currenceUnit})</td>
                                     <td>
                                         <a onClick={() => handleView(x)} style={{ width: '5px' }} title="detail"><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="edit"><i className="material-icons">edit</i></a>

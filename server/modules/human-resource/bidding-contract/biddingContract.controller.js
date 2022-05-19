@@ -10,13 +10,12 @@ exports.searchBiddingContract = async (req, res) => {
         let params = {
             name: req.query.name,
             code: req.query.code,
-            page: Number(req.query.page) ? Number(req.query.page) : 1,
+            page: Number(req.query.page),
             limit: Number(req.query.limit),
             startDate: req.query.startDateSearch,
             endDate: req.query.endDateSearch,
         };
-    
-        console.log(11, params)
+        console.log(18, params);
 
         data = await BiddingContractService.searchBiddingContract(
             req.portal,
@@ -24,14 +23,15 @@ exports.searchBiddingContract = async (req, res) => {
             req.user.company._id
         );
 
-        await Log.info(req.user.email, "GET_CONTRACT", req.portal);
+        await Log.info(req.user.email, "GET_BIDDING_CONTRACT", req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_contract_success"],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "GET_CONTRACT", req.portal);
+        console.log(error);
+        await Log.error(req.user.email, "GET_BIDDING_CONTRACT", req.portal);
         res.status(400).json({
             success: false,
             messages: ["get_contract_failure"],
@@ -48,16 +48,19 @@ exports.createNewBiddingContract = async (req, res) => {
         data = await BiddingContractService.createNewBiddingContract(
             req.portal,
             req.body,
+            req.files,
             req.user.company._id
         );
-        await Log.info(req.user.email, "CREATE_CONTRACT", req.portal);
+
+        await Log.info(req.user.email, "CREATE_BIDDING_CONTRACT", req.portal);
         res.status(200).json({
             success: true,
             messages: ["create_contract_success"],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "CREATE_CONTRACT", req.portal);
+        console.log(error);
+        await Log.error(req.user.email, "CREATE_BIDDING_CONTRACT", req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_contract_failure"],
@@ -75,16 +78,17 @@ exports.editBiddingContract = async (req, res) => {
             req.portal,
             req.body,
             req.params,
+            req.files,
             req.user.company._id
         );
-        await Log.info(req.user.email, "EDIT_CONTRACT", req.portal);
+        await Log.info(req.user.email, "EDIT_BIDDING_CONTRACT", req.portal);
         res.status(200).json({
             success: true,
             messages: ["edit_contract_success"],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "EDIT_CONTRACT", req.portal);
+        await Log.error(req.user.email, "EDIT_BIDDING_CONTRACT", req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_contract_failure"],
@@ -106,14 +110,14 @@ exports.deleteBiddingContract = async (req, res) => {
             req.params.id,
             req.user.company._id
         );
-        await Log.info(req.user.email, "DELETE_CONTRACT", req.portal);
+        await Log.info(req.user.email, "DELETE_BIDDING_CONTRACT", req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_contract_success"],
             content: data,
         });
     } catch (error) {
-        await Log.error(req.user.email, "DELETE_CONTRACT", req.portal);
+        await Log.error(req.user.email, "DELETE_BIDDING_CONTRACT", req.portal);
         res.status(400).json({
             success: false,
             messages: ["delete_contract_failure"],
