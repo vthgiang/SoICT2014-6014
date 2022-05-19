@@ -149,9 +149,8 @@ exports.updateAllocation = async (portal, id, data) => {
     const supply = await Supplies(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
             { _id: ObjectId(data.supplies)},
-            { $push: {allocationHistories: allocation._id}}
+            { $addToSet: {allocationHistories: allocation._id}}
         );
-    console.log('supply in update allocationHistory ', supply);
     return allocation;
 };
 
@@ -163,7 +162,24 @@ exports.updateAllocation = async (portal, id, data) => {
 exports.deleteAllocations = async (portal, ids) => {
     let allocations = await AllocationHistory(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: ids.map(item => mongoose.Types.ObjectId(item)) } });
-
+    let supplies = await Supplies(connect(DB_CONNECTION, portal))
+        .find({}).exec();
+    for(let i = 0; i < supplies.length; i++) {
+        console.log("supply before update: ", supplies[i]);
+        await Supplies(connect(DB_CONNECTION, portal))
+            .updateOne(
+                {
+                    _id: mongoose.Types.ObjectId(supplies[i]._id)
+                },
+                {
+                    $pull: {
+                        allocationHistories: {
+                            _id: { $in: ids.map(item => mongoose.Types.ObjectId(item))}
+                        }
+                    }
+                });
+        console.log("supply after update: ", supplies[i]);
+    }
     return allocations;
 };
 

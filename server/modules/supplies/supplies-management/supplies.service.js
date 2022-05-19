@@ -7,7 +7,7 @@ const { Supplies, PurchaseInvoice, AllocationHistory } = Models;
 const PurchaseInvoiceService = require('../purchase-invoice-management/purchase-invoice.service');
 const AllocationService = require('../allocation-management/allocation-history.service');
 const { result } = require("lodash");
-const {SuppliesPurchaseRequest} = require("../../../models");
+const {SuppliesPurchaseRequest, OrganizationalUnit} = require("../../../models");
 
 
 /**
@@ -262,12 +262,15 @@ exports.getDashboardSupplies = async (portal, query) => {
         .populate('allocationHistories')
         .populate('purchaseInvoices')
         .exec();
-    let suppliesPurchaseRequest =  await SuppliesPurchaseRequest(connect(DB_CONNECTION, portal))
+    let suppliesPurchaseRequest = await SuppliesPurchaseRequest(connect(DB_CONNECTION, portal))
         .find({})
         .populate('company')
         .populate('proponent')
         .populate('recommendUnits')
         .populate('approver')
+        .exec();
+    let organizationUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .find({})
         .exec();
 
     let data = {}, suppliesPrice = 0, purchaseInvoicesPrice = 0, totalPurchaseInvoice = 0;
@@ -278,37 +281,59 @@ exports.getDashboardSupplies = async (portal, query) => {
         waitingForApprovalTotal: 0
     };
 
+    let boughtSupplies = [], existSupplies = [], organizationUnitsPriceSupply = [];
+
     // handle supplies
     for(let i = 0; i < supplies.length; i++) {
-        suppliesPrice += supplies[i].price;
-        //handle purchaseInvoice
-        for(let j = 0; j < supplies[i].purchaseInvoices.length; j++) {
-            let purchaseInvoiceDate = supplies[i].purchaseInvoices[j].date;
-            purchaseInvoiceDate = new Date(purchaseInvoiceDate.getFullYear(), purchaseInvoiceDate.getMonth());
+        let supply = supplies[i];
+        suppliesPrice += supply.price;
 
-            console.log('purchaseInvoiceDate: ', Date.parse(purchaseInvoiceDate));
-            console.log('startTime: ', Date.parse(startTime));
-            console.log('endTime: ', Date.parse(endTime));
+        //handle purchaseInvoice
+        for(let j = 0; j < supply.purchaseInvoices.length; j++) {
+            let purchaseInvoiceDate = supply.purchaseInvoices[j].date;
+            purchaseInvoiceDate = new Date(purchaseInvoiceDate.getFullYear(), purchaseInvoiceDate.getMonth());
 
             if (Date.parse(purchaseInvoiceDate) >= Date.parse(startTime) && Date.parse(purchaseInvoiceDate) <= Date.parse(endTime)) {
                 totalPurchaseInvoice++;
-                purchaseInvoicesPrice += Number(supplies[i].purchaseInvoices[j].price) * Number(supplies[i].purchaseInvoices[j].quantity);
+                purchaseInvoicesPrice += Number(supply.purchaseInvoices[j].price) * Number(supply.purchaseInvoices[j].quantity);
             }
         }
+
         //handle allocationHistory
-        for(let j = 0; j < supplies[i].allocationHistories.length; j++) {
-            let allocationHistoryDate = supplies[i].allocationHistories[j].date;
+        for(let j = 0; j < supply.allocationHistories.length; j++) {
+            let allocationHistoryDate = supply.allocationHistories[j].date;
             allocationHistoryDate = new Date(allocationHistoryDate.getFullYear(), allocationHistoryDate.getMonth());
             if (Date.parse(allocationHistoryDate) >= Date.parse(startTime) && Date.parse(allocationHistoryDate) <= Date.parse(endTime)) {
                 allocationHistoryTotal++;
-                allocationHistoryPrice +=  Number(supplies[i].price) * Number(supplies[i].allocationHistories[j].quantity);
+                allocationHistoryPrice +=  Number(supply.price) * Number(supply.allocationHistories[j].quantity);
             }
         }
+
+        /** Handle pie chart */
+        //handle boughtSupplies
+        let totalBoughtSupplyPrice = 0;
+        for(let j = 0; j < supply.purchaseInvoices.length; j++) {
+            totalBoughtSupplyPrice += supply.purchaseInvoices[j].price;
+        }
+        boughtSupplies.push({
+            supplyName: supply.suppliesName,
+            price: totalBoughtSupplyPrice
+        });
+
+        //handle existSupplies
+        let totalExistSupplyPrice = 0;
+        if (supply.totalPurchase - supply.totalAllocation >= 0) {
+            if (supply.totalPurchase !== 0)
+                totalExistSupplyPrice = (totalBoughtSupplyPrice / supply.totalPurchase) * (supply.totalPurchase - supply.totalAllocation);
+        }
+        existSupplies.push({
+            supplyName: supply.suppliesName,
+            price: totalExistSupplyPrice
+        });
     }
 
     // handle supplies purchase request
     for(let i = 0; i < suppliesPurchaseRequest.length; i++) {
-        console.log(`suppliesPurchaseRequest[${i}]: `, suppliesPurchaseRequest[i]);
 
         switch (suppliesPurchaseRequest[i].status) {
             case "approved":
@@ -323,6 +348,40 @@ exports.getDashboardSupplies = async (portal, query) => {
             default:
                 throw new Error("INVALID_PURCHASE_REQUEST_STATUS");
         }
+    }
+
+    /** Handle bar chart */
+    // handle organization price supplies
+    for(let i = 0; i < organizationUnits.length; i++) {
+        let organizationUnit = organizationUnits[i];
+        organizationUnit.quantity = 0;
+        organizationUnit.price = 0;
+        for(let j = 0; j < supplies.length; j++) {
+            let supply = supplies[j], totalPricePerSupply = 0, totalQuantityPerSupply = 0, tempQuantity = 0;
+            for(let k = 0; k < supply.allocationHistories.length; k++) {
+                let allocationHistory = supply.allocationHistories[k];
+                if (organizationUnit._id.toString() === allocationHistory.allocationToOrganizationalUnit.toString()) {
+                   tempQuantity += allocationHistory.quantity;
+                }
+            }
+            for(let k = 0; k < supply.purchaseInvoices.length; k++) {
+                totalPricePerSupply += supply.purchaseInvoices[k].price;
+                totalQuantityPerSupply += supply.purchaseInvoices[k].quantity;
+            }
+            if (tempQuantity !== 0) {
+                console.log(`totalPricePerSupply: ${totalPricePerSupply}`);
+                console.log(`totalQuantityPerSupply: ${totalQuantityPerSupply}`);
+                console.log(`tempQuantity: ${tempQuantity}`);
+                if (totalQuantityPerSupply !== 0)
+                    organizationUnit.price += (totalPricePerSupply / totalQuantityPerSupply) * tempQuantity;
+            }
+            organizationUnit.quantity +=  tempQuantity;
+        }
+        organizationUnitsPriceSupply.push({
+            name: organizationUnit.name,
+            quantity: organizationUnit.quantity,
+            price: organizationUnit.price
+        });
     }
 
     data.numberData = {
@@ -340,9 +399,18 @@ exports.getDashboardSupplies = async (portal, query) => {
             allocationHistoryPrice
         }
     }
-    console.log('supplies: ', supplies);
-    console.log('startTime: ', startTime);
-    console.log('endTime: ', endTime);
-    console.log('data: ', data);
+
+    data.pieChart = {
+        boughtSupplies: boughtSupplies,
+        existSupplies: existSupplies
+    }
+
+    data.barChart = {
+        organizationUnitsPriceSupply
+    }
+
+    console.log('data pie chart - bought: ', data.pieChart.boughtSupplies);
+    console.log('data pie chart - exist: ', data.pieChart.existSupplies);
+    console.log('data bar chart - organization: ', data.barChart.organizationUnitsPriceSupply);
     return result;
 }

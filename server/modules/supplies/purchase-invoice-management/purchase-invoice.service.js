@@ -150,9 +150,8 @@ exports.updatePurchaseInvoice = async (portal, id, data) => {
     const supply = await Supplies(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
             { _id: ObjectId(data.supplies)},
-            { $push: {purchaseInvoices: oldInvoice._id}}
+            { $addToSet: {purchaseInvoices: oldInvoice._id}}
         );
-    console.log('supply in update purchaseInvoice ', supply);
 
     let purchaseInvoice = await PurchaseInvoice(connect(DB_CONNECTION, portal))
         .findById({ _id: oldInvoice._id })
@@ -168,7 +167,24 @@ exports.updatePurchaseInvoice = async (portal, id, data) => {
 exports.deletePurchaseInvoices = async (portal, ids) => {
     let invoices = await PurchaseInvoice(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: ids.map(item => mongoose.Types.ObjectId(item)) } });
-
+    let supplies = await Supplies(connect(DB_CONNECTION, portal))
+        .find({}).exec();
+    for(let i = 0; i < supplies.length; i++) {
+        console.log("supply before update: ", supplies[i]);
+        await Supplies(connect(DB_CONNECTION, portal))
+            .updateOne(
+                {
+                    _id: mongoose.Types.ObjectId(supplies[i]._id)
+                },
+                {
+                    $pull: {
+                        purchaseInvoices: {
+                            _id: { $in: ids.map(item => mongoose.Types.ObjectId(item))}
+                        }
+                    }
+                });
+        console.log("supply after update: ", supplies[i]);
+    }
     return invoices;
 };
 
