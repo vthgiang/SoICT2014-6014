@@ -7,7 +7,9 @@ import { DataTableSetting, DeleteNotification, ConfirmNotification, PaginateBar,
 
 import { BiddingContractActions } from '../redux/actions';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
-import CreateContract from './createContract';
+import CreateBiddingContract from './createContract';
+import EditBiddingContract from './editContract';
+import ViewBiddingContract from './detailContract';
 
 const ContractManagement = (props) => {
 
@@ -34,16 +36,12 @@ const ContractManagement = (props) => {
 
     const [state, setState] = useState({
         tableId,
-        position: null,
-        gender: null,
         status: [0, 1, 2, 3, 4],
         type: [1, 2, 3, 4, 5],
-        professionalSkills: null,
-        careerFields: null,
         page: 1,
         limit: _limit,
-        currentRow: {},
-        currentRowView: {}
+        currentRow: null,
+        currentRowView: null
     });
 
 
@@ -101,7 +99,9 @@ const ContractManagement = (props) => {
                 currentRowView: value
             }
         });
-        window.$(`#modal-detail-bidding-package${value._id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modal-view-bidding-contract--${value._id}`).modal('show');
+        }, 500);
     }
 
     /**
@@ -109,14 +109,12 @@ const ContractManagement = (props) => {
      * @param {*} value : Thông tin nhân viên muốn chỉnh sửa
      */
     const handleEdit = (value) => {
-        setState(state => {
-            return {
-                ...state,
-                currentRow: value
-            }
+        setState({
+            ...state,
+            currentRow: value
         });
         setTimeout(() => {
-            window.$(`#modal-edit-bidding-package${value._id}`).modal('show');
+            window.$(`#modal-edit-bidding-contract--${value._id}`).modal('show');
         }, 500);
     }
 
@@ -285,8 +283,8 @@ const ContractManagement = (props) => {
                                             title="Xóa thông tin hợp đồng"
                                             name="delete"
                                             className="text-red"
-                                            content={`<h4>Delete ${x.name + " - " + x.code}</h4>`}
-                                            func={() => props.deleteBiddingPackage(x._id)}
+                                            content={`<h4>Xóa "${x.name + " - " + x.code}"</h4>`}
+                                            func={() => props.deleteBiddingContract(x._id)}
                                         />
                                     </td>
                                 </tr>
@@ -303,7 +301,15 @@ const ContractManagement = (props) => {
                 <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
             </div>
             {/* From thêm mới hợp đồng */}
-            <CreateContract />
+            <CreateBiddingContract />
+
+            {/* From chinh sửa thông tin hợp đồng */}
+            {
+                <EditBiddingContract
+                    id={currentRow ? currentRow._id : null}
+                    data={currentRow ? currentRow : null}
+                />
+            }
 
             {/* From import thông tin nhân viên */}
             {/* {
@@ -311,17 +317,12 @@ const ContractManagement = (props) => {
             } */}
 
             {/* From xem thông tin nhân viên */}
-            {/* {
-                <BiddingPackageDetailForm
-                    _id={currentRowView ? currentRowView._id : ""}
+            {
+                <ViewBiddingContract
+                    id={currentRowView ? currentRowView._id : null}
+                    data={currentRowView ? currentRowView : null}
                 />
-            } */}
-            {/* From chinh sửa thông tin nhân viên */}
-            {/* {
-                <BiddingPackageEditFrom
-                    _id={currentRow ? currentRow._id : ""}
-                />
-            } */}
+            }
         </div >
     );
 }
@@ -333,6 +334,7 @@ function mapState(state) {
 
 const actionCreators = {
     getListBiddingContract: BiddingContractActions.getListBiddingContract,
+    deleteBiddingContract: BiddingContractActions.deleteBiddingContract,
 };
 
 const biddingContractManagement = connect(mapState, actionCreators)(withTranslate(ContractManagement));
