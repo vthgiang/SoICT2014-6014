@@ -10,7 +10,6 @@ function StockTakeCreateForm(props) {
     const EMPTY_GOOD = {
         good: '',
         quantity: '',
-        realQuantity: '',
         damagedQuantity: 0,
         realQuantity: 0,
         description: '',
@@ -66,9 +65,9 @@ function StockTakeCreateForm(props) {
         await props.getLotsByGood({ good, stock: fromStock });
     }
 
-    const addQuantity = () => {
-        window.$('#modal-add-quantity-take').modal('show');
-    }
+    // const addQuantity = () => {
+    //     window.$('#modal-add-quantity-take').modal('show');
+    // }
 
     const handleClickCreate = () => {
         const value = generateCode("BIST");
@@ -289,12 +288,12 @@ function StockTakeCreateForm(props) {
         })
     }
 
-    const handleStatusChange = (value) => {
-        setState({
-            ...state,
-            status: value[0]
-        })
-    }
+    // const handleStatusChange = (value) => {
+    //     setState({
+    //         ...state,
+    //         status: value[0]
+    //     })
+    // }
 
     const isFormValidated = () => {
         let result =
@@ -432,27 +431,25 @@ function StockTakeCreateForm(props) {
         return false;
     }
 
-    useEffect(() => {
-        if (props.lots.listLotsByGood) {
-            state.lots = [];
-            state.listLot = props.lots.listLotsByGood;
-            props.lots.listLotsByGood.map(item => {
-                let lot = {};
-                lot.lot = item._id;
-                lot.expirationDate = item.expirationDate;
-                item.stocks.map(stock => {
-                    if (stock.stock._id === state.fromStock) {
-                        lot.quantity = stock.quantity;
-                    }
-                })
-                lot.note = '';
-                lot.realQuantity = '';
-                lot.damagedQuantity = 0;
-                state.lots = [...state.lots, lot];
+    if (props.lots.listLotsByGood) {
+        state.lots = [];
+        state.listLot = props.lots.listLotsByGood;
+        props.lots.listLotsByGood.map(item => {
+            let lot = {};
+            lot.lot = item._id;
+            lot.expirationDate = item.expirationDate;
+            item.stocks.map(stock => {
+                if (stock.stock._id === state.fromStock) {
+                    lot.quantity = stock.quantity;
+                }
             })
-            state.good.lots = state.lots;
-        }
-    })
+            lot.note = '';
+            lot.realQuantity = '';
+            lot.damagedQuantity = 0;
+            state.lots = [...state.lots, lot];
+        })
+        state.good.lots = state.lots;
+    }
 
     const save = async () => {
 
@@ -502,11 +499,11 @@ function StockTakeCreateForm(props) {
     }
     good.quantity = quantity;
     const timelineTextArr = [
-        {text: "Tạo phiếu"},
-        {text: "Phê duyệt phiếu"},
-        {text: "Thực hiện phiếu"},
-        {text: "Kiểm định chất lượng"},
-        {text: "Hoàn thành"},
+        { text: "Tạo phiếu" },
+        { text: "Phê duyệt phiếu" },
+        { text: "Thực hiện phiếu" },
+        { text: "Kiểm định chất lượng" },
+        { text: "Hoàn thành" },
     ]
 
     return (
@@ -525,7 +522,7 @@ function StockTakeCreateForm(props) {
             >
                 {/* <QuantityCreateForm group={group} good={good} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} /> */}
                 <form id={`form-create-bill-take`}>
-                <div className="timeline-create">
+                    <div className="timeline-create">
                         <div className="timeline-progress" style={{ width: "0%" }}></div>
                         <div className="timeline-items">
                             {timelineTextArr.map((item, index) => (

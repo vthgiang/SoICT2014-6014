@@ -133,6 +133,22 @@ export function taskProcess(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case TaskProcessConstants.GET_XML_PROCESS_BY_ID_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case TaskProcessConstants.GET_XML_PROCESS_BY_ID_SUCCESS:
+            return {
+                ...state,
+                taskProcessById: action.payload.content,
+                isLoading: false
+            };
+        case TaskProcessConstants.GET_XML_PROCESS_BY_ID_FAIL:
+            return {
+                error: action.error,
+                isLoading: false
+            };
         case TaskProcessConstants.CREATE_TASK_BY_PROCESS_REQUEST:
             return {
                 ...state,

@@ -19,6 +19,7 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { EditProcessTemplateChild } from "./editProcessTemplateChild";
 
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
@@ -63,6 +64,8 @@ function ModalCreateTaskByProcessTemplate(props) {
         userId: getStorage("userId"),
         currentRole: getStorage('currentRole'),
         showInfo: false,
+        showInfoProcess:false,
+        infoTemplate: {},
         info: data.tasks,
         xmlDiagram: data.xmlDiagram,
         selected: 'info',
@@ -153,11 +156,18 @@ function ModalCreateTaskByProcessTemplate(props) {
                 }
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
+            let infoTemplate = {};
+            let infoProcessTemplates = props.data.processTemplates; // TODO task list
+            for (let i in infoProcessTemplates) {
+                infoTemplate[`${infoProcessTemplates[i].code}`] = infoProcessTemplates[i];
+            }
+            //console.log(infoTemplate);
             setState({
                 ...state,
                 idProcess: props.idProcess,
                 showInfo: false,
                 info: info,
+                infoTemplate: infoTemplate,
                 processDescription: props.data.processDescription ? props.data.processDescription : '',
                 processName: props.data.processName ? props.data.processName : '',
                 xmlDiagram: props.data.xmlDiagram,
@@ -218,6 +228,51 @@ function ModalCreateTaskByProcessTemplate(props) {
                 ...state,
                 processDescription: value,
                 errorOnProcessDescription: message,
+            }
+        });
+    }
+    // hàm cập nhật Tên Quy trình con
+    const handleChangeNameProcessChild = async (value) => {
+        let infoTemplates = state.infoTemplate
+        infoTemplates[`${state.id}`].process.processName = value
+        await setState(state => {
+            return {
+                ...state,
+                infoTemplate: infoTemplates
+            }
+        });
+    }
+
+    // hàm cập nhật mô tả quy trình con
+    const handleProcessTemplateDescProcessChild = async (value) => {
+        let infoTemplates = state.infoTemplate
+        infoTemplates[`${state.id}`].process.processDescription = value
+        await setState(state => {
+            return {
+                ...state,
+                infoTemplate: infoTemplates
+            }
+        });
+    }
+
+    const handleChangeManagerProcessChild = async (value) => {
+        let infoTemplates = state.infoTemplate
+        infoTemplates[`${state.id}`].process.manager = value
+        await setState(state => {
+            return {
+                ...state,
+                infoTemplate: infoTemplates
+            }
+        });
+    }
+
+    const handleChangeViewerProcessChild = async (value) => {
+        let infoTemplates = state.infoTemplate
+        infoTemplates[`${state.id}`].process.viewer = value
+        await setState(state => {
+            return {
+                ...state,
+                infoTemplate: infoTemplates
             }
         });
     }
@@ -365,6 +420,31 @@ function ModalCreateTaskByProcessTemplate(props) {
             }
         })
     }
+    const handleChangeViewerBpmn = async (value) => {
+    	const modeling = modeler.get('modeling');
+    	let element1 = modeler.get('elementRegistry').get(state.id);
+    	let viewer = []
+    	value.forEach(x => {
+    		viewer.push(x.name)
+    	})
+    	modeling.updateProperties(element1, {
+    		viewerName: viewer
+    	});
+
+    }
+
+    // hàm cập nhật người phê duyệt công việc
+    const handleChangeManagerBpmn = async (value) => {
+    	const modeling = modeler.get('modeling');
+    	let element1 = modeler.get('elementRegistry').get(state.id);
+    	let manager = []
+    	value.forEach(x => {
+    		manager.push(x.name)
+    	})
+    	modeling.updateProperties(element1, {
+    		managereName: manager
+    	});
+    }
 
     // hàm cập nhật độ ưu tiên
     const handleChangeTaskPriority = (value) => {
@@ -379,7 +459,7 @@ function ModalCreateTaskByProcessTemplate(props) {
     // Các hàm  xử lý sự kiện của bpmn
     const interactPopup = (event) => {
         var element = event.element;
-        // console.log(element, state)
+        //console.log(element, state)
         let nameStr = element.type.split(':');
         setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
@@ -396,6 +476,25 @@ function ModalCreateTaskByProcessTemplate(props) {
                 return {
                     ...state,
                     showInfo: true,
+                    showInfoProcess:false,
+                    type: element.type,
+                    name: nameStr[1],
+                    taskName: element.businessObject.name,
+                    id: `${element.businessObject.id}`,
+                }
+            } else if (element.type === "bpmn:SubProcess") {
+                if (!state.infoTemplate[`${element.businessObject.id}`] ||
+                    (state.infoTemplate[`${element.businessObject.id}`] && !state.infoTemplate[`${element.businessObject.id}`].organizationalUnit)) {
+                    state.infoTemplate[`${element.businessObject.id}`] = {
+                        ...state.infoTemplate[`${element.businessObject.id}`],
+                        organizationalUnit: props.listOrganizationalUnit[0]?._id,
+                    }
+                }
+
+                return {
+                    ...state,
+                    showInfo: false,
+                    showInfoProcess:true,
                     type: element.type,
                     name: nameStr[1],
                     taskName: element.businessObject.name,
@@ -404,7 +503,7 @@ function ModalCreateTaskByProcessTemplate(props) {
             }
             else {
 
-                return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
+                return { ...state, showInfo: false,showInfoProcess:false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
         })
@@ -573,6 +672,19 @@ function ModalCreateTaskByProcessTemplate(props) {
             })
     }
 
+    const handleDataProcessTempalte = async (name,value) => {
+        // console.log(value);
+        let infoTemplates = state.infoTemplate
+        infoTemplates[`${state.id}`].process[name] = value
+        console.log(infoTemplates);
+        await setState(state => {
+            return {
+                ...state,
+                infoTemplate: infoTemplates
+            }
+        });
+        
+    }
     // hàm validate form tạo quy trình công việc
     const isTaskFormValidated = () => {
         let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate, viewer, manager, errorOnManager, errorOnViewer } = state;
@@ -581,10 +693,9 @@ function ModalCreateTaskByProcessTemplate(props) {
             && errorOnViewer === undefined && errorOnManager === undefined && manager.length !== 0 && viewer.length !== 0
             && startDate.trim() !== "" && endDate.trim() !== "";
     }
-
     // Hàm lưu thông tin 
     const save = async () => {
-        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
+        let { info, infoTemplate, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
 
         let xmlStr;
         modeler.saveXML({ format: true }, function (err, xml) {
@@ -603,6 +714,11 @@ function ModalCreateTaskByProcessTemplate(props) {
             info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
         }
 
+        for (let i in infoTemplate) {
+            infoTemplate[i].process.startDate = infoTemplate[i].process.startDate ? infoTemplate[i].process.startDate : startDate;
+            infoTemplate[i].process.endDate = infoTemplate[i].process.endDate ? infoTemplate[i].process.endDate : endDate;
+        }
+
         let data = {
             processName: processName,
             processDescription: processDescription,
@@ -611,18 +727,23 @@ function ModalCreateTaskByProcessTemplate(props) {
             xmlDiagram: xmlStr,
             creator: userId,
             taskList: info,
+            processList: infoTemplate,
             startDate: startDate,
             endDate: endDate,
 
         }
+        
         let template;
-        props.createTaskByProcess(data, state.idProcess, template = true);
+        console.log(data);
+        //props.createTaskByProcess(data, state.idProcess, template = true);
         setState({
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
             info: props.data.tasks,
             xmlDiagram: props.data.xmlDiagram,
+            showInfoProcess:false,
+            infoTemplate: {},
             selected: 'info',
             save : true,
             zlevel: 1,
@@ -637,7 +758,7 @@ function ModalCreateTaskByProcessTemplate(props) {
 
     const { translate, role, user } = props;
     const { id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
-        processDescription, processName, selected, viewer, manager, errorOnProcessName, errorOnProcessDescription, indexRenderer } = state;
+        processDescription, processName, selected, viewer, manager, errorOnProcessName, errorOnProcessDescription, indexRenderer, showInfoProcess, infoTemplate } = state;
     const { listOrganizationalUnit } = props
 
     let listUserCompany = user?.usercompanys;
@@ -657,7 +778,8 @@ function ModalCreateTaskByProcessTemplate(props) {
     if (user && user.usersInUnitsOfCompany) {
         usersInUnitsOfCompany = user.usersInUnitsOfCompany;
     }
-
+    //console.log(props.data);
+    //console.log(info,id);
     let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
     let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
     return (
@@ -774,7 +896,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                             <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process-create-task">
                                 <div className="row">
                                     {/* Quy trình công việc */}
-                                    <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                    <div className={`contain-border ${showInfo || showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
                                         {/* Nút tùy chọn export, import diagram,... */}
                                         <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                             <button onClick={exportDiagram}>Export XML</button>
@@ -811,7 +933,7 @@ function ModalCreateTaskByProcessTemplate(props) {
                                     </div>
 
                                     {/* form thông tin công việc */}
-                                    <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                                    <div className={`right-content ${showInfo || showInfoProcess ? 'col-md-4' : undefined}`}>
                                         {/* style={{ display: "flex", flexDirection: "column" }} */}
                                         {
                                             (showInfo) &&
@@ -825,10 +947,30 @@ function ModalCreateTaskByProcessTemplate(props) {
                                                     startDate={startDate}
                                                     endDate={endDate}
                                                     info={(info && info[`${id}`]) && info[`${id}`]}
+                                                    handleChangeName={handleChangeName}
+                                                    handleChangeResponsible={handleChangeResponsible}
+                                                    handleChangeAccountable={handleChangeAccountable}
                                                     onChangeTemplateData={handleChangeInfo}
-                                                    handleChangeName={handleChangeName} // cập nhật tên vào diagram
-                                                    handleChangeResponsible={handleChangeResponsible} // cập nhật hiển thi diagram
-                                                    handleChangeAccountable={handleChangeAccountable} // cập nhật hiển thị diagram
+                                                     // cập nhật hiển thị diagram
+                                                />
+                                            </div>
+                                        }
+                                        {
+                                            (showInfoProcess) &&
+                                            <div>
+                                                <div>
+                                                    <h3>{translate("task.task_process.create_task_with_template")} {taskName}</h3>
+                                                </div>
+                                                <EditProcessTemplateChild
+                                                    user={user}
+                                                    id={id}
+                                                    infoTemplate={(infoTemplate && infoTemplate[`${id}`]) && infoTemplate[`${id}`].process}
+                                                    handleDataProcessChild={handleDataProcessTempalte}
+                                                    handleChangeNameProcessChild={handleChangeNameProcessChild} // cập nhật tên vào diagram
+                                                    handleProcessTemplateDescProcessChild={handleProcessTemplateDescProcessChild} // cập nhật mô tả vào diagram
+                                                    handleChangeManagerProcessChild={handleChangeManagerProcessChild} // cập nhật hiển thi diagram
+                                                    handleChangeViewerProcessChild={handleChangeViewerProcessChild} // cập nhật hiển thị diagram
+                                                    // setBpmnProcess={setBpmnProcess}
                                                 />
                                             </div>
                                         }

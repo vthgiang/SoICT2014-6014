@@ -98,7 +98,7 @@ export default class CustomRenderer extends BaseRenderer {
                 }
             }
         } else {
-            let manager1 = accountable.split(",")
+            let manager1 = manager.split(",")
             for (i = 0; i < manager1.length; i++) {
                 if (i !== manager1.length - 1) {
                     managerName = managerName + manager1[i] + ", "
@@ -118,7 +118,7 @@ export default class CustomRenderer extends BaseRenderer {
                 }
             }
         } else {
-            let viewer1 = accountable.split(",")
+            let viewer1 = viewer.split(",")
             for (i = 0; i < viewer1.length; i++) {
                 if (i !== viewer1.length - 1) {
                     viewerName = viewerName + viewer1[i] + ", "
