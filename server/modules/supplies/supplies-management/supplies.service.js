@@ -262,6 +262,7 @@ exports.getDashboardSupplies = async (portal, query) => {
         .populate('allocationHistories')
         .populate('purchaseInvoices')
         .exec();
+
     let suppliesPurchaseRequest = await SuppliesPurchaseRequest(connect(DB_CONNECTION, portal))
         .find({})
         .populate('company')
@@ -269,6 +270,13 @@ exports.getDashboardSupplies = async (portal, query) => {
         .populate('recommendUnits')
         .populate('approver')
         .exec();
+    // filter data by query time
+    suppliesPurchaseRequest = suppliesPurchaseRequest.filter((item) => {
+        let suppliesPurchaseRequestDate = item.dateCreate;
+        suppliesPurchaseRequestDate = new Date(suppliesPurchaseRequestDate.getFullYear(), suppliesPurchaseRequestDate.getMonth());
+        return (Date.parse(suppliesPurchaseRequestDate) >= Date.parse(startTime) && Date.parse(suppliesPurchaseRequestDate) <= Date.parse(endTime))
+    })
+
     let organizationUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .find({})
         .exec();
@@ -288,25 +296,29 @@ exports.getDashboardSupplies = async (portal, query) => {
         let supply = supplies[i];
         suppliesPrice += supply.price;
 
+        // filter data by query
+        supply.allocationHistories = supply.allocationHistories.filter((item) => {
+            let allocationDate = item.date;
+            allocationDate = new Date(allocationDate.getFullYear(), allocationDate.getMonth());
+            return (Date.parse(allocationDate) >= Date.parse(startTime) && Date.parse(allocationDate) <= Date.parse(endTime))
+        });
+
+        supply.purchaseInvoices = supply.purchaseInvoices.filter((item) => {
+            let purchaseDate = item.date;
+            purchaseDate = new Date(purchaseDate.getFullYear(), purchaseDate.getMonth());
+            return (Date.parse(purchaseDate) >= Date.parse(startTime) && Date.parse(purchaseDate) <= Date.parse(endTime))
+        });
+
         //handle purchaseInvoice
         for(let j = 0; j < supply.purchaseInvoices.length; j++) {
-            let purchaseInvoiceDate = supply.purchaseInvoices[j].date;
-            purchaseInvoiceDate = new Date(purchaseInvoiceDate.getFullYear(), purchaseInvoiceDate.getMonth());
-
-            if (Date.parse(purchaseInvoiceDate) >= Date.parse(startTime) && Date.parse(purchaseInvoiceDate) <= Date.parse(endTime)) {
-                totalPurchaseInvoice++;
-                purchaseInvoicesPrice += Number(supply.purchaseInvoices[j].price) * Number(supply.purchaseInvoices[j].quantity);
-            }
+            totalPurchaseInvoice++;
+            purchaseInvoicesPrice += Number(supply.purchaseInvoices[j].price) * Number(supply.purchaseInvoices[j].quantity);
         }
 
         //handle allocationHistory
         for(let j = 0; j < supply.allocationHistories.length; j++) {
-            let allocationHistoryDate = supply.allocationHistories[j].date;
-            allocationHistoryDate = new Date(allocationHistoryDate.getFullYear(), allocationHistoryDate.getMonth());
-            if (Date.parse(allocationHistoryDate) >= Date.parse(startTime) && Date.parse(allocationHistoryDate) <= Date.parse(endTime)) {
-                allocationHistoryTotal++;
-                allocationHistoryPrice +=  Number(supply.price) * Number(supply.allocationHistories[j].quantity);
-            }
+            allocationHistoryTotal++;
+            allocationHistoryPrice +=  Number(supply.price) * Number(supply.allocationHistories[j].quantity);
         }
 
         /** Handle pie chart */
@@ -358,6 +370,19 @@ exports.getDashboardSupplies = async (portal, query) => {
         organizationUnit.price = 0;
         for(let j = 0; j < supplies.length; j++) {
             let supply = supplies[j], totalPricePerSupply = 0, totalQuantityPerSupply = 0, tempQuantity = 0;
+            // filter data by query
+            supply.allocationHistories = supply.allocationHistories.filter((item) => {
+                let allocationDate = item.date;
+                allocationDate = new Date(allocationDate.getFullYear(), allocationDate.getMonth());
+                return (Date.parse(allocationDate) >= Date.parse(startTime) && Date.parse(allocationDate) <= Date.parse(endTime))
+            });
+
+            supply.purchaseInvoices = supply.purchaseInvoices.filter((item) => {
+                let purchaseDate = item.date;
+                purchaseDate = new Date(purchaseDate.getFullYear(), purchaseDate.getMonth());
+                return (Date.parse(purchaseDate) >= Date.parse(startTime) && Date.parse(purchaseDate) <= Date.parse(endTime))
+            });
+
             for(let k = 0; k < supply.allocationHistories.length; k++) {
                 let allocationHistory = supply.allocationHistories[k];
                 if (organizationUnit._id.toString() === allocationHistory.allocationToOrganizationalUnit.toString()) {
@@ -409,8 +434,58 @@ exports.getDashboardSupplies = async (portal, query) => {
         organizationUnitsPriceSupply
     }
 
+    console.log('data number data: ', data.numberData);
     console.log('data pie chart - bought: ', data.pieChart.boughtSupplies);
     console.log('data pie chart - exist: ', data.pieChart.existSupplies);
     console.log('data bar chart - organization: ', data.barChart.organizationUnitsPriceSupply);
     return result;
+}
+
+exports.getDashboardSuppliesForOrganization = async (portal, query) => {
+    let {supplyIds, organizationId, time} = query;
+    time = JSON.parse(time);
+    let startTime = new Date(time.startTime);
+    let endTime = new Date(time.endTime);
+    startTime = new Date(startTime.getFullYear(), startTime.getMonth());
+    endTime = new Date(endTime.getFullYear(), endTime.getMonth());
+
+    let supplies = await Supplies(connect(DB_CONNECTION, portal))
+        .find({
+            _id: {$in: supplyIds.map(item => mongoose.Types.ObjectId(item))} })
+        .populate('allocationHistories')
+        .populate('purchaseInvoices')
+        .exec();
+
+    let suppliesPriceForOrganization = [];
+    for (let i = 0; i < supplies.length; i++) {
+        let supply = supplies[i];
+
+        // filter data by query
+        supply.allocationHistories = supply.allocationHistories.filter((item) => {
+            let allocationDate = item.date;
+            allocationDate = new Date(allocationDate.getFullYear(), allocationDate.getMonth());
+            return (Date.parse(allocationDate) >= Date.parse(startTime) && Date.parse(allocationDate) <= Date.parse(endTime))
+        });
+
+        let totalPrice = 0, totalQuantity = 0;
+        for(let j = 0; j < supply.purchaseInvoices.length; j++) {
+            totalPrice += supply.purchaseInvoices[j].price;
+            totalQuantity += supply.purchaseInvoices[j].quantity;
+        }
+
+        let pricePerUnit = totalPrice / totalQuantity, price = 0, quantity = 0;
+        for(let j = 0; j < supply.allocationHistories.length; j++) {
+            if (supply.allocationHistories[j].allocationToOrganizationalUnit.toString() === organizationId) {
+                price += pricePerUnit * supply.allocationHistories[j].quantity;
+                quantity += supply.allocationHistories[j].quantity;
+            }
+        }
+        suppliesPriceForOrganization.push({
+            name: supply.suppliesName,
+            price: price,
+            quantity: quantity
+        });
+    }
+
+    return suppliesPriceForOrganization;
 }

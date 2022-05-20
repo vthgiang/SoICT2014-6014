@@ -244,7 +244,29 @@ exports.getDashboardSupplies = async (req, res) => {
         await Logger.error(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_dashboard_supplies_success_failed"],
+            messages: ["get_dashboard_supplies_failed"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
+
+exports.getDashboardSuppliesForOrganization = async (req, res) => {
+    try {
+        let result = await SuppliesService.getDashboardSuppliesForOrganization(req.portal, req.query);
+        await Logger.info(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_dashboard_supplies_for_organization_success"],
+            content: result
+        });
+    } catch (error) {
+        console.log('Error: ', error)
+        await Logger.error(req.user.email, 'GET_DASHBOARD_SUPPLIES', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_dashboard_supplies_for_organization_failed"],
             content: {
                 error: error
             }
