@@ -43,9 +43,9 @@ function createBiddingContract(data) {
  * Chỉnh sửa hợp đồng
  * @data : Dữ liệu
  */
-function editBiddingContract(data) {
+function editBiddingContract(data, id) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract/${data.contractId}`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract/${id}`,
         method: 'PATCH',
         data: data
     }, true, true, 'human_resource.bidding_contract');

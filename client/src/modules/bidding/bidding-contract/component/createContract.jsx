@@ -561,7 +561,7 @@ const CreateBiddingContract = (props) => {
 				func={save}
 				size={75}
 			>
-				<form id="form-create-career-position">
+				<form id="form-create-biddingContract">
 					<div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
 						{/* Tabbed pane */}
 						<ul className="nav nav-tabs">

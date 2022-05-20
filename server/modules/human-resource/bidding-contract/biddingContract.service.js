@@ -117,11 +117,12 @@ exports.createNewBiddingContract = async (portal, data, files, company) => {
     let filesConvert
     if (files) {
         filesConvert = files.map(obj => ({
-            name: obj.originalname,
+            fileName: obj.originalname,
             url: this.getUrl(obj.destination, obj.filename),
         }))
     }
 
+    data.createdDate = Date.now()
     data.files = filesConvert
 
     await BiddingContract(connect(DB_CONNECTION, portal)).create(data);
@@ -134,7 +135,33 @@ exports.createNewBiddingContract = async (portal, data, files, company) => {
  * @id : Id hợp đồng muốn chỉnh sửa
  * @data : Dữ liệu thay đổi
  */
-exports.editBiddingContract = async (portal, data, params, company) => {
+exports.editBiddingContract = async (portal, data, params, files, company) => {
+    data = freshObject(data);
+
+    const existedContract = await BiddingContract(connect(DB_CONNECTION, portal)).findOne({ _id: data.id });
+    if (!existedContract) throw ["contract_not_exist"];
+
+    const checkBidpackage = await BiddingContract(
+        connect(DB_CONNECTION, portal)
+    ).findOne({ biddingPackage: data.biddingPackage });
+    if (checkBidpackage && String(checkBidpackage._id) !== String(data.id)) throw ["contract_for_bidding_package_exist"];
+
+    let filesConvert
+    if (files) {
+        filesConvert = files.map(obj => ({
+            fileName: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+    }
+
+    if (filesConvert) {
+        filesConvert = [...data.files, ...filesConvert]
+    }
+
+    data.files = filesConvert
+
+    // TODO: chưa xử lý xóa file
+
     await BiddingContract(connect(DB_CONNECTION, portal)).updateOne(
         { _id: params.id },
         {
@@ -151,6 +178,8 @@ exports.editBiddingContract = async (portal, data, params, company) => {
 
                 biddingPackage: data.biddingPackage,
                 project: data.project,
+
+                files: data.files
             },
         },
         { $new: true }

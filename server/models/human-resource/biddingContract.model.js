@@ -146,12 +146,12 @@ const BiddingContractSchema = new Schema(
 
         // file hợp đồng đính kèm
         files: [{
-            name: {
+            fileName: {
                 type: String,
             },
             url: {
-                type: String,
-            },
+                type: String
+            }
         }]
     },
     {

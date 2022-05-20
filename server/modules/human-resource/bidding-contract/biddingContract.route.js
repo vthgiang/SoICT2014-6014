@@ -8,7 +8,7 @@ router.get("/bidding-contract", auth, BiddingContractController.searchBiddingCon
 
 router.post("/bidding-contract", auth, uploadFile([{ name: 'files', path: '/bidding-contracts' }], 'array'), BiddingContractController.createNewBiddingContract);
 
-router.patch("/bidding-contract/:id", auth, BiddingContractController.editBiddingContract);
+router.patch("/bidding-contract/:id", auth, uploadFile([{ name: 'files', path: '/bidding-contracts' }], 'array'), BiddingContractController.editBiddingContract);
 router.delete("/bidding-contract/:id", auth, BiddingContractController.deleteBiddingContract);
 
 

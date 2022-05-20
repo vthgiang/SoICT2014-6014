@@ -68,12 +68,12 @@ function createBiddingContract(data) {
  * Chỉnh sửa chuyên ngành tương đương
  * @data : Dữ liệu key tìm kiếm 
  */
-function editBiddingContract(data) {
+function editBiddingContract(data, id) {
     return dispatch => {
         dispatch({
             type: BiddingContractConstant.UPDATE_BIDDING_CONTRACT_REQUEST
         });
-        BiddingContractService.editBiddingContract(data)
+        BiddingContractService.editBiddingContract(data, id)
             .then(res => {
                 dispatch({
                     type: BiddingContractConstant.UPDATE_BIDDING_CONTRACT_SUCCESS,
@@ -93,7 +93,7 @@ function editBiddingContract(data) {
  * Xóa chuyên ngành
  * @data : Dữ liệu key tìm kiếm 
  */
- function deleteBiddingContract(data) {
+function deleteBiddingContract(data) {
     return dispatch => {
         dispatch({
             type: BiddingContractConstant.DELETE_BIDDING_CONTRACT_REQUEST,
