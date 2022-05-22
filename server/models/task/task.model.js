@@ -855,6 +855,10 @@ const TaskSchema = new Schema(
         actualEndDate: {
             type: Date,
         },
+        //thời điểm thực bắt đầu task đó
+        actualStartDate: {
+            type: Date,
+        },
         // Danh sách thành viên tham gia công việc + lương tháng + trọng số thành viên trong công việc
         actorsWithSalary: [
             {
