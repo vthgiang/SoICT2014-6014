@@ -51,7 +51,7 @@ function EditProcessTemplateChild(props) {
         
         let { value } = e.target;
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
-        props.handleProcessDescProcessChild(value)
+        props.handleProcessTemplateDescProcessChild(value)
         await setState(state => {
             return {
                 ...state,

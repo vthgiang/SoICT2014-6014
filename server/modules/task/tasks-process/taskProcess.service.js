@@ -529,6 +529,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                 }
             }
         }
+        console.log('27');
         for (let i in data[x].preceedingTasks) {
             let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: data[x].preceedingTasks[i].task });
 
@@ -548,7 +549,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             }
 
         }
-
+        console.log('28');
         await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
             { process: taskProcessId, codeInProcess: data[x].code },
             {
@@ -560,6 +561,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             { new: true }
         )
     }
+    console.log('29');
     for (let x in dataProcess) {
         let listFollowingProcess = [];
         let listPreceedingProcess = [];
@@ -601,6 +603,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                 }
             }
         }
+        console.log('30');
         for (let i in dataProcess[x].preceedingTasks) {
             let item = await Task(connect(DB_CONNECTION, portal)).findOne({ process: taskProcessId, codeInProcess: dataProcess[x].preceedingTasks[i].task });
             if (item) {
@@ -620,7 +623,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             }
 
         }
-
+        console.log('31');
         await TaskProcess(connect(DB_CONNECTION, portal)).findOneAndUpdate(
             { processParent: taskProcessId, codeInProcess: dataProcess[x].code },
             {
@@ -632,9 +635,11 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             { new: true }
         )
     }
+    console.log('32');
     if (processId !== "undefined") {
         await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
     }
+    console.log('33');
     let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask, processChilds: listProcess } }, { new: true })
     .populate([
         { path: 'creator', select: 'name' },
@@ -661,14 +666,17 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         },
         { path: 'processTemplate', select: 'processName' },
     ]);
+    console.log('34');
     let myProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate([
         { path: 'creator', select: 'name' },
         { path: 'viewer', select: 'name' },
         { path: 'manager', select: 'name' },
         { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
-    ]);;
+    ]);
+    console.log('35');
     if( body.template === false ) {
+        console.log('36');
         return { process: newProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
     }else {
         return { process: myProcess, newTask: newTaskItem, mailInfo: mailInfoArr }

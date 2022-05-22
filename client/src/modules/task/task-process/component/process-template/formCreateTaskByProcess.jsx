@@ -7,7 +7,7 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task-template/redux/actions';
 
-import { SelectBox, ErrorLabel, DatePicker } from '../../../../../common-components';
+import { SelectBox, ErrorLabel, DatePicker, QuillEditor } from '../../../../../common-components';
 
 import getEmployeeSelectBoxItems from '../../../organizationalUnitHelper';
 import './../../../task-template/component/tasktemplate.css';
@@ -181,8 +181,7 @@ function FormCreateTaskByProcess(props) {
         return message == undefined;
     }
 
-    const handleTaskTemplateDesc = (event) => {
-        let value = event.target.value;
+    const handleTaskTemplateDesc = (value, imgs) => {
         validateTaskTemplateDesc(value, true);
     }
     const validateTaskTemplateDesc = (value, willUpdateState = true) => {
@@ -503,7 +502,16 @@ function FormCreateTaskByProcess(props) {
                     {/**Mô tả mẫu công việc này */}
                     <div className={`form-group ${state.taskItem.errorOnDescription === undefined ? "" : "has-error"}`} >
                         <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{ color: "red" }}>*</span></label>
-                        <textarea rows={4} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={taskItem.description} onChange={handleTaskTemplateDesc} />
+                        <QuillEditor
+                            id={`inputDescriptionTaskTemplate`}
+                            table={false}
+                            embeds={false}
+                            getTextData={handleTaskTemplateDesc}
+                            maxHeight={80}
+                            quillValueDefault={taskItem.description}
+                            placeholder={translate('task_template.description')}
+                        />
+                        
                         <ErrorLabel content={state.taskItem.errorOnDescription} />
                     </div>
                 </div>
