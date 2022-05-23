@@ -4,12 +4,13 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DeleteNotification, ConfirmNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker, SelectBox } from '../../../../common-components';
 
-
 import { BiddingContractActions } from '../redux/actions';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import CreateBiddingContract from './createContract';
 import EditBiddingContract from './editContract';
 import ViewBiddingContract from './detailContract';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
 
 const ContractManagement = (props) => {
 
@@ -48,6 +49,10 @@ const ContractManagement = (props) => {
     useEffect(() => {
         props.getListBiddingContract(state);
     }, [state.limit, state.page]);
+
+    useEffect(() => {
+        props.getAllUserInAllUnitsOfCompany();
+    }, []);
 
     /**
      * Function format dữ liệu Date thành string
@@ -335,6 +340,8 @@ function mapState(state) {
 const actionCreators = {
     getListBiddingContract: BiddingContractActions.getListBiddingContract,
     deleteBiddingContract: BiddingContractActions.deleteBiddingContract,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 };
 
 const biddingContractManagement = connect(mapState, actionCreators)(withTranslate(ContractManagement));
