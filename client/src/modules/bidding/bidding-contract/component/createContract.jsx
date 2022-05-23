@@ -8,6 +8,7 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import { BiddingPackageManagerActions } from '../../bidding-package/biddingPackageManagement/redux/actions';
 import { getStorage } from '../../../../config';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
+import { ConfigurationActions } from '../../../super-admin/module-configuration/redux/actions';
 const CreateBiddingContract = (props) => {
 	const fakeUnitCostList = [
 		{ text: 'VND', value: 'VND' },
@@ -18,55 +19,6 @@ const CreateBiddingContract = (props) => {
 		{ text: 'Giờ', value: 'hours' },
 		{ text: 'Tháng', value: 'months' },
 	]
-	// const initState = {
-
-	// 	contractNameError: undefined,
-	// 	contractCodeError: undefined,
-
-	// 	code: "",
-	// 	name: "",
-	// 	effectiveDate: "",
-	// 	endDate: "",
-	// 	unitTime: "days",
-	// 	budget: 0,
-	// 	unitCost: fakeUnitCostList[0].value,
-	// 	partyA: {
-	// 		company: "",
-	// 		address: "",
-	// 		phone: "",
-	// 		taxCode: "",
-	// 		representative: {
-	// 			name: "",
-	// 			role: "",
-	// 		},
-	// 		bank: {
-	// 			name: "",
-	// 			accountNumber: "",
-	// 		},
-	// 	},
-	// 	partyB: {
-	// 		company: "",
-	// 		address: "",
-	// 		phone: "",
-	// 		taxCode: "",
-	// 		representative: {
-	// 			name: "",
-	// 			role: "",
-	// 		},
-	// 		bank: {
-	// 			name: "",
-	// 			accountNumber: "",
-	// 		},
-	// 	},
-
-	// 	biddingPackage: null,
-	// 	project: null,
-
-	// 	file: "",
-	// 	fileName: "",
-	// 	fileUrl: "",
-	// 	fileUpload: "",
-	// }
 	const initState = {
 
 		contractNameError: undefined,
@@ -106,25 +58,36 @@ const CreateBiddingContract = (props) => {
 
 		// files: [],
 
-		// file: "",
-		// fileName: "",
-		// fileUrl: "",
-		// fileUpload: "",
-
 		selectedTab: 'general'
 	}
 	const [state, setState] = useState(initState);
-	const { translate, biddingContract, biddingPackagesManager } = props;
-	// let files;
-	// if (state.file) {
-	// 	files = [{ fileName: state.fileName, fileUrl: state.fileUrl, fileUpload: state.fileUpload }]
-	// }
+	const { translate, biddingContract, biddingPackagesManager, modelConfiguration } = props;
 	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
 
 	useEffect(() => {
 		props.getAllBiddingPackage({ name: '', status: 3, page: 0, limit: 1000 });
-
+		props.getConfiguration();
 	}, [])
+
+	useEffect(() => {
+		if (modelConfiguration.biddingConfig != '') {
+			const data = modelConfiguration.biddingConfig
+			console.log(75, data);
+			setState({
+				...state,
+				companyB: data.company,
+				addressB: data.address,
+				phoneB: data.phone,
+				emailB: data.email,
+				taxCodeB: data.taxCode,
+				representativeNameB: data.representative.name,
+				representativeRoleB: data.representative.role,
+				bankNameB: data.bank.name,
+				bankAccountNumberB: data.bank.accountNumber,
+			})
+		}
+	}, [modelConfiguration.biddingConfig])
+
 
 	/**
 	 * Function lưu giá trị unit vào state khi thay đổi
@@ -197,31 +160,6 @@ const CreateBiddingContract = (props) => {
 		})
 	}
 
-
-	/** Bắt sự kiện thay đổi single file đính kèm */
-	const handleChangeSingleFile = (value) => {
-		if (value.length !== 0) {
-			setState(state => {
-				return {
-					...state,
-					fileName: value[0].fileName,
-					fileUrl: value[0].urlFile,
-					fileUpload: value[0].fileUpload
-				}
-			})
-		} else {
-			setState(state => {
-				return {
-					...state,
-					fileName: "",
-					fileUrl: "",
-					fileUpload: ""
-				}
-			})
-		}
-	}
-
-
 	/** Bắt sự kiện thay đổi multi file đính kèm */
 	const handleChangeFile = (file) => {
 		console.log(227, file);
@@ -238,8 +176,6 @@ const CreateBiddingContract = (props) => {
 			}
 		});
 	}
-
-	console.log();
 
 	const save = () => {
 		let formData;
@@ -421,10 +357,6 @@ const CreateBiddingContract = (props) => {
 				</div>
 
 				<div className="row">
-					{/* <div className="col-md-6">
-								<label>File hợp đồng đính kèm</label>
-								<UploadFile files={files} onChange={handleChangeFile} />
-							</div> */}
 					<div className="form-group col-md-6">
 						<label>File hợp đồng đính kèm</label>
 						<UploadFile multiple={true} files={state.files} onChange={handleChangeFile} />
@@ -587,6 +519,7 @@ const mapStateToProps = state => state;
 const mapDispatchToProps = {
 	createBiddingContract: BiddingContractActions.createBiddingContract,
 	getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
+	getConfiguration: ConfigurationActions.getConfiguration,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateBiddingContract));
