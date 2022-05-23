@@ -94,25 +94,24 @@ const initSampleCompanyDB = async () => {
   let connectOptions =
     process.env.DB_AUTHENTICATION === "true"
       ? {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-          user: process.env.DB_USERNAME,
-          pass: process.env.DB_PASSWORD,
-          auth: {
-            authSource: "admin",
-          },
-        }
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+        auth: {
+          authSource: "admin",
+        },
+      }
       : {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-        };
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      };
   const systemDB = mongoose.createConnection(
-    `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-      process.env.DB_NAME
+    `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME
     }`,
     connectOptions
   );
@@ -120,22 +119,22 @@ const initSampleCompanyDB = async () => {
   let connectVNISTOptions =
     process.env.DB_AUTHENTICATION === "true"
       ? {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-          user: process.env.DB_USERNAME,
-          pass: process.env.DB_PASSWORD,
-          auth: {
-            authSource: "admin",
-          },
-        }
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+        auth: {
+          authSource: "admin",
+        },
+      }
       : {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-        };
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      };
   const vnistDB = mongoose.createConnection(
     `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`,
     connectVNISTOptions
@@ -1837,6 +1836,21 @@ const initSampleCompanyDB = async () => {
         shift2Time: 4,
         shift3Time: 4,
       },
+    },
+    bidding: {
+      company: vnist.name,
+      address: "Tầng 10, số 266 Đội Cấn, quận Ba Đình, Hà Nội",
+      email: "vnist@gmail.com",
+      phone: "0987654345",
+      taxCode: "564651658496456",
+      representative: {
+        name: users[2].name,
+        role: giamDoc.name
+      },
+      bank: {
+        name: "SHB - chi nhánh Ba Đình",
+        accountNumber: "98676745678"
+      }
     },
   });
 
