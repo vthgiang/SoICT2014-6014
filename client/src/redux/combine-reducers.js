@@ -6,7 +6,7 @@ import { systemSetting } from '../modules/system-admin/system-setting/redux/redu
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
-import {systemPage} from '../modules/system-admin/system-page/redux/reducers';
+import { systemPage } from '../modules/system-admin/system-page/redux/reducers';
 import { systemApis } from '../modules/system-admin/system-api/system-api-management/redux/reducers';
 import { privilegeApis } from '../modules/system-admin/system-api/system-api-privilege/redux/reducers'
 
@@ -77,11 +77,11 @@ import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/re
 import { assetLotManager } from "../modules/asset/admin/asset-lot/redux/reducers";
 
 //supplies 
-import { suppliesReducer} from "../modules/supplies/admin/supplies/redux/reducers";
-import { suppliesDashboardReducer} from "../modules/supplies/admin/supplies-dashboard/redux/reducers";
-import { purchaseInvoiceReducer} from "../modules/supplies/admin/purchase-invoice/redux/reducers";
-import { allocationHistoryReducer} from "../modules/supplies/admin/allocation-history/redux/reducers";
-import { purchaseRequest} from "../modules/supplies/admin/purchase-request/redux/reducers";
+import { suppliesReducer } from "../modules/supplies/admin/supplies/redux/reducers";
+import { suppliesDashboardReducer } from "../modules/supplies/admin/supplies-dashboard/redux/reducers";
+import { purchaseInvoiceReducer } from "../modules/supplies/admin/purchase-invoice/redux/reducers";
+import { allocationHistoryReducer } from "../modules/supplies/admin/allocation-history/redux/reducers";
+import { purchaseRequest } from "../modules/supplies/admin/purchase-request/redux/reducers";
 
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
@@ -101,10 +101,10 @@ import { status } from "../modules/crm/status/redux/reducers";
 import { cares } from "../modules/crm/care/redux/reducers";
 import { careTypes } from "../modules/crm/careType/redux/reducers";
 import { evaluations } from "../modules/crm/evaluation/redux/reducers";
-import {loyalCustomers} from "../modules/crm/loyalCustomer/redux/reducers"
-import {customerRankPoints} from "../modules/crm/customerRankPoint/redux/reducers"
-import {crmUnits} from "../modules/crm/crmUnitConfiguration/redux/reducers"
-import {crmUnitKPI} from "../modules/crm/crmUnitKPI/redux/reducers"
+import { loyalCustomers } from "../modules/crm/loyalCustomer/redux/reducers"
+import { customerRankPoints } from "../modules/crm/customerRankPoint/redux/reducers"
+import { crmUnits } from "../modules/crm/crmUnitConfiguration/redux/reducers"
+import { crmUnitKPI } from "../modules/crm/crmUnitKPI/redux/reducers"
 //order
 import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
@@ -146,6 +146,7 @@ import { transportDepartment } from '../modules/production/transport/transport-d
 
 // Project
 import { project } from "../modules/project/projects/redux/reducers";
+import { projectTemplate } from "../modules/bidding/project-template/redux/reducers";
 import { changeRequest } from "../modules/project/change-requests/redux/reducers";
 import { projectStatistic } from "../modules/project/statistic/redux/reducers";
 import { schedulingProjects } from "../modules/project/scheduling-projects/redux/reducers";
@@ -261,7 +262,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status, cares, careTypes,evaluations,loyalCustomers,customerRankPoints,crmUnits,crmUnitKPI
+        customers, groups, status, cares, careTypes, evaluations, loyalCustomers, customerRankPoints, crmUnits, crmUnitKPI
     }),
 
     //order
@@ -277,7 +278,7 @@ const appReducer = combineReducers({
 
     //plane
     plan,
-    
+
     //example1
     example1,
 
@@ -303,8 +304,9 @@ const appReducer = combineReducers({
     transportSchedule,
     transportVehicle,
     transportDepartment,
-    
+
     // project
+    projectTemplate,
     project,
     projectStatistic,
     changeRequest,

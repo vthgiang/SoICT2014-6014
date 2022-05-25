@@ -65,6 +65,7 @@ const Certificate = lazy(() => import("../modules/human-resource/certificate/com
 const Major = lazy(() => import("../modules/human-resource/major/component"))
 const Contract = lazy(() => import("../modules/bidding/bidding-contract/component"))
 const BiddingPackagesManagement = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components"))
+const ProjectTemplateManagement = lazy(() => import("../modules/bidding/project-template/components"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
@@ -1268,7 +1269,7 @@ class Routes extends Component {
                         path={"/bidding-project-template"}
                         pageName={"bidding_project_template_list"}
                         layout={Layout}
-                        component={Project}
+                        component={ProjectTemplateManagement}
                     />
                     <PrivateRoute
                         isLoading={this.props.course.isLoading}

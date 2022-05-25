@@ -117,7 +117,7 @@ router.use("/course", require("./modules/trainning/course/course.route"));
 router.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
 router.use("/asset", require("./modules/asset/asset-management/asset.route"));
 //asset lot
-router.use("/assetlot",require("./modules/asset/asset-lot-management/asset-lot.route"));
+router.use("/assetlot", require("./modules/asset/asset-lot-management/asset-lot.route"));
 
 router.use(
     "/purchase-request",
@@ -182,8 +182,11 @@ app.use("/sla", require("./modules/production/order/sla/sla.route"));
 app.use("/tax", require("./modules/production/order/tax/tax.route"));
 app.use("/payment", require("./modules/production/order/payment/payment.route"));
 app.use("/business-department", require("./modules/production/order/business-department/businessDepartment.route"));
-app.use("/projects", require("./modules/project/project.route"));
 app.use("/news-feed", require("./modules/news-feed/newsFeed.route"));
+
+// project
+app.use("/projects", require("./modules/project/project.route"));
+app.use("/project-templates", require("./modules/project-template/projectTemplate.route"));
 
 app.use("/transport-requirement", require("./modules/production/transport/transportRequirements/transportRequirements.route"));
 app.use("/transport-plan", require("./modules/production/transport/transportPlan/transportPlan.route"));
