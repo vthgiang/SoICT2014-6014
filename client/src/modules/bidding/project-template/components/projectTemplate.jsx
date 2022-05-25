@@ -32,7 +32,7 @@ function ProjectTemplateManage(props) {
     // Sau khi add project mới hoặc edit project thì call lại tất cả list project
     const handleAfterCreateProject = () => {
         props.getProjectTemplateDispatch({ calledId: "paginate", page, perPage, userId, searchName });
-        props.getProjectTemplateDispatch({ calledId: "user_all", userId });
+        // props.getProjectTemplateDispatch({ calledId: "user_all", userId });
     }
 
     const handleChangeSearchName = (e) => {
@@ -124,7 +124,9 @@ function ProjectTemplateManage(props) {
                 projectEdit={currentRow}
                 handleAfterCreateProject={handleAfterCreateProject}
             /> */}
-            <CreateProjectTemplateForm />
+            <CreateProjectTemplateForm
+                handleAfterCreateProject={handleAfterCreateProject}
+            />
 
             <div className="box">
                 <div className="box-body qlcv">

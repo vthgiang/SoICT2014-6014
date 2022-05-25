@@ -53,7 +53,8 @@ exports.get = async (portal, query) => {
     ).find(options).sort({ createdAt: -1 }).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
         .populate({ path: "responsibleEmployees", select: "_id name email" })
         .populate({ path: "projectManager", select: "_id name email" })
-        .populate({ path: "creator", select: "_id name email" });
+        .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "task.responsibleEmployees task.accountableEmployees task.consultedEmployees task.informedEmployees", select: "_id name" })
     return {
         list: project,
         totalItem: totalList,
@@ -72,14 +73,6 @@ exports.create = async (portal, data) => {
     let newResponsibleEmployeesWithUnit = [];
 
     if (data) {
-        // for (let i in data) {
-        //     if (data[i] && data[i].length > 0) {
-        //         newData = {
-        //             ...newData,
-        //             [i]: data[i]
-        //         }
-        //     }
-        // }
         for (let employeeItem of data.responsibleEmployeesWithUnit) {
             let newListUsers = [];
             for (let userItem of employeeItem.listUsers) {
@@ -126,11 +119,16 @@ exports.create = async (portal, data) => {
     }
 
     let project = await ProjectTemplate(connect(DB_CONNECTION, portal)).create({
-        // ...newData,
         ...data,
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     });
-    return project;
+    // return project;
+
+    return await ProjectTemplate(connect(DB_CONNECTION, portal)).findOne({ _id: project._id })
+        .populate({ path: "responsibleEmployees", select: "_id name email" })
+        .populate({ path: "projectManager", select: "_id name email" })
+        .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "task.responsibleEmployees task.accountableEmployees task.consultedEmployees task.informedEmployees", select: "_id name" })
 }
 
 exports.edit = async (portal, id, data) => {
@@ -193,10 +191,15 @@ exports.edit = async (portal, id, data) => {
             responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
             responsibleEmployees: data.responsibleEmployees,
             unitTime: data.unitTime,
+
+            tasks: data.tasks,
         }
     }, { new: true });
     return await ProjectTemplate(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: "projectManager", select: "_id name" })
+        .populate({ path: "responsibleEmployees", select: "_id name email" })
+        .populate({ path: "projectManager", select: "_id name email" })
+        .populate({ path: "creator", select: "_id name email" })
+        .populate({ path: "task.responsibleEmployees task.accountableEmployees task.consultedEmployees task.informedEmployees", select: "_id name" })
 }
 
 exports.delete = async (portal, id) => {

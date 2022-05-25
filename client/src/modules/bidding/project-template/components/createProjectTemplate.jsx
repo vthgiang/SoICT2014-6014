@@ -60,24 +60,33 @@ const CreateProjectTemplateForm = (props) => {
 
     const isFormValidated = () => {
         let { translate } = props;
-        // console.log('\n----------------')
-        // console.log(!ValidationHelper.validateName(translate, projectName, 6, 255).status)
-        // console.log(projectManager.length === 0)
-        // console.log(responsibleEmployeesWithUnit.list.length === 0)
-        // console.log(startDate.length === 0)
-        // console.log(endDate.length === 0)
+        // validate general info 
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
         if (projectManager.length === 0) return false;
         if (responsibleEmployeesWithUnit.list.length === 0) return false;
-        if (startDate.length === 0) return false;
-        if (endDate.length === 0) return false;
-        if (startDate > endDate) return false;
+        // if (startDate.length === 0) return false;
+        // if (endDate.length === 0) return false;
+        // if (new Date(startDate) > new Date(endDate)) return false;
+
+        // validate task info
+        for (let task in tasksInfo) {
+            const requiredKey = ["code", "name", "estimateNormalTime", "estimateOptimisticTime", "totalResWeight", "responsibleEmployees", "accountableEmployees"];
+            // for (const [key, value] of Object.entries(task))
+            for (const key in task) {
+                if (requiredKey.find(x => x === key)) {
+                    if (task[key].length <= 0) {
+                        return false
+                    }
+                }
+            }
+        }
+
         return true;
     }
 
     const save = () => {
         console.log(66, generalInfo, endTime, startTime, responsibleEmployeesWithUnit, currentSalaryMembers)
-        console.log(80, tasksInfo)
+        console.log(80, tasksInfo, isFormValidated())
         if (isFormValidated()) {
             let partStartDate = convertDateTime(startDate, startTime).split('-');
             let start = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
@@ -93,25 +102,26 @@ const CreateProjectTemplateForm = (props) => {
                 }
             }
 
+            props.createProjectTemplateDispatch({
+                name: projectName,
+                projectType,
+                startDate: start,
+                endDate: end,
+                projectManager,
+                responsibleEmployees: newEmployeesArr,
+                description,
+                unitCost,
+                unitTime,
+                estimatedCost,
+                creator: userId,
+                responsibleEmployeesWithUnit: currentSalaryMembers,
 
-            // props.createProjectDispatch({
-            //     name: projectName,
-            //     projectType,
-            //     startDate: start,
-            //     endDate: end,
-            //     projectManager,
-            //     responsibleEmployees: newEmployeesArr,
-            //     description,
-            //     unitCost,
-            //     unitTime,
-            //     estimatedCost,
-            //     creator: userId,
-            //     responsibleEmployeesWithUnit: currentSalaryMembers,
-            // });
+                tasks: tasksInfo
+            });
 
-            // setTimeout(() => {
-            //     props.handleAfterCreateProject()
-            // }, 30 * newEmployeesArr.length);
+            setTimeout(() => {
+                props.handleAfterCreateProject()
+            }, 30 * newEmployeesArr.length);
         }
     }
 
@@ -154,6 +164,9 @@ const CreateProjectTemplateForm = (props) => {
                                 <CreateTaskProjectTemplate
                                     userSelectOptions={userSelectOptions}
                                     setTasksInfo={setTasksInfo}
+                                // currentProjectTasks={tasksInfo}
+                                // projectDetail={generalInfo}
+                                // listUsers={listUsers}
                                 />
                             </div>
                         </div>
@@ -170,6 +183,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createProjectDispatch: ProjectTemplateActions.createProject,
+    createProjectTemplateDispatch: ProjectTemplateActions.createProjectTemplateDispatch,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateProjectTemplateForm));

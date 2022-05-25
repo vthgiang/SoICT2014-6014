@@ -243,7 +243,7 @@ const CreateGeneralTab = (props) => {
                             </div>
                         </div>
 
-                        <div className="row">
+                        {/* <div className="row">
                             <div className="form-group col-md-6">
                                 <label>{translate('project.startDate')}<span className="text-red">*</span></label>
                                 <DatePicker
@@ -285,7 +285,7 @@ const CreateGeneralTab = (props) => {
                                     disabled={false}
                                 />
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="form-group">
                             <label>{translate('project.unitTime')}</label>

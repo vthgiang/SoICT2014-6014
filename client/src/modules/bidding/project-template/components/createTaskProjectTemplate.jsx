@@ -1,3 +1,8 @@
+/**
+ * Dùng tạm cho việc tạo task cho mẫu dự án
+ * vì chưa phân chia là tạo cv cho dự án CPM hay là dự án đơn giản
+ */
+
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { ErrorLabel, SelectBox } from '../../../../common-components';
@@ -20,19 +25,16 @@ export const CreateTaskProjectTemplate = (props) => {
         consultedEmployees: [],
         informedEmployees: [],
         creator: getStorage("userId"),
-        organizationalUnit: "",
+        // organizationalUnit: "",
         collaboratedWithOrganizationalUnits: [],
-        taskTemplate: "",
-        preceedingTasks: [],
-        followingTasks: [],
-        taskProject: "",
+        // preceedingTasks: "",
+        // followingTasks: [],
         estimateNormalTime: '',
         estimateOptimisticTime: '',
         estimateNormalCost: '',
         estimateMaxCost: '',
-        estimateAssetCost: '1,000,000',
+        estimateAssetCost: 1000000,
         estimateHumanCost: '',
-        parent: '',
         actorsWithSalary: [],
         totalResWeight: 80,
         totalAccWeight: 20,
@@ -227,22 +229,22 @@ export const CreateTaskProjectTemplate = (props) => {
                         </td>
                         <td>
                             <div className="form-group">
-                                <input type="text" className="form-control" name="name" value={newTask.name} onChange={(e) => handleChange(e)}></input>
+                                <input type="text" className="form-control" name="name" required value={newTask.name} onChange={(e) => handleChange(e)}></input>
                             </div>
                         </td>
                         <td>
                             <div className="form-group">
-                                <input type="text" className="form-control" name="preceedingTasks" value={newTask.preceedingTasks} onChange={(e) => handleChange(e)}></input>
+                                <input type="text" className="form-control" name="preceedingTasks" required value={newTask.preceedingTasks} onChange={(e) => handleChange(e)}></input>
                             </div>
                         </td>
                         <td>
                             <div className="form-group">
-                                <input type="number" className="form-control" name="estimateNormalTime" value={newTask.estimateNormalTime} onChange={(e) => handleChange(e)}></input>
+                                <input type="number" className="form-control" name="estimateNormalTime" required value={newTask.estimateNormalTime} onChange={(e) => handleChange(e)}></input>
                             </div>
                         </td>
                         <td>
                             <div className="form-group">
-                                <input type="number" className="form-control" name="estimateOptimisticTime" value={newTask.estimateOptimisticTime} onChange={(e) => handleChange(e)}></input>
+                                <input type="number" className="form-control" name="estimateOptimisticTime" required value={newTask.estimateOptimisticTime} onChange={(e) => handleChange(e)}></input>
                             </div>
                         </td>
                         <td>
@@ -281,7 +283,7 @@ export const CreateTaskProjectTemplate = (props) => {
                         </td>
                         <td>
                             <div className="form-group">
-                                <input type="number" className="form-control" name="totalResWeight" value={newTask.totalResWeight} onChange={(e) => handleChangeTotalResWeight(e)}></input>
+                                <input type="number" className="form-control" name="totalResWeight" required value={newTask.totalResWeight} onChange={(e) => handleChangeTotalResWeight(e)}></input>
                             </div>
                         </td>
                         <td>
