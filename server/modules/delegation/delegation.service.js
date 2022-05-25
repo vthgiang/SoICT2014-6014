@@ -142,20 +142,20 @@ exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateL
     let indexOfCanBeDelegated = indexOfAttributeInArray(canBeDelegated._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
     let indexOfCanReceiveRoleDelegation = indexOfAttributeInArray(canReceiveRoleDelegation._id, delegateeAttributes != null ? delegateeAttributes : [])
 
-    console.log("delegator", delegator)
-    console.log("delegatorAttributes", delegatorAttributes)
-    console.log("delegatee", delegatee)
-    console.log("delegateeAttributes", delegateeAttributes)
-    console.log("delegateRole", delegateRole)
-    console.log("delegateRoleAttributes", delegateRoleAttributes)
+    // console.log("delegator", delegator)
+    // console.log("delegatorAttributes", delegatorAttributes)
+    // console.log("delegatee", delegatee)
+    // console.log("delegateeAttributes", delegateeAttributes)
+    // console.log("delegateRole", delegateRole)
+    // console.log("delegateRoleAttributes", delegateRoleAttributes)
 
-    console.log("canDelegateRole", canDelegateRole)
-    console.log("canBeDelegated", canBeDelegated)
-    console.log("canReceiveRoleDelegation", canReceiveRoleDelegation)
+    // console.log("canDelegateRole", canDelegateRole)
+    // console.log("canBeDelegated", canBeDelegated)
+    // console.log("canReceiveRoleDelegation", canReceiveRoleDelegation)
 
-    console.log("indexOfCanDelegateRole", indexOfCanDelegateRole)
-    console.log("indexOfCanBeDelegated", indexOfCanBeDelegated)
-    console.log("indexOfCanReceiveRoleDelegation", indexOfCanReceiveRoleDelegation)
+    // console.log("indexOfCanDelegateRole", indexOfCanDelegateRole)
+    // console.log("indexOfCanBeDelegated", indexOfCanBeDelegated)
+    // console.log("indexOfCanReceiveRoleDelegation", indexOfCanReceiveRoleDelegation)
 
 
     if (indexOfCanDelegateRole == -1 || delegatorAttributes[indexOfCanDelegateRole].value.toLowerCase() != "true") {
@@ -176,11 +176,11 @@ exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateL
         // let indexOfCanBeDelegatedByUser = indexOfAttributeInArray(canBeDelegatedByUser._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
         let indexOfCanReceiveChosenRole = indexOfAttributeInArray(canReceiveChosenRole._id, delegateeAttributes != null ? delegateeAttributes : [])
 
-        console.log("canDelegateChosenRole", canDelegateChosenRole)
-        console.log("canReceiveChosenRole", canReceiveChosenRole)
+        // console.log("canDelegateChosenRole", canDelegateChosenRole)
+        // console.log("canReceiveChosenRole", canReceiveChosenRole)
 
-        console.log("indexOfCanDelegateChosenRole", indexOfCanDelegateChosenRole)
-        console.log("indexOfCanReceiveChosenRole", indexOfCanReceiveChosenRole)
+        // console.log("indexOfCanDelegateChosenRole", indexOfCanDelegateChosenRole)
+        // console.log("indexOfCanReceiveChosenRole", indexOfCanReceiveChosenRole)
 
 
         // check delegator can delegate specific role
@@ -203,21 +203,20 @@ exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateL
 
                 let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegateLinksIds } })
                 let delegatableLinkForChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "delegatable_link_for_" + delegateRole.name })
-                console.log("delegateLinks", delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications"))
-                console.log("delegatableLinkForChosenRole", delegatableLinkForChosenRole)
+                // console.log("delegateLinks", delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications"))
+                // console.log("delegatableLinkForChosenRole", delegatableLinkForChosenRole)
 
-                delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications").forEach(async link => {
+                delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications").every(async link => {
                     let delegateLinkAttributes = link.attributes
                     let indexOfDelegatableLinkForChosenRole = indexOfAttributeInArray(delegatableLinkForChosenRole._id, delegateLinkAttributes != null ? delegateLinkAttributes : [])
-                    console.log("delegateLinkAttributes", delegateLinkAttributes)
-                    console.log("indexOfDelegatableLinkForChosenRole", indexOfDelegatableLinkForChosenRole)
+                    // console.log("delegateLinkAttributes", delegateLinkAttributes)
+                    // console.log("indexOfDelegatableLinkForChosenRole", indexOfDelegatableLinkForChosenRole)
                     if (indexOfDelegatableLinkForChosenRole == -1 || delegateLinkAttributes[indexOfDelegatableLinkForChosenRole].value.toLowerCase() != "true") {
-                        count++
-
+                        count++;
+                        return false;
                     }
-
-
-                })
+                    return true;
+                });
 
                 if (count > 0) {
                     throw ["link_cant_be_delegated_for_chosen_role"]
