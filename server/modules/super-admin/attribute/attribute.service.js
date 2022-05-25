@@ -121,7 +121,7 @@ exports.editAttribute = async (portal, id, data) => {
     }
 
     // Cach 2 de update
-    await Attribute(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    await Attribute(connect(DB_CONNECTION, portal)).updateOne({ _id: id }, { $set: data });
     let attribute = await Attribute(connect(DB_CONNECTION, portal)).findById({ _id: oldAttribute._id });
 
     return attribute;

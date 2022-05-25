@@ -2,7 +2,10 @@ const {
     Delegation,
     Privilege,
     UserRole,
-    Role
+    Role,
+    Attribute,
+    User,
+    Link
 } = require('../../models');
 
 const {
@@ -45,7 +48,7 @@ exports.createDelegation = async (portal, data) => {
                 status: {
                     $in: [
                         "activated", // Đang hoạt động
-                        "wait_for_confirmation", // Chờ xác nhận
+                        "pending", // Chờ xác nhận
                         "confirmed" // Xác nhận
                     ]
                 }
@@ -67,18 +70,21 @@ exports.createDelegation = async (portal, data) => {
             }
 
             if (checkDelegationExist.length == 0 && checkUserHaveRole.length == 0) {
-                newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
-                    delegationName: delArray[i].delegationName,
-                    description: delArray[i].description,
-                    delegator: delArray[i].delegator,
-                    delegatee: delArray[i].delegatee,
-                    delegateType: "Role",
-                    delegateRole: delArray[i].delegateRole,
-                    allPrivileges: delArray[i].allPrivileges,
-                    delegatePrivileges: delegatePrivileges != null ? delegatePrivileges.map(p => p._id) : null,
-                    startDate: delArray[i].delegationStart,
-                    endDate: delArray[i].delegationEnd
-                });
+                if (await this.checkDelegationAttribute(delArray[i].delegator, delArray[i].delegateRole, delArray[i].delegateLinks, delArray[i].delegatee, portal)) {
+                    newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
+                        delegationName: delArray[i].delegationName,
+                        description: delArray[i].description,
+                        delegator: delArray[i].delegator,
+                        delegatee: delArray[i].delegatee,
+                        delegateType: "Role",
+                        delegateRole: delArray[i].delegateRole,
+                        allPrivileges: delArray[i].allPrivileges,
+                        delegatePrivileges: delegatePrivileges != null ? delegatePrivileges.map(p => p._id) : null,
+                        startDate: delArray[i].delegationStart,
+                        endDate: delArray[i].delegationEnd
+                    });
+                }
+
             }
 
             // add delegationId to selected Privileges
@@ -92,9 +98,17 @@ exports.createDelegation = async (portal, data) => {
     }
 
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: newDelegation._id }).populate([
-        { path: 'delegateRole', select: 'name' },
+        { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
-        { path: 'delegatee', select: 'name' }
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegator', select: '_id name' },
+        {
+            path: 'delegatePrivileges', select: '_id resourceId resourceType',
+            populate: {
+                path: 'resourceId',
+                select: '_id url category description'
+            }
+        }
     ]);
     let newUserRole = await UserRole(connect(DB_CONNECTION, portal)).create({
         userId: delegation.delegatee,
@@ -105,6 +119,119 @@ exports.createDelegation = async (portal, data) => {
     newUserRole.save();
 
     return delegation;
+}
+
+exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateLinksIds, delegateeId, portal) => {
+    let result = true;
+    let delegator = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegatorId })
+    let delegatorAttributes = delegator.attributes
+    let delegatee = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegateeId })
+    let delegateeAttributes = delegatee.attributes
+    let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({ _id: delegateRoleId })
+    let delegateRoleAttributes = delegateRole.attributes
+
+    let canDelegateRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_delegate_role" })
+    let canBeDelegated = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_be_delegated" })
+    let canReceiveRoleDelegation = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_receive_role_delegation" })
+
+    const indexOfAttributeInArray = (attributeId, attributes) => {
+        return attributes.findIndex(a => a.attributeId.equals(attributeId))
+    }
+
+    let indexOfCanDelegateRole = indexOfAttributeInArray(canDelegateRole._id, delegatorAttributes != null ? delegatorAttributes : [])
+    let indexOfCanBeDelegated = indexOfAttributeInArray(canBeDelegated._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
+    let indexOfCanReceiveRoleDelegation = indexOfAttributeInArray(canReceiveRoleDelegation._id, delegateeAttributes != null ? delegateeAttributes : [])
+
+    console.log("delegator", delegator)
+    console.log("delegatorAttributes", delegatorAttributes)
+    console.log("delegatee", delegatee)
+    console.log("delegateeAttributes", delegateeAttributes)
+    console.log("delegateRole", delegateRole)
+    console.log("delegateRoleAttributes", delegateRoleAttributes)
+
+    console.log("canDelegateRole", canDelegateRole)
+    console.log("canBeDelegated", canBeDelegated)
+    console.log("canReceiveRoleDelegation", canReceiveRoleDelegation)
+
+    console.log("indexOfCanDelegateRole", indexOfCanDelegateRole)
+    console.log("indexOfCanBeDelegated", indexOfCanBeDelegated)
+    console.log("indexOfCanReceiveRoleDelegation", indexOfCanReceiveRoleDelegation)
+
+
+    if (indexOfCanDelegateRole == -1 || delegatorAttributes[indexOfCanDelegateRole].value.toLowerCase() != "true") {
+        throw ["delegator_cant_delegate_role"]
+    }
+    else if (indexOfCanBeDelegated == -1 || delegateRoleAttributes[indexOfCanBeDelegated].value.toLowerCase() != "true") {
+        throw ["role_cant_be_delegate"]
+    }
+    else if (indexOfCanReceiveRoleDelegation == -1 || delegateeAttributes[indexOfCanReceiveRoleDelegation].value.toLowerCase() != "true") {
+        throw ["delegatee_cant_receive_role_delegation"]
+    }
+    else {
+        let canDelegateChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_delegate_role_" + delegateRole.name })
+        // let canBeDelegatedByUser = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_be_delegated_by_" + delegator.email })
+        let canReceiveChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "can_receive_role_" + delegateRole.name })
+
+        let indexOfCanDelegateChosenRole = indexOfAttributeInArray(canDelegateChosenRole._id, delegatorAttributes != null ? delegatorAttributes : [])
+        // let indexOfCanBeDelegatedByUser = indexOfAttributeInArray(canBeDelegatedByUser._id, delegateRoleAttributes != null ? delegateRoleAttributes : [])
+        let indexOfCanReceiveChosenRole = indexOfAttributeInArray(canReceiveChosenRole._id, delegateeAttributes != null ? delegateeAttributes : [])
+
+        console.log("canDelegateChosenRole", canDelegateChosenRole)
+        console.log("canReceiveChosenRole", canReceiveChosenRole)
+
+        console.log("indexOfCanDelegateChosenRole", indexOfCanDelegateChosenRole)
+        console.log("indexOfCanReceiveChosenRole", indexOfCanReceiveChosenRole)
+
+
+        // check delegator can delegate specific role
+        if (indexOfCanDelegateChosenRole == -1 || delegatorAttributes[indexOfCanDelegateChosenRole].value.toLowerCase() != "true") {
+            throw ["delegator_cant_delegate_chosen_role"]
+        }
+        // check specific role can be delegated by delegator
+        // else if (indexOfCanBeDelegatedByUser == -1 || delegateRoleAttributes[indexOfCanBeDelegatedByUser].value.toLowerCase() != "true") {
+        //     throw ["role_cant_be_delegated_by_delegator"]
+        // }
+        // check delegatee can receive specific role
+        else if (indexOfCanReceiveChosenRole == -1 || delegateeAttributes[indexOfCanReceiveChosenRole].value.toLowerCase() != "true") {
+            throw ["delegatee_cant_receive_chosen_role"]
+        }
+        // if delegateLinks not null
+        // check each link can be delegated for specific role 
+        else {
+            if (delegateLinksIds != null) {
+                let count = 0;
+
+                let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegateLinksIds } })
+                let delegatableLinkForChosenRole = await Attribute(connect(DB_CONNECTION, portal)).findOne({ attributeName: "delegatable_link_for_" + delegateRole.name })
+                console.log("delegateLinks", delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications"))
+                console.log("delegatableLinkForChosenRole", delegatableLinkForChosenRole)
+
+                delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications").forEach(async link => {
+                    let delegateLinkAttributes = link.attributes
+                    let indexOfDelegatableLinkForChosenRole = indexOfAttributeInArray(delegatableLinkForChosenRole._id, delegateLinkAttributes != null ? delegateLinkAttributes : [])
+                    console.log("delegateLinkAttributes", delegateLinkAttributes)
+                    console.log("indexOfDelegatableLinkForChosenRole", indexOfDelegatableLinkForChosenRole)
+                    if (indexOfDelegatableLinkForChosenRole == -1 || delegateLinkAttributes[indexOfDelegatableLinkForChosenRole].value.toLowerCase() != "true") {
+                        count++
+
+                    }
+
+
+                })
+
+                if (count > 0) {
+                    throw ["link_cant_be_delegated_for_chosen_role"]
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return result
+
 }
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
@@ -127,9 +254,17 @@ exports.getDelegations = async (portal, data) => {
     let totalList = await Delegation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate([
-            { path: 'delegateRole', select: 'name' },
+            { path: 'delegateRole', select: '_id name' },
             { path: 'delegateTasks' },
-            { path: 'delegatee', select: 'name' }
+            { path: 'delegatee', select: '_id name' },
+            { path: 'delegator', select: '_id name' },
+            {
+                path: 'delegatePrivileges', select: '_id resourceId resourceType',
+                populate: {
+                    path: 'resourceId',
+                    select: '_id url category description'
+                }
+            }
         ])
         .skip((page - 1) * perPage)
         .limit(perPage);
@@ -170,9 +305,17 @@ exports.getOnlyDelegationName = async (portal, data) => {
 // Lấy ra Ví dụ theo id
 exports.getDelegationById = async (portal, id) => {
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: id }).populate([
-        { path: 'delegateRole', select: 'name' },
+        { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
-        { path: 'delegatee', select: 'name' }
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegator', select: '_id name' },
+        {
+            path: 'delegatePrivileges', select: '_id resourceId resourceType',
+            populate: {
+                path: 'resourceId',
+                select: '_id url category description'
+            }
+        }
     ]);
     if (delegation) {
         return delegation;

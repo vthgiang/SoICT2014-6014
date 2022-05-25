@@ -209,7 +209,7 @@ function AttributeTable(props) {
                                 </tr> :
                                 attributes.map((attr, index) => {
                                     return <tr key={index}>
-                                        <td>
+                                        <td style={{ maxWidth: '250px' }}>
                                             <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
                                                 <SelectBox
                                                     id={attr.addOrder}

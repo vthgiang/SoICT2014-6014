@@ -1681,7 +1681,9 @@ export default {
             delegation_role_exist: "Delegation exists",
             not_select_link: "Delegate links not selected",
             user_role_exist: "Delegatee already has this role",
-            wait_for_confirmation: "Pending",
+            revoke_reason: "Revoke reason",
+            revoke_reason_placeholder: "Enter reason",
+            pending: "Pending",
             declined: "Declined",
             confirmed: "Confirmed",
             revoked: "Revoked",
@@ -1689,6 +1691,17 @@ export default {
             revoke_request: "Revoke this delegation",
             revoke_success: "Revoke delegation successfully!",
             revoke_fail: "Revoke delegation fail!",
+            general_information: "General information",
+            log_activity: "Activity logs",
+            delegation_period: "Delegation period",
+            delegation_allowed_links: "Delegated links",
+            delegator_cant_delegate_role: "You are not permitted to delegate role",
+            role_cant_be_delegate: "Chosen role is not permitted to be delegated",
+            delegatee_cant_receive_role_delegation: "Chosen delegatee is not permitted to receive role delegation",
+            delegator_cant_delegate_chosen_role: "You are not permitted to delegate chosen role",
+            // role_cant_be_delegated_by_delegator: "Chosen role is not permitted to be delegated by you",
+            delegatee_cant_receive_chosen_role: "Delegatee is not permitted to receive chosen role",
+            link_cant_be_delegated_for_chosen_role: "Links of chosen role are not permitted to be delegated"
         },
 
         // Modules cấu hình các chức năng

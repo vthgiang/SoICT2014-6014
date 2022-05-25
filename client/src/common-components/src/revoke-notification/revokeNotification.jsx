@@ -17,8 +17,8 @@ class RevokeNotification extends Component {
     ) => {
         Swal.fire({
             html: `<h4 style="color: red"><div>${content}</div> ${data.info ? `<div>"${data.info}"</div>` : ""}</h4><br> <div class="form-group">
-            <label>Lý do thu hồi</label>
-            <textarea id="revokeReason-${data.id}" class="form-control" placeholder="Nhập lý do"></textarea>
+            <label>${this.props.translate('manage_delegation.revoke_reason')}</label>
+            <textarea id="revokeReason-${data.id}" class="form-control" placeholder="${this.props.translate('manage_delegation.revoke_reason_placeholder')}"></textarea>
         </div>`,
             icon: 'question',
             showCancelButton: true,

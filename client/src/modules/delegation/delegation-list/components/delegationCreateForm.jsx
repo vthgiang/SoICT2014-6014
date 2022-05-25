@@ -220,13 +220,16 @@ function DelegationCreateForm(props) {
             // console.log(selectedRoleAndParents)
             // console.log(link.list.filter(link => link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r))))
 
-            let linksOfDelegateRole = link.list.filter(link => link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r)))
+            // Lọc link ko có policies
+            let linksOfDelegateRole = link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => selectedRoleAndParents.includes(r)))
 
+            console.log(linksOfDelegateRole)
             setState({
                 ...state,
                 delegateRole: value,
                 errorDelegateRole: msg,
                 validLinks: linksOfDelegateRole.sort((a, b) => a.category > b.category ? 1 : -1),
+                delegatee: "",
                 // unitMembers: unitMems,
                 selectDelegateRole: true
             })
@@ -449,7 +452,7 @@ function DelegationCreateForm(props) {
                                 style={{ width: "100%" }}
                                 items={
                                     auth.user.roles.filter(role => {
-                                        return role.roleId && role.roleId.name !== 'Super Admin'
+                                        return role.roleId && role.roleId.name !== 'Super Admin' && role.roleId.type.name !== 'Root' && (!role.delegation || role.delegation.length == 0)
                                     }).map(role => { return { value: role && role.roleId ? role.roleId._id : null, text: role && role.roleId ? role.roleId.name : "" } })
                                 }
                                 onChange={handleDelegateRole}

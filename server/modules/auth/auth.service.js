@@ -33,9 +33,11 @@ exports.login = async (fingerprint, data) => {
                 path: "roles",
                 populate: [{
                     path: "roleId",
+                    populate: { path: "type" }
                 }, {
                     path: "delegation",
-                    populate: { path: "delegator" }
+                    select: "_id delegator",
+                    populate: { path: "delegator", select: "name" }
                 }]
             },
         ]);
@@ -480,9 +482,11 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
     })
 
     let delegationAllowedLinks = [];
+    // Nếu role đó là role được ủy quyền
     if (userrole.delegation) {
         privilege.forEach(pri => {
             if (pri.delegations.length > 0) {
+                // Kiểm tra privilege có được delegate không thì thêm links
                 if (userrole.delegation) {
                     if (pri.delegations.some(delegation => userrole.delegation.toString() == delegation.toString()) && pri.resourceId.deleteSoft === false) {
                         delegationAllowedLinks = delegationAllowedLinks.concat(pri.resourceId);
@@ -490,9 +494,9 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
                 }
             }
         })
+        // Lọc ra các link được phép truy cập theo tùy chọn trang trong cấu hình ủy quyền
         links = delegationAllowedLinks.length > 0 ? links.filter(link => delegationAllowedLinks.includes(link)) : links;
     }
-    console.log(links)
 
     return links;
 };
@@ -505,7 +509,7 @@ exports.getProfile = async (portal, userId) => {
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(userId)
         .select("-password -status -deleteSoft -tokens")
-        .populate([{ path: "roles", populate: [{ path: "roleId" }, { path: "delegation", populate: { path: "delegator" } }] }]).lean();
+        .populate([{ path: "roles", populate: [{ path: "roleId", populate: { path: "type" } }, { path: "delegation", select: "_id delegator", populate: { path: "delegator", select: "name" } }] }]).lean();
     if (user === null) throw ["user_not_found"];
     // user = user.toObject();
     const password2Exists = user.password2 ? true : false;

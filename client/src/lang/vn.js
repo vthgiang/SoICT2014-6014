@@ -1776,7 +1776,7 @@ export default {
             delegation_role_exist: "Ủy quyền này đã tồn tại",
             not_select_link: "Chưa chọn trang cho phép truy cập",
             user_role_exist: "Người nhận ủy quyền đã có vai trò này",
-            wait_for_confirmation: "Chờ xác nhận",
+            pending: "Chờ xác nhận",
             declined: "Bị từ chối",
             confirmed: "Đã xác nhận",
             revoked: "Đã thu hồi",
@@ -1784,6 +1784,19 @@ export default {
             revoke_request: "Thu hồi ủy quyền",
             revoke_success: "Thu hồi ủy quyền thành công!",
             revoke_fail: "Thu hồi ủy quyền thất bại!",
+            general_information: "Thông tin chung",
+            log_activity: "Theo dõi hoạt động",
+            delegation_period: "Thời gian ủy quyền",
+            delegation_allowed_links: "Trang được phép truy cập",
+            revoke_reason: "Lý do thu hồi",
+            revoke_reason_placeholder: "Nhập lý do",
+            delegator_cant_delegate_role: "Bạn không được phép ủy quyền vai trò",
+            role_cant_be_delegate: "Vai trò đã chọn không được phép ủy quyền",
+            delegatee_cant_receive_role_delegation: "Người nhận không được phép nhận ủy quyền vai trò",
+            delegator_cant_delegate_chosen_role: "Bạn không được phép ủy quyền vai trò đã chọn",
+            // role_cant_be_delegated_by_delegator: "Vai trò đã chọn không được phép ủy quyền bởi bạn",
+            delegatee_cant_receive_chosen_role: "Người nhận không được phép nhận ủy quyền vai trò đã chọn",
+            link_cant_be_delegated_for_chosen_role: "Trang thuộc vai trò đã chọn không được phép ủy quyền"
         },
         // Modules cấu hình các chức năng
         module_configuration: {

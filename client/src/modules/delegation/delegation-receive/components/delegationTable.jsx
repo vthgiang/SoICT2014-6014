@@ -134,7 +134,7 @@ function DelegationTable(props) {
         props.getDelegations({
             delegationName,
             perPage,
-            page: 1
+            page: delegation && delegation.lists && delegation.lists.length === 1 ? page - 1 : page
         });
     }
 
@@ -183,10 +183,10 @@ function DelegationTable(props) {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
-    const colorfyDelegationStatus = (status) => {
+    const colorfyDelegationStatus = (delegation) => {
         const { translate } = props;
         let statusColor = "";
-        switch (status) {
+        switch (delegation.status) {
             case "pending":
                 statusColor = "#db8b0b";
                 break;
@@ -208,7 +208,7 @@ function DelegationTable(props) {
 
         return (
 
-            <span style={{ color: statusColor }}>{formatStatus(translate, status)}</span>
+            <span style={{ color: statusColor }}>{formatStatus(translate, delegation.status)}</span>
 
         )
 
@@ -226,19 +226,6 @@ function DelegationTable(props) {
                 delegationID={curentRowDetail && curentRowDetail._id}
                 delegationName={curentRowDetail && curentRowDetail.delegationName}
                 description={curentRowDetail && curentRowDetail.description}
-                delegator={curentRowDetail && curentRowDetail.delegator}
-                delegatee={curentRowDetail && curentRowDetail.delegatee}
-                delegatePrivileges={curentRowDetail && curentRowDetail.delegatePrivileges}
-                delegateType={curentRowDetail && curentRowDetail.delegateType}
-                delegateRole={curentRowDetail && curentRowDetail.delegateRole}
-                delegateTasks={curentRowDetail && curentRowDetail.delegateTasks}
-                status={curentRowDetail && curentRowDetail.status}
-                allPrivileges={curentRowDetail && curentRowDetail.allPrivileges}
-                startDate={curentRowDetail && curentRowDetail.startDate}
-                endDate={curentRowDetail && curentRowDetail.endDate}
-                revokedDate={curentRowDetail && curentRowDetail.revokedDate}
-                revokeReason={curentRowDetail && curentRowDetail.revokeReason}
-
             />
 
             {user && user.organizationalUnitsOfUser && <DelegationCreateForm
@@ -311,15 +298,12 @@ function DelegationTable(props) {
                             delegatee: <td>{item?.delegatee.name}</td>,
                             delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
                             delegateEndDate: <td>{item.endDate ? formatTime(item?.endDate) : (item.revokedDate ? formatTime(item.revokedDate) : translate("manage_delegation.end_date_tbd"))}</td>,
-                            delegateStatus: <td>{colorfyDelegationStatus(item.status)}</td>,
+                            delegateStatus: <td>{colorfyDelegationStatus(item)}</td>,
                             // description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>
                                 <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_delegation.detail_info_delegation')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
-                                {item.status == "pending" || item.status == "declined"
-                                    ? <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
-                                    : null
-                                }
-                                {item.status == "revoked" || item.status == "declined" ?
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
+                                {item.status == "revoked" ?
                                     <DeleteNotification
                                         content={translate('manage_delegation.delete')}
                                         data={{
