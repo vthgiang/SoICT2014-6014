@@ -779,6 +779,9 @@ exports.links = [{
         url: '/hr-list-bidding-package',
         apis: ['@all']
     }, {
+        url: '/bidding/bidding-package',
+        apis: ['@all']
+    }, {
         url: '/hr-list-certificate',
         apis: ['@all']
     }, {

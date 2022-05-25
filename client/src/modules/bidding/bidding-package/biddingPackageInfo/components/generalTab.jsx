@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { BiddingPackageDetailForm } from '../../biddingPackageManagement/components/biddingPackageDetailForm';
 
 function GeneralTab(props) {
 
     const [state, setState] = useState({
-
+        currentRowView: props.biddingPackage
     })
 
     /**
@@ -38,6 +39,7 @@ function GeneralTab(props) {
             return {
                 ...state,
                 id: props.id,
+                _id: props.biddingPackage._id,
                 name: props.biddingPackage.name,
                 code: props.biddingPackage.code,
                 customer: props.biddingPackage ? props.biddingPackage.customer : '',
@@ -55,7 +57,7 @@ function GeneralTab(props) {
 
     const { translate } = props;
 
-    const { id, name, code, customer, receiveLocal, openLocal, price, startDate, endDate, type, status, description } = state;
+    const { id, _id, name, code, customer, receiveLocal, openLocal, price, startDate, endDate, type, status, description } = state;
 
     const typeArr = [
         { value: 1, text: 'Gói thầu tư vấn' },
@@ -72,7 +74,7 @@ function GeneralTab(props) {
         { value: '4', text: 'Hoàn thành' },
     ]
 
-    
+
 
     return (
         <div id={id} className="tab-pane active">
@@ -82,7 +84,10 @@ function GeneralTab(props) {
                         {/* Name */}
                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                             <strong>Tên gói thầu&emsp; </strong>
-                            {name}
+                            {props.inContractDetail ?
+                                <span><a href={`/bidding/bidding-package?id=${_id}`} target="_blank"> {name} </a></span> :
+                                <span>{name}</span>
+                            }
                         </div>
                         {/* Mã gói thầu */}
                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
@@ -142,7 +147,7 @@ function GeneralTab(props) {
                         {/* Mô tả */}
                         <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
                             <strong htmlFor="emailCompany">Mô tả</strong>
-                            &emsp; { description }
+                            &emsp; {description}
                         </div>
                     </div>
                 </div>

@@ -166,6 +166,7 @@ export default {
             bidding_project_template_list: "Mẫu dự án đấu thầu",
             list_bidding_contract: "Danh sách hợp đồng thầu",
             list_bidding_package: "Danh sách gói thầu",
+            detail_bidding_package: "Chi tiết gói thầu",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
 
             employee_unit: "Nhân sự đơn vị",
@@ -2267,7 +2268,7 @@ export default {
                     update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
-                    
+
                     get_list_employee_success:
                         "Lấy danh sách nhân viên thành công",
                     get_list_employee_faile: "Lấy danh sách nhân viên thất bại",
@@ -2338,7 +2339,7 @@ export default {
                 }
             },
 
-            
+
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {
@@ -4124,8 +4125,8 @@ export default {
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
-                select_task_process_template:"Chọn quy trình mẫu",
-                process_template_name:"Tên mẫu quy trình",
+                select_task_process_template: "Chọn quy trình mẫu",
+                process_template_name: "Tên mẫu quy trình",
             },
             task_dashboard: {
                 general_unit_task: "Tổng quan công việc",
@@ -5048,7 +5049,7 @@ export default {
                 equipment: "Công cụ dụng cụ",
                 asset: "Tài sản",
                 category_tree: "Danh mục cây",
-                category_table:"Danh mục bảng",
+                category_table: "Danh mục bảng",
                 bin_location: "Nơi lưu trữ",
                 archive: "Danh mục lưu trữ",
                 1: {

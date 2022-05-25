@@ -158,13 +158,14 @@ export default {
             list_major: "Manage majors",
             list_career_position: "Manage career position",
             list_certificate: "Manage bidding certificates",
-            
+
             // đấu thầu
             manage_bidding: "Manage bidding",
             list_bidding_contract: "Manage bidding contracts",
             bidding_project_template_list: "Bidding project template",
             list_search_for_package: "Search employee for package",
             list_bidding_package: "Manage bidding packages",
+            detail_bidding_package: "Detail bidding packages",
 
             manage_warehouse: "Manage warehouses",
             dashboard_material: "Dashboad manage materials",
@@ -231,7 +232,7 @@ export default {
 
             view_building_list: "View building list",
 
-            
+
             // NHÂN VIÊN
             recommend_equipment_procurement: "Recommend equipment procurement",
             recommend_distribute_asset: "Recommend distribute asset",
@@ -242,7 +243,7 @@ export default {
             //Quản lý vật tư 
             manage_supplies: "Manage supplies",
             dashboard_supplies: "Dashboard manage supplies",
-            manage_supplies_infor:"Manage supplies information",
+            manage_supplies_infor: "Manage supplies information",
             manage_supplies_purchase_request: "Manage purchase request",
             manage_allocation_history: "Manage allocation history",
             manage_purchase_invoice: "Manage purchase invoice",
@@ -900,7 +901,7 @@ export default {
             no_version: "Not have different version",
             no_blank_description: "Description should not empty",
             no_blank_name: "Name should not empty",
-            no_blank_code:"Code should not empty",
+            no_blank_code: "Code should not empty",
             infomation_docs: "Document Infomation",
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
@@ -2208,7 +2209,7 @@ export default {
                 }
             },
 
-            
+
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {
@@ -3882,8 +3883,8 @@ export default {
                 view_task_process_template: "View task process template",
                 import_task_template_success: "Import task template success",
                 import_task_template_failure: "Import task template failure",
-                select_task_process_template:"Select taskprocess template",
-                process_template_name:"Process template name",
+                select_task_process_template: "Select taskprocess template",
+                process_template_name: "Process template name",
             },
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
@@ -4818,7 +4819,7 @@ export default {
                 asset: "Asset",
                 bin_location: "Storage location",
                 category_tree: "Tree directory",
-                category_table:"Table list",
+                category_table: "Table list",
                 archive: "Storage category",
                 1: {
                     status: "Ready to use",

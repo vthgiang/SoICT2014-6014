@@ -647,6 +647,19 @@ const LINKS = [
     components: getComponentsInLink("/bidding-search-for-package"),
   },
   {
+    url: "/bidding/bidding-package",
+    description: "Chi tiết gói thầu",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/bidding/bidding-package"),
+  },
+  {
     url: "/bidding-management-package",
     description: "Quản lí thông tin gói thầu",
     category: LINK_CATEGORY.BIDDING.name,

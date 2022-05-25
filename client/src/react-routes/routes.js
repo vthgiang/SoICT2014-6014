@@ -65,6 +65,7 @@ const Certificate = lazy(() => import("../modules/human-resource/certificate/com
 const Major = lazy(() => import("../modules/human-resource/major/component"))
 const Contract = lazy(() => import("../modules/bidding/bidding-contract/component"))
 const BiddingPackagesManagement = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components"))
+const BiddingPackageDetailPage = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components/biddingPackageDetailPage"))
 const ProjectTemplateManagement = lazy(() => import("../modules/bidding/project-template/components"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
@@ -1190,6 +1191,26 @@ class Routes extends Component {
                         pageName={"list_bidding_package"}
                         layout={Layout}
                         component={BiddingPackagesManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"detail_bidding_package"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding/bidding-package",
+                                name: "detail_bidding_package",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding/bidding-package"}
+                        path={"/bidding/bidding-package"}
+                        pageName={"detail_bidding_package"}
+                        layout={Layout}
+                        component={BiddingPackageDetailPage}
                     />
 
                     <PrivateRoute

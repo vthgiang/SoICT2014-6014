@@ -275,6 +275,7 @@ const ViewBiddingContract = (props) => {
 							{/* tab thông tin của gói thầu */}
 							{state.biddingPackage &&
 								<GeneralTab
+									inContractDetail={true}
 									id={`view_general${state.id}`}
 									biddingPackage={state.biddingPackage && state.biddingPackage}
 								/>
