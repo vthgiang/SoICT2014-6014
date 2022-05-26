@@ -133,6 +133,58 @@ const BiddingContractSchema = new Schema(
             },
         },
 
+        decideToImplement: {
+            tasks: {
+                name: {
+                    type: String
+                },
+                description: {
+                    type: String,
+                },
+
+                //thời gian ước lượng làm của task
+                estimateTime: {
+                    type: Number,
+                },
+                // Đơn vị thời gian của task
+                unitOfTime: {
+                    // có 2 đơn vị thời gian: Giờ, Ngày, Tháng
+                    type: String,
+                    default: "days",
+                    enum: [
+                        "hours",
+                        "days",
+                        "months",
+                    ],
+                },
+            },// Những người quản trị dự án
+            projectManager: [{
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            }],
+            // Những người tham gia dự án
+            responsibleEmployees: [{
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            }],
+            // Những người tham gia dự án vói unit của họ - để tính toán lương
+            responsibleEmployeesWithUnit: [{
+                unitId: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'OrganizationalUnit',
+                },
+                listUsers: [{
+                    userId: {
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    // salary: {
+                    //     type: Number,
+                    // }
+                }],
+            }],
+        },
+
         // gói thầu trúng thầu
         biddingPackage: {
             type: Schema.Types.ObjectId,

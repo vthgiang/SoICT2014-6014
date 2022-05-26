@@ -5,7 +5,7 @@ import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectTo
 
 import { DialogModal } from '../../../../../common-components';
 
-import { KeyPeopleRequire, ExperienceTab, GeneralTab } from './combinedContent';
+import { KeyPeopleRequire, ExperienceTab, GeneralTab, Proposals } from './combinedContent';
 import { BiddingPackageManagerActions } from '../redux/actions';
 import { MajorActions } from '../../../../human-resource/major/redux/actions';
 import { CareerReduxAction } from '../../../../human-resource/career/redux/actions';
@@ -37,7 +37,7 @@ const BiddingPackageEditFrom = (props) => {
                         count: 0
                     }
                 }
-            ], 
+            ],
         }
     })
 
@@ -46,7 +46,7 @@ const BiddingPackageEditFrom = (props) => {
     useEffect(() => {
         const shouldUpdate = async () => {
             if (props._id !== state._id && !props.biddingPackagesManager.isLoading) {
-                await props.getDetailBiddingPackage( props._id, {} );
+                await props.getDetailBiddingPackage(props._id, {});
                 setState({
                     ...state,
                     _id: props?._id,
@@ -54,7 +54,7 @@ const BiddingPackageEditFrom = (props) => {
                     biddingPackage: ''
                 })
             };
-            
+
             if (state.dataStatus === DATA_STATUS.QUERYING && !props.biddingPackagesManager.isLoading) {
                 setState({
                     ...state,
@@ -160,7 +160,7 @@ const BiddingPackageEditFrom = (props) => {
         let { _id, biddingPackage } = state;
 
         await props.updateBiddingPackage(_id, biddingPackage);
-        await props.getDetailBiddingPackage( props._id, {} );
+        await props.getDetailBiddingPackage(props._id, {});
         setState({
             ...state,
             dataStatus: DATA_STATUS.QUERYING,
@@ -176,10 +176,12 @@ const BiddingPackageEditFrom = (props) => {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={()=>{setState(state => ({
-                    ...state,
-                    _id: null,
-                }))}}
+                afterClose={() => {
+                    setState(state => ({
+                        ...state,
+                        _id: null,
+                    }))
+                }}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-edit-biddingPackage"> */}
@@ -189,6 +191,7 @@ const BiddingPackageEditFrom = (props) => {
                             <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general_bidding_package${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                             <li><a title="Yêu cầu nhân sự chủ chốt" data-toggle="tab" href={`#edit_contact_bidding_package${_id}`}>Yêu cầu nhân sự chủ chốt</a></li>
                             <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#edit_key_people_bidding_package${_id}`}>Nhân sự chủ chốt</a></li>
+                            <li><a title="Hồ sơ đề xuất" data-toggle="tab" href={`#proposals_edit_${_id}`}>Hồ sơ đề xuất</a></li>
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */
@@ -216,6 +219,13 @@ const BiddingPackageEditFrom = (props) => {
                                 listMajor={major?.listMajor}
                                 listCertificate={certificate?.listCertificate}
                                 keyPersonnelRequires={state.biddingPackage.keyPersonnelRequires}
+                                biddingPackage={biddingPackage}
+                            />
+                            {/* Hồ sơ đề xuất */}
+                            <Proposals
+                                id={`proposals_edit_${_id}`}
+                                handleChange={handleChange}
+                                proposals={state.biddingPackage.proposals}
                                 biddingPackage={biddingPackage}
                             />
                         </div>

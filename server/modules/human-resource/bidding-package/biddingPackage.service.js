@@ -83,7 +83,8 @@ exports.searchBiddingPackage = async (portal, params, company) => {
             .find(keySearch)
             .sort({
                 endDate: -1,
-            });
+            })
+            .populate({ path: "proposals.directEmployees proposals.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
         return {
             listBiddingPackages: data,
             totalList: data.length,
@@ -100,7 +101,8 @@ exports.searchBiddingPackage = async (portal, params, company) => {
                 endDate: -1,
             })
             .skip(params.page)
-            .limit(params.limit);
+            .limit(params.limit)
+            .populate({ path: "proposals.directEmployees proposals.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
         return {
             listBiddingPackages: listBiddingPackages,
             totalList: data.length,
@@ -116,7 +118,8 @@ exports.searchBiddingPackage = async (portal, params, company) => {
 exports.getDetailBiddingPackage = async (portal, params) => {
     let listBiddingPackages = await BiddingPackage(
         connect(DB_CONNECTION, portal)
-    ).findOne({ _id: params.id });
+    ).findOne({ _id: params.id })
+        .populate({ path: "proposals.directEmployees proposals.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
     let keyPeopleArr = {};
     keyPeopleArr = {
         ...listBiddingPackages._doc,
@@ -152,7 +155,8 @@ exports.getDetailBiddingPackage = async (portal, params) => {
 exports.getDetailBiddingPackageToEdit = async (portal, params) => {
     let listBiddingPackages = await BiddingPackage(
         connect(DB_CONNECTION, portal)
-    ).findOne({ _id: params.id });
+    ).findOne({ _id: params.id })
+    // .populate({ path: "proposals.directEmployees proposals.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
 
     return {
         listBiddingPackages,
@@ -179,6 +183,7 @@ exports.createNewBiddingPackage = async (portal, data, company) => {
         description: data.description,
         keyPeople: data.keyPeople,
         keyPersonnelRequires: data.keyPersonnelRequires,
+        proposals: data.proposals,
         company: company,
     });
 
@@ -253,6 +258,7 @@ exports.editBiddingPackage = async (portal, data, params, company) => {
                         certificates: data.certificates,
                         count: data.count,
                     },
+                    proposals: data.proposals
                 },
             },
             { $new: true }

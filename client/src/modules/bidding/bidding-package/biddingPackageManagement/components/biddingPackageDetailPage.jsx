@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import {
-    GeneralTab, KeyPeopleRequireTab, KeyPeople
+    GeneralTab, KeyPeopleRequireTab, KeyPeople, Proposals
 } from '../../biddingPackageInfo/components/combinedContent';
 
 import { BiddingPackageManagerActions } from '../redux/actions';
@@ -73,6 +73,7 @@ const BiddingPackageDetailPage = (props) => {
                         <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#view_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                         <li><a title="Yêu cầu nhân sự chủ chốt" data-toggle="tab" href={`#view_contact${_id}`}>Yêu cầu nhân sự chủ chốt</a></li>
                         <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#view_key_people_bidding_package${_id}`}>Danh sách nhân sự chủ chốt</a></li>
+                        <li><a title="Hồ sơ đề xuất" data-toggle="tab" href={`#view_proppsals_bidding_package${_id}`}>Hồ sơ đề xuất</a></li>
                     </ul>
                     <div className="tab-content">
                         {/* Thông tin chung */}
@@ -97,6 +98,14 @@ const BiddingPackageDetailPage = (props) => {
                             listCertificate={certificate?.listCertificate}
                             keyPersonnelRequires={biddingPackageDetail.keyPersonnelRequires}
                             keyPeople={biddingPackageDetail.keyPeople}
+                            biddingPackage={biddingPackageDetail}
+                            downLoadDocument={handleDownLoadDocument}
+                        />
+                        {/* Hồ sơ đề xuất */}
+                        <Proposals
+                            id={`view_proppsals_bidding_package${_id}`}
+                            _id={_id}
+                            proposals={biddingPackageDetail.proposals}
                             biddingPackage={biddingPackageDetail}
                             downLoadDocument={handleDownLoadDocument}
                         />

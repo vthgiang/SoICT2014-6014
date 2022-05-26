@@ -99,7 +99,7 @@ const BiddingPackageSchema = new Schema(
         },
 
         // đề xuất kỹ thuật
-        technicalProposal: [{
+        proposals: [{
             // tên công việc
             taskName: {
                 type: String
@@ -113,22 +113,22 @@ const BiddingPackageSchema = new Schema(
             //     type: String
             // }],
             // nhân sự trực tiếp
-            directEmployees: {
+            directEmployees: [{
                 type: Schema.Types.ObjectId,
-                ref: "User",
-            },
+                ref: "Employee",
+            }],
             // nhân sự dự phòng
-            backupEmployees: {
+            backupEmployees: [{
                 type: Schema.Types.ObjectId,
-                ref: "User",
-            },
+                ref: "Employee",
+            }],
             //thời gian ước lượng làm của task
             estimateTime: {
                 type: Number,
             },
             // Đơn vị thời gian của task
             unitOfTime: {
-                // có 2 đơn vị thời gian: Giờ, Ngày, Tháng
+                // có 3 đơn vị thời gian: Giờ, Ngày, Tháng
                 type: String,
                 default: "days",
                 enum: [
@@ -138,13 +138,15 @@ const BiddingPackageSchema = new Schema(
                 ],
             },
 
-            // // file đề xuất kĩ thuật đính kèm
-            // fileName: {
-            //     type: String,
-            // },
-            // fileUrl: {
-            //     type: String,
-            // },
+            // // file hợp đồng đính kèm
+            // files: [{
+            //     fileName: {
+            //         type: String,
+            //     },
+            //     url: {
+            //         type: String
+            //     }
+            // }]
         }]
     },
     {

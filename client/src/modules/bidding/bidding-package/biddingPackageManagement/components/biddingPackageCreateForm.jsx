@@ -10,6 +10,7 @@ import { BiddingPackageManagerActions } from '../redux/actions';
 import { MajorActions } from '../../../../human-resource/major/redux/actions';
 import { CareerReduxAction } from '../../../../human-resource/career/redux/actions';
 import { CertificateActions } from '../../../../human-resource/certificate/redux/actions';
+import { Proposals } from './proposals';
 
 const initBiddingPackage = {
     name: "",
@@ -56,6 +57,7 @@ const BiddingPackageCreateForm = (props) => {
             endDate: "",
             description: "",
             keyPersonnelRequires: [],
+            proposals: [],
             errorOnName: undefined,
         },
         editBiddingPackge: initBiddingPackage
@@ -82,8 +84,8 @@ const BiddingPackageCreateForm = (props) => {
      * @param {*} value : Giá trị của trường
      */
     const handleChange = (name, value) => {
-        const { biddingPackage} = state;
-        if ( name === 'startDate' || name === 'endDate' ) {
+        const { biddingPackage } = state;
+        if (name === 'startDate' || name === 'endDate') {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -141,7 +143,7 @@ const BiddingPackageCreateForm = (props) => {
     /** Function thêm mới thông tin nhân viên */
     const save = async () => {
         let { keyPeople, biddingPackage, keyPersonnelRequires, code, startDate, endDate, status, type,
-            description, name, price, customer, openLocal, receiveLocal } = state;
+            description, name, price, customer, openLocal, receiveLocal, proposals } = state;
 
         await setState(state => ({
             ...state,
@@ -155,15 +157,16 @@ const BiddingPackageCreateForm = (props) => {
                 receiveLocal,
                 startDate,
                 endDate,
-                status, 
+                status,
                 type,
                 description,
                 KeyPeople: keyPeople,
-                keyPersonnelRequires: keyPersonnelRequires
+                keyPersonnelRequires: keyPersonnelRequires,
+                proposals: proposals
             }
         }))
-        
-        props.addNewBiddingPackage({...biddingPackage});
+
+        props.addNewBiddingPackage({ ...biddingPackage });
     }
 
     const { translate, biddingPackagesManager, career, major, certificate } = props;
@@ -178,21 +181,24 @@ const BiddingPackageCreateForm = (props) => {
                 func={save}
                 resetOnSave={true}
                 resetOnClose={true}
-                afterClose={()=>{setState(state => ({
-                    ...state,
-                    biddingPackage: {
-                        name: "",
-                        code: "",
-                        type: "",
-                        status: "",
-                        startDate: "",
-                        endDate: "",
-                        description: "",
-                        KeyPeople: [],
-                        keyPersonnelRequires: [],
-                        errorOnName: undefined,
-                    },
-                }))}}
+                afterClose={() => {
+                    setState(state => ({
+                        ...state,
+                        biddingPackage: {
+                            name: "",
+                            code: "",
+                            type: "",
+                            status: "",
+                            startDate: "",
+                            endDate: "",
+                            description: "",
+                            KeyPeople: [],
+                            keyPersonnelRequires: [],
+                            proposals: [],
+                            errorOnName: undefined,
+                        },
+                    }))
+                }}
                 disableSubmit={!isFormValidated()}
             >
                 {/* <form className="form-group" id="form-create-bidding-package"> */}
@@ -201,6 +207,7 @@ const BiddingPackageCreateForm = (props) => {
                         <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href="#general-create">{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
                         <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href="#key-people-require-create">Yêu cầu nhân sự chủ chốt</a></li>
                         <li><a title="Danh sách nhân sự chủ chốt" data-toggle="tab" href={`#key_people_create`}>Nhân sự chủ chốt</a></li>
+                        <li><a title="Hồ sơ đề xuất" data-toggle="tab" href={`#proposals_create`}>Hồ sơ đề xuất</a></li>
 
                     </ul>
                     < div className="tab-content">
@@ -220,13 +227,20 @@ const BiddingPackageCreateForm = (props) => {
                             biddingPackage={biddingPackage}
                         />
                         {/* Danh sách nhân sự chủ chốt */}
-                            <KeyPeople
+                        <KeyPeople
                             id={`key_people_create`}
                             handleChange={handleChange}
                             listCareer={career?.listPosition}
                             listMajor={major?.listMajor}
                             listCertificate={certificate?.listCertificate}
                             keyPersonnelRequires={state.biddingPackage.keyPersonnelRequires}
+                            biddingPackage={biddingPackage}
+                        />
+                        {/* Hồ sơ đề xuất */}
+                        <Proposals
+                            id={`proposals_create`}
+                            handleChange={handleChange}
+                            proposals={state.biddingPackage.proposals}
                             biddingPackage={biddingPackage}
                         />
                     </div>
