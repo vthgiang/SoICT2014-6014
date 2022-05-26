@@ -10,6 +10,7 @@ import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
 import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
+import { ModalViewProcessById } from "../modules/task/task-process/component/task-process-management/modalViewProcessById";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -1431,7 +1432,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={TaskComponent}
                     />
-                    <PrivateRoute // Trang chi tiết quy trinhf  (không có trên menu)
+                    <PrivateRoute // Trang chi tiết mẫu quy trinh  (không có trên menu)
                         isLoading={this.props.tasks.isLoading}
                         key={"task"}
                         arrPage={[
@@ -1445,6 +1446,21 @@ class Routes extends Component {
                         pageName={"process_template"}
                         layout={Layout}
                         component={ModalViewTaskProcessById}
+                    />
+                    <PrivateRoute // Trang chi tiết quy trinh  (không có trên menu)
+                        isLoading={this.props.tasks.isLoading}
+                        key={"task"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            { link: "/process-template", name: "process-template", icon: "" },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/process"}
+                        path={"/process"}
+                        pageName={"process"}
+                        layout={Layout}
+                        component={ModalViewProcessById}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}

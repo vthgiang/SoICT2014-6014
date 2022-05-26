@@ -10,6 +10,8 @@ const apiTagNames = {
     ORGANIZATIONAL: "Organizational",
     SYSTEM_API: "System api",
     SYSTEM_PRIVILEGE_API: "System privilege api",
+    ORDER: "Order api",
+    SUPER_ADMIN: "Super Admin",
     STOCK: "Stock api",
     BIN_LOCATION: "Bin location api",
     BILL: "Bill api",

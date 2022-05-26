@@ -9,7 +9,7 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { TaskFormValidator } from '../../../task-management/component/taskFormValidator';
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
-function EditProcessTemplateChild(props) {
+function EditProcessChild(props) {
     // let userId = getStorage
     let userId = getStorage("userId")
 
@@ -31,11 +31,11 @@ function EditProcessTemplateChild(props) {
             processDescription:infoTemplate.processDescription,
             processName:infoTemplate.processName,
             viewer:infoTemplate.viewer,
-        })
+        })  
         // props.getRoles();
     }, [props.id])
    
- const handleProcessTemplateName = (e) => {
+ const handleProcessName = (e) => {
         let { value } = e.target;
         let { isProcess, translate } = props
         let { message } = ValidationHelper.validateName(translate, value, 1, 255);
@@ -47,11 +47,11 @@ function EditProcessTemplateChild(props) {
             errorOnName : message
         });
     }
-    const handleProcessTemplateDescProcessChild = async(e) => {
+    const handleProcessDescProcessChild = async(e) => {
         
         let { value } = e.target;
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
-        props.handleProcessTemplateDescProcessChild(value)
+        props.handleProcessDescProcessChild(value)
         await setState(state => {
             return {
                 ...state,
@@ -154,7 +154,7 @@ function EditProcessTemplateChild(props) {
                             <input type="text"
                                 value={state.processName}
                                 className="form-control" placeholder={translate("task.task_process.process_name")}
-                                onChange={handleProcessTemplateName}
+                                onChange={handleProcessName}
                             />
                         </div>
                         {/* Mô tả quy trình */}
@@ -163,7 +163,7 @@ function EditProcessTemplateChild(props) {
                             <textarea type="text" rows={4}
                                 value={state.processDescription}
                                 className="form-control" placeholder={translate("task.task_process.process_description")}
-                                onChange={handleProcessTemplateDescProcessChild}
+                                onChange={handleProcessDescProcessChild}
                             />
                         </div>
                         <div className="row form-group">
@@ -245,5 +245,5 @@ const actionCreators = {
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     getAllDepartments: DepartmentActions.get,
 };
-const connectedAddProcessTemplate = connect(mapState, actionCreators)(withTranslate(EditProcessTemplateChild));
-export { connectedAddProcessTemplate as EditProcessTemplateChild };
+const connectedAddProcessTemplate = connect(mapState, actionCreators)(withTranslate(EditProcessChild));
+export { connectedAddProcessTemplate as EditProcessChild };
