@@ -16,6 +16,7 @@ import ProjectCreateForm from '../../../project/projects/components/createProjec
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
+import { ExpectedResults } from './expectedResults';
 
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
@@ -42,7 +43,8 @@ function AddTaskForm(props) {
                 taskTemplate: "",
                 parent: "",
                 taskProject: "",
-                tags: []
+                tags: [],
+                taskOutputs: []
             },
             currentRole: getStorage('currentRole'),
         }
@@ -129,6 +131,7 @@ function AddTaskForm(props) {
                     formula: props.task.formula,
                     taskInformations: props.task.taskInformations,
                     taskActions: props.task.taskActions,
+                    taskOutputs: props.task.taskOutputs,
                     startTime: formatTime(props.task.startDate),
                     endTime: formatTime(props.task.endDate),
                 },
@@ -384,6 +387,16 @@ function AddTaskForm(props) {
         });
     }
 
+    const handleChangeTaskOutputs = (data) => {
+        setState({
+            ...state,
+            newTask: {
+                ...state.newTask,
+                taskOutputs: data
+            }
+        });
+    }
+
     // Sau khi add project mới hoặc edit project thì call lại tất cả list project
     const handleAfterCreateProject = () => {
         props.getProjectsDispatch({ calledId: "" });
@@ -562,7 +575,8 @@ function AddTaskForm(props) {
                 newTask: {
                     ...state.newTask,
                     tags: value
-            }}
+                }
+            }
         })
     }
     const uniqueArray = (arr) => {
@@ -622,7 +636,7 @@ function AddTaskForm(props) {
                     {/* Thông tin công việc */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
-                        
+
                         <div className={'row'}>
                             {/* Đơn vị quản lý công việc */}
                             <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
@@ -817,7 +831,7 @@ function AddTaskForm(props) {
                         {props.parentTask || props.task ? // modal tạo subtask và modal copytask
                             <div className="form-group">
                                 <label>{translate('task.task_management.add_parent_task')}</label>
-                                <input className="form-control" value={listParentTask?.find(x => newTask?.parent === x?.value)?.text || '' } disabled />
+                                <input className="form-control" value={listParentTask?.find(x => newTask?.parent === x?.value)?.text || ''} disabled />
 
                             </div>
                             :
@@ -871,8 +885,8 @@ function AddTaskForm(props) {
                                 <TreeSelect
                                     id={`select-task-project-task-${id}`}
                                     mode='radioSelect'
-                                    data={props.projectIdFromDetailProject ? project?.data?.list?.filter((projectItem) => projectItem._id === props.projectIdFromDetailProject ) : 
-                                        project?.data?.list?.filter((projectItem) => projectItem.projectType === 1 )}
+                                    data={props.projectIdFromDetailProject ? project?.data?.list?.filter((projectItem) => projectItem._id === props.projectIdFromDetailProject) :
+                                        project?.data?.list?.filter((projectItem) => projectItem.projectType === 1)}
                                     handleChange={handleTaskProject}
                                     value={props.projectIdFromDetailProject || [newTask.taskProject]}
                                     action={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 ? () => { window.$('#modal-create-project').modal('show') } : null}
@@ -890,6 +904,11 @@ function AddTaskForm(props) {
                             />
                         </div>
                     </fieldset>
+                </div>
+                <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                    <ExpectedResults
+                        onChange={handleChangeTaskOutputs}
+                    />
                 </div>
             </div>
         </React.Fragment>

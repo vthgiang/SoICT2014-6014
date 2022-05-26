@@ -278,7 +278,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       info: true,
     };
   }
-  
+
   task.evaluations.reverse();
   task.logs.reverse()
   task = task.toObject();
@@ -3041,7 +3041,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     collaboratedWithOrganizationalUnits,
     listInfo,
     taskProject,
-    tags
+    tags,
+    taskOutputs
   } = data;
 
   // Chuẩn hóa parent
@@ -3117,6 +3118,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees: informedEmployees,
 
         inactiveEmployees: inactiveEmployees,
+        taskOutputs: taskOutputs,
       } : {
         name: name,
         description: description,
@@ -3137,6 +3139,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees: informedEmployees,
 
         inactiveEmployees: inactiveEmployees,
+        taskOutputs: taskOutputs,
       },
     },
     { $new: true }
