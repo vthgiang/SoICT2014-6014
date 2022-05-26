@@ -107,27 +107,6 @@ function StockEditForm(props) {
         return msg === undefined;
     }
 
-    const handleDepartmentChange = (value) => {
-        let manageDepartment = value[0];
-        validateDepartment(manageDepartment, true);
-    }
-
-    const validateDepartment = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.stock_management.validate_department');
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnDepartment: msg,
-                manageDepartment: value,
-            });
-        }
-        return msg === undefined;
-    }
-
     const handleOrganizationalUnitValueChange = (value) => {
         let organizationalUnitValue = value[0];
         validateOrganizationalUnitValue(organizationalUnitValue, true);
@@ -474,7 +453,7 @@ function StockEditForm(props) {
     }
 
     const { translate, stocks } = props;
-    const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnRole, errorOnManagementGood, role,
+    const { errorOnName, errorOnAddress, errorOnDepartment, stockId, errorOnRole, errorOnManagementGood, role,
         errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name, managementLocation, status, address, description, manageDepartment, goods, good, currentDepartment, organizationalUnitValue  } = state;
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
@@ -513,7 +492,7 @@ function StockEditForm(props) {
                             <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
                                 <SelectBox
-                                    id={`select-status-of-stock`}
+                                    id={`select-stock-${stockId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={organizationalUnitValue}

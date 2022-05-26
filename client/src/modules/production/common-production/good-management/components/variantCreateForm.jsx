@@ -16,7 +16,6 @@ function VariantCreateForm(props) {
     };
 
     const handleAddVariantOptions = async (data) => {
-        console.log(data);
         const { variants } = state;
         const { productCode } = props;
         let arr = [];
@@ -82,7 +81,6 @@ function VariantCreateForm(props) {
 
     const { translate, productWeight, productDefaultPrice } = props;
     let { variants } = state;
-    console.log(variants);
     return (
 
         <fieldset className="scheduler-border">

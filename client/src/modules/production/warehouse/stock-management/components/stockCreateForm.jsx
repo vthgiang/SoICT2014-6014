@@ -80,27 +80,6 @@ function StockCreateForm(props) {
         return msg === undefined;
     }
 
-    const handleDepartmentChange = (value) => {
-        let manageDepartment = value[0];
-        validateDepartment(manageDepartment, true);
-    }
-
-    const validateDepartment = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnDepartment: msg,
-                manageDepartment: value,
-            });
-        }
-        return msg === undefined;
-    }
-
     const handleOrganizationalUnitValueChange = (value) => {
         let organizationalUnitValue = value[0];
         validateOrganizationalUnitValue(organizationalUnitValue, true);
@@ -468,7 +447,7 @@ function StockCreateForm(props) {
 
     const { translate, stocks } = props;
     const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name,
-        managementLocation, status, address, description, manageDepartment, goods, good, errorOnRole, errorOnManagementGood, role, currentDepartment } = state;
+        managementLocation, status, address, description, organizationalUnitValue, goods, good, errorOnRole, errorOnManagementGood, role, currentDepartment } = state;
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
@@ -511,10 +490,10 @@ function StockCreateForm(props) {
                             <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
                                 <SelectBox
-                                    id={`select-status-of-stock`}
+                                    id={`select-department`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    value={manageDepartment}
+                                    value={organizationalUnitValue}
                                     items={departmentManagement}
                                     onChange={handleOrganizationalUnitValueChange}
                                     multiple={false}
