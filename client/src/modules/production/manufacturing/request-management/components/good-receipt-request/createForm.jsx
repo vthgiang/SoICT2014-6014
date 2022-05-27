@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
-import { formatToTimeZoneDate } from '../../../../../../helpers/formatDate';
+import { formatToTimeZoneDate, formatDate } from '../../../../../../helpers/formatDate';
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 function CreateForm(props) {
 
     const [state, setState] = useState({
-        code: generateCode("PDN"),
-        desiredTime: "",
+        code: generateCode("GRR"),
+        desiredTime: formatDate((new Date()).toISOString()),
         description: "",
         listGoods: [],
         approvers: "",
@@ -33,25 +33,10 @@ function CreateForm(props) {
     // Mô tả
     const handleDescriptionChange = (e) => {
         const { value } = e.target;
-        validateDescriptionChange(value, true);
-
-    }
-
-    const validateDescriptionChange = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (value === "") {
-            msg = translate('production.request_management.error_description')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                description: value,
-                errorDescription: msg
-            });
-        }
-
-        return msg;
+        setState({
+            ...state,
+            description: value,
+        });
     }
 
     // Phần người phê duyệt
@@ -80,7 +65,7 @@ function CreateForm(props) {
         const { translate, user } = props;
         let listUsersArray = [{
             value: "",
-            text: translate('manage_warehouse.bill_management.choose_approver')
+            text: translate('production.request_management.approver_in_factory')
         }];
 
         let { userdepartments } = user;
@@ -140,7 +125,7 @@ function CreateForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_stock");
+            msg = translate("production.request_management.validate_stock");
         }
         if (willUpdateState) {
             setState({
@@ -154,7 +139,7 @@ function CreateForm(props) {
 
     const getStock = () => {
         const { stocks, translate } = props;
-        let stockArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_stock") }];
+        let stockArr = [{ value: "", text: translate("production.request_management.choose_stock") }];
 
         stocks.listStocks.map((item) => {
             stockArr.push({
@@ -172,7 +157,7 @@ function CreateForm(props) {
         const { translate, manufacturingWorks } = props;
         let listWorksArray = [{
             value: "",
-            text: translate('manufacturing.manufacturing_mill.choose_works')
+            text: translate('production.request_management.choose_manufacturing_works')
         }];
 
         const { listWorks } = manufacturingWorks;
@@ -198,7 +183,7 @@ function CreateForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (value === "") {
-            msg = translate('manufacturing.manufacturing_mill.worksValue_error');
+            msg = translate('production.request_management.validate_manufacturing_works');
         }
         if (willUpdateState) {
             setState({
@@ -214,7 +199,7 @@ function CreateForm(props) {
     // Phần lưu dữ liệu
 
     const handleClickCreate = () => {
-        const value = generateCode("PDN");
+        const value = generateCode("GRR");
         setState({
             ...state,
             code: value
@@ -222,14 +207,12 @@ function CreateForm(props) {
     }
 
     const isFormValidated = () => {
-        if (
-            validateDescriptionChange(state.description, false)
-            || state.desiredTime === ""
-            || state.listGoods.length === 0
-        ) {
-            return false;
-        }
-        return true;
+        let { approver, stock, worksValue, listGoods } = state;
+        let result = validateApprover(approver, false) &&
+            validateStock(stock, false) &&
+            validateManufacturingWorks(worksValue, false) &&
+            listGoods.length > 0
+        return result;
     }
 
     const save = () => {
@@ -243,7 +226,7 @@ function CreateForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: state.desiredTime,
+                desiredTime: formatToTimeZoneDate(state.desiredTime),
                 description: state.description,
                 goods: goods,
                 approverInFactory: state.approvers,
@@ -286,7 +269,7 @@ function CreateForm(props) {
             >
                 <form id="form-create-purchasing-request">
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate("manage_warehouse.bill_management.infor")}</legend>
+                        <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
@@ -321,7 +304,7 @@ function CreateForm(props) {
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!worksValueError ? "" : "has-error"}`}>
-                                <label>{translate('manufacturing.manufacturing_mill.works')}<span className="text-red">*</span></label>
+                                <label>{translate('production.request_management.manufacturing_works')}<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`select-works`}
                                     className="form-control select2"
@@ -351,10 +334,9 @@ function CreateForm(props) {
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={`form-group ${!errorDescription ? "" : "has-error"}`}>
-                                <label>{translate('production.request_management.description')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label>{translate('production.request_management.description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
-                                <ErrorLabel content={errorDescription} />
                             </div>
                         </div>
                     </fieldset>

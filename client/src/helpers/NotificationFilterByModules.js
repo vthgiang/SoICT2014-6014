@@ -1,6 +1,6 @@
 export const NotificationFilterByModules = (arrNotification) => {
-    let notifyTask = [], notifyAsset = [], notifyKPI = [], notifyDefault = [];
-    
+    let notifyTask = [], notifyAsset = [], notifyKPI = [], notifyProduction = [], notifyDefault = [];
+
     arrNotification.forEach(obj => {
         let type;
         if (obj.associatedDataObject && obj.associatedDataObject.dataType) {
@@ -17,10 +17,13 @@ export const NotificationFilterByModules = (arrNotification) => {
             case 3:
                 notifyKPI = [...notifyKPI, obj];
                 break;
+            case 4:
+                notifyProduction = [...notifyProduction, obj];
+                break;
             default:
                 notifyDefault = [...notifyDefault, obj];
                 break;
         }
     })
-    return { notifyTask, notifyAsset, notifyKPI, notifyDefault };
+    return { notifyTask, notifyAsset, notifyKPI, notifyProduction, notifyDefault };
 }

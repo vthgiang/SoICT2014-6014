@@ -1,7 +1,8 @@
 const {
-    RequestManagement, ManufacturingCommand, ManufacturingMill
+    RequestManagement, ManufacturingCommand, ManufacturingMill, Stock
 } = require(`../../../../models`);
-const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.service");
+const { getAllManagersOfUnitByRole } = require("../../../super-admin/user/user.service");
+const NotificationServices = require(`../../../notification/notification.service`)
 
 const {
     connect
@@ -23,10 +24,20 @@ function getArrayTimeFromString(stringDate) {
     return [start, end];
 }
 
-exports.createRequest = async (userId, data, portal) => {
+/* Tạo yêu cầu*/
+
+exports.createRequest = async (user, data, portal) => {
+    console.log(data);
+    let stockManagersArray = [];
+    if (data.requestType != 3) { // lấy dữ liệu người phê duyệt trong kho trong trường hợp tạo phiếu ở trong module kho
+        let stock = await Stock(connect(DB_CONNECTION, portal))
+            .findById({ _id: data.stock })
+            .populate({ path: "organizationalUnit" });
+        stockManagersArray = await getAllManagersOfUnitByRole(portal, stock.organizationalUnit.managers);
+    }
     let newRequest = await RequestManagement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
-        creator: userId,
+        creator: user._id,
         goods: data.goods.map(item => {
             return {
                 good: item.good,
@@ -43,12 +54,18 @@ exports.createRequest = async (userId, data, portal) => {
                 approvedTime: item.approvedTime
             }
         }) : [],
-        approverInWarehouse: data.approverInWarehouse ? data.approverInWarehouse.map((item) => {
+        approverInWarehouse: (data.requestType != 3 && stockManagersArray.length != 0) ? stockManagersArray.map((item) => {
             return {
-                approver: item.approver,
-                approvedTime: item.approvedTime
+                approver: item.userId._id,
+                approvedTime: null
             }
-        }) : [],
+        }) :
+            (data.approverInWarehouse ? data.approverInWarehouse.map((item) => {
+                return {
+                    approver: item.approver,
+                    approvedTime: item.approvedTime
+                }
+            }) : []),
         approverInOrder: data.approverInOrder ? data.approverInOrder.map((item) => {
             return {
                 approver: item.approver,
@@ -67,6 +84,78 @@ exports.createRequest = async (userId, data, portal) => {
         type: data.type ? data.type : 1,
     });
 
+    /* Tạo thông báo cho người phê duyệt khi tạo yêu cầu */
+    let approvers = [];
+    let notificationText = "";
+    let url = "";
+    switch (data.requestType) {
+        case 1:
+            if (data.approverInFactory) {
+                data.approverInFactory.map((item) => {
+                    approvers.push(item.approver);
+                })
+            }
+            switch (data.type) {
+                case 1:
+                    notificationText = "mua hàng";
+                    break;
+                case 2:
+                    notificationText = "nhập kho hàng hóa";
+                    break;
+                case 3:
+                    notificationText = "xuất kho hàng hóa";
+                    break;
+            }
+            url = 'manufacturing';
+            break;
+        case 2:
+            if (data.approverReceiptRequestInOrder) {
+                data.approverReceiptRequestInOrder.map((item) => {
+                    approvers.push(item.approver);
+                })
+            }
+            notificationText = "nhập kho hàng hóa";
+            url = 'order';
+            break;
+        case 3:
+            if (data.approverInWarehouse) {
+                data.approverInWarehouse.map((item) => {
+                    approvers.push(item.approver);
+                })
+            }
+            switch (data.type) {
+                case 1:
+                    notificationText = "nhập kho hàng hóa";
+                    break;
+                case 2:
+                    notificationText = "xuất kho hàng hóa";
+                    break;
+                case 3:
+                    notificationText = "trả hàng";
+                    break;
+                case 4:
+                    notificationText = "luân chuyển hàng hóa";
+                    break;
+            }
+            url = 'stock';
+            break;
+    }
+
+    const date = data.desiredTime;
+    const dataNotification = {
+        organizationalUnits: [],
+        title: `Xin phê duyệt yêu cầu ${notificationText}`,
+        level: "general",
+        content: `<p><strong>${user.name}</strong> đã gửi yêu cầu phê duyệt ${notificationText} đến trước ngày <strong>${date}</strong>, <a href="${process.env.WEBSITE}/request-management/${url}">Xem ngay</a></p>`,
+        sender: `${user.name}`,
+        users: approvers,
+        associatedDataObject: {
+            dataType: 4,
+            description: `<p><strong>${user.name}</strong>: Đã gửi yêu cầu ${notificationText}.</p>`
+        }
+    };
+    NotificationServices.createNotification(portal, portal, dataNotification)
+
     let request = await RequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: newRequest._id })
         .populate([
             { path: "creator", select: "name" },
@@ -82,10 +171,11 @@ exports.createRequest = async (userId, data, portal) => {
     return { request }
 }
 
+/* Lấy dữ liệu yêu cầu theo điều kiện*/
+
 exports.getAllRequestByCondition = async (query, portal) => {
     let { page, limit } = query;
     let option = {};
-    let conditionInStock = {};
     if (query.requestFrom == 'stock') {
         if (query.type == 1) {
             option = {
@@ -94,21 +184,21 @@ exports.getAllRequestByCondition = async (query, portal) => {
                         $and: [ // nhập kho khi mua hàng 
                             { requestType: 1 },
                             { type: 1 },
-                            { status: {'$gte': 6}}
+                            { status: { '$gte': 6 } }
                         ],
                     },
                     {
                         $and: [ // nhập kho khi sản xuất xong
                             { requestType: 1 },
                             { type: 2 },
-                            { status: {'$gte': 2}}
+                            { status: { '$gte': 2 } }
                         ],
                     },
                     {
                         $and: [ // nhập kho khi tronng bộ phận đơn hàng tự tạo
                             { requestType: 2 },
                             { type: 1 },
-                            { status: {'$gte': 2}}
+                            { status: { '$gte': 2 } }
                         ],
                     },
                     {
@@ -126,7 +216,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
                         $and: [
                             { requestType: 1 },
                             { type: 3 },
-                            { status: {'$gte': 2}}
+                            { status: { '$gte': 2 } }
                         ],
                     },
                     {
@@ -222,6 +312,9 @@ exports.getAllRequestByCondition = async (query, portal) => {
     }
 }
 
+/* Lấy yêu cầu theo id*/
+
+
 exports.getRequestById = async (id, portal) => {
     let request = await RequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
@@ -253,7 +346,9 @@ function findIndexOfApprover(array, id) {
     return result;
 }
 
-exports.editRequest = async (id, data, portal) => {
+/* Chỉnh sửa yêu cầu*/
+
+exports.editRequest = async (user, id, data, portal) => {
     let oldRequest = await RequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
         .populate([
@@ -272,15 +367,6 @@ exports.editRequest = async (id, data, portal) => {
 
         if (index !== -1) {
             oldRequest.approverInFactory[index].approvedTime = new Date(Date.now());
-        }
-
-        let quantityApproved = 1;
-        oldRequest.approverInFactory.forEach((element, index1) => {
-            if (index1 !== index && element.approvedTime == null) {
-                quantityApproved = 0;
-            }
-        });
-        if (quantityApproved) {
             oldRequest.status = 2;
         }
     }
@@ -292,6 +378,17 @@ exports.editRequest = async (id, data, portal) => {
         let index = findIndexOfApprover(oldRequest.approverInOrder, data.approverIdInOrder);
         if (index !== -1) {
             oldRequest.approverInOrder[index].approvedTime = new Date(Date.now());
+            oldRequest.status = 3;
+        }
+    }
+    else {
+        oldRequest.status = data.status ? data.status : oldRequest.status;
+    }
+    // phê duyệt yêu trong kho
+    if (data.approverIdInWarehouse) {
+        let index = findIndexOfApprover(oldRequest.approverInWarehouse, data.approverIdInWarehouse);
+        if (index !== -1) {
+            oldRequest.approverInWarehouse[index].approvedTime = new Date(Date.now());
             oldRequest.status = 3;
         }
     }
@@ -343,7 +440,7 @@ exports.editRequest = async (id, data, portal) => {
     }) : oldRequest.approverInWarehouse;
 
     if (oldRequest.requestType == 1 && oldRequest.type == 1 && oldRequest.status == 2) {
-        let orderManagerArray = await getAllEmployeeOfUnitByRole(portal, oldRequest.orderUnit.managers);
+        let orderManagerArray = await getAllManagersOfUnitByRole(portal, oldRequest.orderUnit.managers);
         oldRequest.approverInOrder = orderManagerArray ? orderManagerArray.map((item) => {
             return {
                 approver: item.userId._id,
@@ -351,8 +448,69 @@ exports.editRequest = async (id, data, portal) => {
             }
         }) : oldRequest.approverInOrder;
     }
-
     await oldRequest.save();
+
+    /* Quản lý thông báo khi chỉnh sửa yêu cầu */
+    let approvers = [];
+    let notificationText = "";
+    let url = "";
+    if (oldRequest.requestType == 1) {
+        switch (oldRequest.status) {
+            case 2:
+                if (oldRequest.approverInOrder) {
+                    oldRequest.approverInOrder.map((item) => {
+                        approvers.push(item.approver);
+                    })
+                }
+                notificationText = "mua hàng";
+                url = 'order';
+                break;
+            case 5:
+                if (oldRequest.approverReceiptRequestInOrder) {
+                    oldRequest.approverReceiptRequestInOrder.map((item) => {
+                        approvers.push(item.approver);
+                    })
+                }
+                notificationText = "nhập kho hàng hóa";
+                url = 'order';
+                break;
+            case 6:
+                if (oldRequest.approverInWarehouse) {
+                    oldRequest.approverInWarehouse.map((item) => {
+                        approvers.push(item.approver);
+                    })
+                }
+                notificationText = "nhập kho hàng hóa";
+                url = 'stock';
+                break;
+        }
+    }
+
+    if ((oldRequest.requestType == 1 && oldRequest.type == 2 || oldRequest.type == 3) || (oldRequest.requestType == 2 && oldRequest.type == 1)) {
+        if (oldRequest.approverInWarehouse) {
+            oldRequest.approverInWarehouse.map((item) => {
+                approvers.push(item.approver);
+            })
+        }
+        notificationText = oldRequest.type == 3 ? "xuất kho hàng hóa" : 'nhập kho hàng hóa';
+        url = 'stock';
+    }
+
+    const date = oldRequest.desiredTime;
+    const dataNotification = {
+        organizationalUnits: [],
+        title: `Xin phê duyệt yêu cầu ${notificationText}`,
+        level: "general",
+        content: `<p><strong>${user.name}</strong> đã gửi yêu cầu phê duyệt ${notificationText} đến trước ngày <strong>${date}</strong>, <a href="${process.env.WEBSITE}/request-management/${url}">Xem ngay</a></p>`,
+        sender: `${user.name}`,
+        users: approvers,
+        associatedDataObject: {
+            dataType: 4,
+            description: `<p><strong>${user.name}</strong>: Đã gửi yêu cầu ${notificationText}.</p>`
+        }
+    };
+    NotificationServices.createNotification(portal, portal, dataNotification)
+
     let request = await RequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: oldRequest._id })
         .populate([
@@ -369,6 +527,8 @@ exports.editRequest = async (id, data, portal) => {
 
     return { request }
 }
+
+// Lấy số lượng request
 
 exports.getNumberRequest = async (query, portal) => {
     const { manufacturingWorks, fromDate, toDate } = query;

@@ -186,6 +186,43 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
     return employees;
 };
 
+exports.getAllManagersOfUnitByRole = async (portal, role) => {
+    let organizationalUnit = await OrganizationalUnit(
+        connect(DB_CONNECTION, portal)
+    ).findOne({
+        $or: [
+            {
+                managers: {
+                    $in: role,
+                },
+            },
+            {
+                deputyManagers: {
+                    $in: role,
+                },
+            },
+            {
+                employees: {
+                    $in: role,
+                },
+            },
+        ],
+    });
+
+    let managers;
+    if (organizationalUnit) {
+        managers = await UserRole(connect(DB_CONNECTION, portal))
+            .find({
+                roleId: {
+                    $in: organizationalUnit.managers,
+                },
+            })
+            .populate("userId roleId");
+    }
+
+    return managers;
+};
+
 /**
  * Lấy tất cả nhân viên theo mảng id đơn vị
  * @id Mảng id các đơn vị

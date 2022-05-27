@@ -33,25 +33,11 @@ function CreateFromPurchaseOrderForm(props) {
     // Mô tả
     const handleDescriptionChange = (e) => {
         const { value } = e.target;
-        validateDescriptionChange(value, true);
+        setState({
+            ...state,
+            description: value,
+        });
 
-    }
-
-    const validateDescriptionChange = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (value === "") {
-            msg = translate('production.request_management.error_description')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                description: value,
-                errorDescription: msg
-            });
-        }
-
-        return msg;
     }
 
     // Phần người phê duyệt
@@ -84,7 +70,7 @@ function CreateFromPurchaseOrderForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_approver");
+            msg = translate("production.request_management.validate_approver_in_order");
         }
         if (willUpdateState) {
             let approvers = [];
@@ -135,7 +121,6 @@ function CreateFromPurchaseOrderForm(props) {
         if (!value) {
             msg = translate("manage_warehouse.bill_management.validate_stock");
         }
-        console.log(value);
         if (willUpdateState) {
             let listGoods = [];
             if (value) {
@@ -171,7 +156,7 @@ function CreateFromPurchaseOrderForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_stock");
+            msg = translate("production.request_management.validate_stock");
         }
         if (willUpdateState) {
             setState({
@@ -185,7 +170,7 @@ function CreateFromPurchaseOrderForm(props) {
 
     const getStock = () => {
         const { stocks, translate } = props;
-        let stockArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_stock") }];
+        let stockArr = [{ value: "", text: translate("production.request_management.choose_stock") }];
 
         stocks.listStocks.map((item) => {
             stockArr.push({
@@ -200,14 +185,11 @@ function CreateFromPurchaseOrderForm(props) {
     // Phần lưu dữ liệu
 
     const isFormValidated = () => {
-        if (
-            validateDescriptionChange(state.description, false)
-            || state.desiredTime === ""
-            || state.listGoods.length === 0
-        ) {
-            return false;
-        }
-        return true;
+        let { approver, stock, listGoods } = state;
+        let result = validateApprover(approver, false) &&
+            validateStock(stock, false) &&
+            listGoods.length > 0
+        return result;
     }
 
     const save = () => {
@@ -221,7 +203,7 @@ function CreateFromPurchaseOrderForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: state.desiredTime,
+                desiredTime: formatToTimeZoneDate(state.desiredTime),
                 description: state.description,
                 goods: goods,
                 stock: state.stock,
@@ -243,7 +225,7 @@ function CreateFromPurchaseOrderForm(props) {
     }
 
     const { translate, bigModal } = props;
-    const { code, desiredTime, errorIntendReceiveTime, description, errorDescription, approver, errorApprover, errorStock, stock, errorPurchaseOrder, purchaseOrder, listGoods } = state;
+    const { code, desiredTime, errorDesiredTime, description, approver, errorApprover, errorStock, stock, errorPurchaseOrder, purchaseOrder, listGoods } = state;
     const dataStock = getStock();
     const dataApprover = getApprover();
     const dataPurchaseOrder = getPurchaseOrder();
@@ -262,7 +244,7 @@ function CreateFromPurchaseOrderForm(props) {
             >
                 <form id="modal-create-request-from-purchase-order">
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate("manage_warehouse.bill_management.infor")}</legend>
+                        <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
@@ -320,7 +302,7 @@ function CreateFromPurchaseOrderForm(props) {
                                 />
                                 <ErrorLabel content={errorPurchaseOrder} />
                             </div>
-                            <div className={`form-group ${!errorIntendReceiveTime ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorDesiredTime ? "" : "has-error"}`}>
                                 <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`purchasing-request-create-desiredTime`}
@@ -328,14 +310,13 @@ function CreateFromPurchaseOrderForm(props) {
                                     onChange={handleDesiredTimeChange}
                                     disabled={true}
                                 />
-                                <ErrorLabel content={errorIntendReceiveTime} />
+                                <ErrorLabel content={errorDesiredTime} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={`form-group ${!errorDescription ? "" : "has-error"}`}>
-                                <label>{translate('production.request_management.description')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label>{translate('production.request_management.description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
-                                <ErrorLabel content={errorDescription} />
                             </div>
                         </div>
                     </fieldset>

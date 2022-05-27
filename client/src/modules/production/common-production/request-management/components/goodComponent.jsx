@@ -226,7 +226,7 @@ function GoodComponentRequest(props) {
     return (
         <React.Fragment>
             <fieldset className="scheduler-border">
-                <legend className="scheduler-border">{translate('production.request_management.good_info')}</legend>
+                <legend className="scheduler-border">{translate('production.request_management.good_info')}<span className="text-red">*</span></legend>
                 <div className={`form-group ${!errorGood ? "" : "has-error"}`}>
                     <label>{translate('production.request_management.good_code')}</label>
                     <SelectBox

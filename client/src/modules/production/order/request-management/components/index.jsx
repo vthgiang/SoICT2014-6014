@@ -90,24 +90,6 @@ function RequestManagement(props) {
         props.getAllRequestByCondition(data);
     }
 
-    const checkRoleApprover = (request) => {
-        const { approverInOrder } = request;
-        const userId = localStorage.getItem("userId");
-        let approverIds = approverInOrder.map(x => x.approver._id);
-        if (approverIds.includes(userId) && approverInOrder[approverIds.indexOf(userId)].approvedTime === null) {
-            return true;
-        }
-        return false
-    }
-
-    const handleFinishedApproval = (request) => {
-        const userId = localStorage.getItem("userId");
-        const data = {
-            approverIdInOrder: userId
-        }
-        props.editRequest(request._id, data);
-    }
-
     const checkRoleApproverReceiptRequestToStock = (request) => {
         const { approverReceiptRequestInOrder } = request;
         const userId = localStorage.getItem("userId");
@@ -187,18 +169,16 @@ function RequestManagement(props) {
     return (
         <div className="nav-tabs-custom">
             <ul className="nav nav-tabs">
-                <li className="active"><a href="#purchasing-request" data-toggle="tab" onClick={() => handlePurchasingRequest()}>{translate('production.request_management.purchase_request')}</a></li>
-                <li><a href="#receipt-request" data-toggle="tab" onClick={() => handleReceiptRequest()}>{translate('production.request_management.receipt_request')}</a></li>
+                <li className="active"><a href="#good-purchasing-request" data-toggle="tab" onClick={() => handlePurchasingRequest()}>{translate('production.request_management.purchase_request')}</a></li>
+                <li><a href="#good-receipt-request" data-toggle="tab" onClick={() => handleReceiptRequest()}>{translate('production.request_management.receipt_request')}</a></li>
             </ul>
             <div className="tab-content">
-                <div className="tab-pane active" id="purchasing-request">
+                <div className="tab-pane active" id="good-purchasing-request">
                     {requestType == 1 && type == 1 &&
                         <LazyLoadComponent>
                             <PurchaseRequest
                                 setPage={setPage}
                                 setLimit={setLimit}
-                                checkRoleApprover={checkRoleApprover}
-                                handleFinishedApproval={handleFinishedApproval}
                                 handleCancelRequest={handleCancelRequest}
                                 handleCodeChange={handleCodeChange}
                                 handleCreatedAtChange={handleCreatedAtChange}
@@ -211,14 +191,12 @@ function RequestManagement(props) {
                         </LazyLoadComponent>
                     }
                 </div>
-                <div className="tab-pane" id="receipt-request">
+                <div className="tab-pane" id="good-receipt-request">
                     {requestType == 2 && type == 1 &&
                         <LazyLoadComponent>
                             <ReceiptRequest
                                 setPage={setPage}
                                 setLimit={setLimit}
-                                checkRoleApprover={checkRoleApprover}
-                                handleFinishedApproval={handleFinishedApproval}
                                 handleCancelRequest={handleCancelRequest}
                                 handleCodeChange={handleCodeChange}
                                 handleCreatedAtChange={handleCreatedAtChange}

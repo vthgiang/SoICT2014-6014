@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { formatDate } from '../../../../../../helpers/formatDate';
 import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../../common-components";
-import DetailForm from './detailForm';
+import DetailForm from '../common-components/detailForm';
 import EditForm from './editForm';
 import CreateForm from './createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
@@ -10,7 +10,8 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 function ReceiptRequestManagementTable(props) {
 
     const [state, setState] = useState({
-   
+        createdAt: formatDate((new Date()).toISOString()),
+        desiredTime: formatDate((new Date()).toISOString()),
     });
 
     const handleShowDetailRequest = async (request) => {
@@ -92,9 +93,11 @@ function ReceiptRequestManagementTable(props) {
                             options={{ nonSelectedText: translate('production.request_management.select_status'), allSelectedText: translate('production.request_management.select_all') }}
                             style={{ width: "100%" }}
                             items={[
-                                { value: 1, text: translate('production.request_management.purchasing_request.1.content') },
-                                { value: 2, text: translate('production.request_management.purchasing_request.2.content') },
-                                { value: 5, text: translate('production.request_management.purchasing_request.5.content') },
+                                { value: 1, text: translate('production.request_management.receipt_request_from_manufacturing.1.content') },
+                                { value: 2, text: translate('production.request_management.receipt_request_from_manufacturing.2.content') },
+                                { value: 3, text: translate('production.request_management.receipt_request_from_manufacturing.3.content') },
+                                { value: 4, text: translate('production.request_management.receipt_request_from_manufacturing.4.content') },
+                                { value: 5, text: translate('production.request_management.receipt_request_from_manufacturing.5.content') },
                             ]}
                             onChange={props.handleStatusChange}
                         />
@@ -162,7 +165,7 @@ function ReceiptRequestManagementTable(props) {
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
                                         {
-                                            request.status !== 3 &&
+                                            request.status == 1 &&
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('production.request_management.request_edit')} onClick={() => handleEditRequest(request)}><i className="material-icons">edit</i></a>
                                         }
                                         {/*Phê duyệt yêu cầu*/}
@@ -178,7 +181,7 @@ function ReceiptRequestManagementTable(props) {
                                             />
                                         }
                                         {
-                                            request.status != 5 &&
+                                            request.status == 1 &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('production.request_management.cancel_request')}

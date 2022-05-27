@@ -14,7 +14,8 @@ exports.getAllStocks = async (company, query, portal) => {
             .find(options)
             .populate([
                 { path: 'goods.good', select: 'id name'},
-                { path: 'managementLocation.role', select: 'id name'}
+                { path: 'managementLocation.role', select: 'id name'},
+                { path: 'organizationalUnit' }
             ])
     }
     else{
@@ -42,20 +43,7 @@ exports.getAllStocks = async (company, query, portal) => {
                 populate: [
                     { path: 'goods.good', select: 'id name'},
                     { path: 'managementLocation.role', select: 'id name'},
-                    {
-                        path: "organizationalUnit",
-                        populate: [{
-                            path: 'managers',
-                            populate: [{
-                                path: "users",
-                                populate: [{
-                                    path: "userId"
-                                }]
-                            }]
-                        },
-                        { path: 'deputyManagers' },
-                        { path: 'employees' }]
-                    }
+                    { path: 'organizationalUnit' }
                 ]
             })
     }
@@ -67,20 +55,7 @@ exports.getStock = async (id, portal) => {
         .populate([
             { path: 'goods.good', select: 'id name'},
             { path: 'managementLocation.role', select: 'id name'},
-            {
-                path: "organizationalUnit",
-                populate: [{
-                    path: 'managers',
-                    populate: [{
-                        path: "users",
-                        populate: [{
-                            path: "userId"
-                        }]
-                    }]
-                },
-                { path: 'deputyManagers' },
-                { path: 'employees' }]
-            }
+            { path: 'organizationalUnit' }
         ])
 }
 
@@ -112,20 +87,7 @@ exports.createStock = async (company, data, portal) => {
         .populate([
             { path: 'goods.good', select: 'id name'},
             { path: 'managementLocation.role', select: 'id name'},
-            {
-                path: "organizationalUnit",
-                populate: [{
-                    path: 'managers',
-                    populate: [{
-                        path: "users",
-                        populate: [{
-                            path: "userId"
-                        }]
-                    }]
-                },
-                { path: 'deputyManagers' },
-                { path: 'employees' }]
-            }
+            { path: 'organizationalUnit' }
         ])
 }
 
@@ -159,20 +121,7 @@ exports.editStock = async (id, data, portal) => {
         .populate([
             { path: 'goods.good', select: 'id name'},
             { path: 'managementLocation.role', select: 'id name'},
-            {
-                path: "organizationalUnit",
-                populate: [{
-                    path: 'managers',
-                    populate: [{
-                        path: "users",
-                        populate: [{
-                            path: "userId"
-                        }]
-                    }]
-                },
-                { path: 'deputyManagers' },
-                { path: 'employees' }]
-            }
+            { path: 'organizationalUnit' }
         ])
 }
 

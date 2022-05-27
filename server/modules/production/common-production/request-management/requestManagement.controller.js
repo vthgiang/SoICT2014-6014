@@ -4,7 +4,7 @@ const RequestService = require('./requestManagement.service');
 exports.createRequest = async (req, res) => {
     try {
         let data = req.body;
-        let request = await RequestService.createRequest(req.user._id, data, req.portal);
+        let request = await RequestService.createRequest(req.user, data, req.portal);
 
         await Log.info(req.user.email, "CREATE_REQUEST", req.portal);
 
@@ -78,7 +78,7 @@ exports.editRequest = async (req, res) => {
         let id = req.params.id;
         let data = req.body;
 
-        let request = await RequestService.editRequest(id, data, req.portal);
+        let request = await RequestService.editRequest(req.user, id, data, req.portal);
 
         await Log.info(req.user.email, "EDIT_REQUEST", req.portal);
 

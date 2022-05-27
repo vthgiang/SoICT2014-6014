@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { formatDate } from '../../../../../../helpers/formatDate';
 import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../../common-components";
-import DetailForm from './detailForm';
-import EditForm from './editForm';
-import CreateForm from './createForm';
+import DetailForm from '../common-components/detailForm';
+import EditGoodPurchaseRequestForm from './editForm';
+import CreateGoodPurchaseRequestForm from './createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
 function PurchasingRequestManagementTable(props) {
 
     const [state, setState] = useState({
+        createdAt: formatDate((new Date()).toISOString()),
+        desiredTime: formatDate((new Date()).toISOString()),
     });
 
     const handleShowDetailRequest = async (request) => {
@@ -52,7 +54,7 @@ function PurchasingRequestManagementTable(props) {
             {<DetailForm requestDetail={state.requestDetail} />}
             {
                 state.currentRow && state.listGoods &&
-                <EditForm
+                <EditGoodPurchaseRequestForm
                     requestId={state.currentRow._id}
                     code={state.currentRow.code}
                     desiredTime={state.currentRow.desiredTime}
@@ -66,7 +68,7 @@ function PurchasingRequestManagementTable(props) {
                 />
             }
             <div className="box-body qlcv">
-                <CreateForm />
+                <CreateGoodPurchaseRequestForm />
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('production.request_management.code')}</label>
@@ -94,7 +96,13 @@ function PurchasingRequestManagementTable(props) {
                             items={[
                                 { value: 1, text: translate('production.request_management.purchasing_request.1.content') },
                                 { value: 2, text: translate('production.request_management.purchasing_request.2.content') },
+                                { value: 3, text: translate('production.request_management.purchasing_request.3.content') },
+                                { value: 4, text: translate('production.request_management.purchasing_request.4.content') },
                                 { value: 5, text: translate('production.request_management.purchasing_request.5.content') },
+                                { value: 6, text: translate('production.request_management.purchasing_request.6.content') },
+                                { value: 7, text: translate('production.request_management.purchasing_request.7.content') },
+                                { value: 8, text: translate('production.request_management.purchasing_request.8.content') },
+                                { value: 9, text: translate('production.request_management.purchasing_request.9.content') },
                             ]}
                             onChange={props.handleStatusChange}
                         />
@@ -162,7 +170,7 @@ function PurchasingRequestManagementTable(props) {
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
                                         {
-                                            request.status !== 3 &&
+                                            request.status == 1 &&
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('production.request_management.request_edit')} onClick={() => handleEditRequest(request)}><i className="material-icons">edit</i></a>
                                         }
                                         {/*Phê duyệt yêu cầu*/}
@@ -170,15 +178,15 @@ function PurchasingRequestManagementTable(props) {
                                             props.checkRoleApprover(request) && request.status == 1 &&
                                             <ConfirmNotification
                                                 icon="question"
-                                                title={translate('manage_warehouse.bill_management.approved_true')}
-                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
+                                                title={translate('production.request_management.approved_true')}
+                                                content={translate('production.request_management.approved_true') + " " + request.code}
                                                 name="check_circle_outline"
                                                 className="text-green"
                                                 func={() => props.handleFinishedApproval(request)}
                                             />
                                         }
                                         {
-                                            request.status != 5 &&
+                                            request.status == 1 &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('production.request_management.cancel_request')}

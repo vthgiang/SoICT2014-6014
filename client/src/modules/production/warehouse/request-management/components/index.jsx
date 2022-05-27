@@ -84,15 +84,14 @@ function RequestManagement(props) {
             code: state.code,
             status: state.status
         }
-        console.log(data);
         props.getAllRequestByCondition(data);
     }
 
     const checkRoleApprover = (request) => {
-        const { approverInFactory } = request;
+        const { approverInWarehouse } = request;
         const userId = localStorage.getItem("userId");
-        let approverIds = approverInFactory.map(x => x.approver._id);
-        if (approverIds.includes(userId) && approverInFactory[approverIds.indexOf(userId)].approvedTime === null) {
+        let approverIds = approverInWarehouse.map(x => x.approver._id);
+        if (approverIds.includes(userId) && approverInWarehouse[approverIds.indexOf(userId)].approvedTime === null) {
             return true;
         }
         return false
@@ -101,7 +100,7 @@ function RequestManagement(props) {
     const handleFinishedApproval = (request) => {
         const userId = localStorage.getItem("userId");
         const data = {
-            approverIdInFactory: userId
+            approverIdInWarehouse: userId
         }
         props.editRequest(request._id, data);
     }

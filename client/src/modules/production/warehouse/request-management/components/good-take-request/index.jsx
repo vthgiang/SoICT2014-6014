@@ -10,7 +10,8 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 function GoodTakeRequestManagementTable(props) {
 
     const [state, setState] = useState({
-   
+        createdAt: formatDate((new Date()).toISOString()),
+        desiredTime: formatDate((new Date()).toISOString()),
     });
 
     const handleShowDetailRequest = async (request) => {
@@ -38,13 +39,6 @@ function GoodTakeRequestManagementTable(props) {
             listGoods: listGoods,
         });
         window.$('#modal-edit-request').modal('show');
-    }
-
-    const cancelPurchasingRequest = (request) => {
-        const data = {
-            status: 3
-        }
-        props.editRequest(request._id, data);
     }
 
     const { translate, requestManagements } = props;
@@ -162,7 +156,7 @@ function GoodTakeRequestManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
-                                    <td>{request.approverInFactory && request.approverInFactory[0].approver.name}</td>
+                                    <td>{request.approverInWarehouse && request.approverInWarehouse[0].approver.name}</td>
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
                                     <td style={{ color: request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.color`) : translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{request.status <= 5 ?  translate(`production.request_management.receipt_request_from_order.${request.status}.content`) : translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
@@ -170,7 +164,7 @@ function GoodTakeRequestManagementTable(props) {
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
                                         {
-                                            request.status !== 3 &&
+                                            request.status == 1 &&
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('production.request_management.request_edit')} onClick={() => handleEditRequest(request)}><i className="material-icons">edit</i></a>
                                         }
                                         {/*Phê duyệt yêu cầu*/}
@@ -178,15 +172,15 @@ function GoodTakeRequestManagementTable(props) {
                                             props.checkRoleApprover(request) && request.status == 1 &&
                                             <ConfirmNotification
                                                 icon="question"
-                                                title={translate('manage_warehouse.bill_management.approved_true')}
-                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
+                                                title={translate('production.request_management.approved_true')}
+                                                content={translate('production.request_management.approved_true') + " " + request.code}
                                                 name="check_circle_outline"
                                                 className="text-green"
                                                 func={() => props.handleFinishedApproval(request)}
                                             />
                                         }
                                         {
-                                            request.status != 5 &&
+                                            request.status == 1 &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('production.request_management.cancel_request')}

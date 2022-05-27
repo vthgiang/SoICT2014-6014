@@ -11,6 +11,8 @@ function PurchasingRequestManagementTable(props) {
 
     const [state, setState] = useState({
         requestFrom: 'Request screen',
+        createdAt: formatDate((new Date()).toISOString()),
+        desiredTime: formatDate((new Date()).toISOString()),
     });
 
     const handleShowDetailRequest = async (request) => {
@@ -73,9 +75,14 @@ function PurchasingRequestManagementTable(props) {
                             options={{ nonSelectedText: translate('production.request_management.select_status'), allSelectedText: translate('production.request_management.select_all') }}
                             style={{ width: "100%" }}
                             items={[
-                                { value: 1, text: translate('production.request_management.purchasing_request.1.content') },
                                 { value: 2, text: translate('production.request_management.purchasing_request.2.content') },
+                                { value: 3, text: translate('production.request_management.purchasing_request.3.content') },
+                                { value: 4, text: translate('production.request_management.purchasing_request.4.content') },
                                 { value: 5, text: translate('production.request_management.purchasing_request.5.content') },
+                                { value: 6, text: translate('production.request_management.purchasing_request.6.content') },
+                                { value: 7, text: translate('production.request_management.purchasing_request.7.content') },
+                                { value: 8, text: translate('production.request_management.purchasing_request.8.content') },
+                                { value: 9, text: translate('production.request_management.purchasing_request.9.content') },
                             ]}
                             onChange={props.handleStatusChange}
                         />
@@ -149,18 +156,6 @@ function PurchasingRequestManagementTable(props) {
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
-                                        {/*Phê duyệt yêu cầu*/}
-                                        {
-                                            props.checkRoleApprover(request) && request.status == 2 &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.approved_true')}
-                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
-                                                name="check_circle_outline"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApproval(request)}
-                                            />
-                                        }
                                         {request.status == 3 && (
                                             <a
                                                 onClick={() => handleCreatePurchaseOrder(request)}
@@ -175,8 +170,8 @@ function PurchasingRequestManagementTable(props) {
                                             props.checkRoleApproverReceiptRequestToStock(request) && request.status == 5 &&
                                             <ConfirmNotification
                                                 icon="question"
-                                                title={translate('manage_warehouse.bill_management.approved_true')}
-                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
+                                                title={translate('production.request_management.approved_true')}
+                                                content={translate('production.request_management.approved_true') + " " + request.code}
                                                 name="check_circle"
                                                 className="text-green"
                                                 func={() => props.handleFinishedApprovalReceiptRequestToStock(request)}

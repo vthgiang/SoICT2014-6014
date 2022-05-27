@@ -13,6 +13,8 @@ function ReceiptRequestManagementTable(props) {
 
     const [state, setState] = useState({
         currentRole: localStorage.getItem("currentRole"),
+        createdAt: formatDate((new Date()).toISOString()),
+        desiredTime: formatDate((new Date()).toISOString()),
     });
 
     const handleShowDetailRequest = async (request) => {
@@ -129,9 +131,11 @@ function ReceiptRequestManagementTable(props) {
                             options={{ nonSelectedText: translate('production.request_management.select_status'), allSelectedText: translate('production.request_management.select_all') }}
                             style={{ width: "100%" }}
                             items={[
-                                { value: 1, text: translate('production.request_management.receipt_request_from_order.1.content') },
-                                { value: 2, text: translate('production.request_management.receipt_request_from_order.2.content') },
-                                { value: 5, text: translate('production.request_management.receipt_request_from_order.5.content') },
+                                { value: 1, text: translate('production.request_management.receipt_request_from_manufacturing.1.content') },
+                                { value: 2, text: translate('production.request_management.receipt_request_from_manufacturing.2.content') },
+                                { value: 3, text: translate('production.request_management.receipt_request_from_manufacturing.3.content') },
+                                { value: 4, text: translate('production.request_management.receipt_request_from_manufacturing.4.content') },
+                                { value: 5, text: translate('production.request_management.receipt_request_from_manufacturing.5.content') },
                             ]}
                             onChange={props.handleStatusChange}
                         />
@@ -196,23 +200,11 @@ function ReceiptRequestManagementTable(props) {
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
                                         {
-                                            request.status !== 3 &&
+                                            request.status == 1 &&
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('production.request_management.request_edit')} onClick={() => handleEditRequest(request)}><i className="material-icons">edit</i></a>
                                         }
-                                        {/*Phê duyệt yêu cầu*/}
                                         {
-                                            props.checkRoleApprover(request) && request.status == 1 &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.approved_true')}
-                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
-                                                name="check_circle_outline"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApproval(request)}
-                                            />
-                                        }
-                                        {
-                                            request.status != 5 &&
+                                            request.status == 1 &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('production.request_management.cancel_request')}

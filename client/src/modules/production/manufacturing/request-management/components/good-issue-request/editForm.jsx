@@ -8,10 +8,10 @@ import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
 
-function EditForm(props) {
+function EditGoodIssueRequestForm(props) {
 
     const [state, setState] = useState({
-        code: generateCode("PDN"),
+        code: generateCode("GIR"),
         desiredTime: "",
         description: "",
         listGoods: [],
@@ -29,25 +29,11 @@ function EditForm(props) {
 
     const handleDescriptionChange = (e) => {
         const { value } = e.target;
-        validateDescriptionChange(value, true);
+        setState({
+            ...state,
+            description: value,
+        });
 
-    }
-
-    const validateDescriptionChange = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (value === "") {
-            msg = translate('production.request_management.error_description')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                description: value,
-                errorDescription: msg
-            });
-        }
-
-        return msg;
     }
 
     // Phần người phê duyệt
@@ -76,13 +62,13 @@ function EditForm(props) {
         const { translate, user } = props;
         let listUsersArray = [{
             value: "",
-            text: translate('manage_warehouse.bill_management.choose_approver')
+            text: translate('production.request_management.approver_in_factory')
         }];
 
         let { userdepartments } = user;
         if (userdepartments) {
             userdepartments = userdepartments[0];
-            if (userdepartments.managers && Object.keys(userdepartments.managers).length > 0) { 
+            if (userdepartments.managers && Object.keys(userdepartments.managers).length > 0) {
                 let managers = userdepartments.managers[Object.keys(userdepartments.managers)[0]].members;
                 if (managers.length) {
                     managers.map((member) => {
@@ -107,7 +93,7 @@ function EditForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_approver");
+            msg = translate("production.request_management.validate_approver_in_factory");
         }
         if (willUpdateState) {
             let approvers = [];
@@ -135,7 +121,7 @@ function EditForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_stock");
+            msg = translate("production.request_management.validate_stock");
         }
         if (willUpdateState) {
             setState({
@@ -149,7 +135,7 @@ function EditForm(props) {
 
     const getStock = () => {
         const { stocks, translate } = props;
-        let stockArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_stock") }];
+        let stockArr = [{ value: "", text: translate("production.request_management.choose_stock") }];
 
         stocks.listStocks.map((item) => {
             stockArr.push({
@@ -167,7 +153,7 @@ function EditForm(props) {
         const { translate, manufacturingWorks } = props;
         let listWorksArray = [{
             value: "",
-            text: translate('manufacturing.manufacturing_mill.choose_works')
+            text: translate('production.request_management.choose_manufacturing_works')
         }];
         const { listWorks } = manufacturingWorks;
 
@@ -192,7 +178,7 @@ function EditForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (value === "") {
-            msg = translate('manufacturing.manufacturing_mill.worksValue_error');
+            msg = translate('production.request_management.validate_manufacturing_works');
         }
         if (willUpdateState) {
             setState({
@@ -207,14 +193,12 @@ function EditForm(props) {
 
 
     const isFormValidated = () => {
-        if (
-            validateDescriptionChange(state.description, false)
-            || state.desiredTime === ""
-            || state.listGoods.length === 0
-        ) {
-            return false;
-        }
-        return true;
+        let { approver, stock, worksValue, listGoods } = state;
+        let result = validateApprover(approver, false) &&
+            validateStock(stock, false) &&
+            validateManufacturingWorks(worksValue, false) &&
+            listGoods.length > 0
+        return result;
     }
 
     const save = () => {
@@ -290,7 +274,7 @@ function EditForm(props) {
     }
 
     const { translate, requestManagements } = props;
-    const { requestId, code, desiredTime, errorDesiredTime, description, errorDescription, good, errorGood, errorQuantity, listGoods, goodOptions,
+    const { requestId, code, desiredTime, errorDesiredTime, description, listGoods,
         approver, errorApprover, errorStock, stock, worksValueError, worksValue } = state;
     const dataApprover = getApprover();
     const dataStock = getStock();
@@ -310,7 +294,7 @@ function EditForm(props) {
             >
                 <form id={`form-edit-request-${requestId}`}>
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate("manage_warehouse.bill_management.infor")}</legend>
+                        <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
@@ -345,7 +329,7 @@ function EditForm(props) {
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!worksValueError ? "" : "has-error"}`}>
-                                <label>{translate('manufacturing.manufacturing_mill.works')}<span className="text-red">*</span></label>
+                                <label>{translate('production.request_management.manufacturing_works')}<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`select-works-${requestId}`}
                                     className="form-control select2"
@@ -375,14 +359,13 @@ function EditForm(props) {
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={`form-group ${!errorDescription ? "" : "has-error"}`}>
-                                <label>{translate('production.request_management.description')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label>{translate('production.request_management.description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
-                                <ErrorLabel content={errorDescription} />
                             </div>
                         </div>
                     </fieldset>
-                    <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} requestId={requestId} listGoods={listGoods}/>
+                    <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} requestId={requestId} listGoods={listGoods} />
                 </form>
             </DialogModal>
         </React.Fragment >
@@ -396,4 +379,4 @@ const mapDispatchToProps = {
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditGoodIssueRequestForm));

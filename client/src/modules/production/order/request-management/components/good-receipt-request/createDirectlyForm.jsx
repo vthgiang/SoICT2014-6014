@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
-import { formatToTimeZoneDate } from '../../../../../../helpers/formatDate';
-import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
+import { formatToTimeZoneDate, formatDate } from '../../../../../../helpers/formatDate';
+import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 function CreateDirectlyForm(props) {
 
     const [state, setState] = useState({
         code: generateCode("PDN"),
-        desiredTime: "",
+        desiredTime: formatDate((new Date()).toISOString()),
         description: "",
         listGoods: [],
         stock: "",
@@ -32,27 +32,12 @@ function CreateDirectlyForm(props) {
     // Mô tả
     const handleDescriptionChange = (e) => {
         const { value } = e.target;
-        validateDescriptionChange(value, true);
+        setState({
+            ...state,
+            description: value,
+        });
 
     }
-
-    const validateDescriptionChange = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (value === "") {
-            msg = translate('production.request_management.error_description')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                description: value,
-                errorDescription: msg
-            });
-        }
-
-        return msg;
-    }
-
     // Phần người phê duyệt
 
     const getApprover = () => {
@@ -83,7 +68,7 @@ function CreateDirectlyForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_approver");
+            msg = translate("production.request_management.validate_approver_in_order");
         }
         if (willUpdateState) {
             let approvers = [];
@@ -111,7 +96,7 @@ function CreateDirectlyForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_stock");
+            msg = translate("production.request_management.validate_stock");
         }
         if (willUpdateState) {
             setState({
@@ -125,7 +110,7 @@ function CreateDirectlyForm(props) {
 
     const getStock = () => {
         const { stocks, translate } = props;
-        let stockArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_stock") }];
+        let stockArr = [{ value: "", text: translate("production.request_management.choose_stock") }];
 
         stocks.listStocks.map((item) => {
             stockArr.push({
@@ -140,14 +125,11 @@ function CreateDirectlyForm(props) {
     // Phần lưu dữ liệu
 
     const isFormValidated = () => {
-        if (
-            validateDescriptionChange(state.description, false)
-            || state.desiredTime === ""
-            || state.listGoods.length === 0
-        ) {
-            return false;
-        }
-        return true;
+        let { approver, stock, listGoods } = state;
+        let result = validateApprover(approver, false) &&
+            validateStock(stock, false) &&
+            listGoods.length > 0
+        return result;
     }
 
     const save = () => {
@@ -161,7 +143,7 @@ function CreateDirectlyForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: state.desiredTime,
+                desiredTime: formatToTimeZoneDate(state.desiredTime),
                 description: state.description,
                 goods: goods,
                 stock: state.stock,
@@ -183,7 +165,7 @@ function CreateDirectlyForm(props) {
     }
 
     const { translate, bigModal } = props;
-    const { code, desiredTime, errorIntendReceiveTime, description, errorDescription, errorStock, stock, errorApprover, approver } = state;
+    const { code, desiredTime, errorIntendReceiveTime, description, errorStock, stock, errorApprover, approver, listGoods } = state;
     const dataStock = getStock();
     const dataApprover = getApprover();
 
@@ -202,7 +184,7 @@ function CreateDirectlyForm(props) {
             >
                 <form id="modal-create-directly-request">
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate("manage_warehouse.bill_management.infor")}</legend>
+                        <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
@@ -254,10 +236,9 @@ function CreateDirectlyForm(props) {
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={`form-group ${!errorDescription ? "" : "has-error"}`}>
-                                <label>{translate('production.request_management.description')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label>{translate('production.request_management.description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
-                                <ErrorLabel content={errorDescription} />
                             </div>
                         </div>
                     </fieldset>

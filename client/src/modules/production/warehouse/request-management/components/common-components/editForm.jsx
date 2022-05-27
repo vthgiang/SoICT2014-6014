@@ -11,7 +11,7 @@ import GoodComponentRequest from '../../../../common-production/request-manageme
 function EditForm(props) {
 
     const [state, setState] = useState({
-        code: generateCode("PDN"),
+        code: generateCode("SR"),
         desiredTime: "",
         description: "",
         listGoods: [],
@@ -29,46 +29,59 @@ function EditForm(props) {
 
     const handleDescriptionChange = (e) => {
         const { value } = e.target;
-        validateDescriptionChange(value, true);
+        setState({
+            ...state,
+            description: value,
+        });
 
     }
+    // Phần người phê duyệt
 
-    const validateDescriptionChange = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (value === "") {
-            msg = translate('production.request_management.error_description')
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                description: value,
-                errorDescription: msg
-            });
-        }
-
-        return msg;
+    const findIndex = (array, value) => {
+        let result = -1;
+        array.map((item, index) => {
+            if (item.value === value) {
+                result = index
+            }
+        })
+        return result;
     }
 
-     // Phần người phê duyệt
-
-     const getApprover = () => {
-        let mapOptions = [];
-        const { user } = props;
-        if (user) {
-            mapOptions = [{
-                value: "title", //Title không được chọn
-                text: "---Chọn người phê duyệt---",
-            }];
-
-            user.list.map((user) => {
-                mapOptions.push({
-                    value: user._id,
-                    text: user.name,
-                });
-            });
+    useEffect(() => {
+        if (state.stock) {
+            let listStocks = getStock();
+            console.log(listStocks);
+            let result = findIndex(listStocks, state.stock);
+            if (result !== -1) {
+                props.getAllUserOfDepartment(listStocks[result].organizationalUnit);
+            }
         }
-        return mapOptions;
+    }, [state.stock])
+
+    const getApprover = () => {
+        const { translate, user } = props;
+        let listUsersArray = [{
+            value: "",
+            text: translate('production.request_management.approver_in_stock')
+        }];
+
+        let { userdepartments } = user;
+        if (userdepartments) {
+            userdepartments = userdepartments[0];
+            if (userdepartments.managers && Object.keys(userdepartments.managers).length > 0) { // Nếu kho có nhân viên
+                let managers = userdepartments.managers[Object.keys(userdepartments.managers)[0]].members;
+                if (managers.length) {
+                    managers.map((member) => {
+                        listUsersArray.push({
+                            value: member._id,
+                            text: member.name
+                        });
+                    });
+                }
+
+            }
+        }
+        return listUsersArray;
     }
 
     const handleApproverChange = (value) => {
@@ -80,7 +93,7 @@ function EditForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_approver");
+            msg = translate("production.request_management.validate_approver_in_stock");
         }
         if (willUpdateState) {
             let approvers = [];
@@ -108,7 +121,7 @@ function EditForm(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_stock");
+            msg = translate("production.request_management.validate_stock");
         }
         if (willUpdateState) {
             setState({
@@ -122,72 +135,25 @@ function EditForm(props) {
 
     const getStock = () => {
         const { stocks, translate } = props;
-        let stockArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_stock") }];
+        let stockArr = [{ value: "", text: translate("production.request_management.choose_stock") }];
 
         stocks.listStocks.map((item) => {
             stockArr.push({
                 value: item._id,
                 text: item.name,
+                organizationalUnit: item.organizationalUnit._id
             });
         });
 
         return stockArr;
     };
 
-    // Phần nhà máy sản xuất
-
-    const getListWorks = () => {
-        const { translate, manufacturingWorks } = props;
-        let listWorksArray = [{
-            value: "",
-            text: translate('manufacturing.manufacturing_mill.choose_works')
-        }];
-        const { listWorks } = manufacturingWorks;
-
-        if (listWorks) {
-            listWorks.map((item) => {
-                listWorksArray.push({
-                    value: item._id,
-                    text: item.name,
-                    organizationalUnit: item.organizationalUnit._id
-                });
-            });
-        }
-        return listWorksArray;
-    }
-
-    const handleManufacturingWorksChange = (value) => {
-        const worksValue = value[0];
-        validateManufacturingWorks(worksValue, true);
-    }
-
-    const validateManufacturingWorks = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (value === "") {
-            msg = translate('manufacturing.manufacturing_mill.worksValue_error');
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                worksValue: value,
-                worksValueError: msg,
-                teamLeaderValue: ""
-            });
-        }
-        return msg === undefined;
-    }
-
-
     const isFormValidated = () => {
-        if (
-            validateDescriptionChange(state.description, false)
-            || state.desiredTime === ""
-            || state.listGoods.length === 0
-        ) {
-            return false;
-        }
-        return true;
+        let { approver, stock, listGoods } = state;
+        let result = validateApprover(approver, false) &&
+            validateStock(stock, false) &&
+            listGoods.length > 0
+        return result;
     }
 
     const save = () => {
@@ -204,7 +170,7 @@ function EditForm(props) {
                 desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
-                approverInFactory: state.approvers,
+                approverInWarehouse: state.approvers,
                 stock: state.stock,
                 requestType: 3,
                 type: props.stockRequestType,
@@ -263,7 +229,7 @@ function EditForm(props) {
     }
 
     const { translate, requestManagements } = props;
-    const { requestId, code, desiredTime, errorDesiredTime, description, errorDescription, good, errorGood, errorQuantity, listGoods, goodOptions,
+    const { requestId, code, desiredTime, errorDesiredTime, description, listGoods,
         approver, errorApprover, errorStock, stock, worksValueError, worksValue } = state;
     const dataApprover = getApprover();
     const dataStock = getStock();
@@ -283,12 +249,30 @@ function EditForm(props) {
             >
                 <form id={`form-edit-request-${requestId}`}>
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate("manage_warehouse.bill_management.infor")}</legend>
+                        <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
                                 <input type="text" disabled={true} value={code} className="form-control"></input>
                             </div>
+                            <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.approver_in_stock")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-approver-${requestId}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={approver}
+                                    items={dataApprover}
+                                    onChange={handleApproverChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorApprover} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                 <label>
                                     {translate("production.request_management.unit_receiving_request")}
@@ -305,24 +289,6 @@ function EditForm(props) {
                                 />
                                 <ErrorLabel content={errorStock} />
                             </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("production.request_management.approver_in_factory")}
-                                    <span className="text-red"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-approver-${requestId}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={approver}
-                                    items={dataApprover}
-                                    onChange={handleApproverChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={errorApprover} />
-                            </div>
                             <div className={`form-group ${!errorDesiredTime ? "" : "has-error"}`}>
                                 <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
                                 <DatePicker
@@ -335,10 +301,9 @@ function EditForm(props) {
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={`form-group ${!errorDescription ? "" : "has-error"}`}>
-                                <label>{translate('production.request_management.description')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label>{translate('production.request_management.description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
-                                <ErrorLabel content={errorDescription} />
                             </div>
                         </div>
                     </fieldset>
