@@ -96,7 +96,6 @@ function IssueManagement(props) {
     //     let index = findIndexOfStaff(bill.qualityControlStaffs, userId);
     //     let qcStatus = bill.qualityControlStaffs[index].status ? bill.qualityControlStaffs.status : "";
     //     let qcContent = bill.qualityControlStaffs[index].content ? bill.qualityControlStaffs[index].content : "";
-    //     console.log(bill);
     //     await setState({
     //         ...state,
     //         currentControl: bill,
@@ -106,7 +105,6 @@ function IssueManagement(props) {
     //     window.$('#modal-quality-control-bill').modal('show');
     // }
 
-    console.log(listPaginate);
     return (
         <div id="bill-good-issues">
             <div className="box-body qlcv">

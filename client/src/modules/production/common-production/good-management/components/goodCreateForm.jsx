@@ -213,7 +213,6 @@ function GoodCreateForm(props) {
     };
 
     const handlePriceChange = (data) => {
-        console.log(data);
         setState({
             ...state,
             pricePerBaseUnit: data.defaultPrice,
@@ -293,7 +292,6 @@ function GoodCreateForm(props) {
 
     // Function lưu các trường thông tin vào state
     const handleChangeOptionalAttribute = (data) => {
-        console.log(data);
         setState({
             ...state,
             optionalAttributes: data,
@@ -301,7 +299,6 @@ function GoodCreateForm(props) {
     }
 
     const handleChangeVariant = (data) => {
-        console.log(data);
         setState({
             ...state,
             variants: data,
@@ -309,9 +306,7 @@ function GoodCreateForm(props) {
     }
 
     const save = () => {
-        console.log(state);
         if (isFormValidated()) {
-        console.log(state);
             props.createGoodByType(state);
         }
     };

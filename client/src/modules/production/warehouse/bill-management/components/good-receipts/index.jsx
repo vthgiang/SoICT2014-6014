@@ -5,6 +5,7 @@ import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotifica
 
 import BillDetailForm from '../genaral/billDetailForm';
 import GoodReceiptEditForm from './goodReceiptEditForm';
+import StockWorkAssignmentModal from './stockWorkAssignmentModal';
 import GoodDetailModal from './goodDetailModal';
 import GoodReceiptCreateForm from './goodReceiptCreateForm';
 import { BillActions } from '../../redux/actions';
@@ -158,6 +159,14 @@ function ReceiptManagement(props) {
         window.$('#modal-good-detail').modal('show');
     }
 
+    const handleStockWorkAssigment = (bill) => {
+        setState({
+            ...state,
+            currentBill: bill,
+        })
+        window.$('#stock-work-assignment-modal').modal('show');
+    }
+
     const handleSearchByStatus = (status) => {
         props.handleSearchByStatus(status);
     }
@@ -185,6 +194,13 @@ function ReceiptManagement(props) {
                         listGoods={state.currentBill.goods}
                         stocks={stocks}
                         lots={lots}
+                    />
+                }
+                {
+                    state.currentBill &&
+                    <StockWorkAssignmentModal
+                        billId={state.currentBill._id}
+                        bill={state.currentBill}
                     />
                 }
                 <div className="form-inline">
@@ -499,6 +515,15 @@ function ReceiptManagement(props) {
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}
                                                 onClick={() => handleShowGoodDetail(x)}
                                             ><i className="material-icons">info</i>
+                                            </a>
+                                        }
+                                        {
+                                            props.checkRoleCanEdit(x) &&
+                                            <a
+                                                className="text-violet"
+                                                title={translate('manage_warehouse.inventory_management.add_lot')}
+                                                onClick={() => handleStockWorkAssigment(x)}
+                                            ><i className="material-icons">assignment_turned_in</i>
                                             </a>
                                         }
                                         {/*Chuyển phiếu sang trạng thái đã hủy*/}

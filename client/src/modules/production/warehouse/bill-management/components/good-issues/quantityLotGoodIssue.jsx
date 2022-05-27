@@ -38,7 +38,6 @@ function QuantityLotGoodIssue(props) {
     const getLotsByGood = () => {
         const { lots, translate } = props;
         let lotArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_lot') }]
-        console.log(lots.listLotsByGood);
         if (lots.listLotsByGood && lots.listLotsByGood.length > 0) {
             lots.listLotsByGood.map(item => {
                 let stock = item.stocks.filter(x => x.stock._id === props.stock);

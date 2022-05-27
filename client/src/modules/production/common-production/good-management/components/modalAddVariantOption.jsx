@@ -145,7 +145,6 @@ function ModalAddVariantOption(props) {
 
     const { translate } = props;
     const { variantOption, errorOnNameField, errorOnValue, errorOnNameFieldPosition, errorOnValuePosition} = state;
-    console.log(variantOption);
 
     return (
         <React.Fragment>
