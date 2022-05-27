@@ -10,6 +10,7 @@ import { GeneralTab } from '../../bidding-package/biddingPackageInfo/components/
 import DetailContent from '../../../project/projects/components/detailContent';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import moment from 'moment';
+import { ViewDecisionForImplement } from './viewDecision';
 const ViewBiddingContract = (props) => {
 	const [showFile, setShowFile] = useState(false)
 	const initState = {
@@ -47,6 +48,7 @@ const ViewBiddingContract = (props) => {
 		bankAccountNumberB: "",
 
 
+		decideToImplement: null,
 		biddingPackage: null,
 		project: null,
 
@@ -110,6 +112,8 @@ const ViewBiddingContract = (props) => {
 
 				biddingPackage: data.biddingPackage,
 				project: data.project,
+
+				decideToImplement: data.decideToImplement,
 
 				files: data.files,
 			})
@@ -237,11 +241,13 @@ const ViewBiddingContract = (props) => {
 					{/* Tabbed pane */}
 					<ul className="nav nav-tabs">
 						{/* Nút tab thông tin cơ bản */}
-						<li className="active"><a href="#general" onClick={() => handleChangeContent("general")} data-toggle="tab">Thông tin chung</a></li>
+						<li className="active"><a href="#general" onClick={() => handleChangeContent("general")} data-toggle="tab" title='Thông tin chung'>Thông tin chung</a></li>
+						{/* Nút tab quyết định giao triển khai hợp đồng */}
+						<li ><a href={`#view-decision-${id}`} onClick={() => handleChangeContent(`#view-decision-${id}`)} data-toggle="tab" title='Thông tin quyết định giao triển khai hợp đồng'>Thông tin quyết định giao triển khai hợp đồng</a></li>
 						{/* Nút tab gói thầu*/}
-						<li><a href="#bidding-package" onClick={() => handleChangeContent("bidding-package")} data-toggle="tab">Thông tin gói thầu</a></li>
+						<li><a href="#bidding-package" onClick={() => handleChangeContent("bidding-package")} data-toggle="tab" title='Thông tin gói thầu'>Thông tin gói thầu</a></li>
 						{/* Nút tab dự án */}
-						<li><a href="#project" onClick={() => handleChangeContent("project")} data-toggle="tab">Thông tin dự án</a></li>
+						<li><a href="#project" onClick={() => handleChangeContent("project")} data-toggle="tab" title='Thông tin dự án'>Thông tin dự án</a></li>
 					</ul>
 					<div className="tab-content">
 						<div className={state.selectedTab === "general" ? "active tab-pane" : "tab-pane"} id="general">
@@ -290,6 +296,12 @@ const ViewBiddingContract = (props) => {
 										currentProjectTasks={tasks && tasks.tasksbyproject}
 									/> : <span>Chưa có dự án theo hợp đồng này</span>
 							}
+						</div>
+						<div className={state.selectedTab === `#view-decision-${id}` ? "active tab-pane" : "tab-pane"} id={`#view-decision-${id}`}>
+							<ViewDecisionForImplement
+								id={`view-decision-${id}`}
+								biddingContract={state}
+							/>
 						</div>
 					</div>
 				</div>

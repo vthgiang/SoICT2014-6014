@@ -18,9 +18,7 @@ function Proposals(props) {
         taskDescription: "",
         directEmployees: [],
         backupEmployees: [],
-        estimateTime: {
-            type: Number,
-        },
+        estimateTime: "",
         unitOfTime: "days",
     }
     const [state, setState] = useState({
@@ -53,6 +51,20 @@ function Proposals(props) {
                 return {
                     ...item,
                     [key]: value
+                }
+            }
+            return item;
+        })
+        setProposals(newList);
+        props.handleChange("proposals", newList);
+    }
+
+    const handleChangeSingleSelectForm = (key, value, listIndex) => {
+        let newList = proposals.map((item, index) => {
+            if (index === listIndex) {
+                return {
+                    ...item,
+                    [key]: value[0]
                 }
             }
             return item;
@@ -130,7 +142,7 @@ function Proposals(props) {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={arrUnitTimeList}
-                                            onChange={(value) => handleChangeForm("estimateTime", value, listIndex)}
+                                            onChange={(value) => handleChangeSingleSelectForm("unitOfTime", value, listIndex)}
                                             value={item.unitOfTime}
                                             multiple={false}
                                         />

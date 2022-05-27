@@ -9,6 +9,7 @@ import { BiddingPackageManagerActions } from '../../bidding-package/biddingPacka
 import { getStorage } from '../../../../config';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { ConfigurationActions } from '../../../super-admin/module-configuration/redux/actions';
+import { DecisionForImplement } from './decisionAssignImplementContract';
 const CreateBiddingContract = (props) => {
 	const fakeUnitCostList = [
 		{ text: 'VND', value: 'VND' },
@@ -55,6 +56,8 @@ const CreateBiddingContract = (props) => {
 
 		biddingPackage: null,
 		project: null,
+
+		// decideToImplement: null
 
 		// files: [],
 
@@ -224,6 +227,7 @@ const CreateBiddingContract = (props) => {
 					accountNumber: state.bankAccountNumberB,
 				},
 			},
+			decideToImplement: state.decideToImplement,
 		}
 
 		formData = convertJsonObjectToFormData(data);
@@ -254,7 +258,17 @@ const CreateBiddingContract = (props) => {
 		return true;
 	}
 
-	const aaa = isFormValidated()
+	/**
+	 * Function lưu các trường thông tin vào state
+	 * @param {*} name : Tên trường
+	 * @param {*} value : Giá trị của trường
+	 */
+	const handleChange = (name, value) => {
+		setState({
+			...state,
+			[name]: value,
+		});
+	}
 
 	// Các hàm xử lý tabbedPane
 	const handleChangeContent = async (content) => {
@@ -268,7 +282,8 @@ const CreateBiddingContract = (props) => {
 
 	const generalInfo = () => {
 		return (
-			<div className={state.selectedTab === "general" ? "active tab-pane" : "tab-pane"} id="general">
+			// className={state.selectedTab === "general" ? "active tab-pane" : "tab-pane"} 
+			<div id="general" className="active tab-pane">
 				<div className='row'>
 					<div className={`form-group col-md-6 ${!state.contractNameError ? "" : "has-error"}`}>
 						<label>Tên hợp đồng<span className="text-red">*</span></label>
@@ -369,7 +384,8 @@ const CreateBiddingContract = (props) => {
 
 	const partyForm = () => {
 		return (
-			<div className={state.selectedTab === "party" ? "active tab-pane" : "tab-pane"} id="party" >
+			// className={state.selectedTab === "party" ? "active tab-pane" : "tab-pane"} 
+			<div id="party" className="tab-pane">
 				<div className="col-md-6">
 					<fieldset className="scheduler-border">
 						<legend className="scheduler-border">Bên A</legend>
@@ -498,13 +514,20 @@ const CreateBiddingContract = (props) => {
 						{/* Tabbed pane */}
 						<ul className="nav nav-tabs">
 							{/* Nút tab thông tin cơ bản */}
-							<li className="active"><a href="#general" onClick={() => handleChangeContent("general")} data-toggle="tab">Thông tin chung</a></li>
+							<li className="active"><a title='Thông tin chung' data-toggle="tab" href="#general">Thông tin chung</a></li>
 							{/* Nút tab các bên tgia */}
-							<li><a href="#party" onClick={() => handleChangeContent("party")} data-toggle="tab">Các bên tham gia</a></li>
+							<li><a title='Các bên tham gia' data-toggle="tab" href="#party" >Các bên tham gia</a></li>
+							{/* Nút tab quyết định giao thực hiện hợp đồng */}
+							<li><a title='Quyết định giao thực hiện hợp đồng' data-toggle="tab" href="#decision">Quyết định giao thực hiện hợp đồng</a></li>
 						</ul>
 						<div className="tab-content">
 							{generalInfo()}
 							{partyForm()}
+							<DecisionForImplement
+								id={"decision"}
+								biddingContract={state}
+								handleChange={handleChange}
+							/>
 						</div>
 					</div>
 				</form>

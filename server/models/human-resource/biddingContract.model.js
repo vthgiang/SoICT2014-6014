@@ -134,7 +134,7 @@ const BiddingContractSchema = new Schema(
         },
 
         decideToImplement: {
-            tasks: {
+            tasks: [{
                 name: {
                     type: String
                 },
@@ -157,7 +157,8 @@ const BiddingContractSchema = new Schema(
                         "months",
                     ],
                 },
-            },// Những người quản trị dự án
+            }],
+            // Những người quản trị dự án
             projectManager: [{
                 type: Schema.Types.ObjectId,
                 ref: "User",
@@ -178,9 +179,9 @@ const BiddingContractSchema = new Schema(
                         type: Schema.Types.ObjectId,
                         ref: "User",
                     },
-                    // salary: {
-                    //     type: Number,
-                    // }
+                    salary: {
+                        type: Number,
+                    }
                 }],
             }],
         },
