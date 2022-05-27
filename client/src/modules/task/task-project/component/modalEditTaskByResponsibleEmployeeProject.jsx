@@ -491,7 +491,6 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
                             </fieldset>
                             <TaskInformationForm
                                 task={task && task}
-
                                 handleChangeProgress={this.handleChangeProgress}
                                 handleInfoBooleanChange={this.handleInfoBooleanChange}
                                 handleInfoDateChange={this.handleInfoDateChange}
@@ -499,10 +498,10 @@ class ModalEditTaskByResponsibleEmployeeProject extends Component {
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
                                 handleChangeListInfo={this.handleChangeListInfo}
-
                                 role={role}
                                 perform={perform}
                                 value={this.state}
+                                progress={this.state.progress}
                             />
                         </form>
                     </DialogModal>

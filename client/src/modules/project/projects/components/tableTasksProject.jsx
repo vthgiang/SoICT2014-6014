@@ -80,7 +80,7 @@ const TableTasksProject = (props) => {
             })
         }
         console.log(data);
-    }, [performtasks?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading])
+    }, [performtasks?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading,JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)])
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
