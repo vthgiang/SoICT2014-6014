@@ -100,15 +100,15 @@ function UnitCreateForm(props) {
 
     // Hàm này validate xem list unit có hợp lệ để tạo thành một packingRule hay không
     // Input là 1 array chứa các phần tử có conversion rate tăng dần
-    const validateListUnitArray = (array) => {
-        for (let i = 0; i < array.length - 1; i++) {
-            let rate = array[i + 1].conversionRate / array[i].conversionRate;
-            if (!Number.isInteger(rate)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    // const validateListUnitArray = (array) => {
+    //     for (let i = 0; i < array.length - 1; i++) {
+    //         let rate = array[i + 1].conversionRate / array[i].conversionRate;
+    //         if (!Number.isInteger(rate)) {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
 
 
     // const convertToPackingRule = (value) => {

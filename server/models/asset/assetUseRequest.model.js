@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// Updated
 // tạo bảng csdl Đề nghị cấp phát tài sản
 const AssetUseRequestSchema = new Schema({
     company: {

@@ -522,10 +522,11 @@ function getTimeSheetOfUser(userId, month, year, requireActions = false) {
     };
 }
 
-function getAllUserTimeSheet(month, year, rowLimit, page, timeLimit) {
+function getAllUserTimeSheet(month, year, rowLimit, page, timeLimit, unitArray, sortType) {
+    sortType = parseInt(sortType[0]);
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST });
-        taskManagementService.getAllUserTimeSheet(month, year, rowLimit, page, timeLimit)
+        taskManagementService.getAllUserTimeSheet(month, year, rowLimit, page, timeLimit, unitArray, sortType)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_SUCCESS,
@@ -614,8 +615,6 @@ function importTasks(data) {
                 })
             })
             .catch(err => {
-                console.log("error", err)
-                console.log("errordata", err?.response?.data)
                 dispatch({
                     type: taskManagementConstants.IMPORT_TASKS_FAILURE,
                     error: err?.response?.data?.content

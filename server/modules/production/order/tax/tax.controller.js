@@ -27,7 +27,7 @@ exports.createNewTax = async (req, res) => {
 exports.editTaxByCode = async (req, res) => {
     try {
         let id = req.params.id;
-        data = req.body;
+        let data = req.body;
         let tax = await TaxService.editTaxByCode(req.user._id, id, data, req.portal);
 
         await Log.info(req.user.email, "EDIT_TAX", req.portal);

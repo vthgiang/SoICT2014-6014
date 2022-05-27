@@ -48,11 +48,11 @@ class AssetIncidentChart extends Component {
     }
 
     setDataColumnChartForMonth = (type) => {
-        const { translate, getIncidentData ,incidentAsset} = this.props;
+        const { translate, getIncidentData ,chartAsset} = this.props;
         let category1 = [], count1 = ['Số lần'], yValue1 = [], max = []
         const maxVa = (a, b) => Math.max(a, b)
-        if (incidentAsset.incidentChart) {
-            incidentAsset.incidentChart.forEach(element => {
+        if (chartAsset.incidentChart) {
+            chartAsset.incidentChart.forEach(element => {
                 if (type.length !== 0) {
                     let sumCate = 0
                     type.forEach(value => {
@@ -83,7 +83,7 @@ class AssetIncidentChart extends Component {
             yValues: yValue1
         };
 
-        if (incidentAsset && dataColumnChart) {
+        if (chartAsset && dataColumnChart) {
             getIncidentData(dataColumnChart, type);
         }
 
@@ -91,11 +91,11 @@ class AssetIncidentChart extends Component {
     }
 
     setDataColumnChartForYear = (type) => {
-        const { translate, getIncidentData,incidentAsset } = this.props;
+        const { translate, getIncidentData,chartAsset } = this.props;
         let category1=[],count1=['Số lần'], yValue1=[] , max = []
         const maxVa = (a,b) =>  Math.max(a,b)
-        if (incidentAsset.incidentChartYear){
-            incidentAsset.incidentChartYear.forEach(element => {
+        if (chartAsset.incidentChartYear){
+            chartAsset.incidentChartYear.forEach(element => {
                 if (type.length !==0){
                     let sumCate = 0
                     type.forEach(value=>{
@@ -129,7 +129,7 @@ class AssetIncidentChart extends Component {
             yValues: yValue1
         };
 
-        if (dataColumnChart && incidentAsset) {
+        if (dataColumnChart && chartAsset) {
             getIncidentData(dataColumnChart, type);
         }
         return dataColumnChart;
@@ -229,7 +229,7 @@ class AssetIncidentChart extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            this.props.getAllAssetIncident({ name: "incident-date-data", endTimeIncident: incidentDateBefore, startTimeIncident: incidentDateAfter })
+            this.props.getAllAssetGroup([{ name: "incident-date-data", endTimeIncident: incidentDateBefore, startTimeIncident: incidentDateAfter }])
         }
     }
 
@@ -337,12 +337,13 @@ class AssetIncidentChart extends Component {
     }
 }
 function mapState(state) {
-    const { incidentAsset } = state.assetsManager;
-    return { incidentAsset };
+    const { chartAsset } = state.assetsManager;
+    return { chartAsset };
 }
 
 const mapDispatchToProps = {
-    getAllAssetIncident: AssetManagerActions.getAllAssetIncident
+    getAllAssetIncident: AssetManagerActions.getAllAssetIncident,
+    getAllAssetGroup: AssetManagerActions.getAllAssetGroup
 }
 
 const AssetIncidentChartConnect = connect(mapState, mapDispatchToProps)(withTranslate(AssetIncidentChart));

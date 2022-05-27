@@ -1,4 +1,4 @@
-const { Bill, Lot, Stock, SalesOrder, PurchaseOrder } = require(`../../../../models`);
+const { Bill, Lot, Stock, SalesOrder, PurchaseOrder, BinLocation } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 const CustomerService = require('../../../crm/customer/customer.service');
 const { updateCrmActionsTaskInfo, updateSearchingCustomerTaskInfo } = require('../../../crm/crmTask/crmTask.service');
@@ -459,7 +459,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             good: item.good,
             quantity: item.quantity,
             returnQuantity: item.returnQuantity,
-            realQuantity: item.realQuantity,
+            realQuantity: item.realQuantity ? item.realQuantity : item.quantity,
             damagedQuantity: item.quantity - item.realQuantity,
             description: item.description,
             lots: item.lots.map(x => {
@@ -467,7 +467,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                     lot: x.lot,
                     quantity: x.quantity,
                     returnQuantity: x.returnQuantity,
-                    damagedQuantity: x.damagedQuantity,
+                    damagedQuantity: x.damagedQuantity ? x.damagedQuantity : 0,
                     realQuantity: x.realQuantity,
                     note: x.note
                 }
@@ -534,6 +534,24 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     log.versions = "versions " + (bill.logs.length + 1);
     bill.logs = [...bill.logs, log];
 
+    if (data.group === '3' && data.oldStatus === '4' && data.status === '5') {
+        let billIssue = await Bill(connect(DB_CONNECTION, portal)).findById(bill.bill._id);
+        billIssue.goods = billIssue.goods ? billIssue.goods.map((item, key) => {
+            console.log(key, item);
+            return {
+                good: item.good,
+                quantity: item.quantity,
+                returnQuantity: item.returnQuantity + data.goods[key].returnQuantity,
+                realQuantity: item.realQuantity - item.returnQuantity - data.goods[key].returnQuantity,
+                damagedQuantity: item.damagedQuantity,
+                description: item.description,
+                lots: item.lots,
+                unpassed_quality_control_lots: item.unpassed_quality_control_lots,
+            }
+        }) : billIssue.goods;
+        await billIssue.save();
+    }
+
     await bill.save();
 
     //--------------------PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG------------------------
@@ -593,8 +611,8 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
 
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
     //Nếu là phiếu xuất kho hệ thống cập nhật lại số lượng tồn kho
-    console.log("data", data);
     if (data.group === '2' && data.oldStatus === '3' && data.status === '5') {
+        console.log('update inventory');
         if (data.goods && data.goods.length > 0) {
             for (let i = 0; i < data.goods.length; i++) {
                 if (data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -605,8 +623,28 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                         lot.quantity = Number(lot.quantity) - Number(quantity);
                         if (lot.stocks && lot.stocks.length > 0) {
                             for (let k = 0; k < lot.stocks.length; k++) {
-                                if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+                                if (lot.stocks[k].stock.toString() === data.fromStock._id.toString()) {
                                     lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
+                                    if (lot.stocks[k].binLocations.length > 0) {
+                                        for (let j = 0; j < lot.stocks[k].binLocations.length; j++) {
+                                            let binLocation = await BinLocation(connect(DB_CONNECTION, portal)).findById(lot.stocks[k].binLocations[j].binLocation._id)
+                                            let number = lot.stocks[k].binLocations[j].quantity;
+                                            if (binLocation.enableGoods.length > 0) {
+                                                for (let k = 0; k < binLocation.enableGoods.length; k++) {
+                                                    if (binLocation.enableGoods[k].good._id.toString() === lot.good._id.toString()) {
+                                                        if (binLocation.enableGoods[k].contained !== null) {
+                                                            binLocation.enableGoods[k].contained = Number(binLocation.enableGoods[k].contained) - Number(number);
+                                                            await binLocation.save();
+                                                        } else {
+                                                            binLocation.enableGoods[k].contained = 0 - Number(number);
+                                                            await binLocation.save();
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
                                     lot.stocks[k].binLocations = [];
                                 }
                             }
@@ -668,7 +706,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                             lot.quantity = Number(lot.quantity) + Number(returnQuantity);
                             if (lot.stocks && lot.stocks.length > 0) {
                                 for (let k = 0; k < lot.stocks.length; k++) {
-                                    if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+                                    if (lot.stocks[k].stock.toString() === data.fromStock._id.toString()) {
                                         lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(returnQuantity);
                                         lot.stocks[k].binLocations = [];
                                     }

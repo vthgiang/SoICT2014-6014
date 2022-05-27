@@ -6,39 +6,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Get all Document",
             "operationId": "getDocuments",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -80,39 +49,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Create a new Document",
             "operationId": "CreateDocument",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin tài liệu",
@@ -148,6 +86,7 @@ const openapi_documentRoute = {
             "description": "Find document by ID",
             "description": "Lấy thông tin tài liệu theo id",
             "operationId": "getDocumentById",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -158,38 +97,6 @@ const openapi_documentRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -218,6 +125,7 @@ const openapi_documentRoute = {
             "description": "Delete document by ID",
             "description": "Xóa thông tin tài liệu theo id",
             "operationId": "deleteDocument",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -228,38 +136,6 @@ const openapi_documentRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -276,6 +152,7 @@ const openapi_documentRoute = {
             "description": "Update document by ID",
             "description": "Cập nhật thông tin tài liệu theo id",
             "operationId": "updateDocument",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -286,38 +163,6 @@ const openapi_documentRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin tài liệu",
@@ -352,39 +197,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "import file document",
             "operationId": "importFileDocument",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "content": {
@@ -424,39 +238,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "user statistical",
             "operationId": "user-statistical",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -503,39 +286,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Get all document-domains",
             "operationId": "getDocumentsDomains",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -577,39 +329,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Create a new document-domains",
             "operationId": "CreateDocumentDomains",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin danh mục tài liệu",
@@ -645,6 +366,7 @@ const openapi_documentRoute = {
             "description": "Update document-domains by ID",
             "description": "Cập nhật thông tin danh mục tài liệu theo id",
             "operationId": "updateDocumentDomains",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -655,38 +377,6 @@ const openapi_documentRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin danh mục tài liệu",
@@ -720,6 +410,7 @@ const openapi_documentRoute = {
             "description": "Delete document-domains by ID",
             "description": "Xóa thông tin danh mục tài liệu theo id",
             "operationId": "deleteDocumentDomains",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -730,38 +421,6 @@ const openapi_documentRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -779,39 +438,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "import file document domains",
             "operationId": "importFileDocumentDomains",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "content": {
@@ -851,39 +479,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Get all document categories",
             "operationId": "getDocumentCategories",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -925,39 +522,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Create a new document category",
             "operationId": "CreateDocumentCategory",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin loại tài liệu",
@@ -997,6 +563,7 @@ const openapi_documentRoute = {
             "description": "Find document category by ID",
             "description": "Lấy thông tin loại tài liệu theo id",
             "operationId": "getDocumentCategoryById",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -1007,38 +574,6 @@ const openapi_documentRoute = {
                     },
                     "require": true
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -1067,6 +602,7 @@ const openapi_documentRoute = {
             "description": "Update document category by ID",
             "description": "Cập nhật thông tin loại tài liệu theo id",
             "operationId": "updateDocumentCategory",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -1077,38 +613,6 @@ const openapi_documentRoute = {
                     },
                     "required": true
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin loại tài liệu",
@@ -1146,6 +650,7 @@ const openapi_documentRoute = {
             "description": "Delete document category by ID",
             "description": "Xóa thông tin loại tài liệu theo id",
             "operationId": "deleteDocumentCategory",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -1156,38 +661,6 @@ const openapi_documentRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -1217,39 +690,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "import file document category",
             "operationId": "importFileDocumentcategory",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "content": {
@@ -1293,39 +735,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Get all DocumnetArchives",
             "operationId": "getDocumnetArchives",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -1367,39 +778,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "Create a new document archive ",
             "operationId": "CreateDocumentArchive",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin lưu trữ tài liệu",
@@ -1435,6 +815,7 @@ const openapi_documentRoute = {
             "description": "Update document archive by ID",
             "description": "Cập nhật thông tin lưu trữ tài liệu",
             "operationId": "updateDocumentArchive",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -1444,38 +825,6 @@ const openapi_documentRoute = {
                     },
                     "required": true
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin nơi lưu trữ tài liệu",
@@ -1509,6 +858,7 @@ const openapi_documentRoute = {
             "description": "Delete document archive by ID",
             "description": "Xóa thông tin lưu trữ tài liệu",
             "operationId": "deleteDocumentArchive",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -1519,38 +869,6 @@ const openapi_documentRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -1580,39 +898,8 @@ const openapi_documentRoute = {
             "tags": [apiTagNames.DOCUMENT],
             "description": "import file document archive",
             "operationId": "importFileDocumentArchive",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "content": {

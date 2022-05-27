@@ -78,9 +78,10 @@ const {
     TransportDepartment,
     TransportVehicle,
     TransportPlan,
-    TransportSchedule,
+    TransportSchedule, SuppliesPurchaseRequest, Supplies, PurchaseInvoice, AllocationHistory,
 
 } = require("../models");
+const {ObjectId} = require("mongodb");
 
 require("dotenv").config();
 
@@ -3580,6 +3581,188 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
 
 
+
+    /*---------------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------------------------
+       TẠO DỮ LIỆU VẬT TƯ
+   -----------------------------------------------------------------------------------------------
+   ----------------------------------------------------------------------------------------------- */
+
+    // TẠO DỮ LIỆU ĐĂNG KÝ CẤP VẬT TƯ
+    const suppliesPurchaseRequests = await SuppliesPurchaseRequest(vnistDB).insertMany([
+        {
+            company: vnist._id,
+            recommendNumber: "DNMS20220421.231192",
+            dateCreate: Date.now(),
+            proponent: users[4]._id, // Người đề nghị
+            suppliesName: 'Máy tính Lenovo',
+            suppliesDescription: 'None',
+            supplier:'Công ty ABC',
+            approver: [users[1]._id], // Người phê duyệt
+            total: 12,
+            unit: 5,
+            estimatePrice: 10000000,
+            note: null,
+            status: 'waiting_for_approval',
+            files: null,
+            recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
+        },
+        {
+            company: vnist._id,
+            recommendNumber: "DNMS20220421.231194",
+            dateCreate: Date.now(),
+            proponent: users[4]._id, // Người đề nghị
+            suppliesName: 'Máy tính Dell',
+            suppliesDescription: 'None',
+            supplier:'Công ty ABC',
+            approver: [users[1]._id], // Người phê duyệt
+            total: 12,
+            unit: 5,
+            estimatePrice: 10000000,
+            note: null,
+            status: 'approved',
+            files: null,
+            recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
+        },
+        {
+            company: vnist._id,
+            recommendNumber: "DNMS20220421.231196",
+            dateCreate: Date.now(),
+            proponent: users[2]._id, // Người đề nghị
+            suppliesName: 'Máy tính Asus',
+            suppliesDescription: 'None',
+            supplier:'Công ty ABC',
+            approver: [users[1]._id], // Người phê duyệt
+            total: 12,
+            unit: 5,
+            estimatePrice: 10000000,
+            note: null,
+            status: 'approved',
+            files: null,
+            recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
+        },
+        {
+            company: vnist._id,
+            recommendNumber: "DNMS20220421.231196",
+            dateCreate: Date.now(),
+            proponent: users[2]._id, // Người đề nghị
+            suppliesName: 'Máy tính Macbook',
+            suppliesDescription: 'None',
+            supplier:'Công ty ABC',
+            approver: [users[1]._id], // Người phê duyệt
+            total: 12,
+            unit: 5,
+            estimatePrice: 10000000,
+            note: null,
+            status: 'waiting_for_approval',
+            files: null,
+            recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
+        }
+    ])
+
+    // TẠO DỮ LIỆU VẬT TƯ
+    const supplies = await Supplies(vnistDB).insertMany([
+        {
+            company: vnist._id,
+            code: 'VVTM20220421.162431',
+            suppliesName: 'Macbook',
+            totalPurchase: 4,
+            totalAllocation: 2,
+            price: 10000000
+        },
+        {
+            company: vnist._id,
+            code: 'VVTM20220421.162433',
+            suppliesName: 'Surface',
+            totalPurchase: 4,
+            totalAllocation: 2,
+            price: 10000000
+        },
+        {
+            company: vnist._id,
+            code: 'VVTM20220421.162435',
+            suppliesName: 'Apple watch',
+            totalPurchase: 4,
+            totalAllocation: 2,
+            price: 10000000
+        },
+        {
+            company: vnist._id,
+            code: 'VVTM20220421.162437',
+            suppliesName: 'Tables',
+            totalPurchase: 4,
+            totalAllocation: 2,
+            price: 10000000
+        }
+    ])
+
+    // TẠO DỮ LIỆU HÓA ĐƠN MUA VẬT TƯ
+    const purchaseInvoice = await PurchaseInvoice(vnistDB).insertMany([
+        {
+            codeInvoice: "DNMS20220421.253013",
+            date: "2022-04-21T00:00:00.000Z",
+            price: "1213",
+            quantity: "12",
+            supplier: "Công ty A",
+            supplies: supplies[0]._id
+        },
+        {
+            codeInvoice: "DNMS20220421.253015",
+            date: "2022-04-21T00:00:00.000Z",
+            price: "1213",
+            quantity: "12",
+            supplier: "Công ty A",
+            supplies: supplies[1]._id
+        },
+        {
+            codeInvoice: "DNMS20220421.253017",
+            date: "2022-04-21T00:00:00.000Z",
+            price: "1213",
+            quantity: "12",
+            supplier: "Công ty A",
+            supplies: supplies[2]._id
+        },
+        {
+            codeInvoice: "DNMS20220421.253019",
+            date: "2022-04-21T00:00:00.000Z",
+            price: "1213",
+            quantity: "12",
+            supplier: "Công ty A",
+            supplies: supplies[3]._id
+        }
+    ])
+
+    // TẠO DỮ LIỆU LỊCH SỬ CẤP PHÁT
+    const allocationHistory = await AllocationHistory(vnistDB).insertMany([
+        {
+            allocationToOrganizationalUnit: "6260be256c016d1b48a23fcf",
+            allocationToUser: users[4]._id,
+            date: "2022-04-21T00:00:00.000Z",
+            quantity: "12",
+            supplies: supplies[0]._id
+        },
+        {
+            allocationToOrganizationalUnit: "6260be256c016d1b48a23fcf",
+            allocationToUser: users[4]._id,
+            date: "2022-04-21T00:00:00.000Z",
+            quantity: "12",
+            supplies: supplies[1]._id
+        },
+        {
+            allocationToOrganizationalUnit: "6260be256c016d1b48a23fcf",
+            allocationToUser: users[2]._id,
+            date: "2022-04-21T00:00:00.000Z",
+            quantity: "12",
+            supplies: supplies[2]._id
+        },
+        {
+            allocationToOrganizationalUnit: "6260be256c016d1b48a23fcf",
+            allocationToUser: users[2]._id,
+            date: "2022-04-21T00:00:00.000Z",
+            quantity: "12",
+            supplies: supplies[3]._id
+        }
+    ])
     /*---------------------------------------------------------------------------------------------
    -----------------------------------------------------------------------------------------------
        TẠO DỮ LIỆU NHÀ MÁY VÀ XƯỞNG SẢN XUẤT
@@ -5373,7 +5556,7 @@ const initSampleCompanyDB = async () => {
             approver: users[1]._id,
             receiver: {
                 name: "Phạm Đại Tài",
-                phone: 0344213030,
+                phone: '0344213030',
                 email: "thangbao2698@gmail.com",
                 address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
             },

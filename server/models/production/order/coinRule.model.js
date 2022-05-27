@@ -8,7 +8,7 @@ const CoinRuleSchema = new Schema({
     }, 
     minCoin: {
         type: Number,
-        required: Number
+        required: true
     }
 }, {
     timestamps: true,

@@ -84,7 +84,7 @@ const ViewTaskTemplate = (props) => {
                                 )}
                             </ul>
                         }
-                        <div><strong>{translate('task_template.description')}:</strong><span>{taskTemplate?.description}</span></div>
+                        <div><strong>{translate('task_template.description')}:</strong><span >{parse(taskTemplate?.description)}</span></div>
 
                         <div><strong>{translate('task.task_management.priority')}:</strong><span>{taskTemplate && priority}</span></div>
 

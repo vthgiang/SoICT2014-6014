@@ -6,39 +6,8 @@ const openapi_assetManagementRoute = {
             "tags": [apiTagNames.ASSET],
             "description": "Get all Asset",
             "operationId": "getAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -75,40 +44,8 @@ const openapi_assetManagementRoute = {
             "tags": [apiTagNames.ASSET],
             "description": "Create a new Asset",
             "operationId": "CreateAsset",
-            "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
-            ],
+            "security": [{ ApiKeyAuth: [] }],
+            "parameters": [ ],
             "requestBody": {
                 "description": "Nhập thông tin tài sản",
                 "content": {
@@ -143,6 +80,7 @@ const openapi_assetManagementRoute = {
             "description": "Update Asset by ID",
             "description": "Cập nhật thông tin tài sản",
             "operationId": "updateAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -153,38 +91,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin tài sản",
@@ -218,6 +124,7 @@ const openapi_assetManagementRoute = {
             "description": "Delete Asset ",
             "description": "Xóa thông tin tài sản",
             "operationId": "deleteAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -228,38 +135,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -277,6 +152,7 @@ const openapi_assetManagementRoute = {
             "tags": [apiTagNames.ASSET],
             "description": "Create a new Asset",
             "operationId": "CreateAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -287,38 +163,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin sử dụng tài sản",
@@ -348,6 +192,7 @@ const openapi_assetManagementRoute = {
             "description": "Update usage Asset by ID",
             "description": "Cập nhật thông tin sử dụng tài sản",
             "operationId": "updateUsageAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -358,38 +203,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin sử dụng tài sản",
@@ -423,6 +236,7 @@ const openapi_assetManagementRoute = {
             "description": "Delete usage Asset ",
             "description": "Xóa thông tin sử dụng tài sản",
             "operationId": "deleteAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -433,38 +247,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -482,6 +264,7 @@ const openapi_assetManagementRoute = {
             "tags": [apiTagNames.ASSET],
             "description": "Create a new maintainance Asset",
             "operationId": "CreateMaintainanceAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -492,38 +275,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin bảo trì tài sản",
@@ -553,6 +304,7 @@ const openapi_assetManagementRoute = {
             "description": "Update maintainance Asset by ID",
             "description": "Cập nhật thông tin sử dụng tài sản",
             "operationId": "updateMaintainanceAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -563,38 +315,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "requestBody": {
                 "description": "Nhập thông tin bảo trì tài sản",
@@ -628,6 +348,7 @@ const openapi_assetManagementRoute = {
             "description": "Delete maintainance Asset ",
             "description": "Xóa thông tin bảo trì tài sản",
             "operationId": "deleteMaintainanceAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
                 {
                     "name": "id",
@@ -638,38 +359,6 @@ const openapi_assetManagementRoute = {
                         "type": "string"
                     }
                 },
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                }
             ],
             "responses": {
                 "200": {
@@ -687,39 +376,8 @@ const openapi_assetManagementRoute = {
             "tags": [apiTagNames.ASSET],
             "description": "Get all maintainance Asset",
             "operationId": "getMaintainanceAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",
@@ -758,39 +416,8 @@ const openapi_assetManagementRoute = {
             "tags": [apiTagNames.ASSET],
             "description": "Get all incident-logs Asset",
             "operationId": "getIncidentAsset",
+            "security": [{ ApiKeyAuth: [] }],
             "parameters": [
-                {
-                    "in": "header",
-                    "name": "auth-token",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "fingerprint",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-role",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
-                {
-                    "in": "header",
-                    "name": "current-page",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "require": true
-                },
                 {
                     "in": "query",
                     "name": "page",

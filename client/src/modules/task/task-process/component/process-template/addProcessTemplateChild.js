@@ -156,7 +156,7 @@ function AddProcessTemplate(props) {
                             id={`select-process-template`}
                             lassName="form-control select2"
                             style={{ width: "100%" }}
-                            items={taskProcess.xmlDiagram && taskProcess.xmlDiagram.map(x => {
+                            items={taskProcess.xmlDiagram && taskProcess.xmlDiagram.filter(x=>x._id!==props.idParent).map(x => {
                                 return {  value: x._id , text: x.processName}
                             })}
                             options={{ placeholder: translate('task.task_template.select_task_process_template') }}

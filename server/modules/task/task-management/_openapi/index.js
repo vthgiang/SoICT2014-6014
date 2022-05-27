@@ -205,9 +205,7 @@ const openapi_taskManagementRoute = {
             "security": [{ ApiKeyAuth: [] }],
             "description": "Tạo công việc mới",
             "operationId": "createTask",
-            "parameters": [
-                
-            ],
+            "parameters": [ ],
             "requestBody": {
                 "description": "Nhập thông tin công việc",
                 "content": {
@@ -244,7 +242,6 @@ const openapi_taskManagementRoute = {
             "description": "Lấy ra công việc con",
             "operationId": "getSubTasks",
             "parameters": [
-                
                 {
                     "in": "path",
                     "name": "taskId",
@@ -276,7 +273,6 @@ const openapi_taskManagementRoute = {
             "description": "Xóa một hoặc nhiều công việc đã thiết lập",
             "operationId": "deleteTask",
             "parameters": [
-                
                 {
                     "in": "path",
                     "name": "taskId",
@@ -303,7 +299,6 @@ const openapi_taskManagementRoute = {
             "description": "Lấy tất cả đánh giá công việc ",
             "operationId": "getTaskEvaluations",
             "parameters": [
-                
                 {
                     "in": "query",
                     "name": "organizationalUnit",
@@ -378,7 +373,6 @@ const openapi_taskManagementRoute = {
             "description": "Lấy thông tin thống kê công việc của người dùng theo vai trò",
             "operationId": "getTaskAnalyseOfUser",
             "parameters": [
-                
                 {
                     "in": "query",
                     "name": "userId",
@@ -537,7 +531,6 @@ const openapi_taskManagementRoute = {
             "description": "Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm",
             "operationId": "getUserTimeSheet",
             "parameters": [
-                
                 {
                     "in": "query",
                     "name": "month",
@@ -587,7 +580,6 @@ const openapi_taskManagementRoute = {
             "description": "Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống (lấy thóng kê tổng số bấm giờ hợp lệ)",
             "operationId": "getAllUserTimeSheet",
             "parameters": [
-                
                 {
                     "in": "query",
                     "name": "month",

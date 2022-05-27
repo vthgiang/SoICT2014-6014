@@ -153,7 +153,9 @@ function getAllAssetGroup(data) {
                 group: data ? data.group : data,
                 startDepreciation: data ? data.startDepreciation : data,
                 depreciationType: data ? data.depreciationType : data,
-
+                time : data,
+                purchaseDate: data ? data.purchaseDate : data,
+                disposalDate: data ? data.disposalDate : data,
                 // hình thức lấy danh sách tài sản (bình thường, tài sản có thông tin khấu hao, v.v.)
                 getType: data ? data.getType : undefined,
             },

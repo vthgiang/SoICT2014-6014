@@ -144,6 +144,27 @@ exports.deleteTaskProcess = async (req, res) => {
 		});
 	}
 }
+/**
+ * Lấy  process theo id
+ */
+ exports.getProcessById = async (req, res) => {
+	try {
+		var data = await TaskProcessService.getProcessById(req.portal, req.params);
+		await Logger.info(req.user.email, `get Process by id `, req.portal);
+		res.status(200).json({
+			success: true,
+			messages: ['get_by_id_success'],
+			content: data
+		});
+	} catch (error) {
+		await Logger.error(req.user.email, `get Process by id `, req.portal);
+		res.status(400).json({
+			success: false,
+			messages: ['get_by_id_err'],
+			content: error
+		});
+	}
+}
 
 /**
  * Tạo công việc theo quy trình

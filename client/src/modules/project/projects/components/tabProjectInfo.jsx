@@ -90,7 +90,7 @@ const TabProjectInfo = (props) => {
 
                 <h4 style={{ marginTop: 10 }}><strong>Thông tin chung</strong></h4>
                 <div><strong>Hình thức quản lý: {'  '}</strong>
-                    {projectDetail ? renderProjectTypeText(projectDetail?.projectType) : null}
+                    {projectDetail ? translate(renderProjectTypeText(projectDetail?.projectType)) : null}
                 </div>
                 <div><strong>{translate('project.startDate')}: {'  '}</strong>
                     {projectDetail ? moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY') : null}

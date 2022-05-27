@@ -345,6 +345,7 @@ function BillManagement(props) {
     }
 
     const handleInProcessingStatus = (bill) => {
+        console.log(bill);
         const data = {
             status: '3',
             oldStatus: bill.status,
@@ -366,6 +367,7 @@ function BillManagement(props) {
             goods: bill.goods,
             oldGoods: bill.goods
         }
+        console.log(data);
         props.editBill(bill._id, data);
     }
 
@@ -395,11 +397,13 @@ function BillManagement(props) {
     }
 
     const handleCompleteBill = (bill) => {
+        console.log(bill);
         const data = {
             status: '5',
             oldStatus: bill.status,
             group: bill.group,
             fromStock: bill.fromStock,
+            toStock: bill.toStock ? bill.toStock : '',
             code: bill.code,
             type: bill.type,
             group: bill.group,
