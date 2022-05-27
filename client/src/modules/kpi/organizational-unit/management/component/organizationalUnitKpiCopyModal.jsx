@@ -1,14 +1,13 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { createUnitKpiActions } from '../../creation/redux/actions.js';
 import { managerActions } from '../redux/actions';
 
-import { ErrorLabel, DatePicker, DialogModal, SelectBox } from '../../../../../common-components';
-import { createKpiUnit } from '../../creation/redux/reducers.js';
 
-function ModalCopyKPIUnit (props) {
+
+function ModalCopyKPIUnit(props) {
     const TYPE = {
         DEFAULT: 'default',
         COPY_PARENT_KPI_TO_UNIT: 'copy-parent-kpi-to-unit',
@@ -16,7 +15,7 @@ function ModalCopyKPIUnit (props) {
     };
     const { translate, createKpiUnit } = props;
     const { kpiId, idunit, monthDefault, approverDefault, type = TYPE.DEFAULT, kpiunit, organizationalUnitSelect } = props;
-    
+
     const [state, setState] = useState({
         kpiId: undefined
     });
@@ -30,7 +29,7 @@ function ModalCopyKPIUnit (props) {
             })
         }
 
-        setState ({
+        setState({
             ...state,
             kpiId: props.kpiId,
             listKpiUnit: listKpiUnit,
@@ -70,14 +69,14 @@ function ModalCopyKPIUnit (props) {
         }
     });
 
-    useEffect(() =>{
+    useEffect(() => {
         let listKpiUnit = {};
         if (props.kpiunit?.kpis?.length > 0) {
             props.kpiunit.kpis.map(item => {
                 listKpiUnit[item._id] = true;
             })
         }
-        setState( {
+        setState({
             ...state,
             kpiId: props.kpiId,
             listKpiUnit: listKpiUnit,
@@ -114,7 +113,7 @@ function ModalCopyKPIUnit (props) {
 
     /** Thay đổi người phê duyệt */
     const handleApproverChange = (value) => {
-        setState(  {
+        setState({
             ...state,
             approver: value[0]
         })
@@ -163,7 +162,7 @@ function ModalCopyKPIUnit (props) {
             listKpiUnit[id] = !listKpiUnit[id];
         }
 
-        setState( {
+        setState({
             ...state,
             listKpiUnit: listKpiUnit
 
@@ -191,8 +190,8 @@ function ModalCopyKPIUnit (props) {
         >
             {/* Đơn vị */}
             <div className="form-group" style={{ marginLeft: "10px" }}>
-                <label style={{ marginRight: "10px"}}>{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
-                { organizationalUnitSelect?.length > 0 && type === TYPE.COPY_PARENT_KPI_TO_UNIT
+                <label style={{ marginRight: "10px" }}>{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
+                {organizationalUnitSelect?.length > 0 && type === TYPE.COPY_PARENT_KPI_TO_UNIT
                     ? <SelectBox
                         id={`organizationalUnitSelectBoxInOrganizationalUnitKpiCopy`}
                         className="form-control select2"
@@ -208,7 +207,7 @@ function ModalCopyKPIUnit (props) {
 
             {/* Chọn tháng */}
             <div className="form-group" style={{ marginLeft: "10px" }}>
-                <label style={{ marginRight: "10px"}}>{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
+                <label style={{ marginRight: "10px" }}>{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
                 <DatePicker
                     id="new_date"
                     value={formatDate(monthDefault)}
@@ -220,26 +219,26 @@ function ModalCopyKPIUnit (props) {
 
             {/* CHọn người phê duyệt */}
             {approverDefault
-            && <div className="form-group" style={{ marginLeft: "10px"}}>
-                <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
-                <SelectBox
-                    id={`copy-kpi-unit-approver`}
-                    className="form-control select2"
-                    style={{ width: "100%" }}
-                    items={approverDefault}
-                    multiple={false}
-                    onChange={handleApproverChange}
-                    value={approver ? approver : approverDefault?.[1]?.value?.[0]?.value}
-                />
-                <br/>
-            </div>
+                && <div className="form-group" style={{ marginLeft: "10px" }}>
+                    <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
+                    <SelectBox
+                        id={`copy-kpi-unit-approver`}
+                        className="form-control select2"
+                        style={{ width: "100%" }}
+                        items={approverDefault}
+                        multiple={false}
+                        onChange={handleApproverChange}
+                        value={approver ? approver : approverDefault?.[1]?.value?.[0]?.value}
+                    />
+                    <br />
+                </div>
             }
 
-            <div className="form-group"  style={{ margin: "0px 10px"}}>
+            <div className="form-group" style={{ margin: "0px 10px" }}>
                 <label>{translate('kpi.organizational_unit.management.copy_modal.list_target')}</label>
                 {listKpi?.kpis?.length > 0
                     ? <ul style={{ listStyle: "none" }}>
-                        { listKpi.kpis.map(item => {
+                        {listKpi.kpis.map(item => {
                             return <li key={item._id}><input type="checkbox" checked={listKpiUnit?.[item?._id]} disabled={item?.type !== 0} onChange={item?.type !== 0 ? null : () => handleKpiUnit(item?._id)}></input><span>{item.name + " (" + item.weight + ")"}</span></li>
                         })
                         }

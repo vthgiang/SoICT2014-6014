@@ -19,7 +19,8 @@ exports.login = async (fingerprint, data) => {
     if (data.portal !== process.env.DB_NAME) {
         company = await Company(
             connect(DB_CONNECTION, process.env.DB_NAME)
-        ).findOne({ shortName: data.portal })
+        )
+            .findOne({ shortName: data.portal })
             .select('_id name shortName active log');
         if (!company) throw ["portal_invalid"];
     }
@@ -72,7 +73,7 @@ exports.login = async (fingerprint, data) => {
 
     let tokenArr = [];
     let userParse = user.toObject();
-    
+
     if (userParse?.tokens?.length === 10) { // nếu mảng tokens đã có 10 token thì thay thế token đầu tiên trong mảng tokens thành  requestToken user vừa gừi lên
         tokenArr = [...userParse.tokens, token]
         tokenArr.shift();

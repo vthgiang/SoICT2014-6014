@@ -51,6 +51,7 @@ export function managerKpiUnit(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
+
     case managerConstants.COPY_KPIUNIT_REQUEST:
       return {
         ...state,
@@ -71,6 +72,7 @@ export function managerKpiUnit(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
+
     case managerConstants.CALCULATE_KPIUNIT_REQUEST:
       return {
         ...state,
