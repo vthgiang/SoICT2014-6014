@@ -317,7 +317,7 @@ const TabProjectReportMember = (props) => {
 
     const renderOverdueScheduleChart = () => {
         const currentChartOverdueSchedule = chartOverdueScheduleRef.current;
-        while (currentChartOverdueSchedule.hasChildNodes()) {
+        while (currentChartOverdueSchedule && currentChartOverdueSchedule.hasChildNodes()) {
             currentChartOverdueSchedule.removeChild(currentChartOverdueSchedule.lastChild);
         }
         let chartOverdueSchedule = c3.generate({
@@ -352,7 +352,7 @@ const TabProjectReportMember = (props) => {
 
     const renderBehindBudgetChart = () => {
         const currentChartBehindBudget = chartBehindBudgetRef.current;
-        while (currentChartBehindBudget.hasChildNodes()) {
+        while (currentChartBehindBudget && currentChartBehindBudget.hasChildNodes()) {
             currentChartBehindBudget.removeChild(currentChartBehindBudget.lastChild);
         }
         let chartBehindBudget = c3.generate({
