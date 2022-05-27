@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, TreeSelect, DatePicker, SelectBox, TimePicker } from '../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel, TreeSelect, DatePicker, SelectBox, TimePicker, QuillEditor } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
-import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
+import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments, formatTime } from './functionHelper';
 import ModalSalaryMembers from './modalSalaryMembers';
+import { TaskFormValidator } from '../../../task/task-management/component/taskFormValidator';
 
 const ProjectCreateForm = (props) => {
     const { translate, project, user } = props;
     const userId = getStorage('userId');
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
-    const [currentSalaryMembers, setCurrentSalaryMembers] = useState(undefined);
+    const [currentSalaryMembers, setCurrentSalaryMembers] = useState([]);
     // console.log('listUsers', listUsers)
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
@@ -28,73 +29,384 @@ const ProjectCreateForm = (props) => {
         { text: 'QLDA dạng đơn giản', value: 1 },
         { text: 'QLDA phương pháp CPM', value: 2 },
     ]
-    const [form, setForm] = useState({
-        projectNameError: undefined,
-        projectName: "",
-        projectType: 2,
-        description: "",
-        startDate: '',
-        endDate: '',
-        projectManager: [],
-        responsibleEmployees: [],
-        unitCost: fakeUnitCostList[0].value,
-        unitTime: fakeUnitTimeList[0].value,
-        estimatedCost: ''
+    const [state, setState] = useState({
+        newProject: {
+            projectName: '',
+            projectType: 2,
+            description: '',
+            startDate: '',
+            endDate: '',
+            projectManager: [],
+            responsibleEmployees: [],
+            unitCost: fakeUnitCostList[0].value,
+            unitTime: fakeUnitTimeList[0].value,
+            estimatedCost: '',
+            startTime:'',
+            endTime: '05:30 PM',
+            responsibleEmployeesWithUnit: {
+                list: [],
+                currentUnitRow: '',
+                currentEmployeeRow: []
+            },
+            errorOnProjectName: undefined,
+            errorOnProjectType: undefined,
+            errorOnStartDate: undefined,
+            errorOnEndDate: undefined,
+            errorOnStartTime: undefined,
+            errorOnEndTime: undefined,
+            errorOnProjectManager: undefined,
+            errorOnResponsibleEmployees: undefined,
+        }
     });
 
-    const [startTime, setStartTime] = useState('08:00 AM');
-    const [endTime, setEndTime] = useState('05:30 PM');
+    let { newProject } = state;
+    let { projectName, projectType, description, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost,
+        startTime, endTime,  responsibleEmployeesWithUnit, errorOnProjectName, errorOnProjectType, errorOnStartDate, errorOnEndDate, errorOnStartTime,
+        errorOnEndTime, errorOnProjectManager, errorOnResponsibleEmployees} = state?.newProject;
 
-    const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState({
-        list: [],
-        currentUnitRow: '',
-        currentEmployeeRow: [],
-    })
+    // const handleChangeForm = (event, currentKey) => {
+    //     if (currentKey === 'projectName') {
+    //         let { translate } = props;
+    //         let { message } = ValidationHelper.validateName(translate, event.target.value, 6, 255);
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event.target.value,
+    //             errorOnProjectName: message,
+    //         })
+    //         return;
+    //     }
+    //     const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
+    //     if (justRenderEventArr.includes(currentKey)) {
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event,
+    //         })
+    //         return;
+    //     }
+    //     const renderFirstItemArr = ['unitCost', 'unitTime', 'projectType'];
+    //     if (renderFirstItemArr.includes(currentKey)) {
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event[0],
+    //         })
+    //         return;
+    //     }
+    //     if (currentKey === 'estimatedCost') {
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event.target.value,
+    //         })
+    //         return;
+    //     }
+    //     setForm({
+    //         ...form,
+    //         [currentKey]: event?.target?.value,
+    //     })
+    // }
 
-    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
+    useEffect(() => {
+        //Đặt lại thời gian mặc định khi mở modal
+        window.$(`#modal-create-project`).on('shown.bs.modal', regenerateTime);
+        return () => {
+            window.$(`#modal-create-project`).unbind('shown.bs.modal', regenerateTime)
+        }
+    }, [])
 
-    const handleChangeForm = (event, currentKey) => {
-        if (currentKey === 'projectName') {
-            let { translate } = props;
-            let { message } = ValidationHelper.validateName(translate, event.target.value, 6, 255);
-            setForm({
-                ...form,
-                [currentKey]: event.target.value,
-                projectNameError: message,
+    useEffect(() => {
+        let newResponsibleEmployeesWithUnit = [];
+        // console.log('currentSalaryMembers create project', currentSalaryMembers)
+        for (let i = 0; i < responsibleEmployeesWithUnit.list.length; i++) {
+            newResponsibleEmployeesWithUnit.push({
+                unitId: responsibleEmployeesWithUnit.list[i].unitId,
+                listUsers: responsibleEmployeesWithUnit.list[i].listUsers.map((item, index) => ({
+                    userId: item,
+                    salary: currentSalaryMembers?.[i]?.listUsers?.[index]?.salary,
+                }))
             })
-            return;
         }
-        const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
-        if (justRenderEventArr.includes(currentKey)) {
-            setForm({
-                ...form,
-                [currentKey]: event,
-            })
-            return;
-        }
-        const renderFirstItemArr = ['unitCost', 'unitTime', 'projectType'];
-        if (renderFirstItemArr.includes(currentKey)) {
-            setForm({
-                ...form,
-                [currentKey]: event[0],
-            })
-            return;
-        }
-        if (currentKey === 'estimatedCost') {
-            setForm({
-                ...form,
-                [currentKey]: event.target.value,
-            })
-            return;
-        }
-        setForm({
-            ...form,
-            [currentKey]: event?.target?.value,
+        setCurrentSalaryMembers(newResponsibleEmployeesWithUnit);
+    }, [responsibleEmployeesWithUnit.list])
+
+    const handleChangeProjectName = (event) => {
+        let { value } = event.target;
+        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                projectName: value,
+                errorOnProjectName: message,
+            }
+            
         })
     }
 
+    const handleChangeProjectType = (event) => {
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                projectType: event[0]
+            }
+        });
+    }
+
+    const handleChangeProjectDescription = (event) => {
+        let {value} = event.target
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                description: value,
+            } 
+        });
+    }
+
+    const handleChangeProjectStartDate = (value) => {
+        validateProjectStartDate(value, true);
+    }
+    const validateProjectStartDate = (value, willUpdateState = true) => {
+        let msg = TaskFormValidator.validateTaskStartDate(value, endDate, translate);
+        let _startDate = convertDateTime(value, startTime);
+        let _endDate = convertDateTime(endDate, endTime);
+
+        if (_startDate > _endDate) {
+            msg = translate('project.add_err_end_date');
+        }
+
+        if (willUpdateState) {
+            console.log(value)
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    startDate: value,
+                    errorOnStartDate: msg,
+                    errorOnEndDate: !msg && endDate? msg: errorOnEndDate
+                }
+            })
+
+        }
+        return msg === undefined;
+    }
+
+    const handleStartTimeChange = (value) => {
+        let _startDate = convertDateTime(startDate, value);
+        let _endDate = convertDateTime(endDate, endTime);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('project.add_err_empty_start_date');
+        }
+        else if (_startDate > _endDate) {
+            err = translate('project.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                startTime: value,
+                errorOnStartDate: err,
+                errorOnEndDate: resetErr,
+            }
+        });
+    }
+
+    const handleEndTimeChange = (value) => {
+        let _startDate = convertDateTime(startDate, startTime);
+        let _endDate = convertDateTime(endDate, value);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('project.add_err_empty_end_date');
+        }
+        else if (_startDate > _endDate) {
+            err = translate('project.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                endTime: value,
+                errorOnEndDate: err,
+                errorOnStartDate: resetErr,
+            }
+        })
+    }
+
+    const handleChangeProjectEndDate = (value) => {
+        validateProjectEndDate(value, true);
+    }
+
+    const validateProjectEndDate = (value, willUpdateState = true) => {
+        let msg = TaskFormValidator.validateTaskEndDate(startDate, value, translate);
+        if (willUpdateState) {
+            console.log(value);
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    endDate: value,
+                    errorOnEndDate: msg,
+                    errorOnStartDate: !msg && startDate? msg: errorOnStartDate
+                }
+            })
+        }
+        console.log(startDate,endDate)
+        return msg === undefined;
+    }
+
+    const handleChangeUnitTime = (event) => {
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                unitTime: event[0]
+            }
+        });
+    }
+
+    const handleChangeUnitCost = (event) => {
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                unitCost: event[0]
+            }
+        });
+    }
+
+    const handleChangeProjectManager = (value) => {
+        validateProjectManager(value, true);
+    }
+    const validateProjectManager = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateArrayLength(translate, value);
+
+        if (willUpdateState) {
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    projectManager: value,
+                    errorOnProjectManager: message
+                }
+            });
+        }
+        return message === undefined;
+    }
+
+    const handleDeleteRow = (index) => {
+        if (responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0) {
+            const cloneArr = [...responsibleEmployeesWithUnit.list];
+            cloneArr.splice(index, 1);
+            let { message } = ValidationHelper.validateArrayLength(props.translate, cloneArr);
+            // responsibleEmployeesWithUnit.list.splice(responsibleEmployeesWithUnit.list.length - 1, 1);
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    responsibleEmployeesWithUnit: {
+                        ...responsibleEmployeesWithUnit,
+                        list: cloneArr,
+                        currentUnitRow: '',
+                        currentEmployeeRow: [],
+                    },
+                    errorOnResponsibleEmployees: message
+                }
+            })
+        }
+    }
+
+    const handleAddRow = () => {
+        if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
+            // Đề phòng user không chọn gì thì lấy default là Ban giám đốc
+            const currentChosenUnitRow = responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value;
+            const isUnitAlreadyExistedInArr = responsibleEmployeesWithUnit.list.find((item) => {
+                return currentChosenUnitRow === item.unitId
+            })
+            const oldListRow = responsibleEmployeesWithUnit.list;
+            // Nếu unit đã có trong array rồi
+            if (isUnitAlreadyExistedInArr) {
+                let newListRow = oldListRow.map((oldListRowItem) => {
+                    if (String(oldListRowItem.unitId) === String(isUnitAlreadyExistedInArr.unitId)) {
+                        let currentListUsers = oldListRowItem.listUsers;
+                        for (let currentEmployeeRowItem of responsibleEmployeesWithUnit.currentEmployeeRow) {
+                            if (!currentListUsers.includes(currentEmployeeRowItem)) {
+                                currentListUsers.push(currentEmployeeRowItem)
+                            }
+                        }
+                        return {
+                            unitId: oldListRowItem.unitId,
+                            listUsers: currentListUsers,
+                        }
+                    }
+                    return oldListRowItem;
+                })
+                setState({
+                    ...state,
+                    newProject: {
+                        ...state.newProject,
+                        responsibleEmployeesWithUnit: {
+                            ...responsibleEmployeesWithUnit,
+                            list: newListRow,
+                            currentUnitRow: '',
+                            currentEmployeeRow: [],
+                        },
+                        errorOnResponsibleEmployees: undefined
+                    }
+                })
+            }
+            else {
+                const newListRow = [...oldListRow, {
+                    unitId: currentChosenUnitRow,
+                    listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
+                }];
+                setState({
+                    ...state,
+                    newProject: {
+                        ...state.newProject,
+                        responsibleEmployeesWithUnit: {
+                            ...responsibleEmployeesWithUnit,
+                            list: newListRow,
+                            currentUnitRow: '',
+                            currentEmployeeRow: [],
+                        },
+                        errorOnResponsibleEmployees: undefined
+                    }
+                })
+            }
+        }
+    }
+
+    const handleOpenModalSalaryMembers = () => {
+        setTimeout(() => {
+            window.$("#modal-salary-members").modal("show");
+        }, 10);
+    }
+
+    const handleSaveCurrentSalaryMember = (data) => {
+        setCurrentSalaryMembers(data);
+    }
+
+
+    // Đặt lại thời gian
+    const regenerateTime = () => {
+        let currentTime = formatTime(new Date())
+        setState(state => {
+            return {
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    startTime: currentTime
+                }
+            }     
+        });
+    }
+
     const isFormValidated = () => {
-        let { translate } = props;
         // console.log('\n----------------')
         // console.log(!ValidationHelper.validateName(translate, projectName, 6, 255).status)
         // console.log(!ValidationHelper.validateName(translate, code, 6, 6).status)
@@ -102,12 +414,8 @@ const ProjectCreateForm = (props) => {
         // console.log(responsibleEmployeesWithUnit.list.length === 0)
         // console.log(startDate.length === 0)
         // console.log(endDate.length === 0)
-        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
-        if (projectManager.length === 0) return false;
-        if (responsibleEmployeesWithUnit.list.length === 0) return false;
-        if (startDate.length === 0) return false;
-        if (endDate.length === 0) return false;
-        if (startDate > endDate) return false;
+        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status|| projectManager.length === 0
+            || responsibleEmployeesWithUnit.list.length === 0|| errorOnStartDate|| errorOnStartDate) return false;
         return true;
     }
 
@@ -148,92 +456,6 @@ const ProjectCreateForm = (props) => {
         }
     }
 
-    const handleDelete = (index) => {
-        if (responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0) {
-            const cloneArr = [...responsibleEmployeesWithUnit.list];
-            cloneArr.splice(index, 1);
-            // responsibleEmployeesWithUnit.list.splice(responsibleEmployeesWithUnit.list.length - 1, 1);
-            setResponsibleEmployeesWithUnit({
-                ...responsibleEmployeesWithUnit,
-                list: cloneArr,
-                currentUnitRow: '',
-                currentEmployeeRow: [],
-            })
-        }
-    }
-
-    const handleAddRow = () => {
-        if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
-            // Đề phòng user không chọn gì thì lấy default là Ban giám đốc
-            const currentChoosenUnitRow = responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value;
-            const isUnitAlreadyExistedInArr = responsibleEmployeesWithUnit.list.find((item) => {
-                return currentChoosenUnitRow === item.unitId
-            })
-            const oldListRow = responsibleEmployeesWithUnit.list;
-            // Nếu unit đã có trong array rồi
-            if (isUnitAlreadyExistedInArr) {
-                let newListRow = oldListRow.map((oldListRowItem) => {
-                    if (String(oldListRowItem.unitId) === String(isUnitAlreadyExistedInArr.unitId)) {
-                        let currentListUsers = oldListRowItem.listUsers;
-                        for (let currentEmployeeRowItem of responsibleEmployeesWithUnit.currentEmployeeRow) {
-                            if (!currentListUsers.includes(currentEmployeeRowItem)) {
-                                currentListUsers.push(currentEmployeeRowItem)
-                            }
-                        }
-                        return {
-                            unitId: oldListRowItem.unitId,
-                            listUsers: currentListUsers,
-                        }
-                    }
-                    return oldListRowItem;
-                })
-                setResponsibleEmployeesWithUnit({
-                    ...responsibleEmployeesWithUnit,
-                    list: newListRow,
-                    currentUnitRow: '',
-                    currentEmployeeRow: [],
-                })
-            }
-            else {
-                const newListRow = [...oldListRow, {
-                    unitId: currentChoosenUnitRow,
-                    listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
-                }];
-                setResponsibleEmployeesWithUnit({
-                    ...responsibleEmployeesWithUnit,
-                    list: newListRow,
-                    currentUnitRow: '',
-                    currentEmployeeRow: [],
-                })
-            }
-        }
-    }
-
-    useEffect(() => {
-        let newResponsibleEmployeesWithUnit = [];
-        // console.log('currentSalaryMembers create project', currentSalaryMembers)
-        for (let i = 0; i < responsibleEmployeesWithUnit.list.length; i++) {
-            newResponsibleEmployeesWithUnit.push({
-                unitId: responsibleEmployeesWithUnit.list[i].unitId,
-                listUsers: responsibleEmployeesWithUnit.list[i].listUsers.map((item, index) => ({
-                    userId: item,
-                    salary: currentSalaryMembers?.[i]?.listUsers?.[index]?.salary,
-                }))
-            })
-        }
-        setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
-    }, [responsibleEmployeesWithUnit.list])
-
-    const handleOpenModalSalaryMembers = () => {
-        setTimeout(() => {
-            window.$("#modal-salary-members").modal("show");
-        }, 10);
-    }
-
-    const handleSaveCurrentSalaryMember = (data) => {
-        setCurrentSalaryMembers(data);
-    }
-
     return (
         <React.Fragment>
             <DialogModal
@@ -255,70 +477,74 @@ const ProjectCreateForm = (props) => {
                             <legend className="scheduler-border">Thông số dự án</legend>
 
                             <div className="row">
-                                <div className={`form-group col-md-6 col-xs-6 ${!projectNameError ? "" : "has-error"}`}>
+                                {/* Tên dự án */}
+                                <div className={`form-group col-md-6 col-xs-6 ${!errorOnProjectName ? "" : "has-error"}`}>
                                     <label>{translate('project.name')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
-                                    <ErrorLabel content={projectNameError} />
+                                    <input type="text" className="form-control" value={projectName} onChange={handleChangeProjectName}></input>
+                                    <ErrorLabel content={errorOnProjectName} />
                                 </div>
-
+                                {/* Hình thức quản lý dự án */}
                                 <div className={`form-group col-md-6 col-xs-6`}>
-                                    <label>Hình thức quản lý dự án<span className="text-red">*</span></label>
+                                    <label>{translate('project.projectType')}<span className="text-red">*</span></label>
                                     <SelectBox
                                         id={`select-project-type`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={fakeProjectTypeList}
-                                        onChange={(e) => handleChangeForm(e, 'projectType')}
+                                        onChange={handleChangeProjectType}
                                         value={projectType}
                                         multiple={false}
                                     />
                                 </div>
                             </div>
 
+                            {/* Thời gian bắt đầu, kết thúc */}
                             <div className="row">
-                                <div className="form-group col-md-6">
-                                    <label>{translate('project.startDate')}<span className="text-red">*</span></label>
+                                <div className={`col-md-6 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('project.startDate')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`create-project-start-date`}
                                         value={startDate}
-                                        onChange={(e) => handleChangeForm(e, 'startDate')}
+                                        onChange={e => handleChangeProjectStartDate(e)}
                                         dateFormat="day-month-year"
                                         disabled={false}
                                     />
                                 </div>
                                 <div className="form-group col-md-6">
-                                    <label>Thời gian bắt đầu dự án<span className="text-red">*</span></label>
+                                    <label className="control-label">{translate('project.startTime')}<span className="text-red">*</span></label>
                                     <TimePicker
                                         id={`create-project-start-time`}
                                         value={startTime}
-                                        onChange={(e) => setStartTime(e)}
+                                        onChange={e => handleStartTimeChange(e)}
                                         disabled={false}
                                     />
                                 </div>
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
 
                             <div className="row">
-                                <div className="form-group col-md-6">
-                                    <label>{translate('project.endDate')}<span className="text-red">*</span></label>
+                                <div className={`col-md-6 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('project.endDate')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`create-project-end-date`}
                                         value={endDate}
-                                        onChange={(e) => handleChangeForm(e, 'endDate')}
+                                        onChange={e => handleChangeProjectEndDate(e)}
                                         dateFormat="day-month-year"
                                         disabled={false}
                                     />
                                 </div>
                                 <div className="form-group col-md-6">
-                                    <label>Thời gian dự kiến kết thúc dự án<span className="text-red">*</span></label>
+                                    <label className="control-label">{translate('project.endTime')}<span className="text-red">*</span></label>
                                     <TimePicker
                                         id={`create-project-end-time`}
                                         value={endTime}
-                                        onChange={(e) => setEndTime(e)}
+                                        onChange={e => handleEndTimeChange(e)}
                                         disabled={false}
                                     />
                                 </div>
+                                <ErrorLabel content={errorOnEndDate} />
                             </div>
-
+                            {/* Đơn vị tính thời gian */}
                             <div className="form-group">
                                 <label>{translate('project.unitTime')}</label>
                                 <SelectBox
@@ -326,26 +552,37 @@ const ProjectCreateForm = (props) => {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={fakeUnitTimeList}
-                                    onChange={(e) => handleChangeForm(e, 'unitTime')}
+                                    onChange={handleChangeUnitTime}
                                     value={unitTime}
                                     multiple={false}
                                 />
                             </div>
+                            {/* Đơn vị tính chi phí */}
                             <div className="form-group">
                                 <label>{translate('project.unitCost')}</label>
-                                <div className="form-control">VND</div>
+                                <SelectBox
+                                    id={`select-project-unitCost`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={fakeUnitCostList}
+                                    onChange={handleChangeUnitCost}
+                                    value={unitCost}
+                                    multiple={false}
+                                />
                             </div>
-
+                            {/* Mô tả dự án */}
                             <div className={`form-group`}>
                                 <label>{translate('project.description')}</label>
-                                <textarea type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')} />
+                                <textarea type="text" className="form-control" value={description} onChange={handleChangeProjectDescription} />
                             </div>
                         </fieldset>
                     </div>
+                    
                     <div className={"col-sm-6"}>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Nhân lực</legend>
-                            <div className="form-group">
+                            {/* Người quản trị dự án */}
+                            <div className={`form-group ${errorOnProjectManager === undefined ? "" : "has-error"}`}>
                                 <label>{translate('project.manager')}<span className="text-red">*</span></label>
                                 {listUsers &&
                                     <SelectBox
@@ -353,17 +590,20 @@ const ProjectCreateForm = (props) => {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listUsers}
-                                        onChange={(e) => handleChangeForm(e, 'projectManager')}
+                                        onChange={handleChangeProjectManager}
                                         value={projectManager}
                                         multiple={true}
                                     />
                                 }
+                                <ErrorLabel content={errorOnProjectManager} />
                             </div>
-                            <div className="form-group">
+                            {/* Thành viên tham gia dự án */}
+                            <div className={`form-group ${errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <label>{translate('project.member')}<span className="text-red">*</span></label>
                                     <button className="btn-link" onClick={handleOpenModalSalaryMembers}>Xem chi tiết lương nhân viên</button>
                                 </div>
+                                <ErrorLabel content={errorOnResponsibleEmployees} />
                                 <table id="project-table" className="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
@@ -384,7 +624,7 @@ const ProjectCreateForm = (props) => {
                                                         }
                                                     </td>
                                                     <td>
-                                                        <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
+                                                        <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteRow(index)}><i className="material-icons">delete</i></a>
                                                     </td>
                                                 </tr>
                                             ))
@@ -400,9 +640,15 @@ const ProjectCreateForm = (props) => {
                                                             items={listDepartments}
                                                             onChange={(e) => {
                                                                 setTimeout(() => {
-                                                                    setResponsibleEmployeesWithUnit({
-                                                                        ...responsibleEmployeesWithUnit,
-                                                                        currentUnitRow: e[0],
+                                                                    setState({
+                                                                        ...state,
+                                                                        newProject: {
+                                                                            ...state.newProject,
+                                                                            responsibleEmployeesWithUnit: {
+                                                                                ...responsibleEmployeesWithUnit,
+                                                                                currentUnitRow: e[0],
+                                                                            },
+                                                                        },  
                                                                     })
                                                                 }, 10);
                                                             }}
@@ -424,9 +670,15 @@ const ProjectCreateForm = (props) => {
                                                             )}
                                                             onChange={(e) => {
                                                                 setTimeout(() => {
-                                                                    setResponsibleEmployeesWithUnit({
-                                                                        ...responsibleEmployeesWithUnit,
-                                                                        currentEmployeeRow: e,
+                                                                    setState({
+                                                                        ...state,
+                                                                        newProject: {
+                                                                            ...state.newProject,
+                                                                            responsibleEmployeesWithUnit: {
+                                                                                ...responsibleEmployeesWithUnit,
+                                                                                currentEmployeeRow: e,
+                                                                            }
+                                                                        }
                                                                     })
                                                                 }, 10);
                                                             }}

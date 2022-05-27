@@ -168,6 +168,14 @@ const ModalExcelImport = (props) => {
                     return;
                 }
             }
+            if (dataItem.estimateOptimisticTime >= dataItem.estimateNormalTime) {
+                setCurrentMessageError(`Thời gian thoả hiệp của ${dataItem.name} phải nhỏ hơn thời gian ước lượng`);
+                return;
+            }
+            if ( dataItem.totalResWeight <= 0 || dataItem.totalResWeight >= 100){
+                setCurrentMessageError(`Trọng số thực hiện hoặc phê duyệt của ${dataItem.name} không hợp lệ`);
+                return;
+            }
         }
         setCurrentMessageError(``);
     }

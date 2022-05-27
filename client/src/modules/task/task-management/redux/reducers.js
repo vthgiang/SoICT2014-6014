@@ -641,6 +641,7 @@ export function tasks(state = {
         case taskManagementConstants.GETTASK_BYPROJECT_SUCCESS:
             return {
                 ...state,
+                tasks: action.payload,
                 tasksbyproject: action.payload,
                 isLoading: false
             };
@@ -659,6 +660,7 @@ export function tasks(state = {
         case taskManagementConstants.GETTASK_BYPROJECT_PAGINATE_SUCCESS:
             return {
                 ...state,
+                tasks: action.payload.docs,
                 tasksbyprojectpaginate: action.payload.docs,
                 totalDocs: action.payload.totalDocs,
                 isProjectPaginateLoading: false
