@@ -10,7 +10,14 @@ import { getStorage } from '../../../../config';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { ConfigurationActions } from '../../../super-admin/module-configuration/redux/actions';
 import { DecisionForImplement } from './decisionAssignImplementContract';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import { getListDepartments } from '../../../project/projects/components/functionHelper';
+import { convertEmployeeToUserInUnit, getDecisionDataWhenUpdateBidPackage, getDepartmentIdByUserId } from './functionHelper';
+
 const CreateBiddingContract = (props) => {
+	const { translate, biddingContract, biddingPackagesManager, modelConfiguration, user } = props;
+	const allUsers = user && user.list
+	const listUserDepartment = user && user.usersInUnitsOfCompany
 	const fakeUnitCostList = [
 		{ text: 'VND', value: 'VND' },
 		{ text: 'USD', value: 'USD' },
@@ -64,7 +71,6 @@ const CreateBiddingContract = (props) => {
 		selectedTab: 'general'
 	}
 	const [state, setState] = useState(initState);
-	const { translate, biddingContract, biddingPackagesManager, modelConfiguration } = props;
 	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
 
 	useEffect(() => {
@@ -103,6 +109,8 @@ const CreateBiddingContract = (props) => {
 
 		let bp = props.biddingPackagesManager?.listBiddingPackages?.find(x => x._id == value[0])
 		if (bp) {
+			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
+
 			setState({
 				...state,
 				name: "Hợp đồng " + bp.name,
@@ -110,6 +118,7 @@ const CreateBiddingContract = (props) => {
 				addressA: bp.receiveLocal,
 				representativeNameA: bp.customer,
 				biddingPackage: value[0],
+				decideToImplement: updatedDecision
 			})
 		} else {
 			setState({
@@ -118,6 +127,7 @@ const CreateBiddingContract = (props) => {
 			})
 		}
 	}
+	console.log(193, state);
 
 	const handleChangeForm = (event, currentKey) => {
 		if (currentKey === 'contractName') {

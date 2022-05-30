@@ -52,6 +52,7 @@ const ContractManagement = (props) => {
 
     useEffect(() => {
         props.getAllUserInAllUnitsOfCompany();
+        props.getAllUser();
     }, []);
 
     /**
@@ -341,6 +342,7 @@ const actionCreators = {
     getListBiddingContract: BiddingContractActions.getListBiddingContract,
     deleteBiddingContract: BiddingContractActions.deleteBiddingContract,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getAllUser: UserActions.get,
     getTasksByProject: taskManagementActions.getTasksByProject,
 };
 

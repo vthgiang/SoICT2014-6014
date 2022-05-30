@@ -92,7 +92,12 @@ exports.searchBiddingContract = async (portal, params, company) => {
             })
             .skip((params.page - 1) * params.limit)
             .limit(params.limit)
-            .populate({ path: "biddingPackage" })
+            .populate({
+                path: "biddingPackage", populate: [
+                    { path: 'proposals.backupEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+                    { path: 'proposals.directEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+                ]
+            })
             .populate({
                 path: "project", populate: [
                     { path: 'projectManager', select: 'name email avatar' },

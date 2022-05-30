@@ -62,13 +62,12 @@ function DecisionForImplement(props) {
             ...responsibleEmployeesWithUnit,
             list: resWithUnitCopy?.map(x => {
                 return {
-                    _id: x._id,
                     unitId: x.unitId,
                     listUsers: x.listUsers?.map(o => o.userId)
                 }
             })
         })
-    }, [props.id])
+    }, [props.id, JSON.stringify(props.biddingContract?.decideToImplement)])
 
     let allEmployee;
     if (employeesManager && employeesManager.listAllEmployees) {
@@ -464,7 +463,8 @@ function DecisionForImplement(props) {
                                         <tr key={listIndex}>
                                             <td>{item?.name}</td>
                                             <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
-                                            <td>{item?.description?.length > 50 ? `${item?.description?.subString(0, 50)} ...` : item?.description}</td>
+                                            <td>{item?.description}</td>
+                                            {/* <td>{item?.description?.length > 50 ? `${item?.description?.subString(0, 50)} ...` : item?.description}</td> */}
                                             <td>
                                                 <a className="edit" title={translate('general.delete')} onClick={() => handleEditTask(listIndex)}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(listIndex)}><i className="material-icons">delete</i></a>

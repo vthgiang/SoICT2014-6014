@@ -9,7 +9,13 @@ import { BiddingPackageManagerActions } from '../../bidding-package/biddingPacka
 import { getStorage } from '../../../../config';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { DecisionForImplement } from './decisionAssignImplementContract';
+import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import { getListDepartments } from '../../../project/projects/components/functionHelper';
+import { getDecisionDataWhenUpdateBidPackage } from './functionHelper';
 const EditBiddingContract = (props) => {
+	const { translate, biddingContract, biddingPackagesManager, user } = props;
+	const allUsers = user && user.list
+	const listUserDepartment = user && user.usersInUnitsOfCompany
 	const fakeUnitCostList = [
 		{ text: 'VND', value: 'VND' },
 		{ text: 'USD', value: 'USD' },
@@ -67,7 +73,6 @@ const EditBiddingContract = (props) => {
 
 	const [state, setState] = useState(initState);
 	const [id, setId] = useState(props.id)
-	const { translate, biddingContract, biddingPackagesManager } = props;
 	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
 
 	useEffect(() => {
@@ -159,6 +164,8 @@ const EditBiddingContract = (props) => {
 
 		let bp = props.biddingPackagesManager?.listBiddingPackages?.find(x => x._id == value[0])
 		if (bp) {
+			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
+
 			setState({
 				...state,
 				name: "Hợp đồng " + bp.name,
@@ -166,6 +173,7 @@ const EditBiddingContract = (props) => {
 				addressA: bp.receiveLocal,
 				representativeNameA: bp.customer,
 				biddingPackage: value[0],
+				decideToImplement: updatedDecision
 			})
 		} else {
 			setState({
