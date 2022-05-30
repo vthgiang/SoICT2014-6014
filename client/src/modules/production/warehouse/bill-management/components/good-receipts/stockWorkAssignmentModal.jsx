@@ -2,29 +2,59 @@ import React, { useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, Gantt, DatePicker, TimePicker } from '../../../../../../common-components';
-import QuantityLotGoodReceipt from './quantityLotGoodReceipt';
-import { generateCode } from '../../../../../../helpers/generateCode';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
-import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import './goodReceipt.css'
 import 'react-calendar-timeline/lib/Timeline.css'
 import ValidationHelper from '../../../../../../helpers/validationHelper';
-
+import { TaskFormValidator } from '../../../../../task/task-management/component/taskFormValidator';
+import dayjs from "dayjs";
 
 function StockWorkAssignmentModal(props) {
+
+    // convert ISODate to String dd-mm-yyyy
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
+
+    const DEFALT_WORK_ASSIGNMENT = [
+        {
+            nameField: "Công việc vận chuyển", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: 'Vận chuyển hàng hóa đến đúng vị trí'
+        },
+        {
+            nameField: "Công việc kiểm định chất lượng", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: `unpack, kiểm tra số lượng và chất lượng. Phân loại hàng hóa theo danh mục. Đối chiếu, packing. Ghi chú thay đổi`
+        },
+        {
+            nameField: "Đánh lô hàng hóa", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: 'Đánh mã số lô hàng cho hàng hóa khi nhập'
+        },
+        {
+            nameField: "Xếp hàng hóa vào vị trí lưu trữ", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: 'Xếp hàng đến vị trí lưu trữ trong kho'
+        },
+    ]
 
     const [state, setState] = useState({
         userId: localStorage.getItem("userId"),
         currentZoom: props.translate('system_admin.system_setting.backup.date'),
         detailInfo: [],
-        variantOption: [],
+        workAssignment: DEFALT_WORK_ASSIGNMENT,
+        startDate: formatDate((new Date()).toISOString()),
+        endDate: formatDate((new Date()).toISOString()),
+        startTime: '',
+        endTime: '05:30 PM',
     })
-
 
     const getApprover = () => {
         const { user, translate } = props;
-        let ApproverArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_approver') }];
+        let ApproverArr = [{ value: [], text: translate('manage_warehouse.bill_management.choose_approver') }];
 
         user.list.map(item => {
             ApproverArr.push({
@@ -36,48 +66,30 @@ function StockWorkAssignmentModal(props) {
         return ApproverArr;
     }
 
-    const getCustomer = () => {
-        const { crm, translate } = props;
-        let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_supplier') }];
+    /* Người quản lý*/
 
-        crm.customers.list.map(item => {
-            CustomerArr.push({
-                value: item._id,
-                text: item.name
-            })
-        })
+    const handlePeopleInChargeChange = (value) => {
+        let peopleInCharge = value;
+        validatePeopleInCharge(peopleInCharge, true);
+    };
 
-        return CustomerArr;
-    }
-
-    const handleApproverChange = (value) => {
-        let approver = value;
-        validateApprover(approver, true);
-    }
-
-    const validateApprover = (value, willUpdateState = true) => {
+    const validatePeopleInCharge = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate('manage_warehouse.bill_management.validate_approver')
+            msg = translate("manage_warehouse.bill_management.validate_approver");
         }
         if (willUpdateState) {
-            let approvers = [];
-            value.map(item => {
-                approvers.push({
-                    approver: item,
-                    approvedTime: null
-                });
-            })
             setState({
                 ...state,
-                approver: value,
-                approvers: approvers,
-                errorApprover: msg,
-            })
+                peopleInCharge: value,
+                errorPeopleInCharge: msg,
+            });
         }
         return msg === undefined;
-    }
+    };
+
+    /*Người giám sát*/
 
     const handleAccountablesChange = (value) => {
         let accountables = value;
@@ -100,12 +112,14 @@ function StockWorkAssignmentModal(props) {
         return msg === undefined;
     }
 
-    const handleResponsiblesChange = (value) => {
-        let responsibles = value;
-        validateResponsibles(responsibles, true);
+    /*Kế toán*/
+
+    const handleAccountantsChange = (value) => {
+        let accountants = value;
+        validateAccountants(accountants, true);
     }
 
-    const validateResponsibles = (value, willUpdateState = true) => {
+    const validateAccountants = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
@@ -114,57 +128,251 @@ function StockWorkAssignmentModal(props) {
         if (willUpdateState) {
             setState({
                 ...state,
-                responsibles: value,
-                errorResponsibles: msg,
+                accountants: value,
+                errorAccountants: msg,
             })
         }
         return msg === undefined;
     }
 
-    const handleQualityControlStaffsChange = (value) => {
-        let qualityControlStaffs = value;
-        validateQualityControlStaffs(qualityControlStaffs, true);
+    /*Phần xử lý liên quan đến việc thêm công việc mới*/
+
+    const handleAddWorkAssignment = () => {
+        var { workAssignment } = state;
+        let array = [];
+        let description = '';
+        if (workAssignment.length !== 0) {
+            let result;
+            for (let n in workAssignment) {
+                result = validateNameField(workAssignment[n].nameField, n);
+                if (!result) {
+                    validateNameField(workAssignment[n].nameField, n);
+                    break;
+                }
+            }
+            if (result) {
+                setState({
+                    ...state,
+                    workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "" }],
+                })
+            }
+        } else {
+            setState({
+                ...state,
+                workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "" }],
+            })
+        }
+
     }
 
-    const validateQualityControlStaffs = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.bill_management.validate_approver')
+    const delete_function = (index) => {
+        var { workAssignment } = state;
+        workAssignment.splice(index, 1);
+        if (workAssignment.length !== 0) {
+            for (let n in workAssignment) {
+                validateNameField(workAssignment[n].nameField, n);
+                // validateValue(workAssignment[n].value, n)
+            }
+        } else {
+            setState({
+                ...state,
+                workAssignment: workAssignment,
+                errorOnValue: undefined,
+                errorOnNameField: undefined
+            })
+        }
+    };
+
+    const handleChangeNameField = (e, index) => {
+        var { value } = e.target;
+        validateNameField(value, index);
+    }
+    const validateNameField = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+
+        if (willUpdateState) {
+            var { workAssignment } = state;
+            workAssignment[className] = { ...workAssignment[className], nameField: value }
+            setState({
+                ...state,
+                errorOnNameField: message,
+                errorOnNameFieldPosition: message ? className : null,
+                workAssignment: workAssignment
+            });
+        }
+        return message === undefined;
+    }
+
+    const handleChangeDescription = (e, index) => {
+        var { value } = e.target;
+        validateDescription(value, index);
+    }
+
+    const validateDescription = (value, className, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+
+        if (willUpdateState) {
+            var { workAssignment } = state;
+            workAssignment[className] = { ...workAssignment[className], description: value }
+            setState({
+                ...state,
+                errorOnDescription: message,
+                errorOnDescriptionPosition: message ? className : null,
+                workAssignment: workAssignment
+            });
+        }
+        return message === undefined;
+    }
+
+    const handleChangeWorkAssignmentStaffsValue = (value, index) => {
+        validateWorkAssignmentStaffs(value, index);
+    }
+    const validateWorkAssignmentStaffs = async (value, index, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
+
+        if (willUpdateState) {
+            var { workAssignment } = state;
+            workAssignment[index].workAssignmentStaffs = value;
+            await setState({
+                ...state,
+                errorOnValue: message,
+                errorOnValuePosition: message ? index : null,
+                workAssignment: workAssignment
+            });
+        }
+        return message === undefined;
+    }
+
+
+    /* Phần xử lý liên quan đến thời gian công việc*/
+
+    const convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+    }
+
+    // convert ISODate to String hh:mm AM/PM
+    const formatTime = (date) => {
+        return dayjs(date).format("h:mm A");
+    }
+
+    // Đặt lại thời gian
+    const regenerateTime = () => {
+        let currentTime = formatTime(new Date())
+        setState(state => {
+            return {
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    startTime: currentTime,
+                }
+            }
+        });
+    }
+
+    useEffect(() => {
+        window.$(`#stock-work-assignment-modal`).on('shown.bs.modal', regenerateTime);
+        return () => {
+            window.$(`#stock-work-assignment-modal`).unbind('shown.bs.modal', regenerateTime)
+        }
+    }, [])
+
+
+    const handleChangeTaskStartDate = (value) => {
+        validateTaskStartDate(value, true);
+    }
+    const validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let msg = TaskFormValidator.validateTaskStartDate(value, state.endDate, translate);
+        let startDate = convertDateTime(value, state.startTime);
+        let endDate = convertDateTime(state.endDate, state.endTime);
+        if (startDate > endDate) {
+            msg = translate('task.task_management.add_err_end_date');
         }
         if (willUpdateState) {
-            let listQualityControlStaffs = [];
-            value.map(item => {
-                listQualityControlStaffs.push({
-                    staff: item,
-                    time: null
+            setState({
+                ...state,
+                startDate: value,
+                errorOnStartDate: msg,
+            })
+            state.startDate = value;
+            state.errorOnStartDate = msg;
+            if (!msg && state.endDate) {
+                setState({
+                    ...state,
+                    errorOnEndDate: msg
+                })
+            }
+        }
+        return msg === undefined;
+    }
+
+    const handleStartTimeChange = (value) => {
+        let { translate } = props;
+        let startDate = convertDateTime(state.startDate, value);
+        let endDate = convertDateTime(state.endDate, state.endTime);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if (startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            startTime: value,
+            errorOnStartDate: err,
+            errorOnEndDate: resetErr,
+        });
+    }
+
+    const handleEndTimeChange = (value) => {
+        let { translate } = props;
+        let startDate = convertDateTime(state.startDate, state.startTime);
+        let endDate = convertDateTime(state.endDate, value);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if (startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            endTime: value,
+            errorOnEndDate: err,
+            errorOnStartDate: resetErr,
+        })
+    }
+
+    const handleChangeTaskEndDate = (value) => {
+        validateTaskEndDate(value, true);
+    }
+
+    const validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let msg = TaskFormValidator.validateTaskEndDate(state.startDate, value, translate);
+        if (willUpdateState) {
+            setState({
+                ...state,
+                endDate: value,
+                errorOnEndDate: msg,
+            })
+            state.endDate = value;
+            state.errorOnEndDate = msg;
+            if (!msg && state.startDate) {
+                setState({
+                    ...state,
+                    errorOnStartDate: msg
                 });
-            })
-            setState({
-                ...state,
-                qualityControlStaffs: value,
-                listQualityControlStaffs: listQualityControlStaffs,
-                errorQualityControlStaffs: msg,
-            })
+            }
         }
         return msg === undefined;
-    }
-
-    const isFormValidated = () => {
-        const { status } = state;
-        let result =
-            // validateType(state.type, false) &&
-            // validateStock(state.fromStock, false) &&
-            validateApprover(state.approver, false) &&
-            // validatePartner(state.supplier, false) &&
-            validateAccountables(state.accountables, false) &&
-            // // validateQualityControlStaffs(state.qualityControlStaffs, false) &&
-            validateResponsibles(state.responsibles, false)
-        // if (status === '2') {
-        //     result = result &&
-        //         checkAllLots();
-        // }
-        return result;
     }
 
 
@@ -251,6 +459,51 @@ function StockWorkAssignmentModal(props) {
     //     }
     // }, [props.billId, props.oldStatus])
 
+    const handleChangeTime = (time, type, index) => {
+        validateTime(time, type, index);
+    }
+
+    const validateTime = async (time, type, index, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, time);
+        if (willUpdateState) {
+            var { workAssignment } = state;
+            workAssignment[index] = { ...workAssignment[index], [type]: time };
+            setState({
+                ...state,
+                errorOnTime: message,
+                errorOnTimePosition: message ? index : null,
+                workAssignment: workAssignment
+            });
+        }
+        return message === undefined;
+    }
+
+    /*Lịch*/
+
+    const handleZoomChange = (zoom) => {
+        setState({
+            ...state,
+            currentZoom: zoom
+        });
+    }
+
+    const isFormValidated = () => {
+        const { status } = state;
+        // let result = ;
+        // validateType(state.type, false) &&
+        // validateStock(state.fromStock, false) &&
+        // validateApprover(state.approver, false) &&
+        // validatePartner(state.supplier, false) &&
+        // validateAccountables(state.accountables, false) &&
+        // // validateQualityControlStaffs(state.qualityControlStaffs, false) &&
+        // validateResponsibles(state.responsibles, false)
+        // if (status === '2') {
+        //     result = result &&
+        //         checkAllLots();
+        // }
+        return true;
+    }
+
     const save = async () => {
         const { billId, approvers, listQualityControlStaffs, responsibles, accountables } = state;
         const { group } = props;
@@ -267,162 +520,12 @@ function StockWorkAssignmentModal(props) {
         })
     }
 
-    // const checkApproved = (approvers, listQualityControlStaffs) => {
-    //     let quantityApproved = 1;
-    //     approvers.forEach((element) => {
-    //         if (element.approvedTime == null) {
-    //             quantityApproved = 0;
-    //         }
-    //     });
-    //     if (quantityApproved === 0) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-
-    const handleZoomChange = (zoom) => {
-        setState({
-            ...state,
-            currentZoom: zoom
-        });
-    }
-
-    const handleAddvariantOption = () => {
-        var { variantOption } = state;
-        let array = ['']
-        if (variantOption.length !== 0) {
-            let result;
-            for (let n in variantOption) {
-                result = validateNameField(variantOption[n].nameField, n);
-                // && validateVariantOptionValue(variantOption[n].value, n);
-                if (!result) {
-                    validateNameField(variantOption[n].nameField, n);
-                    // validateVariantOptionValue(variantOption[n].value, n)
-                    break;
-                }
-            }
-            if (result) {
-                setState({
-                    ...state,
-                    variantOption: [...variantOption, { nameField: "", variantOptionValue: array }],
-                })
-            }
-        } else {
-            setState({
-                ...state,
-                variantOption: [...variantOption, { nameField: "", variantOptionValue: array }],
-            })
-        }
-
-    }
-
-    const handleAddVariantOptionValue = async (index) => {
-        let data = Object.entries(state.variantOption[index]).map(([key, value]) => ({ key, value }));
-        var { variantOption } = state;
-        if (data.length !== 0) {
-            let result = true;
-            if (result) {
-                data[1].value.push('');
-                variantOption[index] = { ...variantOption[index], variantOptionValue: data[1].value }
-                await setState({
-                    ...state,
-                    variantOption: variantOption
-                });
-            }
-        } else {
-            data[1].value.push('');
-            variantOption[index] = { ...variantOption[index], variantOptionValue: data[1].value }
-            await setState({
-                ...state,
-                variantOption: variantOption
-            });
-        }
-    }
-
-    const delete_function = (index) => {
-        var { variantOption } = state;
-        variantOption.splice(index, 1);
-        if (variantOption.length !== 0) {
-            for (let n in variantOption) {
-                validateNameField(variantOption[n].nameField, n);
-                // validateValue(variantOption[n].value, n)
-            }
-        } else {
-            setState({
-                ...state,
-                variantOption: variantOption,
-                errorOnValue: undefined,
-                errorOnNameField: undefined
-            })
-        }
-    };
-
-    const deleteVariantOptionValue = (i, index) => {
-        var { variantOption } = state;
-        let data = Object.entries(state.variantOption[index]).map(([key, value]) => ({ key, value }));
-        data[1].value.splice(i, 1);
-        variantOption[index] = { ...variantOption[index], variantOptionValue: data[1].value }
-        setState({
-            ...state,
-            variantOption: variantOption,
-            errorOnValue: undefined,
-            errorOnNameField: undefined
-        });
-
-    }
-
-    const handleChangeNameField = (e, index) => {
-        var { value } = e.target;
-        validateNameField(value, index);
-    }
-    const validateNameField = (value, className, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-            var { variantOption } = state;
-            variantOption[className] = { ...variantOption[className], nameField: value }
-            setState({
-                ...state,
-                errorOnNameField: message,
-                errorOnNameFieldPosition: message ? className : null,
-                variantOption: variantOption
-            });
-        }
-        return message === undefined;
-    }
-
-
-    const handleChangeVariantOptionValue = (e, i, index) => {
-        var { value } = e.target;
-        validateVariantOptionValue(value, i, index);
-    }
-    const validateVariantOptionValue = async (value, i, index, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, value);
-
-        if (willUpdateState) {
-            var { variantOption } = state;
-            let data = Object.entries(variantOption[index]).map(([key, value]) => ({ key, value }));
-            data[1].value[i] = value;
-            variantOption[index] = { ...variantOption[index], variantOptionValue: data[1].value }
-            await setState({
-                ...state,
-                errorOnValue: message,
-                errorOnValuePosition: message ? index : null,
-                variantOption: variantOption
-            });
-        }
-        return message === undefined;
-    }
-
-
     const { translate } = props;
-    const { billId, approver, accountables, responsibles,
-        qualityControlStaffs, errorApprover, errorQualityControlStaffs, errorAccountables, errorResponsibles, currentZoom, detailInfo, errorOnNameFieldPosition, errorOnNameField, errorOnValue, errorOnValuePosition, variantOption } = state;
+    const { billId, approver, accountables, accountants, startDate, endDate, startTime, endTime, errorOnStartDate, errorOnEndDate, errorPeopleInCharge, errorAccountants, errorAccountables, currentZoom, errorOnNameFieldPosition, errorOnNameField, errorOnValue, errorOnValuePosition, workAssignment } = state;
     const dataApprover = getApprover();
-    let today = new Date();
+    console.log(state);
     return (
         <React.Fragment>
-
             <DialogModal
                 modalID={`stock-work-assignment-modal`}
                 formID={`stock-work-assignment-modal`}
@@ -436,31 +539,28 @@ function StockWorkAssignmentModal(props) {
                 <form id={`stock-work-assignment-modal`}>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
-                            <div className="form-group">
-                                    <p type="button" className="btn btn-primary">Phân công tự động</p>
-                                </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.approved')}<span className="text-red"> * </span></label>
+                            <legend className="scheduler-border">{"Danh sách người quản lý, giám sát, thời gian làm việc"}</legend>
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!errorPeopleInCharge ? "" : "has-error"}`}>
+                                    <label>{"Người quản lý"}<span className="text-red"> * </span></label>
                                     <SelectBox
-                                        id={`select-approver-bill-receipt-edit-${billId}`}
+                                        id={`select-people-in-charge-${billId}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={approver}
                                         items={dataApprover}
-                                        onChange={handleApproverChange}
+                                        onChange={handlePeopleInChargeChange}
                                         multiple={true}
                                     />
-                                    <ErrorLabel content={errorApprover} />
+                                    <ErrorLabel content={errorPeopleInCharge} />
                                 </div>
 
                             </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.accountables')}<span className="text-red"> * </span></label>
+                                    <label>{"Người giám sát"}<span className="text-red"> * </span></label>
                                     <SelectBox
-                                        id={`select-responsibles-bill-receipt-edit-${billId}`}
+                                        id={`select-accountables-${billId}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={accountables}
@@ -471,148 +571,145 @@ function StockWorkAssignmentModal(props) {
                                     <ErrorLabel content={errorAccountables} />
                                 </div>
                             </div>
-                            <div className="col-xs-12">
-                                <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="text-red"> * </span></label>
-                                    {/* <SelectBox
-                                        id={`select-qualityControlStaffs-bill-receipt-edit-${billId}`}
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <div className={`form-group ${!errorAccountants ? "" : "has-error"}`}>
+                                    <label>{"Kế toán"}<span className="text-red"> * </span></label>
+                                    <SelectBox
+                                        id={`select-accountants`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={qualityControlStaffs}
+                                        value={accountants}
                                         items={dataApprover}
-                                        onChange={handleQualityControlStaffsChange}
+                                        onChange={handleAccountantsChange}
                                         multiple={true}
-                                    /> */}
-                                    <ErrorLabel content={errorQualityControlStaffs} />
+                                    />
+                                    <ErrorLabel content={errorAccountants} />
                                 </div>
-                                <div className="form-group">
-                                    <p type="button" className="btn btn-success" onClick={handleAddvariantOption}>Thêm mới</p>
-                                </div>
-                                <table className="table">
-                                    {/* <thead>
-                                        <tr>
-                                            <th style={{ paddingLeft: '0px' }}>{"Tên công việc"}</th>
-                                            <th style={{ paddingLeft: '0px' }}>{"Người tham gia/Thời gian thực hiên"}</th>
-                                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
-                                        </tr>
-                                    </thead> */}
-                                    <tbody>
-                                        {(!variantOption || variantOption.length === 0) ? <tr>
-                                            <td colSpan={10}>
-                                                <center> {translate('table.no_data')}</center>
-                                            </td>
-                                        </tr> :
-                                            variantOption.map((x, index) => {
-                                                return <tr key={index}>
-                                                    <td>
-                                                        <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
-                                                            <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} />
-                                                            {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
-                                                        </div>
-                                                        <a onClick={() => delete_function(index)}><p className='text-red'>- Xóa tùy chọn</p></a>
-                                                    </td>
-
-                                                    <td>
-                                                        {(x.variantOptionValue && x.variantOptionValue.length) ? x.variantOptionValue.map((y, i) => {
-                                                            return <div key={i} className={`form-group ${(parseInt(errorOnValuePosition) === i && errorOnValue) ? "has-error" : ""}`} style={{ display: "flex" }}>
-                                                                <input className="form-control" type="text" value={y} name="value" style={{ width: "100%" }} onChange={(e) => handleChangeVariantOptionValue(e, i, index)} />
-                                                                <DatePicker
-                                                                    id={`datepicker1`}
-                                                                    dateFormat="day-month-year"
-                                                                // value={newTask.startDate}
-                                                                // onChange={handleChangeTaskStartDate}
-                                                                />
-                                                                < TimePicker
-                                                                    id={`time-picker-1`}
-                                                                    refs={`time-picker-1`}
-                                                                // value={newTask.startTime}
-                                                                // onChange={handleStartTimeChange}
-                                                                />
-
-                                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => deleteVariantOptionValue(i, index)}><i className="material-icons"></i></a>
-                                                                {(parseInt(errorOnValuePosition) === i && errorOnValue) && <ErrorLabel content={errorOnValue} />}
-                                                            </div>
-
-                                                        }) : <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}> </div>}
-                                                        <a style={{ textAlign: 'left' }} onClick={() => handleAddVariantOptionValue(index)}><p className='text-green'>+ Thêm giá trị mới</p></a>
-                                                    </td>
-                                                </tr>
-                                            })}
-                                    </tbody>
-                                </table>
                             </div>
                             <div className="col-xs-12">
-                                <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.users')}<span className="text-red"> * </span></label>
-                                    {/* <SelectBox
-                                        id={`select-accountables-bill-receipt-edit-${billId}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={responsibles}
-                                        items={dataApprover}
-                                        onChange={handleResponsiblesChange}
-                                        multiple={true}
-                                    /> */}
-                                    <ErrorLabel content={errorResponsibles} />
+                                <label>{"Thời gian hoàn thành công việc"}<span className="text-red"> * </span></label>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <label>{"Ngày bắt đầu"}<span className="text-red"> * </span></label>
+                                    <DatePicker
+                                        id={`startDatePicker`}
+                                        dateFormat="day-month-year"
+                                        value={startDate}
+                                        onChange={handleChangeTaskStartDate}
+                                    />
                                 </div>
-                                {/* <div className="form-group">
-                                    <p type="button" className="btn btn-success" onClick={handleAddDetailInfo}>Thêm mới</p>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <label>{"Thời gian bắt đầu"}<span className="text-red"> * </span></label>
+                                    < TimePicker
+                                        id={`startTimePicker`}
+                                        refs={`startTimePicker`}
+                                        value={startTime}
+                                        onChange={handleStartTimeChange}
+                                    />
                                 </div>
-
+                                <ErrorLabel content={errorOnStartDate} />
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <label>{"Ngày kết thúc"}<span className="text-red"> * </span></label>
+                                    <DatePicker
+                                        id={`endDatePicker`}
+                                        dateFormat="day-month-year"
+                                        value={endDate}
+                                        onChange={handleChangeTaskEndDate}
+                                    />
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <label>{"Thời gian kết thúc"}<span className="text-red"> * </span></label>
+                                    < TimePicker
+                                        id={`endTimePicker`}
+                                        refs={`endTimePicker`}
+                                        value={endTime}
+                                        onChange={handleEndTimeChange}
+                                    />
+                                </div>
+                                <ErrorLabel content={errorOnEndDate} />
+                            </div>
+                        </fieldset>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{"Danh sách phân công người thực hiện"}</legend>
+                            <div className="col-xs-12">
+                                <div className="form-group">
+                                    <p type="button" className="btn btn-success" onClick={handleAddWorkAssignment}>Thêm công việc mới</p>
+                                    <p style={{ float: "right" }} type="button" className="btn btn-primary">{"Phân công tự động"}</p>
+                                </div>
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th style={{ paddingLeft: '0px' }}>{"Tên công việc"}</th>
-                                            <th style={{ paddingLeft: '0px' }}>{"Người tham gia"}</th>
-                                            <th style={{ paddingLeft: '0px' }}>{"Thời gian thực hiên"}</th>
-                                            <th style={{ paddingLeft: '0px' }}></th>
-                                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                            <th>{"Tên hoạt động"}</th>
+                                            <th>{"Mô tả"}</th>
+                                            <th>{"Người thực hiện"}</th>
+                                            <th>{"Thời gian bắt đầu"}</th>
+                                            <th>{"Thời gian kết thúc"}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(!detailInfo || detailInfo.length === 0) ? <tr>
-                                            <td colSpan={3}>
-                                                <center> {translate('table.no_data')}</center>
-                                            </td>
-                                        </tr> :
-                                            detailInfo.map((x, index) => {
+                                        {
+                                            workAssignment.map((x, index) => {
                                                 return <tr key={index}>
-                                                    <td style={{ paddingLeft: '0px' }}>
+                                                    <td>
                                                         <div className={`form-group ${(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) ? "has-error" : ""}`}>
-                                                            <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} />
+                                                            {x.type !== 'default' ? <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} /> : <span>{x.nameField}</span>}
                                                             {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
                                                         </div>
+                                                        {x.type !== 'default' ? <a onClick={() => delete_function(index)}><p className='text-red'>- Xóa tùy chọn</p></a> : ''}
                                                     </td>
-
-                                                    <td style={{ paddingLeft: '0px' }}>
-                                                        <div className={`form-group ${(parseInt(errorOnValuePosition) === index && errorOnValue) ? "has-error" : ""}`}>
-                                                            <input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => handleChangeValue(e, index)} />
-                                                            {(parseInt(errorOnValuePosition) === index && errorOnValue) && <ErrorLabel content={errorOnValue} />}
+                                                    <td>
+                                                        {x.type == 'default' ? <p>{x.description}</p> : <textarea className="form-control" type="text" value={x.description} name="description" style={{ width: "100%" }} onChange={(e) => handleChangeDescription(e, index)} />}
+                                                    </td>
+                                                    <td style={{ width: '90%' }}>
+                                                        <div className={`form-group ${(parseInt(errorOnValuePosition) === 0 && errorOnValue) ? "has-error" : ""}`}>
+                                                            <SelectBox
+                                                                id={`select-responsibles-person-${index}`}
+                                                                className="form-control select2"
+                                                                style={{ width: "100%" }}
+                                                                value={x.workAssignmentStaffs}
+                                                                items={dataApprover}
+                                                                onChange={(e) => handleChangeWorkAssignmentStaffsValue(e, index)}
+                                                                multiple={true}
+                                                            />
+                                                            {(parseInt(errorOnValuePosition) === 0 && errorOnValue) && <ErrorLabel content={errorOnValue} />}
                                                         </div>
                                                     </td>
-                                                    <td style={{ paddingLeft: '0px' }}>
+                                                    <td>
                                                         <DatePicker
-                                                            id={`datepicker1`}
+                                                            id={`startDatePicker-${index}`}
                                                             dateFormat="day-month-year"
-                                                        value={newTask.startDate}
-                                                        onChange={handleChangeTaskStartDate}
+                                                            value={x.startDate}
+                                                            onChange={(e) => handleChangeTime(e, 'startDate', index)}
+                                                        />
+                                                        <TimePicker
+                                                            id={`startTimePicker-${index}`}
+                                                            refs={`startTimePicker-${index}`}
+                                                            value={x.startTime}
+                                                            onChange={(e) => handleChangeTime(e, 'startTime', index)}
                                                         />
                                                     </td>
-                                                    <td style={{ paddingLeft: '0px' }}>
-                                                        < TimePicker
-                                                            id={`time-picker-1`}
-                                                            refs={`time-picker-1`}
-                                                        value={newTask.startTime}
-                                                        onChange={handleStartTimeChange}
+                                                    <td>
+                                                        <DatePicker
+                                                            id={`endDatePicker-${index}`}
+                                                            dateFormat="day-month-year"
+                                                            value={x.endDate}
+                                                            onChange={(e) => handleChangeTime(e, 'endDate', index)}
                                                         />
-                                                    </td>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => delete_function(index)}><i className="material-icons"></i></a>
+                                                        <TimePicker
+                                                            id={`endTimePicker-${index}`}
+                                                            refs={`endTimePicker-${index}`}
+                                                            value={x.endTime}
+                                                            onChange={(e) => handleChangeTime(e, 'endTime', index)}
+                                                        />
                                                     </td>
                                                 </tr>
-                                            })}
+                                            })
+                                        }
                                     </tbody>
-                                </table> */}
+                                </table>
                             </div>
                         </fieldset>
                     </div>
