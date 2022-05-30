@@ -53,8 +53,21 @@ function DecisionForImplement(props) {
     const { id } = state;
 
     useEffect(() => {
+        const decisionData = props.biddingContract?.decideToImplement ? props.biddingContract?.decideToImplement : initDecision;
+        const resWithUnitCopy = [...decisionData.responsibleEmployeesWithUnit]
         props.getAllEmployee();
         setState({ ...state, id: props.id })
+        setDecision(decisionData)
+        setResponsibleEmployeesWithUnit({
+            ...responsibleEmployeesWithUnit,
+            list: resWithUnitCopy?.map(x => {
+                return {
+                    _id: x._id,
+                    unitId: x.unitId,
+                    listUsers: x.listUsers?.map(o => o.userId)
+                }
+            })
+        })
     }, [props.id])
 
     let allEmployee;
@@ -272,6 +285,8 @@ function DecisionForImplement(props) {
         props.handleChange("decideToImplement", newDecision);
     }, [responsibleEmployeesWithUnit.list])
 
+    console.log(275, decision)
+    console.log(276, responsibleEmployeesWithUnit)
 
     const renderMembers = () => {
         return (
@@ -282,7 +297,7 @@ function DecisionForImplement(props) {
                         <label>{translate('project.manager')}<span className="text-red">*</span></label>
                         {listUsers &&
                             <SelectBox
-                                id={`select-project-manager`}
+                                id={`select-project-manager-${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={listUsers}
@@ -318,12 +333,12 @@ function DecisionForImplement(props) {
                                         </tr>
                                     ))
                                 }
-                                <tr key={`add-task-input-${responsibleEmployeesWithUnit.list.length}`}>
+                                <tr key={`add-task-input-${responsibleEmployeesWithUnit.list.length}-${id}`}>
                                     <td>
                                         <div className={`form-group`}>
                                             {listDepartments && listDepartments.length > 0 &&
                                                 <SelectBox
-                                                    id={`create-project-${responsibleEmployeesWithUnit.list.length}`}
+                                                    id={`decision-department-${responsibleEmployeesWithUnit.list.length}-${id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={listDepartments}
@@ -344,7 +359,7 @@ function DecisionForImplement(props) {
                                         <div className={`form-group`}>
                                             {listDepartments && listDepartments.length > 0 &&
                                                 <SelectBox
-                                                    id={`select-project-members`}
+                                                    id={`decision-member--${responsibleEmployeesWithUnit.list.length}-${id}`}
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     items={listUsers.filter(item =>
@@ -408,7 +423,7 @@ function DecisionForImplement(props) {
                         <div className="form-group">
                             <label>Đơn vị thời gian<span className="text-red">*</span></label>
                             <SelectBox
-                                id={`select-decision-bidding-contract-unitTime`}
+                                id={`select-decision-bidding-contract-unitTime-${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={arrUnitTimeList}

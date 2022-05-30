@@ -183,6 +183,7 @@ exports.editBiddingContract = async (portal, data, params, files, company) => {
 
                 biddingPackage: data.biddingPackage,
                 project: data.project,
+                decideToImplement: data.decideToImplement,
 
                 files: data.files
             },
