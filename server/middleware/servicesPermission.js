@@ -578,6 +578,10 @@ exports.links = [
             { path: '/bills/:id', method: 'PATCH' },
             { path: '/bills/get-detail-bill/:id', method: 'GET' },
 
+            { path: '/request-management/stock', method: 'GET' },
+            { path: '/request-management/manufacturing', method: 'GET' },
+            { path: '/request-management/order', method: 'GET' },
+
             //order
             { path: "/orders", method: "GET" },
             { path: "/orders", method: "POST" },
@@ -1063,6 +1067,15 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/manage-manufacturing-lot',
+        apis: ['@all']
+    }, {
+        url: '/request-management/stock',
+        apis: ['@all']
+    }, {
+        url: '/request-management/manufacturing',
+        apis: ['@all']
+    }, {
+        url: '/request-management/order',
         apis: ['@all']
     }, {
         url: '/hr-manage-field',

@@ -126,7 +126,6 @@ function StockManagementTable(props) {
     const { stocks, translate } = props;
     const { listPaginate, totalPages, page } = stocks;
     // const { tableId } = state;
-
     return (
         <div className="box">
             <div className="box-body qlcv">
@@ -177,6 +176,8 @@ function StockManagementTable(props) {
                         managementLocation={state.currentRow.managementLocation}
                         goodsManagement={state.currentRow.goods}
                         description={state.currentRow.description}
+                        organizationalUnitValue={state.currentRow.organizationalUnit._id}
+                        organizationalUnit={state.currentRow.organizationalUnit}
                     />
                 }
 
@@ -192,6 +193,7 @@ function StockManagementTable(props) {
                         managementLocation={state.currentRow.managementLocation}
                         goodsManagement={state.currentRow.goods}
                         description={state.currentRow.description}
+                        organizationalUnit={state.currentRow.organizationalUnit}
                     />
                 }
 

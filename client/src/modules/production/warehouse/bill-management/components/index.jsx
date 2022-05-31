@@ -345,29 +345,27 @@ function BillManagement(props) {
     }
 
     const handleInProcessingStatus = (bill) => {
-        console.log(bill);
         const data = {
             status: '3',
             oldStatus: bill.status,
-            group: bill.group,
-            fromStock: bill.fromStock,
-            code: bill.code,
-            type: bill.type,
-            group: bill.group,
-            users: bill.users,
-            approvers: bill.approvers,
-            qualityControlStaffs: bill.listQualityControlStaffs,
-            responsibles: bill.responsibles,
-            accountables: bill.accountables,
-            customer: bill.customer,
-            phone: bill.phone,
-            email: bill.email,
-            address: bill.address,
-            description: bill.description,
-            goods: bill.goods,
-            oldGoods: bill.goods
+            // group: bill.group,
+            // fromStock: bill.fromStock,
+            // code: bill.code,
+            // type: bill.type,
+            // group: bill.group,
+            // users: bill.users,
+            // approvers: bill.approvers,
+            // qualityControlStaffs: bill.listQualityControlStaffs,
+            // responsibles: bill.responsibles,
+            // accountables: bill.accountables,
+            // customer: bill.customer,
+            // phone: bill.phone,
+            // email: bill.email,
+            // address: bill.address,
+            // description: bill.description,
+            // goods: bill.goods,
+            // oldGoods: bill.goods
         }
-        console.log(data);
         props.editBill(bill._id, data);
     }
 
@@ -375,50 +373,49 @@ function BillManagement(props) {
         const data = {
             status: '7',
             oldStatus: bill.status,
-            group: bill.group,
-            fromStock: bill.fromStock,
-            code: bill.code,
-            type: bill.type,
-            group: bill.group,
-            users: bill.users,
-            approvers: bill.approvers,
-            qualityControlStaffs: bill.listQualityControlStaffs,
-            responsibles: bill.responsibles,
-            accountables: bill.accountables,
-            customer: bill.customer,
-            phone: bill.phone,
-            email: bill.email,
-            address: bill.address,
-            description: bill.description,
-            goods: bill.goods,
-            oldGoods: bill.goods
+            // group: bill.group,
+            // fromStock: bill.fromStock,
+            // code: bill.code,
+            // type: bill.type,
+            // group: bill.group,
+            // users: bill.users,
+            // approvers: bill.approvers,
+            // qualityControlStaffs: bill.listQualityControlStaffs,
+            // responsibles: bill.responsibles,
+            // accountables: bill.accountables,
+            // customer: bill.customer,
+            // phone: bill.phone,
+            // email: bill.email,
+            // address: bill.address,
+            // description: bill.description,
+            // goods: bill.goods,
+            // oldGoods: bill.goods
         }
         props.editBill(bill._id, data);
     }
 
     const handleCompleteBill = (bill) => {
-        console.log(bill);
         const data = {
             status: '5',
             oldStatus: bill.status,
-            group: bill.group,
-            fromStock: bill.fromStock,
-            toStock: bill.toStock ? bill.toStock : '',
-            code: bill.code,
-            type: bill.type,
-            group: bill.group,
-            users: bill.users,
-            approvers: bill.approvers,
-            qualityControlStaffs: bill.listQualityControlStaffs,
-            responsibles: bill.responsibles,
-            accountables: bill.accountables,
-            customer: bill.customer,
-            phone: bill.phone,
-            email: bill.email,
-            address: bill.address,
-            description: bill.description,
-            goods: bill.goods,
-            oldGoods: bill.goods
+            // group: bill.group,
+            // fromStock: bill.fromStock,
+            // toStock: bill.toStock ? bill.toStock : '',
+            // code: bill.code,
+            // type: bill.type,
+            // group: bill.group,
+            // users: bill.users,
+            // approvers: bill.approvers,
+            // qualityControlStaffs: bill.listQualityControlStaffs,
+            // responsibles: bill.responsibles,
+            // accountables: bill.accountables,
+            // customer: bill.customer,
+            // phone: bill.phone,
+            // email: bill.email,
+            // address: bill.address,
+            // description: bill.description,
+            // goods: bill.goods,
+            // oldGoods: bill.goods
         }
         props.editBill(bill._id, data);
     }

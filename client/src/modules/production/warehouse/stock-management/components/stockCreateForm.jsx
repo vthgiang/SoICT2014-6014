@@ -80,47 +80,42 @@ function StockCreateForm(props) {
         return msg === undefined;
     }
 
-    const handleDepartmentChange = (value) => {
-        let manageDepartment = value[0];
-        validateDepartment(manageDepartment, true);
+    const handleOrganizationalUnitValueChange = (value) => {
+        let organizationalUnitValue = value[0];
+        validateOrganizationalUnitValue(organizationalUnitValue, true);
     }
 
-    const validateDepartment = (value, willUpdateState = true) => {
+    const validateOrganizationalUnitValue = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+        const { translate, department } = props;
+        if (value === "") {
+            msg = translate('manage_warehouse.stock_management.error_organizational_unit')
         }
+
         if (willUpdateState) {
+            const { list } = department;
+            let currentDepartment;
+            const listDepartment = list.filter(x => x._id === value);
+            if (listDepartment.length > 0) {
+                currentDepartment = listDepartment[0];
+            } else {
+                currentDepartment = {
+                    name: "",
+                    description: ""
+                }
+            }
             setState({
                 ...state,
-                errorOnDepartment: msg,
-                manageDepartment: value,
+                organizationalUnitError: msg,
+                organizationalUnitValue: value,
+                currentDepartment: currentDepartment,
+                name: currentDepartment.name,
+                description: currentDepartment.description
             });
         }
-        return msg === undefined;
+        return msg;
     }
-
-    const handleManagementLocationtChange = (value) => {
-        validateManagementLocation(value, true);
-    }
-
-    const validateManagementLocation = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnManagementLocation: msg,
-                managementLocation: value,
-            });
-        }
-        return msg === undefined;
-    }
-
+    
     const handleStatusChange = (value) => {
         setState({
             ...state,
@@ -452,7 +447,7 @@ function StockCreateForm(props) {
 
     const { translate, stocks } = props;
     const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name,
-        managementLocation, status, address, description, manageDepartment, goods, good, errorOnRole, errorOnManagementGood, role } = state;
+        managementLocation, status, address, description, organizationalUnitValue, goods, good, errorOnRole, errorOnManagementGood, role, currentDepartment } = state;
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
@@ -479,30 +474,31 @@ function StockCreateForm(props) {
                                 <label>{translate('manage_warehouse.stock_management.code')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={code} disabled />
                             </div>
+                            <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.stock_management.name')}<span className="text-red"> * </span></label>
+                                <input type="text" className="form-control" value={name} onChange={handleNameChange} />
+                                <ErrorLabel content={errorOnName} />
+                            </div>
                             <div className={`form-group ${!errorOnAddress ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.stock_management.address')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
                                 <ErrorLabel content={errorOnAddress} />
                             </div>
-                            {/* <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-status-of-stock`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={manageDepartment}
-                                        items={departmentManagement}
-                                        onChange={this.handleDepartmentChange}    
-                                        multiple={false}
-                                    />
-                                    <ErrorLabel content = { errorOnDepartment } />
-                                </div> */}
+
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.stock_management.name')}<span className="text-red"> * </span></label>
-                                <input type="text" className="form-control" value={name} onChange={handleNameChange} />
-                                <ErrorLabel content={errorOnName} />
+                            <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
+                                <SelectBox
+                                    id={`select-department`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={organizationalUnitValue}
+                                    items={departmentManagement}
+                                    onChange={handleOrganizationalUnitValueChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorOnDepartment} />
                             </div>
                             <div className="form-group">
                                 <label>{translate('manage_warehouse.stock_management.status')}<span className="text-red"> * </span></label>
@@ -521,25 +517,37 @@ function StockCreateForm(props) {
                                     multiple={false}
                                 />
                             </div>
-                            {/* <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.management_location')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-management-location-stock`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={managementLocation}
-                                        items={this.props.role.list.map((y, index) => { return { value: y._id, text: y.name}})}
-                                        onChange={this.handleManagementLocationtChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorOnManagementLocation } />
-                                </div> */}
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="form-group">
                                 <label>{translate('manage_warehouse.stock_management.description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
+                            {
+                                currentDepartment && currentDepartment.managers &&
+                                <React.Fragment>
+                                    <fieldset className="scheduler-border">
+                                        <legend className="scheduler-border">{translate('manage_warehouse.stock_management.list_roles')}</legend>
+                                        {
+                                            currentDepartment.managers.map((role, index) => {
+                                                return (
+                                                    <div className={`form-group`} key={index}>
+                                                        <strong>{role.name}: &emsp;</strong>
+                                                        {
+                                                            role.users.map((user, index) => {
+                                                                if (index === role.users.length - 1) {
+                                                                    return user.userId.name
+                                                                }
+                                                                return user.userId.name + ", "
+                                                            })
+                                                        }
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </fieldset>
+                                </React.Fragment>
+                            }
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.stock_management.management_location')}</legend>
 
