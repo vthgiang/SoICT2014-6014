@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DatePicker, DialogModal, ErrorLabel, SelectBox, SelectMulti } from '../../../../../common-components';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { managerActions } from '../../management/redux/actions';
 import { createUnitKpiActions } from '../redux/actions.js';
@@ -75,11 +75,8 @@ function ChildOfOrganizationalUnitCreate(props) {
     const [dateRangeError, setDateRangeError] = useState();
     const [kpi, setKpi] = useState();
     const [applyMonth, setApplyMonth] = useState([]);
-    const [duplicate, setDuplicate] = useState(false);
     const [dateCopyError, setDateCopyError] = useState();
-    const [dateNew, setDateNew] = useState([]);
-
-    const arrayKpiUnit = currentKPI?.kpis?.map(x => x._id);
+    const [arrayKpiUnit, setArrayKpiUnit] = useState([]);
 
     const childrenUnit = childrenOrganizationalUnit?.children || [];
 
@@ -89,6 +86,16 @@ function ChildOfOrganizationalUnitCreate(props) {
             text: x.name
         }
     })
+
+    const handleKpiUnit = (id) => {
+        let listKpi = arrayKpiUnit;
+        if (listKpi.includes(id)) {
+            listKpi = listKpi.filter(item => item !== id)
+        } else {
+            listKpi.push(id)
+        }
+        setArrayKpiUnit(listKpi)
+    }
 
     const handleChangeUnitCopy = (value) => {
         if (value.length === 0) {
@@ -106,7 +113,7 @@ function ChildOfOrganizationalUnitCreate(props) {
             setUnitOrganizationalApplyError('Đơn vị áp dụng không được để trống');
         } else {
             setUnitOrganizationalApplyError(undefined);
-            setIdsUnitApply(value[0])
+            setIdsUnitApply(value)
         }
     }
 
@@ -142,7 +149,7 @@ function ChildOfOrganizationalUnitCreate(props) {
         const dataKPI = {
             type: 'copy-parent-kpi-to-unit',
             idunit: idsUnitApply,
-            datenew: dateNew,
+            datenew: applyMonth,
             listKpiUnit: arrayKpiUnit,
             organizationalUnitIdCopy: idsUnitCopy,
             matchParent: false
@@ -156,7 +163,7 @@ function ChildOfOrganizationalUnitCreate(props) {
 
     useEffect(() => {
         const dateArr = [];
-        let applyMonth = [];
+        let applyMonth = {};
         let unitName = null;
 
         if (startDate && endDate) {
@@ -169,33 +176,37 @@ function ChildOfOrganizationalUnitCreate(props) {
         }
 
         if (idsUnitApply) {
-            childrenUnit.map((unit) => {
-                if (unit.id === idsUnitApply) {
-                    unitName = unit.name
-                }
-            })
-            if (kpi[unitName]) {
-                for (let i = 0; i < dateArr.length; i++) {
-                    if (!kpi[unitName].includes(formatDate2(dateArr[i]))) {
-                        applyMonth.push(dateArr[i]);
+            for (let i = 0; i < idsUnitApply.length; i++) {
+                childrenUnit.map((unit) => {
+                    if (unit.id === idsUnitApply[i]) {
+                        unitName = unit.name
                     }
+                })
+                applyMonth[unitName] = [idsUnitApply[i]];
+
+                if (kpi[unitName]) {
+                    for (let i = 0; i < dateArr.length; i++) {
+                        if (!kpi[unitName].includes(formatDate2(dateArr[i]))) {
+                            applyMonth[unitName].push(dateArr[i]);
+                        }
+                    }
+                } else {
+                    const date = applyMonth[unitName].concat(dateArr);
+                    applyMonth[unitName] = date;
+
                 }
-            } else {
-                applyMonth = dateArr
             }
 
-            if (applyMonth.length > 0 && applyMonth.length < dateArr.length) {
-                setDuplicate(true);
-            } else {
-                setDuplicate(false)
+
+            for (let key in applyMonth) {
+                if (applyMonth.hasOwnProperty(key)) {
+                    for (let i = 1; i < applyMonth[key].length; i++) {
+                        applyMonth[key][i] = convertMMYYtoYYMM(formatDate2(applyMonth[key][i]))
+                    }
+                }
             }
 
             setApplyMonth(applyMonth);
-            setDateNew(
-                applyMonth.length && applyMonth.map((x) => {
-                    return convertMMYYtoYYMM(formatDate2(x))
-                })
-            )
         }
     }, [startDate, endDate, idsUnitApply]);
 
@@ -216,13 +227,17 @@ function ChildOfOrganizationalUnitCreate(props) {
             })
         }
         setKpi(kpiUnit);
-    }, [createKpiUnit, startDate, endDate])
+    }, [kpiChildUnit])
 
     useEffect(() => {
         if (idsUnitCopy && copyDate) {
             props.getCurrentKPIUnit(localStorage.getItem("currentRole"), idsUnitCopy, copyDate);
         }
     }, [idsUnitCopy, copyDate])
+
+    useEffect(() => {
+        setArrayKpiUnit(currentKPI?.kpis?.map(x => x._id))
+    }, [currentKPI])
 
     return (
         <React.Fragment>
@@ -269,21 +284,43 @@ function ChildOfOrganizationalUnitCreate(props) {
                         </div>
                     </div>
                 </div>
+                <div className="form-group">
+                    <label>{translate('kpi.organizational_unit.management.copy_modal.list_target')}</label>
+                    {currentKPI?.kpis?.length > 0
+                        ? <ul style={{ listStyle: "none" }}>
+                            {currentKPI.kpis.map(item => {
+                                return <li key={item._id}>
+                                    {
+                                        item?.type !== 0 ? <div>
+                                            <input type="checkbox" checked={true} disabled={true} onChange={null} />
+                                            <span>{item.name + " (" + item.weight + ")"}</span>
+                                        </div> :
+                                            <div>
+                                                <input type="checkbox" checked={arrayKpiUnit?.includes(item?._id)} onChange={() => handleKpiUnit(item?._id)} />
+                                                <span>{item.name + " (" + item.weight + ")"}</span>
+                                            </div>
+                                    }
+
+                                </li>
+                            })
+                            }
+                        </ul>
+                        : <div>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')}</div>
+                    }
+                </div>
 
                 <div className='row qlcv' style={{ marginBottom: 10 }} >
                     {/* Đơn vị áp dụng */}
                     <div className="col-sm-6">
                         <div className={`form-group ${unitOrganizationalApplyError === undefined ? "" : "has-error"}`} >
                             <label style={{ width: "auto" }}>Đơn vị áp dụng</label>
-                            <SelectBox
-                                id={`selectBoxInOrganizationalUnitKpiApply`}
-                                className="form-control select2"
-                                style={{ width: 230 }}
-                                items={options}
-                                multiple={false}
+                            <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
+                                options={{ nonSelectedText: 'chọn đơn vị', allSelectedText: 'chọn tất cả' }}
                                 onChange={handleChangeUnitApply}
-                                value={idsUnitApply}
-                            />
+                                value={idsUnitApply ?? []}
+                                items={options}
+                            >
+                            </SelectMulti>
                             <ErrorLabel content={unitOrganizationalApplyError} />
                         </div>
                     </div>
@@ -319,7 +356,7 @@ function ChildOfOrganizationalUnitCreate(props) {
                     </div>
                     <ErrorLabel content={dateRangeError} />
                 </div>
-
+                {/* 
                 {
                     duplicate && (
                         <div style={{ 'marginTop': 10 }} className='text-danger'>
@@ -338,7 +375,7 @@ function ChildOfOrganizationalUnitCreate(props) {
                                 })
                             }
                         </div>)
-                }
+                } */}
             </DialogModal>
         </React.Fragment>
     );

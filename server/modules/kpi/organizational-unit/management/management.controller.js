@@ -79,39 +79,47 @@ exports.copyKPIForRange = async (req, res) => {
             creator: req.user._id
         }
         let kpi = [];
+        parseDatenew = JSON.parse(query.datenew);
 
-        for (let i = 0; i < query.datenew.length; i++) {
-            let queryData = {
-                ...query,
-                datenew: query.datenew[i]
+        for (let key in parseDatenew) {
+            let id = parseDatenew[key][0];
+            parseDatenew[key].shift();
+            for (let i = 0; i < parseDatenew[key].length; i++) {
+                let queryData = {
+                    ...query,
+                    idunit: id,
+                    datenew: parseDatenew[key][i]
+                }
+
+                let data = await managerService.copyKPI(req.portal, req.params.id, queryData);
+
+                kpi.push(data)
+
+                // Thêm log
+                let log = getDataOrganizationalUnitKpiSetLog({
+                    type: "copy_kpi_unit_to_unit",
+                    creator: req.user._id,
+                    organizationalUnit: data?.kpiunit?.organizationalUnit,
+                    month: data?.kpiunit?.date,
+                    newData: data?.kpiunit,
+                    copyKpi: data?.copyKpi
+                })
+                await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
+                    ...log,
+                    organizationalUnitKpiSetId: data?.kpiunit?._id
+                })
+
+                // Thêm newsfeed
+                await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
+                    ...log,
+                    organizationalUnit: data?.kpiunit?.organizationalUnit,
+                    organizationalUnitKpiSetId: data?.kpiunit?._id
+                })
+
+                Logger.info(req.user.email, ' copy kpi unit ', req.portal)
             }
-            let data = await managerService.copyKPI(req.portal, req.params.id, queryData);
-
-            kpi.push(data)
-
-            // Thêm log
-            let log = getDataOrganizationalUnitKpiSetLog({
-                type: "copy_kpi_unit_to_unit",
-                creator: req.user._id,
-                organizationalUnit: data?.kpiunit?.organizationalUnit,
-                month: data?.kpiunit?.date,
-                newData: data?.kpiunit,
-                copyKpi: data?.copyKpi
-            })
-            await managerService.createOrganizationalUnitKpiSetLogs(req.portal, {
-                ...log,
-                organizationalUnitKpiSetId: data?.kpiunit?._id
-            })
-
-            // Thêm newsfeed
-            await KPIUnitService.createNewsFeedForOrganizationalUnitKpiSet(req.portal, {
-                ...log,
-                organizationalUnit: data?.kpiunit?.organizationalUnit,
-                organizationalUnitKpiSetId: data?.kpiunit?._id
-            })
-
-            Logger.info(req.user.email, ' copy kpi unit ', req.portal)
         }
+
 
         res.status(200).json({
             success: true,

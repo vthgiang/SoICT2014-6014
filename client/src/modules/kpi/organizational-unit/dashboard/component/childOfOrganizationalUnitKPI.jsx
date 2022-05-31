@@ -94,12 +94,12 @@ function ChildOfOrganizationalUnitKpi(props) {
         let tableCols = getTableCols(startDate, endDate);
         setCols(tableCols);
 
-        props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(localStorage.getItem("currentRole"), startDate, endDate);
+        props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(localStorage.getItem("currentRole"));
     }
 
 
     useEffect(() => {
-        props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(localStorage.getItem("currentRole"), startDate, endDate);
+        props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(localStorage.getItem("currentRole"));
     }, [])
 
     useEffect(() => {
