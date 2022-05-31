@@ -186,6 +186,44 @@ export const getProjectParticipants = (projectDetail, hasManagerAndCreator = fal
     return projectParticipants;
 }
 
+// dùng khi tạo task project cho project by contract 
+export const getProjectParticipantsByArrId = (projectDetail, listUsers, hasManagerAndCreator = false) => {
+    let projectParticipants = [];
+    if (hasManagerAndCreator) {
+        const formattedManagerArr = projectDetail?.projectManager?.map(item => {
+            return ({
+                text: convertUserIdToUserName(listUsers, item),
+                value: item
+            })
+        })
+        let formattedEmployeeArr = [];
+        if (Array.isArray(projectDetail?.responsibleEmployees)) {
+            for (let item of projectDetail?.responsibleEmployees) {
+                if (!projectDetail?.projectManager.find(managerItem => managerItem === item)) {
+                    formattedEmployeeArr.push({
+                        text: convertUserIdToUserName(listUsers, item),
+                        value: item
+                    })
+                }
+            }
+        }
+
+        if (!projectParticipants || !formattedManagerArr || !formattedEmployeeArr) {
+            return []
+        }
+        projectParticipants = formattedManagerArr.concat(formattedEmployeeArr)
+
+        return projectParticipants;
+    }
+    projectParticipants = projectDetail?.responsibleEmployees?.map(item => {
+        return ({
+            text: convertUserIdToUserName(listUsers, item),
+            value: item
+        })
+    });
+    return projectParticipants;
+}
+
 export const getEmailMembers = (projectDetail) => {
     let resultArr = [];
     // if (!projectDetail) return [];

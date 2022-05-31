@@ -11,6 +11,7 @@ import EditBiddingContract from './editContract';
 import ViewBiddingContract from './detailContract';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
+import CreateProjectByContractModal from './createProjectByContractModal';
 
 const ContractManagement = (props) => {
 
@@ -121,6 +122,20 @@ const ContractManagement = (props) => {
         });
         setTimeout(() => {
             window.$(`#modal-edit-bidding-contract--${value._id}`).modal('show');
+        }, 500);
+    }
+
+    /**
+     * Bắt sự kiện click tạo dự án theo hợp đồng
+     * @param {*} value : Thông tin hợp đồng
+     */
+    const handleCreateProject = (value) => {
+        setState({
+            ...state,
+            currentRow: value
+        });
+        setTimeout(() => {
+            window.$(`#modal-create-project-for-contract--${value._id}`).modal('show');
         }, 500);
     }
 
@@ -292,6 +307,11 @@ const ContractManagement = (props) => {
                                             content={`<h4>Xóa "${x.name + " - " + x.code}"</h4>`}
                                             func={() => props.deleteBiddingContract(x._id)}
                                         />
+                                        {!x.project &&
+                                            <a className="" style={{ color: "#28A745" }} onClick={() => handleCreateProject(x)} title={"Tạo dự án theo hợp đồng này"}>
+                                                <i className="material-icons">add_box</i>
+                                            </a>
+                                        }
                                     </td>
                                 </tr>
                             )
@@ -312,6 +332,14 @@ const ContractManagement = (props) => {
             {/* From chinh sửa thông tin hợp đồng */}
             {
                 <EditBiddingContract
+                    id={currentRow ? currentRow._id : null}
+                    data={currentRow ? currentRow : null}
+                />
+            }
+
+            {/* From tạo dự án theo hợp đồng */}
+            {
+                <CreateProjectByContractModal
                     id={currentRow ? currentRow._id : null}
                     data={currentRow ? currentRow : null}
                 />

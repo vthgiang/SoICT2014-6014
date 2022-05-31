@@ -110,7 +110,7 @@ const CreateBiddingContract = (props) => {
 		let bp = props.biddingPackagesManager?.listBiddingPackages?.find(x => x._id == value[0])
 		if (bp) {
 			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
-
+			console.log(113, updatedDecision);
 			setState({
 				...state,
 				name: "Hợp đồng " + bp.name,
@@ -127,7 +127,6 @@ const CreateBiddingContract = (props) => {
 			})
 		}
 	}
-	console.log(193, state);
 
 	const handleChangeForm = (event, currentKey) => {
 		if (currentKey === 'contractName') {
@@ -534,6 +533,7 @@ const CreateBiddingContract = (props) => {
 							{generalInfo()}
 							{partyForm()}
 							<DecisionForImplement
+								type={"create"}
 								id={"decision"}
 								biddingContract={state}
 								handleChange={handleChange}

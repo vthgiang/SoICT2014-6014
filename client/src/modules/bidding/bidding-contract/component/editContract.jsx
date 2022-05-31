@@ -610,6 +610,7 @@ const EditBiddingContract = (props) => {
 						{generalInfo()}
 						{partyForm()}
 						<DecisionForImplement
+							type={"edit"}
 							id={`edit-decision-${id}`}
 							biddingContract={state}
 							handleChange={handleChange}

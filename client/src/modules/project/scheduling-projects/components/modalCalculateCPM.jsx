@@ -20,11 +20,17 @@ import { SchedulingProjectsActions } from '../redux/actions';
 
 const ModalCalculateCPM = (props) => {
     const { tasksData, translate, project, user } = props;
+    const [projectData, setProjectData] = useState(props.projectData);
     const [currentTasksData, setCurrentTasksData] = useState(tasksData);
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
-    const projectDetail = getCurrentProjectDetails(project);
+    // const projectDetail = getCurrentProjectDetails(project);
+    const projectDetail = projectData ?? getCurrentProjectDetails(project);
     const [isTableShown, setIsTableShown] = useState(true);
     let formattedTasksData = {}
+
+    useEffect(() => {
+        setProjectData(props.projectData)
+    }, [JSON.stringify(props.projectData)])
 
     useEffect(() => {
         console.log('tasksData co thay doi');
@@ -168,11 +174,17 @@ const ModalCalculateCPM = (props) => {
                         responsibleEmployees: processDataItem.currentResponsibleEmployees,
                         accountableEmployees: processDataItem.currentAccountableEmployees,
                         totalResWeight: processDataItem.totalResWeight,
+                        description: processDataItem.description
                     }
                 });
 
                 console.log('newTasksList', newTasksList);
-                await props.createProjectTasksFromCPMDispatch(newTasksList);
+                if (props.handleTaskProjectList) {
+                    props.handleTaskProjectList(newTasksList);
+                } else {
+                    console.log("props.createProjectTasksFromCPMDispatch");
+                    // await props.createProjectTasksFromCPMDispatch(newTasksList);
+                }
                 props.handleHideModal();
             }
         })
@@ -211,12 +223,12 @@ const ModalCalculateCPM = (props) => {
                         </button>
                     </div>
                     {/* Button Tính toán mức thoả hiệp dự án */}
-                    {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate))
-                        &&
+                    {// moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate)) &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                             <ModalCalculateRecommend
                                 handleApplyChange={handleApplyChange}
                                 processedData={processedData}
+                                projectData={projectDetail}
                                 currentTasksData={currentTasksData}
                                 oldCPMEndDate={findLatestDate(processedData)}
                             />

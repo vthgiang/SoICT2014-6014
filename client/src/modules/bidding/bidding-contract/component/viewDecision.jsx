@@ -39,7 +39,6 @@ function ViewDecisionForImplement(props) {
     }
 
     let allEmployeeCompany = getAllEmployeeSelectBoxItems(allEmployee)
-    console.log(42, decision);
 
     const renderMembers = () => {
         return (

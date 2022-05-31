@@ -37,9 +37,9 @@ const TableTasksProject = (props) => {
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
-    useEffect(() => {
-        window.$(`#modelPerformTask${currentTaskId}`).modal('show')
-    }, [currentTaskId])
+    // useEffect(() => {
+    //     window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+    // }, [currentTaskId])
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
@@ -79,11 +79,16 @@ const TableTasksProject = (props) => {
 
     const handleShowDetailInfo = (id) => {
         setState(state => {
-            return{
+            return {
                 ...state,
-            currentTaskId: id
+                currentTaskId: id
             }
         })
+
+        setTimeout(() => {
+            // window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+            window.$(`#modelPerformTask${id}`).modal('show')
+        }, 500);
     }
 
     const processPreceedingTasks = (preceedingTasks) => {

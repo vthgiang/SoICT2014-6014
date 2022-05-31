@@ -190,6 +190,7 @@ function DecisionForImplement(props) {
             projectManager: value
         }
         setDecision(newDecision)
+        console.log(193, newDecision);
         props.handleChange("decideToImplement", newDecision);
     }
 
@@ -284,199 +285,195 @@ function DecisionForImplement(props) {
         props.handleChange("decideToImplement", newDecision);
     }, [responsibleEmployeesWithUnit.list])
 
-    console.log(275, decision)
-    console.log(276, responsibleEmployeesWithUnit)
+    // console.log(275, decision)
+    // console.log(276, responsibleEmployeesWithUnit)
 
     const renderMembers = () => {
         return (
-            <>
-                <fieldset className="scheduler-border">
-                    <legend className="scheduler-border">Nhân lực</legend>
-                    <div className="form-group">
-                        <label>{translate('project.manager')}<span className="text-red">*</span></label>
-                        {listUsers &&
-                            <SelectBox
-                                id={`select-project-manager-${id}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listUsers}
-                                onChange={(e) => handleProjectManager(e)}
-                                value={decision.projectManager}
-                                multiple={true}
-                            />
-                        }
-                    </div>
-                    <div className="form-group">
-                        <table id="project-table" className="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Thuộc đơn vị</th>
-                                    <th>Thành viên tham gia</th>
-                                    <th>{translate('task_template.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0 &&
-                                    responsibleEmployeesWithUnit.list.map((item, index) => (
-                                        <tr key={index}>
-                                            <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
-                                            <td>
-                                                {item?.listUsers.map(userItem =>
-                                                    convertUserIdToUserName(listUsers, userItem))
-                                                    .join(', ')
-                                                }
-                                            </td>
-                                            <td>
-                                                <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteMemberRow(index)}><i className="material-icons">delete</i></a>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                                <tr key={`add-task-input-${responsibleEmployeesWithUnit.list.length}-${id}`}>
-                                    <td>
-                                        <div className={`form-group`}>
-                                            {listDepartments && listDepartments.length > 0 &&
-                                                <SelectBox
-                                                    id={`decision-department-${responsibleEmployeesWithUnit.list.length}-${id}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={listDepartments}
-                                                    onChange={(e) => {
-                                                        setTimeout(() => {
-                                                            setResponsibleEmployeesWithUnit({
-                                                                ...responsibleEmployeesWithUnit,
-                                                                currentUnitRow: e[0],
-                                                            })
-                                                        }, 10);
-                                                    }}
-                                                    value={responsibleEmployeesWithUnit.currentUnitRow}
-                                                    multiple={false}
-                                                />}
-                                        </div>
-                                    </td>
-                                    <td style={{ maxWidth: 250 }}>
-                                        <div className={`form-group`}>
-                                            {listDepartments && listDepartments.length > 0 &&
-                                                <SelectBox
-                                                    id={`decision-member--${responsibleEmployeesWithUnit.list.length}-${id}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={listUsers.filter(item =>
-                                                        item.text === convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany,
-                                                            responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value)
-                                                    )}
-                                                    onChange={(e) => {
-                                                        setTimeout(() => {
-                                                            setResponsibleEmployeesWithUnit({
-                                                                ...responsibleEmployeesWithUnit,
-                                                                currentEmployeeRow: e,
-                                                            })
-                                                        }, 10);
-                                                    }}
-                                                    value={responsibleEmployeesWithUnit.currentEmployeeRow}
-                                                    multiple={true}
-                                                />}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a className="save text-green" title={translate('general.save')} onClick={handleAddMemberRow}><i className="material-icons">add_circle</i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </fieldset>
-            </>
+            <fieldset className="scheduler-border">
+                <legend className="scheduler-border">Nhân lực</legend>
+                <div className="form-group">
+                    <label>{translate('project.manager')}<span className="text-red">*</span></label>
+                    {listUsers &&
+                        <SelectBox
+                            id={`${props.type}-select-project-manager--${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={listUsers}
+                            onChange={handleProjectManager}
+                            value={decision.projectManager}
+                            multiple={true}
+                        />
+                    }
+                </div>
+                <div className="form-group">
+                    <table id="project-table" className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Thuộc đơn vị</th>
+                                <th>Thành viên tham gia</th>
+                                <th>{translate('task_template.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0 &&
+                                responsibleEmployeesWithUnit.list.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
+                                        <td>
+                                            {item?.listUsers.map(userItem =>
+                                                convertUserIdToUserName(listUsers, userItem))
+                                                .join(', ')
+                                            }
+                                        </td>
+                                        <td>
+                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteMemberRow(index)}><i className="material-icons">delete</i></a>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                            <tr key={`add-task-input-${responsibleEmployeesWithUnit.list.length}-${id}`}>
+                                <td>
+                                    <div className={`form-group`}>
+                                        {listDepartments && listDepartments.length > 0 &&
+                                            <SelectBox
+                                                id={`decision-department-${responsibleEmployeesWithUnit.list.length}-${id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={listDepartments}
+                                                onChange={(e) => {
+                                                    setTimeout(() => {
+                                                        setResponsibleEmployeesWithUnit({
+                                                            ...responsibleEmployeesWithUnit,
+                                                            currentUnitRow: e[0],
+                                                        })
+                                                    }, 10);
+                                                }}
+                                                value={responsibleEmployeesWithUnit.currentUnitRow}
+                                                multiple={false}
+                                            />}
+                                    </div>
+                                </td>
+                                <td style={{ maxWidth: 250 }}>
+                                    <div className={`form-group`}>
+                                        {listDepartments && listDepartments.length > 0 &&
+                                            <SelectBox
+                                                id={`decision-member--${responsibleEmployeesWithUnit.list.length}-${id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={listUsers.filter(item =>
+                                                    item.text === convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany,
+                                                        responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value)
+                                                )}
+                                                onChange={(e) => {
+                                                    setTimeout(() => {
+                                                        setResponsibleEmployeesWithUnit({
+                                                            ...responsibleEmployeesWithUnit,
+                                                            currentEmployeeRow: e,
+                                                        })
+                                                    }, 10);
+                                                }}
+                                                value={responsibleEmployeesWithUnit.currentEmployeeRow}
+                                                multiple={true}
+                                            />}
+                                    </div>
+                                </td>
+                                <td>
+                                    <a className="save text-green" title={translate('general.save')} onClick={handleAddMemberRow}><i className="material-icons">add_circle</i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
         )
     }
 
     const renderTasks = () => {
         return (
-            <>
-                <fieldset className="scheduler-border">
-                    <legend className="scheduler-border">Danh sách công việc</legend>
+            <fieldset className="scheduler-border">
+                <legend className="scheduler-border">Danh sách công việc</legend>
 
-                    {/* Form create task */}
-                    <div style={{ paddingTop: '10px' }}>
-                        <div className="form-group">
-                            <label>Tên công việc<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name={`name-${state.currentIndex}`} onChange={(value) => handleChangeForm("name", value)} value={state.currentTask?.name} placeholder="Tên công việc" autoComplete="off" />
-                            <ErrorLabel content={state.currentTask?.nameError} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Mô tả công việc</label>
-                            <textarea type="text" rows={3} style={{ minHeight: '103.5px' }}
-                                name={`count-${state.currentIndex}`}
-                                onChange={(value) => handleChangeForm("description", value)}
-                                value={state.currentTask?.description}
-                                className="form-control"
-                                placeholder="Mô tả công việc"
-                                autoComplete="off"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Thời gian thực hiện<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name={`estimateTime-${state.currentIndex}`} onChange={(value) => handleChangeForm("estimateTime", value)} value={state.currentTask?.estimateTime} placeholder="Thời gian thực hiện" autoComplete="off" />
-                        </div>
-                        <div className="form-group">
-                            <label>Đơn vị thời gian<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`select-decision-bidding-contract-unitTime-${id}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={arrUnitTimeList}
-                                onChange={(value) => handleChangeSingleSelectForm("unitOfTime", value)}
-                                value={state.currentTask?.unitOfTime}
-                                multiple={false}
-                            />
-                        </div>
+                {/* Form create task */}
+                <div style={{ paddingTop: '10px' }}>
+                    <div className="form-group">
+                        <label>Tên công việc<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" name={`name-${state.currentIndex}`} onChange={(value) => handleChangeForm("name", value)} value={state.currentTask?.name} placeholder="Tên công việc" autoComplete="off" />
+                        <ErrorLabel content={state.currentTask?.nameError} />
                     </div>
 
-
-                    <div className="pull-right row" style={{ marginRight: 0, marginBottom: "15px" }}>
-                        {state.type === EDIT_TYPE &&
-                            <>
-                                <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancel() }}>Hủy</button>
-                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTask(state.currentIndex) }}>Lưu</button>
-                            </>
-                        }
-                        {state.type === ADD_TYPE &&
-                            <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTask() }}>Thêm</button>
-                        }
-                        <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
+                    <div className="form-group">
+                        <label>Mô tả công việc</label>
+                        <textarea type="text" rows={3} style={{ minHeight: '103.5px' }}
+                            name={`count-${state.currentIndex}`}
+                            onChange={(value) => handleChangeForm("description", value)}
+                            value={state.currentTask?.description}
+                            className="form-control"
+                            placeholder="Mô tả công việc"
+                            autoComplete="off"
+                        />
                     </div>
+                    <div className="form-group">
+                        <label>Thời gian thực hiện<span className="text-red">*</span></label>
+                        <input type="number" className="form-control" name={`estimateTime-${state.currentIndex}`} onChange={(value) => handleChangeForm("estimateTime", value)} value={state.currentTask?.estimateTime} placeholder="Thời gian thực hiện" autoComplete="off" />
+                    </div>
+                    <div className="form-group">
+                        <label>Đơn vị thời gian<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`${props.type}-select-decision-bidding-contract-unitTime-${id}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={arrUnitTimeList}
+                            onChange={(value) => handleChangeSingleSelectForm("unitOfTime", value)}
+                            value={state.currentTask?.unitOfTime}
+                            multiple={false}
+                        />
+                    </div>
+                </div>
 
-                    <table id="project-table" className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Tên công việc</th>
-                                <th>Thời gian thực hiện</th>
-                                <th>Mô tả công việc</th>
-                                <th>{translate('task_template.action')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                decision.tasks?.map((item, listIndex) => {
-                                    return (
-                                        <tr key={listIndex}>
-                                            <td>{item?.name}</td>
-                                            <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
-                                            <td>{item?.description}</td>
-                                            {/* <td>{item?.description?.length > 50 ? `${item?.description?.subString(0, 50)} ...` : item?.description}</td> */}
-                                            <td>
-                                                <a className="edit" title={translate('general.delete')} onClick={() => handleEditTask(listIndex)}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(listIndex)}><i className="material-icons">delete</i></a>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
-                </fieldset>
-            </>
+
+                <div className="pull-right row" style={{ marginRight: 0, marginBottom: "15px" }}>
+                    {state.type === EDIT_TYPE &&
+                        <>
+                            <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancel() }}>Hủy</button>
+                            <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTask(state.currentIndex) }}>Lưu</button>
+                        </>
+                    }
+                    {state.type === ADD_TYPE &&
+                        <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTask() }}>Thêm</button>
+                    }
+                    <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
+                </div>
+
+                <table id="project-table" className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tên công việc</th>
+                            <th>Thời gian thực hiện</th>
+                            <th>Mô tả công việc</th>
+                            <th>{translate('task_template.action')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            decision.tasks?.map((item, listIndex) => {
+                                return (
+                                    <tr key={listIndex}>
+                                        <td>{item?.name}</td>
+                                        <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
+                                        <td>{item?.description}</td>
+                                        {/* <td>{item?.description?.length > 50 ? `${item?.description?.subString(0, 50)} ...` : item?.description}</td> */}
+                                        <td>
+                                            <a className="edit" title={translate('general.delete')} onClick={() => handleEditTask(listIndex)}><i className="material-icons">edit</i></a>
+                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(listIndex)}><i className="material-icons">delete</i></a>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
+            </fieldset>
         )
     }
 

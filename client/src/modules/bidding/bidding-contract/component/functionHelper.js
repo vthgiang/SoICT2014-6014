@@ -101,6 +101,50 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
     return decisionAuto;
 }
 
+/**
+ * hàm trả về dữ liệu project task khi tạo mới project theo
+ * @param {BiddingPackage} bp dữ liệu gói thầu
+ * @param {Array} allUsers danh sách tất cả user
+ * @returns decision - quyết định giao triển khai hợp đồng
+ */
+export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
+    const proposalsCopy = bp.proposals ? [...bp.proposals] : [];
+
+    let taskList = [];
+
+    for (let idx in proposalsCopy) {
+        let p = proposalsCopy[idx]
+        let projectTaskData = {
+            code: `Task_${Number(idx) + 1}`,
+            name: p.taskName,
+            description: p.taskDescription,
+            preceedingTasks: Number(idx) === 0 ? [] : [`Task_${Number(idx)}`],
+            estimateNormalTime: p.estimateTime, // thời gian ước lượng
+            estimateOptimisticTime: Number(p.estimateTime) === 1 ? '0' : Number(p.estimateTime) === 2 ? '1' : (Number(p.estimateTime) - 2).toString(), // thòi lượng thỏa hiệp
+            unitOfTime: p.unitOfTime,
+            responsibleEmployees: [],
+            accountableEmployees: [],
+            totalResWeight: 80,
+        }
+        for (let emp of p.directEmployees) {
+            let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp);
+            if (cvtEmp) {
+                projectTaskData.responsibleEmployees.push(cvtEmp._id)
+            }
+        }
+        for (let emp of p.backupEmployees) {
+            let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp);
+            if (cvtEmp) {
+                projectTaskData.accountableEmployees.push(cvtEmp._id)
+            }
+        }
+
+        taskList.push(projectTaskData)
+    }
+
+    return taskList;
+}
+
 export const getDepartmentWithUsers = (usersOfChildrenOrganizationalUnit, includeManager = true, includeDeputyManager = true, includeEmployee = true) => {
     let unitMembers;
     let structEmployee = [];
