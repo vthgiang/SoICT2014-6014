@@ -388,6 +388,7 @@ function AddTaskForm(props) {
     }
 
     const handleChangeTaskOutputs = (data) => {
+        console.log(391, data)
         setState({
             ...state,
             newTask: {

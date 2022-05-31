@@ -914,12 +914,18 @@ const TaskSchema = new Schema(
         },
         taskOutputs: [
             {
-                version: Number, // phiên bản sửa đổi
-                status: String, // Trạng thái của kết quả giao nộp
-                /* Danh sách người phê duyệt kết quả giao nộp: 
-                trong TH công việc thường: accountableEmployees sẽ là người phê duyệt công việc
-                trong TH theo quy trình: accountableEmployees sẽ thêm danh sách người thực hiện của công việc tiếp theo cần xác nhận
-                */
+                title: {
+                    type: String
+                },
+                type: {
+                    type: Number
+                }, // có các kiểu 0:text, 1: document
+                description: {
+                    type: String
+                },
+                status: {
+                    type: String
+                },
                 accountableEmployees: [
                     {
                         accountableEmployee: {
@@ -929,33 +935,28 @@ const TaskSchema = new Schema(
                         taskId: {
                             type: Schema.Types.ObjectId
                         }, // id của công việc cần xác nhận phê duyệt
-                        status: String // Phê duyệt, Chờ phê duyệt, từ chối
+                        // status: {
+                        //     type: String
+                        // }
+
                     }
                 ],
-                expectedResults: [
+                submissionResults: [
                     {
-                        title: {
-                            type: String
-                        },
-                        type: {
+                        version: {
                             type: Number
-                        }, // có các kiểu 0:text, 1: document
-                        description: {
-                            type: String
                         },
                         status: {
-                            type: String
+                            type: Number
                         },
-                        submissionResults: [
-                            {
-                                commentId: Schema.Types.ObjectId,
-                                documentId: Schema.Types.ObjectId,
-                                creator: {
-                                    type: Schema.Types.ObjectId,
-                                    ref: "User",
-                                },
-                            }
-                        ]
+
+                        taskActions: [{
+                            type: String
+                        }],
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
                     }
                 ]
             }

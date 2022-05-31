@@ -120,4 +120,7 @@ router.patch('/process/tasks/:taskId/comments/:commentId/child-comments/:childCo
 
 router.post('/tasks/:taskId/evaluate-project', auth, PerformTaskController.evaluateTaskProject);
 
+// TaskOutputs
+router.post('/tasks/:taskId/task-outputs', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskOutputs);
+
 module.exports = router;

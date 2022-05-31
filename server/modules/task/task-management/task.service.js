@@ -2103,6 +2103,21 @@ exports.createTask = async (portal, task) => {
         taskInformations = taskTemplate ? taskTemplate.taskInformations : [];
     }
 
+    const accountableEmployeesTaskOutputs = task.accountableEmployees.map((item) => {
+        return {
+            accountableEmployee: item,
+            status: "waiting_approval"
+        }
+    });
+    console.log('task', task)
+    const taskOutputs = task.taskOutputs.map((item) => {
+        return {
+            ...item,
+            accountableEmployees: accountableEmployeesTaskOutputs
+        }
+    })
+    console.log(2118, taskOutputs)
+
     const newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
@@ -2125,7 +2140,7 @@ exports.createTask = async (portal, task) => {
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
         taskProject: taskProject,
         tags: task.tags,
-        taskOutputs: task.taskOutputs
+        taskOutputs: taskOutputs
     });
 
     if (newTask.taskTemplate !== null) {

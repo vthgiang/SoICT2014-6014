@@ -3072,6 +3072,19 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
   let taskItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
+  const accountableEmployeesTaskOutputs = task.accountableEmployees.map((item) => {
+    return {
+      accountableEmployee: item,
+      status: "waiting_approval"
+    }
+  });
+  const taskOutputsChange = taskOutputs.map((item) => {
+    return {
+      ...item,
+      accountableEmployees: accountableEmployeesTaskOutputs
+    }
+  })
+
   // update collaboratedWithOrganizationalUnits
   let newCollab = [];
   let oldCollab = taskItem.collaboratedWithOrganizationalUnits.map(e => { return e.organizationalUnit });
@@ -3118,7 +3131,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees: informedEmployees,
 
         inactiveEmployees: inactiveEmployees,
-        taskOutputs: taskOutputs,
+        taskOutputs: taskOutputsChange,
       } : {
         name: name,
         description: description,
@@ -3139,7 +3152,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees: informedEmployees,
 
         inactiveEmployees: inactiveEmployees,
-        taskOutputs: taskOutputs,
+        taskOutputs: taskOutputsChange,
       },
     },
     { $new: true }
@@ -7797,3 +7810,36 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
 
   return newTask;
 };
+
+exports.createTaskOutputs = async (portal, params, body, taskAction) => {
+  console.log(7810, params, body)
+  // let actionInformation = {
+  //   creator: body.creator,
+  //   description: body.description,
+  //   files: files,
+  // };
+  let submissionResults = {
+    taskActions: [taskAction._id],
+    status: 1
+  }
+
+  console.log(7819, submissionResults)
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      { _id: params.taskId, "taskOutputs._id": mongoose.Types.ObjectId(body.expectedResult) },
+      {
+        $push: {
+          "taskOutputs.$.submissionResults": {
+            $each: [submissionResults],
+            $position: 0
+          },
+        },
+        // $push: {
+        //   "taskActions.$.files": files,
+        // },
+      },
+      { new: true })
+  console.log(7835)
+
+  return { taskOutputs: task.taskOutputs };
+}

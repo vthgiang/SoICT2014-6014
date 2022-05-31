@@ -23,7 +23,7 @@ function ExpectedResults(props) {
     const { onChange } = props;
     const { tasks } = props;
 
-    const initValue = tasks?.task?.taskOutputs ? tasks.task.taskOutputs[0].expectedResults : [];
+    const initValue = tasks?.task ? tasks.task.taskOutputs : [];
     const [itemStatus, setItemStatus] = useState({
         index: '',
         status: '',
@@ -34,13 +34,6 @@ function ExpectedResults(props) {
         type: 0,
     })
     const [expectedResults, setExpectedResults] = useState(initValue)
-    const handleChangeResultType = (event) => {
-        let value = event.target.value;
-        setNewExpectedResult({
-            ...newExpectedResult,
-            type: value,
-        });
-    }
 
     const handleChangeDescription = async (value, imgs) => {
         setNewExpectedResult({
@@ -51,11 +44,7 @@ function ExpectedResults(props) {
     }
 
     useEffect(() => {
-        onChange([
-            {
-                expectedResults: expectedResults
-            }
-        ])
+        onChange(expectedResults)
     }, [expectedResults])
 
     return (
@@ -143,20 +132,40 @@ function ExpectedResults(props) {
                                 })
                             }}
                         > Lưu</button>
-                    </React.Fragment> : <button
-                        className="btn btn-success"
-                        style={{ marginLeft: "10px" }}
-                        onClick={() => {
-                            const newList = [...expectedResults, newExpectedResult]
-                            setExpectedResults(newList);
-                            setNewExpectedResult({
-                                title: '',
-                                description: '',
-                                type: 0,
-                            });
-                        }}>Thêm mới</button>
+                    </React.Fragment> : (
+                        <button
+                            className="btn btn-success"
+                            style={{ marginLeft: "10px" }}
+                            onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                const newList = [...expectedResults, newExpectedResult]
+                                setExpectedResults(newList);
+                                setNewExpectedResult({
+                                    title: '',
+                                    description: '',
+                                    type: 0,
+                                });
+                            }}>
+                            Thêm mới
+                        </button>
+                    )
                 }
-                <button className="btn btn-primary" style={{ marginLeft: "10px" }} >Xóa trắng</button>
+                <button
+                    className="btn btn-primary"
+                    style={{ marginLeft: "10px" }}
+                    onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setNewExpectedResult({
+                            title: '',
+                            description: '',
+                            type: 0,
+                        });
+                    }}
+                >
+                    Xóa trắng
+                </button>
             </div>
 
             {/**table chứa danh sách các thông tin của mẫu công việc */}

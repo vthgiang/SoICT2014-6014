@@ -78,6 +78,8 @@ export const performTaskService = {
 
     evaluateTaskByResponsibleEmployeesProject,
     evaluateTaskByAccountableEmployeesProject,
+
+    createTaskOutputs
 };
 
 /**
@@ -829,4 +831,17 @@ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
             role: 'accountable',
         }
     }, true, true, 'task.task_management');
+}
+
+/**
+ * Thêm mới hoạt động
+ * @param {*} taskId id của task
+ * @param {*} newAction nội dung hành động
+ */
+function createTaskOutputs(taskId, newAction) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs`,
+        method: 'POST',
+        data: newAction
+    }, true, true, 'task.task_perform');
 }

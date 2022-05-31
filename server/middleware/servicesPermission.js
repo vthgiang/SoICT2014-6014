@@ -130,8 +130,8 @@ exports.links = [
             { path: '/educationProgram/educationPrograms/:id', method: 'PATCH' },
 
             // Dashboard unit
-            { path: '/dashboard-unit/all-unit-dashboard-data',method: 'GET' },
-            
+            { path: '/dashboard-unit/all-unit-dashboard-data', method: 'GET' },
+
             { path: '/course/courses', method: 'GET' },
             { path: '/course/courses', method: 'POST' },
             { path: '/course/courses/:id', method: 'DELETE' },
@@ -367,7 +367,8 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-comments/:commentId', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/files/:fileId', method: 'PATCH' },
 
-
+            // task outputs
+            { path: '/performtask/tasks/:taskId/task-outputs', method: 'POST' },
 
             //comment of task comment
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST' },
@@ -436,11 +437,11 @@ exports.links = [
 
 
             //Asset-lot
-            {path: '/assetlot/asset-lots', method:'GET'},
-            {path: '/assetlot/asset-lots', method:'POST'},
-            {path: '/assetlot/asset-lots/:id', method:'PATCH'},
-            {path: '/assetlot/asset-lots', method:'DELETE'},
-            {path: '/assetlot/asset-lots/:id', method:'GET'},
+            { path: '/assetlot/asset-lots', method: 'GET' },
+            { path: '/assetlot/asset-lots', method: 'POST' },
+            { path: '/assetlot/asset-lots/:id', method: 'PATCH' },
+            { path: '/assetlot/asset-lots', method: 'DELETE' },
+            { path: '/assetlot/asset-lots/:id', method: 'GET' },
 
 
             // Asset
@@ -476,23 +477,23 @@ exports.links = [
 
 
             //Supplies
-            {path: '/supplies/supplies', method: 'GET'},
-            {path: '/supplies/supplies', method: 'POST'},
-            {path: '/supplies/supplies/:id', method: 'PATCH'},
-            {path: '/supplies/supplies', method: 'DELETE'},
-            {path: '/supplies/supplies/:id', method: 'GET'},
+            { path: '/supplies/supplies', method: 'GET' },
+            { path: '/supplies/supplies', method: 'POST' },
+            { path: '/supplies/supplies/:id', method: 'PATCH' },
+            { path: '/supplies/supplies', method: 'DELETE' },
+            { path: '/supplies/supplies/:id', method: 'GET' },
             //supplies allocation history
-            {path: '/allocation-supplies/allocation', method: 'GET'},
-            {path: '/allocation-supplies/allocation', method: 'POST'},
-            {path: '/allocation-supplies/allocation/:id', method: 'PATCH'},
-            {path: '/allocation-supplies/allocation', method: 'DELETE'},
-            {path: '/allocation-supplies/allocation/:id', method: 'GET'},
+            { path: '/allocation-supplies/allocation', method: 'GET' },
+            { path: '/allocation-supplies/allocation', method: 'POST' },
+            { path: '/allocation-supplies/allocation/:id', method: 'PATCH' },
+            { path: '/allocation-supplies/allocation', method: 'DELETE' },
+            { path: '/allocation-supplies/allocation/:id', method: 'GET' },
             //purchase invoice
-            {path: '/purchase-invoice/purchase-invoice', method: 'GET'},
-            {path: '/purchase-invoice/purchase-invoice', method: 'POST'},
-            {path: '/purchase-invoice/purchase-invoice/:id', method: 'PATCH'},
-            {path: '/purchase-invoice/purchase-invoice', method: 'DELETE'},
-            {path: '/purchase-invoice/purchase-invoice/:id', method: 'GET'},
+            { path: '/purchase-invoice/purchase-invoice', method: 'GET' },
+            { path: '/purchase-invoice/purchase-invoice', method: 'POST' },
+            { path: '/purchase-invoice/purchase-invoice/:id', method: 'PATCH' },
+            { path: '/purchase-invoice/purchase-invoice', method: 'DELETE' },
+            { path: '/purchase-invoice/purchase-invoice/:id', method: 'GET' },
             //supplies purchase request
             { path: '/supplies-request/purchase-request', method: 'GET' },
             { path: '/supplies-request/use-approver', method: 'GET' },
@@ -828,10 +829,10 @@ exports.links = [
     }, {
         url: '/task-process-template',
         apis: ['@all']
-    },  {
+    }, {
         url: '/process-template',
         apis: ['@all']
-    },  {
+    }, {
         url: '/process',
         apis: ['@all']
     },
@@ -919,9 +920,9 @@ exports.links = [
         url: '/supplies-purchase-request',
         apis: ['@all']
     },
-    
-    
-    
+
+
+
     {
         url: '/task-report',
         apis: ['@all']

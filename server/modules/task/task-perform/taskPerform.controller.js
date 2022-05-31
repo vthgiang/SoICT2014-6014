@@ -13,7 +13,7 @@ const moment = require('moment');
  */
 exports.getTaskById = async (req, res) => {
     try {
-        var task = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id, req.thirdParty? true : false);
+        var task = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id, req.thirdParty ? true : false);
         await Logger.info(req.user.email, ` get task by id `, req.portal);
         res.status(200).json({
             success: true,
@@ -983,7 +983,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
         sendEmail(task.email, tasks.name, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${tasks?.name}</a> với vai trò người phê duyệt</p>`
-        +`<p>Mô tả công việc : ${tasks.description}  </p>`, `${task.tasks._id}@gmail.com`, null);
+            + `<p>Mô tả công việc : ${tasks.description}  </p>`, `${task.tasks._id}@gmail.com`, null);
 
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
@@ -2042,5 +2042,35 @@ evaluateTaskByAccountableEmployeesProject = async (req, res) => {
             messages: ['evaluate_task_failure'],
             content: error
         });
+    }
+}
+
+exports.createTaskOutputs = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+
+        let task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
+        let taskAction = task.taskActions?.[0];
+        let taskOutputs = await PerformTaskService.createTaskOutputs(req.portal, req.params, req.body, taskAction);
+        // console.log(taskAction);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create task action  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_task_action_failure'],
+            content: error
+        })
     }
 }
