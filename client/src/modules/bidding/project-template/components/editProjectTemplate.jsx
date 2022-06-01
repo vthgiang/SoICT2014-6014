@@ -40,11 +40,11 @@ const EditProjectTemplateForm = (props) => {
         endDate: '',
         projectManager: [],
         responsibleEmployees: [],
-        unitCost: fakeUnitCostList[0].value,
-        unitTime: fakeUnitTimeList[0].value,
+        currenceUnit: fakeUnitCostList[0].value,
+        unitOfTime: fakeUnitTimeList[0].value,
         estimatedCost: ''
     });
-    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = generalInfo;
+    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, currenceUnit, unitOfTime, estimatedCost } = generalInfo;
     const [tasksInfo, setTasksInfo] = useState([]);
     const [startTime, setStartTimeRq] = useState('08:00 AM');
     const [endTime, setEndTimeRq] = useState('05:30 PM');
@@ -117,8 +117,8 @@ const EditProjectTemplateForm = (props) => {
                 projectManager,
                 responsibleEmployees: newEmployeesArr,
                 description,
-                unitCost,
-                unitTime,
+                currenceUnit,
+                unitOfTime,
                 estimatedCost,
                 creator: userId,
                 responsibleEmployeesWithUnit: currentSalaryMembers,
@@ -167,7 +167,7 @@ const EditProjectTemplateForm = (props) => {
                                     setUserSelectOptions={setUserSelectOptions}
                                     projectData={projectData}
                                     type={"edit"}
-                                    id={`edit-${id}`}
+                                    id={`edit-template-${id}`}
                                 />
                             </div>
                             <div className={selectedTab === "tasks" ? "active tab-pane" : "tab-pane"} id={`tasks-edit-${id}`}>
@@ -175,7 +175,7 @@ const EditProjectTemplateForm = (props) => {
                                     userSelectOptions={userSelectOptions}
                                     setTasksInfo={setTasksInfo}
                                     type={"edit"}
-                                    id={`edit-${id}`}
+                                    id={`edit-template-${id}`}
                                     taskList={projectData?.tasks}
                                 // currentProjectTasks={tasksInfo}
                                 // projectDetail={generalInfo}

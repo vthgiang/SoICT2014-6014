@@ -37,12 +37,19 @@ const AddTaskSchedule = (props) => {
 
     useEffect(() => {
         setProjectDetail(projectData)
+        setState({
+            ...state,
+            taskInit: {
+                ...state.taskInit,
+                code: `DXT${projectData?.id?.substring(0, 6)}-0`,
+            }
+        })
     }, [JSON.stringify(projectData)])
 
     const [state, setState] = useState({
         taskInit: {
-            taskProject: projectDetail?._id,
-            code: `DXT${projectDetail?.code?.substring(0, 6)}-0`,
+            // taskProject: projectDetail?._id,
+            code: `DXT${projectDetail?.id?.substring(0, 6)}-0`,
             name: '',
             preceedingTasks: [],
             estimateNormalTime: '',
@@ -179,24 +186,6 @@ const AddTaskSchedule = (props) => {
         //         }
         //     })
         // });
-    }
-
-    const resetForm = () => {
-        setState({
-            taskInit: {
-                taskProject: projectDetail?._id,
-                code: `DXT${projectDetail?.code.substring(0, 6)}-0`,
-                name: '',
-                preceedingTasks: [],
-                estimateNormalTime: '',
-                estimateOptimisticTime: '',
-                estimateNormalCost: '',
-                estimateMaxCost: '',
-                startDate: '',
-                endDate: '',
-            },
-            listTasks: [],
-        })
     }
 
     const handleSaveEditInfoRow = (newRowData, currentEditRowIndex) => {

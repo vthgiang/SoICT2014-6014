@@ -172,7 +172,7 @@ const ProjectCreateFormData = (props) => {
 
     useEffect(() => {
         let prjData = props.projectData;
-        if (props.type === TYPE.CREATE_BY_CONTRACT && prjData) {
+        if ((props.type === TYPE.CREATE_BY_CONTRACT || props.type === TYPE.CREATE_BY_TEMPLATE) && prjData) {
             setForm({
                 id: props.id,
                 // projectId: prjDataId,

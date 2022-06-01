@@ -8,6 +8,7 @@ import { getStorage } from '../../../../config';
 import { getParticipants, convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments, formatTime } from './functionHelper';
 import ModalSalaryMembers from './modalSalaryMembers';
 import { formatDate } from '../../../../helpers/formatDate';
+import ModalSalaryMembersEdit from './modalSalaryMembersEdit';
 
 const CreateGeneralTab = (props) => {
     const { translate, project, user } = props;
@@ -36,8 +37,8 @@ const CreateGeneralTab = (props) => {
         endDate: '',
         projectManager: [],
         responsibleEmployees: [],
-        unitCost: fakeUnitCostList[0].value,
-        unitTime: fakeUnitTimeList[0].value,
+        currenceUnit: fakeUnitCostList[0].value,
+        unitOfTime: fakeUnitTimeList[0].value,
         estimatedCost: ''
     });
 
@@ -50,7 +51,7 @@ const CreateGeneralTab = (props) => {
         currentEmployeeRow: [],
     })
 
-    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, id } = form;
+    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, currenceUnit, unitOfTime, estimatedCost, id } = form;
 
     const handleChangeForm = (event, currentKey) => {
         if (currentKey === 'projectName') {
@@ -71,7 +72,7 @@ const CreateGeneralTab = (props) => {
             })
             return;
         }
-        const renderFirstItemArr = ['unitCost', 'unitTime', 'projectType'];
+        const renderFirstItemArr = ['currenceUnit', 'unitOfTime', 'projectType'];
         if (renderFirstItemArr.includes(currentKey)) {
             setForm({
                 ...form,
@@ -113,8 +114,8 @@ const CreateGeneralTab = (props) => {
                 endDate: prjData?.endDate ? formatDate(prjData?.endDate) : '',
                 projectManager: preprocessUsersList(prjData?.projectManager),
                 responsibleEmployees: preprocessUsersList(prjData?.responsibleEmployees),
-                unitCost: prjData?.unitCost || fakeUnitCostList[0].text,
-                unitTime: prjData?.unitTime || fakeUnitTimeList[0].text,
+                currenceUnit: prjData?.currenceUnit || fakeUnitCostList[0].text,
+                unitOfTime: prjData?.unitOfTime || fakeUnitTimeList[0].text,
                 estimatedCost: prjData?.estimatedCost || '',
             })
             setStartTime(formatTime(prjData?.startDate) || '08:00 AM')
@@ -143,6 +144,11 @@ const CreateGeneralTab = (props) => {
                     }),
                 })
             }, 10);
+        } else {
+            setForm({
+                ...form,
+                id: props.id,
+            })
         }
     }, [JSON.stringify(props.projectData), props.id])
 
@@ -156,8 +162,8 @@ const CreateGeneralTab = (props) => {
             endDate: form.endDate,
             projectManager: form.projectManager,
             responsibleEmployees: form.responsibleEmployees,
-            unitCost: form.unitCost,
-            unitTime: form.unitTime,
+            currenceUnit: form.currenceUnit,
+            unitOfTime: form.unitOfTime,
             estimatedCost: form.estimatedCost,
         })
     }, [form])
@@ -253,9 +259,9 @@ const CreateGeneralTab = (props) => {
         setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
     }, [responsibleEmployeesWithUnit.list])
 
-    const handleOpenModalSalaryMembers = () => {
+    const handleOpenModalSalaryMembers = (id) => {
         setTimeout(() => {
-            window.$("#modal-salary-members-prj-template").modal("show");
+            window.$(`#modal-salary-members-template-${id}`).modal("show");
         }, 10);
     }
 
@@ -265,8 +271,18 @@ const CreateGeneralTab = (props) => {
 
     return (
         <React.Fragment>
-
-            <ModalSalaryMembers
+            {/* {
+                props.type === "create" ?
+                    <ModalSalaryMembers
+                        id
+                        createProjectCurrentSalaryMember={currentSalaryMembers}
+                        responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
+                        handleSaveCurrentSalaryMember={handleSaveCurrentSalaryMember}
+                    /> : 
+            }*/}
+            <ModalSalaryMembersEdit
+                showInput={true}
+                projectDetailId={id}
                 createProjectCurrentSalaryMember={currentSalaryMembers}
                 responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
                 handleSaveCurrentSalaryMember={handleSaveCurrentSalaryMember}
@@ -349,8 +365,8 @@ const CreateGeneralTab = (props) => {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={fakeUnitTimeList}
-                                onChange={(e) => handleChangeForm(e, 'unitTime')}
-                                value={unitTime}
+                                onChange={(e) => handleChangeForm(e, 'unitOfTime')}
+                                value={unitOfTime}
                                 multiple={false}
                             />
                         </div>
@@ -385,7 +401,7 @@ const CreateGeneralTab = (props) => {
                         <div className="form-group">
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <label>{translate('project.member')}<span className="text-red">*</span></label>
-                                <button type="button" className="btn-link" onClick={handleOpenModalSalaryMembers}>Xem chi tiết lương nhân viên</button>
+                                <button type="button" className="btn-link" onClick={() => handleOpenModalSalaryMembers(id)}>Xem chi tiết lương nhân viên</button>
                             </div>
                             <table id="project-table" className="table table-striped table-bordered table-hover">
                                 <thead>

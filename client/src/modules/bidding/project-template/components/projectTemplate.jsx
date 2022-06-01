@@ -9,6 +9,7 @@ import { renderLongList } from "./functionHelper";
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
 import CreateProjectTemplateForm from "./createProjectTemplate";
 import EditProjectTemplateForm from "./editProjectTemplate";
+import CreateProjectByProjectTemplateModal from "./createProjectByProjectTemplate";
 
 function ProjectTemplateManage(props) {
     const tableId = 'project-template-table';
@@ -91,6 +92,20 @@ function ProjectTemplateManage(props) {
         }, 10);
     }
 
+    /**
+     * Bắt sự kiện click tạo dự án theo mẫu
+     * @param {*} value : Thông tin mẫu
+     */
+    const handleCreateProject = (value) => {
+        setState({
+            ...state,
+            currentRow: value
+        });
+        setTimeout(() => {
+            window.$(`#modal-create-project-by-template--${value._id}`).modal('show');
+        }, 500);
+    }
+
     const handleDelete = (id) => {
         props.deleteProjectTemplateDispatch(id);
         props.getProjectTemplateDispatch({
@@ -126,6 +141,10 @@ function ProjectTemplateManage(props) {
             />
             <CreateProjectTemplateForm
                 handleAfterCreateProject={handleAfterCreateProject}
+            />
+            <CreateProjectByProjectTemplateModal
+                id={currentRow ? currentRow._id : null}
+                data={currentRow ? currentRow : null}
             />
 
             <div className="box">
@@ -186,7 +205,7 @@ function ProjectTemplateManage(props) {
                                             <td>{item?.projectManager.map(o => o.name).join(", ")}</td>
                                             <td style={{ maxWidth: 450 }}>{renderLongList(item?.responsibleEmployees.map(o => o.name))}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
+                                                <a className="edit text-blue" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
                                                 {<a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>}
                                                 {<DeleteNotification
                                                     content={translate('project.delete')}
@@ -196,6 +215,9 @@ function ProjectTemplateManage(props) {
                                                     }}
                                                     func={handleDelete}
                                                 />}
+                                                <a className="" style={{ color: "#28A745" }} onClick={() => handleCreateProject(item)} title={"Tạo dự án theo mẫu"}>
+                                                    <i className="material-icons">add_box</i>
+                                                </a>
                                             </td>
                                         </tr>
                                     )

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { LazyLoadComponent, forceCheckOrVisible, DialogModal } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import { ProjectTemplateActionsns } from '../redux/actions';
 import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import { ProjectTemplateActions } from '../redux/actions';
 
 const ModalSalaryMembersEdit = (props) => {
-    const { translate, responsibleEmployeesWithUnit, project, user, createProjectCurrentSalaryMember, projectDetail, projectDetailId, isTasksListEmpty } = props;
+    const { translate, responsibleEmployeesWithUnit, projectTemplate, user, createProjectCurrentSalaryMember, showInput, projectDetail, projectDetailId, isTasksListEmpty, type } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
-    const [currentSalaryMembers, setCurrentSalaryMembers] = useState(project.salaries || []);
+    const [currentSalaryMembers, setCurrentSalaryMembers] = useState(projectTemplate.salaries || []);
 
     useEffect(() => {
         let newResponsibleEmployeesWithUnit = [];
@@ -32,8 +32,8 @@ const ModalSalaryMembersEdit = (props) => {
     }, [createProjectCurrentSalaryMember])
 
     useEffect(() => {
-        setCurrentSalaryMembers(project.salaries);
-    }, [project.salaries])
+        setCurrentSalaryMembers(projectTemplate.salaries);
+    }, [projectTemplate.salaries])
 
     const save = () => {
         props.handleSaveCurrentSalaryMember(currentSalaryMembers);
@@ -42,19 +42,18 @@ const ModalSalaryMembersEdit = (props) => {
     const isAbleToSave = () => {
         return currentSalaryMembers.length > 0;
     }
-
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-salary-members-edit-${projectDetail?._id || projectDetailId}`} isLoading={false}
-                formID={`form-salary-members-edit-${projectDetail?._id || projectDetailId}`}
+                modalID={`modal-salary-members-template-${projectDetailId}`} isLoading={false}
+                formID={`form-salary-members-template-${projectDetailId}`}
                 title={`Bảng lương thành viên trong dự án`}
                 size={75}
                 func={save}
                 disableSubmit={!isAbleToSave}
             >
                 <div>
-                    <p style={{ color: 'red' }}>*Nếu dự án đã có công việc thì không được sửa lương</p>
+                    {/* {!type && <p style={{ color: 'red' }}>*Nếu dự án đã có công việc thì không được sửa lương</p>} */}
                     <div className="box">
                         <div className="box-body qlcv">
                             <h3><strong>Bảng lương các thành viên trong dự án</strong></h3>
@@ -77,7 +76,7 @@ const ModalSalaryMembersEdit = (props) => {
                                                         <td>{convertUserIdToUserName(listUsers, userItem.userId)}</td>
                                                         <td>
                                                             {
-                                                                isTasksListEmpty
+                                                                showInput
                                                                     ?
                                                                     <input
                                                                         type="number"
@@ -120,8 +119,8 @@ const ModalSalaryMembersEdit = (props) => {
 }
 
 function mapStateToProps(state) {
-    const { project, user, tasks } = state;
-    return { project, user, tasks }
+    const { projectTemplate, user, tasks } = state;
+    return { projectTemplate, user, tasks }
 }
 
 const mapDispatchToProps = {

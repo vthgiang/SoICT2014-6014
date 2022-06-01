@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, DialogModal, ErrorLabel, SelectBox, UploadFile } from '../../../../common-components';
-import { BiddingContractActions } from '../redux/actions';
+import { DialogModal } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { BiddingPackageManagerActions } from '../../bidding-package/biddingPackageManagement/redux/actions';
 import { getStorage } from '../../../../config';
-import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
-import { DecisionForImplement } from './decisionAssignImplementContract';
-import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
-import { convertDateTime, getListDepartments } from '../../../project/projects/components/functionHelper';
+import { convertDateTime } from '../../../project/projects/components/functionHelper';
 import ProjectCreateFormData from '../../../project/projects/components/createProjectContent';
-import { getDecisionDataWhenUpdateBidPackage, getProjectTaskDataWhenCreateByContract } from './functionHelper';
-import { ProjectTaskForm } from './createProjectTaskList';
-import AddTaskSchedule from './createProjectTaskCPM';
+import AddTaskSchedule from '../../../bidding/bidding-contract/component/createProjectTaskCPM';
 
-const CreateProjectByContractModal = (props) => {
-    const { translate, biddingContract, biddingPackagesManager, user, project } = props;
+const CreateProjectByProjectTemplateModal = (props) => {
+    const { translate, user, project } = props;
     const userId = getStorage('userId');
     const allUsers = user && user.list
     const listUserDepartment = user && user.usersInUnitsOfCompany;
@@ -42,51 +36,7 @@ const CreateProjectByContractModal = (props) => {
         { text: 'QLDA phương pháp CPM', value: 2 },
     ]
 
-    const initState = {
-        contractNameError: undefined,
-        contractCodeError: undefined,
-
-        id: "",
-
-        code: "",
-        name: "",
-        effectiveDate: "",
-        endDate: "",
-        unitOfTime: fakeUnitTimeList[0].value,
-        budget: 0,
-        currenceUnit: fakeUnitCostList[0].value,
-
-        companyA: "",
-        addressA: "",
-        phoneA: "",
-        emailA: "",
-        taxCodeA: "",
-        representativeNameA: "",
-        representativeRoleA: "",
-        bankNameA: "",
-        bankAccountNumberA: "",
-
-        companyB: "",
-        addressB: "",
-        phoneB: "",
-        emailB: "",
-        taxCodeB: "",
-        representativeNameB: "",
-        representativeRoleB: "",
-        bankNameB: "",
-        bankAccountNumberB: "",
-
-        decideToImplement: null,
-        biddingPackage: null,
-        project: null,
-
-        // projectInfo: null,
-        // projectTask: [],
-
-        selectedTab: 'general'
-    }
     const initPrjData = {
-        projectNameError: undefined,
         projectName: "",
         projectType: 2,
         description: "",
@@ -96,14 +46,15 @@ const CreateProjectByContractModal = (props) => {
         responsibleEmployees: [],
         unitCost: fakeUnitCostList[0].value,
         unitTime: fakeUnitTimeList[0].value,
-        estimatedCost: ''
+
+        tasks: [],
     }
-    const [state, setState] = useState(initState);
+    const [state, setState] = useState(initPrjData);
     const [projectInfo, setProjectInfo] = useState(null);
-    const [projectInfoForTaskProps, setProjectInfoForTaskProps] = useState(null);// dùng để truyền props thông tin project xuống tab task project
+    const [projectInfoForTaskProps, setProjectInfoForTaskProps] = useState(null); // dùng để truyền props thông tin project xuống tab task project
     const [id, setId] = useState(props.id);
     const [projectTask, setProjectTask] = useState([]);
-    const [taskProjectList, setTaskProjectList] = useState([]); // dùng để gửi xuống server
+    const [taskProjectList, setTaskProjectList] = useState([]);// dùng để gửi xuống server
     const [currentSalaryMembers, setCurrentSalaryMembers] = useState(); // [] // dùng để gửi xuống server
     const [form, setForm] = useState();// dùng để gửi xuống server
 
@@ -116,8 +67,6 @@ const CreateProjectByContractModal = (props) => {
         currentEmployeeRow: [],
     })
 
-    const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
-
     useEffect(() => {
         props.getAllBiddingPackage({ name: '', status: 3, page: 0, limit: 1000 });
     }, [])
@@ -126,83 +75,7 @@ const CreateProjectByContractModal = (props) => {
         setId(props.id)
     }, [props.id])
 
-    // useEffect(() => {
-    //     if (projectInfo) {
-    //         setPrjForAddTaskProps({ ...projectInfo, responsibleEmployeesWithUnit: currentSalaryMembers })
-    //     }
-
-    // }, [JSON.stringify(currentSalaryMembers)])
-
-    useEffect(() => {
-        const { data } = props;
-
-        if (data) {
-            setState({
-                ...state,
-                id: data._id,
-
-                code: data.code,
-                name: data.name,
-                effectiveDate: formatDate(data.effectiveDate),
-                endDate: formatDate(data.endDate),
-                unitOfTime: fakeUnitTimeList.find(x => x.value === data.unitOfTime).value,
-                budget: data.budget,
-                currenceUnit: fakeUnitCostList.find(x => x.value === data.currenceUnit).value,
-
-                companyA: data.partyA.company,
-                addressA: data.partyA.address,
-                phoneA: data.partyA.phone,
-                emailA: data.partyA.email,
-                taxCodeA: data.partyA.taxCode,
-                representativeNameA: data.partyA.representative.name,
-                representativeRoleA: data.partyA.representative.role,
-                bankNameA: data.partyA.bank.name,
-                bankAccountNumberA: data.partyA.bank.accountNumber,
-
-                companyB: data.partyB.company,
-                addressB: data.partyB.address,
-                phoneB: data.partyB.phone,
-                emailB: data.partyB.email,
-                taxCodeB: data.partyB.taxCode,
-                representativeNameB: data.partyB.representative.name,
-                representativeRoleB: data.partyB.representative.role,
-                bankNameB: data.partyB.bank.name,
-                bankAccountNumberB: data.partyB.bank.accountNumber,
-
-                biddingPackage: data.biddingPackage?._id,
-                project: data.project,
-
-                decideToImplement: data.decideToImplement,
-
-                files: data.files,
-            })
-
-            let projectData = {
-                id: data._id, // lấy contract id để truyền xuống làm init code cho task
-                contractId: data._id,
-                name: `Dự án ${data.biddingPackage?.name}`,
-                projectType: 2,
-                startDate: data.effectiveDate,
-                endDate: data.endDate,
-                projectManager: data.decideToImplement?.projectManager,
-                responsibleEmployees: data.decideToImplement?.responsibleEmployees ?? [],
-                // description,
-                unitCost: data.currenceUnit,
-                unitTime: data.unitOfTime,
-                estimatedCost: data.budget,
-                creator: userId,
-                responsibleEmployeesWithUnit: data.decideToImplement?.responsibleEmployeesWithUnit ?? [],
-            }
-            setProjectInfo(projectData); // dùng cho khởi tạo thông tin cho tab general
-            setProjectInfoForTaskProps(projectData); // dùng để cập nhật thông tin cho tab task
-
-            let projectTaskData = getProjectTaskDataWhenCreateByContract(data.biddingPackage, allUsers);
-            setProjectTask(projectTaskData);
-        }
-    }, [props.id])
-
-
-    const fommatDataProject = () => {
+    const fommatDataProject = useCallback(() => {
         const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
 
         let partStartDate = convertDateTime(startDate, startTime).split('-');
@@ -234,7 +107,12 @@ const CreateProjectByContractModal = (props) => {
             creator: userId,
             responsibleEmployeesWithUnit: currentSalaryMembers,
         }
-    }
+    }, [endTime,
+        startTime,
+        JSON.stringify(form),
+        JSON.stringify(responsibleEmployeesWithUnit),
+        JSON.stringify(currentSalaryMembers),
+    ])
 
     useEffect(() => {
         if (endTime && startTime && form && responsibleEmployeesWithUnit && currentSalaryMembers) {
@@ -248,6 +126,47 @@ const CreateProjectByContractModal = (props) => {
         JSON.stringify(responsibleEmployeesWithUnit),
         JSON.stringify(currentSalaryMembers),
     ])
+
+    useEffect(() => {
+        const { data } = props;
+
+        if (data) {
+            setState({
+                ...state,
+                id: data._id,
+            })
+
+            let projectData = {
+                id: data._id,
+                name: `${data.name}`,
+                projectType: data.projectType,
+                startDate: Date.now(),
+                endDate: Date.now(),
+                projectManager: data.projectManager?.map(x => x._id),
+                responsibleEmployees: data?.responsibleEmployees?.map(x => x._id) ?? [],
+                description: data.description,
+                unitCost: data.currenceUnit,
+                unitTime: data.unitOfTime,
+                // creator: userId,
+                responsibleEmployeesWithUnit: data.responsibleEmployeesWithUnit ?? [],
+
+                tasks: data.tasks ?? [],
+            }
+            setProjectInfo(projectData);
+            setProjectInfoForTaskProps(projectData);
+
+            let projectTaskData = data.tasks?.map(x => {
+                if (x)
+                    return {
+                        ...x,
+                        preceedingTasks: x.preceedingTasks ? x.preceedingTasks.split(",")?.map(s => s?.trim()) : []
+                    }
+            }) ?? [];
+            setProjectTask(projectTaskData);
+        }
+    }, [props.id])
+
+    // console.log(115, projectInfo, projectTask);
 
     // Function format dữ liệu Date thành string
     const formatDate = (date, monthYear = false) => {
@@ -325,10 +244,10 @@ const CreateProjectByContractModal = (props) => {
         let { translate } = props;
         if (!ValidationHelper.validateName(translate, state.code, 3, 255).status) return false;
         if (!ValidationHelper.validateName(translate, state.name, 6, 255).status) return false;
-        if (state.effectiveDate.length === 0) return false;
+        if (state.startDate.length === 0) return false;
         if (state.endDate.length === 0) return false;
 
-        let splitter = state.effectiveDate.split("-");
+        let splitter = state.startDate.split("-");
         let effectiveDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
         splitter = state.endDate.split("-");
         let endDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
@@ -340,14 +259,14 @@ const CreateProjectByContractModal = (props) => {
 
     return (
         <DialogModal
-            modalID={`modal-create-project-for-contract--${id}`}
-            formID={`form-create-project-for-contract--${id}`}
+            modalID={`modal-create-project-by-template--${id}`}
+            formID={`form-create-project-by-template--${id}`}
             title="Tạo dự án cho hợp đồng"
-            disableSubmit={!isFormValidated()}
+            // disableSubmit={!isFormValidated()}
             func={save}
             size={100}
         >
-            <form id={`form-edit-bidding-contract-${id}`}>
+            <form id={`form-create-project-by-template--${id}`}>
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                     {/* Tabbed pane */}
                     <ul className="nav nav-tabs">
@@ -360,7 +279,7 @@ const CreateProjectByContractModal = (props) => {
                         <div id={`project-general-${id}`} className="active tab-pane">
                             <ProjectCreateFormData
                                 id={`project-general-${id}`}
-                                type={TYPE.CREATE_BY_CONTRACT}
+                                type={TYPE.CREATE_BY_TEMPLATE}
                                 handleStartTime={setStartTime}
                                 handleEndTime={setEndTime}
                                 handleCurrentSalaryMembers={setCurrentSalaryMembers}
@@ -371,7 +290,7 @@ const CreateProjectByContractModal = (props) => {
                         </div>
                         <div id={`project-task-${id}`} className="tab-pane">
                             <AddTaskSchedule
-                                type={TYPE.CREATE_BY_CONTRACT}
+                                type={TYPE.CREATE_BY_TEMPLATE}
                                 id={`project-task-${id}`}
                                 projectTask={projectTask}
                                 projectData={{
@@ -395,4 +314,4 @@ const mapDispatchToProps = {
     getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateProjectByContractModal));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateProjectByProjectTemplateModal));

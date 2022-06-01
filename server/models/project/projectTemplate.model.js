@@ -39,7 +39,7 @@ const ProjectTemplateSchema = new Schema(
         unitOfTime: {
             // có 2 đơn vị thời gian: Giờ, Ngày
             type: String,
-            default: "hours",
+            default: "days",
             enum: [
                 "hours",
                 "days",

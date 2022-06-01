@@ -172,11 +172,10 @@ export const formatStatusCode = (translate, data) => {
 }
 
 export const getSalaryFromUserId = (responsibleEmployeesWithUnit, userId) => {
-    console.log(responsibleEmployeesWithUnit, userId);
+    // console.log(responsibleEmployeesWithUnit, userId);
     if (responsibleEmployeesWithUnit)
         for (let unitItem of responsibleEmployeesWithUnit) {
             for (let userItem of unitItem.listUsers) {
-                console.log(179, userItem, userItem.salary);
                 if (userId === userItem.userId) return userItem.salary;
             }
         }

@@ -44,8 +44,8 @@ const ModalSalaryMembers = (props) => {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-salary-members-prj-template`} isLoading={false}
-                formID={`form-salary-members-prj-template`}
+                modalID={`modal-salary-members-template--prj-template`} isLoading={false}
+                formID={`form-salary-members-template-prj-template`}
                 title={`Bảng lương thành viên trong dự án`}
                 size={75}
                 func={save}

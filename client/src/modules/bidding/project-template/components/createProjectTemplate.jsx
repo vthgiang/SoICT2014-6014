@@ -42,7 +42,7 @@ const CreateProjectTemplateForm = (props) => {
         unitTime: fakeUnitTimeList[0].value,
         estimatedCost: ''
     });
-    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = generalInfo;
+    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, currenceUnit, unitOfTime, estimatedCost } = generalInfo;
     const [tasksInfo, setTasksInfo] = useState([]);
     const [startTime, setStartTimeRq] = useState('08:00 AM');
     const [endTime, setEndTimeRq] = useState('05:30 PM');
@@ -56,7 +56,6 @@ const CreateProjectTemplateForm = (props) => {
         const op = getParticipants(listUsers, projectManager, responsibleEmployeesWithUnit)
         setUserSelectOptions(op)
     }, [projectManager, responsibleEmployeesWithUnit])
-
 
     const isFormValidated = () => {
         let { translate } = props;
@@ -110,8 +109,8 @@ const CreateProjectTemplateForm = (props) => {
                 projectManager,
                 responsibleEmployees: newEmployeesArr,
                 description,
-                unitCost,
-                unitTime,
+                currenceUnit,
+                unitOfTime,
                 estimatedCost,
                 creator: userId,
                 responsibleEmployeesWithUnit: currentSalaryMembers,

@@ -132,6 +132,7 @@ exports.create = async (portal, data) => {
 }
 
 exports.edit = async (portal, id, data) => {
+    console.log('data', id, data)
     let newResponsibleEmployeesWithUnit = [];
     if (data) {
         for (let employeeItem of data.responsibleEmployeesWithUnit) {
@@ -190,7 +191,8 @@ exports.edit = async (portal, id, data) => {
             projectManager: data.projectManager,
             responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
             responsibleEmployees: data.responsibleEmployees,
-            unitTime: data.unitTime,
+            unitOfTime: data.unitOfTime,
+            currenceUnit: data.currenceUnit,
 
             tasks: data.tasks,
         }
