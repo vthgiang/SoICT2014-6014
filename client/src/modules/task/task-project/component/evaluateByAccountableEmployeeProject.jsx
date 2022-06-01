@@ -189,7 +189,6 @@ const EvaluateByAccountableEmployeeProject = (props) => {
                 progress: currentProgress,
                 actualResMemberCost: Number(
                     actualCostResMemberArr.find((acResItem) => {
-                        console.log('resEvalArr[i]', resEvalArr[i], 'acResItem.userId', acResItem.userId)
                         return String(acResItem.userId) === String(resEvalArr[i].id)
                     })?.actualCost
                 )

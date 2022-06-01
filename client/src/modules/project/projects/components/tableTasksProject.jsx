@@ -1,6 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'react-redux';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, DeleteNotification } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, DeleteNotification, ToolTip } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../redux/actions';
@@ -14,23 +14,26 @@ import Swal from 'sweetalert2';
 import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
 import moment from 'moment';
 import { getTotalTimeSheetLogs } from '../../../task/task-management/component/functionHelpers';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const TableTasksProject = (props) => {
     const tableId = "tasks-project-table";
     const [state, setState] = useState({
         taskName: "",
+        data: []
         // page: 1,
         // perPage: 6,
-        currentTaskId: '',
     })
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(6);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
     const { translate, currentProjectTasks, user, project, performtasks, tasks } = props;
-    const { taskName, currentTaskId } = state;
+    const { taskName, currentTaskId, data } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
+
+    const totalPage = tasks && Math.ceil(tasks.totalDocs / perPage);
 
     useEffect(() => {
         props.getTasksByProject(currentProjectId, page, perPage);
@@ -38,8 +41,46 @@ const TableTasksProject = (props) => {
     }, [])
 
     useEffect(() => {
-        window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+        if (currentTaskId) {
+            window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+        }
     }, [currentTaskId])
+
+    useEffect(() => {
+        let data = [];
+        if (!tasks?.isLoading && !user?.isLoading && !performtasks?.isLoading && !tasks?.isProjectPaginateLoading) {
+            let currentTasks = _cloneDeep(tasks.tasks); // Sao chép ra mảng mới
+            for (let n in currentTasks) {
+
+                data[n] = {
+                    ...currentTasks[n],
+                    rawData: currentTasks[n],
+                    name: currentTasks[n]?.name,
+                    preceedingTask: processPreceedingTasks(currentTasks[n]?.preceedingTasks),
+                    responsibleEmployees: currentTasks[n]?.responsibleEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.responsibleEmployees.map(o => o.name)} /> : null,
+                    accountableEmployees: currentTasks[n]?.accountableEmployees?.length > 0 ? <ToolTip dataTooltip={currentTasks[n]?.accountableEmployees.map(o => o.name)} /> : null,
+                    status: <div style={{ color: renderStatusColor(currentTasks[n]) }}>{formatTaskStatus(translate, currentTasks[n]?.status)}</div>,
+                    startDate: moment(currentTasks[n]?.startDate).format('HH:mm DD/MM/YYYY'),
+                    endDate: moment(currentTasks[n]?.endDate).format('HH:mm DD/MM/YYYY'),
+                    actualEndDate: currentTasks[n]?.actualEndDate && moment(currentTasks[n]?.actualEndDate).format('HH:mm DD/MM/YYYY'),
+                    timesheetLogs: getTotalTimeSheetLogs(currentTasks[n]?.timesheetLogs),
+                    progress: renderProgressBar(currentTasks[n]?.progress, currentTasks[n]),
+                    action: ["view"]
+                }
+
+                // Kiểm tra xem người dùng có quyền bấm giờ
+                if (currentTasks[n].responsibleEmployees && currentTasks[n].responsibleEmployees.find(e => e._id === userId) || currentTasks[n].accountableEmployees && currentTasks[n].accountableEmployees.find(e => e._id === userId)) {
+                    data[n] = { ...data[n], action: ["edit", "startTimer"] }
+                }
+            }
+
+            setState({
+                ...state,
+                data: data
+            })
+        }
+        console.log(data);
+    }, [performtasks?.isLoading, tasks?.isLoading, user?.isLoading, tasks?.isProjectPaginateLoading,JSON.stringify(props?.tasks?.tasks), JSON.stringify(props?.project?.data?.list)])
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
@@ -78,12 +119,11 @@ const TableTasksProject = (props) => {
     }
 
     const handleShowDetailInfo = (id) => {
-        setState(state => {
-            return{
-                ...state,
+        setState({
+            ...state,
             currentTaskId: id
-            }
         })
+        window.$(`#modelPerformTask${id}`).modal('show')
     }
 
     const processPreceedingTasks = (preceedingTasks) => {
@@ -93,14 +133,8 @@ const TableTasksProject = (props) => {
         })
         return resultArr.join(", ");
     }
-    let lists = [];
-    if (tasks) {
-        lists = tasks.tasksbyprojectpaginate
-    }
 
-    const totalPage = tasks && Math.ceil(tasks.totalDocs / perPage);
-
-    const funcStartTimer = async (taskId, overrideTSLog = 'no') => {
+    const startTimer = async (taskId, overrideTSLog = 'no') => {
         let timer = {
             creator: userId,
             overrideTSLog
@@ -130,101 +164,68 @@ const TableTasksProject = (props) => {
         })
     }
 
-    const renderTimerButton = (taskItem) => {
-        const resArrFlatten = taskItem?.responsibleEmployees.map(o => String(o.id))
-        const accArrFlatten = taskItem?.accountableEmployees.map(o => String(o.id))
-        if (resArrFlatten.includes(String(userId)) || accArrFlatten.includes(String(userId))) {
-            return <a
-                style={{ cursor: 'pointer' }}
-                onClick={() => !performtasks.currentTimer && funcStartTimer(taskItem._id)}
-                className={`timer ${performtasks.currentTimer ? performtasks.currentTimer._id === taskItem._id ? 'text-orange' : 'text-gray' : 'text-black'}`}
-            >
-                <i className="material-icons">timer</i>
-            </a>
-            // return <a className="timer text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}>
-            //     <i className="material-icons">timer</i>
-            // </a>
-        }
-        return null;
-    }
+    // const renderTimerButton = (taskItem) => {
+    //     const resArrFlatten = taskItem?.responsibleEmployees.map(o => String(o.id))
+    //     const accArrFlatten = taskItem?.accountableEmployees.map(o => String(o.id))
+    //     if (resArrFlatten.includes(String(userId)) || accArrFlatten.includes(String(userId))) {
+    //         return <a
+    //             style={{ cursor: 'pointer' }}
+    //             onClick={() => !performtasks.currentTimer && startTimer(taskItem._id)}
+    //             className={`timer ${performtasks.currentTimer ? performtasks.currentTimer._id === taskItem._id ? 'text-orange' : 'text-gray' : 'text-black'}`}
+    //         >
+    //             <i className="material-icons">timer</i>
+    //         </a>
+    //         // return <a className="timer text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}>
+    //         //     <i className="material-icons">timer</i>
+    //         // </a>
+    //     }
+    //     return null;
+    // }
+
+    let column = [
+        { name: translate('task.task_management.col_name'), key: "name" },
+        { name: translate('project.task_management.preceedingTask'), key: "preceedingTask" },
+        { name: translate('task.task_management.responsible'), key: "responsibleEmployees" },
+        { name: translate('task.task_management.accountable'), key: "accountableEmployees" },
+        { name: translate('task.task_management.col_status'), key: "status" },
+        { name: translate('project.col_start_time'), key: "startDate" },
+        { name: translate('project.col_expected_end_time'), key: "endDate" },
+        { name: translate('task.task_management.col_actual_end_date'), key: "actualEndDate" },
+        { name: translate('task.task_management.col_timesheet_log'), key: "timesheetLogs" },
+        { name: translate('task.task_management.col_progress'), key: "progress" },
+    ];
 
     return (
         <React.Fragment>
             {
-                currentTaskId ? <ModalPerform
+                currentTaskId && <ModalPerform
                     units={units}
                     id={currentTaskId}
-                /> : null
+                />
             }
 
-            <table id={tableId} className="table table-striped table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>{translate('task.task_management.col_name')}</th>
-                        <th>{translate('project.task_management.preceedingTask')}</th>
-                        <th>{translate('task.task_management.responsible')}</th>
-                        <th>{translate('task.task_management.accountable')}</th>
-                        <th>{translate('task.task_management.col_status')}</th>
-                        <th>Thời điểm bắt đầu</th>
-                        <th>Thời điểm kết thúc dự kiến</th>
-                        <th>Thời điểm kết thúc thực tế</th>
-                        <th>Tổng thời gian bấm giờ</th>
-                        <th>{translate('task.task_management.col_progress')}</th>
-                        <th style={{ width: "120px", textAlign: "center" }}>
-                            {translate('table.action')}
-                            <DataTableSetting
-                                tableId={tableId}
-                                columnArr={[
-                                    translate('task.task_management.col_name'),
-                                    translate('project.task_management.preceedingTask'),
-                                    translate('task.task_management.responsible'),
-                                    translate('task.task_management.accountable'),
-                                    translate('task.task_management.col_status'),
-                                    'Thời điểm bắt đầu',
-                                    'Thời điểm kết thúc dự kiến',
-                                    'Thời điểm kết thúc thực tế',
-                                    'Thời điểm bấm giờ',
-                                    translate('task.task_management.col_progress'),
-                                ]}
-                                setLimit={setLimit}
-                            />
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {(lists && lists.length !== 0) &&
-                        lists.map((taskItem, index) => (
-                            <tr key={index}>
-                                <td style={{ color: '#385898' }}>{taskItem?.name}</td>
-                                <td style={{ maxWidth: 350 }}>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
-                                <td>{taskItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
-                                <td>{taskItem?.accountableEmployees?.map(o => o.name).join(", ")}</td>
-                                <td style={{ color: renderStatusColor(taskItem) }}>{formatTaskStatus(translate, taskItem?.status)}</td>
-                                <td>{moment(taskItem?.startDate).format('HH:mm DD/MM/YYYY')}</td>
-                                <td>{moment(taskItem?.endDate).format('HH:mm DD/MM/YYYY')}</td>
-                                <td>{taskItem?.actualEndDate && moment(taskItem?.actualEndDate).format('HH:mm DD/MM/YYYY')}</td>
-                                <td>{getTotalTimeSheetLogs(taskItem?.timesheetLogs)}</td>
-                                <td>{renderProgressBar(taskItem?.progress, taskItem)}</td>
-                                {/* <td>{taskItem?.progress}%</td> */}
-                                <td style={{ textAlign: "center" }}>
-                                    <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">edit</i></a>
-                                    {renderTimerButton(taskItem)}
-                                </td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
+            <div className="qlcv StyleScrollDiv StyleScrollDiv-y" style={{ maxHeight: '600px' }}>
+                <TreeTable
+                    behaviour="show-children"
+                    tableSetting={true}
+                    tableId='list-project-table'
+                    viewWhenClickName={true}
+                    column={column}
+                    data={data}
+                    onSetNumberOfRowsPerPage={setLimit}
+                    titleAction={{
+                        edit: translate('task.task_management.action_edit'),
+                        startTimer: translate('task.task_management.action_start_timer'),
+                    }}
+                    funcEdit={handleShowDetailInfo}
+                    funcStartTimer={startTimer}
+                />
+            </div>
 
-            {/* PaginateBar */}
-            {tasks && tasks.isProjectPaginateLoading ?
-                <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-            }
             <PaginateBar
                 pageTotal={totalPage ? totalPage : 0}
                 currentPage={page}
-                display={lists && lists.length !== 0 && lists.length}
+                display={data && data.length !== 0 && data.length}
                 total={tasks && tasks.totalDocs}
                 func={setCurrentPage}
             />

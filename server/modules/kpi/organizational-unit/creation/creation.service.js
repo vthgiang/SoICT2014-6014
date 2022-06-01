@@ -56,7 +56,7 @@ exports.getOrganizationalUnitKpiSet = async (portal, query) => {
                 status: { $ne: 2 }, date: { $lt: nextMonth, $gte: month }
             })
             .populate("organizationalUnit")
-            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate([
                 { path: "comments.creator", select: 'name email avatar' },
@@ -118,7 +118,7 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, data) => {
                 date: { $gte: monthIso, $lt: nextMonth }
             })
             .populate("organizationalUnit")
-            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })
             .populate({ path: 'organizationalUnitImportances', populate: { path: 'organizationalUnit' } })
@@ -139,10 +139,18 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, data) => {
  * @query {*} endDate
  */
 exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizationalUnitId, startDate, endDate) => {
-    startDate = new Date(startDate)
-    endDate = new Date(endDate)
-    endDate.setMonth(endDate.getMonth() + 1)
-    
+    // Nếu không có ngày bắt đầu và kết thúc thì mặc định tìm trong khoảng 2 năm
+    if (!startDate && !endDate) {
+        startDate = new Date();
+        endDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 12);
+        endDate.setMonth(endDate.getMonth() + 12);
+    } else {
+        startDate = new Date(startDate)
+        endDate = new Date(endDate)
+        endDate.setMonth(endDate.getMonth() + 1)
+    }
+
     let organizationalUnit, organizationalUnitKpiSets;
     if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
@@ -279,7 +287,7 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         .skip(perPage * (page - 1))
         .limit(perPage)
         .populate("organizationalUnit ")
-        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: "comments.creator", select: 'name email avatar' },
@@ -319,7 +327,7 @@ exports.editImportancesInUnitKpi = async (portal, id, data, type) => {
 
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: "comments.creator", select: 'name email avatar' },
@@ -459,7 +467,7 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     organizationalUnitKpi = organizationalUnitKpi && await organizationalUnitKpi
         .populate([
             { path: "organizationalUnit" },
-            {path: "creator", select :"_id name email avatar"},
+            { path: "creator", select: "_id name email avatar" },
             { path: "kpis", populate: { path: 'parent' } },
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' },
@@ -516,7 +524,7 @@ exports.createOrganizationalUnitKpi = async (portal, data) => {
 
         organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
             .populate("organizationalUnit")
-            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate([
                 { path: "comments.creator", select: 'name email avatar' },
@@ -554,7 +562,7 @@ exports.editOrganizationalUnitKpi = async (portal, data, id) => {
             { $replaceRoot: { newRoot: "$organizationalUnitKpis" } },
             { $match: { 'name': data.name } },
         ])
-    
+
 
     let target;
     if (checkTarget.length > 0 && checkTarget?.[0]?._id.toString() !== id) {
@@ -568,7 +576,7 @@ exports.editOrganizationalUnitKpi = async (portal, data, id) => {
             weight: data.weight,
             criteria: data.criteria
         }
-        
+
         target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(id, { $set: objUpdate }, { new: true });
         target = target && await target.populate("parent").execPopulate();
@@ -577,7 +585,7 @@ exports.editOrganizationalUnitKpi = async (portal, data, id) => {
     let unitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({ kpis: { $elemMatch: { $eq: mongoose.Types.ObjectId(id) } } })
         .populate("organizationalUnit")
-        
+
     return {
         target,
         unitKpiSet
@@ -597,7 +605,7 @@ exports.deleteOrganizationalUnitKpi = async (portal, id, organizationalUnitKpiSe
 
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: "comments.creator", select: 'name email avatar' },
@@ -624,7 +632,7 @@ exports.editOrganizationalUnitKpiSetStatus = async (portal, id, data) => {
 
     kpiunit = kpiunit && await kpiunit
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })
         .populate({ path: 'organizationalUnitImportances', populate: { path: 'organizationalUnit' } })
@@ -946,7 +954,7 @@ exports.createNewsFeedForOrganizationalUnitKpiSet = async (portal, data) => {
         title: title,
         description: description,
         creator: creator,
-        associatedDataObject: { 
+        associatedDataObject: {
             dataType: 2,
             value: organizationalUnitKpiSetId
         },

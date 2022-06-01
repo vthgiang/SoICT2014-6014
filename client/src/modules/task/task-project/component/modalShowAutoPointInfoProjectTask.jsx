@@ -78,17 +78,16 @@ const ModalShowAutoPointInfoProjectTask = (props) => {
                         <li>costWeight - trọng số chi phí: <strong>{numberWithCommas(task?.taskWeight?.costWeight) || '0.33'}</strong></li>
                         <li>taskCostPoint: <strong>{numberWithCommas(taskCostPoint)}</strong></li>
                     </ul>
-                    <p><strong>Công thức quy đổi: </strong>
-                        <ul style={{ lineHeight: 2.3 }}>
-                            <li>{translate('project.eval.undefined')}</li>
-                            <li>{translate('project.eval.level1')}</li>
-                            <li>{translate('project.eval.level2')}</li>
-                            <li>{translate('project.eval.level3')}</li>
-                            <li>{translate('project.eval.level4')}</li>
-                            <li>{translate('project.eval.level5')}</li>
-                            <li>{translate('project.eval.level6')}</li>
-                        </ul>
-                    </p>
+                    <p><strong>Công thức quy đổi: </strong></p>
+                    <ul style={{ lineHeight: 2.3 }}>
+                        <li>{translate('project.eval.undefined')}</li>
+                        <li>{translate('project.eval.level1')}</li>
+                        <li>{translate('project.eval.level2')}</li>
+                        <li>{translate('project.eval.level3')}</li>
+                        <li>{translate('project.eval.level4')}</li>
+                        <li>{translate('project.eval.level5')}</li>
+                        <li>{translate('project.eval.level6')}</li>
+                    </ul>
                     <p><strong>Kết quả hiện tại: </strong> {numberWithCommas(taskTimePoint)} + {numberWithCommas(taskQualityPoint)} + {numberWithCommas(taskCostPoint)} = {numberWithCommas(autoTaskPoint)}</p>
                 </div>
 
