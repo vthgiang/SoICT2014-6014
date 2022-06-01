@@ -10,6 +10,7 @@ import { taskManagementActions } from "../../../task/task-management/redux/actio
 import CreateProjectTemplateForm from "./createProjectTemplate";
 import EditProjectTemplateForm from "./editProjectTemplate";
 import CreateProjectByProjectTemplateModal from "./createProjectByProjectTemplate";
+import DetailProjectTemplate from "./detailProjectTemplate";
 
 function ProjectTemplateManage(props) {
     const tableId = 'project-template-table';
@@ -71,16 +72,16 @@ function ProjectTemplateManage(props) {
         props.getProjectTemplateDispatch({ calledId: "paginate", page: 1, perPage: parseInt(number), userId, searchName });
     }
 
-    const handleShowDetailInfo = (item) => {
-        setState({
-            ...state,
-            projectDetail: item
-        });
-        props.getTasksByProject(item?._id);
-        setTimeout(() => {
-            window.$(`#modal-detail-project-template-${item?._id}`).modal('show');
-        }, 10);
-    }
+    // const handleShowDetailInfo = (item) => {
+    //     setState({
+    //         ...state,
+    //         projectDetail: item
+    //     });
+    //     props.getTasksByProject(item?._id);
+    //     setTimeout(() => {
+    //         window.$(`#modal-detail-project-template-${item?._id}`).modal('show');
+    //     }, 10);
+    // }
 
     const handleEdit = (item) => {
         setState({
@@ -89,6 +90,16 @@ function ProjectTemplateManage(props) {
         })
         setTimeout(() => {
             window.$(`#modal-edit-project-template-${item?._id}`).modal('show')
+        }, 10);
+    }
+
+    const handleDetail = (item) => {
+        setState({
+            ...state,
+            currentRow: item
+        })
+        setTimeout(() => {
+            window.$(`#modal-detail-project-template-${item?._id}`).modal('show')
         }, 10);
     }
 
@@ -133,6 +144,10 @@ function ProjectTemplateManage(props) {
                 projectDetail={projectDetail}
                 currentProjectTasks={tasks && tasks.tasksbyproject}
             /> */}
+            <DetailProjectTemplate
+                projectId={currentRow && currentRow._id}
+                projectDetail={currentRow}
+            />
 
             <EditProjectTemplateForm
                 projectEditId={currentRow && currentRow._id}
@@ -205,7 +220,7 @@ function ProjectTemplateManage(props) {
                                             <td>{item?.projectManager.map(o => o.name).join(", ")}</td>
                                             <td style={{ maxWidth: 450 }}>{renderLongList(item?.responsibleEmployees.map(o => o.name))}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a className="edit text-blue" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
+                                                <a className="edit text-blue" style={{ width: '5px' }} onClick={() => handleDetail(item)}><i className="material-icons">visibility</i></a>
                                                 {<a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>}
                                                 {<DeleteNotification
                                                     content={translate('project.delete')}
