@@ -9,6 +9,7 @@ import 'react-calendar-timeline/lib/Timeline.css'
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 import { TaskFormValidator } from '../../../../../task/task-management/component/taskFormValidator';
 import dayjs from "dayjs";
+import GanttCalendar from '../genaral/GanttCalendar';
 
 function StockWorkAssignmentModal(props) {
 
@@ -44,7 +45,6 @@ function StockWorkAssignmentModal(props) {
     const [state, setState] = useState({
         userId: localStorage.getItem("userId"),
         currentZoom: props.translate('system_admin.system_setting.backup.date'),
-        detailInfo: [],
         workAssignment: DEFALT_WORK_ASSIGNMENT,
         startDate: formatDate((new Date()).toISOString()),
         endDate: formatDate((new Date()).toISOString()),
@@ -139,8 +139,8 @@ function StockWorkAssignmentModal(props) {
 
     const handleAddWorkAssignment = () => {
         var { workAssignment } = state;
+        let currentTime = formatTime(new Date())
         let array = [];
-        let description = '';
         if (workAssignment.length !== 0) {
             let result;
             for (let n in workAssignment) {
@@ -153,13 +153,13 @@ function StockWorkAssignmentModal(props) {
             if (result) {
                 setState({
                     ...state,
-                    workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "" }],
+                    workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "", startDate: formatDate((new Date()).toISOString()), startTime: currentTime, endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM" }],
                 })
             }
         } else {
             setState({
                 ...state,
-                workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "" }],
+                workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "", startDate: formatDate((new Date()).toISOString()), startTime: currentTime, endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM" }],
             })
         }
 
@@ -217,7 +217,6 @@ function StockWorkAssignmentModal(props) {
             setState({
                 ...state,
                 errorOnDescription: message,
-                errorOnDescriptionPosition: message ? className : null,
                 workAssignment: workAssignment
             });
         }
@@ -227,17 +226,15 @@ function StockWorkAssignmentModal(props) {
     const handleChangeWorkAssignmentStaffsValue = (value, index) => {
         validateWorkAssignmentStaffs(value, index);
     }
-    const validateWorkAssignmentStaffs = async (value, index, willUpdateState = true) => {
+    const validateWorkAssignmentStaffs = (value, index, willUpdateState = true) => {
         let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            var { workAssignment } = state;
-            workAssignment[index].workAssignmentStaffs = value;
-            await setState({
+            let { workAssignment } = state;
+            workAssignment[index] = { ...workAssignment[index], workAssignmentStaffs: value, errorworkAssignmentStaffs: message };
+            setState({
                 ...state,
-                errorOnValue: message,
-                errorOnValuePosition: message ? index : null,
-                workAssignment: workAssignment
+                workAssignment: workAssignment,
             });
         }
         return message === undefined;
@@ -260,14 +257,14 @@ function StockWorkAssignmentModal(props) {
     // Đặt lại thời gian
     const regenerateTime = () => {
         let currentTime = formatTime(new Date())
-        setState(state => {
-            return {
-                ...state,
-                newTask: {
-                    ...state.newTask,
-                    startTime: currentTime,
-                }
-            }
+        let { workAssignment } = state;
+        workAssignment.forEach(item => {
+            item.startTime = currentTime;
+        });
+        setState({
+            ...state,
+            startTime: currentTime,
+            workAssignment: workAssignment
         });
     }
 
@@ -279,10 +276,10 @@ function StockWorkAssignmentModal(props) {
     }, [])
 
 
-    const handleChangeTaskStartDate = (value) => {
-        validateTaskStartDate(value, true);
+    const handleChangeStartDate = (value) => {
+        validateStartDate(value, true);
     }
-    const validateTaskStartDate = (value, willUpdateState = true) => {
+    const validateStartDate = (value, willUpdateState = true) => {
         let { translate } = props;
         let msg = TaskFormValidator.validateTaskStartDate(value, state.endDate, translate);
         let startDate = convertDateTime(value, state.startTime);
@@ -294,14 +291,14 @@ function StockWorkAssignmentModal(props) {
             setState({
                 ...state,
                 startDate: value,
-                errorOnStartDate: msg,
+                errorOnStartDateAll: msg,
             })
             state.startDate = value;
-            state.errorOnStartDate = msg;
+            state.errorOnStartDateAll = msg;
             if (!msg && state.endDate) {
                 setState({
                     ...state,
-                    errorOnEndDate: msg
+                    errorOnEndDateAll: msg
                 })
             }
         }
@@ -324,8 +321,8 @@ function StockWorkAssignmentModal(props) {
         setState({
             ...state,
             startTime: value,
-            errorOnStartDate: err,
-            errorOnEndDate: resetErr,
+            errorOnStartDateAll: err,
+            errorOnEndDateAll: resetErr,
         });
     }
 
@@ -345,30 +342,150 @@ function StockWorkAssignmentModal(props) {
         setState({
             ...state,
             endTime: value,
-            errorOnEndDate: err,
-            errorOnStartDate: resetErr,
+            errorOnEndDateAll: err,
+            errorOnStartDateAll: resetErr,
         })
     }
 
-    const handleChangeTaskEndDate = (value) => {
-        validateTaskEndDate(value, true);
+    const handleChangeEndDate = (value) => {
+        validateEndDate(value, true);
     }
 
-    const validateTaskEndDate = (value, willUpdateState = true) => {
+    const validateEndDate = (value, willUpdateState = true) => {
         let { translate } = props;
         let msg = TaskFormValidator.validateTaskEndDate(state.startDate, value, translate);
         if (willUpdateState) {
             setState({
                 ...state,
                 endDate: value,
-                errorOnEndDate: msg,
+                errorOnEndDateAll: msg,
             })
             state.endDate = value;
-            state.errorOnEndDate = msg;
+            state.errorOnEndDateAll = msg;
             if (!msg && state.startDate) {
                 setState({
                     ...state,
-                    errorOnStartDate: msg
+                    errorOnStartDateAll: msg
+                });
+            }
+        }
+        return msg === undefined;
+    }
+
+    // Phần thời gian chi tiết
+
+    const handleChangeTaskStartDate = (value, index) => {
+        validateTaskStartDate(value, index, true);
+    }
+    const validateTaskStartDate = (value, index, willUpdateState = true) => {
+        let { translate } = props;
+        let { workAssignment } = state;
+        let msg = TaskFormValidator.validateTaskStartDate(value, state.workAssignment[index].endDate, translate);
+        let startDate = convertDateTime(value, state.workAssignment[index].startTime);
+        let endDate = convertDateTime(state.workAssignment[index].endDate, state.workAssignment[index].endTime);
+        let startDateAll = convertDateTime(state.startDate, state.startTime);
+        if (startDate > endDate) {
+            msg = translate('task.task_management.add_err_end_date');
+        }
+        if (startDate < startDateAll) {
+            msg = "Thời gian bắt đầu phải lớn hơn thời gian bắt đầu của công việc";
+        }
+        if (willUpdateState) {
+            workAssignment[index] = { ...workAssignment[index], startDate: value, errorOnStartDate: msg };
+            setState({
+                ...state,
+                workAssignment: workAssignment,
+            })
+            state.workAssignment[index].startDate = value;
+            state.workAssignment[index].errorOnStartDate = msg;
+            if (!msg && state.endDate) {
+                workAssignment[index] = { ...workAssignment[index], errorOnEndDate: msg };
+                setState({
+                    ...state,
+                    workAssignment: workAssignment
+                })
+            }
+        }
+        return msg === undefined;
+    }
+
+    const handleTaskStartTimeChange = (value, index) => {
+        let { translate } = props;
+        let { workAssignment } = state;
+        let startDate = convertDateTime(state.workAssignment[index].startDate, value);
+        let endDate = convertDateTime(state.workAssignment[index].endDate, state.workAssignment[index].endTime);
+        let startDateAll = convertDateTime(state.startDate, state.startTime);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if (startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
+        } else if (startDate < startDateAll) {
+            err = "Thời gian bắt đầu phải lớn hơn thời gian bắt đầu của công việc";
+            ;
+            resetErr = undefined;
+        }
+        workAssignment[index] = { ...workAssignment[index], startTime: value, errorOnStartDate: err, errorOnEndDate: resetErr };
+        setState({
+            ...state,
+            workAssignment: workAssignment,
+        });
+    }
+
+    const handleTaskEndTimeChange = (value, index) => {
+        let { translate } = props;
+        let { workAssignment } = state;
+        let startDate = convertDateTime(state.workAssignment[index].startDate, state.workAssignment[index].startTime);
+        let endDate = convertDateTime(state.workAssignment[index].endDate, value);
+        let endDateAll = convertDateTime(state.endDate, state.endTime);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if (startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
+        } else if (endDate > endDateAll) {
+            err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
+        }
+        workAssignment[index] = { ...workAssignment[index], endTime: value, errorOnEndDate: err, errorOnStartDate: resetErr };
+        setState({
+            ...state,
+            workAssignment: workAssignment,
+        })
+    }
+
+    const handleChangeTaskEndDate = (value, index) => {
+        validateTaskEndDate(value, index, true);
+    }
+
+    const validateTaskEndDate = (value, index, willUpdateState = true) => {
+        let { translate } = props;
+        let { workAssignment } = state;
+        let endDateAll = convertDateTime(state.endDate, state.endTime);
+        let msg = TaskFormValidator.validateTaskEndDate(state.workAssignment[index].startDate, value, translate);
+        let endDate = convertDateTime(value, state.workAssignment[index].endTime);
+        if (endDate > endDateAll) {
+            msg = "Ngày kết thúc phải nhỏ hơn ngày kết thúc của công việc";
+        }
+        if (willUpdateState) {
+            workAssignment[index] = { ...workAssignment[index], endDate: value, errorOnEndDate: msg };
+            setState({
+                ...state,
+                workAssignment: workAssignment,
+            })
+            state.workAssignment[index].endDate = value;
+            state.workAssignment[index].errorOnEndDate = msg;
+            if (!msg && state.startDate) {
+                workAssignment[index] = { ...workAssignment[index], errorOnStartDate: msg };
+                setState({
+                    ...state,
+                    workAssignment: workAssignment
                 });
             }
         }
@@ -459,61 +576,59 @@ function StockWorkAssignmentModal(props) {
     //     }
     // }, [props.billId, props.oldStatus])
 
-    const handleChangeTime = (time, type, index) => {
-        validateTime(time, type, index);
-    }
-
-    const validateTime = async (time, type, index, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(props.translate, time);
-        if (willUpdateState) {
-            var { workAssignment } = state;
-            workAssignment[index] = { ...workAssignment[index], [type]: time };
-            setState({
-                ...state,
-                errorOnTime: message,
-                errorOnTimePosition: message ? index : null,
-                workAssignment: workAssignment
-            });
-        }
-        return message === undefined;
-    }
-
-    /*Lịch*/
-
-    const handleZoomChange = (zoom) => {
-        setState({
-            ...state,
-            currentZoom: zoom
-        });
+    const validateTask = () => {
+        let { workAssignment } = state;
+        let count = 0;
+        workAssignment.forEach((item, index) => {
+            if (!validateTaskStartDate(item.startDate, index, false)
+                || !validateTaskEndDate(item.endDate, index, false)
+                || !validateWorkAssignmentStaffs(item.workAssignmentStaffs, index, false)
+                || !validateNameField(item.nameField, index, false)
+                || !validateDescription(item.description, index, false)) {
+                count++;
+            }
+        })
+        return count === 0;
     }
 
     const isFormValidated = () => {
-        const { status } = state;
-        // let result = ;
-        // validateType(state.type, false) &&
-        // validateStock(state.fromStock, false) &&
-        // validateApprover(state.approver, false) &&
-        // validatePartner(state.supplier, false) &&
-        // validateAccountables(state.accountables, false) &&
-        // // validateQualityControlStaffs(state.qualityControlStaffs, false) &&
-        // validateResponsibles(state.responsibles, false)
-        // if (status === '2') {
-        //     result = result &&
-        //         checkAllLots();
-        // }
-        return true;
+        let { peopleInCharge, accountables, accountants, startDate, endDate } = state;
+        let result = validateAccountables(accountables, false) &&
+            validateAccountants(accountants, false) &&
+            validatePeopleInCharge(peopleInCharge, false) &&
+            validateStartDate(startDate, false) &&
+            validateEndDate(endDate, false) &&
+            validateTask();
+        return result;
     }
+
+    useEffect(() => {
+        if (isFormValidated()) {
+            let data = [
+                {
+                    nameField: "Quản lý", workAssignmentStaffs: state.peopleInCharge, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                },
+                {
+                    nameField: "Giám sát", workAssignmentStaffs: state.accountables, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                },
+                {
+                    nameField: "Kế toán", workAssignmentStaffs: state.accountants, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                },
+            ]
+            const newArray = data.concat(state.workAssignment);
+            setState({
+                ...state,
+                dataCalendar: newArray
+            })
+        }
+    }, [isFormValidated()])
 
     const save = async () => {
         const { billId, approvers, listQualityControlStaffs, responsibles, accountables } = state;
         const { group } = props;
 
-        // if (arrayId && arrayId.length > 0) {
-        //     await props.deleteLot(arrayId);
-        // }
-
         await props.editBill(billId, {
-            approvers: approvers,
+            // approvers: approvers,
             qualityControlStaffs: listQualityControlStaffs,
             responsibles: responsibles,
             accountables: accountables,
@@ -521,7 +636,8 @@ function StockWorkAssignmentModal(props) {
     }
 
     const { translate } = props;
-    const { billId, approver, accountables, accountants, startDate, endDate, startTime, endTime, errorOnStartDate, errorOnEndDate, errorPeopleInCharge, errorAccountants, errorAccountables, currentZoom, errorOnNameFieldPosition, errorOnNameField, errorOnValue, errorOnValuePosition, workAssignment } = state;
+    const { billId, peopleInCharge, accountables, accountants, startDate, endDate, startTime, endTime, errorOnStartDateAll,
+        errorOnEndDateAll, errorPeopleInCharge, errorAccountants, errorAccountables, dataCalendar, errorOnNameFieldPosition, errorOnNameField, workAssignment } = state;
     const dataApprover = getApprover();
     console.log(state);
     return (
@@ -547,7 +663,7 @@ function StockWorkAssignmentModal(props) {
                                         id={`select-people-in-charge-${billId}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={approver}
+                                        value={peopleInCharge}
                                         items={dataApprover}
                                         onChange={handlePeopleInChargeChange}
                                         multiple={true}
@@ -589,14 +705,14 @@ function StockWorkAssignmentModal(props) {
                             <div className="col-xs-12">
                                 <label>{"Thời gian hoàn thành công việc"}<span className="text-red"> * </span></label>
                             </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`col-xs-12 col-sm-6 col-md-6 col-lg-6 ${!errorOnStartDateAll ? "" : "has-error"}`}>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <label>{"Ngày bắt đầu"}<span className="text-red"> * </span></label>
                                     <DatePicker
                                         id={`startDatePicker`}
                                         dateFormat="day-month-year"
                                         value={startDate}
-                                        onChange={handleChangeTaskStartDate}
+                                        onChange={handleChangeStartDate}
                                     />
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -608,16 +724,16 @@ function StockWorkAssignmentModal(props) {
                                         onChange={handleStartTimeChange}
                                     />
                                 </div>
-                                <ErrorLabel content={errorOnStartDate} />
+                                <ErrorLabel content={errorOnStartDateAll} />
                             </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`col-xs-12 col-sm-6 col-md-6 col-lg-6 ${!errorOnEndDateAll ? "" : "has-error"}`}>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <label>{"Ngày kết thúc"}<span className="text-red"> * </span></label>
                                     <DatePicker
                                         id={`endDatePicker`}
                                         dateFormat="day-month-year"
                                         value={endDate}
-                                        onChange={handleChangeTaskEndDate}
+                                        onChange={handleChangeEndDate}
                                     />
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -629,14 +745,14 @@ function StockWorkAssignmentModal(props) {
                                         onChange={handleEndTimeChange}
                                     />
                                 </div>
-                                <ErrorLabel content={errorOnEndDate} />
+                                <ErrorLabel content={errorOnEndDateAll} />
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{"Danh sách phân công người thực hiện"}</legend>
                             <div className="col-xs-12">
                                 <div className="form-group">
-                                    <p type="button" className="btn btn-success" onClick={handleAddWorkAssignment}>Thêm công việc mới</p>
+                                    <p type="button" className="btn btn-success" onClick={handleAddWorkAssignment}>{"Thêm công việc mới"}</p>
                                     <p style={{ float: "right" }} type="button" className="btn btn-primary">{"Phân công tự động"}</p>
                                 </div>
                                 <table className="table">
@@ -658,13 +774,14 @@ function StockWorkAssignmentModal(props) {
                                                             {x.type !== 'default' ? <input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => handleChangeNameField(e, index)} /> : <span>{x.nameField}</span>}
                                                             {(parseInt(errorOnNameFieldPosition) === index && errorOnNameField) && <ErrorLabel content={errorOnNameField} />}
                                                         </div>
-                                                        {x.type !== 'default' ? <a onClick={() => delete_function(index)}><p className='text-red'>- Xóa tùy chọn</p></a> : ''}
+                                                        {x.type !== 'default' ? <a onClick={() => delete_function(index)}><p className='text-red'>{"Xóa công việc"}</p></a> : ''}
                                                     </td>
                                                     <td>
                                                         {x.type == 'default' ? <p>{x.description}</p> : <textarea className="form-control" type="text" value={x.description} name="description" style={{ width: "100%" }} onChange={(e) => handleChangeDescription(e, index)} />}
                                                     </td>
                                                     <td style={{ width: '90%' }}>
-                                                        <div className={`form-group ${(parseInt(errorOnValuePosition) === 0 && errorOnValue) ? "has-error" : ""}`}>
+
+                                                        <div className={`form-group ${!x.errorworkAssignmentStaffs ? "" : "has-error"}`}>
                                                             <SelectBox
                                                                 id={`select-responsibles-person-${index}`}
                                                                 className="form-control select2"
@@ -674,36 +791,42 @@ function StockWorkAssignmentModal(props) {
                                                                 onChange={(e) => handleChangeWorkAssignmentStaffsValue(e, index)}
                                                                 multiple={true}
                                                             />
-                                                            {(parseInt(errorOnValuePosition) === 0 && errorOnValue) && <ErrorLabel content={errorOnValue} />}
+                                                            <ErrorLabel content={x.errorworkAssignmentStaffs} />
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <DatePicker
-                                                            id={`startDatePicker-${index}`}
-                                                            dateFormat="day-month-year"
-                                                            value={x.startDate}
-                                                            onChange={(e) => handleChangeTime(e, 'startDate', index)}
-                                                        />
-                                                        <TimePicker
-                                                            id={`startTimePicker-${index}`}
-                                                            refs={`startTimePicker-${index}`}
-                                                            value={x.startTime}
-                                                            onChange={(e) => handleChangeTime(e, 'startTime', index)}
-                                                        />
+                                                        <div className={` ${!x.errorOnStartDate ? "" : "has-error"}`}>
+                                                            <DatePicker
+                                                                id={`startDatePicker-${index}`}
+                                                                dateFormat="day-month-year"
+                                                                value={x.startDate}
+                                                                onChange={(e) => handleChangeTaskStartDate(e, index)}
+                                                            />
+                                                            <TimePicker
+                                                                id={`startTimePicker-${index}`}
+                                                                refs={`startTimePicker-${index}`}
+                                                                value={x.startTime}
+                                                                onChange={(e) => handleTaskStartTimeChange(e, index)}
+                                                            />
+                                                            <ErrorLabel content={x.errorOnStartDate} />
+                                                        </div>
                                                     </td>
                                                     <td>
-                                                        <DatePicker
-                                                            id={`endDatePicker-${index}`}
-                                                            dateFormat="day-month-year"
-                                                            value={x.endDate}
-                                                            onChange={(e) => handleChangeTime(e, 'endDate', index)}
-                                                        />
-                                                        <TimePicker
-                                                            id={`endTimePicker-${index}`}
-                                                            refs={`endTimePicker-${index}`}
-                                                            value={x.endTime}
-                                                            onChange={(e) => handleChangeTime(e, 'endTime', index)}
-                                                        />
+                                                        <div className={` ${!x.errorOnEndDate ? "" : "has-error"}`}>
+                                                            <DatePicker
+                                                                id={`endDatePicker-${index}`}
+                                                                dateFormat="day-month-year"
+                                                                value={x.endDate}
+                                                                onChange={(e) => handleChangeTaskEndDate(e, index)}
+                                                            />
+                                                            <TimePicker
+                                                                id={`endTimePicker-${index}`}
+                                                                refs={`endTimePicker-${index}`}
+                                                                value={x.endTime}
+                                                                onChange={(e) => handleTaskEndTimeChange(e, index)}
+                                                            />
+                                                            <ErrorLabel content={x.errorOnEndDate} />
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             })
@@ -715,17 +838,7 @@ function StockWorkAssignmentModal(props) {
                     </div>
 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <Gantt
-                            ganttId="gantt-chart"
-                            ganttData={''}
-                            zoom={currentZoom}
-                            status={''}
-                            count={''}
-                            line={''}
-                            unit={''}
-                            onZoomChange={handleZoomChange}
-                        // attachEvent={attachEvent}
-                        />
+                        <GanttCalendar dataCalendar={dataCalendar} />
                     </div>
                 </form>
             </DialogModal>

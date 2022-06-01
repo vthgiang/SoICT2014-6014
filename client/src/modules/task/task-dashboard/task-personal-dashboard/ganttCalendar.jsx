@@ -35,7 +35,6 @@ function GanttCalendar(props) {
                     dataCalendar: data
                 })
             }
-
         }
 
     }, [JSON.stringify(taskDashboardCharts?.["gantt-chart"])])
@@ -226,6 +225,7 @@ function GanttCalendar(props) {
         let acc = tasks && tasks.accountableTasks;
         let con = tasks && tasks.consultedTasks;
         let inf = tasks && tasks.informedTasks;
+        console.log(tasks);
 
         let resData = getDataGroupByRole(data, res, 'res', translate('task.task_management.responsible_role'), count, line);
         let data1 = resData.data;
@@ -413,6 +413,10 @@ function GanttCalendar(props) {
         window.$(`#modal-detail-task-Employee`).modal('show')
     }
 
+    console.log("dataCalendar", dataCalendar);
+    console.log("infoSearch", infoSearch);
+    console.log("unit", unit);
+    console.log(props.tasks)
     return (
         <React.Fragment>
             <div className="gantt qlcv" >
@@ -492,4 +496,3 @@ const actions = {
 }
 const GanttCalendarConnected = connect(mapState, actions)(withTranslate(GanttCalendar))
 export { GanttCalendarConnected as GanttCalendar }
-
