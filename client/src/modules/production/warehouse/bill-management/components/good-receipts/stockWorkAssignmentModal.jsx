@@ -29,16 +29,16 @@ function StockWorkAssignmentModal(props) {
 
     const DEFALT_WORK_ASSIGNMENT = [
         {
-            nameField: "Công việc vận chuyển", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: 'Vận chuyển hàng hóa đến đúng vị trí'
+            nameField: "Công việc vận chuyển", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: 'Vận chuyển hàng hóa đến đúng vị trí'
         },
         {
-            nameField: "Công việc kiểm định chất lượng", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: `unpack, kiểm tra số lượng và chất lượng. Phân loại hàng hóa theo danh mục. Đối chiếu, packing. Ghi chú thay đổi`
+            nameField: "Công việc kiểm định chất lượng", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: `unpack, kiểm tra số lượng và chất lượng. Phân loại hàng hóa theo danh mục. Đối chiếu, packing. Ghi chú thay đổi`
         },
         {
-            nameField: "Đánh lô hàng hóa", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: 'Đánh mã số lô hàng cho hàng hóa khi nhập'
+            nameField: "Đánh lô hàng hóa", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: 'Đánh mã số lô hàng cho hàng hóa khi nhập'
         },
         {
-            nameField: "Xếp hàng hóa vào vị trí lưu trữ", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM", type: 'default', description: 'Xếp hàng đến vị trí lưu trữ trong kho'
+            nameField: "Xếp hàng hóa vào vị trí lưu trữ", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: 'Xếp hàng đến vị trí lưu trữ trong kho'
         },
     ]
 
@@ -49,7 +49,11 @@ function StockWorkAssignmentModal(props) {
         startDate: formatDate((new Date()).toISOString()),
         endDate: formatDate((new Date()).toISOString()),
         startTime: '',
-        endTime: '05:30 PM',
+        endTime: '5:30 PM',
+        dataCalendarStatus: 0,
+        dataCalendarOldStatus: 0,
+        counter: 0,
+        isOpenCalendarChart: false,
     })
 
     const getApprover = () => {
@@ -84,6 +88,7 @@ function StockWorkAssignmentModal(props) {
                 ...state,
                 peopleInCharge: value,
                 errorPeopleInCharge: msg,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
             });
         }
         return msg === undefined;
@@ -107,6 +112,7 @@ function StockWorkAssignmentModal(props) {
                 ...state,
                 accountables: value,
                 errorAccountables: msg,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
             })
         }
         return msg === undefined;
@@ -130,6 +136,7 @@ function StockWorkAssignmentModal(props) {
                 ...state,
                 accountants: value,
                 errorAccountants: msg,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
             })
         }
         return msg === undefined;
@@ -178,7 +185,8 @@ function StockWorkAssignmentModal(props) {
                 ...state,
                 workAssignment: workAssignment,
                 errorOnValue: undefined,
-                errorOnNameField: undefined
+                errorOnNameField: undefined,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
             })
         }
     };
@@ -197,7 +205,8 @@ function StockWorkAssignmentModal(props) {
                 ...state,
                 errorOnNameField: message,
                 errorOnNameFieldPosition: message ? className : null,
-                workAssignment: workAssignment
+                workAssignment: workAssignment,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
             });
         }
         return message === undefined;
@@ -223,6 +232,22 @@ function StockWorkAssignmentModal(props) {
         return message === undefined;
     }
 
+    const findFullUserInfor = (value) => {
+        const { user } = props;
+        let array = [];
+        value.forEach(item => {
+            let userFind = user.list.find(element => element._id === item)
+            if (userFind) {
+                array.push({
+                    id: userFind._id,
+                    name: userFind.name,
+                    email: userFind.email,
+                })
+            }
+        })
+        return array;
+    }
+
     const handleChangeWorkAssignmentStaffsValue = (value, index) => {
         validateWorkAssignmentStaffs(value, index);
     }
@@ -231,10 +256,12 @@ function StockWorkAssignmentModal(props) {
 
         if (willUpdateState) {
             let { workAssignment } = state;
-            workAssignment[index] = { ...workAssignment[index], workAssignmentStaffs: value, errorworkAssignmentStaffs: message };
+            let array = findFullUserInfor(value);
+            workAssignment[index] = { ...workAssignment[index], workAssignmentStaffs: array, errorworkAssignmentStaffs: message };
             setState({
                 ...state,
                 workAssignment: workAssignment,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
             });
         }
         return message === undefined;
@@ -264,7 +291,8 @@ function StockWorkAssignmentModal(props) {
         setState({
             ...state,
             startTime: currentTime,
-            workAssignment: workAssignment
+            workAssignment: workAssignment,
+            counter: isFormValidated() ? state.counter + 1 : state.counter
         });
     }
 
@@ -292,6 +320,7 @@ function StockWorkAssignmentModal(props) {
                 ...state,
                 startDate: value,
                 errorOnStartDateAll: msg,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
             })
             state.startDate = value;
             state.errorOnStartDateAll = msg;
@@ -323,6 +352,7 @@ function StockWorkAssignmentModal(props) {
             startTime: value,
             errorOnStartDateAll: err,
             errorOnEndDateAll: resetErr,
+            counter: isFormValidated() ? state.counter + 1 : state.counter
         });
     }
 
@@ -344,6 +374,7 @@ function StockWorkAssignmentModal(props) {
             endTime: value,
             errorOnEndDateAll: err,
             errorOnStartDateAll: resetErr,
+            counter: isFormValidated() ? state.counter + 1 : state.counter
         })
     }
 
@@ -359,6 +390,8 @@ function StockWorkAssignmentModal(props) {
                 ...state,
                 endDate: value,
                 errorOnEndDateAll: msg,
+                counter: isFormValidated() ? state.counter + 1 : state.counter
+
             })
             state.endDate = value;
             state.errorOnEndDateAll = msg;
@@ -402,7 +435,9 @@ function StockWorkAssignmentModal(props) {
                 workAssignment[index] = { ...workAssignment[index], errorOnEndDate: msg };
                 setState({
                     ...state,
-                    workAssignment: workAssignment
+                    workAssignment: workAssignment,
+                    counter: isFormValidated() ? state.counter + 1 : state.counter
+
                 })
             }
         }
@@ -432,6 +467,7 @@ function StockWorkAssignmentModal(props) {
         setState({
             ...state,
             workAssignment: workAssignment,
+            counter: isFormValidated() ? state.counter + 1 : state.counter
         });
     }
 
@@ -457,6 +493,7 @@ function StockWorkAssignmentModal(props) {
         setState({
             ...state,
             workAssignment: workAssignment,
+            counter: isFormValidated() ? state.counter + 1 : state.counter
         })
     }
 
@@ -485,7 +522,8 @@ function StockWorkAssignmentModal(props) {
                 workAssignment[index] = { ...workAssignment[index], errorOnStartDate: msg };
                 setState({
                     ...state,
-                    workAssignment: workAssignment
+                    workAssignment: workAssignment,
+                    counter: isFormValidated() ? state.counter + 1 : state.counter
                 });
             }
         }
@@ -602,30 +640,31 @@ function StockWorkAssignmentModal(props) {
         return result;
     }
 
-    useEffect(() => {
+    const handleOpenCalendarChart = () => {
         if (isFormValidated()) {
             let data = [
                 {
-                    nameField: "Quản lý", workAssignmentStaffs: state.peopleInCharge, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                    nameField: "Quản lý", workAssignmentStaffs: findFullUserInfor(state.peopleInCharge), startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
                 },
                 {
-                    nameField: "Giám sát", workAssignmentStaffs: state.accountables, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                    nameField: "Giám sát", workAssignmentStaffs: findFullUserInfor(state.accountables), startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
                 },
                 {
-                    nameField: "Kế toán", workAssignmentStaffs: state.accountants, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                    nameField: "Kế toán", workAssignmentStaffs: findFullUserInfor(state.accountants), startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
                 },
             ]
             const newArray = data.concat(state.workAssignment);
             setState({
                 ...state,
-                dataCalendar: newArray
+                dataCalendar: newArray,
+                counter: state.counter + 1,
+                isOpenCalendarChart: true
             })
         }
-    }, [isFormValidated()])
+    }
 
     const save = async () => {
-        const { billId, approvers, listQualityControlStaffs, responsibles, accountables } = state;
-        const { group } = props;
+        const { billId, listQualityControlStaffs, responsibles, accountables } = state;
 
         await props.editBill(billId, {
             // approvers: approvers,
@@ -637,9 +676,8 @@ function StockWorkAssignmentModal(props) {
 
     const { translate } = props;
     const { billId, peopleInCharge, accountables, accountants, startDate, endDate, startTime, endTime, errorOnStartDateAll,
-        errorOnEndDateAll, errorPeopleInCharge, errorAccountants, errorAccountables, dataCalendar, errorOnNameFieldPosition, errorOnNameField, workAssignment } = state;
+        errorOnEndDateAll, errorPeopleInCharge, errorAccountants, errorAccountables, dataCalendar, errorOnNameFieldPosition, errorOnNameField, workAssignment, counter, isOpenCalendarChart } = state;
     const dataApprover = getApprover();
-    console.log(state);
     return (
         <React.Fragment>
             <DialogModal
@@ -710,7 +748,7 @@ function StockWorkAssignmentModal(props) {
                                     <label>{"Ngày bắt đầu"}<span className="text-red"> * </span></label>
                                     <DatePicker
                                         id={`startDatePicker`}
-                                        dateFormat="day-month-year"
+                                        dateFormat="year-month-day"
                                         value={startDate}
                                         onChange={handleChangeStartDate}
                                     />
@@ -731,7 +769,7 @@ function StockWorkAssignmentModal(props) {
                                     <label>{"Ngày kết thúc"}<span className="text-red"> * </span></label>
                                     <DatePicker
                                         id={`endDatePicker`}
-                                        dateFormat="day-month-year"
+                                        dateFormat="year-month-day"
                                         value={endDate}
                                         onChange={handleChangeEndDate}
                                     />
@@ -798,7 +836,7 @@ function StockWorkAssignmentModal(props) {
                                                         <div className={` ${!x.errorOnStartDate ? "" : "has-error"}`}>
                                                             <DatePicker
                                                                 id={`startDatePicker-${index}`}
-                                                                dateFormat="day-month-year"
+                                                                dateFormat="year-month-day"
                                                                 value={x.startDate}
                                                                 onChange={(e) => handleChangeTaskStartDate(e, index)}
                                                             />
@@ -815,7 +853,7 @@ function StockWorkAssignmentModal(props) {
                                                         <div className={` ${!x.errorOnEndDate ? "" : "has-error"}`}>
                                                             <DatePicker
                                                                 id={`endDatePicker-${index}`}
-                                                                dateFormat="day-month-year"
+                                                                dateFormat="year-month-day"
                                                                 value={x.endDate}
                                                                 onChange={(e) => handleChangeTaskEndDate(e, index)}
                                                             />
@@ -838,7 +876,11 @@ function StockWorkAssignmentModal(props) {
                     </div>
 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <GanttCalendar dataCalendar={dataCalendar} />
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{"Biểu đồ lịch công việc"}</legend>
+                            <button type="button" disabled={!isFormValidated()} className="btn btn-info" onClick={handleOpenCalendarChart}>{!isOpenCalendarChart ? "Xem biểu đồ công việc" : 'Làm mới biểu đồ'}</button>
+                            <GanttCalendar dataChart={dataCalendar} counter={counter} />
+                        </fieldset>
                     </div>
                 </form>
             </DialogModal>
