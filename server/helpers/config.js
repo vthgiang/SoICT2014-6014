@@ -1319,7 +1319,6 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/manage-payment'),
 },
-,
 {
     url: '/request-management/order',
     description: 'Quản lý đề nghị',
