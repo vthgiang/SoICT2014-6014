@@ -10,8 +10,8 @@ import { convertDateTime, getParticipants } from './functionHelper';
 import CreateGeneralTab from "./createGeneralInfo"
 import CreateTaskProjectTemplate from "./createTaskProjectTemplate"
 
-const CreateProjectTemplateForm = (props) => {
-    const { translate, projectTemplate, user } = props;
+const EditProjectTemplateForm = (props) => {
+    const { translate, projectTemplate, user, projectEditId, projectEdit } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
@@ -26,6 +26,8 @@ const CreateProjectTemplateForm = (props) => {
         { text: 'QLDA phương pháp CPM', value: 2 },
     ]
     const userId = getStorage('userId');
+    const [projectData, setProjectData] = useState(projectEdit);
+    const [id, setId] = useState(projectEditId);
     const [currentSalaryMembers, setCurrentSalaryMemData] = useState(undefined);
     const [userSelectOptions, setUserSelectOptions] = useState([]);
     const [selectedTab, setSelectedTab] = useState("general");
@@ -51,6 +53,11 @@ const CreateProjectTemplateForm = (props) => {
         currentUnitRow: '',
         currentEmployeeRow: [],
     })
+
+    useEffect(() => {
+        setProjectData(projectEdit);
+        setId(projectEditId);
+    }, [projectEditId])
 
     useEffect(() => {
         const op = getParticipants(listUsers, projectManager, responsibleEmployeesWithUnit)
@@ -102,7 +109,7 @@ const CreateProjectTemplateForm = (props) => {
                 }
             }
 
-            props.createProjectTemplateDispatch({
+            props.editProjectTemplateDispatch(id, {
                 name: projectName,
                 projectType,
                 startDate: start,
@@ -133,9 +140,9 @@ const CreateProjectTemplateForm = (props) => {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-project-template" isLoading={false}
-                formID="form-create-project-template"
-                title={"Thêm mẫu dự án"}
+                modalID={`modal-edit-project-template-${id}`} isLoading={false}
+                formID="form-edit-project-template"
+                title={"Chỉnh sửa mẫu dự án"}
                 func={save}
                 // disableSubmit={!isFormValidated()}
                 size={100}
@@ -145,12 +152,12 @@ const CreateProjectTemplateForm = (props) => {
                         {/* Tabbed pane */}
                         <ul className="nav nav-tabs">
                             {/* Nút tab thông tin cơ bản */}
-                            <li className="active"><a href="#general" onClick={() => handleChangeContent("general")} data-toggle="tab">Thông số và nhân sự mẫu dự án</a></li>
+                            <li className="active"><a href={`#general-edit-${id}`} onClick={() => handleChangeContent(`general-edit-${id}`)} data-toggle="tab">Thông số và nhân sự mẫu dự án</a></li>
                             {/* Nút tab các bên tgia */}
-                            <li><a href="#tasks" onClick={() => handleChangeContent("tasks")} data-toggle="tab">Thêm công việc vào mẫu dự án</a></li>
+                            <li><a href={`#tasks-edit-${id}`} onClick={() => handleChangeContent(`tasks-edit-${id}`)} data-toggle="tab">Thêm công việc vào mẫu dự án</a></li>
                         </ul>
                         <div className="tab-content">
-                            <div className={selectedTab === "general" ? "active tab-pane" : "tab-pane"} id="general">
+                            <div className={selectedTab === "general" ? "active tab-pane" : "tab-pane"} id={`general-edit-${id}`}>
                                 <CreateGeneralTab
                                     setCurrentSalaryMemData={setCurrentSalaryMemData}
                                     setResponsibleEmployeesWithUnitReqData={setResponsibleEmployeesWithUnitReqData}
@@ -158,16 +165,18 @@ const CreateProjectTemplateForm = (props) => {
                                     setStartTimeRq={setStartTimeRq}
                                     setEndTimeRq={setEndTimeRq}
                                     setUserSelectOptions={setUserSelectOptions}
-                                    type={"create"}
-                                    id={`create`}
+                                    projectData={projectData}
+                                    type={"edit"}
+                                    id={`edit-${id}`}
                                 />
                             </div>
-                            <div className={selectedTab === "tasks" ? "active tab-pane" : "tab-pane"} id="tasks">
+                            <div className={selectedTab === "tasks" ? "active tab-pane" : "tab-pane"} id={`tasks-edit-${id}`}>
                                 <CreateTaskProjectTemplate
                                     userSelectOptions={userSelectOptions}
                                     setTasksInfo={setTasksInfo}
-                                    type={"create"}
-                                    id={`create`}
+                                    type={"edit"}
+                                    id={`edit-${id}`}
+                                    taskList={projectData?.tasks}
                                 // currentProjectTasks={tasksInfo}
                                 // projectDetail={generalInfo}
                                 // listUsers={listUsers}
@@ -187,6 +196,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createProjectTemplateDispatch: ProjectTemplateActions.createProjectTemplateDispatch,
+    editProjectTemplateDispatch: ProjectTemplateActions.editProjectTemplateDispatch,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateProjectTemplateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditProjectTemplateForm));

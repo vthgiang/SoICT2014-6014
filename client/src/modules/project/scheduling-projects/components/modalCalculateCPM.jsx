@@ -180,10 +180,11 @@ const ModalCalculateCPM = (props) => {
 
                 console.log('newTasksList', newTasksList);
                 if (props.handleTaskProjectList) {
+                    console.log("handleTaskProjectList");
                     props.handleTaskProjectList(newTasksList);
                 } else {
-                    console.log("props.createProjectTasksFromCPMDispatch");
-                    // await props.createProjectTasksFromCPMDispatch(newTasksList);
+                    // console.log("props.createProjectTasksFromCPMDispatch");
+                    await props.createProjectTasksFromCPMDispatch(newTasksList);
                 }
                 props.handleHideModal();
             }
@@ -223,7 +224,7 @@ const ModalCalculateCPM = (props) => {
                         </button>
                     </div>
                     {/* Button Tính toán mức thoả hiệp dự án */}
-                    {// moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate)) &&
+                    {moment(findLatestDate(processedData)).isAfter(moment(projectDetail?.endDate)) &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                             <ModalCalculateRecommend
                                 handleApplyChange={handleApplyChange}

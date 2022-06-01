@@ -8,6 +8,7 @@ import { getStorage } from "../../../../config";
 import { renderLongList } from "./functionHelper";
 import { taskManagementActions } from "../../../task/task-management/redux/actions";
 import CreateProjectTemplateForm from "./createProjectTemplate";
+import EditProjectTemplateForm from "./editProjectTemplate";
 
 function ProjectTemplateManage(props) {
     const tableId = 'project-template-table';
@@ -118,12 +119,11 @@ function ProjectTemplateManage(props) {
                 currentProjectTasks={tasks && tasks.tasksbyproject}
             /> */}
 
-            {/* <ProjectEditForm
-                currentProjectTasks={tasks && tasks.tasksbyproject}
+            <EditProjectTemplateForm
                 projectEditId={currentRow && currentRow._id}
                 projectEdit={currentRow}
                 handleAfterCreateProject={handleAfterCreateProject}
-            /> */}
+            />
             <CreateProjectTemplateForm
                 handleAfterCreateProject={handleAfterCreateProject}
             />

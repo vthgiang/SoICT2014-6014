@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, TreeSelect, DatePicker, SelectBox, TimePicker } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
-import { getParticipants, convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from './functionHelper';
+import { getParticipants, convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments, formatTime } from './functionHelper';
 import ModalSalaryMembers from './modalSalaryMembers';
+import { formatDate } from '../../../../helpers/formatDate';
 
 const CreateGeneralTab = (props) => {
     const { translate, project, user } = props;
@@ -49,7 +50,7 @@ const CreateGeneralTab = (props) => {
         currentEmployeeRow: [],
     })
 
-    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
+    const { projectName, projectNameError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, id } = form;
 
     const handleChangeForm = (event, currentKey) => {
         if (currentKey === 'projectName') {
@@ -90,6 +91,60 @@ const CreateGeneralTab = (props) => {
             [currentKey]: event?.target?.value,
         })
     }
+
+    const preprocessUsersList = useCallback((currentObject) => {
+        if (typeof currentObject?.[0] === 'string') {
+            return currentObject;
+        }
+        return currentObject?.map(item => item._id)
+    }, [])
+
+    useEffect(() => {
+        let prjData = props.projectData;
+        if (props.type === "edit" && prjData) {
+            setForm({
+                id: props.id,
+                // projectId: prjDataId,
+                projectNameError: undefined,
+                projectName: prjData?.name || "",
+                description: prjData?.description || "",
+                projectType: prjData?.projectType || 2,
+                startDate: prjData?.startDate ? formatDate(prjData?.startDate) : '',
+                endDate: prjData?.endDate ? formatDate(prjData?.endDate) : '',
+                projectManager: preprocessUsersList(prjData?.projectManager),
+                responsibleEmployees: preprocessUsersList(prjData?.responsibleEmployees),
+                unitCost: prjData?.unitCost || fakeUnitCostList[0].text,
+                unitTime: prjData?.unitTime || fakeUnitTimeList[0].text,
+                estimatedCost: prjData?.estimatedCost || '',
+            })
+            setStartTime(formatTime(prjData?.startDate) || '08:00 AM')
+            setEndTime(formatTime(prjData?.endDate) || '05:30 PM')
+            let newResponsibleEmployeesWithUnit = [];
+            for (let i = 0; i < prjData?.responsibleEmployeesWithUnit.length; i++) {
+                newResponsibleEmployeesWithUnit.push({
+                    unitId: prjData?.responsibleEmployeesWithUnit[i].unitId,
+                    listUsers: prjData?.responsibleEmployeesWithUnit[i].listUsers.map((item, index) => ({
+                        userId: item.userId,
+                        salary: item.salary,
+                    }))
+                })
+            }
+            setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
+            setTimeout(() => {
+                setResponsibleEmployeesWithUnit({
+                    ...responsibleEmployeesWithUnit,
+                    list: prjData?.responsibleEmployeesWithUnit?.map((unitItem) => {
+                        return {
+                            unitId: unitItem.unitId,
+                            listUsers: unitItem?.listUsers?.map((userItem) => {
+                                return userItem.userId
+                            })
+                        }
+                    }),
+                })
+            }, 10);
+        }
+    }, [JSON.stringify(props.projectData), props.id])
 
     useEffect(() => {
         props.setGeneralInfo({
@@ -232,7 +287,7 @@ const CreateGeneralTab = (props) => {
                             <div className={`form-group col-md-6 col-xs-6`}>
                                 <label>Hình thức quản lý dự án<span className="text-red">*</span></label>
                                 <SelectBox
-                                    id={`select-project-type`}
+                                    id={`${props.type}-select-project-type-${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={fakeProjectTypeList}
@@ -290,7 +345,7 @@ const CreateGeneralTab = (props) => {
                         <div className="form-group">
                             <label>{translate('project.unitTime')}</label>
                             <SelectBox
-                                id={`select-project-unitTime`}
+                                id={`${props.type}-select-project-unitTime-${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={fakeUnitTimeList}
@@ -317,7 +372,7 @@ const CreateGeneralTab = (props) => {
                             <label>{translate('project.manager')}<span className="text-red">*</span></label>
                             {listUsers &&
                                 <SelectBox
-                                    id={`select-project-manager`}
+                                    id={`${props.type}-select-project-manager-${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={listUsers}
@@ -362,7 +417,7 @@ const CreateGeneralTab = (props) => {
                                             <div className={`form-group`}>
                                                 {listDepartments && listDepartments.length > 0 &&
                                                     <SelectBox
-                                                        id={`create-project-${responsibleEmployeesWithUnit.list.length}`}
+                                                        id={`${props.type}-create-project-${responsibleEmployeesWithUnit.list.length}-${id}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
                                                         items={listDepartments}
@@ -383,7 +438,7 @@ const CreateGeneralTab = (props) => {
                                             <div className={`form-group`}>
                                                 {listDepartments && listDepartments.length > 0 &&
                                                     <SelectBox
-                                                        id={`select-project-members`}
+                                                        id={`${props.type}-select-project-members--${responsibleEmployeesWithUnit.list.length}-${id}`}
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
                                                         items={listUsers.filter(item =>

@@ -110,7 +110,6 @@ const AddTaskSchedule = (props) => {
         }
     }, [JSON.stringify(props.projectTask), JSON.stringify(projectDetail)])
 
-    console.log(108, projectDetail);
     const handleTaskCPM = (data) => {
         const formattedData = data.map((dataItem) => {
             let currentResMemberIdArr = [], currentAccMemberIdArr = [];

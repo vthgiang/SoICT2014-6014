@@ -14,20 +14,29 @@ import { getStorage } from '../../../../config';
 import { withTranslate } from 'react-redux-multilingual';
 
 export const CreateTaskProjectTemplate = (props) => {
-    const { translate, taskInProjectTemplate, userSelectOptions, respEmployeesWithUnit, user } = props;
+    const { translate, taskInProjectTemplate, userSelectOptions, respEmployeesWithUnit, user, taskList } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
-    const initNewTask = {
+    const arrPrirority = [
+        { value: "5", text: translate('task.task_management.urgent') },
+        { value: "4", text: translate('task.task_management.high') },
+        { value: "3", text: translate('task.task_management.standard') },
+        { value: "2", text: translate('task.task_management.average') },
+        { value: "1", text: translate('task.task_management.low') },
+    ];
+    const initTaskData = {
+        code: "",
         name: "",
+        description: "",
         priority: 3,
         responsibleEmployees: [],
         accountableEmployees: [],
         consultedEmployees: [],
         informedEmployees: [],
-        creator: getStorage("userId"),
+        // creator: getStorage("userId"),
         // organizationalUnit: "",
         collaboratedWithOrganizationalUnits: [],
-        // preceedingTasks: "",
+        preceedingTasks: "",
         // followingTasks: [],
         estimateNormalTime: '',
         estimateOptimisticTime: '',
@@ -44,12 +53,22 @@ export const CreateTaskProjectTemplate = (props) => {
         currentEarliestEndDate: '',
     }
     const [optionUsers, setOptionUsers] = useState(userSelectOptions);
-    const [tasks, setTasks] = useState([]);
-    const [newTask, setNewTask] = useState(initNewTask);
+    const [id, setId] = useState(props.id);
+    const [tasks, setTasks] = useState(taskList ?? []);
     const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState(respEmployeesWithUnit);
+    const EDIT_TYPE = "EDIT_TYPE", ADD_TYPE = "ADD_TYPE" // , RESET_TYPE = "RESET_TYPE", DELETE_TYPE = "DELETE_TYPE", CANCEL_TYPE = "CANCEL_TYPE";
+    const [state, setState] = useState({
+        type: ADD_TYPE,
+        currentTask: initTaskData,
+        currentIndex: null
+    });
 
     useEffect(() => {
-        // setTasks(taskInProjectTemplate)
+        setTasks(taskList ?? [])
+        setId(props.id)
+    }, [props.id])
+
+    useEffect(() => {
         setResponsibleEmployeesWithUnit(respEmployeesWithUnit)
     }, [respEmployeesWithUnit])
 
@@ -64,19 +83,50 @@ export const CreateTaskProjectTemplate = (props) => {
     const handleChange = (e) => {
         let { name, value } = e?.target;
 
-        setNewTask({
-            ...newTask,
-            [name]: value,
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                [name]: value
+            }
         })
     }
 
     const handleChangeTotalResWeight = (e) => {
         let { name, value } = e?.target;
 
-        setNewTask({
-            ...newTask,
-            totalResWeight: Number(value),
-            totalAccWeight: 100 - Number(value)
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                totalResWeight: Number(value),
+                totalAccWeight: 100 - Number(value)
+            }
+        })
+    }
+
+    const handleChangeEstimateNormalTime = (e) => {
+        let { name, value } = e?.target;
+
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                estimateNormalTime: Number(value),
+                estimateOptimisticTime: Number(value) === 1 ? 0 : Number(value) === 2 ? 1 : (Number(value) - 2)
+            }
+        })
+    }
+
+    const handleChangeEstimateOptimisticTime = (e) => {
+        let { name, value } = e?.target;
+
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                estimateOptimisticTime: Number(value)
+            }
         })
     }
 
@@ -86,6 +136,7 @@ export const CreateTaskProjectTemplate = (props) => {
     const validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateArrayLength(translate, value);
+        let newTask = state.currentTask
         if (checkIfHasCommonItems(value, newTask.accountableEmployees)) {
             message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
         }
@@ -106,15 +157,15 @@ export const CreateTaskProjectTemplate = (props) => {
                 })
             })
             const currentNewTask = {
-                ...newTask,
+                ...state.currentTask,
                 responsibleEmployees: value,
                 errorOnResponsibleEmployees: message,
                 actorsWithSalary: [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr],
             }
-            setNewTask(currentNewTask);
-            // setTimeout(() => {
-            //     props.handleChangeTaskData(currentNewTask)
-            // }, 10);
+            setState({
+                ...state,
+                currentTask: currentNewTask
+            });
         }
         return message === undefined;
     }
@@ -125,6 +176,7 @@ export const CreateTaskProjectTemplate = (props) => {
     const validateTaskAccountableEmployees = (value, willUpdateState = true) => {
         let { translate } = props;
         let { message } = ValidationHelper.validateArrayLength(translate, value);
+        let newTask = state.currentTask
         if (checkIfHasCommonItems(value, newTask.responsibleEmployees)) {
             message = "Thành viên Thực hiện và Phê duyệt không được trùng nhau"
         }
@@ -145,33 +197,213 @@ export const CreateTaskProjectTemplate = (props) => {
                 })
             })
             const currentNewTask = {
-                ...newTask,
+                ...state.currentTask,
                 accountableEmployees: value,
-                errorOnAccountableEmployees: message,
+                errorOnResponsibleEmployees: message,
                 actorsWithSalary: [...responsiblesWithSalaryArr, ...accountablesWithSalaryArr],
             }
-            setNewTask(currentNewTask);
-            // setTimeout(() => {
-            //     props.handleChangeTaskData(currentNewTask)
-            // }, 10);
+            setState({
+                ...state,
+                currentTask: currentNewTask
+            });
         }
         return message === undefined;
     }
 
-    const handleDelete = (index) => {
-        if (tasks && tasks.length > 0) {
-            const cloneArr = [...tasks];
-            cloneArr.splice(index, 1);
-            setTasks(cloneArr)
-        }
+    const handleChangeSingleSelectForm = (key, value) => {
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                [key]: value[0]
+            }
+        })
     }
 
-    const handleAddRow = () => {
-        if (newTask) {
-            const newListTask = [...tasks, newTask];
-            setTasks(newListTask);
-            setNewTask(initNewTask)
-        }
+    const handleDeleteTask = (listIndex) => {
+        let newList = tasks
+        newList.splice(listIndex, 1)
+
+        setTasks(newList);
+        props.setTasksInfo(tasks)
+    }
+
+    const handleResetTask = () => {
+        setState({
+            ...state,
+            type: ADD_TYPE,
+            currentTask: initTaskData,
+            currentIndex: null
+        })
+    }
+
+    const handleCancel = () => {
+        setState({
+            ...state,
+            type: ADD_TYPE,
+            currentTask: initTaskData,
+            currentIndex: null
+        })
+    }
+
+    const handleEditTask = (listIndex) => {
+        setState({
+            ...state,
+            type: EDIT_TYPE,
+            currentTask: tasks[listIndex],
+            currentIndex: listIndex
+        })
+    }
+
+    const handleSaveTask = (listIndex) => {
+        let { currentTask } = state
+        let newList = tasks.map((x, idx) => {
+
+            if (idx === listIndex) {
+                x = { ...currentTask }
+            }
+            return x;
+        })
+
+        setState({
+            ...state,
+            type: ADD_TYPE,
+            currentTask: initTaskData,
+            currentIndex: null
+        })
+        setTasks(newList);
+        props.setTasksInfo(tasks)
+    }
+
+    const handleAddTask = () => {
+        let { currentTask } = state
+        let newList = tasks
+
+        newList.push(currentTask)
+
+        setState({
+            ...state,
+            type: ADD_TYPE,
+            currentTask: initTaskData,
+            currentIndex: null
+        })
+        setTasks(newList);
+        props.setTasksInfo(tasks)
+    }
+
+    const renderTaskForm = () => {
+        return (
+            <div className='row'>
+                <div className="col-md-6">
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">Thông tin chung</legend>
+
+                        {/* Form create task */}
+                        <div style={{ paddingTop: '10px' }}>
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>Tên công việc<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="name" value={state.currentTask.name} onChange={(e) => handleChange(e)}></input>
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label>Độ ưu tiên<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`${props.type}-select-priority-task-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={arrPrirority}
+                                        onChange={(value) => handleChangeSingleSelectForm("priority", value)}
+                                        value={state.currentTask?.priority}
+                                        multiple={false}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>Mã công việc<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="code" value={state.currentTask.code} onChange={(e) => handleChange(e)}></input>
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label>Công việc tiền nhiệm<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="preceedingTasks" value={state.currentTask.preceedingTasks} onChange={(e) => handleChange(e)}></input>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>Thòi gian ước lượng<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="estimateNormalTime" value={state.currentTask.estimateNormalTime} onChange={(e) => handleChangeEstimateNormalTime(e)}></input>
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label>Thời lượng thỏa hiệp<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="estimateOptimisticTime" value={state.currentTask.estimateOptimisticTime} onChange={(e) => handleChangeEstimateOptimisticTime(e)}></input>
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Mô tả công việc</label>
+                                <textarea type="text" rows={3} style={{ minHeight: '103.5px' }}
+                                    name={`description`}
+                                    onChange={(value) => handleChange(value)}
+                                    value={state.currentTask?.description}
+                                    className="form-control"
+                                    placeholder="Mô tả công việc"
+                                    autoComplete="off"
+                                />
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div className="col-md-6">
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">Vai trò</legend>
+
+                        {/* Form create task */}
+                        <div style={{ paddingTop: '10px' }}>
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>Người thực hiện<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`${props.type}-responsible-select-box-${id}-${state.currentIndex}`}
+                                        className="form-control select"
+                                        style={{ width: "100%" }}
+                                        items={optionUsers}
+                                        onChange={handleChangeTaskResponsibleEmployees}
+                                        value={state.currentTask.responsibleEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_resp') }}
+                                    />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label>Trọng số người thực hiện (%)<span className="text-red">*</span></label>
+                                    <input type="number" className="form-control" name={`totalResWeight`} onChange={(value) => handleChangeTotalResWeight(value)} value={state.currentTask?.totalResWeight} autoComplete="off" />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-md-6">
+                                    <label>Người phê duyệt<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`${props.type}-accounatable-select-box-${id}-${state.currentIndex}`}
+                                        className="form-control select"
+                                        style={{ width: "100%" }}
+                                        items={optionUsers}
+                                        onChange={handleChangeTaskAccountableEmployees}
+                                        value={state.currentTask.accountableEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_acc') }}
+                                    />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label>Trọng số người phê duyệt (%)<span className="text-red">*</span></label>
+                                    <input type="number" className="form-control" name={`totalAccWeight`} onChange={(value) => {/** do nothing */ }} value={state.currentTask?.totalAccWeight} autoComplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -179,6 +411,21 @@ export const CreateTaskProjectTemplate = (props) => {
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', color: 'red' }}>
                 <p>Điền các thông tin công việc theo mẫu bên duói<span className="text-red">*</span></p>
             </div>
+            {renderTaskForm()}
+
+            <div className="pull-right row" style={{ marginRight: 0, marginBottom: "15px" }}>
+                {state.type === EDIT_TYPE &&
+                    <>
+                        <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancel() }}>Hủy</button>
+                        <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTask(state.currentIndex) }}>Lưu</button>
+                    </>
+                }
+                {state.type === ADD_TYPE &&
+                    <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTask() }}>Thêm</button>
+                }
+                <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
+            </div>
+
             <table id="project-template-task-table" className="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
@@ -216,80 +463,12 @@ export const CreateTaskProjectTemplate = (props) => {
                                 </td>
                                 <td>{item?.totalResWeight}</td>
                                 <td>
-                                    <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
+                                    <a className="edit" title={translate('general.delete')} onClick={() => handleEditTask(index)}><i className="material-icons">edit</i></a>
+                                    <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(index)}><i className="material-icons">delete</i></a>
                                 </td>
                             </tr>
                         ))
                     }
-                    <tr key={`add-task-input-${tasks.length}`}>
-                        <td>
-                            <div className="form-group">
-                                <input type="text" className="form-control" name="code" value={newTask.code} onChange={(e) => handleChange(e)}></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="form-group">
-                                <input type="text" className="form-control" name="name" required value={newTask.name} onChange={(e) => handleChange(e)}></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="form-group">
-                                <input type="text" className="form-control" name="preceedingTasks" required value={newTask.preceedingTasks} onChange={(e) => handleChange(e)}></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="form-group">
-                                <input type="number" className="form-control" name="estimateNormalTime" required value={newTask.estimateNormalTime} onChange={(e) => handleChange(e)}></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className="form-group">
-                                <input type="number" className="form-control" name="estimateOptimisticTime" required value={newTask.estimateOptimisticTime} onChange={(e) => handleChange(e)}></input>
-                            </div>
-                        </td>
-                        <td>
-                            <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
-                                {
-                                    <SelectBox
-                                        id={`responsible-select-box${newTask.code}`}
-                                        className="form-control select"
-                                        style={{ width: "100%" }}
-                                        items={optionUsers}
-                                        onChange={handleChangeTaskResponsibleEmployees}
-                                        value={newTask.responsibleEmployees}
-                                        multiple={true}
-                                        options={{ placeholder: translate('task.task_management.add_resp') }}
-                                    />
-                                }
-                                <ErrorLabel content={newTask.errorOnResponsibleEmployees} />
-                            </div>
-                        </td>
-                        <td>
-                            <div className={`form-group ${newTask.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
-                                {
-                                    <SelectBox
-                                        id={`accounatable-select-box${newTask.code}`}
-                                        className="form-control select"
-                                        style={{ width: "100%" }}
-                                        items={optionUsers}
-                                        onChange={handleChangeTaskAccountableEmployees}
-                                        value={newTask.accountableEmployees}
-                                        multiple={true}
-                                        options={{ placeholder: translate('task.task_management.add_acc') }}
-                                    />
-                                }
-                                <ErrorLabel content={newTask.errorOnAccountableEmployees} />
-                            </div>
-                        </td>
-                        <td>
-                            <div className="form-group">
-                                <input type="number" className="form-control" name="totalResWeight" required value={newTask.totalResWeight} onChange={(e) => handleChangeTotalResWeight(e)}></input>
-                            </div>
-                        </td>
-                        <td>
-                            <a className="save text-green" title={translate('general.save')} onClick={handleAddRow}><i className="material-icons">add_circle</i></a>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>

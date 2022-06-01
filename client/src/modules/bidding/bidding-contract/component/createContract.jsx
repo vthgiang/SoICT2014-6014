@@ -81,7 +81,6 @@ const CreateBiddingContract = (props) => {
 	useEffect(() => {
 		if (modelConfiguration.biddingConfig != '') {
 			const data = modelConfiguration.biddingConfig
-			console.log(75, data);
 			setState({
 				...state,
 				companyB: data.company,

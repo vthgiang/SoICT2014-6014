@@ -113,9 +113,9 @@ function TaskManagement(props) {
             tags: []
         };
     }
-    useEffect(() => {
-        window.$(`#modelPerformTask${currentTaskId}`).modal('show')
-    }, [currentTaskId])
+    // useEffect(() => {
+    //     window.$(`#modelPerformTask${currentTaskId}`).modal('show')
+    // }, [currentTaskId])
 
     useEffect(() => {
         const { perPage, currentPage } = state;
@@ -379,7 +379,9 @@ function TaskManagement(props) {
             currentTaskId: id,
             taskName
         })
-        window.$(`#modelPerformTask${id}`).modal('show')
+        setTimeout(() => {
+            window.$(`#modelPerformTask${id}`).modal('show')
+        }, 500)
     }
 
     /**
