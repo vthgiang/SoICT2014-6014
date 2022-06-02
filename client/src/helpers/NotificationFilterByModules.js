@@ -17,7 +17,7 @@ export const NotificationFilterByModules = (arrNotification) => {
             case 3:
                 notifyKPI = [...notifyKPI, obj];
                 break;
-            case 4:
+            case 5:
                 notifyProduction = [...notifyProduction, obj];
                 break;
             default:

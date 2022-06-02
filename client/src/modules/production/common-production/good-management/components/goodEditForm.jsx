@@ -25,10 +25,18 @@ function GoodEditForm(props) {
         numberExpirationDate: "",
         sourceType: "",
         isSeflProduced: props.sourceType === "1" ? true : false,
+        excludingGoods: [],
     })
 
     useEffect(() => {
         if (props.goodId !== state.goodId) {
+            let excludingGoods = [];
+            if (props.excludingGoods && props.excludingGoods.length > 0) {
+                for (let i = 0; i < props.excludingGoods.length; i++) {
+                    excludingGoods = [...excludingGoods, props.excludingGoods[i].good._id];
+                }
+
+            }
             setState({
                 ...state,
                 goodId: props.goodId,
@@ -45,6 +53,7 @@ function GoodEditForm(props) {
                 pricePerBaseUnit: props.pricePerBaseUnit ? props.pricePerBaseUnit : "",
                 salesPriceVariance: props.salesPriceVariance ? props.salesPriceVariance : "",
                 numberExpirationDate: props.numberExpirationDate ? props.numberExpirationDate : "",
+                excludingGoods: excludingGoods,
                 errorOnName: undefined,
                 errorOnCode: undefined,
                 errorOnBaseUnit: undefined,
@@ -71,14 +80,6 @@ function GoodEditForm(props) {
         }
     ];
 
-    const validatePrice = (value) => {
-        let msg = undefined;
-        if (value && parseInt(value) < 0) {
-            msg = "Giá trị không được âm";
-        }
-        return msg;
-    };
-
     const showListExplainVariance = () => {
         Swal.fire({
             icon: "question",
@@ -90,6 +91,16 @@ function GoodEditForm(props) {
             width: "50%",
         })
     };
+
+    const showExplainExcludingGoods = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Hàng hóa loại trừ</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Thông tin này sử dụng để lưu trữ hàng hóa trong kho hoặc khi vận chuyển, tránh xảy ra xung đột hàng hóa .</p>`,
+            width: "50%",
+        })
+    }
 
     const handlePricePerBaseUnitChange = (e) => {
         let { value } = e.target;
@@ -107,6 +118,14 @@ function GoodEditForm(props) {
             salesPriceVariance: value,
             salesPriceVarianceError: validatePrice(value),
         });
+    };
+
+    const validatePrice = (value) => {
+        let msg = undefined;
+        if (value && parseInt(value) < 0) {
+            msg = "Giá trị không được âm";
+        }
+        return msg;
     };
 
     const handleCodeChange = (e) => {
@@ -263,6 +282,30 @@ function GoodEditForm(props) {
         });
     };
 
+    useEffect(() => {
+        props.getAllGoods();
+    }, [])
+
+    const getDataGoods = () => {
+        const { goods } = props;
+        let dataGoods = [];
+        goods.listALLGoods.map((item) => {
+            dataGoods.push({
+                value: item._id,
+                text: item.name,
+            });
+        });
+
+        return dataGoods;
+    }
+
+    const handleExcludingGoodsChange = (value) => {
+        setState({
+            ...state,
+            excludingGoods: value,
+        });
+    }
+
 
     const handleNumberExpirationDateChange = (e) => {
         const { value } = e.target;
@@ -333,12 +376,15 @@ function GoodEditForm(props) {
         numberExpirationDate,
         errorOnNumberExpirationDate,
         isSeflProduced,
+        excludingGoods,
     } = state;
     const dataSelectBox = getAllCategory();
 
     if (units) listUnit = units;
     if (materials) listMaterial = materials;
     if (manufacturingMills) listManfaucturingMills = manufacturingMills;
+    let dataGoods = getDataGoods();
+    
     return (
         <React.Fragment>
             <DialogModal
@@ -414,6 +460,21 @@ function GoodEditForm(props) {
                                 <input type="number" className="form-control" value={numberExpirationDate ? numberExpirationDate : ''} onChange={handleNumberExpirationDateChange} />
                                 <ErrorLabel content={errorOnNumberExpirationDate} />
                             </div>
+                            <div className={`form-group`}>
+                                <label>{translate('manage_warehouse.good_management.excluding_good')}</label>
+                                <a onClick={() => showExplainExcludingGoods()}>
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                </a>
+                                <SelectBox
+                                    id={`select-excluding-goods-edit`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={excludingGoods}
+                                    items={dataGoods}
+                                    onChange={handleExcludingGoodsChange}
+                                    multiple={true}
+                                />
+                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>
@@ -486,5 +547,6 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     editGood: GoodActions.editGood,
     getCategoriesByType: CategoryActions.getCategoriesByType,
+    getAllGoods: GoodActions.getAllGoods,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodEditForm));

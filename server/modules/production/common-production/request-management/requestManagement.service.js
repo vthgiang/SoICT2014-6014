@@ -150,7 +150,7 @@ exports.createRequest = async (user, data, portal) => {
         sender: `${user.name}`,
         users: approvers,
         associatedDataObject: {
-            dataType: 4,
+            dataType: 5,
             description: `<p><strong>${user.name}</strong>: Đã gửi yêu cầu ${notificationText}.</p>`
         }
     };
@@ -505,7 +505,7 @@ exports.editRequest = async (user, id, data, portal) => {
         sender: `${user.name}`,
         users: approvers,
         associatedDataObject: {
-            dataType: 4,
+            dataType: 5,
             description: `<p><strong>${user.name}</strong>: Đã gửi yêu cầu ${notificationText}.</p>`
         }
     };
