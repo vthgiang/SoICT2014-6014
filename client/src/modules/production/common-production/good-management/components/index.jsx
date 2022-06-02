@@ -326,6 +326,7 @@ function GoodManagement(props) {
                         salesPriceVariance={state.currentRow.salesPriceVariance}
                         numberExpirationDate={state.currentRow.numberExpirationDate}
                         sourceType={state.currentRow.sourceType}
+                        excludingGoods={state.currentRow.excludingGoods}
                     />
                 )}
 
@@ -346,6 +347,7 @@ function GoodManagement(props) {
                         salesPriceVariance={state.currentRow.salesPriceVariance}
                         numberExpirationDate={state.currentRow.numberExpirationDate}
                         sourceType={state.currentRow.sourceType}
+                        excludingGoods={state.currentRow.excludingGoods}
                     />
                 )}
                 <div className="form-inline">

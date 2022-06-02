@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Gantt } from '../../../../../../common-components';
+import dayjs from 'dayjs'
 
 function GanttCalendar(props) {
     const DEFAULT_INFOSEARCH = {
@@ -10,12 +11,24 @@ function GanttCalendar(props) {
 
     const [state, setState] = useState({
         currentZoom: props.translate('system_admin.system_setting.backup.date'),
-        messages: [],
         infoSearch: Object.assign({}, DEFAULT_INFOSEARCH),
-        dataCalendar: [],
+        dataCalendar: {},
         unit: true,
         counter: 0,
     })
+
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
     /*Lịch*/
     const handleZoomChange = (zoom) => {
         setState({
@@ -32,20 +45,21 @@ function GanttCalendar(props) {
                 item.workAssignmentStaffs.forEach((itemStaff) => {
                     formatData.push({
                         id: itemStaff.name,
-                        text: '',
+                        text: item.nameField + ' - ' + '0%',
                         role: itemStaff.name,
                         start_date: null,
                         duration: null,
                         render: 'spilit',
+                        process: 1,
                     });
                     formatData.push({
-                        id: itemStaff.name + "-" + itemStaff.id,
+                        id: itemStaff.name + '-' + itemStaff.id,
                         parent: itemStaff.name,
                         process: 1,
                         progress: 0,
-                        text: item.nameField + " - " + "0%",
-                        start_date: item.startDate + " " + item.startTime.replace(" PM", ""),
-                        end_date: item.endDate + " " + item.endTime.replace(" PM", ""),
+                        text: item.nameField + ' - ' + '0%',
+                        start_date: dayjs(formatDate(item.startDate) + ' ' + item.startTime).format("YYYY-MM-DD HH:mm"),
+                        end_date: dayjs(formatDate(item.endDate) + ' ' + item.endTime).format("YYYY-MM-DD HH:mm"),
                     })
                 });
             })
@@ -65,15 +79,15 @@ function GanttCalendar(props) {
                         }
                     }
                 }
-                for (let i = 0; i < arr1.length; i=i+2) {
-                    arr1[i].id = arr1[i].id + "-" + (arrCounter[i/2] - 1);
-                    if (arrCounter[i/2] >= 2) 
+                for (let i = 0; i < arr1.length; i = i + 2) {
+                    arr1[i].id = arr1[i].id + "-" + (arrCounter[i / 2] - 1);
+                    if (arrCounter[i / 2] >= 2)
                         arr1[i].role = "";
 
                 }
-                for (let i = 1; i < arr1.length; i=i+2) {
-                    arr1[i].parent = arr1[i].parent + "-" + (arrCounter[(i-1)/2] - 1);
-                    arr1[i].id = arr1[i].id + "-" + (arrCounter[(i-1)/2] - 1);
+                for (let i = 1; i < arr1.length; i = i + 2) {
+                    arr1[i].parent = arr1[i].parent + "-" + (arrCounter[(i - 1) / 2] - 1);
+                    arr1[i].id = arr1[i].id + "-" + (arrCounter[(i - 1) / 2] - 1);
                 }
                 setState({
                     ...state,
@@ -124,7 +138,6 @@ function GanttCalendar(props) {
                     />
                 }
             </div>
-
         </React.Fragment>
     );
 }

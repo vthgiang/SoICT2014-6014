@@ -4606,6 +4606,7 @@ export default {
                 edit_faile: "Edit failed",
                 name: "Commodity name",
                 good_source: "Good source",
+                excluding_good: "Excluding good",
                 validate_source_product: 'Product source cannot be empty',
                 code: "Commodity code",
                 type: "Commodity type",
@@ -5025,6 +5026,8 @@ export default {
                 add_faile: "Add failed",
                 edit_success: "Edit successfully",
                 edit_faile: "Edit failed",
+                choose_employees: "Select employees",
+                validate_choose_employees: 'Must select employees',
 
                 // Phần liên quan lô sản xuất
                 add_issue_product: "Thêm phiếu nhập sản phẩm",

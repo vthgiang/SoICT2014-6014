@@ -10,6 +10,7 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 import { TaskFormValidator } from '../../../../../task/task-management/component/taskFormValidator';
 import dayjs from "dayjs";
 import GanttCalendar from '../genaral/GanttCalendar';
+import { UserActions } from "../../../../../super-admin/user/redux/actions";
 
 function StockWorkAssignmentModal(props) {
 
@@ -56,18 +57,37 @@ function StockWorkAssignmentModal(props) {
         isOpenCalendarChart: false,
     })
 
-    const getApprover = () => {
+    function getUnique(arr, index) {
+
+        const unique = arr
+            .map(e => e[index])
+            .map((e, i, final) => final.indexOf(e) === i && i)
+            .filter(e => arr[e]).map(e => arr[e]);
+
+        return unique;
+    }
+
+    const getEmployees = () => {
         const { user, translate } = props;
-        let ApproverArr = [{ value: [], text: translate('manage_warehouse.bill_management.choose_approver') }];
+        let {userdepartments } = user;
 
-        user.list.map(item => {
-            ApproverArr.push({
-                value: item._id,
-                text: item.name
-            })
-        })
-
-        return ApproverArr;
+        if (userdepartments) {
+            let list = [{ value: [], text: translate('manage_warehouse.bill_management.choose_employees') }];
+            const { deputyManagers, employees, managers } = userdepartments
+            let keyManagers = Object.keys(managers)
+            let keyDeputyManagers = Object.keys(deputyManagers)
+            let keyEmployees = Object.keys(employees)
+            if (managers[keyManagers[0]]) {
+                list = managers[keyManagers[0]].members.map(category => { return { value: category._id, text: category.name } });
+            }
+            if (deputyManagers[keyDeputyManagers[0]]) {
+                list = list.concat(deputyManagers[keyDeputyManagers[0]].members.map(category => { return { value: category._id, text: category.name } }));
+            }
+            if (employees[keyEmployees[0]]) {
+                list = list.concat(employees[keyEmployees[0]].members.map(category => { return { value: category._id, text: category.name } }));
+            }
+            return getUnique(list, 'value');
+        }
     }
 
     /* Người quản lý*/
@@ -81,7 +101,7 @@ function StockWorkAssignmentModal(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate("manage_warehouse.bill_management.validate_approver");
+            msg = translate("manage_warehouse.bill_management.validate_choose_employees");
         }
         if (willUpdateState) {
             setState({
@@ -105,7 +125,7 @@ function StockWorkAssignmentModal(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate('manage_warehouse.bill_management.validate_approver')
+            msg = translate('manage_warehouse.bill_management.validate_choose_employees')
         }
         if (willUpdateState) {
             setState({
@@ -129,7 +149,7 @@ function StockWorkAssignmentModal(props) {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
-            msg = translate('manage_warehouse.bill_management.validate_approver')
+            msg = translate('manage_warehouse.bill_management.validate_choose_employees')
         }
         if (willUpdateState) {
             setState({
@@ -297,6 +317,8 @@ function StockWorkAssignmentModal(props) {
     }
 
     useEffect(() => {
+        let currentRole = localStorage.getItem("currentRole")
+        props.getAllUserSameDepartment(currentRole)
         window.$(`#stock-work-assignment-modal`).on('shown.bs.modal', regenerateTime);
         return () => {
             window.$(`#stock-work-assignment-modal`).unbind('shown.bs.modal', regenerateTime)
@@ -677,7 +699,7 @@ function StockWorkAssignmentModal(props) {
     const { translate } = props;
     const { billId, peopleInCharge, accountables, accountants, startDate, endDate, startTime, endTime, errorOnStartDateAll,
         errorOnEndDateAll, errorPeopleInCharge, errorAccountants, errorAccountables, dataCalendar, errorOnNameFieldPosition, errorOnNameField, workAssignment, counter, isOpenCalendarChart } = state;
-    const dataApprover = getApprover();
+    const dataEmployees = getEmployees();
     return (
         <React.Fragment>
             <DialogModal
@@ -702,7 +724,7 @@ function StockWorkAssignmentModal(props) {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={peopleInCharge}
-                                        items={dataApprover}
+                                        items={dataEmployees}
                                         onChange={handlePeopleInChargeChange}
                                         multiple={true}
                                     />
@@ -718,7 +740,7 @@ function StockWorkAssignmentModal(props) {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={accountables}
-                                        items={dataApprover}
+                                        items={dataEmployees}
                                         onChange={handleAccountablesChange}
                                         multiple={true}
                                     />
@@ -733,7 +755,7 @@ function StockWorkAssignmentModal(props) {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={accountants}
-                                        items={dataApprover}
+                                        items={dataEmployees}
                                         onChange={handleAccountantsChange}
                                         multiple={true}
                                     />
@@ -825,7 +847,7 @@ function StockWorkAssignmentModal(props) {
                                                                 className="form-control select2"
                                                                 style={{ width: "100%" }}
                                                                 value={x.workAssignmentStaffs}
-                                                                items={dataApprover}
+                                                                items={dataEmployees}
                                                                 onChange={(e) => handleChangeWorkAssignmentStaffsValue(e, index)}
                                                                 multiple={true}
                                                             />
@@ -879,7 +901,7 @@ function StockWorkAssignmentModal(props) {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{"Biểu đồ lịch công việc"}</legend>
                             <button type="button" disabled={!isFormValidated()} className="btn btn-info" onClick={handleOpenCalendarChart}>{!isOpenCalendarChart ? "Xem biểu đồ công việc" : 'Làm mới biểu đồ'}</button>
-                            <GanttCalendar dataChart={dataCalendar} counter={counter} />
+                            {isOpenCalendarChart && <GanttCalendar dataChart={dataCalendar} counter={counter} />}
                         </fieldset>
                     </div>
                 </form>
@@ -893,5 +915,7 @@ const mapStateToProps = state => state;
 const mapDispatchToProps = {
     createOrUpdateLots: LotActions.createOrUpdateLots,
     editBill: BillActions.editBill,
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(StockWorkAssignmentModal));

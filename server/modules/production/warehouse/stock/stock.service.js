@@ -120,6 +120,8 @@ exports.createStock = async (company, data, portal) => {
             }
         }) : [],
         organizationalUnit: data.organizationalUnitValue,
+        startTime: data.startTime,
+        endTime: data.endTime,
     })
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(stock._id)
@@ -165,6 +167,8 @@ exports.editStock = async (id, data, portal) => {
         }
     }) : stock.managementLocation,
     stock.organizationalUnit = data.organizationalUnitValue ? data.organizationalUnitValue : stock.organizationalUnit,
+    stock.startTime = data.startTime ? data.startTime : stock.startTime,
+    stock.endTime = data.endTime ? data.endTime : stock.endTime,
 
     await stock.save();
 
