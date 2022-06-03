@@ -2113,10 +2113,10 @@ exports.createTask = async (portal, task) => {
     const taskOutputs = task.taskOutputs.map((item) => {
         return {
             ...item,
+            status: "unfinished",
             accountableEmployees: accountableEmployeesTaskOutputs
         }
     })
-    console.log(2118, taskOutputs)
 
     const newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,

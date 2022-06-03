@@ -935,30 +935,29 @@ const TaskSchema = new Schema(
                         taskId: {
                             type: Schema.Types.ObjectId
                         }, // id của công việc cần xác nhận phê duyệt
-                        // status: {
-                        //     type: String
-                        // }
-
+                        action: {
+                            type: String
+                        }
                     }
                 ],
-                submissionResults: [
-                    {
-                        version: {
-                            type: Number
-                        },
-                        status: {
-                            type: Number
-                        },
-
-                        taskActions: [{
-                            type: String
-                        }],
+                submissionResults:
+                {
+                    taskActions: [{
+                        type: String
+                    }],
+                    logs: [{
                         creator: {
                             type: Schema.Types.ObjectId,
                             ref: "User",
                         },
-                    }
-                ]
+                        description: {
+                            type: String
+                        },
+                        taskAction: {
+                            type: String
+                        }
+                    }]
+                }
             }
         ],
         memberWeight: {

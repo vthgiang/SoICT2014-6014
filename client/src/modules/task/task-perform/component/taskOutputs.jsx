@@ -4,8 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import OutputDetail from './modalDetailOutput';
 import parse from 'html-react-parser';
 import { getStorage } from '../../../../config';
-import { ContentMaker, SelectBox } from '../../../../common-components';
-import './taskOutputs.css';
+import { ContentMaker, SelectBox, ShowMoreShowLess } from '../../../../common-components';
 import { performTaskAction } from '../redux/actions';
 
 const formatTypeInfo = (value) => {
@@ -20,13 +19,53 @@ const formatTypeInfo = (value) => {
             return "";
             break;
     }
+}
 
+const formatStatusInfo = (value) => {
+    switch (value) {
+        case "unfinished":
+            return (
+                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "5px" }}>
+                    Chưa hoàn thành
+                </div>
+            );
+        case "waiting_approval":
+            return (
+                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "5px" }}>
+                    Đang chờ phê duyệt
+                </div>
+            );
+        case "rejected":
+            return (
+                <div style={{ color: "rgba(239, 68, 68)", backgroundColor: "rgba(254, 202, 202)", padding: "5px" }}>
+                    Bị từ chối
+                </div>
+            );
+        case "approved":
+            return (
+                <div style={{ color: "rgba(16, 185, 129)", backgroundColor: "rgba(167, 243, 208)", padding: "5px" }}>
+                    Đã phê duyệt
+                </div>
+            );
+        default:
+            return "";
+            break;
+    }
+}
+
+const isImage = (src) => {
+    let string = src.toLowerCase().split(".");
+    let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
+    if (image.indexOf(string[string.length - 1]) !== -1) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function TaskOutputsTab(props) {
-    const { tasks, auth } = props;
+    const { performtasks, auth } = props;
     const idUser = getStorage("userId");
-    console.log(tasks.task)
     const [state, setState] = useState(() => {
         return {
             newAction: {
@@ -37,6 +76,11 @@ function TaskOutputsTab(props) {
             }
         }
     })
+
+    useEffect(() => {
+        props.getTaskOutputs(performtasks.task._id)
+        console.log(73)
+    }, [performtasks.task._id])
     const { newAction } = state;
 
     const onActionFilesChange = (files) => {
@@ -56,28 +100,22 @@ function TaskOutputsTab(props) {
         let { newAction } = state;
 
         const data = new FormData();
-        console.log(59, type)
 
         data.append("creator", newAction.creator);
         data.append("description", newAction.description);
-        data.append("expectedResult", taskOutputId);
         data.append("index", index)
         newAction.files && newAction.files.forEach(x => {
             data.append("files", x);
         })
         if (newAction.creator) {
-            console.log(69)
             if (type === 0) {
-                props.createTaskOutputs(taskId, data);
-                console.log(71)
+                props.createTaskOutputs(taskId, taskOutputId, data);
             }
             if (type === 1 && newAction.files.length > 0) {
-                props.createTaskOutputs(taskId, data);
-                console.log(75)
+                props.createTaskOutputs(taskId, taskOutputId, data);
             }
             // props.createTaskAction(taskId, data);
         }
-        console.log(77)
         // Reset state cho việc thêm mới action
         setState({
             ...state,
@@ -91,23 +129,16 @@ function TaskOutputsTab(props) {
         })
     }
 
-    const handleShowDetailLot = async () => {
-        // await setState({
-        //     ...state,
-        //     lotDetail: lot
-        // });
-
-        window.$('#modal-detail-output').modal('show');
-    }
-    if (!tasks?.task?.taskOutputs) {
+    if (!performtasks?.task?.taskOutputs) {
         return <div>Chưa có thông tin</div>
     }
+
     return (
         <div>
             <OutputDetail />
             <div>
                 {/* Kết quả */}
-                {tasks.task.taskOutputs.map((item, index) => {
+                {performtasks.task.taskOutputs.map((item, index) => {
                     return (
                         <div className="faqs-page block ">
                             <div className="panel-group" id="accordion-notevaluation" role="tablist" aria-multiselectable="true" style={{ marginBottom: 0 }}>
@@ -123,22 +154,19 @@ function TaskOutputsTab(props) {
                                             {/* phê duyệt */}
                                             <div className='form-group' style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                 <div>
-                                                    <div className='' style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "5px" }}>
-                                                        Đang chờ phê duyệt
-                                                    </div>
+                                                    {formatStatusInfo(item.status)}
                                                 </div>
-
 
                                                 <div className="form-group">
                                                     <SelectBox
                                                         id={`status`}
                                                         className="form-control select2"
-                                                        style={{ width: "100%", padding: '2px', marginRight: '5px' }}
+                                                        style={{ width: "100%", padding: '5px', marginRight: '5px' }}
                                                         value={'approved'}
                                                         items={[
-                                                            { value: 'approved', text: 'Phê duyệt' },
-                                                            { value: 'waiting_for_approval', text: "Chờ phê duyệt" },
-                                                            { value: 'disapproved', text: "Từ chối" },
+                                                            { value: 'approved', text: 'Phê duyệt ' },
+                                                            { value: 'waiting_for_approval', text: "Chờ phê duyệt " },
+                                                            { value: 'disapproved', text: "Từ chối " },
                                                         ]}
                                                     // onChange={handleStatusChange}
                                                     />
@@ -159,17 +187,16 @@ function TaskOutputsTab(props) {
                                                     <strong>Đã giao nộp:</strong>
                                                 </div>
                                                 <React.Fragment>
-
                                                     <div style={{ marginTop: '15px' }}>
                                                         <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
-                                                            idQuill={`add-comment-action`}
-                                                            // imageDropAndPasteQuill={false}
-                                                            inputCssClass="text-input-outputs" controlCssClass="tool-level1 row"
+                                                            idQuill={`add-action-${item._id}`}
+                                                            imageDropAndPasteQuill={false}
+                                                            inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                                             onFilesChange={onActionFilesChange}
                                                             onFilesError={onFilesError}
                                                             files={newAction.files}
-                                                            placeholder={"Bình luận"}
+                                                            placeholder={"Báo cáo kết quả"}
                                                             text={newAction.descriptionDefault}
                                                             submitButtonText={'Thêm'}
                                                             onTextChange={(value, imgs) => {
@@ -182,11 +209,53 @@ function TaskOutputsTab(props) {
                                                                     }
                                                                 })
                                                             }}
-                                                            onSubmit={(e) => { submitAction(item._id, tasks.task._id, tasks.task.taskActions.length, item.type) }}
+                                                            onSubmit={(e) => { submitAction(item._id, performtasks.task._id, performtasks.task.taskActions.length, item.type) }}
                                                         />
                                                     </div>
-
                                                 </React.Fragment>
+                                                <ShowMoreShowLess
+                                                    id={`description${item._id}`}
+                                                    classShowMoreLess='tool-level1'
+                                                    styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
+                                                >
+                                                    {
+                                                        item?.submissionResults?.taskActions?.map((x) => {
+                                                            let listImage = x.files?.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                                            return (
+                                                                <div key={x._id} className={index > 3 ? "hide-component" : ""}>
+                                                                    {x.creator ?
+                                                                        <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + x.creator.avatar)} alt="User Image" /> :
+                                                                        <div className="user-img-level1" />
+                                                                    }
+                                                                    { // khi chỉnh sửa thì ẩn action hiện tại đi
+                                                                        <React.Fragment>
+                                                                            <div className="content-level1" data-width="100%" style={{ marginBottom: "35px" }}>
+                                                                                {/* Tên người tạo hoạt động */}
+                                                                                <div style={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
+                                                                                    {
+                                                                                        x.creator && <a style={{ cursor: "pointer" }}>{x.creator?.name} </a>
+                                                                                    }
+                                                                                </div>
+                                                                                <div>
+                                                                                    {
+                                                                                        x.name && <b style={{ display: 'flex', marginTop: '4px' }}>{x.name} </b>
+                                                                                    }
+                                                                                    {x?.description?.split('\n')?.map((elem, idx) => (
+                                                                                        <div key={idx}>
+                                                                                            {parse(elem)}
+                                                                                        </div>
+                                                                                    ))
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                        </React.Fragment>
+                                                                    }
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </ShowMoreShowLess>
+                                                <button class="btn btn-block btn-default btn-sm">Xem lịch sử thay đổi</button>
                                             </div>
                                         </div>
                                     </div>
@@ -201,12 +270,13 @@ function TaskOutputsTab(props) {
 }
 
 function mapState(state) {
-    const { tasks, auth } = state;
-    return { tasks, auth };
+    const { performtasks, tasks, auth } = state;
+    return { performtasks, tasks, auth };
 }
 
 const actionCreators = {
     createTaskOutputs: performTaskAction.createTaskOutputs,
+    getTaskOutputs: performTaskAction.getTaskOutputs
 };
 
 const connectedTaskOutputs = connect(mapState, actionCreators)(withTranslate(TaskOutputsTab));

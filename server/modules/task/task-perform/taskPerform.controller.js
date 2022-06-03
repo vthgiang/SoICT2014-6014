@@ -2074,3 +2074,41 @@ exports.createTaskOutputs = async (req, res) => {
         })
     }
 }
+
+exports.getTaskOutputs = async (req, res) => {
+    try {
+        let taskOutputs = await PerformTaskService.getTaskOutputs(req.portal, req.params);
+        // console.log(taskAction);
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_outputs_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` get task outputs  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_outputs_failure'],
+            content: error
+        })
+    }
+}
+
+exports.approveTaskOutputs = async (req, res) => {
+    try {
+        let taskOutputs = await PerformTaskService.approveTaskOutputs(req.portal, req.params, req.body);
+        // console.log(taskAction);
+        res.status(200).json({
+            success: true,
+            messages: ['approve_task_outputs_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` approve task outputs  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['approve_task_outputs_failure'],
+            content: error
+        })
+    }
+}

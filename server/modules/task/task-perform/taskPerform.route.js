@@ -121,6 +121,8 @@ router.patch('/process/tasks/:taskId/comments/:commentId/child-comments/:childCo
 router.post('/tasks/:taskId/evaluate-project', auth, PerformTaskController.evaluateTaskProject);
 
 // TaskOutputs
-router.post('/tasks/:taskId/task-outputs', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskOutputs);
+router.post('/tasks/:taskId/task-outputs/:taskOutputId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskOutputs);
+router.get('/tasks/:taskId/task-outputs', auth, PerformTaskController.getTaskOutputs);
+router.patch('/tasks/:taskId/task-outputs/:taskOutputId', auth, PerformTaskController.approveTaskOutputs);
 
 module.exports = router;

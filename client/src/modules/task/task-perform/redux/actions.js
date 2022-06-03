@@ -78,7 +78,8 @@ export const performTaskAction = {
     evaluateTaskByResponsibleEmployeesProject,
     evaluateTaskByAccountableEmployeesProject,
 
-    createTaskOutputs
+    createTaskOutputs,
+    getTaskOutputs
 };
 
 
@@ -1264,15 +1265,26 @@ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
     };
 }
 
-function createTaskOutputs(taskId, newAction) {
-    console.log(1268)
+function createTaskOutputs(taskId, taskOutputId, newAction) {
     return dispatch => {
         dispatch({ type: performTaskConstants.CREATE_TASK_OUTPUT_REQUEST });
 
-        performTaskService.createTaskOutputs(taskId, newAction)
+        performTaskService.createTaskOutputs(taskId, taskOutputId, newAction)
             .then(
                 payload => dispatch({ type: performTaskConstants.CREATE_TASK_OUTPUT_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.CREATE_TASK_OUTPUT_FAILURE, error })
+            );
+    };
+}
+
+function getTaskOutputs(taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_REQUEST });
+
+        performTaskService.getTaskOutputs(taskId)
+            .then(
+                payload => dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_FAILURE, error })
             );
     };
 }

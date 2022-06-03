@@ -7812,34 +7812,137 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
 };
 
 exports.createTaskOutputs = async (portal, params, body, taskAction) => {
-  console.log(7810, params, body)
-  // let actionInformation = {
-  //   creator: body.creator,
-  //   description: body.description,
-  //   files: files,
-  // };
-  let submissionResults = {
-    taskActions: [taskAction._id],
-    status: 1
-  }
-
-  console.log(7819, submissionResults)
   const task = await Task(connect(DB_CONNECTION, portal))
     .findOneAndUpdate(
-      { _id: params.taskId, "taskOutputs._id": mongoose.Types.ObjectId(body.expectedResult) },
+      { _id: params.taskId, "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId) },
       {
         $push: {
-          "taskOutputs.$.submissionResults": {
-            $each: [submissionResults],
+          "taskOutputs.$.submissionResults.taskActions": {
+            $each: [taskAction._id],
             $position: 0
           },
         },
-        // $push: {
-        //   "taskActions.$.files": files,
-        // },
+        $set: {
+          "taskOutputs.$.status": "waiting_approval",
+        },
       },
       { new: true })
-  console.log(7835)
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+    ])
+  const taskOutputs = task.taskOutputs.map((item) => {
+    const taskActions = item.submissionResults.taskActions.map((x) => {
+      const taskAction = task.taskActions.find(o => x == o._id);
+      return taskAction;
+    })
+    let taskOutput = {
+      _id: item._id,
+      title: item.title,
+      description: item.description,
+      type: item.type,
+      status: item.status,
+      accountableEmployees: item.accountableEmployees,
+      submissionResults: {
+        taskActions: taskActions,
+        logs: item.submissionResults.logs
+      }
+    }
+    return taskOutput;
+  })
+
+  return { taskOutputs: taskOutputs };
+}
+
+exports.getTaskOutputs = async (portal, params) => {
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+    ])
+
+  const taskOutputs = task.taskOutputs.map((item) => {
+    const taskActions = item.submissionResults.taskActions.map((x) => {
+      const taskAction = task.taskActions.find(o => x == o._id);
+      return taskAction;
+    })
+    let taskOutput = {
+      _id: item._id,
+      title: item.title,
+      description: item.description,
+      type: item.type,
+      status: item.status,
+      accountableEmployees: item.accountableEmployees,
+      submissionResults: {
+        taskActions: taskActions,
+        logs: item.submissionResults.logs
+      }
+    }
+    return taskOutput;
+  })
+
+  return { taskOutputs: taskOutputs };
+}
+
+exports.approveTaskOutputs = async (portal, params, body) => {
+  console.log(7901)
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId });
+  console.log(7904)
+  let taskOutput = currentTask?.taskOutputs.find((item) => item._id == params.taskOutputId)
+  console.log(7905)
+  let status = taskOutput?.status;
+  console.log(7906, status)
+  let checkStatus = taskOutput?.accountableEmployees.length;
+  console.log(7910)
+  let accountableEmployees = taskOutput?.accountableEmployees.map((item) => {
+    let action = item.action;
+    if (item.accountableEmployee == body.creator) {
+      action = body.action;
+    }
+    if (action === "reject") {
+      status = "rejected";
+    }
+    if (action !== "approve") {
+      checkStatus = checkStatus - 1;
+    }
+    return {
+      _id: item.id,
+      action: action,
+      accountableEmployee: item.accountableEmployee
+    }
+  })
+
+  if (checkStatus === taskOutput?.accountableEmployees.length) {
+    status = "approved";
+  };
+  console.log(7931, status, accountableEmployees)
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+      },
+      {
+        $set: {
+          "taskOutputs.$.accountableEmployees": accountableEmployees,
+          "taskOutputs.$.status": status,
+        },
+      },
+      { new: true })
 
   return { taskOutputs: task.taskOutputs };
 }

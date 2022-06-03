@@ -368,7 +368,9 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/files/:fileId', method: 'PATCH' },
 
             // task outputs
-            { path: '/performtask/tasks/:taskId/task-outputs', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs', method: 'GET' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId', method: 'PATCH' },
 
             //comment of task comment
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST' },

@@ -1063,20 +1063,30 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.CREATE_TASK_OUTPUT_SUCCESS:
-            // var taskActions = { ...state.task, taskActions: action.payload.data.content }
+            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
 
-            // if (state.currentTimer && state.currentTimer._id === taskActions._id) {
-            //     timer = {
-            //         ...state.currentTimer,
-            //         taskActions: action.payload.data.content,
-            //     }
-            // }
             return {
                 ...state,
-                // task: taskActions,
-                // currentTimer: _isEmpty(timer) ? state.currentTimer : timer
+                task: task,
             }
         case performTaskConstants.CREATE_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.GET_TASK_OUTPUTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.GET_TASK_OUTPUTS_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+
+            return {
+                ...state,
+                task: task,
+            }
+        case performTaskConstants.GET_TASK_OUTPUTS_FAILURE:
             return {
                 ...state,
                 error: action.error

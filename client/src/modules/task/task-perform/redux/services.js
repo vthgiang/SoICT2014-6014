@@ -79,7 +79,8 @@ export const performTaskService = {
     evaluateTaskByResponsibleEmployeesProject,
     evaluateTaskByAccountableEmployeesProject,
 
-    createTaskOutputs
+    createTaskOutputs,
+    getTaskOutputs
 };
 
 /**
@@ -838,10 +839,17 @@ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
  * @param {*} taskId id của task
  * @param {*} newAction nội dung hành động
  */
-function createTaskOutputs(taskId, newAction) {
+function createTaskOutputs(taskId, taskOutputId, newAction) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}`,
         method: 'POST',
         data: newAction
     }, true, true, 'task.task_perform');
+}
+
+function getTaskOutputs(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs`,
+        method: 'GET',
+    }, false, false, 'task.task_perform');
 }
