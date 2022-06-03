@@ -7,13 +7,9 @@ import { BiddingContractActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { BiddingPackageManagerActions } from '../../bidding-package/biddingPackageManagement/redux/actions';
 import { getStorage } from '../../../../config';
-import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
-import { DecisionForImplement } from './decisionAssignImplementContract';
-import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { convertDateTime, getListDepartments } from '../../../project/projects/components/functionHelper';
 import ProjectCreateFormData from '../../../project/projects/components/createProjectContent';
-import { getDecisionDataWhenUpdateBidPackage, getProjectTaskDataWhenCreateByContract } from './functionHelper';
-import { ProjectTaskForm } from './createProjectTaskList';
+import { getProjectTaskDataWhenCreateByContract } from './functionHelper';
 import AddTaskSchedule from './createProjectTaskCPM';
 
 const CreateProjectByContractModal = (props) => {
@@ -301,8 +297,7 @@ const CreateProjectByContractModal = (props) => {
             }
         }
 
-        // props.createProjectDispatch
-        console.log(206, {
+        const projectRq = {
             name: projectName,
             projectType,
             startDate: start,
@@ -315,25 +310,29 @@ const CreateProjectByContractModal = (props) => {
             estimatedCost,
             creator: userId,
             responsibleEmployeesWithUnit: currentSalaryMembers,
-        });
+        };
 
-        console.log(1718, state, projectInfo, projectTask, taskProjectList)
-        // props.editBiddingContract(formData, id);
+        const dataRq = {
+            project: projectRq,
+            tasks: taskProjectList
+        }
+
+        // console.log(1718, state, projectInfo, projectTask, taskProjectList)
+        props.createProjectByContract(dataRq, id);
     }
 
     const isFormValidated = () => {
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, state.code, 3, 255).status) return false;
-        if (!ValidationHelper.validateName(translate, state.name, 6, 255).status) return false;
-        if (state.effectiveDate.length === 0) return false;
-        if (state.endDate.length === 0) return false;
+        if (!ValidationHelper.validateName(translate, form?.projectName, 6, 255).status) return false;
+        if (form.startDate.length === 0) return false;
+        if (form.endDate.length === 0) return false;
 
-        let splitter = state.effectiveDate.split("-");
-        let effectiveDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
-        splitter = state.endDate.split("-");
+        let splitter = form?.startDate?.split("-");
+        let startDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
+        splitter = form?.endDate?.split("-");
         let endDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
 
-        if (effectiveDate > endDate) return false;
+        if (startDate > endDate) return false;
 
         return true;
     }
@@ -343,7 +342,7 @@ const CreateProjectByContractModal = (props) => {
             modalID={`modal-create-project-for-contract--${id}`}
             formID={`form-create-project-for-contract--${id}`}
             title="Tạo dự án cho hợp đồng"
-            disableSubmit={!isFormValidated()}
+            // disableSubmit={!isFormValidated()}
             func={save}
             size={100}
         >
@@ -393,6 +392,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
+    createProjectByContract: BiddingContractActions.createProjectByContract
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateProjectByContractModal));

@@ -160,6 +160,7 @@ function ProjectTemplateManage(props) {
             <CreateProjectByProjectTemplateModal
                 id={currentRow ? currentRow._id : null}
                 data={currentRow ? currentRow : null}
+                handleAfterCreateProject={handleAfterCreateProject}
             />
 
             <div className="box">

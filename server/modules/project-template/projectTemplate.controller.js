@@ -1,4 +1,7 @@
 const ProjectTemplateService = require('./projectTemplate.service');
+const NotificationServices = require(`../notification/notification.service`);
+const NewsFeed = require('../news-feed/newsFeed.service');
+const { sendEmail } = require(`../../helpers/emailHelper`);
 const Logger = require('../../logs');
 
 exports.get = async (req, res) => {
@@ -103,50 +106,6 @@ exports.delete = async (req, res) => {
     }
 }
 
-exports.getMembersWithScore = async (req, res) => {
-    try {
-        let tp = await ProjectTemplateService.getMembersWithScore(req.portal, req.params.id, req.params.evalMonth);
-
-        await Logger.info(req.user.email, 'get_members_with_score', req.portal)
-        res.status(200).json({
-            success: true,
-            messages: ['get_members_with_score_success'],
-            content: tp
-        });
-    } catch (error) {
-        console.log('get_members_with_score', error);
-        await Logger.error(req.user.email, 'get_members_with_score', req.portal)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_members_with_score_fail'],
-            content: error
-        })
-    }
-}
-
-
-exports.getListTasksEval = async (req, res) => {
-    console.log(req.params)
-    try {
-        let tp = await ProjectTemplateService.getListTasksEval(req.portal, req.params.id, req.params.evalMonth);
-
-        await Logger.info(req.user.email, 'get_list_tasks_eval', req.portal)
-        res.status(200).json({
-            success: true,
-            messages: ['get_list_tasks_eval_success'],
-            content: tp
-        });
-    } catch (error) {
-        console.log('get_list_tasks_eval', error);
-        await Logger.error(req.user.email, 'get_list_tasks_eval', req.portal)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_list_tasks_eval_fail'],
-            content: error
-        })
-    }
-}
-
 exports.getSalaryMembers = async (req, res) => {
     try {
         let tp = await ProjectTemplateService.getSalaryMembers(req.portal, req.body.data);
@@ -167,81 +126,59 @@ exports.getSalaryMembers = async (req, res) => {
     }
 }
 
-exports.createProjectChangeRequest = async (req, res) => {
+exports.createProjectCpmByProjectTemplate = async (req, res) => {
     try {
-        let tp = await ProjectTemplateService.createProjectChangeRequest(req.portal, req.body);
+        let tp = await ProjectTemplateService.createProjectByProjectTemplate(req.portal, req.params.templateId, req.body);
+        const taskList = tp.tasks?.tasks;
+        for (let itemTask of taskList) {
+            var task = itemTask.task;
+            var user = itemTask.user.filter(user => user !== req.user._id); // Lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
+
+            // Gửi mail cho nhân viện tham gia công việc
+            var email = itemTask.email;
+            var html = itemTask.html;
+            var data = {
+                organizationalUnits: task.organizationalUnit._id,
+                title: "Tạo mới công việc",
+                level: "general",
+                content: html,
+                sender: task.organizationalUnit.name,
+                users: user,
+                associatedDataObject: {
+                    dataType: 1,
+                    value: task.priority,
+                    description: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
+                },
+            };
+
+            await NotificationServices.createNotification(req.portal, req.user.company._id, data);
+            await sendEmail(email, "Bạn có công việc mới", '', html);
+            await NewsFeed.createNewsFeed(req.portal, {
+                title: data?.title,
+                description: data?.content,
+                creator: req.user._id,
+                associatedDataObject: {
+                    dataType: 1,
+                    value: task?._id,
+                    description: task?.name
+                },
+                relatedUsers: data?.users
+            });
+        }
+
+        await Logger.info(req.user.email, 'create_project_by_template_success', req.portal)
 
         res.status(200).json({
             success: true,
-            messages: ['create_project_change_request_success'],
-            content: tp
+            messages: ['create_project_by_template_success'],
+            content: tp.template
         });
     } catch (error) {
-        console.log('create_project_change_request', error);
-        await Logger.error(req.user.email, 'create_project_change_request', req.portal)
+        console.log('create_project_by_template_fail', error);
+        await Logger.error(req.user.email, 'create_project_by_template_fail', req.portal)
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_project_change_request_fail'],
-            content: error
-        })
-    }
-}
-
-exports.getListProjectChangeRequests = async (req, res) => {
-    try {
-        let tp = await ProjectTemplateService.getListProjectChangeRequests(req.portal, req.query);
-
-        res.status(200).json({
-            success: true,
-            messages: ['get_list_project_change_requests_success'],
-            content: tp
-        });
-    } catch (error) {
-        console.log('get_list_project_change_requests', error);
-        await Logger.error(req.user.email, 'get_list_project_change_requests', req.portal)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_list_project_change_requests_fail'],
-            content: error
-        })
-    }
-}
-
-exports.updateStatusProjectChangeRequest = async (req, res) => {
-    try {
-        let tp = await ProjectTemplateService.updateStatusProjectChangeRequest(req.portal, req.query.id, req.query.status);
-
-        res.status(200).json({
-            success: true,
-            messages: ['update_status_project_change_request_success'],
-            content: tp
-        });
-    } catch (error) {
-        console.log('update_status_project_change_request', error);
-        await Logger.error(req.user.email, 'update_status_project_change_request', req.portal)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['update_status_project_change_request_fail'],
-            content: error
-        })
-    }
-}
-
-exports.updateListProjectChangeRequests = async (req, res) => {
-    try {
-        let tp = await ProjectTemplateService.updateListProjectChangeRequests(req.portal, req.body);
-
-        res.status(200).json({
-            success: true,
-            messages: ['update_list_project_change_requests_success'],
-            content: tp
-        });
-    } catch (error) {
-        console.log('update_list_project_change_requests', error);
-        await Logger.error(req.user.email, 'update_list_project_change_requests', req.portal)
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['update_list_project_change_requests_fail'],
+            messages: Array.isArray(error) ? error : ['create_project_by_template_fail'],
             content: error
         })
     }

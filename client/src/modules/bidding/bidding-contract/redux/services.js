@@ -6,7 +6,8 @@ export const BiddingContractService = {
     getListBiddingContract,
     createBiddingContract,
     editBiddingContract,
-    deleteBiddingContract
+    deleteBiddingContract,
+    createProjectByContract,
 }
 /**
  * Lấy danh sách kỷ luật
@@ -21,7 +22,7 @@ function getListBiddingContract(data) {
             page: data.page,
             limit: data.limit
         }
-    }, false, false, 'human_resource.bidding_contract');
+    }, false, false, 'bidding.bidding_contract');
 }
 
 /**
@@ -34,7 +35,7 @@ function createBiddingContract(data) {
         url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract`,
         method: 'POST',
         data: data
-    }, true, true, 'human_resource.bidding_contract');
+    }, true, true, 'bidding.bidding_contract');
 }
 
 //=============EDIT===============
@@ -48,7 +49,7 @@ function editBiddingContract(data, id) {
         url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract/${id}`,
         method: 'PATCH',
         data: data
-    }, true, true, 'human_resource.bidding_contract');
+    }, true, true, 'bidding.bidding_contract');
 }
 
 // =============DELETE===============
@@ -62,5 +63,20 @@ function deleteBiddingContract(data) {
         url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract/${data}`,
         method: 'DELETE',
         data: data
-    }, true, true, 'human_resource.bidding_contract');
+    }, true, true, 'bidding.bidding_contract');
+}
+
+
+//=============CREATE_PROJECT===============
+
+/**
+ * Tạo prj cho hợp đồng
+ * @data : Dữ liệu
+ */
+function createProjectByContract(data, id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract/${id}/project/create-cpm`,
+        method: 'POST',
+        data: data
+    }, true, true, 'bidding.bidding_contract');
 }

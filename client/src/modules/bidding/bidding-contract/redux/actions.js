@@ -11,7 +11,8 @@ export const BiddingContractActions = {
     getListBiddingContract,
     createBiddingContract,
     editBiddingContract,
-    deleteBiddingContract
+    deleteBiddingContract,
+    createProjectByContract,
 };
 
 /**
@@ -114,3 +115,29 @@ function deleteBiddingContract(data) {
     }
 }
 
+
+/**
+ * Tạo dự án theo hợp đồng
+ * @data : Dữ liệu prj
+ * @id : id contract 
+ */
+function createProjectByContract(data, id) {
+    return dispatch => {
+        dispatch({
+            type: BiddingContractConstant.CREATE_PROJECT_BY_BIDDING_CONTRACT_REQUEST
+        });
+        BiddingContractService.createProjectByContract(data, id)
+            .then(res => {
+                dispatch({
+                    type: BiddingContractConstant.CREATE_PROJECT_BY_BIDDING_CONTRACT_SUCCESS,
+                    payload: res.data.content.listBiddingContract
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: BiddingContractConstant.CREATE_PROJECT_BY_BIDDING_CONTRACT_FAILURE,
+                    error: err
+                });
+            })
+    }
+}

@@ -25,6 +25,7 @@ export function projectTemplate(state = initState, action) {
         case ProjectTemplateConstants.CREATE_PROJECTS_TEMPLATE_REQUEST:
         case ProjectTemplateConstants.DELETE_PROJECTS_TEMPLATE_REQUEST:
         case ProjectTemplateConstants.EDIT_PROJECTS_TEMPLATE_REQUEST:
+        case ProjectTemplateConstants.CREATE_PROJECT_BY_TEMPLATE_REQUEST:
         case ProjectTemplateConstants.GET_SALARY_MEMBER_PROJECTS_TEMPLATE:
             return {
                 ...state,
@@ -35,6 +36,7 @@ export function projectTemplate(state = initState, action) {
         case ProjectTemplateConstants.CREATE_PROJECTS_TEMPLATE_FAILE:
         case ProjectTemplateConstants.DELETE_PROJECTS_TEMPLATE_FAILE:
         case ProjectTemplateConstants.EDIT_PROJECTS_TEMPLATE_FAILE:
+        case ProjectTemplateConstants.CREATE_PROJECT_BY_TEMPLATE_FAILE:
         case ProjectTemplateConstants.GET_SALARY_MEMBER_PROJECTS_TEMPLATE_FAILE:
             return {
                 ...state,
@@ -66,41 +68,30 @@ export function projectTemplate(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                data: {
-                    ...state.data,
-                    list: [
-                        action.payload,
-                        ...state.data.list
-                    ],
-                    paginate: [
-                        action.payload,
-                        ...state.data.paginate,
-                    ],
-                    listbyuser: [
-                        action.payload,
-                        ...state.data.listbyuser,
-                    ]
-                }
+                list: [
+                    action.payload,
+                    ...state.list
+                ],
             }
         case ProjectTemplateConstants.DELETE_PROJECTS_TEMPLATE_SUCCESS:
-            index = findIndex(state.data.list, action.payload);
-            if (index !== -1) state.data.list.splice(index, 1);
-            indexPaginate = findIndex(state.data.paginate, action.payload);
-            if (indexPaginate !== -1) state.data.paginate.splice(indexPaginate, 1);
-            indexUserAll = findIndex(state.data.listbyuser, action.payload);
-            if (indexUserAll !== -1) state.data.listbyuser.splice(indexUserAll, 1);
+            index = findIndex(state.list, action.payload);
+            if (index !== -1) state.list.splice(index, 1);
             return {
                 ...state,
                 isLoading: false
             };
 
         case ProjectTemplateConstants.EDIT_PROJECTS_TEMPLATE_SUCCESS:
-            index = findIndex(state.data.list, action.payload._id);
-            if (index !== -1) state.data.list[index] = action.payload;
-            indexPaginate = findIndex(state.data.paginate, action.payload._id);
-            if (indexPaginate !== -1) state.data.paginate[indexPaginate] = action.payload;
-            indexUserAll = findIndex(state.data.listbyuser, action.payload);
-            if (indexUserAll !== -1) state.data.listbyuser.splice(indexUserAll, 1);
+            index = findIndex(state.list, action.payload._id);
+            if (index !== -1) state.list[index] = action.payload;
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case ProjectTemplateConstants.CREATE_PROJECT_BY_TEMPLATE_SUCCESS:
+            index = findIndex(state.list, action.payload._id);
+            if (index !== -1) state.list[index] = action.payload;
             return {
                 ...state,
                 isLoading: false

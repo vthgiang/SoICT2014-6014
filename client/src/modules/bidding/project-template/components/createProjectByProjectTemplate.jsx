@@ -9,6 +9,7 @@ import { getStorage } from '../../../../config';
 import { convertDateTime } from '../../../project/projects/components/functionHelper';
 import ProjectCreateFormData from '../../../project/projects/components/createProjectContent';
 import AddTaskSchedule from '../../../bidding/bidding-contract/component/createProjectTaskCPM';
+import { ProjectTemplateActions } from '../redux/actions';
 
 const CreateProjectByProjectTemplateModal = (props) => {
     const { translate, user, project } = props;
@@ -66,10 +67,6 @@ const CreateProjectByProjectTemplateModal = (props) => {
         currentUnitRow: '',
         currentEmployeeRow: [],
     })
-
-    useEffect(() => {
-        props.getAllBiddingPackage({ name: '', status: 3, page: 0, limit: 1000 });
-    }, [])
 
     useEffect(() => {
         setId(props.id)
@@ -220,8 +217,7 @@ const CreateProjectByProjectTemplateModal = (props) => {
             }
         }
 
-        // props.createProjectDispatch
-        console.log(206, {
+        const projectRq = {
             name: projectName,
             projectType,
             startDate: start,
@@ -234,25 +230,33 @@ const CreateProjectByProjectTemplateModal = (props) => {
             estimatedCost,
             creator: userId,
             responsibleEmployeesWithUnit: currentSalaryMembers,
-        });
+        }
+        const dataRq = {
+            project: projectRq,
+            tasks: taskProjectList
+        }
 
-        console.log(1718, state, projectInfo, projectTask, taskProjectList)
-        // props.editBiddingContract(formData, id);
+        // console.log(1718, state, projectInfo, projectTask, taskProjectList)
+        props.createProjectByTemplateDispatch(id, dataRq);
+
+
+        setTimeout(() => {
+            props.handleAfterCreateProject()
+        }, 30 * newEmployeesArr.length);
     }
 
     const isFormValidated = () => {
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, state.code, 3, 255).status) return false;
-        if (!ValidationHelper.validateName(translate, state.name, 6, 255).status) return false;
-        if (state.startDate.length === 0) return false;
-        if (state.endDate.length === 0) return false;
+        if (!ValidationHelper.validateName(translate, form?.projectName, 6, 255).status) return false;
+        if (form.startDate.length === 0) return false;
+        if (form.endDate.length === 0) return false;
 
-        let splitter = state.startDate.split("-");
-        let effectiveDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
-        splitter = state.endDate.split("-");
+        let splitter = form?.startDate?.split("-");
+        let startDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
+        splitter = form?.endDate?.split("-");
         let endDate = new Date(`${splitter[2]}-${splitter[1]}-${splitter[0]}`);
 
-        if (effectiveDate > endDate) return false;
+        if (startDate > endDate) return false;
 
         return true;
     }
@@ -311,7 +315,7 @@ const CreateProjectByProjectTemplateModal = (props) => {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
+    createProjectByTemplateDispatch: ProjectTemplateActions.createProjectByTemplateDispatch,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateProjectByProjectTemplateModal));

@@ -7,6 +7,7 @@ export const ProjectTemplateServices = {
     deleteProjectTemplateAPI,
 
     getSalaryMembersOfProjectTemplateAPI,
+    createProjectByTemplateDispatch,
 }
 
 function getProjectTemplateAPI(params = undefined) {
@@ -43,6 +44,19 @@ function editProjectTemplateAPI(id, data) {
             method: "PATCH",
             data,
             // params: { option },
+        },
+        true,
+        true,
+        "project_template"
+    );
+}
+
+function createProjectByTemplateDispatch(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/project-templates/project-template/${id}/project/create-cpm`,
+            method: "POST",
+            data,
         },
         true,
         true,

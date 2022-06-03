@@ -11,6 +11,7 @@ router.post("/bidding-contract", auth, uploadFile([{ name: 'files', path: '/bidd
 router.patch("/bidding-contract/:id", auth, uploadFile([{ name: 'files', path: '/bidding-contracts' }], 'array'), BiddingContractController.editBiddingContract);
 router.delete("/bidding-contract/:id", auth, BiddingContractController.deleteBiddingContract);
 
+router.post("/bidding-contract/:contractId/project/create-cpm", auth, BiddingContractController.createProjectCpmByContract);
 
 router.patch("/bidding-contract/:id/upload", auth, uploadFile([{ name: 'files', path: '/bidding-contracts' }], 'single'), BiddingContractController.uploadBiddingContractFile);
 

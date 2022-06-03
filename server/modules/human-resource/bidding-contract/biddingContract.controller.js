@@ -1,4 +1,7 @@
 const BiddingContractService = require("./biddingContract.service");
+const NotificationServices = require(`../../notification/notification.service`);
+const NewsFeed = require('../../news-feed/newsFeed.service');
+const { sendEmail } = require(`../../../helpers/emailHelper`);
 
 const Log = require(`${SERVER_LOGS_DIR}`);
 
@@ -156,3 +159,61 @@ exports.uploadBiddingContractFile = async (req, res) => {
         });
     }
 };
+
+exports.createProjectCpmByContract = async (req, res) => {
+    try {
+        let tp = await BiddingContractService.createProjectByContract(req.portal, req.params.contractId, req.body, req.user.company._id);
+        const taskList = tp.tasks?.tasks;
+        for (let itemTask of taskList) {
+            var task = itemTask.task;
+            var user = itemTask.user.filter(user => user !== req.user._id); // Lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
+
+            // Gửi mail cho nhân viện tham gia công việc
+            var email = itemTask.email;
+            var html = itemTask.html;
+            var data = {
+                organizationalUnits: task.organizationalUnit._id,
+                title: "Tạo mới công việc",
+                level: "general",
+                content: html,
+                sender: task.organizationalUnit.name,
+                users: user,
+                associatedDataObject: {
+                    dataType: 1,
+                    value: task.priority,
+                    description: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
+                },
+            };
+
+            await NotificationServices.createNotification(req.portal, req.user.company._id, data);
+            await sendEmail(email, "Bạn có công việc mới", '', html);
+            await NewsFeed.createNewsFeed(req.portal, {
+                title: data?.title,
+                description: data?.content,
+                creator: req.user._id,
+                associatedDataObject: {
+                    dataType: 1,
+                    value: task?._id,
+                    description: task?.name
+                },
+                relatedUsers: data?.users
+            });
+        }
+
+        await Log.info(req.user.email, 'create_project_by_contract_success', req.portal)
+
+        res.status(200).json({
+            success: true,
+            messages: ['create_project_by_contract_success'],
+            content: tp.contracts
+        });
+    } catch (error) {
+        console.log('create_project_by_contract_fail', error);
+        await Log.error(req.user.email, 'create_project_by_contract_fail', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_project_by_contract_fail'],
+            content: error
+        })
+    }
+}

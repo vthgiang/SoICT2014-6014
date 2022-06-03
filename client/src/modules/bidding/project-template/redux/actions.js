@@ -7,6 +7,7 @@ export const ProjectTemplateActions = {
     editProjectTemplateDispatch,
     deleteProjectTemplateDispatch,
 
+    createProjectByTemplateDispatch,
     getSalaryMembersOfProjectTemplateDispatch,
 }
 
@@ -64,6 +65,25 @@ function editProjectTemplateDispatch(id, data) {
             .catch((err) => {
                 dispatch({
                     type: ProjectTemplateConstants.EDIT_PROJECTS_TEMPLATE_FAILE,
+                });
+            });
+    };
+}
+
+function createProjectByTemplateDispatch(id, data) {
+    return (dispatch) => {
+        dispatch({ type: ProjectTemplateConstants.CREATE_PROJECT_BY_TEMPLATE_REQUEST });
+        ProjectTemplateServices.createProjectByTemplateDispatch(id, data)
+            .then((res) => {
+                console.log('res.data.content', res.data.content)
+                dispatch({
+                    type: ProjectTemplateConstants.CREATE_PROJECT_BY_TEMPLATE_SUCCESS,
+                    payload: res.data.content,
+                });
+            })
+            .catch((err) => {
+                dispatch({
+                    type: ProjectTemplateConstants.CREATE_PROJECT_BY_TEMPLATE_FAILE,
                 });
             });
     };
