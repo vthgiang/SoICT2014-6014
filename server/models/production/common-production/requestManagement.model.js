@@ -13,45 +13,25 @@ const RequestManagementSchema = new Schema({
         ref: "User",
         required: true
     },
-    approverInFactory: [{ // người phê duyệt trong nhà máy sản xuất
-        approver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
+    // approveType 1. Người phê duyệt trong nhà máy sản xuất
+    // approveType 2. Người phê duyệt mua hàng trong đơn hàng
+    // approveType 3. Người phê duyệt nhập kho trong đơn hàng
+    // approveType 4. Người phê duyệt trong kho
 
-        approvedTime: {
-            type: Date
+    approvers: [{ // Người phê duyệt
+        information: [{
+            approver: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            approvedTime: {
+                type: Date
+            },
+        }],
+        approveType: {
+            type: Number,
+            required: true
         }
-    }],
-    approverInWarehouse: [{ // Người phê duyệt trong kho
-        approver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
-
-        approvedTime: {
-            type: Date
-        }
-    }],
-    approverInOrder: [{ // Người phê duyệt mua hàng trong đơn hàng
-        approver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
-
-        approvedTime: {
-            type: Date
-        },
-    }],
-    approverReceiptRequestInOrder: [{ // Người phê duyệt nhập kho trong đơn hàng
-        approver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
-
-        approvedTime: {
-            type: Date
-        },
     }],
     goods: [{
         good: {
@@ -118,7 +98,7 @@ const RequestManagementSchema = new Schema({
      1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu nhập kho, 3: Đã hoàn thành nhập kho
      4: Đã hủy yêu cầu nhập kho
      */
-        /* Yêu cầu xuất kho : requestType = 3, type = 2
+    /* Yêu cầu xuất kho : requestType = 3, type = 2
      1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu xuất kho, 3: Đã hoàn thành xuất kho
      4: Đã hủy yêu cầu xuất kho
      */

@@ -5495,6 +5495,7 @@ export default {
                 validate_manufacturing_works: "Manufacturing works is required",
                 base_infomation: "Base infomation",
                 approved_true: 'Approve request',
+                source_request: 'Source request',
             },
         },
 

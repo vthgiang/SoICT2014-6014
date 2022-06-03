@@ -72,9 +72,14 @@ function CreateDirectlyForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 3
             });
             setState({
                 ...state,
@@ -150,7 +155,7 @@ function CreateDirectlyForm(props) {
                 requestType: 2,
                 type: 1,
                 status: 1,
-                approverReceiptRequestInOrder: state.approvers,
+                approvers: state.approvers,
             }
             console.log(data);
             props.createRequest(data);

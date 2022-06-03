@@ -101,9 +101,14 @@ function CreateForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 4
             });
             setState({
                 ...state,
@@ -184,13 +189,12 @@ function CreateForm(props) {
                 desiredTime: formatToTimeZoneDate(state.desiredTime),
                 description: state.description,
                 goods: goods,
-                approverInWarehouse: state.approvers,
+                approvers: state.approvers,
                 stock: state.stock,
                 status: 1,
                 type: props.stockRequestType,
                 requestType: 3,
             }
-            console.log(data);
             props.createRequest(data);
         }
     }

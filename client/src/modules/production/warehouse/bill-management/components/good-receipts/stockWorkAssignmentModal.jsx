@@ -30,16 +30,16 @@ function StockWorkAssignmentModal(props) {
 
     const DEFALT_WORK_ASSIGNMENT = [
         {
-            nameField: "Công việc vận chuyển", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: 'Vận chuyển hàng hóa đến đúng vị trí'
+            nameField: "Công việc vận chuyển", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:00 PM", type: 'default', description: 'Vận chuyển hàng hóa đến đúng vị trí'
         },
         {
-            nameField: "Công việc kiểm định chất lượng", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: `unpack, kiểm tra số lượng và chất lượng. Phân loại hàng hóa theo danh mục. Đối chiếu, packing. Ghi chú thay đổi`
+            nameField: "Công việc kiểm định chất lượng", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:00 PM", type: 'default', description: `unpack, kiểm tra số lượng và chất lượng. Phân loại hàng hóa theo danh mục. Đối chiếu, packing. Ghi chú thay đổi`
         },
         {
-            nameField: "Đánh lô hàng hóa", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: 'Đánh mã số lô hàng cho hàng hóa khi nhập'
+            nameField: "Đánh lô hàng hóa", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:00 PM", type: 'default', description: 'Đánh mã số lô hàng cho hàng hóa khi nhập'
         },
         {
-            nameField: "Xếp hàng hóa vào vị trí lưu trữ", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "5:30 PM", type: 'default', description: 'Xếp hàng đến vị trí lưu trữ trong kho'
+            nameField: "Xếp hàng hóa vào vị trí lưu trữ", workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:00 PM", type: 'default', description: 'Xếp hàng đến vị trí lưu trữ trong kho'
         },
     ]
 
@@ -50,7 +50,7 @@ function StockWorkAssignmentModal(props) {
         startDate: formatDate((new Date()).toISOString()),
         endDate: formatDate((new Date()).toISOString()),
         startTime: '',
-        endTime: '5:30 PM',
+        endTime: '11:00 PM',
         dataCalendarStatus: 0,
         dataCalendarOldStatus: 0,
         counter: 0,
@@ -180,13 +180,13 @@ function StockWorkAssignmentModal(props) {
             if (result) {
                 setState({
                     ...state,
-                    workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "", startDate: formatDate((new Date()).toISOString()), startTime: currentTime, endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM" }],
+                    workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "", startDate: formatDate((new Date()).toISOString()), startTime: currentTime, endDate: formatDate((new Date()).toISOString()), endTime: "11:00 PM" }],
                 })
             }
         } else {
             setState({
                 ...state,
-                workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "", startDate: formatDate((new Date()).toISOString()), startTime: currentTime, endDate: formatDate((new Date()).toISOString()), endTime: "05:30 PM" }],
+                workAssignment: [...workAssignment, { nameField: "", workAssignmentStaffs: array, description: "", startDate: formatDate((new Date()).toISOString()), startTime: currentTime, endDate: formatDate((new Date()).toISOString()), endTime: "11:00 PM" }],
             })
         }
 

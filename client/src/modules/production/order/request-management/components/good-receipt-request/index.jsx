@@ -203,6 +203,18 @@ function ReceiptRequestManagementTable(props) {
                                             request.status == 1 &&
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('production.request_management.request_edit')} onClick={() => handleEditRequest(request)}><i className="material-icons">edit</i></a>
                                         }
+                                        {/*Phê duyệt yêu cầu*/}
+                                        {
+                                            props.checkRoleApprover(request) &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.approved_true')}
+                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
+                                                name="check_circle_outline"
+                                                className="text-green"
+                                                func={() => props.handleFinishedApproval(request)}
+                                            />
+                                        }
                                         {
                                             request.status == 1 &&
                                             <ConfirmNotification
@@ -212,17 +224,6 @@ function ReceiptRequestManagementTable(props) {
                                                 name="cancel"
                                                 className="text-red"
                                                 func={() => props.handleCancelRequest(request)}
-                                            />
-                                        }
-                                        {
-                                            props.checkRoleApproverReceiptRequestToStock(request) && request.status == 1 &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.approved_true')}
-                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApprovalReceiptRequestToStock(request)}
                                             />
                                         }
                                     </td>

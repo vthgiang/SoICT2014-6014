@@ -89,19 +89,25 @@ function RequestManagement(props) {
     }
 
     const checkRoleApprover = (request) => {
-        const { approverInFactory } = request;
-        const userId = localStorage.getItem("userId");
-        let approverIds = approverInFactory.map(x => x.approver._id);
-        if (approverIds.includes(userId) && approverInFactory[approverIds.indexOf(userId)].approvedTime === null) {
-            return true;
-        }
-        return false
+        const { approvers } = request;
+        let count = 0;
+        approvers.forEach(approver => {
+            if (approver.approveType == 1) {
+                const userId = localStorage.getItem("userId");
+                let approverIds = approver.information.map(x => x.approver._id);
+                if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
+                    count++;
+                }
+            }
+        })
+        return count > 0;
     }
 
     const handleFinishedApproval = (request) => {
         const userId = localStorage.getItem("userId");
         const data = {
-            approverIdInFactory: userId
+            approvedUser: userId,
+            approveType: 1
         }
         props.editRequest(request._id, data);
     }

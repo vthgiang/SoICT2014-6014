@@ -41,11 +41,14 @@ function GoodReceiptRequestManagementTable(props) {
         window.$('#modal-edit-request').modal('show');
     }
 
-    const cancelPurchasingRequest = (request) => {
-        const data = {
-            status: 3
+    const getSourceRequest = (requestType, type) => {
+        if ((requestType == 1 && type == 1) || (requestType == 2 && type == 1)) {
+            return "Yêu cầu gửi từ bộ phận đơn hàng";
         }
-        props.editRequest(request._id, data);
+        if (requestType == 1 && type == 2)
+            return "Yêu cầu gửi từ nhà máy";
+        if (requestType == 3 && type == 1)
+            return "Yêu cầu tạo từ trong kho";
     }
 
     const { translate, requestManagements } = props;
@@ -69,12 +72,12 @@ function GoodReceiptRequestManagementTable(props) {
                     stock={state.currentRow.stock._id}
                     status={state.currentRow.status}
                     worksValue={state.currentRow.manufacturingWork._id}
-                    approver={state.currentRow.approverInFactory[0].approver._id}
+                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 1) : []}
                     stockRequestType={props.stockRequestType}
                 />
             }
             <div className="box-body qlcv">
-                <CreateForm stockRequestType={props.stockRequestType}/>
+                <CreateForm stockRequestType={props.stockRequestType} />
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('production.request_management.code')}</label>
@@ -130,8 +133,8 @@ function GoodReceiptRequestManagementTable(props) {
                             <th>{translate('production.request_management.index')}</th>
                             <th>{translate('production.request_management.code')}</th>
                             <th>{translate('production.request_management.creator')}</th>
-                            <th>{translate('production.request_management.approver')}</th>
                             <th>{translate('production.request_management.createdAt')}</th>
+                            <th>{translate('production.request_management.source_request')}</th>
                             <th>{translate('production.request_management.desiredTime')}</th>
                             <th>{translate('production.request_management.status')}</th>
                             <th>{translate('production.request_management.description')}</th>
@@ -142,8 +145,8 @@ function GoodReceiptRequestManagementTable(props) {
                                         translate('production.request_management.index'),
                                         translate('production.request_management.code'),
                                         translate('production.request_management.creator'),
-                                        translate('production.request_management.approver'),
                                         translate('production.request_management.createdAt'),
+                                        translate('production.request_management.source_request'),
                                         translate('production.request_management.desiredTime'),
                                         translate('production.request_management.status'),
                                         translate('production.request_management.description')
@@ -162,10 +165,10 @@ function GoodReceiptRequestManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
-                                    <td>{request.approverInWarehouse && request.approverInWarehouse[0].approver.name}</td>
                                     <td>{formatDate(request.createdAt)}</td>
+                                    <td>{getSourceRequest(request.requestType, request.type)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{ color: request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.color`) : translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{request.status <= 5 ?  translate(`production.request_management.receipt_request_from_order.${request.status}.content`) : translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
+                                    <td style={{ color: request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.color`) : translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.content`) : translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
@@ -175,7 +178,7 @@ function GoodReceiptRequestManagementTable(props) {
                                         }
                                         {/*Phê duyệt yêu cầu*/}
                                         {
-                                            props.checkRoleApprover(request) && request.status == 1 &&
+                                            props.checkRoleApprover(request) &&
                                             <ConfirmNotification
                                                 icon="question"
                                                 title={translate('production.request_management.approved_true')}

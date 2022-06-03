@@ -74,9 +74,14 @@ function CreateFromPurchaseOrderForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 3
             });
             setState({
                 ...state,
@@ -210,7 +215,7 @@ function CreateFromPurchaseOrderForm(props) {
                 requestType: 2,
                 type: 1,
                 status: 1,
-                approverReceiptRequestInOrder: state.approvers,
+                approvers: state.approvers,
             }
             props.createRequest(data);
             props.updatePurchaseOrder(purchaseOrder, {status: 3});

@@ -45,7 +45,7 @@ function GanttCalendar(props) {
                 item.workAssignmentStaffs.forEach((itemStaff) => {
                     formatData.push({
                         id: itemStaff.name,
-                        text: item.nameField + ' - ' + '0%',
+                        text: item.nameField,
                         role: itemStaff.name,
                         start_date: null,
                         duration: null,
@@ -57,7 +57,7 @@ function GanttCalendar(props) {
                         parent: itemStaff.name,
                         process: 1,
                         progress: 0,
-                        text: item.nameField + ' - ' + '0%',
+                        text: item.nameField,
                         start_date: dayjs(formatDate(item.startDate) + ' ' + item.startTime).format("YYYY-MM-DD HH:mm"),
                         end_date: dayjs(formatDate(item.endDate) + ' ' + item.endTime).format("YYYY-MM-DD HH:mm"),
                     })
