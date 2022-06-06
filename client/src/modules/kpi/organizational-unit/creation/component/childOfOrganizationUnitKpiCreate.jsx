@@ -66,7 +66,7 @@ function ChildOfOrganizationalUnitCreate(props) {
     const { organizationalUnitKpiSetsOfChildUnit: kpiChildUnit } = createKpiUnit;
 
     const [idsUnitCopy, setIdsUnitCopy] = useState();
-    const [idsUnitApply, setIdsUnitApply] = useState();
+    const [idsUnitApply, setIdsUnitApply] = useState([]);
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [copyDate, setCopyDate] = useState();
@@ -157,8 +157,14 @@ function ChildOfOrganizationalUnitCreate(props) {
         props.copyKPIUnit(currentKPI?._id, dataKPI);
     }
 
-    const isFormValidated = () => {
-        return (idsUnitApply && idsUnitCopy && dateCopyError && dateRangeError)
+    const isFormDisable = () => {
+        const isDisable = !(
+            idsUnitApply.length !== 0
+            && idsUnitCopy !== undefined && startDate && endDate && copyDate
+            && dateCopyError === undefined
+            && dateRangeError === undefined
+        )
+        return isDisable;
     }
 
     useEffect(() => {
@@ -249,7 +255,7 @@ function ChildOfOrganizationalUnitCreate(props) {
                 msg_failure={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
                 hasNote={false}
-                disableSubmit={isFormValidated()}
+                disableSubmit={isFormDisable()}
             >
                 <div className="row qlcv" style={{ marginBottom: 10 }}>
                     <div className="col-sm-6">
@@ -264,6 +270,7 @@ function ChildOfOrganizationalUnitCreate(props) {
                                 multiple={false}
                                 onChange={handleChangeUnitCopy}
                                 value={idsUnitCopy}
+                                options={{ placeholder: '' }}
                             />
                             <ErrorLabel content={unitOrganizationalCopyError} />
                         </div>
@@ -305,7 +312,7 @@ function ChildOfOrganizationalUnitCreate(props) {
                             })
                             }
                         </ul>
-                        : <div>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')}</div>
+                        : <div style={{ 'marginBottom': 5 }}>Chưa chọn KPI tháng</div>
                     }
                 </div>
 
@@ -315,7 +322,7 @@ function ChildOfOrganizationalUnitCreate(props) {
                         <div className={`form-group ${unitOrganizationalApplyError === undefined ? "" : "has-error"}`} >
                             <label style={{ width: "auto" }}>Đơn vị áp dụng</label>
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                                options={{ nonSelectedText: 'chọn đơn vị', allSelectedText: 'chọn tất cả' }}
+                                options={{ nonSelectedText: 'Chọn đơn vị', allSelectedText: 'Chọn tất cả' }}
                                 onChange={handleChangeUnitApply}
                                 value={idsUnitApply ?? []}
                                 items={options}
@@ -356,26 +363,6 @@ function ChildOfOrganizationalUnitCreate(props) {
                     </div>
                     <ErrorLabel content={dateRangeError} />
                 </div>
-                {/* 
-                {
-                    duplicate && (
-                        <div style={{ 'marginTop': 10 }} className='text-danger'>
-                            <i style={{ 'marginRight': 10 }} className="fa fa-exclamation-circle" />
-                            <span style={{ 'fontWeight': 600 }}>
-                                Chỉ có thể áp dụng KPI cho các tháng:
-                            </span>
-                            {
-                                applyMonth.map((x, index) => {
-                                    if (index < applyMonth.length - 1) {
-                                        return <span key={index} style={{ 'fontWeight': 600, 'marginLeft': 5 }}>{x},</span>
-                                    } else {
-                                        return <span key={index} style={{ 'fontWeight': 600, 'marginLeft': 5 }}>{x}</span>
-                                    }
-
-                                })
-                            }
-                        </div>)
-                } */}
             </DialogModal>
         </React.Fragment>
     );
