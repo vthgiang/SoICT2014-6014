@@ -78,16 +78,16 @@ const RequestManagementSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Customer'
     },
-    // yêu cầu gửi từ sản xuất => order => kho => 1
-    // yêu cầu gửi từ sản xuất => kho  => 2
-    // yêu cầu gửi từ đơn hàng => kho => 3
+    // 1: trong sản xuất
+    // 2: trong đơn hàng
+    // 3: Trong kho
     requestType: {
         type: Number,
         default: 1
     },
     // requestType = 1: mua hàng: type = 1, nhập kho: type = 2, xuất kho : type = 3
     // requestType = 2: nhập kho: type = 1
-    // requestType = 3: nhập kho: type = 1, xuất kho: type = 2, trả hàng: type = 3, luân chuyển: type = 4 
+    // requestType = 3: nhập kho: type = 1, xuất kho: type = 2, trả hàng: type = 3, luân chuyển: type = 4 , vận chuyển: type = 5
     type: { // loại yêu cầu
         type: Number,
         default: 1

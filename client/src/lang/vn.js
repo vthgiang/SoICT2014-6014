@@ -4856,6 +4856,7 @@ export default {
                 edit_faile: "Chỉnh sửa thất bại",
                 name: "Tên hàng hóa",
                 good_source: "Nguồn hàng hóa",
+                excluding_good: "Hàng hóa loại trừ",
                 validate_source_product: 'Bạn cần chọn nguồn hàng hóa',
                 code: "Mã hàng hóa",
                 type: "Kiểu hàng hóa",
@@ -5269,6 +5270,8 @@ export default {
                 add_faile: "Thêm mới phiếu thất bại",
                 edit_success: "Chỉnh sửa thành công",
                 edit_faile: "Chỉnh sửa thất bại",
+                choose_employees: 'Chọn nhân viên',
+                validate_choose_employees: 'Bạn cần chọn nhân viên',
 
                 // Phần liên quan lô sản xuất
                 add_issue_product: "Thêm phiếu nhập sản phẩm",

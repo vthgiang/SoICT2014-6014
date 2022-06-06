@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal, TimePicker } from '../../../../../common-components';
 import { StockActions } from '../redux/actions';
-import { translate } from 'react-redux-multilingual/lib/utils';
 import { generateCode } from '../../../../../helpers/generateCode';
 import { useState } from 'react';
+import { formatDate } from '../../../../../helpers/formatDate';
+import dayjs from "dayjs";
 
 function StockCreateForm(props) {
     const EMPTY_GOOD = {
@@ -36,6 +37,8 @@ function StockCreateForm(props) {
         description: '',
         editInfo: false,
         editInfoRole: false,
+        startTime: '07:00 AM',
+        endTime: '07:00 PM',
     })
 
     const handleNameChange = (e) => {
@@ -115,7 +118,7 @@ function StockCreateForm(props) {
         }
         return msg;
     }
-    
+
     const handleStatusChange = (value) => {
         setState({
             ...state,
@@ -141,7 +144,9 @@ function StockCreateForm(props) {
     const isFormValidated = () => {
         let result =
             validateName(state.name, false) &&
-            validateAddress(state.address, false)
+            validateAddress(state.address, false) &&
+            validateStartTime(state.startTime, false) &&
+            validateEndTime(state.endTime, false);
         return result;
     }
 
@@ -445,9 +450,57 @@ function StockCreateForm(props) {
         return result;
     }
 
+    const convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+    }
+
+    const handleStartTimeChange = (value) => {
+        validateStartTime(value, true);
+    }
+
+    const validateStartTime = (value, willUpdateState = true) => {
+        let msg = undefined;
+        let startTime = convertDateTime(formatDate((new Date()).toISOString()), value);
+        let endTime = convertDateTime(formatDate((new Date()).toISOString()), state.endTime);
+        if (startTime > endTime) {
+            msg = "Thời gian mở cửa phải trước thời gian đóng cửa";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                startTime: value,
+                errorOnStartTime: msg
+            });
+        }
+        return msg === undefined;
+    }
+
+    const handleEndTimeChange = (value) => {
+        validateEndTime(value, true);
+    }
+
+    const validateEndTime = (value, willUpdateState = true) => {
+        let msg = undefined;
+        let startTime = convertDateTime(formatDate((new Date()).toISOString()), state.startTime);
+        let endTime = convertDateTime(formatDate((new Date()).toISOString()), value);
+        if (startTime > endTime) {
+            msg = "Thời gian mở cửa phải trước thời gian đóng cửa";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                endTime: value,
+                errorOnEndTime: msg
+            });
+        }
+        return msg === undefined;
+    }
+
     const { translate, stocks } = props;
     const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name,
-        managementLocation, status, address, description, organizationalUnitValue, goods, good, errorOnRole, errorOnManagementGood, role, currentDepartment } = state;
+        managementLocation, status, address, description, organizationalUnitValue, goods, good, errorOnRole, errorOnManagementGood, role, currentDepartment, startTime, endTime, errorOnStartTime, errorOnEndTime } = state;
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
@@ -516,6 +569,28 @@ function StockCreateForm(props) {
                                     onChange={handleStatusChange}
                                     multiple={false}
                                 />
+                            </div>
+                            <div className="form-group" >
+                                <div className={`col-xs-12 col-sm-6 col-md-6 col-lg-6 form-group ${!errorOnStartTime ? "" : "has-error"}`}>
+                                    <label>{"Thời gian bắt đầu mở cửa"}<span className="text-red"> * </span></label>
+                                    <TimePicker
+                                        id={`startTimePicker`}
+                                        refs={`startTimePicker`}
+                                        value={startTime}
+                                        onChange={(e) => handleStartTimeChange(e)}
+                                    />
+                                    <ErrorLabel content={errorOnStartTime} />
+                                </div>
+                                <div className={`col-xs-12 col-sm-6 col-md-6 col-lg-6 form-group ${!errorOnEndTime ? "" : "has-error"}`}>
+                                    <label>{"Thời gian đóng cửa"}<span className="text-red"> * </span></label>
+                                    <TimePicker
+                                        id={`endTimePicker`}
+                                        refs={`endTimePicker`}
+                                        value={endTime}
+                                        onChange={(e) => handleEndTimeChange(e)}
+                                    />
+                                    <ErrorLabel content={errorOnEndTime} />
+                                </div>
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

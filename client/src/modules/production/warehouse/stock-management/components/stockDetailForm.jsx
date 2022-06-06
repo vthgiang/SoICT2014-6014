@@ -25,13 +25,15 @@ function StockDetailForm(props) {
                 managementLocation: props.managementLocation,
                 organizationalUnit: props.organizationalUnit,
                 description: props.description,
+                startTime: props.startTime,
+                endTime: props.endTime,
             })
         }
 
-    }, [props.stockId, props.code, props.name, props.status, props.address, props.goodsManagement, props.managementLocation, props.manageDepartment, props.description])
+    }, [props.stockId, props.code, props.name, props.status, props.address, props.goodsManagement, props.managementLocation, props.manageDepartment, props.description, props.startTime, props.endTime])
 
     const { translate, stocks, department, role } = props;
-    const { code, name, managementLocation, status, address, description, organizationalUnit, goods, good } = state;
+    const { code, name, managementLocation, status, address, description, organizationalUnit, goods, startTime, endTime } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -55,6 +57,10 @@ function StockDetailForm(props) {
                                 <strong>{translate('manage_warehouse.stock_management.address')}:&emsp;</strong>
                                 {address}
                             </div>
+                            <div className="form-group">
+                                <strong>{translate('manage_warehouse.stock_management.description')}:&emsp;</strong>
+                                {description}
+                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
@@ -65,12 +71,14 @@ function StockDetailForm(props) {
                                 <strong>{translate('manage_warehouse.stock_management.status')}:&emsp;</strong>
                                 {status && <span style={{ color: translate(`manage_warehouse.bin_location_management.${status}.color`) }}>{translate(`manage_warehouse.bin_location_management.${status}.status`)}</span>}
                             </div>
+                            <div className="form-group">
+                                <strong>{"Thời gian mở cửa"}:&emsp;</strong>
+                                {startTime}&emsp;
+                                <strong>{"Thời gian đóng cửa"}:&emsp;</strong>
+                                {endTime}
+                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className="form-group">
-                                <strong>{translate('manage_warehouse.stock_management.description')}:&emsp;</strong>
-                                {description}
-                            </div>
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.stock_management.list_roles')}</legend>
                                 {
@@ -145,7 +153,7 @@ function StockDetailForm(props) {
                     </div>
                 </form>
             </DialogModal>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
 

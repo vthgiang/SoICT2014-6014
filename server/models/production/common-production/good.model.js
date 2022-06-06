@@ -78,6 +78,13 @@ const GoodSchema = new Schema({
         }
     }],
 
+    excludingGoods: [{
+        good: {
+            type: Schema.Types.ObjectId,
+            replies: this
+        },
+    }],
+
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User'

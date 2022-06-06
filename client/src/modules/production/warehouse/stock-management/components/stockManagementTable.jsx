@@ -178,6 +178,8 @@ function StockManagementTable(props) {
                         description={state.currentRow.description}
                         organizationalUnitValue={state.currentRow.organizationalUnit._id}
                         organizationalUnit={state.currentRow.organizationalUnit}
+                        startTime={state.currentRow.startTime}
+                        endTime={state.currentRow.endTime}
                     />
                 }
 
@@ -194,6 +196,8 @@ function StockManagementTable(props) {
                         goodsManagement={state.currentRow.goods}
                         description={state.currentRow.description}
                         organizationalUnit={state.currentRow.organizationalUnit}
+                        startTime={state.currentRow.startTime}
+                        endTime={state.currentRow.endTime}
                     />
                 }
 
