@@ -10,6 +10,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { ModalCopyKPIUnit } from '../../management/component/organizationalUnitKpiCopyModal';
 import { createUnitKpiActions } from '../redux/actions.js';
+import { EmployeeCreateKpiAutoModal } from './employeeCreateKpiAutoModal';
 import { EmployeeImportancesModal } from './employeeImportancesModal';
 import { OrganizationalUnitImportancesModal } from './organizationalUnitImportancesModal';
 import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddTargetModal';
@@ -611,6 +612,22 @@ function OrganizationalUnitKpiCreate(props) {
                                                         </a>
                                                     </span>
                                                 }
+                                            </span>
+                                        }
+
+                                        {/* thiet lap tu dong kpi của nhân viên */}
+                                        {checkEdittingPermission(currentKPI && currentKPI.organizationalUnit && currentKPI.status === 1) &&
+                                            <span>
+                                                <span>
+                                                    <a className="btn btn-app" data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                                        <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
+                                                    </a>
+                                                    <EmployeeCreateKpiAutoModal
+                                                        organizationalUnit={currentKPI.organizationalUnit}
+                                                        organizationalUnitId={currentKPI.organizationalUnit && currentKPI.organizationalUnit._id}
+                                                        month={month}
+                                                    />
+                                                </span>
                                             </span>
                                         }
                                     </div>
