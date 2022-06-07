@@ -830,6 +830,7 @@ exports.editTask = async (req, res) => {
         }
         else if (req.body.role === 'accountable') {
             editTaskByAccountableEmployees(req, res);
+            console.log(833)
         }
     }
     else if (req.body.type === 'edit_archived') {

@@ -80,7 +80,8 @@ export const performTaskService = {
     evaluateTaskByAccountableEmployeesProject,
 
     createTaskOutputs,
-    getTaskOutputs
+    getTaskOutputs,
+    approveTaskOutputs
 };
 
 /**
@@ -853,3 +854,13 @@ function getTaskOutputs(taskId) {
         method: 'GET',
     }, false, false, 'task.task_perform');
 }
+
+function approveTaskOutputs(taskId, taskOutputId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'task.task_perform');
+}
+
+

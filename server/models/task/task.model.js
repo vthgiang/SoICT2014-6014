@@ -953,8 +953,15 @@ const TaskSchema = new Schema(
                         description: {
                             type: String
                         },
+                        action: {
+                            type: String
+                        },
                         taskAction: {
                             type: String
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
                         }
                     }]
                 }

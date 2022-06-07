@@ -7,6 +7,7 @@ import { ApiImage, Comment } from '../../../../common-components'
 
 import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
+import TaskOutputsTab from './taskOutputs';
 
 function OutgoingDataTab(props) {
     const { translate, performtasks } = props;
@@ -19,7 +20,7 @@ function OutgoingDataTab(props) {
     const [documents, setDocuments] = useState([])
     const [informations, setInformations] = useState([])
     const { task, isOutputInformation, isOutputDocument } = state;
-
+    console.log(23, performtasks)
     if (props.isOutgoingData && props.taskId !== state.taskId) {
         let isOutputInformation = {}, isOutputDocument = {};
 
@@ -221,12 +222,54 @@ function OutgoingDataTab(props) {
                                 )
                                 : <span>{translate('task.task_process.not_have_doc')}</span>
                         }
+                        <div style={{ marginTop: 10 }}></div>
+                        <strong>Kết quả giao nộp:</strong>
+                        {performtasks.task?.taskOutputs?.map(item => {
+                            return (
+                                <div>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            title={"TaskOutputs"}
+                                            name={item.tilte}
+                                            onClick={() => { console.log(235) }}
+                                            // checked={ }
+                                            onChange={e => { }}
+                                        />
+                                        {item.title}
+                                    </label>
+                                </div>
+                            )
+                        })}
+                        Yêu cầu xác nhận kết quả giao nộp từ các công việc trong quy trình
+                        <div>
+                            <div style={{ marginLeft: "20px" }}>
+                                <span>Xác nhận bước 1</span>
+                                {performtasks.task?.followingTasks.map(x => {
+                                    return (
+                                        <div>
+                                            <input type="checkbox" />
+                                            <span>{x.task.name}</span>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            <div style={{ marginLeft: "20px" }}>
+                                <span>Xác nhận bước 2</span>
+                                <div>
+                                    <input type="checkbox" />
+                                    <span>Phê duyệt hình thức trình bày</span>
+                                </div>
+                            </div>
+                        </div>
                         <div style={{ marginTop: 20 }}>
                             <button type="button" style={{ width: "100%" }} className="btn btn-block btn-default" onClick={() => handleSaveEdit()} disabled={documents.length === 0 && informations.length === 0}>{translate('task.task_process.save')}</button>
                         </div>
 
 
                     </div>
+                    {/* <TaskOutputsTab /> */}
+
 
                     { /** Trao đổi */}
                     <div>

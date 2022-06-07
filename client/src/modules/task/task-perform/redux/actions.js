@@ -79,7 +79,8 @@ export const performTaskAction = {
     evaluateTaskByAccountableEmployeesProject,
 
     createTaskOutputs,
-    getTaskOutputs
+    getTaskOutputs,
+    approveTaskOutputs
 };
 
 
@@ -1285,6 +1286,18 @@ function getTaskOutputs(taskId) {
             .then(
                 payload => dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_FAILURE, error })
+            );
+    };
+}
+
+function approveTaskOutputs(taskId, taskOutputId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_REQUEST });
+
+        performTaskService.approveTaskOutputs(taskId, taskOutputId, data)
+            .then(
+                payload => dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_FAILURE, error })
             );
     };
 }

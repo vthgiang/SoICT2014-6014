@@ -1091,6 +1091,21 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.error
             };
+        case performTaskConstants.APPROVE_TASK_OUTPUTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.APPROVE_TASK_OUTPUTS_SUCCESS:
+
+            return {
+                ...state,
+            }
+        case performTaskConstants.APPROVE_TASK_OUTPUTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
         default:
             return state
     }

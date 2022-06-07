@@ -3069,22 +3069,22 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       }
     }
   }
-
+  console.log(3072)
   let taskItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-  const accountableEmployeesTaskOutputs = task.accountableEmployees.map((item) => {
+  console.log(3074)
+  const accountableEmployeesTaskOutputs = taskItem.accountableEmployees.map((item) => {
     return {
-      accountableEmployee: item,
+      accountableEmployee: item._id,
       status: "waiting_approval"
     }
   });
   const taskOutputsChange = taskOutputs.map((item) => {
     return {
       ...item,
-      accountableEmployees: accountableEmployeesTaskOutputs
+      accountableEmployees: accountableEmployeesTaskOutputs,
+      status: "unfinished"
     }
   })
-
   // update collaboratedWithOrganizationalUnits
   let newCollab = [];
   let oldCollab = taskItem.collaboratedWithOrganizationalUnits.map(e => { return e.organizationalUnit });
@@ -7872,6 +7872,14 @@ exports.getTaskOutputs = async (portal, params) => {
         path: "taskActions.comments.creator",
         select: "name email avatar",
       },
+      {
+        path: "taskOutputs.submissionResults.logs.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
     ])
 
   const taskOutputs = task.taskOutputs.map((item) => {
@@ -7898,16 +7906,12 @@ exports.getTaskOutputs = async (portal, params) => {
 }
 
 exports.approveTaskOutputs = async (portal, params, body) => {
-  console.log(7901)
   const currentTask = await Task(connect(DB_CONNECTION, portal))
     .findOne({ _id: params.taskId });
-  console.log(7904)
   let taskOutput = currentTask?.taskOutputs.find((item) => item._id == params.taskOutputId)
-  console.log(7905)
   let status = taskOutput?.status;
-  console.log(7906, status)
   let checkStatus = taskOutput?.accountableEmployees.length;
-  console.log(7910)
+  let actionDescription;
   let accountableEmployees = taskOutput?.accountableEmployees.map((item) => {
     let action = item.action;
     if (item.accountableEmployee == body.creator) {
@@ -7915,10 +7919,15 @@ exports.approveTaskOutputs = async (portal, params, body) => {
     }
     if (action === "reject") {
       status = "rejected";
+      actionDescription = "Từ chối kết quả"
     }
+
     if (action !== "approve") {
       checkStatus = checkStatus - 1;
+    } else {
+      actionDescription = "Phê duyệt kết quả"
     }
+
     return {
       _id: item.id,
       action: action,
@@ -7929,7 +7938,13 @@ exports.approveTaskOutputs = async (portal, params, body) => {
   if (checkStatus === taskOutput?.accountableEmployees.length) {
     status = "approved";
   };
-  console.log(7931, status, accountableEmployees)
+
+  const log = {
+    creator: mongoose.Types.ObjectId(body.creator),
+    action: actionDescription,
+    description: body.description,
+  }
+
   const task = await Task(connect(DB_CONNECTION, portal))
     .findOneAndUpdate(
       {
@@ -7941,6 +7956,9 @@ exports.approveTaskOutputs = async (portal, params, body) => {
           "taskOutputs.$.accountableEmployees": accountableEmployees,
           "taskOutputs.$.status": status,
         },
+        $push: {
+          "taskOutputs.$.submissionResults.logs": log
+        }
       },
       { new: true })
 
