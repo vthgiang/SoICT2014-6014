@@ -3029,7 +3029,7 @@ exports.getEmployeeByPackageId = async (
                           require?.certificateRequirements?.certificatesEndDate
                       ).format("DD-MM-YYYY")
                     : null,
-                exp: require?.certificateRequirements?.numberYearsOfExperience
+                exp: require?.numberYearsOfExperience
                     ? require?.numberYearsOfExperience
                     : NaN,
                 sameExp: require?.experienceWorkInCarreer

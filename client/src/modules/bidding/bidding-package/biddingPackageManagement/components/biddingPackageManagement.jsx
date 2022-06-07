@@ -348,7 +348,7 @@ const BiddingPackageManagement = (props) => {
                                     <td>{formatDate(x.endDate)}</td>
                                     <td>{translate(`human_resource.profile.bidding_package_management.type.${x.type}`)}</td>
                                     <td style={{ color: x.status == 1 ? "#28A745" : (x.status == 2 ? '#f39c12' : (x.status == 0 ? '#dd4b39' : null)) }}>{translate(`human_resource.profile.bidding_package_management.status.${x.status}`)}</td>
-                                    <td style={{ color: x.status === "active" ? "#28A745" : (x.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${x.status}`)}</td>
+                                    <td>{x.description}</td>
                                     <td>
                                         <a onClick={() => handleView(x)} style={{ width: '5px' }} title="detail"><i className="material-icons">view_list</i></a>
                                         <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="edit"><i className="material-icons">edit</i></a>
