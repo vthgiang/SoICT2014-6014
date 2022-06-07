@@ -1766,7 +1766,7 @@ export default {
             add_success: "Thêm ủy quyền thành công!",
             add_fail: "Thêm ủy quyền thất bại!",
             delegation_description: "Mô tả ủy quyền",
-            edit_title: "Cập nhật ủy quyền",
+            edit_role_delegation_title: "Cập nhật ủy quyền vai trò",
             edit_delegation_success: "Cập nhật ủy quyền thành công!",
             edit_delegation_fail: "Cập nhật ủy quyền thất bại!",
             detail_info_delegation: "Thông tin chi tiết ủy quyền",

@@ -1671,7 +1671,7 @@ export default {
             add_success: "Add delegation successfully!",
             add_fail: "Add delegation fail!",
             delegation_description: "Delegation Description",
-            edit_title: "Update a delegation",
+            edit_role_delegation_title: "Update role delegation",
             edit_delegation_success: "Update delegation successfully!",
             edit_delegation_fail: "Update delegation fail!",
             detail_info_delegation: "Detail infomation of delegation",

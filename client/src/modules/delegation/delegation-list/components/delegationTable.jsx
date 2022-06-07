@@ -216,12 +216,27 @@ function DelegationTable(props) {
 
     return (
         <React.Fragment>
-            <DelegationEditForm
+            {user && user.organizationalUnitsOfUser && <DelegationEditForm
                 delegationID={currentRow && currentRow._id}
                 delegationName={currentRow && currentRow.delegationName}
                 description={currentRow && currentRow.description}
+                delegator={currentRow && currentRow.delegator}
+                delegatee={currentRow && currentRow.delegatee}
+                delegatePrivileges={currentRow && currentRow.delegatePrivileges}
+                delegateType={currentRow && currentRow.delegateType}
+                delegateRole={currentRow && currentRow.delegateRole}
+                delegateTasks={currentRow && currentRow.delegateTasks}
+                status={currentRow && currentRow.status}
+                allPrivileges={currentRow && currentRow.allPrivileges}
+                startDate={currentRow && currentRow.startDate}
+                endDate={currentRow && currentRow.endDate}
+                revokedDate={currentRow && currentRow.revokedDate}
+                revokeReason={currentRow && currentRow.revokeReason}
+                showChooseLinks={currentRow && currentRow.allPrivileges == true ? false : true}
+                showChooseRevoke={currentRow && currentRow.revokedDate != null ? true : false}
             />
 
+            }
             <DelegationDetailInfo
                 delegationID={curentRowDetail && curentRowDetail._id}
                 delegationName={curentRowDetail && curentRowDetail.delegationName}

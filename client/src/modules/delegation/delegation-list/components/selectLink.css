@@ -8,3 +8,14 @@ select#multiSelectDelegateLinks + div .multiselect-container .glyphicon{
     vertical-align: middle;
     padding-bottom: 3px;
 }
+
+select#multiSelectDelegateLinksEdit + div .multiselect-container{
+    position: inherit;
+    width: 100%;
+    max-height: 250px !important
+}
+
+select#multiSelectDelegateLinksEdit + div .multiselect-container .glyphicon{
+    vertical-align: middle;
+    padding-bottom: 3px;
+}

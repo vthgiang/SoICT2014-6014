@@ -323,17 +323,108 @@ exports.getDelegationById = async (portal, id) => {
 }
 
 // Chỉnh sửa một Ví dụ
-exports.editDelegation = async (portal, id, data) => {
-    let oldDelegation = await Delegation(connect(DB_CONNECTION, portal)).findById(id);
-    if (!oldDelegation) {
-        return -1;
-    }
+exports.editDelegation = async (portal, delegationId, data) => {
 
-    // Cach 2 de update
-    await Delegation(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
-    let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: oldDelegation._id });
+    // Revoke
+    this.revokeDelegation(portal, [delegationId])
 
-    return delegation;
+    // Delete
+    this.deleteDelegations(portal, [delegationId])
+
+    // Create
+    let delegation = await this.createDelegation(portal, [data])
+
+    return delegation
+    // // Revoke
+    // await UserRole(connect(DB_CONNECTION, portal)).deleteOne({ delegation: delegationId });
+
+    // let delegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId });
+    // let result = delegation;
+    // if (result.delegatePrivileges != null) {
+    //     let privileges = await Privilege(connect(DB_CONNECTION, portal)).find({ _id: { $in: result.delegatePrivileges } })
+    //     privileges.forEach(async pri => {
+    //         pri.delegations.splice(pri.delegations.indexOf(result._id), 1)
+    //         await pri.save()
+    //     })
+    // }
+
+
+    // // Delete
+
+
+    // // Create
+    // const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: data.delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+    // if (checkDelegationCreated) {
+    //     throw ['delegation_name_exist'];
+    // }
+
+    // let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({ _id: data.delegateRole });
+    // let delegatePrivileges = data.allPrivileges ? null : await Privilege(connect(DB_CONNECTION, portal)).find({ roleId: { $in: [data.delegateRole].concat(delegateRole.parents) }, resourceId: { $in: data.delegateLinks } })
+    // // console.log('delegatePrivileges', delegatePrivileges)
+    // let checkDelegationExist = await Delegation(connect(DB_CONNECTION, portal)).find({
+    //     delegator: data.delegator,
+    //     delegatee: data.delegatee,
+    //     delegateType: "Role",
+    //     delegateRole: data.delegateRole,
+    //     status: {
+    //         $in: [
+    //             "activated", // Đang hoạt động
+    //             "pending", // Chờ xác nhận
+    //             "confirmed" // Xác nhận
+    //         ]
+    //     }
+    // })
+
+    // if (checkDelegationExist.length > 0) {
+    //     throw ["delegation_role_exist"];
+    // }
+
+    // let checkUserHaveRole = await UserRole(connect(DB_CONNECTION, portal)).find({
+    //     userId: data.delegatee,
+    //     roleId: data.delegateRole,
+    //     // TBD: Bỏ comment nếu enable 1 user có >1 ủy quyền từ >1 user khác nhau cho cùng 1 role
+    //     // delegation: { $in: [[], undefined] }
+    // })
+
+    // if (checkUserHaveRole.length > 0) {
+    //     throw ["user_role_exist"]
+    // }
+
+    // if (checkDelegationExist.length == 0 && checkUserHaveRole.length == 0) {
+    //     if (await this.checkDelegationAttribute(data.delegator, data.delegateRole, data.delegateLinks, data.delegatee, portal)) {
+    //         // Cach 2 de update
+    //         await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: id },
+    //             {
+    //                 $set: {
+    //                     delegationName: data.delegationName,
+    //                     description: data.description,
+    //                     delegator: data.delegator,
+    //                     delegatee: data.delegatee,
+    //                     delegateType: "Role",
+    //                     delegateRole: data.delegateRole,
+    //                     allPrivileges: data.allPrivileges,
+    //                     delegatePrivileges: delegatePrivileges != null ? delegatePrivileges.map(p => p._id) : null,
+    //                     startDate: data.delegationStart,
+    //                     endDate: data.delegationEnd
+    //                 }
+    //             }
+    //         );
+    //     }
+
+    // }
+
+    // // add delegationId to selected Privileges
+    // if (delegatePrivileges != null) {
+    //     delegatePrivileges.forEach(async pri => {
+    //         pri.delegations.indexOf(delegationId) === -1 ? pri.delegations.push(delegationId) : null
+    //         await pri.save();
+    //     })
+    // }
+
+
+    // let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: delegationId });
+
+    // return newDelegation;
 }
 
 // Xóa một Ví dụ
@@ -366,5 +457,8 @@ exports.revokeDelegation = async (portal, delegationIds, reason) => {
     result.revokeReason = !reason ? null : reason;
     result.revokedDate = new Date();
     await result.save();
-    return delegation;
+
+    let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
+
+    return newDelegation;
 }

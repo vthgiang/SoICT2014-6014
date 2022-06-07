@@ -80,13 +80,15 @@ exports.editDelegation = async (req, res) => {
     try {
         let { id } = req.params;
         let data = req.body;
-        let updatedDelegation = await DelegationService.editDelegation(req.portal, id, data);
+        await DelegationService.revokeDelegation(req.portal, [id]);
+        await DelegationService.deleteDelegations(req.portal, [id]);
+        let updatedDelegation = await DelegationService.createDelegation(req.portal, [data]);
         if (updatedDelegation !== -1) {
             await Log.info(req.user.email, "UPDATED_DELEGATION", req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["edit_delegation_success"],
-                content: updatedDelegation
+                content: [id, updatedDelegation]
             });
         } else {
             throw Error("Delegation is invalid");
@@ -94,7 +96,7 @@ exports.editDelegation = async (req, res) => {
 
     } catch (error) {
         await Log.error(req.user.email, "UPDATED_DELEGATION", req.portal);
-
+        console.log(error)
         res.status(400).json({
             success: false,
             messages: ["edit_delegation_fail"],

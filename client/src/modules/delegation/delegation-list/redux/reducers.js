@@ -53,9 +53,12 @@ export function delegation(state = initialState, action) {
                 isLoading: false
             }
         case delegationConstants.REVOKE_DELEGATION_SUCCESS:
+            index = findIndex(state.lists, action.payload._id);
+            if (index !== -1) {
+                state.lists[index] = action.payload
+            }
             return {
                 ...state,
-                lists: state.lists,
                 isLoading: false
             }
         case delegationConstants.CREATE_DELEGATION_SUCCESS:
@@ -68,9 +71,9 @@ export function delegation(state = initialState, action) {
                 isLoading: false
             }
         case delegationConstants.EDIT_DELEGATION_SUCCESS:
-            index = findIndex(state.lists, action.payload._id);
+            index = findIndex(state.lists, action.payload[0]);
             if (index !== -1) {
-                state.lists[index] = action.payload
+                state.lists[index] = action.payload[1];
             }
             return {
                 ...state,
