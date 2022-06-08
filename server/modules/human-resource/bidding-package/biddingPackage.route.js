@@ -46,4 +46,10 @@ router.get(
     biddingPackageController.getBiddingPackageDocument
 );
 
+router.post(
+    "/bidding-packages/:id/semi-auto-proposal",
+    auth,
+    biddingPackageController.proposalForBiddingPackage
+);
+
 module.exports = router;

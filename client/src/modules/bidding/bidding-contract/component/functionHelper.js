@@ -36,14 +36,18 @@ export const convertEmployeeToUserInUnit = (allUser, employee) => {
  * @returns decision - quyết định giao triển khai hợp đồng
  */
 export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepartment) => {
-    const proposalsCopy = bp.proposals ? [...bp.proposals] : [];
+    const proposalsCopy = bp.proposals ? bp.proposals : {
+        executionTime: 0,
+        unitOfTime: "days",
+        tasks: [],
+    };
     let decisionAuto = {
-        tasks: proposalsCopy.map(x => {
+        tasks: proposalsCopy.tasks.map(x => {
             return {
                 name: x.taskName,
                 description: x.taskDescription,
                 estimateTime: x.estimateTime,
-                unitOfTime: x.unitOfTime,
+                unitOfTime: x.unitOfTime ?? proposalsCopy.unitOfTime,
             }
         }),
         projectManager: [],
@@ -54,7 +58,7 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
     let responsibleEmployeesArr = [];
     let responsibleEmployeesWithUnitArr = [];
     let ObjResponsibleEmployeesWithUnit = {};
-    for (let p of proposalsCopy) {
+    for (let p of proposalsCopy.tasks) {
         for (let emp of p.directEmployees) {
             let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp);
             if (cvtEmp) {
@@ -71,7 +75,7 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
         }
     }
 
-    for (let p of proposalsCopy) {
+    for (let p of proposalsCopy.tasks) {
         for (let emp of p.backupEmployees) {
             let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp);
             if (cvtEmp) {

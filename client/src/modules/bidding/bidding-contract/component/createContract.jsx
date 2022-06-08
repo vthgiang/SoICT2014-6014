@@ -13,6 +13,7 @@ import { DecisionForImplement } from './decisionAssignImplementContract';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getListDepartments } from '../../../project/projects/components/functionHelper';
 import { convertEmployeeToUserInUnit, getDecisionDataWhenUpdateBidPackage, getDepartmentIdByUserId } from './functionHelper';
+import moment from 'moment';
 
 const CreateBiddingContract = (props) => {
 	const { translate, biddingContract, biddingPackagesManager, modelConfiguration, user } = props;
@@ -27,6 +28,31 @@ const CreateBiddingContract = (props) => {
 		{ text: 'Giờ', value: 'hours' },
 		{ text: 'Tháng', value: 'months' },
 	]
+	/**
+	 * Function format dữ liệu Date thành string
+	 * @param {*} date : Ngày muốn format
+	 * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+	 */
+	const formatDate = (date, monthYear = false) => {
+		if (date) {
+			let d = new Date(date),
+				month = '' + (d.getMonth() + 1),
+				day = '' + d.getDate(),
+				year = d.getFullYear();
+
+			if (month.length < 2)
+				month = '0' + month;
+			if (day.length < 2)
+				day = '0' + day;
+
+			if (monthYear === true) {
+				return [month, year].join('-');
+			} else return [day, month, year].join('-');
+		} else {
+			return date
+		}
+	}
+
 	const initState = {
 
 		contractNameError: undefined,
@@ -34,7 +60,7 @@ const CreateBiddingContract = (props) => {
 
 		code: "",
 		name: "",
-		effectiveDate: "",
+		effectiveDate: formatDate(Date.now()),
 		endDate: "",
 		unitOfTime: fakeUnitTimeList[0].value,
 		budget: 0,
@@ -96,7 +122,6 @@ const CreateBiddingContract = (props) => {
 		}
 	}, [modelConfiguration.biddingConfig])
 
-
 	/**
 	 * Function lưu giá trị unit vào state khi thay đổi
 	 * @param {*} value : Array id package
@@ -110,9 +135,12 @@ const CreateBiddingContract = (props) => {
 		if (bp) {
 			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
 			console.log(113, updatedDecision);
+			const effecttiveDate = state.effectiveDate;
 			setState({
 				...state,
 				name: "Hợp đồng " + bp.name,
+				code: `HD-${bp.code}`,
+				endDate: moment(effecttiveDate, "DD-MM-YYYY").add(bp.proposals.executionTime, bp.proposals.unitOfTime).format('DD-MM-YYYY'),
 				budget: bp.price,
 				addressA: bp.receiveLocal,
 				representativeNameA: bp.customer,

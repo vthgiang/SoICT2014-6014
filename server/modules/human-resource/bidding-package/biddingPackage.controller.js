@@ -267,3 +267,30 @@ exports.getBiddingPackageDocument = async (req, res) => {
         });
     }
 };
+
+/** đề xuất bán tự động cho gói thầu */
+exports.proposalForBiddingPackage = async (req, res) => {
+    try {
+        data = await biddingPackageService.proposalForBiddingPackage(
+            req.portal,
+            req.body,
+            req.params,
+            req.user.company._id
+        );
+        await Log.info(req.user.email, "PROPOSE_BIDDING_PACKAGE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["propose_bidding_package_success"],
+            content: data,
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "PROPOSE_BIDDING_PACKAGE", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["propose_bidding_package_failure"],
+            content: {
+                error: error,
+            },
+        });
+    }
+};

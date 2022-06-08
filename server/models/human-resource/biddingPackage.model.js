@@ -99,34 +99,10 @@ const BiddingPackageSchema = new Schema(
         },
 
         // đề xuất kỹ thuật
-        proposals: [{
-            // tên công việc
-            taskName: {
-                type: String
-            },
-            // mô tả công việc
-            taskDescription: {
-                type: String
-            },
-            // // đầu mục công việc
-            // taskCategory: [{
-            //     type: String
-            // }],
-            // nhân sự trực tiếp
-            directEmployees: [{
-                type: Schema.Types.ObjectId,
-                ref: "Employee",
-            }],
-            // nhân sự dự phòng
-            backupEmployees: [{
-                type: Schema.Types.ObjectId,
-                ref: "Employee",
-            }],
-            //thời gian ước lượng làm của task
-            estimateTime: {
+        proposals: {
+            executionTime: {
                 type: Number,
             },
-            // Đơn vị thời gian của task
             unitOfTime: {
                 // có 3 đơn vị thời gian: Giờ, Ngày, Tháng
                 type: String,
@@ -137,17 +113,56 @@ const BiddingPackageSchema = new Schema(
                     "months",
                 ],
             },
+            tasks: [{
+                // tên công việc
+                taskName: {
+                    type: String
+                },
+                // mô tả công việc
+                taskDescription: {
+                    type: String
+                },
+                // // đầu mục công việc
+                // taskCategory: [{
+                //     type: String
+                // }],
+                // nhân sự trực tiếp
+                directEmployees: [{
+                    type: Schema.Types.ObjectId,
+                    ref: "Employee",
+                }],
+                // nhân sự dự phòng
+                backupEmployees: [{
+                    type: Schema.Types.ObjectId,
+                    ref: "Employee",
+                }],
+                //thời gian ước lượng làm của task
+                estimateTime: {
+                    type: Number,
+                },
+                // Đơn vị thời gian của task
+                unitOfTime: {
+                    // có 3 đơn vị thời gian: Giờ, Ngày, Tháng
+                    type: String,
+                    default: "days",
+                    enum: [
+                        "hours",
+                        "days",
+                        "months",
+                    ],
+                },
 
-            // // file hợp đồng đính kèm
-            // files: [{
-            //     fileName: {
-            //         type: String,
-            //     },
-            //     url: {
-            //         type: String
-            //     }
-            // }]
-        }]
+                // // file hợp đồng đính kèm
+                // files: [{
+                //     fileName: {
+                //         type: String,
+                //     },
+                //     url: {
+                //         type: String
+                //     }
+                // }]
+            }]
+        }
     },
     {
         timestamps: true,

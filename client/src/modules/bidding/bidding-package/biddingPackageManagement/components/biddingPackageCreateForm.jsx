@@ -57,7 +57,7 @@ const BiddingPackageCreateForm = (props) => {
             endDate: "",
             description: "",
             keyPersonnelRequires: [],
-            proposals: [],
+            proposals: null,
             errorOnName: undefined,
         },
         editBiddingPackge: initBiddingPackage

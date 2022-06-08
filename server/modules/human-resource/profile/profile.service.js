@@ -956,9 +956,9 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
 
     degrees = degrees
         ? degrees.map((x) => {
-              if (x.field === "") x.field = null;
-              return x;
-          })
+            if (x.field === "") x.field = null;
+            return x;
+        })
         : [];
 
     degrees = this.mergeUrlFileToObject(fileDegree, degrees);
@@ -1424,43 +1424,43 @@ exports.updateEmployeeInformation = async (
         let queryDelete =
             arrDelete !== undefined
                 ? arrDelete.map((x) => {
-                      return {
-                          deleteOne: {
-                              filter: {
-                                  _id: x._id,
-                              },
-                          },
-                      };
-                  })
+                    return {
+                        deleteOne: {
+                            filter: {
+                                _id: x._id,
+                            },
+                        },
+                    };
+                })
                 : [];
         let queryEdit =
             arrEdit !== undefined
                 ? arrEdit.map((x) => {
-                      return {
-                          updateOne: {
-                              filter: {
-                                  _id: x._id,
-                              },
-                              update: {
-                                  $set: x,
-                              },
-                          },
-                      };
-                  })
+                    return {
+                        updateOne: {
+                            filter: {
+                                _id: x._id,
+                            },
+                            update: {
+                                $set: x,
+                            },
+                        },
+                    };
+                })
                 : [];
         let queryCrete =
             arrCreate !== undefined
                 ? arrCreate.map((x) => {
-                      return {
-                          insertOne: {
-                              document: {
-                                  ...x,
-                                  employee: employeeId,
-                                  company: company,
-                              },
-                          },
-                      };
-                  })
+                    return {
+                        insertOne: {
+                            document: {
+                                ...x,
+                                employee: employeeId,
+                                company: company,
+                            },
+                        },
+                    };
+                })
                 : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if (query.length !== 0) {
@@ -1818,7 +1818,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
         for (let i = 0, max = usersArr.length; i < max; i++) {
             if (
                 usersArr.indexOf(usersArr[i]) !==
-                    usersArr.lastIndexOf(usersArr[i]) ||
+                usersArr.lastIndexOf(usersArr[i]) ||
                 usersArr[i] === users[n]._id.toString()
             ) {
                 usersArr.splice(usersArr.indexOf(usersArr[i]), 1);
@@ -1890,7 +1890,7 @@ exports.createNotificationEndOfContract = async (portal) => {
                 let endDateCommitmentTime = new Date(
                     endDateCourse.getFullYear(),
                     endDateCourse.getMonth() +
-                        Number(x.course.employeeCommitmentTime),
+                    Number(x.course.employeeCommitmentTime),
                     endDateCourse.getDate()
                 );
                 return endDateCommitmentTime;
@@ -1935,15 +1935,14 @@ exports.createNotificationEndOfContract = async (portal) => {
                 level: "important",
                 content:
                     `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.` +
-                    `${
-                        employees[index].endDateCommitmentTime
-                            ? " Tuy nhiên bạn phải làm thêm đến ngày " +
-                              this.formatDate(
-                                  employees[index].endDateCommitmentTime,
-                                  false
-                              ) +
-                              " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo."
-                            : ""
+                    `${employees[index].endDateCommitmentTime
+                        ? " Tuy nhiên bạn phải làm thêm đến ngày " +
+                        this.formatDate(
+                            employees[index].endDateCommitmentTime,
+                            false
+                        ) +
+                        " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo."
+                        : ""
                     }`,
                 sender: process.env.WEB_NAME,
                 user: user._id,
@@ -2092,7 +2091,7 @@ exports.importUpdateEmployeeInfor = async (portal, company, data) => {
             checkEmployeeNumber?.length === 1 &&
             (checkEmailInCompany?.length === 0 ||
                 checkEmployeeNumber[0]?.emailInCompany ===
-                    data[i].emailInCompany)
+                data[i].emailInCompany)
         ) {
             data[i] = {
                 ...data[i],
@@ -2484,7 +2483,7 @@ exports.importContract = async (portal, company, data) => {
                 crurrentContract.endDate &&
                 editEmployee.contractEndDate &&
                 new Date(crurrentContract.endDate).getTime() >
-                    new Date(editEmployee.contractEndDate).getTime()
+                new Date(editEmployee.contractEndDate).getTime()
             ) {
                 editEmployee.contractEndDate = crurrentContract.endDate;
                 editEmployee.contractType = crurrentContract.contractType;
@@ -3017,8 +3016,8 @@ exports.getEmployeeByPackageId = async (
                     : NaN,
                 certificates: require?.certificateRequirements?.certificates
                     ? require?.certificateRequirements?.certificates?.map(
-                          (item) => String(item)
-                      )
+                        (item) => String(item)
+                    )
                     : NaN,
                 certificatesCount: require?.certificateRequirements?.count
                     ? require?.certificateRequirements?.count
@@ -3026,8 +3025,8 @@ exports.getEmployeeByPackageId = async (
                 certificatesEndDate: require?.certificateRequirements
                     ?.certificatesEndDate
                     ? moment(
-                          require?.certificateRequirements?.certificatesEndDate
-                      ).format("DD-MM-YYYY")
+                        require?.certificateRequirements?.certificatesEndDate
+                    ).format("DD-MM-YYYY")
                     : null,
                 exp: require?.numberYearsOfExperience
                     ? require?.numberYearsOfExperience

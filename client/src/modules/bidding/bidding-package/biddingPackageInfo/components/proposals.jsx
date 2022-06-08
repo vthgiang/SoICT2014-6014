@@ -14,7 +14,12 @@ function Proposals(props) {
     ]
     const [state, setState] = useState({
     });
-    const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : [])
+    const initProposal = {
+        executionTime: 0,
+        unitOfTime: "days",
+        tasks: [],
+    }
+    const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : initProposal)
 
     useEffect(() => {
         setState({ ...state, id: props.id, })
@@ -36,14 +41,15 @@ function Proposals(props) {
                     Tải xuống file minh chứng
                 </a>
             </div> */}
-            <div>
+            {proposals?.executionTime && <div style={{ marginLeft: "20px" }}><strong>Thời gian thực hiện hợp đồng: </strong><span>{proposals.executionTime} ({arrUnitTimeList.find(x => x.value === proposals.unitOfTime)?.text})</span> kể từ thời điểm ký kết hợp đồng</div>}
+            {proposals?.tasks?.length > 0 ? <div>
                 <br />
-                <p style={{ color: "green", marginLeft: "20px" }}>*Thông tin đề xuất sẽ được hiển thị bên dưới - click để xem chi tiết*</p>
-                <br />
-            </div>
+                <p style={{ color: "green", marginLeft: "20px" }}>*Thông tin đề xuất côn việc sẽ được hiển thị bên dưới - click để xem chi tiết*</p>
+            </div> : <span style={{ marginLeft: "20px" }}>Chưa có thông tin đề xuất!</span>
+            }
             <div className="box-body qlcv">
                 {
-                    proposals.map((item, index) => {
+                    proposals.tasks.map((item, index) => {
                         return (
 
                             <section className="col-lg-12 col-md-12" key={`section-${index}`}>
@@ -75,7 +81,6 @@ function Proposals(props) {
                     }
                     )
                 }
-
             </div>
         </div>
     );
