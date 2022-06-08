@@ -1,6 +1,9 @@
 const ProjectService = require('./project.service');
 const Logger = require('../../logs');
 
+/** 
+ *  Lấy thông tin dự án
+ */
 exports.get = async (req, res) => {
     try {
         let tp = await ProjectService.get(req.portal, req.query);
@@ -21,6 +24,9 @@ exports.get = async (req, res) => {
         })
     }
 }
+/**
+ *  Xem thông tin
+ */
 
 exports.show = async (req, res) => {
     try {
@@ -43,6 +49,9 @@ exports.show = async (req, res) => {
     }
 }
 
+/** 
+ * Tạo dự án mới
+ */
 exports.create = async (req, res) => {
     try {
         const project = await ProjectService.create(req.portal, req.body);
@@ -63,6 +72,9 @@ exports.create = async (req, res) => {
     }
 }
 
+/**
+ * Thay đổi thông tin dự án
+*/
 exports.edit = async (req, res) => {
     try {
         const project = await ProjectService.edit(req.portal, req.params.id, req.body);
@@ -82,6 +94,9 @@ exports.edit = async (req, res) => {
     }
 }
 
+/**
+ * Xoá dự án
+ */
 exports.delete = async (req, res) => {
     try {
         let tp = await ProjectService.delete(req.portal, req.params.id);
@@ -102,7 +117,9 @@ exports.delete = async (req, res) => {
         })
     }
 }
-
+/**
+ * Lấy điểm các thành viên 
+ */
 exports.getMembersWithScore = async (req, res) => {
     try {
         let tp = await ProjectService.getMembersWithScore(req.portal, req.params.id, req.params.evalMonth);
@@ -124,7 +141,9 @@ exports.getMembersWithScore = async (req, res) => {
     }
 }
 
-
+/**
+ * Lấy danh sách các đánh giá 
+ */
 exports.getListTasksEval = async (req, res) => {
     console.log(req.params)
     try {
@@ -147,6 +166,9 @@ exports.getListTasksEval = async (req, res) => {
     }
 }
 
+/**
+ * Lấy lương nhân viên
+ */
 exports.getSalaryMembers = async (req, res) => {
     try {
         let tp = await ProjectService.getSalaryMembers(req.portal, req.body.data);
@@ -167,6 +189,9 @@ exports.getSalaryMembers = async (req, res) => {
     }
 }
 
+/**
+ * Tạo yêu cầu thay đổi dự án
+ */
 exports.createProjectChangeRequest = async (req, res) => {
     try {
         let tp = await ProjectService.createProjectChangeRequest(req.portal, req.body);
@@ -187,6 +212,9 @@ exports.createProjectChangeRequest = async (req, res) => {
     }
 }
 
+/**
+ * Lấy danh sách các thay đổi dự án
+ */
 exports.getListProjectChangeRequests = async (req, res) => {
     try {
         let tp = await ProjectService.getListProjectChangeRequests(req.portal, req.query);
@@ -207,6 +235,9 @@ exports.getListProjectChangeRequests = async (req, res) => {
     }
 }
 
+/**
+ * Cập nhật trạng thái cho các yêu cầu thay đổi
+ */
 exports.updateStatusProjectChangeRequest = async (req, res) => {
     try {
         let tp = await ProjectService.updateStatusProjectChangeRequest(req.portal, req.query.id, req.query.status);
@@ -227,6 +258,9 @@ exports.updateStatusProjectChangeRequest = async (req, res) => {
     }
 }
 
+/**
+ * Cập nhật danh sách các yêu cầu thay đổi
+ */
 exports.updateListProjectChangeRequests = async (req, res) => {
     try {
         let tp = await ProjectService.updateListProjectChangeRequests(req.portal, req.body);

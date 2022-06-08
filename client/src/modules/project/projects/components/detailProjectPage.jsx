@@ -38,7 +38,8 @@ const ProjectDetailPage = (props) => {
     }, [])
 
     const currentProjectTasks = tasks?.tasksbyproject;
-
+    
+    // Hàm lấy lại thông tin sau khi dự án sau khi tạo dự án mới
     const handleAfterCreateProject = async () => {
         await props.getProjectsDispatch({ calledId: "user_all", userId });
         await props.getTasksByProject(currentProjectId);
@@ -68,6 +69,7 @@ const ProjectDetailPage = (props) => {
                         />
                     </LazyLoadComponent>
                 </div>
+
                 {/** Danh sách công việc dự án */}
                 <div className="tab-pane" id="project-tasks-list">
                     <LazyLoadComponent
@@ -76,6 +78,7 @@ const ProjectDetailPage = (props) => {
                         <TabProjectTasksList projectDetail={projectDetail} currentProjectTasks={currentProjectTasks} />
                     </LazyLoadComponent>
                 </div>
+
                 {/** Yêu cầu thay đổi */}
                 <div className="tab-pane" id="project-details-change-request">
                     <LazyLoadComponent

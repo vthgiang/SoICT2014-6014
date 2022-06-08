@@ -8,6 +8,7 @@ import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
 
+// Kiểm tra xem người dùng có quyền chỉnh sửa danh sách project
 export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isInsideProject = false }) => {
     const currentRole = getStorage("currentRole");
     const userId = getStorage("userId");
@@ -21,6 +22,8 @@ export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isIn
     return isInsideProject ? (checkIfCurrentIdIsProjectManagerOrCreator && checkIfCurrentRoleIsUnitManager) : (checkIfCurrentRoleIsUnitManager);
 }
 
+
+// Lấy thông tin project hiện tại
 export const getCurrentProjectDetails = (project, projectId = undefined, type = 'user_all') => {
     const currentProjectId = projectId || window.location.href.split('?id=')[1].split('#')?.[0];
     const projectDetail = type === 'user_all'
@@ -29,6 +32,7 @@ export const getCurrentProjectDetails = (project, projectId = undefined, type = 
     return projectDetail;
 }
 
+// Lấy danh sách các phòng ban
 export const getListDepartments = (usersInUnitsOfCompany) => {
     return usersInUnitsOfCompany.map(item => ({
         text: item.department,
@@ -36,12 +40,14 @@ export const getListDepartments = (usersInUnitsOfCompany) => {
     }))
 }
 
+// Lấy tên của phòng ban/ đơn vị
 export const convertDepartmentIdToDepartmentName = (usersInUnitsOfCompany, departmentId) => {
     if (!usersInUnitsOfCompany) return [];
     const result = usersInUnitsOfCompany.filter(item => item.id === departmentId)?.[0]?.department;
     return result
 }
 
+// Lấy tên người dùng
 export const convertUserIdToUserName = (listUsers, userId) => {
     if (!listUsers) return [];
     for (let department of listUsers) {
@@ -86,6 +92,7 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
     // return theo don vi ngày - days
     return duration;
 }
+
 
 export const convertDateTime = (date, time) => {
     let splitter = date.split("-");
@@ -562,6 +569,7 @@ export const getActualMemberCostOfTask = (task, projectDetail, userId) => {
     const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
         return String(actorSalaryItem.userId) === String(userId)
     });
+    
     if (currentEmployee) {
         actualNormalMemberCost = Number(currentEmployee.actualCost || 0);
     }

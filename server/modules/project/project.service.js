@@ -19,6 +19,24 @@ const { createProjectTask } = require('../task/task-management/task.service');
 
 const MILISECS_TO_DAYS = 86400000;
 
+/**
+ * Hàm hỗ trợ lấy số tuần trong 1 tháng
+*/
+const getAmountOfWeekDaysInMonth = (date) => {
+    let result = 0;
+    for (var i = 1; i < 6; i++) {
+        date.date(1);
+        var dif = (7 + (i - date.weekday())) % 7 + 1;
+        result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
+    }
+    return result;
+}
+
+
+/**
+ * Lấy danh sách các dự án thoả mãn điều kiện
+ * @param {*} query 
+ */
 exports.get = async (portal, query) => {
     let { page, perPage, userId, projectName, projectType, creatorEmployee, projectManager, responsibleEmployees } = query;
     let options = {};
@@ -163,10 +181,13 @@ exports.get = async (portal, query) => {
 
 exports.show = async (portal, id) => {
     let tp = await Project(connect(DB_CONNECTION, portal)).findById(id).populate({ path: "projectManager", select: "_id name" });
-
     return tp;
 }
 
+/**
+ * Tạo dự án mới
+ * @param {*} data 
+ */
 exports.create = async (portal, data) => {
     console.log('data', data)
     let newData = {};
@@ -239,6 +260,11 @@ exports.create = async (portal, data) => {
     return project;
 }
 
+/**
+ * Thay đổi thông tin dự án
+ * @param {*} id 
+ * @param {*} data 
+ */
 exports.edit = async (portal, id, data) => {
     let newResponsibleEmployeesWithUnit = [];
     if (data) {
@@ -307,22 +333,20 @@ exports.edit = async (portal, id, data) => {
         .populate({ path: "projectManager", select: "_id name email" })
         .populate({ path: "creator", select: "_id name email" })
 }
-
+/**
+ * Xoá dự án theo id
+ * @param {*} id
+*/
 exports.delete = async (portal, id) => {
     await Project(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
     return id;
 }
 
-const getAmountOfWeekDaysInMonth = (date) => {
-    let result = 0;
-    for (var i = 1; i < 6; i++) {
-        date.date(1);
-        var dif = (7 + (i - date.weekday())) % 7 + 1;
-        result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
-    }
-    return result;
-}
-
+/**
+ * Lấy điểm của các thành viên
+ * @param {*} id
+ * @param {*} evalMonth
+ */
 exports.getMembersWithScore = async (portal, id, evalMonth) => {
     const currentProject = await Project(connect(DB_CONNECTION, portal)).find({ _id: id }).populate({ path: "responsibleEmployees", select: "_id name" });
     const currentTasks = await Task(connect(DB_CONNECTION, portal))
@@ -378,6 +402,11 @@ exports.getMembersWithScore = async (portal, id, evalMonth) => {
     return id;
 }
 
+/**
+ * Lấy danh sách các đánh giá
+ * @param {*} id
+ * @param {*} evalMonth
+*/
 exports.getListTasksEval = async (portal, id, evalMonth) => {
     const currentTasks = await Task(connect(DB_CONNECTION, portal))
         .find({
@@ -409,6 +438,10 @@ exports.getListTasksEval = async (portal, id, evalMonth) => {
     })
 }
 
+/**
+ * Lấy danh sách lương các thành viên
+ * @param {*} data
+ */
 exports.getSalaryMembers = async (portal, data) => {
     let newResponsibleEmployeesWithUnit = [];
     for (let employeeItem of data.responsibleEmployeesWithUnit) {
@@ -457,6 +490,10 @@ exports.getSalaryMembers = async (portal, data) => {
     return newResponsibleEmployeesWithUnit;
 }
 
+/**
+ * Lấy danh sách các yêu cầu thay đổi
+ * @param {*} query
+ */
 exports.getListProjectChangeRequests = async (portal, query) => {
     let { page, perPage, projectId } = query;
     console.log('page, perPage, projectId', page, perPage, projectId)
@@ -485,6 +522,10 @@ exports.getListProjectChangeRequests = async (portal, query) => {
     return projectChangeRequestsList;
 }
 
+/** 
+ * Tạo yêu cầu thay đổi dự án
+ * @param {*} changeRequest
+*/
 exports.createProjectChangeRequest = async (portal, changeRequest) => {
     console.log(changeRequest)
     const createCRResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).create(changeRequest);
@@ -494,6 +535,11 @@ exports.createProjectChangeRequest = async (portal, changeRequest) => {
     return projectChangeRequestsList;
 }
 
+/**
+ * Cập nhật trạng thái cho các yêu cầu thay đổi dự án
+ * @param {*} changeRequestId
+ * @param {*} requestStatus
+ */
 exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, requestStatus) => {
     console.log(changeRequestId, requestStatus);
     // update requestStatus trong database
@@ -558,6 +604,10 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
     return projectChangeRequestsList;
 }
 
+/**
+ * Cập nhật danh sách các yêu cầu thay đổi dự án
+ * @param {*} data
+ */
 exports.updateListProjectChangeRequests = async (portal, data) => {
     console.log(data)
     const { newChangeRequestsList } = data
