@@ -17,24 +17,29 @@ const ProjectEditForm = (props) => {
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
     const [currentSalaryMembers, setCurrentSalaryMembers] = useState([]);
+    
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
         { text: 'USD', value: 'USD' },
     ]
+
     const fakeUnitTimeList = [
         { text: 'Ngày', value: 'days' },
         { text: 'Giờ', value: 'hours' },
     ]
+
     const fakeProjectTypeList = [
         { text: 'QLDA dạng đơn giản', value: 1 },
         { text: 'QLDA phương pháp CPM', value: 2 },
     ]
+
     const preprocessUsersList = useCallback((currentObject) => {
         if (typeof currentObject?.[0] === 'string') {
             return currentObject;
         }
         return currentObject?.map(item => item._id)
     }, [])
+
     const [state, setState] = useState({
         newProject: {
             projectName: '',
@@ -226,6 +231,7 @@ const ProjectEditForm = (props) => {
     //     })
     // }
 
+    // Hàm bắt sự kiện thay đổi tên dự án
     const handleChangeProjectName = (event) => {
         let { value } = event.target;
         let { message } = ValidationHelper.validateName(translate, value, 6, 255);
@@ -241,6 +247,7 @@ const ProjectEditForm = (props) => {
         })
     }
 
+    // Hàm bắt sự kiện thay đổi hình thức quản lý dự án
     const handleChangeProjectType = (event) => {
         setState({
             ...state,
@@ -251,6 +258,7 @@ const ProjectEditForm = (props) => {
         });
     }
 
+    // Hàm bắt sự kiện thay đổi mô tả dự án
     const handleChangeProjectDescription = (event) => {
         let {value} = event.target
         setState({
@@ -262,9 +270,11 @@ const ProjectEditForm = (props) => {
         });
     }
 
+    // Hàn bắt sự kiện thay đổi ngày bắt đầu dự án
     const handleChangeProjectStartDate = (value) => {
         validateProjectStartDate(value, true);
     }
+
     const validateProjectStartDate = (value, willUpdateState = true) => {
         let msg = TaskFormValidator.validateTaskStartDate(value, endDate, translate);
         let _startDate = convertDateTime(value, startTime);
@@ -290,6 +300,7 @@ const ProjectEditForm = (props) => {
         return msg === undefined;
     }
 
+    // Hàm bắt sự kiện thay đổi thời điểm bắt đầu dự án
     const handleStartTimeChange = (value) => {
         let _startDate = convertDateTime(startDate, value);
         let _endDate = convertDateTime(endDate, endTime);
@@ -313,6 +324,7 @@ const ProjectEditForm = (props) => {
         });
     }
 
+    // Hàm bắt sự kiện thời điểm kết thúc dự án
     const handleEndTimeChange = (value) => {
         let _startDate = convertDateTime(startDate, startTime);
         let _endDate = convertDateTime(endDate, value);
@@ -336,6 +348,7 @@ const ProjectEditForm = (props) => {
         })
     }
 
+    // Hàm bắt sự kiện thay đổi ngày kết thúc dự án
     const handleChangeProjectEndDate = (value) => {
         validateProjectEndDate(value, true);
     }
@@ -358,6 +371,7 @@ const ProjectEditForm = (props) => {
         return msg === undefined;
     }
 
+    // Hàm bắt sự kiện thay đổi đơn vị tính thời gian
     const handleChangeUnitTime = (event) => {
         setState({
             ...state,
@@ -368,6 +382,7 @@ const ProjectEditForm = (props) => {
         });
     }
 
+    // Hàm bắt sự kiện thay đổi đơn vị tính chi phí
     const handleChangeUnitCost = (event) => {
         setState({
             ...state,
@@ -378,6 +393,7 @@ const ProjectEditForm = (props) => {
         });
     }
 
+    // Hàm bắt sự kiện thay đổi người quản lý dự án
     const handleChangeProjectManager = (value) => {
         validateProjectManager(value, true);
     }
@@ -397,6 +413,7 @@ const ProjectEditForm = (props) => {
         return message === undefined;
     }
 
+    // Hàm bắt sự kiện xoá thành viên tham gia dự án
     const handleDeleteRow = (index) => {
         if (responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0) {
             const cloneArr = [...responsibleEmployeesWithUnit.list];
@@ -419,6 +436,7 @@ const ProjectEditForm = (props) => {
         }
     }
 
+    // Hàm bắt sự kiện thêm thành viên tham gia dự án
     const handleAddRow = () => {
         if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
             // Đề phòng user không chọn gì thì lấy default là Ban giám đốc
@@ -480,16 +498,19 @@ const ProjectEditForm = (props) => {
         }
     }
 
+    // Mở modal xem lương nhân viên
     const handleOpenModalSalaryMembers = () => {
         setTimeout(() => {
             window.$(`#modal-salary-members-edit-${projectEditId}`).modal("show");
         }, 10);
     }
 
+    // Lưu danh sách lương nhân viên
     const handleSaveCurrentSalaryMember = (data) => {
         setCurrentSalaryMembers(data);
     }
 
+    // Kiểm tra xem các thông tin đầu vào có hợp lệ
     const isFormValidated = () => {
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status|| projectManager.length === 0
             || responsibleEmployeesWithUnit.list.length === 0|| errorOnStartDate|| errorOnStartDate) return false;
@@ -562,6 +583,7 @@ const ProjectEditForm = (props) => {
                             <legend className="scheduler-border">Thông số dự án</legend>
 
                             <div className="row">
+
                                 {/* Tên dự án */}
                                 <div className={`form-group col-md-6 col-xs-6 ${!errorOnProjectName ? "" : "has-error"}`}>
                                     <label>{translate('project.name')}<span className="text-red">*</span></label>
@@ -615,6 +637,7 @@ const ProjectEditForm = (props) => {
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
 
+
                             <div className="row">
                                 <div className={`col-md-6 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('project.endDate')}<span className="text-red">*</span></label>
@@ -645,6 +668,7 @@ const ProjectEditForm = (props) => {
                                 </div>
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
+
                             {/* Đơn vị tính thời gian */}
                             <div className="form-group">
                                 <label>{translate('project.unitTime')}</label>
@@ -659,6 +683,7 @@ const ProjectEditForm = (props) => {
                                     disabled={!isTasksListEmpty}
                                 />
                             </div>
+
                             {/* Đơn vị tính chi phí */}
                             <div className="form-group">
                                 <label>{translate('project.unitCost')}</label>
@@ -673,6 +698,7 @@ const ProjectEditForm = (props) => {
                                     disabled={!isTasksListEmpty}
                                 />
                             </div>
+
                             {/* Mô tả dự án */}
                             <div className={`form-group`}>
                                 <label>{translate('project.description')}</label>
@@ -684,6 +710,7 @@ const ProjectEditForm = (props) => {
                     <div className={"col-sm-6"}>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Nhân lực</legend>
+
                             {/* Người quản trị dự án */}
                             <div className={`form-group ${errorOnProjectManager === undefined ? "" : "has-error"}`}>
                                 <label>{translate('project.manager')}<span className="text-red">*</span></label>
@@ -700,6 +727,7 @@ const ProjectEditForm = (props) => {
                                 }
                                 <ErrorLabel content={errorOnProjectManager} />
                             </div>
+                            
                             {/* Thành viên tham gia dự án */}
                             <div className={`form-group ${errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>

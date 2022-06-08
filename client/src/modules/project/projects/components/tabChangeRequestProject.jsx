@@ -383,6 +383,22 @@ const TabChangeRequestProject = (props) => {
                             >Tạo yêu cầu thay đổi</button>
                         </div>
                     </div>
+
+                    <div>
+                        <DataTableSetting
+                            tableId={tableId}
+                            columnArr={[
+                                'Tên yêu cầu',
+                                'Người tạo yêu cầu',
+                                'Thời gian tạo yêu cầu',
+                                'Mô tả yêu cầu',
+                                'Những công việc bị ảnh hưởng',
+                                'Trạng thái yêu cầu',
+                            ]}
+                            setLimit={setLimit}
+                        />
+                    </div>
+
                     <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -393,18 +409,6 @@ const TabChangeRequestProject = (props) => {
                                 <th>Những công việc bị ảnh hưởng</th>
                                 <th>Trạng thái yêu cầu</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={[
-                                            'Tên yêu cầu',
-                                            'Người tạo yêu cầu',
-                                            'Thời gian tạo yêu cầu',
-                                            'Mô tả yêu cầu',
-                                            'Những công việc bị ảnh hưởng',
-                                            'Trạng thái yêu cầu',
-                                        ]}
-                                        setLimit={setLimit}
-                                    />
                                 </th>
                             </tr>
                         </thead>

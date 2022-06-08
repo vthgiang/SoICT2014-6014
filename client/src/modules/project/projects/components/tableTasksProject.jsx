@@ -19,17 +19,23 @@ import _cloneDeep from 'lodash/cloneDeep';
 const TableTasksProject = (props) => {
     const tableId = "tasks-project-table";
     const [state, setState] = useState({
-        taskName: "",
-        data: []
-        // page: 1,
-        // perPage: 6,
+        status: null,
+        name: null,
+        startDate: null,
+        endDate: null,
+        responsibleEmployees: null,
+        accountableEmployees: null,
+        creatorEmployees: null,
+        preceedingTask: null,
+        actualEndDate: null,
+        data: [],
     })
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(6);
     const currentProjectId = window.location.href.split('?id=')[1].split('#')?.[0];
     const userId = getStorage('userId');
     const { translate, currentProjectTasks, user, project, performtasks, tasks } = props;
-    const { taskName, currentTaskId, data } = state;
+    const { name, currentTaskId, data } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
 
@@ -118,6 +124,7 @@ const TableTasksProject = (props) => {
         props.getTasksByProject(currentProjectId, 1, parseInt(number));
     }
 
+    // Xem thông tin công việc
     const handleShowDetailInfo = (id) => {
         setState({
             ...state,
@@ -182,6 +189,7 @@ const TableTasksProject = (props) => {
     //     return null;
     // }
 
+    // Khởi tạo danh sách các cột
     let column = [
         { name: translate('task.task_management.col_name'), key: "name" },
         { name: translate('project.task_management.preceedingTask'), key: "preceedingTask" },

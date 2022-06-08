@@ -42,25 +42,28 @@ const ModalCreateChangeRequest = (props) => {
     }
 
     const save = () => {
-        props.createProjectChangeRequestDispatch({
-            creator: userId,
-            name,
-            description,
-            requestStatus: 1,
-            type: 'normal',
-            taskProject: projectDetail?._id,
-            affectedTasksList: affectedTasks.map((affectedItem) => {
-                return {
-                    task: affectedItem,
-                    old: undefined,
-                    new: undefined,
-                }
-            }),
-        })
+        if (isAbleToSave()) {
+            props.createProjectChangeRequestDispatch({
+                creator: userId,
+                name,
+                description,
+                requestStatus: 1,
+                type: 'normal',
+                taskProject: projectDetail?._id,
+                affectedTasksList: affectedTasks.map((affectedItem) => {
+                    return {
+                        task: affectedItem,
+                        old: undefined,
+                        new: undefined,
+                    }
+                }),
+            })
+        } 
     }
 
     const isAbleToSave = () => {
-        return name.trim().length > 0 && description.trim().length > 0;
+        console.log(name.trim().length > 0 && description.trim().length > 0 && affectedTasks.length > 0);
+        return name.trim().length > 0 && description.trim().length > 0 && affectedTasks.length > 0;
     }
 
     return (
@@ -71,7 +74,7 @@ const ModalCreateChangeRequest = (props) => {
                 title={`Tạo yêu cầu thay đổi thông thường`}
                 size={50}
                 func={save}
-                disableSubmit={!isAbleToSave}
+                disableSubmit={!isAbleToSave()}
             >
                 <div>
                     <div className={`form-group`}>

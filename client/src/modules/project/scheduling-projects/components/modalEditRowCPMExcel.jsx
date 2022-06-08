@@ -62,6 +62,7 @@ const ModalEditRowCPMExcel = (props) => {
             }
         }));
     }
+    
     if (currentEditRowIndex !== currentRowIndex) {
         setCurrentRowIndex(currentEditRowIndex);
     }

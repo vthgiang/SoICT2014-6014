@@ -71,6 +71,7 @@ function ListProject(props) {
         props.getProjectsDispatch({ calledId: "paginate", page, perPage, userId, projectName });
     }
 
+    // Thay đổi tên dự án
     const handleChangeName = (e) => {
         const { value } = e.target;
         setState({
@@ -79,6 +80,7 @@ function ListProject(props) {
         });
     }
 
+    // Thay đổi hình thức quản lý dự án
     const handleSelectProjectType = (value) => {
         setState({
             ...state,
@@ -86,6 +88,7 @@ function ListProject(props) {
         });
     }
 
+    // Thay đổi thành viên tham gia
     const handleChangeMember = (e) => {
         const { value } = e.target;
         setState({
@@ -94,6 +97,7 @@ function ListProject(props) {
         })
     }
 
+    // Thay đổi người quản lý
     const handleChangeManager = (e) => {
         const { value } = e.target;
         setState({
@@ -102,6 +106,7 @@ function ListProject(props) {
         })
     }
 
+    // Thay đổi người thiết lập
     const handleChangeCreator = (e) => {
         const { value } = e.target;
         setState({
@@ -128,6 +133,7 @@ function ListProject(props) {
         props.getProjectsDispatch({ calledId: "paginate", page: 1, perPage: parseInt(number), userId, projectName });
     }
 
+    // Hiển thị thông tin dự án
     const handleShowDetailInfo = (id) => {
         setState({
             ...state,
@@ -139,6 +145,7 @@ function ListProject(props) {
         }, 10);
     }
 
+    // Mở modal thay đổi thông tin
     const handleEdit = (id) => {
         setState({
             ...state,
@@ -149,6 +156,7 @@ function ListProject(props) {
         }, 10);
     }
 
+    // Xoá dự án
     const handleDelete = (id) => {
         let currentProject = project.data.paginate.find(p => p?._id === id)
         Swal.fire({
@@ -171,6 +179,7 @@ function ListProject(props) {
         }) 
     }
 
+    // Mở modal tạo dự án
     const handleOpenCreateForm = () => {
         window.$('#modal-create-project').modal('show')
     }
@@ -195,6 +204,7 @@ function ListProject(props) {
         })
     }
 
+    // Khởi tạo danh sách các cột
     let column = [
         { name: translate('project.name'), key: "name" },
         { name: translate('project.projectType'), key: "projectType" },
@@ -291,7 +301,7 @@ function ListProject(props) {
                         </div>
 
                     </div>
-
+                    {/* Danh sách các dự án */}
                     <div className="qlcv StyleScrollDiv StyleScrollDiv-y" style={{ maxHeight: '600px' }}>
                         <TreeTable
                             behaviour="show-children"

@@ -5510,7 +5510,7 @@ export default {
                 estimatedCost: "Estimated cost",
                 estimatedCostNormal: "Normal",
                 estimatedCostMaximum: "Maximum",
-
+                add_err_optimistic_time: "Optimistic time can't be greater than estimated time",
                 preceedingTask: "Preceeding task",
             },
 
