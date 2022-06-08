@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { ErrorLabel, SelectBox } from '../../../../../common-components';
+import { GoodActions } from "../../good-management/redux/actions";
 
 function GoodComponentRequest(props) {
 
@@ -10,36 +11,85 @@ function GoodComponentRequest(props) {
         goodObject: "",
         quantity: "",
         baseUnit: "",
+        type: "0",
     };
 
     const [state, setState] = useState({
-        listGoods: [],
+        listGoodsByType: [],
         good: Object.assign({}, EMPTY_GOOD),
         editGood: false,
-        goodOptions: [],
-        // Một phần tử của goodOptions
         indexEditting: "",
     });
 
     // phần hàng hóa
 
+    const getType = () => {
+        let typeArr = [];
+        typeArr = [
+            { value: "0", text: "---Loại hàng hóa---" },
+            { value: "1", text: "Nguyên vật liệu" },
+            { value: "2", text: "Thành phẩm" },
+            { value: "3", text: "Công cụ dụng cụ" },
+            { value: "4", text: "Phế phẩm" },
+        ];
+        return typeArr;
+    };
+
+    const handleTypeChange = async (value) => {
+        let type = value[0];
+        switch (type) {
+            case "1":
+                await props.getGoodsByType({ type: "material" });
+                break;
+            case "2":
+                await props.getGoodsByType({ type: "product" });
+                break;
+            case "3":
+                await props.getGoodsByType({ type: "equipment" });
+                break;
+            case "4":
+                await props.getGoodsByType({ type: "waste" });
+                break;
+        }
+        validateType(type, true);
+    };
+
+    const validateType = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value == "0") {
+            msg = translate("manage_warehouse.bill_management.validate_type");
+        }
+        if (willUpdateState) {
+            good.type = value;
+            good.baseUnit = "";
+            good.quantity = "";
+            setState({
+                ...state,
+                good: { ...good },
+                errorType: msg,
+            });
+        }
+        return msg === undefined;
+    };
+
     const getAllGoods = () => {
         const { translate, goods } = props;
-        let listGoods = [{
+        let listGoodsByType = [{
             value: "1",
             text: translate('production.request_management.choose_good')
         }];
-        const { listGoodsByType } = goods;
+        const { listGoods } = goods;
 
-        if (listGoodsByType) {
-            listGoodsByType.map((item) => {
-                listGoods.push({
+        if (listGoods) {
+            listGoods.map((item) => {
+                listGoodsByType.push({
                     value: item._id,
                     text: item.code + " - " + item.name
                 })
             })
         }
-        return listGoods
+        return listGoodsByType
     }
 
     const handleGoodChange = (value) => {
@@ -58,16 +108,13 @@ function GoodComponentRequest(props) {
             let { good } = state;
 
             good.goodId = value
-            console.log(value, good.goodId);
             const { goods } = props;
-            const { listGoodsByType } = goods;
-            let goodArrFilter = listGoodsByType.filter(x => x._id === good.goodId);
+            const { listGoods } = goods;
+            let goodArrFilter = listGoods.filter(x => x._id === good.goodId);
             if (goodArrFilter) {
                 good.goodObject = goodArrFilter[0];
                 good.baseUnit = goodArrFilter[0].baseUnit;
             }
-
-
             setState({
                 ...state,
                 good: { ...good },
@@ -113,103 +160,86 @@ function GoodComponentRequest(props) {
         return true
     }
 
-    const handleClearGood = async (e) => {
-        e.preventDefault();
-
-        await setState({
+    const handleClearGood = () => {
+        setState({
             ...state,
             good: Object.assign({}, EMPTY_GOOD),
         });
     }
 
-    const handleAddGood = (e) => {
-        e.preventDefault();
-        let { listGoods, good } = state;
-
+    const handleAddGood = () => {
+        let { listGoodsByType, good } = state;
         // Lấy các thông tin của good đưa vào goodObject va day good vao listGoods
         const { goods } = props;
-        const { listGoodsByType } = goods;
-        let goodArrFilter = listGoodsByType.filter(x => x._id === good.goodId);
+        const { listGoods } = goods;
+        let goodArrFilter = listGoods.filter(x => x._id === good.goodId);
         if (goodArrFilter) {
             good.goodObject = goodArrFilter[0];
         }
-
-        listGoods.push(good);
-
-        // filter good ra khoi getAllGoods() va gan state vao goodOption
-        let { goodOptions } = state;
-        if (goodOptions.length === 0) {
-            goodOptions = getAllGoods().filter(x => x.value !== good.goodId);
-        } else {
-            // Nếu state đang là goodOptions thi vẫn phải filter những thằng còn lại
-            goodOptions = goodOptions.filter(x => x.value !== good.goodId);
-        }
-
+        listGoodsByType.push(good);
         // Cập nhật lại good state
-
-        good = Object.assign({}, EMPTY_GOOD);
-
         setState({
             ...state,
-            listGoods: [...listGoods],
-            goodOptions: [...goodOptions],
-            good: { ...good }
+            listGoodsByType: [...listGoodsByType],
+            good: Object.assign({}, EMPTY_GOOD)
         })
-        props.onHandleGoodChange(listGoods);
+        props.onHandleGoodChange(listGoodsByType);
     }
 
     const handleDeleteGood = (good, index) => {
-        let { listGoods, goodOptions } = state;
-        // Loại bỏ phần tử good ra khỏi listGoods
-        listGoods.splice(index, 1);
+        let { listGoodsByType } = state;
+        // Loại bỏ phần tử good ra khỏi listGoodsByType
+        listGoodsByType.splice(index, 1);
 
         setState({
             ...state,
-            listGoods: [...listGoods],
-            goodOptions: [...goodOptions, {
-                value: good.goodId,
-                text: good.goodObject.code + " - " + good.goodObject.name
-            }]
+            listGoodsByType: [...listGoodsByType],
         });
     }
 
     const handleEditGood = (good, index) => {
-        let { goodOptions } = state;
+        let type = '';
+        switch (good.goodObject.type) {
+            case "material":
+                type = "1";
+                break;
+            case "product":
+                type = "2";
+                break;
+            case "equipment":
+                type = "3";
+                break;
+            case "waste":
+                type = "4";
+                break;
+        }
+        good.type = type;
         setState({
             ...state,
             editGood: true,
             good: { ...good },
-            goodOptions: [...goodOptions, {
-                value: good.goodId,
-                text: good.goodObject.code + " - " + good.goodObject.name
-            }],
             indexEditting: index
         });
     }
 
     const handleCancelEditGood = (e) => {
         e.preventDefault();
-        let { listGoods, indexEditting, goodOptions } = state;
-        goodOptions = goodOptions.filter(x => x.value !== listGoods[indexEditting].goodId)
         setState({
             ...state,
             editGood: false,
             good: Object.assign({}, EMPTY_GOOD),
-            goodOptions: goodOptions
         });
 
     }
 
     const handleSaveEditGood = () => {
-        let { listGoods, good, indexEditting, goodOptions } = state;
-        goodOptions = goodOptions.filter(x => x.value !== good.goodId)
-        listGoods[indexEditting] = state.good;
+        let { listGoodsByType, good, indexEditting } = state;
+        listGoodsByType[indexEditting] = state.good;
         setState({
             ...state,
             editGood: false,
             good: Object.assign({}, EMPTY_GOOD),
-            goodOptions: goodOptions,
-            listGoods: [...listGoods]
+            listGoodsByType: [...listGoodsByType]
         })
     }
 
@@ -217,16 +247,31 @@ function GoodComponentRequest(props) {
         setState({
             ...state,
             requestId: props.requestId,
-            listGoods: props.listGoods
+            listGoodsByType: props.listGoods
         })
     }
     const { translate, selectBoxName } = props;
-    const { good, errorGood, errorQuantity, listGoods, goodOptions, requestId } = state;
-
+    const { good, errorGood, errorQuantity, listGoodsByType, requestId, errorType } = state;
     return (
         <React.Fragment>
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('production.request_management.good_info')}<span className="text-red">*</span></legend>
+                <div className={`form-group ${!errorType ? "" : "has-error"}`}>
+                    <label>
+                        {"Loại hàng hóa"}
+                        <span className="text-red"> * </span>
+                    </label>
+                    <SelectBox
+                        id={`select-type`}
+                        className="form-control select2"
+                        style={{ width: "100%" }}
+                        value={good.type}
+                        items={getType()}
+                        onChange={handleTypeChange}
+                        multiple={false}
+                    />
+                    <ErrorLabel content={errorType} />
+                </div>
                 <div className={`form-group ${!errorGood ? "" : "has-error"}`}>
                     <label>{translate('production.request_management.good_code')}</label>
                     <SelectBox
@@ -234,7 +279,7 @@ function GoodComponentRequest(props) {
                         className="form-control select2"
                         style={{ width: "100%" }}
                         value={good.goodId}
-                        items={goodOptions.length ? goodOptions : getAllGoods()}
+                        items={getAllGoods()}
                         onChange={handleGoodChange}
                         multiple={false}
                     />
@@ -275,14 +320,14 @@ function GoodComponentRequest(props) {
                 </thead>
                 <tbody>
                     {
-                        (!listGoods || listGoods.length === 0) ?
+                        (!listGoodsByType || listGoodsByType.length === 0) ?
                             <tr>
                                 <td colSpan={6}>
                                     <center>{translate('confirm.no_data')}</center>
                                 </td>
                             </tr>
                             :
-                            listGoods.map((good, index) => {
+                            listGoodsByType.map((good, index) => {
                                 return <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{good.goodObject.code}</td>
@@ -305,5 +350,6 @@ function GoodComponentRequest(props) {
 const mapStateToProps = (state) => state;
 
 const mapDispatchToProps = {
+    getGoodsByType: GoodActions.getGoodsByType,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodComponentRequest));

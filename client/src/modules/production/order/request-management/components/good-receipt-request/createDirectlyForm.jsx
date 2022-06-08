@@ -127,6 +127,45 @@ function CreateDirectlyForm(props) {
         return stockArr;
     };
 
+    // phần nhà cung cấp 
+
+    const getSuplierOptions = () => {
+        let mapOptions = [];
+        const { list } = props.crm.customers;
+        if (list) {
+            mapOptions = [{
+                value: "title", //Title không được chọn
+                text: "---Chọn nhà cung cấp---",
+            }];
+            list.map((item) => {
+                mapOptions.push({
+                    value: item._id,
+                    text: item.name,
+                });
+            });
+        }
+        return mapOptions;
+    };
+
+    const handleSupplierChange = async (value) => {
+        validateSupplier(value[0], true);
+    };
+
+    const validateSupplier = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value || value === "" || value === "title") {
+            msg = "Giá trị không được bỏ trống!";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                supplier: value,
+                supplierError: msg,
+            });
+        }
+        return msg;
+    };
+
     // Phần lưu dữ liệu
 
     const isFormValidated = () => {
@@ -156,6 +195,7 @@ function CreateDirectlyForm(props) {
                 type: 1,
                 status: 1,
                 approvers: state.approvers,
+                supplier: state.supplier,
             }
             console.log(data);
             props.createRequest(data);
@@ -170,9 +210,10 @@ function CreateDirectlyForm(props) {
     }
 
     const { translate, bigModal } = props;
-    const { code, desiredTime, errorIntendReceiveTime, description, errorStock, stock, errorApprover, approver, listGoods } = state;
+    const { code, desiredTime, errorIntendReceiveTime, description, errorStock, stock, errorApprover, approver, supplier, supplierError } = state;
     const dataStock = getStock();
     const dataApprover = getApprover();
+    const dataSupplier = getSuplierOptions();
 
     return (
         <React.Fragment>
@@ -210,6 +251,19 @@ function CreateDirectlyForm(props) {
                                     multiple={false}
                                 />
                                 <ErrorLabel content={errorStock} />
+                            </div>
+                            <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
+                                <label>{"Nhà cung cấp"}<span className="text-red"> * </span></label>
+                                <SelectBox
+                                    id={`select-create-purchase-order-directly-supplier`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={supplier}
+                                    items={dataSupplier}
+                                    onChange={handleSupplierChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={supplierError} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">

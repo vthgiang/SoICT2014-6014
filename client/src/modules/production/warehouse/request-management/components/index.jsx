@@ -12,6 +12,8 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { LazyLoadComponent } from '../../../../../common-components/index';
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { worksActions } from '../../../manufacturing/manufacturing-works/redux/actions';
 
 function RequestManagement(props) {
 
@@ -34,6 +36,8 @@ function RequestManagement(props) {
         props.getUser();
         props.getAllStocks();
         props.getAllDepartments();
+        props.getCustomers();
+        props.getAllManufacturingWorks();
     }, []);
 
     const handleCodeChange = (e) => {
@@ -291,6 +295,8 @@ const mapDispatchToProps = {
     getAllStocks: StockActions.getAllStocks,
     editRequest: RequestActions.editRequest,
     getAllDepartments: DepartmentActions.get,
+    getCustomers: CrmCustomerActions.getCustomers,
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RequestManagement));

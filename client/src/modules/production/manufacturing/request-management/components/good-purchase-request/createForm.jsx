@@ -307,7 +307,7 @@ function CreateGoodPurchaseRequestForm(props) {
     }
 
     const { translate, NotHaveCreateButton, bigModal } = props;
-    const { code, desiredTime, description, errorDescription, approver, errorApprover, errorStock,
+    const { code, desiredTime, description, approver, errorApprover, errorStock,
         stock, worksValueError, worksValue, organizationalUnitValue, organizationalUnitError } = state;
     const dataApprover = getApprover();
     const dataStock = getStock();

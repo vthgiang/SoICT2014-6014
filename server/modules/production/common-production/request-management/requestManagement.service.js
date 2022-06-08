@@ -53,7 +53,8 @@ exports.createRequest = async (user, data, portal) => {
                 information: item1.information ? item1.information.map((item2) => {
                     return {
                         approver: item2.approver,
-                        approvedTime: item2.approvedTime
+                        approvedTime: item2.approvedTime,
+                        note: item2.note ? item2.note : null,
                     }
                 }) : [],
                 approveType: item1.approveType
@@ -63,6 +64,7 @@ exports.createRequest = async (user, data, portal) => {
         orderUnit: data.orderUnit,
         requestType: data.requestType ? data.requestType : 1,
         type: data.type ? data.type : 1,
+        supplier: data.supplier ? data.supplier : null,
     });
 
     /* Tạo thông báo cho người phê duyệt khi tạo yêu cầu */
@@ -134,8 +136,10 @@ exports.createRequest = async (user, data, portal) => {
             { path: "creator", select: "name" },
             { path: "goods.good", select: "code name baseUnit" },
             { path: "approvers.information.approver" },
-            { path: "stock", select: "name" },
+            { path: "refuser.refuser", select: "name" },
+            { path: "stock" },
             { path: "manufacturingWork", select: "name" },
+            { path: "supplier", select: "name" },
             { path: "orderUnit", select: "name" },
         ]);
     return { request }
@@ -249,8 +253,10 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "creator", select: "name" },
                 { path: "goods.good", select: "code name baseUnit" },
                 { path: "approvers.information.approver" },
-                { path: "stock", select: "name" },
+                { path: "refuser.refuser", select: "name" },
+                { path: "stock" },
                 { path: "manufacturingWork", select: "name" },
+                { path: "supplier", select: "name" },
                 { path: "orderUnit", select: "name" },
             ]);
         let requests = {};
@@ -264,8 +270,10 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 populate: [{ path: "creator", select: "name" },
                 { path: "goods.good", select: "code name baseUnit" },
                 { path: "approvers.information.approver" },
-                { path: "stock", select: "name" },
+                { path: "refuser.refuser", select: "name" },
+                { path: "stock" },
                 { path: "manufacturingWork", select: "name" },
+                { path: "supplier", select: "name" },
                 { path: "orderUnit", select: "name" },
                 ],
                 sort: {
@@ -285,8 +293,10 @@ exports.getRequestById = async (id, portal) => {
         .populate([{ path: "creator", select: "name" },
         { path: "goods.good", select: "_id code name baseUnit" },
         { path: "approvers.information.approver" },
-        { path: "stock", select: "name" },
+        { path: "refuser.refuser", select: "name" },
+        { path: "stock" },
         { path: "manufacturingWork", select: "name" },
+        { path: "supplier", select: "name" },
         { path: "orderUnit", select: "name" },
         ]);
     if (!request) {
@@ -339,6 +349,7 @@ exports.editRequest = async (user, id, data, portal) => {
 
         if (index2 !== -1) {
             oldRequest.approvers[index1].information[index2].approvedTime = new Date(Date.now());
+            oldRequest.approvers[index1].information[index2].note = data.note;
             switch (data.approveType) {
                 case 1: oldRequest.status = 2;
                     break;
@@ -346,7 +357,7 @@ exports.editRequest = async (user, id, data, portal) => {
                     break;
                 case 3: oldRequest.status = oldRequest.status == 5 ? 6 : 2;
                     break;
-                case 4: oldRequest.status = oldRequest.status == 6 ? 7 : 3;
+                case 4: oldRequest.status = oldRequest.status == 6 ? 7 : 2;
                     break;
             }
         }
@@ -365,6 +376,8 @@ exports.editRequest = async (user, id, data, portal) => {
             quantity: good.quantity
         }
     }) : oldRequest.goods;
+    oldRequest.supplier = data.supplier ? data.supplier : oldRequest.supplier;
+    oldRequest.refuser = data.refuser ? data.refuser : oldRequest.refuser;
     // Chỉnh sửa người phê duyệt hoặc thêm người phê duyệt mới
     if (data.approvers && data.approvers.length > 0) {
         let counter = 0;
@@ -373,7 +386,8 @@ exports.editRequest = async (user, id, data, portal) => {
                 oldRequest.approvers[index].information = data.approvers[0].information.map((item1) => {
                     return {
                         approver: item1.approver,
-                        approvedTime: item1.approvedTime
+                        approvedTime: item1.approvedTime,
+                        note: item1.note ? item1.note : null,
                     }
                 });
                 oldRequest.approvers[index].approveType = item.approveType
@@ -385,7 +399,8 @@ exports.editRequest = async (user, id, data, portal) => {
                 information: data.approvers[0].information.map((item) => {
                     return {
                         approver: item.approver,
-                        approvedTime: item.approvedTime
+                        approvedTime: item.approvedTime,
+                        note: item.note ? item.note : null,
                     }
                 }),
                 approveType: data.approvers[0].approveType
@@ -400,7 +415,8 @@ exports.editRequest = async (user, id, data, portal) => {
         let information = orderManagerArray ? orderManagerArray.map((item) => {
             return {
                 approver: item.userId._id,
-                approvedTime: null
+                approvedTime: null,
+                note: item.note ? item.note : null,
             }
         }) : [];
         let data = {
@@ -416,7 +432,8 @@ exports.editRequest = async (user, id, data, portal) => {
         let information = warehouseManagerArray ? warehouseManagerArray.map((item) => {
             return {
                 approver: item.userId._id,
-                approvedTime: null
+                approvedTime: null,
+                note: item.note ? item.note : null,
             }
         }) : [];
         let data = {
@@ -484,8 +501,10 @@ exports.editRequest = async (user, id, data, portal) => {
             { path: "creator", select: "name" },
             { path: "goods.good", select: "code name baseUnit" },
             { path: "approvers.information.approver" },
-            { path: "stock", select: "name" },
+            { path: "refuser.refuser", select: "name" },
+            { path: "stock" },
             { path: "manufacturingWork", select: "name" },
+            { path: "supplier", select: "name" },
             { path: "orderUnit", select: "name" },
         ]);
 

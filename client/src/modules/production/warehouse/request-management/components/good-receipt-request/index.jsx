@@ -6,6 +6,8 @@ import DetailForm from '../common-components/detailForm';
 import EditForm from '../common-components/editForm';
 import CreateForm from '../common-components/createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import ApproveForm from './approveForm';
+import GoodReceiptCreateFormModal from '../../../bill-management/components/good-receipts/goodReceiptCreateFormModal';
 
 function GoodReceiptRequestManagementTable(props) {
 
@@ -51,6 +53,22 @@ function GoodReceiptRequestManagementTable(props) {
             return "Yêu cầu tạo từ trong kho";
     }
 
+    const handleShowApprove = async (request) => {
+        await setState({
+            ...state,
+            requestApprove: request,
+        });
+        window.$("#modal-approve-form").modal("show");
+    };
+
+    const handleCreateReceiptBill = async (request) => {
+        await setState({
+            ...state,
+            request: request,
+        });
+        window.$("#modal-create-new-receipt-bill").modal("show");
+    }
+
     const { translate, requestManagements } = props;
     let listRequests = [];
     if (requestManagements.listRequests) {
@@ -71,11 +89,19 @@ function GoodReceiptRequestManagementTable(props) {
                     listGoods={state.listGoods}
                     stock={state.currentRow.stock._id}
                     status={state.currentRow.status}
-                    worksValue={state.currentRow.manufacturingWork._id}
-                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 1) : []}
+                    worksValue={state.currentRow.manufacturingWork ? state.currentRow.manufacturingWork._id : ""}
+                    supplier={state.currentRow.supplier ? state.currentRow.supplier._id : ""}
+                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 4) : []}
                     stockRequestType={props.stockRequestType}
                 />
             }
+            <ApproveForm
+                requestId={state.requestApprove ? state.requestApprove._id : ''}
+                requestApprove={state.requestApprove} />
+            <GoodReceiptCreateFormModal
+                createType={3} // 3: create from request in request screen
+                requestId={state.request ? state.request._id : ''}
+                request={state.request} />
             <div className="box-body qlcv">
                 <CreateForm stockRequestType={props.stockRequestType} />
                 <div className="form-inline">
@@ -178,15 +204,15 @@ function GoodReceiptRequestManagementTable(props) {
                                         }
                                         {/*Phê duyệt yêu cầu*/}
                                         {
-                                            props.checkRoleApprover(request) &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('production.request_management.approved_true')}
-                                                content={translate('production.request_management.approved_true') + " " + request.code}
-                                                name="check_circle_outline"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApproval(request)}
-                                            />
+                                            props.checkRoleApprover(request) && request.status == 1 &&
+                                            <a
+                                                onClick={() => handleShowApprove(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Phê duyệt đơn"
+                                            >
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
                                         }
                                         {
                                             request.status == 1 &&
@@ -198,6 +224,17 @@ function GoodReceiptRequestManagementTable(props) {
                                                 className="text-red"
                                                 func={() => props.handleCancelRequest(request)}
                                             />
+                                        }
+                                        {
+                                            // props.checkRoleApprover(request) && request.status == 2 &&
+                                            <a
+                                                onClick={() => handleCreateReceiptBill(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Tạo phiếu nhập kho"
+                                            >
+                                                <i className="material-icons">add</i>
+                                            </a>
                                         }
                                     </td>
                                 </tr>

@@ -17,7 +17,6 @@ function getAllManufacturingWorks(queryData = {}) {
         });
         worksServices.getAllManufacturingWorks(queryData)
             .then((res) => {
-                console.log(res.data);
                 dispatch({
                     type: worksConstants.GET_ALL_WORKS_SUCCESS,
                     payload: res.data.content

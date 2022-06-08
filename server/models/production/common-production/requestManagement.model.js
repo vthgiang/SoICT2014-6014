@@ -27,12 +27,28 @@ const RequestManagementSchema = new Schema({
             approvedTime: {
                 type: Date
             },
+            note: {
+                type: String
+            }
         }],
         approveType: {
             type: Number,
             required: true
         }
     }],
+    refuser: { // Người từ chối yêu cầu
+        refuser: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        refuserTime: {
+            type: Date
+        },
+        note: {
+            type: String
+        }
+    },
+
     goods: [{
         good: {
             type: Schema.Types.ObjectId,
@@ -79,36 +95,36 @@ const RequestManagementSchema = new Schema({
     /*yêu cầu mua hàng gửi từ sản xuất : requestType = 1, type = 1
     1: chờ phê duyệt, 2: đã gửi đến bộ phận mua hàng, 3: đã phê duyệt mua hàng, 4. Đã tạo đơn mua hàng
     5. Chờ phê duyệt yêu cầu, 
-    6: Đã gửi yêu cầu nhập kho, 7: Đã phê duyệt yêu cầu nhập kho, 8: Đã hoàn thành nhập kho, 
-    9: Đã hủy yêu cầu mua hàng, 10: Đã hủy yêu cầu nhập kho
+    6: Đã gửi yêu cầu nhập kho, 7: Đã phê duyệt yêu cầu nhập kho, 8: Đang tiến hành nhập kho 9: Đã hoàn thành nhập kho, 
+    10: Đã hủy yêu cầu mua hàng, 11: Đã hủy yêu cầu nhập kho
     */
     /* Yêu cầu nhập kho từ sản xuất: requestType = 1, type = 2
-    1: Chờ phê duyệt, 2: Yêu cầu đã gửi đến kho, 3: Đã phê duyệt yêu cầu nhập kho, 4: Đã hoàn thành nhập kho
-    5: Đã hủy yêu cầu nhập kho
+    1: Chờ phê duyệt, 2: Yêu cầu đã gửi đến kho, 3: Đã phê duyệt yêu cầu nhập kho, 4: Đang tiến hành nhập kho, 5: Đã hoàn thành nhập kho
+    6: Đã hủy yêu cầu nhập kho
     */
     /* Yêu cầu xuất kho từ sản xuất: requestType = 1, type = 3
-     1: Chờ phê duyệt, 2: Yêu cầu đã gửi đến kho, 3: Đã phê duyệt yêu cầu xuất kho, 4: Đã hoàn thành xuất kho
-     5: Đã hủy yêu cầu xuất kho
+     1: Chờ phê duyệt, 2: Yêu cầu đã gửi đến kho, 3: Đã phê duyệt yêu cầu xuất kho, 4: Đang tiến hành xuất kho 5: Đã hoàn thành xuất kho
+     6: Đã hủy yêu cầu xuất kho
      */
     /* Yêu cầu nhập kho từ đơn hàng: requestType = 2, type = 1
-     1: Chờ phê duyệt, 2: Yêu cầu đã gửi đến kho, 3: Đã phê duyệt yêu cầu nhập kho, 4: Đã hoàn thành nhập kho
-     5: Đã hủy yêu cầu nhập kho
+     1: Chờ phê duyệt, 2: Yêu cầu đã gửi đến kho, 3: Đã phê duyệt yêu cầu nhập kho, 4: Đang tiến hành nhập kho, 5: Đã hoàn thành nhập kho
+     6: Đã hủy yêu cầu nhập kho
      */
     /* Yêu cầu nhập kho: requestType = 3, type = 1
-     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu nhập kho, 3: Đã hoàn thành nhập kho
-     4: Đã hủy yêu cầu nhập kho
+     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu nhập kho, 3: Đang tiến hành nhập kho, 4: Đã hoàn thành nhập kho
+     5: Đã hủy yêu cầu nhập kho
      */
     /* Yêu cầu xuất kho : requestType = 3, type = 2
-     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu xuất kho, 3: Đã hoàn thành xuất kho
-     4: Đã hủy yêu cầu xuất kho
+     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu xuất kho, 3: Đang tiến hành xuất kho, 4: Đã hoàn thành xuất kho
+     5: Đã hủy yêu cầu xuất kho
      */
     /* Yêu cầu nhập kho: requestType = 3, type = 3
-     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu trả hàng kho, 3: Đã hoàn thành trả hàng
-     4: Đã hủy yêu cầu trả hàng
+     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu trả hàng kho, 3: Đang tiến hành trả hàng, 4: Đã hoàn thành trả hàng
+     5: Đã hủy yêu cầu trả hàng
      */
     /* Yêu cầu luân chuyển kho: requestType = 3, type = 4
-     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu luân chuyển kho, 3: Đã hoàn thành luân chuyển
-     4: Đã hủy yêu cầu luân chuyển
+     1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu luân chuyển kho, 3: Đang tiến hành luân chuyển kho, 4: Đã hoàn thành luân chuyển
+     5: Đã hủy yêu cầu luân chuyển
      */
     status: {
         type: Number,

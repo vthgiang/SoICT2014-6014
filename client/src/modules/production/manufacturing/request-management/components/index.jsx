@@ -5,7 +5,7 @@ import IssueRequest from './good-issue-request/index';
 import ReceiptRequest from './good-receipt-request/index';
 import PurchaseRequest from './good-purchase-request/index';
 import { RequestActions } from '../../../common-production/request-management/redux/actions';
-import { GoodActions } from '../../../common-production/good-management/redux/actions';
+// import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
@@ -30,7 +30,7 @@ function RequestManagement(props) {
 
     useEffect(() => {
         props.getAllRequestByCondition(state);
-        props.getAllGoodsByType({ type: 'material' });
+        // props.getAllGoodsByType({ type: 'material' });
         props.getUser();
         props.getAllStocks();
         props.getAllManufacturingWorks();
@@ -247,7 +247,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllRequestByCondition: RequestActions.getAllRequestByCondition,
-    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    // getAllGoodsByType: GoodActions.getAllGoodsByType,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     editRequest: RequestActions.editRequest,
     getUser: UserActions.get,

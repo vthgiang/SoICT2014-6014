@@ -153,10 +153,123 @@ function EditForm(props) {
         return stockArr;
     };
 
+    // Phần nguồn gốc yêu cầu
+
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
+
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                // selfProducedCheck: value === "1" ? true : false,
+                // listGood: [],
+            });
+        }
+        return msg === undefined;
+    }
+
+    // Phần nhà máy sản xuất
+
+    const getListWorks = () => {
+        const { translate, manufacturingWorks } = props;
+        let listWorksArray = [{
+            value: "",
+            text: translate('production.request_management.choose_manufacturing_works')
+        }];
+
+        const { listWorks } = manufacturingWorks;
+
+        if (listWorks) {
+            listWorks.map((item) => {
+                listWorksArray.push({
+                    value: item._id,
+                    text: item.name,
+                    organizationalUnit: item.organizationalUnit._id
+                });
+            });
+        }
+        return listWorksArray;
+    }
+
+    const handleManufacturingWorksChange = (value) => {
+        const worksValue = value[0];
+        validateManufacturingWorks(worksValue, true);
+    }
+
+    const validateManufacturingWorks = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value === undefined || value === "") {
+            msg = translate('production.request_management.validate_manufacturing_works');
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                worksValue: value,
+                worksValueError: msg,
+                teamLeaderValue: "",
+                supplier: "",
+            });
+        }
+        return msg === undefined;
+    }
+
+    // phần nhà cung cấp 
+
+    const getSuplierOptions = () => {
+        let mapOptions = [];
+        const { list } = props.crm.customers;
+        if (list) {
+            mapOptions = [{
+                value: "title", //Title không được chọn
+                text: "---Chọn nhà cung cấp---",
+            }];
+            list.map((item) => {
+                mapOptions.push({
+                    value: item._id,
+                    text: item.name,
+                });
+            });
+        }
+        return mapOptions;
+    };
+
+    const handleSupplierChange = async (value) => {
+        validateSupplier(value[0], true);
+    };
+
+    const validateSupplier = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value || value === "" || value === "title") {
+            msg = "Giá trị không được bỏ trống!";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                supplier: value,
+                supplierError: msg,
+                worksValue: "",
+            });
+        }
+        return msg === undefined;
+    };
+
     const isFormValidated = () => {
         let { approver, stock, listGoods } = state;
         let result = validateApprover(approver, false) &&
             validateStock(stock, false) &&
+            validateSourceProduct(state.sourceType, false) &&
+            (validateManufacturingWorks(state.worksValue, false) ||
+                validateSupplier(state.supplier, false)) &&
             listGoods.length > 0
         return result;
     }
@@ -175,12 +288,13 @@ function EditForm(props) {
                 desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
-                approverInWarehouse: state.approvers,
+                approvers: state.approvers,
                 stock: state.stock,
                 requestType: 3,
                 type: props.stockRequestType,
                 status: 1,
                 manufacturingWork: state.worksValue,
+                supplier: state.supplier,
             }
             props.editRequest(state.requestId, data);
         }
@@ -206,7 +320,7 @@ function EditForm(props) {
                 text: listGoodsByType[i].code + " - " + listGoodsByType[i].name
             });
         }
-
+        console.log(props.worksValue, props.supplier);
         setState({
             ...state,
             requestId: props.requestId,
@@ -215,6 +329,8 @@ function EditForm(props) {
             description: props.description,
             listGoods: listGoods,
             worksValue: props.worksValue,
+            supplier: props.supplier,
+            sourceType: props.worksValue ? "1" : "2",
             stock: props.stock,
             approver: props.approver[0].information[0].approver._id,
             status: props.status,
@@ -235,9 +351,25 @@ function EditForm(props) {
 
     const { translate, requestManagements } = props;
     const { requestId, code, desiredTime, errorDesiredTime, description, listGoods,
-        approver, errorApprover, errorStock, stock, worksValueError, worksValue } = state;
+        approver, errorApprover, errorStock, stock, worksValueError, worksValue, sourceType, errorOnSourceProduct, errorSupplier, supplier } = state;
+    let dataSource = [
+        {
+            value: '0',
+            text: 'Chọn nguồn yêu cầu',
+        },
+        {
+            value: '1',
+            text: 'Yêu cầu từ nhà máy sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Yêu cầu từ nhà cung cấp',
+        }
+    ];
     const dataApprover = getApprover();
     const dataStock = getStock();
+    const dataManufacturingWorks = getListWorks();
+    const dataCustomer = getSuplierOptions();
 
     return (
         <React.Fragment>
@@ -276,6 +408,20 @@ function EditForm(props) {
                                 />
                                 <ErrorLabel content={errorApprover} />
                             </div>
+                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
+                                <label>{"Nguồn yêu cầu"}</label>
+                                <span className="text-red"> * </span>
+                                <SelectBox
+                                    id={`select-source-type-edit-${requestId}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={sourceType}
+                                    items={dataSource}
+                                    onChange={handleSourceChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorOnSourceProduct} />
+                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
@@ -304,6 +450,39 @@ function EditForm(props) {
                                 />
                                 <ErrorLabel content={errorDesiredTime} />
                             </div>
+                            {sourceType === "2" ?
+                                (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
+                                    <label>
+                                        {translate("manage_warehouse.bill_management.supplier")}
+                                        <span className="text-red"> * </span>
+                                    </label>
+                                    <SelectBox
+                                        id={`select-customer-edit-${requestId}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={supplier}
+                                        items={dataCustomer}
+                                        onChange={handleSupplierChange}
+                                        multiple={false}
+                                    />
+                                    <ErrorLabel content={errorSupplier} />
+                                </div>)
+                                : null}
+                            {sourceType === "1" ?
+                                (<div className={`form-group ${!worksValueError ? "" : "has-error"}`}>
+                                    <label>{translate('production.request_management.manufacturing_works')}<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`select-works-edit-${requestId}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={worksValue}
+                                        items={dataManufacturingWorks}
+                                        onChange={handleManufacturingWorksChange}
+                                        multiple={false}
+                                    />
+                                    <ErrorLabel content={worksValueError} />
+                                </div>)
+                                : null}
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className={`form-group`}>

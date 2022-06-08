@@ -37,12 +37,30 @@ function GanttCalendar(props) {
         });
     }
 
+
+    const findFullUserInfor = (value) => {
+        const { user } = props;
+        let array = [];
+        value.forEach(item => {
+            let userFind = user.list.find(element => element._id === item)
+            if (userFind) {
+                array.push({
+                    id: userFind._id,
+                    name: userFind.name,
+                    email: userFind.email,
+                })
+            }
+        })
+        return array;
+    }
+
     if (props.counter !== state.counter) {
         let formatData = [];
         if (props.dataChart && props.dataChart.length > 0) {
             let dataCalendar = props.dataChart;
             dataCalendar.forEach((item) => {
-                item.workAssignmentStaffs.forEach((itemStaff) => {
+                let itemStaffs = findFullUserInfor(item.workAssignmentStaffs);
+                itemStaffs.forEach((itemStaff) => {
                     formatData.push({
                         id: itemStaff.name,
                         text: item.nameField,

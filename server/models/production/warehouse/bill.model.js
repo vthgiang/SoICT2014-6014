@@ -64,6 +64,38 @@ const BillSchema = new Schema({
         ref: 'User'
     },
 
+    manufacturingWork: { // Nhà máy sản xuất
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingWorks"
+    },
+
+    stockWorkAssignment:[{
+        nameField: {
+            type: String,
+        },
+        workAssignmentStaffs:[{
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }],
+        startDate: {
+            type: Date,
+        },
+        startTime: {
+            type: String,
+        },
+        endDate: {
+            type: Date,
+        },
+        endTime: {
+            type: String,
+        },
+    }],
+
+    request : {
+        type: Schema.Types.ObjectId,
+        ref: "RequestManagement"
+    },
+
     // LSX
     approvers: [{
         approver: {
