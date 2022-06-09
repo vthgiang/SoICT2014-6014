@@ -575,8 +575,8 @@ const CreateBiddingContract = (props) => {
 							<li className="active"><a title='Thông tin chung' data-toggle="tab" href="#general">Thông tin chung</a></li>
 							{/* Nút tab các bên tgia */}
 							<li><a title='Các bên tham gia' data-toggle="tab" href="#party" >Các bên tham gia</a></li>
-							{/* Nút tab quyết định giao thực hiện hợp đồng */}
-							<li><a title='Quyết định giao thực hiện hợp đồng' data-toggle="tab" href={`#decision-${id}`}>Quyết định giao thực hiện hợp đồng</a></li>
+							{/* Nút tab quyết định giao triển khai hợp đồng */}
+							<li><a title='Quyết định giao triển khai hợp đồng' data-toggle="tab" href={`#decision-${id}`}>Quyết định giao triển khai hợp đồng</a></li>
 						</ul>
 						<div className="tab-content">
 							{generalInfo()}

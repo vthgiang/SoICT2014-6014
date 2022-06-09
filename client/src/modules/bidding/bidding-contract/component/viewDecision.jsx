@@ -5,6 +5,9 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { EmployeeManagerActions } from '../../../human-resource/profile/employee-management/redux/actions';
 import getAllEmployeeSelectBoxItems from '../../bidding-package/biddingPackageManagement/components/employeeHelper';
 import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from '../../../project/projects/components/functionHelper';
+import { decisionDocxCreate } from './decisionDocxCreator';
+import { saveAs } from "file-saver";
+import { Packer } from "docx";
 
 function ViewDecisionForImplement(props) {
     const { translate, employeesManager, user } = props;
@@ -29,7 +32,7 @@ function ViewDecisionForImplement(props) {
 
     useEffect(() => {
         props.getAllEmployee();
-        setState({ ...state, id: props.id })
+        setState({ ...state, id: props.id, contract: props.biddingContract })
         setDecision(props.biddingContract?.decideToImplement ? props.biddingContract?.decideToImplement : initDecision)
     }, [props.id])
 
@@ -40,9 +43,22 @@ function ViewDecisionForImplement(props) {
 
     let allEmployeeCompany = getAllEmployeeSelectBoxItems(allEmployee)
 
+    const generateDecision = (contract, listUsers) => {
+        const doc = decisionDocxCreate(contract, listUsers);
+
+        Packer.toBlob(doc).then(blob => {
+            console.log(blob);
+            saveAs(blob, `Quyết định giao triển khai ${contract?.name}.docx`);
+            console.log("Document created successfully");
+        });
+    }
+
     const renderMembers = () => {
         return (
             <>
+                <div style={{ display: 'flex', justifyContent: "flex-end" }}>
+                    <div className="btn btn-success" onClick={() => generateDecision(state?.contract, listUsers)}>Tải file Quyết định giao triển khai hợp đồng</div>
+                </div>
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border">Nhân lực</legend>
                     <div>

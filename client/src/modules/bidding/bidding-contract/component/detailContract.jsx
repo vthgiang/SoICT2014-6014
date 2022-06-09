@@ -11,6 +11,10 @@ import DetailContent from '../../../project/projects/components/detailContent';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
 import moment from 'moment';
 import { ViewDecisionForImplement } from './viewDecision';
+import { contractDocxCreate } from './contractDocxCreator';
+import { saveAs } from "file-saver";
+import { Packer } from "docx";
+
 const ViewBiddingContract = (props) => {
 	const [showFile, setShowFile] = useState(false)
 	const initState = {
@@ -172,19 +176,35 @@ const ViewBiddingContract = (props) => {
 		props.downloadFile(path, fileName)
 	}
 
+
+	const generateContract = (state) => {
+		const doc = contractDocxCreate(state);
+
+		Packer.toBlob(doc).then(blob => {
+			console.log(blob);
+			saveAs(blob, `${state.name}.docx`);
+			console.log("Document created successfully");
+		});
+	}
+
 	const generalInfo = () => {
 		return (
-			<div style={{ lineHeight: 2, marginLeft: "5px" }} className="row">
-				<div className='col-md-6'>
-					<div ><strong>Tên hợp đồng: </strong><span>{state.name}</span></div>
-					<div ><strong>Mã hợp đồng: </strong><span>{state.code}</span></div>
-					<div ><strong>Giá trị hợp đồng: </strong><span>{state.budget} ({state.currenceUnit})</span></div>
+			<div>
+				<div style={{ display: 'flex', justifyContent: "flex-end" }}>
+					<div className="btn btn-success" onClick={() => generateContract(state)}>Tải file hợp đồng</div>
 				</div>
+				<div style={{ lineHeight: 2, marginLeft: "5px" }} className="row">
+					<div className='col-md-6'>
+						<div ><strong>Tên hợp đồng: </strong><span>{state.name}</span></div>
+						<div ><strong>Mã hợp đồng: </strong><span>{state.code}</span></div>
+						<div ><strong>Giá trị hợp đồng: </strong><span>{state.budget} ({state.currenceUnit})</span></div>
+					</div>
 
-				<div className='col-md-6'>
-					<div ><strong>Ngày ký kết: </strong><span>{state.createdDate}</span></div>
-					<div ><strong>Ngày có kiệu lực: </strong><span>{state.effectiveDate}</span></div>
-					<div ><strong>Thời hạn hợp đồng: </strong><span>{state.timeOfEffection} ({state.unitOfTime})</span></div>
+					<div className='col-md-6'>
+						<div ><strong>Ngày ký kết: </strong><span>{state.createdDate}</span></div>
+						<div ><strong>Ngày có kiệu lực: </strong><span>{state.effectiveDate}</span></div>
+						<div ><strong>Thời hạn hợp đồng: </strong><span>{state.timeOfEffection} ({state.unitOfTime})</span></div>
+					</div>
 				</div>
 			</div>
 		)
