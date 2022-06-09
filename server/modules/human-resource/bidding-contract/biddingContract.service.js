@@ -75,8 +75,8 @@ exports.searchBiddingContract = async (portal, params, company) => {
             })
             .populate({
                 path: "biddingPackage", populate: [
-                    { path: 'proposals.backupEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
-                    { path: 'proposals.directEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+                    { path: 'proposals.tasks.backupEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+                    { path: 'proposals.tasks.directEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
                 ]
             })
             .populate({
@@ -105,8 +105,8 @@ exports.searchBiddingContract = async (portal, params, company) => {
             .limit(params.limit)
             .populate({
                 path: "biddingPackage", populate: [
-                    { path: 'proposals.backupEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
-                    { path: 'proposals.directEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+                    { path: 'proposals.tasks.backupEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
+                    { path: 'proposals.tasks.directEmployees', select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" },
                 ]
             })
             .populate({

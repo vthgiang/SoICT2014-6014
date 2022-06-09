@@ -14,6 +14,8 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import { MajorActions } from "../../../../human-resource/major/redux/actions";
 import { CareerReduxAction } from "../../../../human-resource/career/redux/actions";
 import { CertificateActions } from '../../../../human-resource/certificate/redux/actions';
+import CreateBiddingContract from '../../../bidding-contract/component/createContract'
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 const BiddingPackageManagement = (props) => {
 
@@ -42,8 +44,8 @@ const BiddingPackageManagement = (props) => {
         tableId,
         position: null,
         gender: null,
-        status: [0,1,2,3,4],
-        type: [1,2,3,4,5],
+        status: [0, 1, 2, 3, 4],
+        type: [1, 2, 3, 4, 5],
         professionalSkills: null,
         careerFields: null,
         page: 0,
@@ -57,6 +59,8 @@ const BiddingPackageManagement = (props) => {
         props.getListMajor({ name: '', page: 0, limit: 1000 });
         props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
         props.getListCertificate({ name: '', page: 0, limit: 1000 });
+        props.getAllUserInAllUnitsOfCompany();
+        props.getAllUser();
     }, [])
 
     useEffect(() => {
@@ -129,6 +133,22 @@ const BiddingPackageManagement = (props) => {
         });
         setTimeout(() => {
             window.$(`#modal-edit-bidding-package${value._id}`).modal('show');
+        }, 500);
+    }
+
+    /**
+     * Bắt sự kiện click chỉnh sửa thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn chỉnh sửa
+     */
+    const handleCreateContract = (value) => {
+        setState(state => {
+            return {
+                ...state,
+                currentRow: value
+            }
+        });
+        setTimeout(() => {
+            window.$(`#modal-create-package-biddingContract-${value._id}`).modal('show');
         }, 500);
     }
 
@@ -360,6 +380,11 @@ const BiddingPackageManagement = (props) => {
                                             content={`<h4>Delete ${x.name + " - " + x.code}</h4>`}
                                             func={() => props.deleteBiddingPackage(x._id)}
                                         />
+                                        {
+                                            <a className="" style={{ color: "#28A745" }} onClick={() => handleCreateContract(x)} title={"Tạo dự án theo hợp đồng này"}>
+                                                <i className="material-icons">add_box</i>
+                                            </a>
+                                        }
                                     </td>
                                 </tr>
                             )
@@ -377,6 +402,12 @@ const BiddingPackageManagement = (props) => {
             {/* From thêm mới thông tin nhân viên */}
             <BiddingPackageCreateForm />
 
+            {/* From thêm mới hợp đồng */}
+            <CreateBiddingContract
+                id={currentRow ? currentRow._id : ""}
+            />
+
+
             {/* From import thông tin nhân viên*/
                 // importBiddingPackage && <BiddingPackageImportForm />
             }
@@ -388,7 +419,7 @@ const BiddingPackageManagement = (props) => {
             }
             {/* From chinh sửa thông tin nhân viên */
                 <BiddingPackageEditFrom
-                    _id={currentRow ? currentRow._id : ""} 
+                    _id={currentRow ? currentRow._id : ""}
                 />
             }
         </div >
@@ -408,6 +439,8 @@ const actionCreators = {
     deleteBiddingPackage: BiddingPackageManagerActions.deleteBiddingPackage,
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
     getListCertificate: CertificateActions.getListCertificate,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getAllUser: UserActions.get,
 };
 
 const biddingPackageManagement = connect(mapState, actionCreators)(withTranslate(BiddingPackageManagement));

@@ -112,12 +112,16 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
  * @returns decision - quyết định giao triển khai hợp đồng
  */
 export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
-    const proposalsCopy = bp.proposals ? [...bp.proposals] : [];
+    const proposalsCopy = bp.proposals ? bp.proposals : {
+        executionTime: 0,
+        unitOfTime: "days",
+        tasks: [],
+    };
 
     let taskList = [];
 
-    for (let idx in proposalsCopy) {
-        let p = proposalsCopy[idx]
+    for (let idx in proposalsCopy.tasks) {
+        let p = proposalsCopy.tasks[idx]
         let projectTaskData = {
             code: `Task_${Number(idx) + 1}`,
             name: p.taskName,

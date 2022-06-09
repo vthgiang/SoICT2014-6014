@@ -97,12 +97,34 @@ const CreateBiddingContract = (props) => {
 		selectedTab: 'general'
 	}
 	const [state, setState] = useState(initState);
+	const [id, setId] = useState(props.id);
 	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
 
 	useEffect(() => {
 		props.getAllBiddingPackage({ name: '', status: 3, page: 0, limit: 1000 });
 		props.getConfiguration();
 	}, [])
+
+	useEffect(() => {
+		setId(props.id)
+
+		let bp = props.biddingPackagesManager?.listBiddingPackages?.find(x => x._id == props.id);
+		if (bp) {
+			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
+			const effecttiveDate = state.effectiveDate;
+			setState({
+				...state,
+				name: "Hợp đồng " + bp.name,
+				code: `HD-${bp.code}`,
+				endDate: moment(effecttiveDate, "DD-MM-YYYY").add(bp.proposals.executionTime, bp.proposals.unitOfTime).format('DD-MM-YYYY'),
+				budget: bp.price,
+				addressA: bp.receiveLocal,
+				representativeNameA: bp.customer,
+				biddingPackage: props.id,
+				decideToImplement: updatedDecision
+			})
+		}
+	}, [props.id]);
 
 	useEffect(() => {
 		if (modelConfiguration.biddingConfig != '') {
@@ -538,7 +560,7 @@ const CreateBiddingContract = (props) => {
 	return (
 		<React.Fragment>
 			<DialogModal
-				modalID="modal-create-package-biddingContract"
+				modalID={`modal-create-package-biddingContract-${id}`}
 				formID="form-create-biddingContract"
 				title="Thêm hợp đồng"
 				disableSubmit={!isFormValidated()}
@@ -554,14 +576,14 @@ const CreateBiddingContract = (props) => {
 							{/* Nút tab các bên tgia */}
 							<li><a title='Các bên tham gia' data-toggle="tab" href="#party" >Các bên tham gia</a></li>
 							{/* Nút tab quyết định giao thực hiện hợp đồng */}
-							<li><a title='Quyết định giao thực hiện hợp đồng' data-toggle="tab" href="#decision">Quyết định giao thực hiện hợp đồng</a></li>
+							<li><a title='Quyết định giao thực hiện hợp đồng' data-toggle="tab" href={`#decision-${id}`}>Quyết định giao thực hiện hợp đồng</a></li>
 						</ul>
 						<div className="tab-content">
 							{generalInfo()}
 							{partyForm()}
 							<DecisionForImplement
 								type={"create"}
-								id={"decision"}
+								id={`decision-${id}`}
 								biddingContract={state}
 								handleChange={handleChange}
 							/>

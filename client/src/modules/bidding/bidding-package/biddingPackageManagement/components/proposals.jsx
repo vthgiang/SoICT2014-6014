@@ -162,7 +162,7 @@ function Proposals(props) {
 
     let allEmployeeCompany = getAllEmployeeSelectBoxItems(allEmployee)
 
-    console.log(proposals);
+    // console.log(proposals);
     return (
         <div id={id} className="tab-pane">
 

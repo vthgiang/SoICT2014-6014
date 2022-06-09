@@ -83,7 +83,7 @@ const ContractManagement = (props) => {
 
     // Function bắt sự kiện thêm hợp đồng
     const createContractPackage = () => {
-        window.$('#modal-create-package-biddingContract').modal({ backdrop: 'static', display: 'show' });
+        window.$('#modal-create-package-biddingContract-create').modal({ backdrop: 'static', display: 'show' });
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng import file
@@ -327,7 +327,7 @@ const ContractManagement = (props) => {
                 <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
             </div>
             {/* From thêm mới hợp đồng */}
-            <CreateBiddingContract />
+            <CreateBiddingContract id="create" />
 
             {/* From chinh sửa thông tin hợp đồng */}
             {
