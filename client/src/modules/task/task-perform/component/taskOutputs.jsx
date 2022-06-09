@@ -27,25 +27,25 @@ const formatStatusInfo = (value) => {
     switch (value) {
         case "unfinished":
             return (
-                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "5px" }}>
+                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "5px", borderRadius: "4px" }}>
                     Chưa hoàn thành
                 </div>
             );
         case "waiting_approval":
             return (
-                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "5px" }}>
+                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "5px", borderRadius: "4px" }}>
                     Đang chờ phê duyệt
                 </div>
             );
         case "rejected":
             return (
-                <div style={{ color: "rgba(239, 68, 68)", backgroundColor: "rgba(254, 202, 202)", padding: "5px" }}>
+                <div style={{ color: "rgba(239, 68, 68)", backgroundColor: "rgba(254, 202, 202)", padding: "5px", borderRadius: "4px" }}>
                     Bị từ chối
                 </div>
             );
         case "approved":
             return (
-                <div style={{ color: "rgba(16, 185, 129)", backgroundColor: "rgba(167, 243, 208)", padding: "5px" }}>
+                <div style={{ color: "rgba(16, 185, 129)", backgroundColor: "rgba(167, 243, 208)", padding: "5px", borderRadius: "4px" }}>
                     Đã phê duyệt
                 </div>
             );
@@ -97,7 +97,7 @@ const getAcoutableEmployees = (data) => {
     if (accountableEmployees) {
         let users = "";
         accountableEmployees.map(item => {
-            users = users + `${item.accountableEmployee.name}, `
+            users = users + `${item.accountableEmployee.name} `
             return item;
         })
         return users;
@@ -259,10 +259,11 @@ function TaskOutputsTab(props) {
                             <div className="panel-group" id="accordion-notevaluation" role="tablist" aria-multiselectable="true" style={{ marginBottom: 0 }}>
                                 <div className="panel panel-default" style={{ padding: "8px" }} key={index}>
                                     <span role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-notevaluation" href={`#collapse-notevaluation${index}`} aria-expanded="true" aria-controls="collapse1a">
-                                        <>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <i className="fa fa-angle-right angle-right-custom" aria-hidden="true" style={{ marginLeft: "5px", marginRight: "5px" }}></i>
                                             <a className="task-outputs-tilte" title="dự án">{item.title}</a>
-                                        </>
+                                            <div aria-hidden="true" style={{ color: "rgba(16, 185, 129)", backgroundColor: "rgba(167, 243, 208)", padding: "2px 5px 2px 5px", marginLeft: "5px", borderRadius: "4px" }}>Chưa hoàn thành</div>
+                                        </div>
                                     </span>
                                     <div id={`collapse-notevaluation${index}`} className="panel-collapse collapse" role="tabpanel">
                                         <div className="panel-body">
@@ -291,7 +292,7 @@ function TaskOutputsTab(props) {
                                             </div>
 
                                             <div className="time-todo-range" style={{ marginBottom: "5px" }}>
-                                                <span style={{ marginRight: '10px' }}><strong>Mô tả:</strong> {parse(item.description)}</span>
+                                                <div style={{ marginRight: '10px' }}><strong>Mô tả:</strong> {parse(item.description)}</div>
                                             </div>
                                             <div style={{ marginBottom: "5px" }}>
                                                 <span style={{ marginRight: '10px' }}><strong>Kiểu dữ liệu:</strong> {formatTypeInfo(item.type)}</span>
