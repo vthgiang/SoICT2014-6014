@@ -28,6 +28,13 @@ export const convertEmployeeToUserInUnit = (allUser, employee) => {
     }
 }
 
+export const checkExistedUserId = (uid, listUsers) => {
+    let check = listUsers.find(x => String(x.userId) === String(uid));
+
+    if (check) return true;
+    else return false;
+}
+
 /**
  * hàm trả về dữ liệu decision khi update gói thầu
  * @param {BiddingPackage} bp dữ liệu gói thầu
@@ -67,9 +74,11 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
                 let unitIdOfEmp = getDepartmentIdByUserId(listUserDepartment, cvtEmp._id)
 
                 let listEmp = ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`]?.listUsers ?? [];
-                ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`] = {
-                    unitId: unitIdOfEmp,
-                    listUsers: [...listEmp, { userId: cvtEmp._id }]
+                if (!checkExistedUserId(cvtEmp._id, listEmp)) {
+                    ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`] = {
+                        unitId: unitIdOfEmp,
+                        listUsers: [...listEmp, { userId: cvtEmp._id }]
+                    }
                 }
             }
         }
@@ -84,9 +93,11 @@ export const getDecisionDataWhenUpdateBidPackage = (bp, allUsers, listUserDepart
                 let unitIdOfEmp = getDepartmentIdByUserId(listUserDepartment, cvtEmp._id)
 
                 let listEmp = ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`]?.listUsers ?? [];
-                ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`] = {
-                    unitId: unitIdOfEmp,
-                    listUsers: [...listEmp, { userId: cvtEmp._id }]
+                if (!checkExistedUserId(cvtEmp._id, listEmp)) {
+                    ObjResponsibleEmployeesWithUnit[`${unitIdOfEmp}`] = {
+                        unitId: unitIdOfEmp,
+                        listUsers: [...listEmp, { userId: cvtEmp._id }]
+                    }
                 }
             }
         }

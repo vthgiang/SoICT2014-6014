@@ -13,6 +13,7 @@ function DecisionForImplement(props) {
     const { translate, employeesManager, user } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
+    console.log(16, user.usersInUnitsOfCompany);
     const arrUnitTimeList = [
         { text: 'Ngày', value: 'days' },
         { text: 'Giờ', value: 'hours' },
@@ -285,8 +286,8 @@ function DecisionForImplement(props) {
         props.handleChange("decideToImplement", newDecision);
     }, [responsibleEmployeesWithUnit.list])
 
-    // console.log(275, decision)
-    // console.log(276, responsibleEmployeesWithUnit)
+    console.log(275, decision)
+    console.log(276, responsibleEmployeesWithUnit)
 
     const renderMembers = () => {
         return (

@@ -69,9 +69,9 @@ const BiddingPackageDetailForm = (props) => {
                 hasNote={false}
             >
                 <form className="form-group" id={`form-detail-biddingPackage${_id}`} style={{ marginTop: "-15px" }}>
-                    <CreateBiddingContract
+                    {/* <CreateBiddingContract
                         id={_id ? _id : ''}
-                    />
+                    /> */}
                     {biddingPackageDetail && (
                         <div className="nav-tabs-custom row">
                             <ul className="nav nav-tabs">

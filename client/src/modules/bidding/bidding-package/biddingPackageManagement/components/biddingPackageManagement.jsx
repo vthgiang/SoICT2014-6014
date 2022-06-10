@@ -382,11 +382,11 @@ const BiddingPackageManagement = (props) => {
                                             content={`<h4>Delete ${x.name + " - " + x.code}</h4>`}
                                             func={() => props.deleteBiddingPackage(x._id)}
                                         />
-                                        {/* {!x?.hasContract && x.status === 3 &&
+                                        {!x?.hasContract && x.status === 3 &&
                                             <a className="" style={{ color: "#28A745" }} onClick={() => handleCreateContract(x)} title={"Tạo hợp đồng cho gói thầu này"}>
                                                 <i className="material-icons">add_box</i>
                                             </a>
-                                        } */}
+                                        }
                                     </td>
                                 </tr>
                             )
@@ -405,9 +405,10 @@ const BiddingPackageManagement = (props) => {
             <BiddingPackageCreateForm />
 
             {/* From thêm mới hợp đồng */}
-            {/* <CreateBiddingContract
+            <CreateBiddingContract
+                handleRefresh={handleSunmitSearch}
                 id={currentRow ? currentRow._id : ""}
-            /> */}
+            />
 
 
             {/* From import thông tin nhân viên*/

@@ -114,6 +114,7 @@ const CreateBiddingContract = (props) => {
 			const effecttiveDate = state.effectiveDate;
 			setState({
 				...state,
+				createType: "create_by_bid",
 				name: "Hợp đồng " + bp.name,
 				code: `HD-${bp.code}`,
 				endDate: moment(effecttiveDate, "DD-MM-YYYY").add(bp.proposals.executionTime, bp.proposals.unitOfTime).format('DD-MM-YYYY'),
@@ -299,6 +300,9 @@ const CreateBiddingContract = (props) => {
 
 		console.log(1718, state, formData)
 		props.createBiddingContract(formData);
+		if (state.createType === "create_by_bid") {
+			props.handleRefresh();
+		}
 	}
 
 	const isFormValidated = () => {
@@ -604,6 +608,7 @@ const mapDispatchToProps = {
 	createBiddingContract: BiddingContractActions.createBiddingContract,
 	getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 	getConfiguration: ConfigurationActions.getConfiguration,
+	getDetailBiddingPackage: BiddingPackageManagerActions.getDetailBiddingPackage,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateBiddingContract));
