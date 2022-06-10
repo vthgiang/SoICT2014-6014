@@ -109,7 +109,7 @@ const getAcoutableEmployees = (data) => {
 function TaskOutputsTab(props) {
     const { performtasks, auth, role } = props;
     const idUser = getStorage("userId");
-    const [showLogs, setShowLogs] = useState(false);
+    const [showLogs, setShowLogs] = useState([]);
     const [state, setState] = useState(() => {
         return {
             newAction: {
@@ -573,10 +573,18 @@ function TaskOutputsTab(props) {
                                                 </ShowMoreShowLess>
                                             </div>
                                             <div style={{ display: "flex", justifyContent: "center" }}>
-                                                <button className="btn btn-default btn-sm" style={{ width: "60%" }} onClick={() => setShowLogs(!showLogs)}>Xem lịch sử thay đổi</button>
+                                                <button className="btn btn-default btn-sm" style={{ width: "60%" }} onClick={() => {
+                                                    if (showLogs.includes(item._id)) {
+                                                        let newShowLogs = showLogs.filter((log) => log !== item._id)
+                                                        setShowLogs(newShowLogs)
+                                                    } else {
+                                                        let newShowLogs = [...showLogs, item._id]
+                                                        setShowLogs(newShowLogs)
+                                                    }
+                                                }}>Xem lịch sử thay đổi</button>
                                             </div>
                                             {/* Hiển thị lịch sử chỉnh sửa */}
-                                            {showLogs && <div style={{ marginTop: "10px", borderWidth: "2px" }}>
+                                            {showLogs.includes(item._id) && <div style={{ marginTop: "10px", borderWidth: "2px" }}>
                                                 {item?.submissionResults.logs.map(x => {
                                                     return (
                                                         <div key={x._id} className={index > 3 ? "hide-component" : ""}>
