@@ -16,6 +16,7 @@ import { CareerReduxAction } from "../../../../human-resource/career/redux/actio
 import { CertificateActions } from '../../../../human-resource/certificate/redux/actions';
 import CreateBiddingContract from '../../../bidding-contract/component/createContract'
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { ConfigurationActions } from '../../../../super-admin/module-configuration/redux/actions';
 
 const BiddingPackageManagement = (props) => {
 
@@ -61,6 +62,7 @@ const BiddingPackageManagement = (props) => {
         props.getListCertificate({ name: '', page: 0, limit: 1000 });
         props.getAllUserInAllUnitsOfCompany();
         props.getAllUser();
+        props.getConfiguration();
     }, [])
 
     useEffect(() => {
@@ -427,8 +429,8 @@ const BiddingPackageManagement = (props) => {
 }
 
 function mapState(state) {
-    const { biddingPackagesManager, department, field, major, career, certificates } = state;
-    return { biddingPackagesManager, department, field, major, career, certificates };
+    const { biddingPackagesManager, department, field, major, career, certificates, modelConfiguration } = state;
+    return { biddingPackagesManager, department, field, major, career, certificates, modelConfiguration };
 }
 
 const actionCreators = {
@@ -441,6 +443,7 @@ const actionCreators = {
     getListCertificate: CertificateActions.getListCertificate,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllUser: UserActions.get,
+    getConfiguration: ConfigurationActions.getConfiguration,
 };
 
 const biddingPackageManagement = connect(mapState, actionCreators)(withTranslate(BiddingPackageManagement));

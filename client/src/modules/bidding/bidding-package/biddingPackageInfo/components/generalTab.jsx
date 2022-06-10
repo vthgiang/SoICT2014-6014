@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { BiddingPackageDetailForm } from '../../biddingPackageManagement/components/biddingPackageDetailForm';
+import { saveAs } from "file-saver";
+import { Packer } from "docx";
+import { bidsDocxCreate } from './bidsDocxCreator';
 
 function GeneralTab(props) {
 
@@ -76,8 +79,20 @@ function GeneralTab(props) {
 
 
 
+    const generateBidsDocx = (state) => {
+        const doc = bidsDocxCreate(state, props.modelConfiguration.biddingConfig);
+
+        Packer.toBlob(doc).then(blob => {
+            console.log(blob);
+            saveAs(blob, `HSDT ${state.name}.docx`);
+            console.log("Document created successfully");
+        });
+    }
     return (
         <div id={id} className="tab-pane active">
+            <div style={{ display: 'flex', justifyContent: "flex-end" }}>
+                <div className="btn btn-success" onClick={() => generateBidsDocx(state)}>Tải file HSDT</div>
+            </div>
             <div className=" row box-body">
                 <div className="pull-right col-lg-12 col-md-12 col-ms-12 col-xs-12">
                     <div className="row">
@@ -156,5 +171,9 @@ function GeneralTab(props) {
     );
 };
 
-const tabGeneral = connect(null, null)(withTranslate(GeneralTab));
+function mapState(state) {
+    const { modelConfiguration } = state;
+    return { modelConfiguration };
+}
+const tabGeneral = connect(mapState, null)(withTranslate(GeneralTab));
 export { tabGeneral as GeneralTab };

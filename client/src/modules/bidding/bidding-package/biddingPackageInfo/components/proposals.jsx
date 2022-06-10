@@ -5,6 +5,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ConfirmNotification, DataTableSetting, DatePicker, ExportExcel, SelectBox } from '../../../../../common-components';
 import { BiddingPackageManagerActions } from '../../biddingPackageManagement/redux/actions';
 import { BiddingPackageReduxAction } from '../../redux/actions';
+import { saveAs } from "file-saver";
+import { Packer } from "docx";
+import { proposalDocxCreate } from './proposalDocxCreator';
 
 function Proposals(props) {
     const arrUnitTimeList = [
@@ -33,6 +36,16 @@ function Proposals(props) {
     const { translate } = props;
     const { id } = state;
 
+    const generateProposalDocx = (proposals) => {
+        const doc = proposalDocxCreate(proposals);
+
+        Packer.toBlob(doc).then(blob => {
+            console.log(blob);
+            saveAs(blob, `Đẽ xuất kĩ thuật.docx`);
+            console.log("Document created successfully");
+        });
+    }
+
     return (
         <div id={id} className="tab-pane">
             {/* <div className="form-group pull-right" style={{ padding: '6px 12px', margin: '5px', width: '100%' }}>
@@ -41,6 +54,9 @@ function Proposals(props) {
                     Tải xuống file minh chứng
                 </a>
             </div> */}
+            <div style={{ display: 'flex', justifyContent: "flex-end" }}>
+                <div className="btn btn-success" onClick={() => generateProposalDocx(proposals)}>Tải file Đề xuất</div>
+            </div>
             {proposals?.executionTime && <div style={{ marginLeft: "20px" }}><strong>Thời gian thực hiện hợp đồng: </strong><span>{proposals.executionTime} ({arrUnitTimeList.find(x => x.value === proposals.unitOfTime)?.text})</span> kể từ thời điểm ký kết hợp đồng</div>}
             {proposals?.tasks?.length > 0 ? <div>
                 <br />

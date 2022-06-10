@@ -119,7 +119,8 @@ const CreateBiddingContract = (props) => {
 				endDate: moment(effecttiveDate, "DD-MM-YYYY").add(bp.proposals.executionTime, bp.proposals.unitOfTime).format('DD-MM-YYYY'),
 				budget: bp.price,
 				addressA: bp.receiveLocal,
-				representativeNameA: bp.customer,
+				// representativeNameA: bp.customer,
+				companyA: bp.customer,
 				biddingPackage: props.id,
 				decideToImplement: updatedDecision
 			})
@@ -165,7 +166,8 @@ const CreateBiddingContract = (props) => {
 				endDate: moment(effecttiveDate, "DD-MM-YYYY").add(bp.proposals.executionTime, bp.proposals.unitOfTime).format('DD-MM-YYYY'),
 				budget: bp.price,
 				addressA: bp.receiveLocal,
-				representativeNameA: bp.customer,
+				// representativeNameA: bp.customer,
+				companyA: bp.customer,
 				biddingPackage: value[0],
 				decideToImplement: updatedDecision
 			})
@@ -413,7 +415,7 @@ const CreateBiddingContract = (props) => {
 						/>
 					</div>
 					<div className="form-group col-md-6">
-						<label >Chọn gói thầu</label>
+						<label >Chọn gói thầu<span className="text-red">*</span></label>
 						<SelectBox
 							id={`package`}
 							className="form-control select2"

@@ -91,6 +91,7 @@ exports.editBiddingContract = async (req, res) => {
             content: data,
         });
     } catch (error) {
+        console.log(error);
         await Log.error(req.user.email, "EDIT_BIDDING_CONTRACT", req.portal);
         res.status(400).json({
             success: false,

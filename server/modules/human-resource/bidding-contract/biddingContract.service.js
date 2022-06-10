@@ -167,6 +167,10 @@ exports.editBiddingContract = async (portal, data, params, files, company) => {
     ).findOne({ biddingPackage: data.biddingPackage });
     if (checkBidpackage && String(checkBidpackage._id) !== String(data.id)) throw ["contract_for_bidding_package_exist"];
 
+    if (!data.files) {
+        data.files = [];
+    }
+
     let filesConvert
     if (files) {
         filesConvert = files.map(obj => ({

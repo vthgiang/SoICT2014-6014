@@ -171,7 +171,8 @@ const EditBiddingContract = (props) => {
 				name: "Hợp đồng " + bp.name,
 				budget: bp.price,
 				addressA: bp.receiveLocal,
-				representativeNameA: bp.customer,
+				// representativeNameA: bp.customer,
+				companyA: bp.customer,
 				biddingPackage: value[0],
 				decideToImplement: updatedDecision
 			})
@@ -265,6 +266,7 @@ const EditBiddingContract = (props) => {
 				...state,
 				contractFiles,
 				oldFiles,
+				files: oldFiles
 			}
 		});
 
@@ -332,7 +334,7 @@ const EditBiddingContract = (props) => {
 			})
 		}
 
-		console.log(1718, state, formData)
+		console.log(1718, data, state, formData)
 		props.editBiddingContract(formData, id);
 	}
 
@@ -438,7 +440,7 @@ const EditBiddingContract = (props) => {
 						/>
 					</div>
 					<div className="form-group col-md-6">
-						<label >Chọn gói thầu</label>
+						<label >Chọn gói thầu<span className="text-red">*</span></label>
 						<SelectBox
 							id={`bidding-contract-select-package--${id}`}
 							className="form-control select2"
