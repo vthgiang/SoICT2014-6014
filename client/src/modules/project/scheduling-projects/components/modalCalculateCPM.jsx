@@ -124,8 +124,10 @@ const ModalCalculateCPM = (props) => {
         console.log('currentProcessData afterrrrrrr ----------', currentProcessData)
         console.log('findLatestDate(currentProcessData)', findLatestDate(currentProcessData))
         const message = moment(findLatestDate(currentProcessData)).isAfter(moment(projectDetail?.endDate))
-            ? "Thời gian tính toán nhiều hơn thời gian dự kiến. Bạn có chắc chắn tiếp tục thêm danh sách công việc dự án vào cơ sở dữ liệu?"
-            : "Bạn có muốn thêm danh sách công việc dự án vào cơ sở dữ liệu?"
+            // ? "Thời gian tính toán nhiều hơn thời gian dự kiến. Bạn có chắc chắn tiếp tục thêm danh sách công việc dự án vào cơ sở dữ liệu?"
+            ? "Thời gian tính toán nhiều hơn thời gian dự kiến. Bạn có chắc chắn tiếp tục thêm danh sách công việc vào dự án?"
+            : "Bạn có muốn thêm danh sách công việc vào dự án?"
+        // : "Bạn có muốn thêm danh sách công việc dự án vào cơ sở dữ liệu?"
         Swal.fire({
             html: `<h4 style="color: red"><div>${message}</div></h4>`,
             icon: 'warning',

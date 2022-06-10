@@ -2955,7 +2955,7 @@ exports.searchEmployeeForPackage = async (portal, params, companyId) => {
         }
     }
 
-    // console.log("xxxxxxxxxxxxxx", keySearch);
+    console.log("xxxxxxxxxxxxxx", keySearch);
 
     // Lấy danh sách nhân viên
     let listData = [];

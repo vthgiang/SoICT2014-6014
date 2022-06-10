@@ -1,4 +1,4 @@
-const { BiddingPackage, Employee, User, Task } = require("../../../models");
+const { BiddingPackage, Employee, User, Task, BiddingContract } = require("../../../models");
 const fs = require("fs");
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getEmployeeInforByListId } = require("../profile/profile.service");
@@ -82,29 +82,50 @@ exports.searchBiddingPackage = async (portal, params, company) => {
         let data = await BiddingPackage(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .sort({
-                endDate: -1,
+                createdAt: "desc",
             })
             .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
+
+        let result = [];
+        for (let x of data) {
+            let checkHasContract = await BiddingContract(connect(DB_CONNECTION, portal)).findOne({ biddingPackage: x._id });
+            if (checkHasContract) {
+                result.push({ ...x._doc, hasContract: true })
+            } else {
+                result.push({ ...x._doc, hasContract: false })
+            }
+        }
         return {
-            listBiddingPackages: data,
+            listBiddingPackages: result,
             totalList: data.length,
         };
     } else {
         let data = await BiddingPackage(connect(DB_CONNECTION, portal)).find(
             keySearch
         );
-        listBiddingPackages = await BiddingPackage(
+        let listBiddingPackages = await BiddingPackage(
             connect(DB_CONNECTION, portal)
         )
             .find(keySearch)
             .sort({
-                endDate: -1,
+                createdAt: "desc",
             })
             .skip(params.page)
             .limit(params.limit)
             .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
+
+        let result = [];
+        for (let x of listBiddingPackages) {
+            let checkHasContract = await BiddingContract(connect(DB_CONNECTION, portal)).findOne({ biddingPackage: x._id });
+            if (checkHasContract) {
+                result.push({ ...x._doc, hasContract: true })
+            } else {
+                result.push({ ...x._doc, hasContract: false })
+            }
+        }
+
         return {
-            listBiddingPackages: listBiddingPackages,
+            listBiddingPackages: result,
             totalList: data.length,
         };
     }
@@ -120,10 +141,13 @@ exports.getDetailBiddingPackage = async (portal, params) => {
         connect(DB_CONNECTION, portal)
     ).findOne({ _id: params.id })
         .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
+
+    let checkHasContract = await BiddingContract(connect(DB_CONNECTION, portal)).findOne({ biddingPackage: params.id });
     let keyPeopleArr = {};
     keyPeopleArr = {
         ...listBiddingPackages._doc,
         keyPeople: [],
+        hasContract: checkHasContract ? true : false,
     };
 
     if (listBiddingPackages.keyPeople) {
@@ -158,8 +182,14 @@ exports.getDetailBiddingPackageToEdit = async (portal, params) => {
     ).findOne({ _id: params.id })
     // .populate({ path: "proposals.directEmployees proposals.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
 
+    let checkHasContract = await BiddingContract(connect(DB_CONNECTION, portal)).findOne({ biddingPackage: params.id });
+    let res = {};
+    res = {
+        ...listBiddingPackages._doc,
+        hasContract: checkHasContract ? true : false,
+    };
     return {
-        listBiddingPackages,
+        listBiddingPackages: res,
     };
 };
 

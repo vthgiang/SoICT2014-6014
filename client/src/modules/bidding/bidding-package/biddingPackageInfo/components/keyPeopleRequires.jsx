@@ -35,7 +35,7 @@ function KeyPeopleRequireTab(props) {
         { value: 0, text: "Không có" },
     ];
 
-    let sameCareerPosition = listCareer? listCareer.map(item => {return { value: item._id, text: item.name } }) : []
+    let sameCareerPosition = listCareer ? listCareer.map(item => { return { value: item._id, text: item.name } }) : []
 
     return (
         <div id={id} className="tab-pane">
@@ -45,8 +45,8 @@ function KeyPeopleRequireTab(props) {
 
                     if (item.majors) {
                         item.majors.map((y, index) => {
-                            majors = majors + `${listMajor.find(x => x._id == y).name}`
-                            if (index != item.majors.length -1 ) majors = majors + ', '
+                            majors = majors + `${listMajor.find(x => x._id == y)?.name}`
+                            if (index != item.majors.length - 1) majors = majors + ', '
                         })
                     }
 
@@ -104,7 +104,7 @@ function KeyPeopleRequireTab(props) {
                                 <legend className="scheduler-border">
                                     <h4 className="box-title">Yêu cầu chứng chỉ- bằng cấp</h4>
                                 </legend>
-                                
+
                                 <div className="row">
                                     <div className="form-group col-md-12">
                                         <label >Danh sách chứng chỉ - bằng cấp</label>
@@ -122,7 +122,7 @@ function KeyPeopleRequireTab(props) {
                                     </div>
                                     <div className="form-group col-md-12">
                                         <label >Số chứng chỉ tối thiểu</label>
-                                        <input type="number" className="form-control" name="count" value={item?.certificateRequirements?.count} autoComplete="off" disabled={true}/>
+                                        <input type="number" className="form-control" name="count" value={item?.certificateRequirements?.count} autoComplete="off" disabled={true} />
                                     </div>
                                 </div>
                             </fieldset>

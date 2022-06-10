@@ -41,7 +41,7 @@ const ContractManagement = (props) => {
         status: [0, 1, 2, 3, 4],
         type: [1, 2, 3, 4, 5],
         page: 1,
-        limit: _limit,
+        limit: 10,
         currentRow: null,
         currentRowView: null
     });

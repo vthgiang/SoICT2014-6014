@@ -5,6 +5,7 @@ import { BiddingPackageDetailForm } from '../../biddingPackageManagement/compone
 import { saveAs } from "file-saver";
 import { Packer } from "docx";
 import { bidsDocxCreate } from './bidsDocxCreator';
+import CreateBiddingContract from '../../../bidding-contract/component/createContract'
 
 function GeneralTab(props) {
 
@@ -54,13 +55,14 @@ function GeneralTab(props) {
                 type: props.biddingPackage.type,
                 status: props.biddingPackage.status,
                 description: props.biddingPackage.description,
+                hasContract: props.biddingPackage.hasContract,
             }
         })
     }, [props.id])
 
     const { translate } = props;
 
-    const { id, _id, name, code, customer, receiveLocal, openLocal, price, startDate, endDate, type, status, description } = state;
+    const { id, _id, name, code, customer, receiveLocal, openLocal, price, startDate, endDate, type, status, description, hasContract } = state;
 
     const typeArr = [
         { value: 1, text: 'Gói thầu tư vấn' },
@@ -78,6 +80,12 @@ function GeneralTab(props) {
     ]
 
 
+    const handleCreateContract = () => {
+        setTimeout(() => {
+            window.$(`#modal-create-package-biddingContract-${_id}`).modal('show');
+        }, 500);
+    }
+
 
     const generateBidsDocx = (state) => {
         const doc = bidsDocxCreate(state, props.modelConfiguration.biddingConfig);
@@ -90,7 +98,19 @@ function GeneralTab(props) {
     }
     return (
         <div id={id} className="tab-pane active">
-            <div style={{ display: 'flex', justifyContent: "flex-end" }}>
+            <div style={{ display: 'flex', justifyContent: "space-between" }}>
+                <div>
+                    {!props.inContractDetail && !hasContract && status === 3 ?
+                        <span>
+                            {/* <CreateBiddingContract
+                                id={_id ? _id : ''}
+                            /> */}
+                            <span className="text-red">*</span> <span style={{ color: "red" }}>Gói thầu đang thực hiện nhưng chưa tạo hợp đồng. Hãy tạo Hợp đồng ngay tại</span> &nbsp;
+                            <a style={{ fontWeight: "bold", cursor: "pointer" }} onClick={() => handleCreateContract()}>đây</a>
+                            <span className="text-red">*</span>
+                        </span> : ""
+                    }
+                </div>
                 <div className="btn btn-success" onClick={() => generateBidsDocx(state)}>Tải file HSDT</div>
             </div>
             <div className=" row box-body">

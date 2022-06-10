@@ -13,6 +13,7 @@ import { MajorActions } from '../../../../human-resource/major/redux/actions';
 import { CareerReduxAction } from '../../../../human-resource/career/redux/actions';
 import { CertificateActions } from '../../../../human-resource/certificate/redux/actions';
 import { BiddingPackageReduxAction } from '../../redux/actions';
+import CreateBiddingContract from '../../../bidding-contract/component/createContract'
 
 const BiddingPackageDetailForm = (props) => {
 
@@ -68,6 +69,9 @@ const BiddingPackageDetailForm = (props) => {
                 hasNote={false}
             >
                 <form className="form-group" id={`form-detail-biddingPackage${_id}`} style={{ marginTop: "-15px" }}>
+                    <CreateBiddingContract
+                        id={_id ? _id : ''}
+                    />
                     {biddingPackageDetail && (
                         <div className="nav-tabs-custom row">
                             <ul className="nav nav-tabs">
@@ -79,6 +83,7 @@ const BiddingPackageDetailForm = (props) => {
                             <div className="tab-content">
                                 {/* Thông tin chung */}
                                 <GeneralTab
+                                    _id={_id}
                                     id={`view_general${_id}`}
                                     biddingPackage={biddingPackageDetail}
                                 />

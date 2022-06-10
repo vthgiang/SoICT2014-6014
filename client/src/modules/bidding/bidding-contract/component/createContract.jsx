@@ -98,17 +98,17 @@ const CreateBiddingContract = (props) => {
 	}
 	const [state, setState] = useState(initState);
 	const [id, setId] = useState(props.id);
-	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
+	const listActiveBiddingPackage = biddingPackagesManager?.listActiveBiddingPackage;
 
 	useEffect(() => {
-		props.getAllBiddingPackage({ name: '', status: 3, page: 0, limit: 1000 });
+		props.getAllBiddingPackage({ callId: "contract", name: '', status: 3, page: undefined, limit: undefined });
 		props.getConfiguration();
 	}, [])
 
 	useEffect(() => {
 		setId(props.id)
 
-		let bp = props.biddingPackagesManager?.listBiddingPackages?.find(x => x._id == props.id);
+		let bp = props.biddingPackagesManager?.listActiveBiddingPackage?.find(x => x._id == props.id);
 		if (bp) {
 			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
 			const effecttiveDate = state.effectiveDate;
@@ -154,7 +154,7 @@ const CreateBiddingContract = (props) => {
 			value = null
 		};
 
-		let bp = props.biddingPackagesManager?.listBiddingPackages?.find(x => x._id == value[0])
+		let bp = props.biddingPackagesManager?.listActiveBiddingPackage?.find(x => x._id == value[0])
 		if (bp) {
 			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
 			console.log(113, updatedDecision);
@@ -420,7 +420,7 @@ const CreateBiddingContract = (props) => {
 							id={`package`}
 							className="form-control select2"
 							style={{ width: "100%" }}
-							items={listBiddingPackages?.map(x => {
+							items={listActiveBiddingPackage?.map(x => {
 								return { text: x.name, value: x._id }
 							})}
 							options={{ placeholder: "Chọn gói thầu" }}

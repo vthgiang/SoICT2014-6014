@@ -230,6 +230,7 @@ const CreateProjectByProjectTemplateModal = (props) => {
             estimatedCost,
             creator: userId,
             responsibleEmployeesWithUnit: currentSalaryMembers,
+            projectTemplate: id
         }
         const dataRq = {
             project: projectRq,

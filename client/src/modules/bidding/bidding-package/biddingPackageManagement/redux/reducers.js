@@ -10,6 +10,7 @@ const initState = {
     biddingPackageDetail: [],
     listBiddingPackages: [],
     listAllBiddingPackages: [],
+    listActiveBiddingPackage: [],
     error: '',
 }
 export function biddingPackagesManager(state = initState, action) {
@@ -29,14 +30,23 @@ export function biddingPackagesManager(state = initState, action) {
                 // listAllBiddingPackages:[],
             };
         case BiddingPackageConstants.GETALL_SUCCESS:
-            return {
-                ...state,
-                listBiddingPackages: action.payload.listBiddingPackages,
-                listAllBiddingPackages: action.payload.listAllBiddingPackages,
-                totalList: action.payload.totalList,
-                isLoading: false
-            };
-        case BiddingPackageConstants.GET_DETAIL_SUCCESS: 
+            if (!action.callId) {
+                return {
+                    ...state,
+                    listBiddingPackages: action.payload.listBiddingPackages,
+                    listAllBiddingPackages: action.payload.listAllBiddingPackages,
+                    totalList: action.payload.totalList,
+                    isLoading: false
+                };
+            }
+            else if (action.callId === "contract") {
+                return {
+                    ...state,
+                    listActiveBiddingPackage: action.payload.listBiddingPackages,
+                    isLoading: false
+                };
+            }
+        case BiddingPackageConstants.GET_DETAIL_SUCCESS:
             return {
                 ...state,
                 isLoading: false,

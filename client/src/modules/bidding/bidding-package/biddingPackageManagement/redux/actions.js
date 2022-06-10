@@ -32,6 +32,7 @@ function getAllBiddingPackage(data) {
                 dispatch({
                     type: BiddingPackageConstants.GETALL_SUCCESS,
                     payload: res.data.content,
+                    callId: data.callId,
                     // exportData: data ? data.exportData : data
                 })
             })

@@ -1,21 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { connect } from 'react-redux';
-// import { withTranslate } from 'react-redux-multilingual';
-// import { BiddingPackageDetail } from './biddingPackageDetail';
-
-// const BiddingPackageDetailPage = (props) => {
-//     const currentId = window.location.href.split('?id=')[1].split('#')?.[0];
-
-//     return (
-//         <>
-//             <BiddingPackageDetail
-//                 _id={currentId}
-//             />
-//         </>
-//     );
-// }
-
-// export default connect(null, null)(withTranslate(BiddingPackageDetailPage));
 import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -29,6 +11,8 @@ import { MajorActions } from '../../../../human-resource/major/redux/actions';
 import { CareerReduxAction } from '../../../../human-resource/career/redux/actions';
 import { CertificateActions } from '../../../../human-resource/certificate/redux/actions';
 import { BiddingPackageReduxAction } from '../../redux/actions';
+import CreateBiddingContract from '../../../bidding-contract/component/createContract'
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 const BiddingPackageDetailPage = (props) => {
     const { biddingPackagesManager, translate, career, major, certificate } = props;
@@ -43,6 +27,8 @@ const BiddingPackageDetailPage = (props) => {
 
     useEffect(() => {
         props.getDetailBiddingPackage(currentId, {});
+        props.getAllUserInAllUnitsOfCompany();
+        props.getAllUser();
     }, []);
 
     useEffect(() => {
@@ -54,7 +40,8 @@ const BiddingPackageDetailPage = (props) => {
     useEffect(() => {
         setState({
             ...state,
-            biddingPackageDetail: biddingPackagesManager.biddingPackageDetail
+            biddingPackageDetail: biddingPackagesManager.biddingPackageDetail,
+            _id: biddingPackagesManager.biddingPackageDetail?._id
         });
     }, [biddingPackagesManager.biddingPackageDetail]);
 
@@ -67,6 +54,9 @@ const BiddingPackageDetailPage = (props) => {
 
     return (
         <div className='box' id={`form-detail-biddingPackage${_id}`} >
+            <CreateBiddingContract
+                id={_id ? _id : ''}
+            />
             {biddingPackageDetail?._id && (
                 <div className="nav-tabs-custom row box-body" style={{ margin: 0 }}>
                     <ul className="nav nav-tabs">
@@ -117,8 +107,8 @@ const BiddingPackageDetailPage = (props) => {
 }
 
 function mapState(state) {
-    const { biddingPackagesManager, biddingPackages, major, career, certificate } = state;
-    return { biddingPackagesManager, biddingPackages, major, career, certificate };
+    const { biddingPackagesManager, biddingPackages, major, career, certificate, user } = state;
+    return { biddingPackagesManager, biddingPackages, major, career, certificate, user };
 };
 
 const actionCreators = {
@@ -128,6 +118,8 @@ const actionCreators = {
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
     getListCertification: CertificateActions.getListCertificate,
     downLoadDocument: BiddingPackageReduxAction.downloadPackageDocument,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getAllUser: UserActions.get,
 };
 
 // const detailBiddingPackage = connect(mapState, actionCreators)(withTranslate(BiddingPackageDetail));

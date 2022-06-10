@@ -68,7 +68,7 @@ const ViewBiddingContract = (props) => {
 	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
 
 	useEffect(() => {
-		props.getAllBiddingPackage({ name: '', status: 3, page: 0, limit: 1000 });
+		props.getAllBiddingPackage({ name: '', status: 3, page: undefined, limit: undefined });
 	}, [])
 
 	useEffect(() => {
