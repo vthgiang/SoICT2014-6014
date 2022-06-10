@@ -1577,7 +1577,6 @@ exports.deleteTaskAction = async (portal, params) => {
   for (i = 0; i < files.length; i++) {
     fs.unlinkSync(files[i].url);
   }
-
   return action.taskActions;
 };
 
@@ -3069,9 +3068,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       }
     }
   }
-  console.log(3072)
   let taskItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-  console.log(3074)
   const accountableEmployeesTaskOutputs = taskItem.accountableEmployees.map((item) => {
     return {
       accountableEmployee: item._id,
@@ -7812,6 +7809,11 @@ exports.evaluateTaskByAccountableEmployeesProject = async (portal, data, taskId)
 };
 
 exports.createTaskOutputs = async (portal, params, body, taskAction) => {
+  const log = {
+    creator: mongoose.Types.ObjectId(body.creator),
+    action: "Thêm báo cáo kết quả giao nộp",
+    description: body.description,
+  }
   const task = await Task(connect(DB_CONNECTION, portal))
     .findOneAndUpdate(
       { _id: params.taskId, "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId) },
@@ -7821,6 +7823,7 @@ exports.createTaskOutputs = async (portal, params, body, taskAction) => {
             $each: [taskAction._id],
             $position: 0
           },
+          "taskOutputs.$.submissionResults.logs": log
         },
         $set: {
           "taskOutputs.$.status": "waiting_approval",
@@ -7836,6 +7839,14 @@ exports.createTaskOutputs = async (portal, params, body, taskAction) => {
         path: "taskActions.comments.creator",
         select: "name email avatar",
       },
+      {
+        path: "taskOutputs.submissionResults.logs.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
     ])
   const taskOutputs = task.taskOutputs.map((item) => {
     const taskActions = item.submissionResults.taskActions.map((x) => {
@@ -7961,6 +7972,179 @@ exports.approveTaskOutputs = async (portal, params, body) => {
         }
       },
       { new: true })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.logs.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+  const taskOutputs = task.taskOutputs.map((item) => {
+    const taskActions = item.submissionResults.taskActions.map((x) => {
+      const taskAction = task.taskActions.find(o => x == o._id);
+      return taskAction;
+    })
+    let taskOutput = {
+      _id: item._id,
+      title: item.title,
+      description: item.description,
+      type: item.type,
+      status: item.status,
+      accountableEmployees: item.accountableEmployees,
+      submissionResults: {
+        taskActions: taskActions,
+        logs: item.submissionResults.logs
+      }
+    }
+    return taskOutput;
+  })
 
   return { taskOutputs: task.taskOutputs };
+}
+
+
+exports.editSubmissionResults = async (portal, params, body) => {
+  const log = {
+    creator: mongoose.Types.ObjectId(body.creator),
+    action: "Chỉnh sửa báo cáo kết quả giao nộp",
+    description: body.description,
+  }
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+      },
+      {
+        $push: {
+          "taskOutputs.$.submissionResults.logs": log
+        }
+      },
+      { new: true })
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.logs.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+  const taskOutputs = task.taskOutputs.map((item) => {
+    const taskActions = item.submissionResults.taskActions.map((x) => {
+      const taskAction = task.taskActions.find(o => x == o._id);
+      return taskAction;
+    })
+    let taskOutput = {
+      _id: item._id,
+      title: item.title,
+      description: item.description,
+      type: item.type,
+      status: item.status,
+      accountableEmployees: item.accountableEmployees,
+      submissionResults: {
+        taskActions: taskActions,
+        logs: item.submissionResults.logs
+      }
+    }
+    return taskOutput;
+  })
+
+  return { taskOutputs: taskOutputs };
+}
+
+exports.deleteSubmissionResults = async (portal, params, body) => {
+  const log = {
+    creator: mongoose.Types.ObjectId(body.creator),
+    action: "Xóa 1 báo cáo kết quả giao nộp",
+    description: body.description,
+  }
+
+  const currentTask = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId });
+  const taskOutput = currentTask.taskOutputs.find((item) => item._id == params.taskOutputId);
+  const taskActions = taskOutput?.submissionResults.taskActions.filter((item) => item !== body.actionId);
+
+  const newTaskEdit = await Task(connect(DB_CONNECTION, portal))
+    .findOneAndUpdate(
+      {
+        _id: params.taskId,
+        "taskOutputs._id": mongoose.Types.ObjectId(params.taskOutputId),
+      },
+      {
+        $set: {
+          "taskOutputs.$.submissionResults.taskActions": taskActions
+        },
+        $push: {
+          "taskOutputs.$.submissionResults.logs": log
+        }
+      },
+      { new: true })
+
+  const task = await Task(connect(DB_CONNECTION, portal))
+    .findOne({ _id: params.taskId })
+    .populate([
+      {
+        path: "taskActions.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskActions.comments.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.submissionResults.logs.creator",
+        select: "name email avatar",
+      },
+      {
+        path: "taskOutputs.accountableEmployees.accountableEmployee",
+        select: "name email avatar",
+      }
+    ])
+
+  const taskOutputs = task.taskOutputs.map((item) => {
+    const taskActions = item.submissionResults.taskActions.map((x) => {
+      const taskAction = task.taskActions.find(o => x == o._id);
+      return taskAction;
+    })
+    let taskOutput = {
+      _id: item._id,
+      title: item.title,
+      description: item.description,
+      type: item.type,
+      status: item.status,
+      accountableEmployees: item.accountableEmployees,
+      submissionResults: {
+        taskActions: taskActions,
+        logs: item.submissionResults.logs
+      }
+    }
+    return taskOutput;
+  })
+
+  return { taskOutputs: taskOutputs };
 }

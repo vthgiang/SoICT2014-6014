@@ -2014,7 +2014,7 @@ function ActionTab(props) {
                         </React.Fragment>
                     </div>
                     <div className={selected === "taskOutputs" ? "active tab-pane" : "tab-pane"} id="subTask">
-                        <TaskOutputsTab />
+                        <TaskOutputsTab role={role} />
                     </div>
                     {/* Chuyển qua tab công việc liên quan */}
                     <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">

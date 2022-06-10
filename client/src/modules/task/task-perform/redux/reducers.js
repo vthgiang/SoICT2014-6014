@@ -1097,15 +1097,49 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.APPROVE_TASK_OUTPUTS_SUCCESS:
-
+            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
             return {
                 ...state,
+                task: task
             }
         case performTaskConstants.APPROVE_TASK_OUTPUTS_FAILURE:
             return {
                 ...state,
                 error: action.error
             };
+        case performTaskConstants.EDIT_SUBMISSION_RESULTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.EDIT_SUBMISSION_RESULTS_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.EDIT_SUBMISSION_RESULTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.DELETE_SUBMISSION_RESULTS_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+
         default:
             return state
     }

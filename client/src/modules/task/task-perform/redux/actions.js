@@ -80,7 +80,9 @@ export const performTaskAction = {
 
     createTaskOutputs,
     getTaskOutputs,
-    approveTaskOutputs
+    approveTaskOutputs,
+    editSubmissionResults,
+    deleteSubmissionResults
 };
 
 
@@ -1298,6 +1300,30 @@ function approveTaskOutputs(taskId, taskOutputId, data) {
             .then(
                 payload => dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.APPROVE_TASK_OUTPUTS_FAILURE, error })
+            );
+    };
+}
+
+function editSubmissionResults(taskId, taskOutputId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_SUBMISSION_RESULTS_REQUEST });
+
+        performTaskService.editSubmissionResults(taskId, taskOutputId, data)
+            .then(
+                payload => dispatch({ type: performTaskConstants.EDIT_SUBMISSION_RESULTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.EDIT_SUBMISSION_RESULTS_FAILURE, error })
+            );
+    };
+}
+
+function deleteSubmissionResults(taskId, taskOutputId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_REQUEST });
+
+        performTaskService.deleteSubmissionResults(taskId, taskOutputId, data)
+            .then(
+                payload => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE, error })
             );
     };
 }

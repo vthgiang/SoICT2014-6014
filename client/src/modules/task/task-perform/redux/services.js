@@ -81,7 +81,9 @@ export const performTaskService = {
 
     createTaskOutputs,
     getTaskOutputs,
-    approveTaskOutputs
+    approveTaskOutputs,
+    editSubmissionResults,
+    deleteSubmissionResults,
 };
 
 /**
@@ -860,6 +862,22 @@ function approveTaskOutputs(taskId, taskOutputId, data) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}`,
         method: 'PATCH',
         data: data,
+    }, true, true, 'task.task_perform');
+}
+
+function editSubmissionResults(taskId, taskOutputId, newAction) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/submissionResults`,
+        method: 'PATCH',
+        data: newAction
+    }, true, true, 'task.task_perform');
+}
+
+function deleteSubmissionResults(taskId, taskOutputId, newAction) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/submissionResults`,
+        method: 'DELETE',
+        data: newAction
     }, true, true, 'task.task_perform');
 }
 

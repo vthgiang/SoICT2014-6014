@@ -138,7 +138,6 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
-        console.log('err', error)
         await Logger.error(req.user.email, 'stop_timer_failureure', req.portal)
         res.status(400).json({
             success: false,
@@ -830,7 +829,6 @@ exports.editTask = async (req, res) => {
         }
         else if (req.body.role === 'accountable') {
             editTaskByAccountableEmployees(req, res);
-            console.log(833)
         }
     }
     else if (req.body.type === 'edit_archived') {
@@ -2060,7 +2058,7 @@ exports.createTaskOutputs = async (req, res) => {
         let task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
         let taskAction = task.taskActions?.[0];
         let taskOutputs = await PerformTaskService.createTaskOutputs(req.portal, req.params, req.body, taskAction);
-        // console.log(taskAction);
+
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
@@ -2079,7 +2077,6 @@ exports.createTaskOutputs = async (req, res) => {
 exports.getTaskOutputs = async (req, res) => {
     try {
         let taskOutputs = await PerformTaskService.getTaskOutputs(req.portal, req.params);
-        // console.log(taskAction);
         res.status(200).json({
             success: true,
             messages: ['get_task_outputs_success'],
@@ -2098,7 +2095,6 @@ exports.getTaskOutputs = async (req, res) => {
 exports.approveTaskOutputs = async (req, res) => {
     try {
         let taskOutputs = await PerformTaskService.approveTaskOutputs(req.portal, req.params, req.body);
-        // console.log(taskAction);
         res.status(200).json({
             success: true,
             messages: ['approve_task_outputs_success'],
@@ -2109,6 +2105,69 @@ exports.approveTaskOutputs = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['approve_task_outputs_failure'],
+            content: error
+        })
+    }
+}
+
+exports.editSubmissionResults = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        const params = {
+            ...req.params,
+            actionId: req.body.actionId
+        }
+        let task = await PerformTaskService.editTaskAction(req.portal, params, req.body, files);
+        let taskOutputs = await PerformTaskService.editSubmissionResults(req.portal, req.params, req.body);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_submission_results_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create task action  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_submission_results_failure'],
+            content: error
+        })
+    }
+}
+
+exports.deleteSubmissionResults = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        const params = {
+            ...req.params,
+            actionId: req.body.actionId
+        }
+        let task = await PerformTaskService.deleteTaskAction(req.portal, params);
+        let taskOutputs = await PerformTaskService.deleteSubmissionResults(req.portal, req.params, req.body);
+
+        res.status(200).json({
+            success: true,
+            messages: ['delete_submission_results_success'],
+            content: taskOutputs
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create task action  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['delete_submission_results_failure'],
             content: error
         })
     }

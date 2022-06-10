@@ -122,7 +122,10 @@ router.post('/tasks/:taskId/evaluate-project', auth, PerformTaskController.evalu
 
 // TaskOutputs
 router.post('/tasks/:taskId/task-outputs/:taskOutputId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskOutputs);
+router.patch('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editSubmissionResults)
 router.get('/tasks/:taskId/task-outputs', auth, PerformTaskController.getTaskOutputs);
 router.patch('/tasks/:taskId/task-outputs/:taskOutputId', auth, PerformTaskController.approveTaskOutputs);
+router.delete('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, PerformTaskController.deleteSubmissionResults);
+
 
 module.exports = router;
