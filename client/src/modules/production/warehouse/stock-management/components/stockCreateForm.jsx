@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal, TimePicker } from '../../../../../common-components';
 import { StockActions } from '../redux/actions';
-import { translate } from 'react-redux-multilingual/lib/utils';
 import { generateCode } from '../../../../../helpers/generateCode';
 import { useState } from 'react';
+import { formatDate } from '../../../../../helpers/formatDate';
+import dayjs from "dayjs";
 
 function StockCreateForm(props) {
     const EMPTY_GOOD = {
@@ -36,6 +37,8 @@ function StockCreateForm(props) {
         description: '',
         editInfo: false,
         editInfoRole: false,
+        startTime: '07:00 AM',
+        endTime: '07:00 PM',
     })
 
     const handleNameChange = (e) => {
@@ -80,45 +83,40 @@ function StockCreateForm(props) {
         return msg === undefined;
     }
 
-    const handleDepartmentChange = (value) => {
-        let manageDepartment = value[0];
-        validateDepartment(manageDepartment, true);
+    const handleOrganizationalUnitValueChange = (value) => {
+        let organizationalUnitValue = value[0];
+        validateOrganizationalUnitValue(organizationalUnitValue, true);
     }
 
-    const validateDepartment = (value, willUpdateState = true) => {
+    const validateOrganizationalUnitValue = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+        const { translate, department } = props;
+        if (value === "") {
+            msg = translate('manage_warehouse.stock_management.error_organizational_unit')
         }
+
         if (willUpdateState) {
+            const { list } = department;
+            let currentDepartment;
+            const listDepartment = list.filter(x => x._id === value);
+            if (listDepartment.length > 0) {
+                currentDepartment = listDepartment[0];
+            } else {
+                currentDepartment = {
+                    name: "",
+                    description: ""
+                }
+            }
             setState({
                 ...state,
-                errorOnDepartment: msg,
-                manageDepartment: value,
+                organizationalUnitError: msg,
+                organizationalUnitValue: value,
+                currentDepartment: currentDepartment,
+                name: currentDepartment.name,
+                description: currentDepartment.description
             });
         }
-        return msg === undefined;
-    }
-
-    const handleManagementLocationtChange = (value) => {
-        validateManagementLocation(value, true);
-    }
-
-    const validateManagementLocation = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnManagementLocation: msg,
-                managementLocation: value,
-            });
-        }
-        return msg === undefined;
+        return msg;
     }
 
     const handleStatusChange = (value) => {
@@ -146,7 +144,9 @@ function StockCreateForm(props) {
     const isFormValidated = () => {
         let result =
             validateName(state.name, false) &&
-            validateAddress(state.address, false)
+            validateAddress(state.address, false) &&
+            validateStartTime(state.startTime, false) &&
+            validateEndTime(state.endTime, false);
         return result;
     }
 
@@ -450,9 +450,57 @@ function StockCreateForm(props) {
         return result;
     }
 
+    const convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+    }
+
+    const handleStartTimeChange = (value) => {
+        validateStartTime(value, true);
+    }
+
+    const validateStartTime = (value, willUpdateState = true) => {
+        let msg = undefined;
+        let startTime = convertDateTime(formatDate((new Date()).toISOString()), value);
+        let endTime = convertDateTime(formatDate((new Date()).toISOString()), state.endTime);
+        if (startTime > endTime) {
+            msg = "Thời gian mở cửa phải trước thời gian đóng cửa";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                startTime: value,
+                errorOnStartTime: msg
+            });
+        }
+        return msg === undefined;
+    }
+
+    const handleEndTimeChange = (value) => {
+        validateEndTime(value, true);
+    }
+
+    const validateEndTime = (value, willUpdateState = true) => {
+        let msg = undefined;
+        let startTime = convertDateTime(formatDate((new Date()).toISOString()), state.startTime);
+        let endTime = convertDateTime(formatDate((new Date()).toISOString()), value);
+        if (startTime > endTime) {
+            msg = "Thời gian mở cửa phải trước thời gian đóng cửa";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                endTime: value,
+                errorOnEndTime: msg
+            });
+        }
+        return msg === undefined;
+    }
+
     const { translate, stocks } = props;
     const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name,
-        managementLocation, status, address, description, manageDepartment, goods, good, errorOnRole, errorOnManagementGood, role } = state;
+        managementLocation, status, address, description, organizationalUnitValue, goods, good, errorOnRole, errorOnManagementGood, role, currentDepartment, startTime, endTime, errorOnStartTime, errorOnEndTime } = state;
     const departmentManagement = getAllDepartment();
     const listGoods = getAllGoods();
     const listRoles = getAllRoles();
@@ -479,30 +527,31 @@ function StockCreateForm(props) {
                                 <label>{translate('manage_warehouse.stock_management.code')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={code} disabled />
                             </div>
+                            <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.stock_management.name')}<span className="text-red"> * </span></label>
+                                <input type="text" className="form-control" value={name} onChange={handleNameChange} />
+                                <ErrorLabel content={errorOnName} />
+                            </div>
                             <div className={`form-group ${!errorOnAddress ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.stock_management.address')}<span className="text-red"> * </span></label>
                                 <input type="text" className="form-control" value={address} onChange={handleAddressChange} />
                                 <ErrorLabel content={errorOnAddress} />
                             </div>
-                            {/* <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-status-of-stock`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={manageDepartment}
-                                        items={departmentManagement}
-                                        onChange={this.handleDepartmentChange}    
-                                        multiple={false}
-                                    />
-                                    <ErrorLabel content = { errorOnDepartment } />
-                                </div> */}
+
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.stock_management.name')}<span className="text-red"> * </span></label>
-                                <input type="text" className="form-control" value={name} onChange={handleNameChange} />
-                                <ErrorLabel content={errorOnName} />
+                            <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.stock_management.department')}<span className="text-red"> * </span></label>
+                                <SelectBox
+                                    id={`select-department`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={organizationalUnitValue}
+                                    items={departmentManagement}
+                                    onChange={handleOrganizationalUnitValueChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorOnDepartment} />
                             </div>
                             <div className="form-group">
                                 <label>{translate('manage_warehouse.stock_management.status')}<span className="text-red"> * </span></label>
@@ -521,25 +570,59 @@ function StockCreateForm(props) {
                                     multiple={false}
                                 />
                             </div>
-                            {/* <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.stock_management.management_location')}<span className="text-red"> * </span></label>
-                                    <SelectBox
-                                        id={`select-management-location-stock`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={managementLocation}
-                                        items={this.props.role.list.map((y, index) => { return { value: y._id, text: y.name}})}
-                                        onChange={this.handleManagementLocationtChange}    
-                                        multiple={true}
+                            <div className="form-group" >
+                                <div className={`col-xs-12 col-sm-6 col-md-6 col-lg-6 form-group ${!errorOnStartTime ? "" : "has-error"}`}>
+                                    <label>{"Thời gian bắt đầu mở cửa"}<span className="text-red"> * </span></label>
+                                    <TimePicker
+                                        id={`startTimePicker`}
+                                        refs={`startTimePicker`}
+                                        value={startTime}
+                                        onChange={(e) => handleStartTimeChange(e)}
                                     />
-                                    <ErrorLabel content = { errorOnManagementLocation } />
-                                </div> */}
+                                    <ErrorLabel content={errorOnStartTime} />
+                                </div>
+                                <div className={`col-xs-12 col-sm-6 col-md-6 col-lg-6 form-group ${!errorOnEndTime ? "" : "has-error"}`}>
+                                    <label>{"Thời gian đóng cửa"}<span className="text-red"> * </span></label>
+                                    <TimePicker
+                                        id={`endTimePicker`}
+                                        refs={`endTimePicker`}
+                                        value={endTime}
+                                        onChange={(e) => handleEndTimeChange(e)}
+                                    />
+                                    <ErrorLabel content={errorOnEndTime} />
+                                </div>
+                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="form-group">
                                 <label>{translate('manage_warehouse.stock_management.description')}</label>
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
+                            {
+                                currentDepartment && currentDepartment.managers &&
+                                <React.Fragment>
+                                    <fieldset className="scheduler-border">
+                                        <legend className="scheduler-border">{translate('manage_warehouse.stock_management.list_roles')}</legend>
+                                        {
+                                            currentDepartment.managers.map((role, index) => {
+                                                return (
+                                                    <div className={`form-group`} key={index}>
+                                                        <strong>{role.name}: &emsp;</strong>
+                                                        {
+                                                            role.users.map((user, index) => {
+                                                                if (index === role.users.length - 1) {
+                                                                    return user.userId.name
+                                                                }
+                                                                return user.userId.name + ", "
+                                                            })
+                                                        }
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </fieldset>
+                                </React.Fragment>
+                            }
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.stock_management.management_location')}</legend>
 

@@ -12,6 +12,7 @@ export const TaskProcessActions = {
     deleteTaskProcess,
     editProcessInfo,
     importProcessTemplate,
+    getProcessById,
 
     createComment,
     editComment,
@@ -68,6 +69,21 @@ function getXmlDiagramById(diagramId) {
             .then(
                 res => dispatch({ type: TaskProcessConstants.GET_XML_DIAGRAM_BY_ID_SUCCESS, payload: res.data }),
                 error => dispatch({ type: TaskProcessConstants.GET_XML_DIAGRAM_BY_ID_FAIL })
+            );
+    };
+}
+
+/**
+ * Lấy  quy trình theo id
+ * @param {*} processId id mẫu quy trình
+ */
+ function getProcessById(processId) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.GET_XML_PROCESS_BY_ID_REQUEST });
+        TaskProcessService.getProcessById(processId)
+            .then(
+                res => dispatch({ type: TaskProcessConstants.GET_XML_PROCESS_BY_ID_SUCCESS, payload: res.data }),
+                error => dispatch({ type: TaskProcessConstants.GET_XML_PROCESS_BY_ID_FAIL })
             );
     };
 }

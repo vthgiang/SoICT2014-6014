@@ -11,7 +11,7 @@ const PartnerSchema = new Schema ({
 
     type: {
         type: String,
-        enum: ["organization", "persaonal"],
+        enum: ["organization", "personal"],
         require: true
     },
 

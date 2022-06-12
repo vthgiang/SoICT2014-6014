@@ -65,8 +65,6 @@ function PurchaseDetailForm(props) {
         paymentsForOrder = payments.paymentsForOrder;
     }
 
-    console.log("paymentsForOrder", paymentsForOrder);
-
     let paymentTypeConvert = ["", "Tiền mặt", "Chuyển khoản"];
     return (
         <React.Fragment>

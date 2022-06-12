@@ -430,6 +430,7 @@ exports.links = [
 
             { path: '/process', method: 'GET' },
             { path: '/process/diagrams/:diagramId', method: 'GET' },
+            { path: '/process/process/:processId', method: 'GET' },
             { path: '/process/diagrams', method: 'POST' },
             { path: '/process/diagrams/import', method: 'POST' },
             { path: '/process/diagrams/:diagramId', method: 'PATCH' },
@@ -597,6 +598,10 @@ exports.links = [
             { path: '/bills', method: 'POST' },
             { path: '/bills/:id', method: 'PATCH' },
             { path: '/bills/get-detail-bill/:id', method: 'GET' },
+
+            { path: '/request-management/stock', method: 'GET' },
+            { path: '/request-management/manufacturing', method: 'GET' },
+            { path: '/request-management/order', method: 'GET' },
 
             //order
             { path: "/orders", method: "GET" },
@@ -860,7 +865,11 @@ exports.links = [
     }, {
         url: '/process-template',
         apis: ['@all']
-    }, {
+    },  {
+        url: '/process',
+        apis: ['@all']
+    },
+    {
         url: '/task-management-dashboard',
         apis: ['@all']
     }, {
@@ -1088,6 +1097,15 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/manage-manufacturing-lot',
+        apis: ['@all']
+    }, {
+        url: '/request-management/stock',
+        apis: ['@all']
+    }, {
+        url: '/request-management/manufacturing',
+        apis: ['@all']
+    }, {
+        url: '/request-management/order',
         apis: ['@all']
     }, {
         url: '/hr-manage-field',

@@ -12,6 +12,8 @@ function StockRotateCreateForm(props) {
         good: '',
         quantity: '',
         returnQuantity: '',
+        damagedQuantity: 0,
+        realQuantity: 0,
         description: '',
         lots: []
     }
@@ -515,8 +517,14 @@ function StockRotateCreateForm(props) {
     const dataToStock = getToStock();
     const dataStock = getStock();
     const dataType = getType();
-
-
+    const timelineTextArr = [
+        { text: "Tạo phiếu" },
+        { text: "Phê duyệt phiếu" },
+        { text: "Thực hiện phiếu" },
+        { text: "Kiểm định chất lượng" },
+        { text: "Hoàn thành" },
+    ]
+    
     return (
         <React.Fragment>
             <ButtonModal onButtonCallBack={handleClickCreate} modalID={`modal-create-bill-rotate`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
@@ -533,6 +541,18 @@ function StockRotateCreateForm(props) {
             >
                 <QuantityLotStockRotateCreate group={group} good={good} stock={fromStock} initialData={lots} onDataChange={handleLotsChange} />
                 <form id={`form-create-bill-rotate`}>
+                <div className="timeline-create">
+                        <div className="timeline-progress" style={{ width: "0%" }}></div>
+                        <div className="timeline-items">
+                            {timelineTextArr.map((item, index) => (
+                                <div className={`timeline-item ${index === 0 ? "active" : ""}`} key={index} >
+                                    <div className={`timeline-contain`}>
+                                        {item.text}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>

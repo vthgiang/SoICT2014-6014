@@ -211,7 +211,7 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
 
     handleChangeProgress = async (e) => {
         let value = parseInt(e.target.value);
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 progress: value,
@@ -1214,7 +1214,6 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
 
                             <TaskInformationForm
                                 task={task && task}
-
                                 handleChangeProgress={this.handleChangeProgress}
                                 handleInfoBooleanChange={this.handleInfoBooleanChange}
                                 handleInfoDateChange={this.handleInfoDateChange}
@@ -1222,10 +1221,10 @@ class ModalEditTaskByAccountableEmployeeProject extends Component {
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
                                 handleChangeListInfo={this.handleChangeListInfo}
-
                                 role={role}
                                 perform={perform}
                                 value={this.state}
+                                progress={this.state.progress ?this.state.progress :''}
                             />
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_member_info')}</legend>

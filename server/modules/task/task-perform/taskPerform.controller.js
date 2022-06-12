@@ -236,9 +236,16 @@ exports.createTaskAction = async (req, res) => {
                 description: `<p><strong>${tasks.name}:</strong> ${userCreator.name} đã thêm mới một hoạt động.</p>`
             }
         };
-
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible);
-        sendEmail(task.email, tasks.name, '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, `${tasks.id}@gmail.com`, null);
+        sendEmail(
+            task.email, 
+            tasks.name, 
+            '', 
+            `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p><br>`
+            + req.body.description,
+            `${tasks.id}@gmail.com`, 
+            null
+        );
 
         await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({

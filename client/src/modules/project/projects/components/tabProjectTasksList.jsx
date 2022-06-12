@@ -68,6 +68,7 @@ const TabProjectTasksList = (props) => {
                         </div>
                     </div>
                     <div style={{ flexDirection: 'row', display: 'flex' }}>
+
                         {/* Button refresh danh sách tasks */}
                         <button style={{ paddingTop: 5, width: 35, height: 35, justifyContent: 'center', alignItems: 'center', marginTop: 15, marginRight: 10 }}
                             onClick={() => {
@@ -77,6 +78,7 @@ const TabProjectTasksList = (props) => {
                         >
                             <span className="material-icons">refresh</span>
                         </button>
+                        
                         {/* Button thêm mới */}
                         {
                             projectDetail?.projectType === 1 &&
@@ -85,8 +87,8 @@ const TabProjectTasksList = (props) => {
                         {
                             projectDetail?.projectType === 1 &&
                             <button style={{ display: 'flex', marginTop: 15, marginRight: 10 }} type="button" className="btn btn-success" onClick={handleOpenCreateTask}
-                                title={`Tạo công việc mới`}>
-                                Tạo công việc mới
+                                title={translate('task_template.add')}>
+                                {translate('task_template.add')}
                             </button>
                         }
                         {
@@ -98,8 +100,8 @@ const TabProjectTasksList = (props) => {
                             projectDetail?.projectType === 2 &&
                             checkIfAbleToCRUDProject({ project, user, currentProjectId, isInsideProject: true }) && currentProjectTasks && currentProjectTasks.length === 0 &&
                             <button style={{ display: 'flex', marginTop: 15, marginRight: 10 }} type="button" className="btn btn-success" onClick={onHandleOpenScheduleModal}
-                                title={`Tạo công việc mới bằng file excel`}>
-                                Tạo công việc mới bằng file excel
+                                title={translate('task_template.import')}>
+                                {translate('task_template.import')}
                             </button>
                         }
                         {
@@ -108,8 +110,8 @@ const TabProjectTasksList = (props) => {
                             <>
                                 <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
                                 <button style={{ display: 'flex', marginTop: 15, marginRight: 10 }} type="button" className="btn btn-success" onClick={handleOpenCreateProjectTask}
-                                    title={`Tạo công việc mới bằng tay`}>
-                                    Tạo công việc mới bằng tay
+                                    title={translate('task_template.add')}>
+                                    {translate('task_template.add')}
                                 </button>
                             </>
                         }

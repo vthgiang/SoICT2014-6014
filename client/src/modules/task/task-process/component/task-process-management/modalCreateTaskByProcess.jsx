@@ -12,6 +12,8 @@ import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 
 import { FormCreateTask } from './formCreateTask'
 
+
+import { AddProcessChild } from './addProcessChild'
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
@@ -24,6 +26,7 @@ import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 import { TaskAddModal } from "../../../task-management/component/taskAddModal";
 import { AddTaskForm } from "../../../task-management/component/addTaskForm";
 import ValidationHelper from '../../../../../helpers/validationHelper';
+
 
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
@@ -95,6 +98,8 @@ function ModalCreateTaskByProcess(props) {
         showInfo: false,
         selectedCreate: 'info',
         info: {},
+        infoProcess: {},
+        showInfoProcess: false,
         save: false,
         manager: [],
         viewer: [],
@@ -282,6 +287,23 @@ function ModalCreateTaskByProcess(props) {
                 return {
                     ...state,
                     showInfo: true,
+                    showInfoProcess: false,
+                    type: element.type,
+                    name: nameStr[1],
+                    taskName: element.businessObject.name,
+                    id: `${element.businessObject.id}`,
+                }
+            } else if (element.type === "bpmn:SubProcess"){
+                if (!state.infoProcess[`${element.businessObject.id}`] || (state.infoProcess[`${element.businessObject.id}`] && !state.infoProcess[`${element.businessObject.id}`].organizationalUnit)) {
+                    state.infoProcess[`${element.businessObject.id}`] = {
+                        ...state.infoProcess[`${element.businessObject.id}`],
+                        organizationalUnit: organizationalUnit,
+                    }
+                }
+                return {
+                    ...state,
+                    showInfoProcess: true,
+                    showInfo: false,
                     type: element.type,
                     name: nameStr[1],
                     taskName: element.businessObject.name,
@@ -289,7 +311,7 @@ function ModalCreateTaskByProcess(props) {
                 }
             }
             else {
-                return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
+                return { ...state, showInfo: false, showInfoProcess: false, type: element.type, name: '', id: element.businessObject.id, }
             }
         }, () => console.log(state.info))
 
@@ -516,10 +538,16 @@ function ModalCreateTaskByProcess(props) {
                     check = false;
                 }
             }
+            console.log(e);
         }
+        console.log(hasStart, hasEnd);
         if (!hasStart || !hasEnd) {
             check = false;
         }
+        console.log(check , state.manager.length !== 0 , state.viewer.length !== 0 , validateTasks
+            , state.processDescription.trim() !== '' , state.processName.trim() !== ''
+            , state.errorOnManager === undefined , state.errorOnProcessDescription === undefined
+            , state.errorOnProcessName === undefined , state.errorOnViewer === undefined);
         return check && state.manager.length !== 0 && state.viewer.length !== 0 && validateTasks
             && state.processDescription.trim() !== '' && state.processName.trim() !== ''
             && state.errorOnManager === undefined && state.errorOnProcessDescription === undefined
@@ -618,27 +646,168 @@ function ModalCreateTaskByProcess(props) {
             && errorOnViewer === undefined && errorOnManager === undefined && manager.length !== 0 && viewer.length !== 0
             && startDate.trim() !== "" && endDate.trim() !== "";
     }
+
+    const setBpmnProcess = (data) =>{
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
+        let manager = []
+        data.manager.forEach(x => {
+            manager.push(x.name)
+        })
+        let viewer = []
+        data.viewer.forEach(x => {
+            viewer.push(x.name)
+        })
+        if (element1) {
+            modeling.updateProperties(element1, {
+                shapeName: data.processName,
+                managerName:manager,
+                viewerName:viewer
+            });
+        }
+        let infoTemplate = {
+            ...data,
+            code: state.id
+        }
+        const infoProcess = state.infoProcess
+        infoProcess[`${state.id}`].process = infoTemplate ;
+        infoProcess[`${state.id}`].code = state.id ;
+        //state.infoProcess[`${state.id}`] = infoProcess
+        setState({
+                ...state,
+                infoProcess: infoProcess
+            })
+           
+    }
+
+    console.log(modeler.get('elementRegistry')._elements);
     // Hàm lưu thông tin 
     const save = async () => {
-        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
+        let { info, infoProcess,  startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
         // console.log("info", info)
         let xmlStr;
         modeler.saveXML({ format: true }, function (err, xml) {
             xmlStr = xml;
         });
-
+        let elementList = modeler.get('elementRegistry')._elements
         await setState(state => {
+            let { info } = state;
+            for (let j in info) {
+                if (Object.keys(info[j]).length !== 0) {
+                    info[j].followingTasks = [];
+                    info[j].preceedingTasks = [];
+
+                    for (let i in elementList) {
+                        let elem = elementList[i].element;
+                        if (info[j].code === elem.id) {
+                            if (elem.businessObject.incoming) {
+                                let incoming = elem.businessObject.incoming;
+                                for (let x in incoming) {
+                                    let types = incoming[x].sourceRef.$type.split(":")
+                                    // console.log(incoming[x].sourceRef.$type,types);
+                                    if (types[1] === 'SubProcess'){
+                                        info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                            process: incoming[x].sourceRef.id,
+                                            link: incoming[x].name,
+                                            // TODO: activated: false
+                                        })
+                                    } else {
+                                        info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                            task: incoming[x].sourceRef.id,
+                                            link: incoming[x].name,
+                                            // TODO: activated: false
+                                        })
+                                    }
+                                }
+                            }
+                            if (elem.businessObject.outgoing) {
+                                let outgoing = elem.businessObject.outgoing;
+                                for (let y in outgoing) {
+                                    let types = outgoing[y].sourceRef.$type.split(":")
+                                    if (types[1] === 'SubProcess'){
+                                        info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                            process: outgoing[y].targetRef.id,
+                                            link: outgoing[y].name,
+                                        })
+                                    } else {
+                                        info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                            task: outgoing[y].targetRef.id,
+                                            link: outgoing[y].name,
+                                        })
+                                    }
+                                }
+                            }
+                        }
+
+                    
+                    }
+                }
+            }
+            let { infoProcess } = state;
+            for (let j in infoProcess) {
+                if (Object.keys(infoProcess[j]).length !== 0) {
+                    infoProcess[j].followingTasks = [];
+                    infoProcess[j].preceedingTasks = [];
+
+                    for (let i in elementList) {
+                        let elem = elementList[i].element;
+                        console.log(infoProcess[j].code , elem);
+                        if (infoProcess[j].code === elem.id) {
+                            if (elem.businessObject.incoming) {
+                                let incoming = elem.businessObject.incoming;
+                                for (let x in incoming) {
+                                    let types = incoming[x].sourceRef.$type.split(":")
+                                    // console.log(incoming[x].sourceRef.$type,types);
+                                    if (types[1] === 'SubProcess'){
+                                        infoProcess[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                            process: incoming[x].sourceRef.id,
+                                            link: incoming[x].name,
+                                            // TODO: activated: false
+                                        })
+                                    } else {
+                                        infoProcess[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                            task: incoming[x].sourceRef.id,
+                                            link: incoming[x].name,
+                                            // TODO: activated: false
+                                        })
+                                    }
+                                }
+                            }
+                            if (elem.businessObject.outgoing) {
+                                let outgoing = elem.businessObject.outgoing;
+                                for (let y in outgoing) {
+                                    let types = outgoing[y].sourceRef.$type.split(":")
+                                    if (types[1] === 'SubProcess'){
+                                        infoProcess[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                            process: outgoing[y].targetRef.id,
+                                            link: outgoing[y].name,
+                                        })
+                                    } else {
+                                        infoProcess[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                            task: outgoing[y].targetRef.id,
+                                            link: outgoing[y].name,
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return {
                 ...state,
                 xmlDiagram: xmlStr,
             }
-        });
+        })
 
         for (let i in info) {
             info[i].startDate = info[i].startDate ? info[i].startDate : startDate;
             info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
         }
-
+        for (let i in infoProcess) {
+            infoProcess[i].process.startDate = infoProcess[i].process.startDate ? infoProcess[i].process.startDate : startDate;
+            infoProcess[i].process.endDate = infoProcess[i].process.endDate ? infoProcess[i].process.endDate : endDate;
+        }
         let data = {
             processName: processName,
             processDescription: processDescription,
@@ -647,12 +816,13 @@ function ModalCreateTaskByProcess(props) {
             xmlDiagram: xmlStr,
             creator: userId,
             taskList: info,
+            processList: infoProcess,
             startDate: startDate,
             endDate: endDate,
             template: false
         }
         props.createTaskByProcess(data, state.idProcess);
-
+        console.log(data);
         setState({
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -669,7 +839,7 @@ function ModalCreateTaskByProcess(props) {
     }
     let idProcess = ""
     const { translate, department, role, user } = props;
-    const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
+    const { id, name, info,infoProcess, showInfo, showInfoProcess, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
         selected, errorOnProcessName, errorOnProcessDescription, startDate, endDate } = state;
     const { listOrganizationalUnit } = props;
     // if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
@@ -699,7 +869,7 @@ function ModalCreateTaskByProcess(props) {
                 resetOnClose={true}
                 title={props.title}
                 func={save}
-                disableSubmit={!isFormValidate()}
+                //disableSubmit={!isFormValidate()}
                 bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
             >
                 <form id="form-create-task-by-process">
@@ -809,7 +979,7 @@ function ModalCreateTaskByProcess(props) {
 
                                     <div className="">
                                         {/* Quy trình công việc */}
-                                        <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                        <div className={`contain-border ${showInfo ||showInfoProcess? 'col-md-8' : 'col-md-12'}`}>
                                             {/* nút export, import diagram,... */}
                                             <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                                 <button onClick={exportDiagram}>Export XML</button>
@@ -846,7 +1016,7 @@ function ModalCreateTaskByProcess(props) {
                                         </div>
 
                                         {/* form thông tin công việc */}
-                                        <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                                        <div className={`right-content ${showInfo ||showInfoProcess? 'col-md-4' : undefined}`}>
                                             {
                                                 (showInfo) &&
                                                 <div>
@@ -854,6 +1024,21 @@ function ModalCreateTaskByProcess(props) {
                                                         isProcess={true}
                                                         id={id}
                                                         info={(info && info[`${id}`]) && info[`${id}`]}
+                                                        handleChangeTaskData={handleChangeInfo}
+                                                        handleChangeName={handleChangeName} // cập nhật tên vào diagram
+                                                        handleChangeResponsible={handleChangeResponsible} // cập nhật hiển thi diagram
+                                                        handleChangeAccountable={handleChangeAccountable} // cập nhật hiển thị diagram
+                                                    />
+                                                </div>
+                                            }
+                                            {
+                                                (showInfoProcess) &&
+                                                <div>
+                                                    <AddProcessChild
+                                                        setBpmnProcess={setBpmnProcess}
+                                                        isProcess={true}
+                                                        id={id}
+                                                        infoProcess={(infoProcess && infoProcess[`${id}`])&& infoProcess[`${id}`].process && infoProcess[`${id}`].process._id}
                                                         handleChangeTaskData={handleChangeInfo}
                                                         handleChangeName={handleChangeName} // cập nhật tên vào diagram
                                                         handleChangeResponsible={handleChangeResponsible} // cập nhật hiển thi diagram

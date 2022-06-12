@@ -18,7 +18,7 @@ function ViewProcessTemplateChild(props) {
     useEffect(() => {
         const {infoTemplate} = props
         console.log(infoTemplate);
-         props.getXmlDiagramById(infoTemplate.process)
+        props.getXmlDiagramById(infoTemplate.process._id)
        
     }, [props.id])
    

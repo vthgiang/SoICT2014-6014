@@ -8,6 +8,7 @@ import { getNumsOfDaysWithoutGivenDay, getSalaryFromUserId } from "../../../task
 export const MILISECS_TO_DAYS = 86400000;
 export const MILISECS_TO_HOURS = 3600000;
 
+// Kiểm tra xem người dùng có quyền chỉnh sửa danh sách project
 export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isInsideProject = false }) => {
     const currentRole = getStorage("currentRole");
     const userId = getStorage("userId");
@@ -21,6 +22,8 @@ export const checkIfAbleToCRUDProject = ({ project, user, currentProjectId, isIn
     return isInsideProject ? (checkIfCurrentIdIsProjectManagerOrCreator && checkIfCurrentRoleIsUnitManager) : (checkIfCurrentRoleIsUnitManager);
 }
 
+
+// Lấy thông tin project hiện tại
 export const getCurrentProjectDetails = (project, projectId = undefined, type = 'user_all') => {
     const currentProjectId = projectId || window.location.href.split('?id=')[1].split('#')?.[0];
     const projectDetail = type === 'user_all'
@@ -29,6 +32,7 @@ export const getCurrentProjectDetails = (project, projectId = undefined, type = 
     return projectDetail;
 }
 
+// Lấy danh sách các phòng ban
 export const getListDepartments = (usersInUnitsOfCompany) => {
     return usersInUnitsOfCompany.map(item => ({
         text: item.department,
@@ -36,12 +40,14 @@ export const getListDepartments = (usersInUnitsOfCompany) => {
     }))
 }
 
+// Lấy tên của phòng ban/ đơn vị
 export const convertDepartmentIdToDepartmentName = (usersInUnitsOfCompany, departmentId) => {
     if (!usersInUnitsOfCompany) return [];
     const result = usersInUnitsOfCompany.filter(item => item.id === departmentId)?.[0]?.department;
     return result
 }
 
+// Lấy tên người dùng
 export const convertUserIdToUserName = (listUsers, userId) => {
     if (!listUsers) return [];
     for (let department of listUsers) {
@@ -73,7 +79,7 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
     const numsOfSundays = getNumsOfDaysWithoutGivenDay(new Date(startDate), new Date(endDate), 0)
     let duration = 0
     if (timeMode === 'hours') {
-        duration = (moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8;
+        duration = Math.ceil((moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays) * 8);
         // return theo don vi giờ - hours
         return duration;
     }
@@ -82,10 +88,11 @@ export const getDurationWithoutSatSun = (startDate, endDate, timeMode) => {
         // return theo don vi milliseconds
         return duration * MILISECS_TO_DAYS;
     }
-    duration = moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays;
+    duration = Math.ceil(moment(endDate).diff(moment(startDate), `milliseconds`) / MILISECS_TO_DAYS - numsOfSaturdays - numsOfSundays);
     // return theo don vi ngày - days
     return duration;
 }
+
 
 export const convertDateTime = (date, time) => {
     let splitter = date.split("-");
@@ -405,11 +412,12 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
     console.log('tasksList', tasksList)
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
+    // Làm tròn thời gian
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
-            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
             preceedingTasks: taskItem.preceedingTasks,
             code: taskItem._id,
         }
@@ -487,11 +495,12 @@ export const processAffectedTasksChangeRequest = (projectDetail, tasksList, curr
 export const getNewTasksListAfterCR = (projectDetail, tasksList, currentTask) => {
     // Với taskList lấy từ DB xuống phải chia cho unitTIme
     // Với curentTask thì có thể không cần vì mình làm ở local
+    // Ta cần làm tròn kết quả
     const initTasksList = tasksList.map((taskItem, taskIndex) => {
         return {
             ...taskItem,
-            estimateNormalTime: Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
-            estimateOptimisticTime: Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS),
+            estimateNormalTime: Math.ceil(Number(taskItem.estimateNormalTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
+            estimateOptimisticTime: Math.ceil(Number(taskItem.estimateOptimisticTime) / (projectDetail.unitTime === 'days' ? MILISECS_TO_DAYS : MILISECS_TO_HOURS)),
             preceedingTasks: taskItem.preceedingTasks.map((preItem) => preItem.task),
             code: taskItem._id,
         }
@@ -560,6 +569,7 @@ export const getActualMemberCostOfTask = (task, projectDetail, userId) => {
     const currentEmployee = task.actorsWithSalary.find((actorSalaryItem) => {
         return String(actorSalaryItem.userId) === String(userId)
     });
+    
     if (currentEmployee) {
         actualNormalMemberCost = Number(currentEmployee.actualCost || 0);
     }
@@ -577,8 +587,8 @@ export const renderLongList = (list, limit = 10) => {
 }
 
 export const renderProjectTypeText = (projectType) => {
-    if (projectType === 1) return "Đơn giản"
-    return "Phương pháp CPM";
+    if (projectType === 1) return "project.simple"
+    return "project.cpm";
 }
 
 export const isUserInCurrentTask = (userId, task) => {

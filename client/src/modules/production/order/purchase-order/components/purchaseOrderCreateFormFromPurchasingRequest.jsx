@@ -7,156 +7,138 @@ import ValidationHelper from "../../../../../helpers/validationHelper";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate, formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { UserServices } from "../../../../super-admin/user/redux/services";
+import { RequestActions } from '../../../common-production/request-management/redux/actions';
 
 function PurchaseOrderCreateFormFromPurchasingRequest(props) {
 
     const [state, setState] = useState({
         code: "",
-        material: "",
-        materials: [],
+        good: "",
+        goods: [],
         approvers: [],
         price: "",
         quantity: "",
         purchasingRequest: "",
-        listUser: { length: -1 },
     })
 
+    const EMPTY_GOOD = {
+        _id: "title",
+        code: "",
+        name: "",
+        baseUnit: "",
+    }
 
     if (props.code !== state.code) {
-        setState((state) => {
-            return {
-                ...state,
-                code: props.code,
-            }
+        setState({
+            ...state,
+            code: props.code,
+            currentRequest: props.currentRequest,
+            requestFrom: props.requestFrom,
+            goods: props.currentRequest ? props.currentRequest.goods : [],
+            stock: props.currentRequest ? props.currentRequest.stock._id : "",
+            intendReceiveTime: props.currentRequest ? formatDate(props.currentRequest.desiredTime) : "",
+            purchasingRequest: props.currentRequest ? props.currentRequest._id : "",
         })
     }
 
     useEffect(() => {
-        UserServices.get()
-            .then(res => {
-                setState({
-                    ...state,
-                    listUser: res.data.content
-                })
-            })
+        props.getUser();
     }, [])
 
     const getPurchasingRequestOptions = () => {
-        let options = [];
-
-        const { listPurchasingRequests } = props.purchasingRequest;
-        if (listPurchasingRequests) {
-            options = [
-                {
-                    value: "title", //Title không được chọn
-                    text: "---Chọn đơn đề nghị---",
-                },
-            ];
-
-            let mapOptions = listPurchasingRequests.map((item) => {
-                return {
+        let mapOptions = [];
+        const { listRequests } = props;
+        if (listRequests) {
+            mapOptions = [{
+                value: "title", //Title không được chọn
+                text: "---Chọn đơn đề nghị---",
+            }];
+            listRequests.map((item) => {
+                mapOptions.push({
                     value: item._id,
                     text: item.code,
-                };
+                });
             });
-
-            options = options.concat(mapOptions);
         }
-
-        return options;
+        return mapOptions;
     };
 
     const getSuplierOptions = () => {
-        let options = [];
-
+        let mapOptions = [];
         const { list } = props.customers;
         if (list) {
-            options = [
-                {
-                    value: "title", //Title không được chọn
-                    text: "---Chọn nhà cung cấp---",
-                },
-            ];
-
-            let mapOptions = props.customers.list.map((item) => {
-                return {
+            mapOptions = [{
+                value: "title", //Title không được chọn
+                text: "---Chọn nhà cung cấp---",
+            }];
+            list.map((item) => {
+                mapOptions.push({
                     value: item._id,
                     text: item.name,
-                };
+                });
             });
-
-            options = options.concat(mapOptions);
         }
-
-        return options;
+        return mapOptions;
     };
 
     const getApproverOptions = () => {
-        let options = [];
-        const user = state.listUser;
+        let mapOptions = [];
+        const { user } = props;
         if (user) {
-            options = [
-                {
-                    value: "title", //Title không được chọn
-                    text: "---Chọn người phê duyệt---",
-                },
-            ];
+            mapOptions = [{
+                value: "title", //Title không được chọn
+                text: "---Chọn người phê duyệt---",
+            }];
 
-            let mapOptions = user.map((item) => {
-                return {
-                    value: item._id,
-                    text: item.name,
-                };
+            user.list.map((user) => {
+                mapOptions.push({
+                    value: user._id,
+                    text: user.name,
+                });
             });
-
-            options = options.concat(mapOptions);
         }
-        return options;
+        return mapOptions;
     };
 
     const getStockOptions = () => {
-        let options = [];
+        let mapOptions = [];
         const { listStocks } = props.stocks;
 
         if (listStocks.length) {
-            options = [
-                {
-                    value: "title", //Title không được chọn
-                    text: "---Chọn kho nhập---",
-                },
-            ];
-
-            let mapOptions = listStocks.map((item) => {
-                return {
+            mapOptions = [{
+                value: "title", //Title không được chọn
+                text: "---Chọn kho nhập---",
+            }];
+            listStocks.map((item) => {
+                mapOptions.push({
                     value: item._id,
                     text: item.name,
-                };
+                });
             });
-
-            options = options.concat(mapOptions);
         }
-
-        return options;
+        return mapOptions;
     };
 
-    const getMaterialOptions = () => {
-        let options = [];
+    const getGoodData = () => {
+        let mapOptions = [];
         let { listGoodsByType } = props.goods;
         if (listGoodsByType) {
-            options = [{ value: "title", text: "---Chọn nguyên vật liệu---" }];
-
-            let mapOptions = listGoodsByType.map((item) => {
-                return {
+            mapOptions = [{
+                value: "title",
+                text: "---Chọn nguyên vật liệu---"
+            }];
+            listGoodsByType.map((item) => {
+                mapOptions.push({
                     value: item._id,
                     text: item.code + " - " + item.name + " (" + item.baseUnit + ")",
-                };
+                });
             });
-
-            options = options.concat(mapOptions);
         }
+        return mapOptions;
+    };
 
-        return options;
+    const handlePurchasingRequestChange = async (value) => {
+        validatePurchasingRequest(value[0], true);
     };
 
     const validatePurchasingRequest = (value, willUpdateState = true) => {
@@ -164,47 +146,33 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
-
         if (willUpdateState) {
-            setState({
-                ...state,
-                purchasingRequestError: msg,
-            });
-        }
-
-        return msg;
-    };
-
-    const handlePurchasingRequestChange = async (value) => {
-        if (value[0] === "title") {
-            setState({
-                ...state,
-                purchasingRequest: value[0],
-            });
-        } else {
-            //Cập nhật đơn đề nghị vào đơn mua nguyên vật liệu
-            const { listPurchasingRequests } = props.purchasingRequest;
-            let purchasingRequestInfo = listPurchasingRequests.find((element) => element._id === value[0]);
-
+            const { listRequests } = props;
+            let purchasingRequestInfo = listRequests.find((element) => element._id === value);
             if (purchasingRequestInfo) {
-                let materials = purchasingRequestInfo.materials.map((element) => {
+                let goods = purchasingRequestInfo.goods.map((element) => {
                     return {
-                        material: element.good,
+                        good: element.good,
                         quantity: element.quantity,
                     };
                 });
 
-                await setState({
+                setState({
                     ...state,
-                    purchasingRequest: value[0],
-                    materials,
+                    purchasingRequest: value,
+                    stock: purchasingRequestInfo.stock._id,
+                    intendReceiveTime: formatDate(purchasingRequestInfo.desiredTime),
+                    purchasingRequestError: msg,
+                    goods: goods,
                     description: purchasingRequestInfo.description,
-                    intendReceiveTime: purchasingRequestInfo.intendReceiveTime ? formatDate(purchasingRequestInfo.intendReceiveTime) : "",
                 });
             }
         }
+        return msg;
+    };
 
-        validatePurchasingRequest(value[0], true);
+    const handleSupplierChange = async (value) => {
+        validateSupplier(value[0], true);
     };
 
     const validateSupplier = (value, willUpdateState = true) => {
@@ -216,6 +184,7 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         if (willUpdateState) {
             setState({
                 ...state,
+                supplier: value,
                 supplierError: msg,
             });
         }
@@ -223,13 +192,8 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         return msg;
     };
 
-    const handleSupplierChange = async (value) => {
-        setState({
-            ...state,
-            supplier: value[0],
-        });
-
-        validateSupplier(value[0], true);
+    const handleApproversChange = (value) => {
+        validateApprovers(value, true);
     };
 
     const validateApprovers = (value, willUpdateState = true) => {
@@ -245,22 +209,17 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         }
 
         if (willUpdateState) {
-            setState((state) => {
-                return {
-                    ...state,
-                    approversError: msg,
-                };
+            setState({
+                ...state,
+                approvers: value,
+                approversError: msg,
             });
         }
         return msg === undefined;
     };
 
-    const handleApproversChange = (value) => {
-        setState({
-            ...state,
-            approvers: value,
-        });
-        validateApprovers(value, true);
+    const handleStockChange = (value) => {
+        validateStock(value[0], true);
     };
 
     const validateStock = (value, willUpdateState = true) => {
@@ -268,10 +227,10 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
         }
-
         if (willUpdateState) {
             setState({
                 ...state,
+                stock: value,
                 stockError: msg,
             });
         }
@@ -279,19 +238,10 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         return msg;
     };
 
-    const handleStockChange = (value) => {
-        setState({
-            ...state,
-            stock: value[0],
-        });
-        validateStock(value[0], true);
-    };
-
     const handleIntendReceiveTimeChange = (value) => {
         if (!value) {
             value = null;
         }
-
         let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
         setState({
@@ -299,6 +249,11 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
             intendReceiveTime: value,
             intendReceiveTimeError: message,
         });
+    };
+
+    const handleDiscountChange = (e) => {
+        let { value } = e.target;
+        validateDiscount(value, true);
     };
 
     const validateDiscount = (value, willUpdateState = true) => {
@@ -310,19 +265,10 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
             setState({
                 ...state,
                 discountError: msg,
+                discount: value,
             });
         }
         return msg;
-    };
-
-    const handleDiscountChange = (e) => {
-        let { value } = e.target;
-        setState({
-            ...state,
-            discount: value,
-        });
-
-        validateDiscount(value, true);
     };
 
     const handleDescriptionChange = (e) => {
@@ -333,7 +279,11 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         });
     };
 
-    const validateMaterial = (value, willUpdateState = true) => {
+    const handleGoodChange = (value) => {
+        validateGood(value[0], true);
+    };
+
+    const validateGood = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được để trống";
@@ -342,48 +292,25 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         }
 
         if (willUpdateState) {
-            setState((state) => {
-                return {
-                    ...state,
-                    materialError: msg,
-                };
+            let { listGoodsByType } = props.goods;
+            const goodInfo = listGoodsByType.filter((item) => item._id === value);
+            setState({
+                ...state,
+                good: {
+                    _id: goodInfo[0]._id,
+                    code: goodInfo[0].code,
+                    name: goodInfo[0].name,
+                    baseUnit: goodInfo[0].baseUnit,
+                },
+                goodError: msg,
             });
         }
         return msg;
     };
 
-    const handleMaterialChange = (value) => {
-        if (value[0] !== "title") {
-            let { listGoodsByType } = props.goods;
-            const materialInfo = listGoodsByType.filter((item) => item._id === value[0]);
-
-            if (materialInfo.length) {
-                setState((state) => {
-                    return {
-                        ...state,
-                        material: {
-                            _id: materialInfo[0]._id,
-                            code: materialInfo[0].code,
-                            name: materialInfo[0].name,
-                            baseUnit: materialInfo[0].baseUnit,
-                        },
-                    };
-                });
-            }
-        } else {
-            setState((state) => {
-                return {
-                    ...state,
-                    material: {
-                        _id: "title",
-                        code: "",
-                        name: "",
-                        baseUnit: "",
-                    },
-                };
-            });
-        }
-        validateMaterial(value[0], true);
+    const handleQuantityChange = (e) => {
+        let { value } = e.target;
+        validateQuantity(value, true);
     };
 
     const validateQuantity = (value, willUpdateState = true) => {
@@ -396,6 +323,7 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         if (willUpdateState) {
             setState({
                 ...state,
+                quantity: value,
                 quantityError: msg,
             });
         }
@@ -403,14 +331,9 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         return msg;
     };
 
-    const handleQuantityChange = (e) => {
+    const handlePriceChange = (e) => {
         let { value } = e.target;
-        setState({
-            ...state,
-            quantity: value,
-        });
-
-        validateQuantity(value, true);
+        validatePrice(value, true);
     };
 
     const validatePrice = (value, willUpdateState = true) => {
@@ -423,6 +346,7 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         if (willUpdateState) {
             setState({
                 ...state,
+                price: value,
                 priceError: msg,
             });
         }
@@ -430,13 +354,17 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         return msg;
     };
 
-    const handlePriceChange = (e) => {
+    const handlePriceChangeOnTable = (e, index) => {
         let { value } = e.target;
+
+        let { goods } = state;
+        goods[index].price = value;
         setState({
             ...state,
-            price: value,
+            goods,
         });
-        validatePrice(value, true);
+
+        validatePriceChangeOnTable(value, index, true);
     };
 
     const validatePriceChangeOnTable = (value, index, willUpdateState = true) => {
@@ -457,42 +385,24 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         return msg;
     };
 
-    const handlePriceChangeOnTable = (e, index) => {
-        let { value } = e.target;
-
-        let { materials } = state;
-        materials[index].price = value;
-        setState({
-            ...state,
-            materials,
-        });
-
-        validatePriceChangeOnTable(value, index, true);
-    };
-
-    const handleClearMaterial = (e) => {
+    const handleClearGood = (e) => {
         e.preventDefault();
         setState({
             ...state,
-            material: {
-                _id: "title",
-                code: "",
-                name: "",
-                baseUnit: "",
-            },
+            good: Object.assign({}, EMPTY_GOOD),
             quantity: "",
             price: "",
-            materialError: undefined,
+            goodError: undefined,
             quantityError: undefined,
             priceError: undefined,
         });
     };
 
     const getPaymentAmount = (isSubmit = false) => {
-        let { materials, discount } = state;
+        let { goods, discount } = state;
         let paymentAmount = 0;
 
-        paymentAmount = materials.reduce((accumulator, currentValue) => {
+        paymentAmount = goods.reduce((accumulator, currentValue) => {
             return accumulator + currentValue.price * currentValue.quantity;
         }, 0);
 
@@ -505,130 +415,113 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         return formatCurrency(paymentAmount);
     };
 
-    const isSubmitMaterial = () => {
-        //Validate để thêm material vào list materials
-        let { material, quantity, price } = state;
-        if (validateMaterial(material, false) || validateQuantity(quantity, false) || validatePrice(price, false)) {
+    const isSubmitGood = () => {
+        //Validate để thêm good vào list goods
+        let { good, quantity, price } = state;
+        if (validateGood(good, false) || validateQuantity(quantity, false) || validatePrice(price, false)) {
             return false;
         } else {
             return true;
         }
     };
 
-    const handleAddMaterial = (e) => {
+    const handleAddGood = (e) => {
         e.preventDefault();
-        if (isSubmitMaterial()) {
-            const { material, quantity, price, materials } = state;
+        if (isSubmitGood()) {
+            const { good, quantity, price, goods } = state;
             let data = {
-                material,
+                good,
                 quantity,
                 price,
             };
-
-            materials.push(data);
-
+            goods.push(data);
             setState({
                 ...state,
-                materials,
-                material: {
-                    _id: "title",
-                    code: "",
-                    name: "",
-                    baseUnit: "",
-                },
+                goods,
+                good: Object.assign({}, EMPTY_GOOD),
                 quantity: "",
                 price: "",
-                materialError: undefined,
+                goodError: undefined,
                 quantityError: undefined,
                 priceError: undefined,
             });
         }
     };
 
-    const handleDeleteMaterial = (item) => {
-        let { materials } = state;
-        let materialsFilter = materials.filter((element) => element.material !== item.material);
+    const handleDeleteGood = (item) => {
+        let { goods } = state;
+        let goodsFilter = goods.filter((element) => element.good !== item.good);
         setState({
             ...state,
-            materials: materialsFilter,
+            goods: goodsFilter,
         });
     };
 
-    const handleMaterialsEdit = (item, index) => {
+    const handleGoodsEdit = (item, index) => {
         setState({
             ...state,
-            editMaterials: true,
+            editGoods: true,
             indexEditting: index,
-            material: item.material,
+            good: item.good,
             quantity: item.quantity,
             price: item.price,
-            materialError: undefined,
+            goodError: undefined,
             quantityError: undefined,
             priceError: undefined,
         });
     };
 
-    const handleSaveEditMaterial = (e) => {
+    const handleSaveEditGood = (e) => {
         e.preventDefault();
-        if (isSubmitMaterial()) {
-            const { material, quantity, price, materials, indexEditting } = state;
+        if (isSubmitGood()) {
+            const { good, quantity, price, goods, indexEditting } = state;
             let data = {
-                material,
+                good,
                 quantity,
                 price,
             };
 
-            materials[indexEditting] = data;
+            goods[indexEditting] = data;
 
             setState({
                 ...state,
-                materials,
-                material: {
-                    _id: "title",
-                    code: "",
-                    name: "",
-                    baseUnit: "",
-                },
+                goods,
+                good: Object.assign({}, EMPTY_GOOD),
                 quantity: "",
                 price: "",
                 indexEditting: "",
-                editMaterials: false,
-                materialError: undefined,
+                editGoods: false,
+                goodError: undefined,
                 quantityError: undefined,
                 priceError: undefined,
             });
         }
     };
 
-    const handleCancelEditMaterial = (e) => {
+    const handleCancelEditGood = (e) => {
         e.preventDefault();
         setState({
             ...state,
-            material: {
-                _id: "title",
-                code: "",
-                name: "",
-                baseUnit: "",
-            },
+            good: Object.assign({}, EMPTY_GOOD),
             quantity: "",
             price: "",
             indexEditting: "",
-            editMaterials: false,
-            materialError: undefined,
+            editGoods: false,
+            goodError: undefined,
             quantityError: undefined,
             priceError: undefined,
         });
     };
 
-    const validatePriceInMaterials = () => {
+    const validatePriceInGoods = () => {
         //Kiểm tra giá đã được thêm vào chưa
-        let { materials } = state;
-        if (!materials.length) {
+        let { goods } = state;
+        if (!goods.length) {
             return false;
         }
 
-        for (let index = 0; index < materials.length; index++) {
-            if (validatePriceChangeOnTable(materials[index].price, index, false)) {
+        for (let index = 0; index < goods.length; index++) {
+            if (validatePriceChangeOnTable(goods[index].price, index, false)) {
                 return false;
             }
         }
@@ -639,32 +532,32 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
 
     const isFormValidated = () => {
         const { translate } = props;
-        let { stock, supplier, approvers, intendReceiveTime, materials, purchasingRequest } = state;
-        if (
-            validateStock(stock, false) ||
-            validateSupplier(supplier, false) ||
-            validatePurchasingRequest(purchasingRequest, false) ||
-            ValidationHelper.validateEmpty(translate, intendReceiveTime).message ||
-            !validatePriceInMaterials() ||
-            !approvers.length ||
-            !materials.length
-        ) {
-            return false;
-        }
+        let { stock, supplier, approvers, intendReceiveTime, goods, purchasingRequest } = state;
+        // if (
+        //     validateStock(stock, false) ||
+        //     validateSupplier(supplier, false) ||
+        //     validatePurchasingRequest(purchasingRequest, false) ||
+        //     ValidationHelper.validateEmpty(translate, intendReceiveTime).message ||
+        //     !validatePriceInGoods() ||
+        //     !approvers.length ||
+        //     !goods.length
+        // ) {
+        //     return false;
+        // }
         return true;
     };
 
-    const formatMaterialsForSubmit = () => {
-        let { materials } = state;
-        let materialsMap = materials.map((element) => {
+    const formatGoodsForSubmit = () => {
+        let { goods } = state;
+        let goodsMap = goods.map((element) => {
             return {
-                material: element.material,
+                good: element.good,
                 quantity: element.quantity,
                 price: element.price,
             };
         });
 
-        return materialsMap;
+        return goodsMap;
     };
 
     const formatApproversForSubmit = () => {
@@ -680,7 +573,7 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
 
     const save = async () => {
         let { code, stock, supplier, intendReceiveTime, discount, desciption, purchasingRequest } = state;
-        let materials = await formatMaterialsForSubmit();
+        let goods = await formatGoodsForSubmit();
         let approvers = await formatApproversForSubmit();
         let data = {
             code,
@@ -690,12 +583,13 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
             intendReceiveTime: formatToTimeZoneDate(intendReceiveTime),
             discount,
             desciption,
-            materials,
+            goods,
             purchasingRequest,
             paymentAmount: getPaymentAmount(true),
+            status: 1,
         };
         await props.createPurchaseOrder(data);
-
+        await props.editRequest(currentRequest._id, {status: 4});
         setState({
             ...state,
             stock: "title",
@@ -704,9 +598,9 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
             intendReceiveTime: "",
             discount: "",
             desciption: "",
-            materials: [],
+            goods: [],
             quantity: "",
-            material: "title",
+            good: "title",
             price: "",
             purchasingRequest: "title",
         });
@@ -720,12 +614,14 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         intendReceiveTime,
         discount,
         desciption,
-        material,
+        good,
         quantity,
         price,
-        materials,
-        editMaterials,
+        goods,
+        editGoods,
         purchasingRequest,
+        currentRequest,
+        requestFrom
     } = state;
     const {
         supplierError,
@@ -733,13 +629,19 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
         stockError,
         intendReceiveTimeError,
         discountError,
-        materialError,
+        goodError,
         quantityError,
         priceError,
         purchasingRequestError,
         priceErrorPosition,
         priceErrorOnTable,
     } = state;
+
+    const dataApprover = getApproverOptions();
+    const dataGood = getGoodData();
+    const dataListRequest = getPurchasingRequestOptions();
+    const dataStock = getStockOptions();
+    const dataSupplier = getSuplierOptions();
     return (
         <React.Fragment>
             <DialogModal
@@ -756,55 +658,45 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
                 <form id={`form-add-purchase-order-from-puchasing-request`}>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className="form-group">
-                            <label>
-                                Mã đơn
-                                    <span className="attention"> * </span>
-                            </label>
-                            <input type="text" className="form-control" value={code} disabled={true} />
+                            <label>{"Mã đơn"}<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" value={code ? code : ''} disabled={true} />
                         </div>
                         <div className={`form-group ${!purchasingRequestError ? "" : "has-error"}`}>
-                            <label>
-                                Đơn đề nghị mua nguyên vật liệu
-                                    <span className="attention"> * </span>
-                            </label>
+                            <label>{"Đơn đề nghị mua nguyên vật liệu"}<span className="text-red"> * </span></label>
                             <SelectBox
                                 id={`select-create-purchase-order-form-request`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={purchasingRequest}
-                                items={getPurchasingRequestOptions()}
+                                items={dataListRequest}
                                 onChange={handlePurchasingRequestChange}
                                 multiple={false}
+                                disabled={currentRequest && requestFrom == "Request screen" ? true : false}
                             />
                             <ErrorLabel content={purchasingRequestError} />
                         </div>
                         <div className={`form-group ${!stockError ? "" : "has-error"}`}>
-                            <label>
-                                Kho nhập nguyên vật liệu
-                                    <span className="attention"> * </span>
-                            </label>
+                            <label>{"Kho nhập nguyên vật liệu"}<span className="text-red"> * </span></label>
                             <SelectBox
                                 id={`select-create-purchase-order-from-request-stock`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={stock}
-                                items={getStockOptions()}
+                                items={dataStock}
                                 onChange={handleStockChange}
                                 multiple={false}
+                                disabled={true}
                             />
                             <ErrorLabel content={stockError} />
                         </div>
                         <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
-                            <label>
-                                Nhà cung cấp
-                                    <span className="attention"> * </span>
-                            </label>
+                            <label>{"Nhà cung cấp"}<span className="text-red"> * </span></label>
                             <SelectBox
                                 id={`select-create-purchase-order-from-request-supplier`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={supplier}
-                                items={getSuplierOptions()}
+                                items={dataSupplier}
                                 onChange={handleSupplierChange}
                                 multiple={false}
                             />
@@ -813,141 +705,110 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group ${!approversError ? "" : "has-error"}`}>
-                            <label>
-                                Người phê duyệt
-                                    <span className="attention"> * </span>
-                            </label>
-                            {state.listUser && state.listUser.length !== -1 &&
-                                <SelectBox
-                                    id={`select-create-purchase-order-from-request-approvers`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={approvers}
-                                    items={getApproverOptions()}
-                                    onChange={handleApproversChange}
-                                    multiple={true}
-                                />}
-
+                            <label>{"Người phê duyệt"}<span className="text-red"> * </span></label>
+                            <SelectBox
+                                id={`select-create-purchase-order-from-request-approvers`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={approvers}
+                                items={dataApprover}
+                                onChange={handleApproversChange}
+                                multiple={true}
+                            />
                             <ErrorLabel content={approversError} />
                         </div>
                         <div className={`form-group ${!intendReceiveTimeError ? "" : "has-error"}`}>
-                            <label>
-                                Ngày dự kiến nhập hàng
-                                    <span className="attention"> * </span>
-                            </label>
+                            <label>{"Ngày dự kiến nhập hàng"}<span className="text-red"> * </span></label>
                             <DatePicker
                                 id="date_picker_create_purchase-order_from_request_intend_received_time"
                                 value={intendReceiveTime}
                                 onChange={handleIntendReceiveTimeChange}
-                                disabled={false}
+                                disabled={true}
                             />
                             <ErrorLabel content={intendReceiveTimeError} />
                         </div>
                         <div className={`form-group ${!discountError ? "" : "has-error"}`}>
-                            <label>Tiền được khuyến mãi</label>
-                            <input type="number" className="form-control" value={discount} onChange={handleDiscountChange} />
+                            <label>{"Tiền được khuyến mãi"}</label>
+                            <input type="number" className="form-control" value={discount ? discount : ""} onChange={handleDiscountChange} />
                             <ErrorLabel content={discountError} />
                         </div>
                         <div className={`form-group`}>
-                            <label>Ghi chú</label>
-                            <textarea type="text" className="form-control" value={desciption} onChange={handleDescriptionChange} />
+                            <label>{"Ghi chú"}</label>
+                            <textarea type="text" className="form-control" value={currentRequest && requestFrom == "Request screen" ? currentRequest.description : desciption} onChange={handleDescriptionChange} />
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin nguyên vật liệu</legend>
+                            <legend className="scheduler-border">{"Thông tin nguyên vật liệu"}</legend>
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group ${!materialError ? "" : "has-error"}`}>
-                                    <label>
-                                        Nguyên vật liệu
-                                            <span className="attention"> * </span>
-                                    </label>
+                                <div className={`form-group ${!goodError ? "" : "has-error"}`}>
+                                    <label>{"Nguyên vật liệu"}<span className="text-red"> * </span></label>
                                     <SelectBox
-                                        id={`select-create-purchase-order-from-request-material`}
+                                        id={`select-create-purchase-order-from-request-good`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={material&&material._id}
-                                        items={getMaterialOptions()}
-                                        onChange={handleMaterialChange}
+                                        value={good && good._id}
+                                        items={dataGood}
+                                        onChange={handleGoodChange}
                                         multiple={false}
                                     />
-                                    <ErrorLabel content={materialError} />
+                                    <ErrorLabel content={goodError} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
-                                    <label>
-                                        Số lượng mua
-                                            <span className="attention"> * </span>
-                                    </label>
-                                    <input type="number" className="form-control" value={quantity} onChange={handleQuantityChange} />
+                                    <label>{"Số lượng mua"}<span className="text-red"> * </span></label>
+                                    <input type="number" className="form-control" value={quantity ? quantity : ''} onChange={handleQuantityChange} />
                                     <ErrorLabel content={quantityError} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <div className={`form-group ${!priceError ? "" : "has-error"}`}>
-                                    <label>
-                                        Giá nhập
-                                            <span className="attention"> * </span>
-                                    </label>
-                                    <input type="number" className="form-control" value={price} onChange={handlePriceChange} />
+                                    <label>{"Giá nhập"}<span className="text-red"> * </span></label>
+                                    <input type="number" className="form-control" value={price ? price : ''} onChange={handlePriceChange} />
                                     <ErrorLabel content={priceError} />
                                 </div>
                             </div>
                             <div className={"pull-right"} style={{ padding: 10 }}>
-                                {editMaterials ? (
+                                {editGoods ? (
                                     <React.Fragment>
-                                        <button
-                                            className="btn btn-success"
-                                            onClick={handleCancelEditMaterial}
-                                            style={{ marginLeft: "10px" }}
-                                        >
-                                            Hủy chỉnh sửa
-                                            </button>
-                                        <button
-                                            className="btn btn-success"
-                                            disabled={!isSubmitMaterial()}
-                                            onClick={handleSaveEditMaterial}
-                                            style={{ marginLeft: "10px" }}
-                                        >
-                                            Lưu
-                                            </button>
+                                        <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>
+                                            {"Hủy chỉnh sửa"}
+                                        </button>
+                                        <button className="btn btn-success" disabled={!isSubmitGood()} onClick={handleSaveEditGood} style={{ marginLeft: "10px" }}>
+                                            {"Lưu"}
+                                        </button>
                                     </React.Fragment>
                                 ) : (
-                                    <button
-                                        className="btn btn-success"
-                                        style={{ marginLeft: "10px" }}
-                                        disabled={!isSubmitMaterial()}
-                                        onClick={handleAddMaterial}
-                                    >
+                                    <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isSubmitGood()} onClick={handleAddGood}>
                                         {"Thêm"}
                                     </button>
                                 )}
-                                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearMaterial}>
-                                    Xóa trắng
-                                    </button>
+                                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>
+                                    {"Xóa trắng"}
+                                </button>
                             </div>
 
                             <table id={`purchase-order-create-from-request-table`} className="table table-bordered not-sort">
                                 <thead>
                                     <tr>
-                                        <th title={"STT"}>STT</th>
-                                        <th title={"Mã đơn"}>Nguyên vật liệu</th>
-                                        <th title={"Mã đơn"}>Đơn vị tính</th>
-                                        <th title={"Tổng tiền"}>Số lượng</th>
-                                        <th title={"Còn"}>Giá nhập</th>
-                                        <th title={"Số tiền thanh toán"}>Tổng tiền</th>
-                                        <th title={"Đơn vị tính"}>Hành động</th>
+                                        <th title={"STT"}>{"STT"}</th>
+                                        <th title={"Mã đơn"}>{"Nguyên vật liệu"}</th>
+                                        <th title={"Mã đơn"}>{"Đơn vị tính"}</th>
+                                        <th title={"Tổng tiền"}>{"Số lượng"}</th>
+                                        <th title={"Còn"}>{"Giá nhập"}</th>
+                                        <th title={"Số tiền thanh toán"}>{"Tổng tiền"}</th>
+                                        <th title={"Đơn vị tính"}>{"Hành động"}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {materials&&materials.length !== 0 &&
-                                        materials.map((item, index) => {
+                                    {goods && goods.length !== 0 &&
+                                        goods.map((item, index) => {
                                             return (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td>{item.material ? item.material.name : ""}</td>
-                                                    <td>{item.material ? item.material.baseUnit : ""}</td>
+                                                    <td>{item.good ? item.good.name : ""}</td>
+                                                    <td>{item.good ? item.good.baseUnit : ""}</td>
                                                     <td>{item.quantity}</td>
                                                     {/* <td>{item.price ? formatCurrency(item.price) : ""}</td> */}
                                                     <td>
@@ -958,7 +819,7 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
                                                             <input
                                                                 className="form-control"
                                                                 type="number"
-                                                                value={item.price}
+                                                                value={item.price ? item.price : ""}
                                                                 name="value"
                                                                 style={{ width: "100%" }}
                                                                 onChange={(e) => handlePriceChangeOnTable(e, index)}
@@ -976,12 +837,12 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
                                                             href="#abc"
                                                             className="edit"
                                                             title="Sửa"
-                                                            onClick={() => handleMaterialsEdit(item, index)}
+                                                            onClick={() => handleGoodsEdit(item, index)}
                                                         >
                                                             <i className="material-icons">edit</i>
                                                         </a>
                                                         <a
-                                                            onClick={() => handleDeleteMaterial(item)}
+                                                            onClick={() => handleDeleteGood(item)}
                                                             className="delete text-red"
                                                             style={{ width: "5px" }}
                                                             title={"Xóa"}
@@ -992,7 +853,7 @@ function PurchaseOrderCreateFormFromPurchasingRequest(props) {
                                                 </tr>
                                             );
                                         })}
-                                    {materials&&materials.length !== 0 && (
+                                    {goods && goods.length !== 0 && (
                                         <tr>
                                             <td colSpan={5} style={{ fontWeight: 600 }}>
                                                 <center>Tổng thanh toán</center>
@@ -1020,6 +881,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     createPurchaseOrder: PurchaseOrderActions.createPurchaseOrder,
     getUser: UserActions.get,
+    editRequest: RequestActions.editRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderCreateFormFromPurchasingRequest));

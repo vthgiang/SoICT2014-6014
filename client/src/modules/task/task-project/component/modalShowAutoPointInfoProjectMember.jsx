@@ -91,7 +91,8 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
                         <li>timedistributionWeight - trọng số phân bố thời gian: <strong>{task?.memberWeight?.timedistributionWeight || '0.25'}</strong></li>
                         <li>memberTimedistributionPoint : <strong>{numberWithCommas(memberTimedistributionPoint)}</strong></li>
                     </ul>
-                    <p><strong>Công thức quy đổi: </strong>
+                    <div>
+                        <p><strong>Công thức quy đổi: </strong></p>
                         <ul style={{ lineHeight: 2.3 }}>
                             <li>{translate('project.eval.undefined')}</li>
                             <li>{translate('project.eval.level1')}</li>
@@ -101,7 +102,7 @@ const ModalShowAutoPointInfoProjectMember = (props) => {
                             <li>{translate('project.eval.level5')}</li>
                             <li>{translate('project.eval.level6')}</li>
                         </ul>
-                    </p>
+                    </div>
                     <p><strong>Kết quả hiện tại: </strong> {memberTimePoint} + {memberQualityPoint} + {memberCostPoint} + {memberTimedistributionPoint} = {autoMemberPoint}</p>
                 </div>
             </DialogModal>

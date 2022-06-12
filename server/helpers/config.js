@@ -877,6 +877,18 @@ const LINKS = [{
 
 },
 {
+    url: '/process',
+    description: 'Chi tiết quy trình công việc',
+    category: LINK_CATEGORY.TASK.name,
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/process')
+
+},
+{
     url: '/task-management-dashboard',
     description: 'Dashboard công việc',
     category: LINK_CATEGORY.TASK.name,
@@ -1227,6 +1239,16 @@ const LINKS = [{
     components: getComponentsInLink('/inventory-management')
 },
 {
+    url: '/request-management/stock',
+    description: 'Quản lý đề nghị',
+    category: LINK_CATEGORY.WAREHOUSE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    components: getComponentsInLink('/request-management/stock')
+},
+{
     url: "/manage-sales-order",
     description: "Đơn hàng kinh doanh",
     category: LINK_CATEGORY.ORDER.name,
@@ -1330,6 +1352,16 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-payment'),
+},
+{
+    url: '/request-management/order',
+    description: 'Quản lý đề nghị',
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    components: getComponentsInLink('/request-management/order')
 },
 {
     url: "/manage-business-department",
@@ -1655,6 +1687,16 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ],
     components: getComponentsInLink('/manage-manufacturing-lot'),
+},
+{
+    url: '/request-management/manufacturing',
+    description: 'Quản lý đề nghị',
+    category: LINK_CATEGORY.MANUFACTURING.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    components: getComponentsInLink('/request-management/manufacturing')
 },
 // Quan li van chuyen transport
 {

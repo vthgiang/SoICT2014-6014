@@ -6,7 +6,7 @@ exports.getGoodsByType = async (company, query, portal) => {
     // if (!company) throw ['company_invaild'];
     if (!page && !limit) {
         return await Good(connect(DB_CONNECTION, portal))
-            .find({type })
+            .find({ type })
             .populate([
                 { path: 'materials.good', select: 'id name' },
                 { path: 'manufacturingMills.manufacturingMill' }
@@ -39,6 +39,7 @@ exports.getGoodsByType = async (company, query, portal) => {
                 limit,
                 populate: [
                     { path: 'materials.good', select: 'id name' },
+                    { path: 'excludingGoods.good' },
                     { path: 'manufacturingMills.manufacturingMill' }
                 ]
             })
@@ -51,13 +52,14 @@ exports.getAllGoodsByType = async (query, portal) => {
         .find({ type })
         .populate([
             { path: 'materials.good', select: 'id code name baseUnit' },
+            { path: 'excludingGoods.good' },
             { path: 'manufacturingMills.manufacturingMill' }
         ])
 }
 
 exports.getAllGoodsByCategory = async (company, categoryId, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
-        .find({category: categoryId })
+        .find({ category: categoryId })
         .populate([
             { path: 'materials.good', select: 'id name' }
         ])
@@ -86,24 +88,31 @@ exports.createGoodByType = async (company, data, portal) => {
                 good: item.good,
                 quantity: item.quantity
             }
-        }):[],
+        }) : [],
         manufacturingMills: data?.manufacturingMills ? data.manufacturingMills.map(item => {
             return {
                 manufacturingMill: item.manufacturingMill,
                 productivity: item.productivity,
                 personNumber: item.personNumber
             }
-        }):[], // Trường hợp manufacturingMill ko có.. => data.manufacturingMills lỗi.. => không tạo được
+        }) : [], // Trường hợp manufacturingMill ko có.. => data.manufacturingMills lỗi.. => không tạo được
         description: data.description,
         quantity: data.quantity ? data.quantity : 0,
         pricePerBaseUnit: data.pricePerBaseUnit,
-        salesPriceVariance: data.salesPriceVariance
+        salesPriceVariance: data.salesPriceVariance,
+        excludingGoods: data.excludingGoods ? data.excludingGoods.map(item => {
+            return {
+                good: item
+            }
+        }
+        ) : []
     });
 
     return await Good(connect(DB_CONNECTION, portal))
         .findById(good._id)
         .populate([
             { path: 'materials.good', select: 'id name' },
+            { path: 'excludingGoods.good' },
             { path: 'manufacturingMills.manufacturingMill' }
         ])
 }
@@ -150,13 +159,19 @@ exports.editGood = async (id, data, portal) => {
         good.description = data.description,
         good.quantity = data.quantity
         good.pricePerBaseUnit = data.pricePerBaseUnit,
-        good.salesPriceVariance = data.salesPriceVariance
+        good.salesPriceVariance = data.salesPriceVariance,
+        good.excludingGoods = data.excludingGoods.map(item => {
+            return {
+                good: item
+            }
+        })
     await good.save();
 
     return await Good(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
             { path: 'materials.good', select: 'id name' },
+            { path: 'excludingGoods.good' },
             { path: 'manufacturingMills.manufacturingMill' }
         ])
 
@@ -172,6 +187,7 @@ exports.getAllGoods = async (company, portal) => {
         .find({})
         .populate([
             { path: 'materials.good', select: 'id name' },
+            { path: 'excludingGoods.good' },
             { path: 'manufacturingMills.manufacturingMill' }
         ])
 }
@@ -213,6 +229,7 @@ exports.getGoodByManageWorksRole = async (roleId, portal) => {
             }
         }).populate([
             { path: 'materials.good', select: 'id name' },
+            { path: 'excludingGoods.good' },
             { path: 'manufacturingMills.manufacturingMill' }
         ]);
     return { goods }

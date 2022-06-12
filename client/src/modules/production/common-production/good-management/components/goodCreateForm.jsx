@@ -5,10 +5,13 @@ import { DialogModal, TreeSelect, ErrorLabel, ButtonModal, SelectBox } from "../
 import { GoodActions } from "../redux/actions";
 import { CategoryActions } from "../../category-management/redux/actions";
 import UnitCreateForm from "./unitCreateForm";
+import PriceCreateForm from "./priceCreateForm";
 import ComponentCreateForm from "./componentCreateForm";
 import InfoMillCreateForm from "./infoMillCreateForm";
 import { generateCode } from "../../../../../helpers/generateCode";
 import Swal from "sweetalert2";
+import VariantCreateForm from "./variantCreateForm";
+import OptionalAttributeCreateForm from "./optionalAttributeCreateForm";
 
 function GoodCreateForm(props) {
     const [state, setState] = useState({
@@ -16,6 +19,7 @@ function GoodCreateForm(props) {
         name: "",
         baseUnit: "",
         units: [],
+        prices: [],
         materials: [],
         quantity: 0,
         description: "",
@@ -25,6 +29,9 @@ function GoodCreateForm(props) {
         salesPriceVariance: "",
         numberExpirationDate: "",
         sourceType: "",
+        optionalAttributes: [],
+        variants: [],
+        excludingGoods: [],
     })
 
     let dataSource = [
@@ -41,6 +48,10 @@ function GoodCreateForm(props) {
             text: 'Hàng hóa nhập từ nhà cung cấp',
         }
     ];
+
+    useEffect(() => {
+        props.getAllGoods();
+    }, [])
 
     useEffect(() => {
         if (props.type !== state.type) {
@@ -112,10 +123,6 @@ function GoodCreateForm(props) {
         validateName(value, true);
     };
 
-    const handleSourceChange = (value) => {
-        validateSourceProduct(value[0], true);
-    }
-
     const validateName = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
@@ -131,6 +138,41 @@ function GoodCreateForm(props) {
         }
         return msg === undefined;
     };
+
+    const handleSourceChange = (value) => {
+        validateSourceProduct(value[0], true);
+    }
+
+    const validateSourceProduct = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (value !== "1" && value !== "2") {
+            msg = translate("manage_warehouse.good_management.validate_source_product");
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                errorOnSourceProduct: msg,
+                sourceType: value,
+                materials: value === "2" ? [] : state.materials,
+                manufacturingMills: value === "2" ? [] : state.manufacturingMills,
+            });
+        }
+        return msg === undefined;
+    }
+
+    const getDataGoods = () => {
+        const { goods } = props;
+        let dataGoods = [];
+        goods.listALLGoods.map((item) => {
+            dataGoods.push({
+                value: item._id,
+                text: item.name,
+            });
+        });
+
+        return dataGoods;
+    }
 
     const handleBaseUnitChange = (e) => {
         let value = e.target.value;
@@ -206,6 +248,14 @@ function GoodCreateForm(props) {
         });
     };
 
+    const handlePriceChange = (data) => {
+        setState({
+            ...state,
+            pricePerBaseUnit: data.defaultPrice,
+            prices: data
+        });
+    }
+
     const handleListMaterialChange = (data) => {
         setState({
             ...state,
@@ -244,22 +294,11 @@ function GoodCreateForm(props) {
         return msg === undefined;
     }
 
-    const validateSourceProduct = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = props;
-        if (value !== "1" && value !== "2") {
-            msg = translate("manage_warehouse.good_management.validate_source_product");
-        }
-        if (willUpdateState) {
-            setState({
-                ...state,
-                errorOnSourceProduct: msg,
-                sourceType: value,
-                materials: value === "2" ? [] : state.materials,
-                manufacturingMills: value === "2" ? [] : state.manufacturingMills,
-            });
-        }
-        return msg === undefined;
+    const handleExcludingGoodsChange = (value) => {
+        setState({
+            ...state,
+            excludingGoods: value,
+        });
     }
 
     const isFormValidated = () => {
@@ -276,6 +315,21 @@ function GoodCreateForm(props) {
 
     };
 
+    // Function lưu các trường thông tin vào state
+    const handleChangeOptionalAttribute = (data) => {
+        setState({
+            ...state,
+            optionalAttributes: data,
+        });
+    }
+
+    const handleChangeVariant = (data) => {
+        setState({
+            ...state,
+            variants: data,
+        });
+    }
+
     const save = () => {
         if (isFormValidated()) {
             props.createGoodByType(state);
@@ -286,13 +340,22 @@ function GoodCreateForm(props) {
         Swal.fire({
             icon: "question",
 
-            html: `<h3 style="color: red"><div>Phương sai</div> </h3>
+            html: `<h3 style="color: red"><div>Khối lượng một đơn vị tính cơ bản</div> </h3>
             <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
-            <p>Phương sai là giá trị chênh lệch giữa giá bán cao nhất và giá bán thấp nhất có thể chấp nhận được dựa trên 1 đơn vị tính cơ bản.</p>
-            <p>Ví dụ: Phương sai 50,000 VNĐ giá sản phẩm 500,000 VNĐ có nghĩa là có thể bán 1 đơn vị trong tầm giá 450,000 VNĐ-> 500,000 VNĐ</p>`,
+            <p>Đơn vị tính: Kg</p>
+            <p>Nhập vào khối lượng hàng hóa, khối lượng dùng để tính chi phí vận chuyển hàng hóa .</p>`,
             width: "50%",
         })
     };
+    const showExplainExcludingGoods = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Hàng hóa loại trừ</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Thông tin này sử dụng để lưu trữ hàng hóa trong kho hoặc khi vận chuyển, tránh xảy ra xung đột hàng hóa .</p>`,
+            width: "50%",
+        })
+    }
 
     const handleClickCreate = () => {
         let code = generateCode("HH");
@@ -302,6 +365,7 @@ function GoodCreateForm(props) {
         });
     };
     let listUnit = [];
+    let priceInfomation = [];
     let listMaterial = [];
     const { translate, goods, categories, type } = props;
     const {
@@ -314,6 +378,7 @@ function GoodCreateForm(props) {
         name,
         category,
         units,
+        prices,
         baseUnit,
         description,
         materials,
@@ -324,11 +389,14 @@ function GoodCreateForm(props) {
         numberExpirationDate,
         errorOnNumberExpirationDate,
         sourceType,
+        excludingGoods,
     } = state;
     const dataSelectBox = getAllCategory();
 
     if (units) listUnit = units;
+    if (prices) priceInfomation = prices;
     if (materials) listMaterial = materials;
+    let dataGoods = getDataGoods();
     return (
         <React.Fragment>
             <ButtonModal
@@ -410,6 +478,21 @@ function GoodCreateForm(props) {
                                 <input type="number" className="form-control" value={numberExpirationDate} onChange={handleNumberExpirationDateChange} />
                                 <ErrorLabel content={errorOnNumberExpirationDate} />
                             </div>
+                            <div className={`form-group`}>
+                                <label>{translate('manage_warehouse.good_management.excluding_good')}</label>
+                                <a onClick={() => showExplainExcludingGoods()}>
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                </a>
+                                <SelectBox
+                                    id={`select-excluding-good`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={excludingGoods}
+                                    items={dataGoods}
+                                    onChange={handleExcludingGoodsChange}
+                                    multiple={true}
+                                />
+                            </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>
@@ -428,7 +511,7 @@ function GoodCreateForm(props) {
                             </div>
                             <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
                                 <label>
-                                    {"Phương sai giá bán / 1 đơn vị tính cơ bản"}
+                                    {"Phương sai giá bán"}
                                     <span className="text-red"> </span>
                                 </label>
                                 <a onClick={() => showListExplainVariance()}>
@@ -450,6 +533,13 @@ function GoodCreateForm(props) {
                                 <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                             <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={handleListUnitChange} />
+                            <PriceCreateForm productDefaultPrice={state.pricePerBaseUnit} initialData={priceInfomation} onDataChange={handlePriceChange} />
+                            <VariantCreateForm
+                                productCode={state.code}
+                                productWeight={state.weight}
+                                productDefaultPrice={state.pricePerBaseUnit}
+                                handleChange={handleChangeVariant} />
+                            <OptionalAttributeCreateForm handleChange={handleChangeOptionalAttribute} />
 
                             <React.Fragment>
                                 {(type === "product" && sourceType === "1") ? (
@@ -472,5 +562,6 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     createGoodByType: GoodActions.createGoodByType,
     getCategoriesByType: CategoryActions.getCategoriesByType,
+    getAllGoods: GoodActions.getAllGoods,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodCreateForm));

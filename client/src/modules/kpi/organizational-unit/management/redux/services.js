@@ -1,9 +1,10 @@
-import { sendRequest } from '../../../../../helpers/requestHelper'
+import { sendRequest } from '../../../../../helpers/requestHelper';
 export const managerServices = {
     getAllKPIUnit,
     getChildTargetOfCurrentTarget,
     copyKPIUnit,
     calculateKPIUnit,
+    checkExistKPI,
 }
 
 // Lấy tất cả KPI đơn vị
@@ -49,6 +50,17 @@ function copyKPIUnit(kpiId, data) {
             listKpiUnit: data?.listKpiUnit,
             organizationalUnitIdCopy: data?.organizationalUnitIdCopy,
             matchParent: data?.matchParent
+        }
+    }, true, true, 'kpi.organizational_unit');
+}
+
+function checkExistKPI(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/management/organizational-unit-kpi-sets/check`,
+        method: 'POST',
+        params: {
+            idunit: data?.idunit,
+            datenew: data?.datenew,
         }
     }, true, true, 'kpi.organizational_unit');
 }

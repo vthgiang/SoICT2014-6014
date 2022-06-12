@@ -62,7 +62,7 @@ function validateTimeEst(value, translate, mustBeLower = true, compareNumber = I
         msg = translate('project.task_management.add_err_time_cost');
     }
     else if ((mustBeLower && Number(value) >= compareNumber)) {
-        msg = 'Thời gian ước lượng thoả hiệp phải bé hơn Thời gian ước lượng';
+        msg = translate('project.task_management.add_err_optimistic_time');
     }
     return msg;
 }

@@ -19,9 +19,28 @@ const { createProjectTask } = require('../task/task-management/task.service');
 
 const MILISECS_TO_DAYS = 86400000;
 
+/**
+ * Hàm hỗ trợ lấy số tuần trong 1 tháng
+*/
+const getAmountOfWeekDaysInMonth = (date) => {
+    let result = 0;
+    for (var i = 1; i < 6; i++) {
+        date.date(1);
+        var dif = (7 + (i - date.weekday())) % 7 + 1;
+        result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
+    }
+    return result;
+}
+
+
+/**
+ * Lấy danh sách các dự án thoả mãn điều kiện
+ * @param {*} query 
+ */
 exports.get = async (portal, query) => {
-    let { page, perPage, userId, projectName } = query;
+    let { page, perPage, userId, projectName, projectType, creatorEmployee, projectManager, responsibleEmployees } = query;
     let options = {};
+    // Tìm kiếm theo id người sử dụng
     options = userId ? {
         ...options,
         $or: [
@@ -31,6 +50,7 @@ exports.get = async (portal, query) => {
         ]
     } : {};
 
+    // Tìm kiếm theo tên dự án
     if (projectName && projectName.toString().trim()) {
         options = {
             ...options,
@@ -41,24 +61,110 @@ exports.get = async (portal, query) => {
         }
     }
 
+    // Tìm kiếm theo thành viên dự án
+    if (responsibleEmployees) {
+        const responsible = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id) : [];
+
+        options = {
+            ...options,
+            responsibleEmployees: {
+                $in: getIdResponsible
+            }
+        }
+    }
+
+    // Tìm kiếm theo người quản trị dự án
+    if (projectManager) {
+        const manager = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: projectManager,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: projectManager,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+        const getIdManager = manager && manager.length > 0 ? manager.map(o => o._id) : [];
+        options = {
+            ...options,
+            projectManager: {
+                $in: getIdManager
+            }
+        }
+    }
+
+    // Tìm kiếm theo người tạo dự án
+    if (creatorEmployee) {
+        let creator = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creatorEmployee,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creatorEmployee,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id) : [];
+
+        options = {
+            ...options,
+            creator: {
+                $in: getIdCreator
+            }
+        }
+    }
+
+    // Tìm kiếm theo hình thức quản lý dự án
+    if (projectType) {
+        options = {
+            ...options,
+            projectType: {
+                $in: projectType,
+            }
+        };
+    }
     let project;
 
     let totalList = await Project(connect(DB_CONNECTION, portal)).countDocuments(options);
     if (query.calledId === "paginate") {
         let currentPage, currentPerPage;
-        console.log('page, perPage', page, perPage)
         currentPage = page ? Number(page) : 1;
         currentPerPage = perPage ? Number(perPage) : 5;
         console.log('currentPage, currentPerPage', currentPage, currentPerPage)
         console.log('options', options)
 
-        project = await Project(
-            connect(DB_CONNECTION, portal)
-        ).find(options).sort({createdAt: -1}).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
+        project = await Project(connect(DB_CONNECTION, portal)).find(options).sort({createdAt: -1}).skip((currentPage - 1) * currentPerPage).limit(currentPerPage)
             .populate({ path: "responsibleEmployees", select: "_id name email" })
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" });
-        console.log('project', project)
         return {
             docs: project,
             totalDocs: totalList,
@@ -70,16 +176,18 @@ exports.get = async (portal, query) => {
             .populate({ path: "projectManager", select: "_id name email" })
             .populate({ path: "creator", select: "_id name email" })
     }
-    // console.log('project2222222', project)
     return project;
 }
 
 exports.show = async (portal, id) => {
     let tp = await Project(connect(DB_CONNECTION, portal)).findById(id).populate({ path: "projectManager", select: "_id name" });
-
     return tp;
 }
 
+/**
+ * Tạo dự án mới
+ * @param {*} data 
+ */
 exports.create = async (portal, data) => {
     console.log('data', data)
     let newData = {};
@@ -144,9 +252,19 @@ exports.create = async (portal, data) => {
         ...data,
         responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
     });
+
+    project = await Project(connect(DB_CONNECTION, portal)).findById(project._id)
+        .populate({ path: "responsibleEmployees", select: "_id name email" })
+        .populate({ path: "projectManager", select: "_id name email" })
+        .populate({ path: "creator", select: "_id name email" })
     return project;
 }
 
+/**
+ * Thay đổi thông tin dự án
+ * @param {*} id 
+ * @param {*} data 
+ */
 exports.edit = async (portal, id, data) => {
     let newResponsibleEmployeesWithUnit = [];
     if (data) {
@@ -207,27 +325,28 @@ exports.edit = async (portal, id, data) => {
             responsibleEmployeesWithUnit: newResponsibleEmployeesWithUnit,
             responsibleEmployees: data.responsibleEmployees,
             unitTime: data.unitTime,
+            unitCost: data.unitCost
         }
     }, { new: true });
     return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id })
-        .populate({ path: "projectManager", select: "_id name" })
+        .populate({ path: "responsibleEmployees", select: "_id name email" })
+        .populate({ path: "projectManager", select: "_id name email" })
+        .populate({ path: "creator", select: "_id name email" })
 }
-
+/**
+ * Xoá dự án theo id
+ * @param {*} id
+*/
 exports.delete = async (portal, id) => {
     await Project(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
     return id;
 }
 
-const getAmountOfWeekDaysInMonth = (date) => {
-    let result = 0;
-    for (var i = 1; i < 6; i++) {
-        date.date(1);
-        var dif = (7 + (i - date.weekday())) % 7 + 1;
-        result += Math.floor((date.daysInMonth() - dif) / 7) + 1;
-    }
-    return result;
-}
-
+/**
+ * Lấy điểm của các thành viên
+ * @param {*} id
+ * @param {*} evalMonth
+ */
 exports.getMembersWithScore = async (portal, id, evalMonth) => {
     const currentProject = await Project(connect(DB_CONNECTION, portal)).find({ _id: id }).populate({ path: "responsibleEmployees", select: "_id name" });
     const currentTasks = await Task(connect(DB_CONNECTION, portal))
@@ -283,6 +402,11 @@ exports.getMembersWithScore = async (portal, id, evalMonth) => {
     return id;
 }
 
+/**
+ * Lấy danh sách các đánh giá
+ * @param {*} id
+ * @param {*} evalMonth
+*/
 exports.getListTasksEval = async (portal, id, evalMonth) => {
     const currentTasks = await Task(connect(DB_CONNECTION, portal))
         .find({
@@ -314,6 +438,10 @@ exports.getListTasksEval = async (portal, id, evalMonth) => {
     })
 }
 
+/**
+ * Lấy danh sách lương các thành viên
+ * @param {*} data
+ */
 exports.getSalaryMembers = async (portal, data) => {
     let newResponsibleEmployeesWithUnit = [];
     for (let employeeItem of data.responsibleEmployeesWithUnit) {
@@ -362,6 +490,10 @@ exports.getSalaryMembers = async (portal, data) => {
     return newResponsibleEmployeesWithUnit;
 }
 
+/**
+ * Lấy danh sách các yêu cầu thay đổi
+ * @param {*} query
+ */
 exports.getListProjectChangeRequests = async (portal, query) => {
     let { page, perPage, projectId } = query;
     console.log('page, perPage, projectId', page, perPage, projectId)
@@ -390,6 +522,10 @@ exports.getListProjectChangeRequests = async (portal, query) => {
     return projectChangeRequestsList;
 }
 
+/** 
+ * Tạo yêu cầu thay đổi dự án
+ * @param {*} changeRequest
+*/
 exports.createProjectChangeRequest = async (portal, changeRequest) => {
     console.log(changeRequest)
     const createCRResult = await ProjectChangeRequest(connect(DB_CONNECTION, portal)).create(changeRequest);
@@ -399,6 +535,11 @@ exports.createProjectChangeRequest = async (portal, changeRequest) => {
     return projectChangeRequestsList;
 }
 
+/**
+ * Cập nhật trạng thái cho các yêu cầu thay đổi dự án
+ * @param {*} changeRequestId
+ * @param {*} requestStatus
+ */
 exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, requestStatus) => {
     console.log(changeRequestId, requestStatus);
     // update requestStatus trong database
@@ -463,6 +604,10 @@ exports.updateStatusProjectChangeRequest = async (portal, changeRequestId, reque
     return projectChangeRequestsList;
 }
 
+/**
+ * Cập nhật danh sách các yêu cầu thay đổi dự án
+ * @param {*} data
+ */
 exports.updateListProjectChangeRequests = async (portal, data) => {
     console.log(data)
     const { newChangeRequestsList } = data

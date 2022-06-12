@@ -35,12 +35,14 @@ const TabProjectInfo = (props) => {
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                     <h3 ><strong>{projectDetail?.name}</strong></h3>
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
+
                         {/* Button chỉnh sửa thông tin dự án */}
                         <button
                             title="Chỉnh sửa thông tin dự án" style={{ width: 35, height: 35, justifyContent: 'center', alignItems: 'center' }}
                             onClick={handleOpenEditProject}>
                             <span style={{ marginTop: 5 }} className="material-icons">edit</span>
                         </button>
+
                         {/* Button refresh thông tin dự án */}
                         <button
                             title="Tải lại thông tin"
@@ -54,6 +56,8 @@ const TabProjectInfo = (props) => {
                         </button>
                     </div>
                 </div>
+
+                
                 {
                     currentChangeRequestsListNeedApprove && currentChangeRequestsListNeedApprove.length > 0
                     &&
@@ -89,29 +93,37 @@ const TabProjectInfo = (props) => {
                 }
 
                 <h4 style={{ marginTop: 10 }}><strong>Thông tin chung</strong></h4>
-                <div><strong>Hình thức quản lý: {'  '}</strong>
-                    {projectDetail ? renderProjectTypeText(projectDetail?.projectType) : null}
+
+                <div><strong>{translate('project.projectType')}: {'  '}</strong>
+                    {projectDetail ? translate(renderProjectTypeText(projectDetail?.projectType)) : null}
                 </div>
+
                 <div><strong>{translate('project.startDate')}: {'  '}</strong>
                     {projectDetail ? moment(projectDetail?.startDate).format('HH:mm DD/MM/YYYY') : null}
                 </div>
+
                 <div><strong>{translate('project.endDate')}: {'  '}</strong>
                     {currentProjectTasks ? moment(projectDetail?.endDate).format('HH:mm DD/MM/YYYY') : null}
                 </div>
+
                 <div><strong>{translate('project.unitCost')}: {'  '}</strong>
                     {projectDetail?.unitCost ? projectDetail?.unitCost : null}
                 </div>
+
                 <div><strong>{translate('project.unitTime')}: {'  '}</strong>
                     {projectDetail && projectDetail?.unitTime ? translate(`project.unit.${projectDetail?.unitTime}`) : null}
                 </div>
 
                 <h4 style={{ marginTop: 10 }}><strong>Vai trò</strong></h4>
+
                 <div><strong>{translate('project.manager')}: {'  '}</strong>
                     {projectDetail && projectDetail?.projectManager ? projectDetail?.projectManager.map(o => o.name).join(", ") : null}
                 </div>
+
                 <div><strong>{translate('project.member')}: {'  '}</strong>
                     {projectDetail && projectDetail?.responsibleEmployees ? projectDetail?.responsibleEmployees.map(o => o.name).join(", ") : null}
                 </div>
+
             </div>
         </React.Fragment>
     );

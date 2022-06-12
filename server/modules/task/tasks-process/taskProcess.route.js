@@ -7,6 +7,7 @@ const TaskProcessController = require("./taskProcess.controller");
 
 router.get("/", auth, TaskProcessController.get);
 router.get("/diagrams/:diagramId", auth, TaskProcessController.getXmlDiagramById);
+router.get("/process/:processId", auth, TaskProcessController.getProcessById);
 
 router.post("/diagrams", auth, TaskProcessController.createXmlDiagram);
 router.post("/diagrams/import", auth, TaskProcessController.importProcessTemplate);

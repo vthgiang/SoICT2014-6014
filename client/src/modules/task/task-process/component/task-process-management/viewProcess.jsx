@@ -12,6 +12,7 @@ import customModule from '../custom-task-process'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../process-template/processDiagram.css';
+import { ViewProcessChild } from "./viewProcessChild";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -34,7 +35,9 @@ function ViewProcess(props) {
     const [state, setState] = useState({
         userId: getStorage("userId"),
         currentRole: getStorage('currentRole'),
+        showProcessChild:false,
         showInfo: false,
+        processChilds:data.processChilds,
         info: data.tasks,
         xmlDiagram: data.xmlDiagram,
         selected: 'info',
@@ -76,11 +79,19 @@ function ViewProcess(props) {
         for (let i in infoTask) {
             info[`${infoTask[i].codeInProcess}`] = infoTask[i];
         }
+        let ListProcessChilds = {};
+        let processChilds = props.data.processChilds;
+        for (let i in processChilds) {
+            ListProcessChilds[`${processChilds[i].codeInProcess}`] = processChilds[i];
+        }
+        console.log(props.data);
         setState({
             ...state,
             idProcess: props.idProcess,
             showInfo: false,
+            showProcessChild:false,
             info: info,
+            processChilds:ListProcessChilds,
             processDescription: props.data.processDescription ? props.data.processDescription : '',
             processName: props.data.processName ? props.data.processName : '',
             status: props.data.status ? props.data.status : '',
@@ -177,16 +188,36 @@ function ViewProcess(props) {
                     name: nameStr[1],
                     taskName: element.businessObject.name,
                     id: `${element.businessObject.id}`,
+                    showProcessChild:false,
+                }
+            } else if (element.type === 'bpmn:SubProcess') {
+                if (!state.processChilds[`${element.businessObject.id}`] || (state.processChilds[`${element.businessObject.id}`] && !state.processChilds[`${element.businessObject.id}`].organizationalUnit)) {
+                    state.processChilds[`${element.businessObject.id}`] = {
+                        ...state.processChilds[`${element.businessObject.id}`],
+                        organizationalUnit: props.listOrganizationalUnit[0]?._id,
+                    }
+                }
+                return {
+                    ...state,
+                    showProcessChild: true,
+                    type: element.type,
+                    name: nameStr[1],
+                    taskName: element.businessObject.name,
+                    id: `${element.businessObject.id}`,
+                    showInfo: false,
                 }
             }
 
             else {
-                return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
+                return { ...state, showInfo: false,showProcessChild:false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
             window.$(`#modal-detail-task-view-process`).modal("show");
+        }
+        if (element.type === 'bpmn:SubProcess') {
+            window.$(`#modal-view-process-child`).modal("show");
         }
     }
 
@@ -348,24 +379,29 @@ function ViewProcess(props) {
 
     const { translate, role, user } = props;
     const { id, info, startDate, endDate, status,
-        processDescription, processName } = state;
-        // console.log(info);
+        processDescription, processName,showProcessChild,processChilds ,showInfo} = state;
+        console.log(processChilds);
     const { isTabPane } = props
     // if (id){
     //     console.log(info[`${id}`]);
     // }
+    //`contain-border ${showInfo ||showInfoProcess? 'col-md-8' : 'col-md-12'}`
     return (
         <React.Fragment>
             <div>
-                {id !== undefined &&
+                {id !== undefined && showInfo &&
                     <ModalDetailTask action={"view-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
                 }
-
+                {id !== undefined && showProcessChild &&
+                    <ViewProcessChild id={id}
+                    processChild={(processChilds && processChilds[`${id}`]) && processChilds[`${id}`]} />
+                }
                 <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
                     {/* Quy trình công việc */}
                     <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
                         {/* Diagram */}
                         <div id={generateId}></div>
+
                         {/* Zoom button */}
                         <div className="row">
                             <div className="io-zoom-controls">

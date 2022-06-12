@@ -19,7 +19,8 @@ exports.login = async (fingerprint, data) => {
     if (data.portal !== process.env.DB_NAME) {
         company = await Company(
             connect(DB_CONNECTION, process.env.DB_NAME)
-        ).findOne({ shortName: data.portal })
+        )
+            .findOne({ shortName: data.portal })
             .select('_id name shortName active log');
         if (!company) throw ["portal_invalid"];
     }

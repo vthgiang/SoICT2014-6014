@@ -6,6 +6,7 @@ export const managerActions = {
     getChildTargetOfCurrentTarget,
     copyKPIUnit,
     calculateKPIUnit,
+    checkExistKPI,
 }
 
 // lấy tất cả các KPI của đơn vị
@@ -64,6 +65,25 @@ function copyKPIUnit(kpiId, data) {
             .catch(error => {
                 dispatch({
                     type: managerConstants.COPY_KPIUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function checkExistKPI(data) {
+    return dispatch => {
+        dispatch({ type: managerConstants.CHECK_EXIST_KPI_REQUEST });
+        managerServices.checkExistKPI(data)
+            .then(res => {
+                dispatch({
+                    type: managerConstants.CHECK_EXIST_KPI_SUCCESS,
+                    payload: res.data.content,
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: managerConstants.CHECK_EXIST_KPI_FAILURE,
                     payload: error
                 })
             })

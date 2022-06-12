@@ -10,6 +10,7 @@ import Login from "../modules/auth/components/login"
 import Introduction from "../modules/intro/components"
 import ResetPassword from "../modules/auth/components/resetPasswordNew"
 import { ModalViewTaskProcessById } from "../modules/task/task-process/component/process-template/modalViewTaskProcessById";
+import { ModalViewProcessById } from "../modules/task/task-process/component/task-process-management/modalViewProcessById";
 
 const Home = lazy(() => import("../modules/home/components"))
 const NotFound = lazy(() => import("../modules/not-found/components"))
@@ -117,6 +118,7 @@ const StockManagement = lazy(() => import("../modules/production/warehouse/stock
 const BinLocationManagement = lazy(() => import("../modules/production/warehouse/bin-location-management/components"))
 const BillManagement = lazy(() => import("../modules/production/warehouse/bill-management/components"))
 const InventoryManagement = lazy(() => import("../modules/production/warehouse/inventory-management/components"))
+const StockRequestManagement = lazy(() => import("../modules/production/warehouse/request-management/components"))
 
 // Customer Management
 const CrmDashBoard = lazy(() => import("../modules/crm/dashboard/components"))
@@ -140,7 +142,7 @@ const ServiceLevelAgreement = lazy(() => import("../modules/production/order/ser
 const BusinessDepartment = lazy(() => import("../modules/production/order/business-department/components"))
 const Payment = lazy(() => import("../modules/production/order/payment/components"))
 const BankAccount = lazy(() => import("../modules/production/order/bank-account/components"))
-
+const OrderRequestManagement = lazy(() => import("../modules/production/order/request-management/components"))
 // plans
 const PlanManagement = lazy(() => import("../modules/plan/components"))
 
@@ -168,6 +170,7 @@ const ManufacturingWorks = lazy(() => import("../modules/production/manufacturin
 const PurchasingRequest = lazy(() => import("../modules/production/manufacturing/purchasing-request/components"))
 const ManufacturingDashboard = lazy(() => import("../modules/production/manufacturing/manufacturing-dashboard/components"))
 const ManufacturingLot = lazy(() => import("../modules/production/manufacturing/manufacturing-lot/components"))
+const ManufacturingRequestManagement = lazy(() => import("../modules/production/manufacturing/request-management/components"))
 
 // Transport Managements
 const TransportRequirement = lazy(() => import("../modules/production/transport/transport-requirements/components"))
@@ -1480,7 +1483,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={TaskComponent}
                     />
-                    <PrivateRoute // Trang chi tiết quy trinhf  (không có trên menu)
+                    <PrivateRoute // Trang chi tiết mẫu quy trinh  (không có trên menu)
                         isLoading={this.props.tasks.isLoading}
                         key={"task"}
                         arrPage={[
@@ -1494,6 +1497,21 @@ class Routes extends Component {
                         pageName={"process_template"}
                         layout={Layout}
                         component={ModalViewTaskProcessById}
+                    />
+                    <PrivateRoute // Trang chi tiết quy trinh  (không có trên menu)
+                        isLoading={this.props.tasks.isLoading}
+                        key={"task"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            { link: "/process-template", name: "process-template", icon: "" },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/process"}
+                        path={"/process"}
+                        pageName={"process"}
+                        layout={Layout}
+                        component={ModalViewProcessById}
                     />
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}
@@ -1992,7 +2010,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={TaskReportManager}
                     />
-
+                    {/* warehouse route*/}
                     <PrivateRoute
                         isLoading={false}
                         key={"dashboard-inventory"}
@@ -2148,6 +2166,27 @@ class Routes extends Component {
                         layout={Layout}
                         component={BillManagement}
                     />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"stock-request-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/request-management/stock",
+                                name: "request_management",
+                                icon: "fa fa-reorder",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/request-management/stock"}
+                        path={"/request-management/stock"}
+                        pageName={"request_management"}
+                        layout={Layout}
+                        component={StockRequestManagement}
+                    />
+
+                    {/* end warehouse route*/}
 
                     <PrivateRoute
                         isLoading={this.props.assetsManager.isLoading}
@@ -2538,6 +2577,26 @@ class Routes extends Component {
                         layout={Layout}
                         component={Payment}
                     />
+                    
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"order-request-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/request-management/order",
+                                name: "request_management",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/request-management/order"}
+                        path={"/request-management/order"}
+                        pageName={"request_management"}
+                        layout={Layout}
+                        component={OrderRequestManagement}
+                    />
 
                     {/* Plans Management */}
 
@@ -2883,6 +2942,26 @@ class Routes extends Component {
                         pageName={"manage_manufacturing_lot"}
                         layout={Layout}
                         component={ManufacturingLot}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manufacturing-request-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/request-management/manufacturing",
+                                name: "request_management",
+                                icon: "fa fa-navicon",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/request-management/manufacturing"}
+                        path={"/request-management/manufacturing"}
+                        pageName={"request_management"}
+                        layout={Layout}
+                        component={ManufacturingRequestManagement}
                     />
 
                     {/* Transport Management */}

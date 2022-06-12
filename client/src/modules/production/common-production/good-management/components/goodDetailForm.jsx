@@ -20,6 +20,13 @@ function GoodDetailForm(props) {
         props.category !== state.category ||
         props.description !== state.description
     ) {
+        let excludingGoods = [];
+        if (props.excludingGoods && props.excludingGoods.length > 0) {
+            for (let i = 0; i < props.excludingGoods.length; i++) {
+                excludingGoods = [...excludingGoods, props.excludingGoods[i].good.name];
+            }
+
+        }
         setState({
             ...state,
             goodId: props.goodId,
@@ -31,6 +38,7 @@ function GoodDetailForm(props) {
             code: props.code,
             name: props.name,
             category: props.category,
+            excludingGoods: excludingGoods,
             // packingRule: props.packingRule,
             manufacturingMills: props.manufacturingMills,
             pricePerBaseUnit: props.pricePerBaseUnit,
@@ -54,6 +62,7 @@ function GoodDetailForm(props) {
         pricePerBaseUnit,
         salesPriceVariance,
         numberExpirationDate,
+        excludingGoods,
     } = state;
     return (
         <React.Fragment >
@@ -86,6 +95,12 @@ function GoodDetailForm(props) {
                             <div className="form-group">
                                 <strong>{translate("manage_warehouse.good_management.expirationDate")}:&emsp;</strong>
                                 {numberExpirationDate ? numberExpirationDate : ''}{" " + translate("manage_warehouse.good_management.day")}
+                            </div>
+                            <div className="form-group">
+                                <strong>{translate("manage_warehouse.good_management.excluding_good")}:&emsp;</strong>
+                                { excludingGoods && excludingGoods.length > 0 ? excludingGoods.map((item, index) => {
+                                    return <span key={index}>{item}&emsp;</span>
+                                }) : ''}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
