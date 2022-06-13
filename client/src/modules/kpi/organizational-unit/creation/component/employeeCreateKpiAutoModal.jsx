@@ -135,7 +135,7 @@ function EmployeeCreateKpiAutoModal(props) {
         };
         console.log('data', data)
 
-        props.createEmployeeKpiSet(data)
+        props.createEmployeeKpiSetAuto(data)
     }
 
     const isFormValidated = () => {
@@ -203,7 +203,7 @@ function mapState(state) {
 }
 const actions = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    createEmployeeKpiSet: createKpiSetActions.createEmployeeKpiSet,
+    createEmployeeKpiSetAuto: createKpiSetActions.createEmployeeKpiSetAuto,
 }
 
 const connectedEmployeeCreateKpiAutoModal = connect(mapState, actions)(withTranslate(EmployeeCreateKpiAutoModal));

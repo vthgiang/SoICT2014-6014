@@ -7,6 +7,10 @@ const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSe
 
 const NotificationServices = require(`../../../notification/notification.service`)
 const NewsFeedService = require('../../../news-feed/newsFeed.service')
+const EmployeeService = require('../../../human-resource/profile/profile.service')
+const UserService = require('../../../super-admin/user/user.service');
+const { getPaginatedTasksThatUserHasResponsibleRole } = require('../../../task/task-management/task.service');
+
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /* Lấy tập KPI cá nhân hiện tại theo người dùng */
@@ -55,7 +59,7 @@ exports.getEmployeeKpiSet = async (portal, data) => {
         .findOne({ creator: data.userId, organizationalUnit: department._id, status: { $ne: 3 }, date: { $lt: nextMonth, $gte: month } })
         .populate("organizationalUnit")
         .populate({ path: 'creator', select: '_id name email avatar' })
-        .populate({path: 'approver', select: '_id name email avatar'})
+        .populate({ path: 'approver', select: '_id name email avatar' })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -69,7 +73,7 @@ exports.getEmployeeKpiSet = async (portal, data) => {
 /* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, userId, startDate, endDate) => {
     endDate = new Date(endDate)
-    endDate.setMonth(endDate.getMonth() + 1)    
+    endDate.setMonth(endDate.getMonth() + 1)
 
     let keySearch = {
         creator: new mongoose.Types.ObjectId(userId),
@@ -80,7 +84,7 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
     if (organizationalUnitIds) {
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .find({ _id: { $in: organizationalUnitIds.map(item => mongoose.Types.ObjectId(item)) } })
-        
+
         if (unit?.length > 0) {
             keySearch = {
                 ...keySearch,
@@ -100,7 +104,7 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
                 organizationalUnit: { $in: unit.map(item => item?._id) }
             }
         }
-    } 
+    }
 
     let employeeKpiSetByMonth = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find(keySearch)
@@ -169,6 +173,17 @@ exports.createEmployeeKpiSet = async (portal, data) => {
     nextMonthSearch = new Date(month);
     nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
 
+    // Kiem tra ton tai kpi
+    let check = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: organizationalUnit,
+        creator: creator,
+        approver: approver,
+        date: new Date(month)
+    })
+    if (check) {
+        console.log('da khoi tao roi');
+        return null;
+    }
 
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -180,7 +195,7 @@ exports.createEmployeeKpiSet = async (portal, data) => {
             }
         })
         .populate("kpis");//status = 1 là kpi đã đc phê duyệt
-    
+
     if (organizationalUnitKpiSet) {
         // Tạo thông tin chung cho KPI cá nhân
         let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -216,8 +231,8 @@ exports.createEmployeeKpiSet = async (portal, data) => {
 
         employeeKpiSet = employeeKpiSet && await employeeKpiSet
             .populate("organizationalUnit")
-            .populate({path: "creator", select :"_id name email avatar"})
-            .populate({path: "approver", select :"_id name email avatar"})
+            .populate({ path: "creator", select: "_id name email avatar" })
+            .populate({ path: "approver", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .execPopulate();
 
@@ -245,8 +260,8 @@ exports.createEmployeeKpi = async (portal, data) => {
     employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(employeeKpiSetId)
         .populate('organizationalUnit')
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -254,6 +269,335 @@ exports.createEmployeeKpi = async (portal, data) => {
         ])
 
     return employeeKpiSet;
+}
+
+exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
+    // Chấm ĐIỂM PROFILE nhân viên. Điểm max = 120
+
+    // Tiêu chí chấm điểm profile
+    const statusPoint = {
+        active: 10,
+        probationary: 10,
+        leave: -100,
+        maternity_leave: -100,
+        unpaid_leave: -100,
+        sick_leave: -100
+    }
+
+    const professionalSkillPoint = {
+        unavailable: 5,
+        intermediate_degree: 5,
+        colleges: 10,
+        university: 10,
+        bachelor: 10,
+        engineer: 10,
+        master_degree: 15,
+        phd: 15
+    }
+
+    const degreePoint = {
+        unknown: 0,
+        no_rating: 0,
+        ordinary: 10,
+        average_good: 10,
+        good: 15,
+        very_good: 15,
+        excellent: 15
+    }
+
+    let profilePoint = 0;
+    let resultPoint = 0;
+    let progressPoint = 0;
+
+    // Lấy thông tin profile nhân viên
+
+    if (!portal) portal = 'vnist';
+    let user = await UserService.getUser(portal, employee);
+    let inforEmployee = await EmployeeService.getEmployeeProfile(portal, user.email);
+
+    // chấm ĐIỂM PROFILE
+    const profile = inforEmployee.employees[0];
+
+    if (profile.status) {
+        profilePoint += statusPoint[profile.status];
+    }
+    if (profile.professionalSkill) {
+        profilePoint += professionalSkillPoint[profile.professionalSkill];
+    }
+    if (profile?.degrees.length > 0) {
+        let point = 0;
+        profile.degrees.map(x => {
+            point += degreePoint[x.degreeType];
+        })
+        if (point > 15) {
+            point = 20;
+        };
+        profilePoint += point;
+    }
+    if (profile?.certificates) {
+        let point = 20 * profile.certificates.length;
+        if (point > 20) {
+            point = 25;
+        };
+        profilePoint += point;
+    }
+    if (profile?.experiences) {
+        let point = 20 * profile.experiences.length;
+        if (point > 20) {
+            point = 25;
+        };
+        profilePoint += point;
+    }
+    if (profile?.workProcess) {
+        let point = 20 * profile.workProcess.length;
+        if (point > 20) {
+            point = 25;
+        };
+        profilePoint += point;
+    }
+
+
+    // Chấm điểm ĐIỂM KẾT QUẢ và ĐIỂM QUÁ TRÌNH
+    let numOfKpis = 0;
+    let now = new Date();
+    let before = new Date();
+    before.setMonth(now.getMonth() - 3);
+
+    let kpiRecently = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .find({
+            creator: employee,
+            date: {
+                $gte: before, $lt: now
+            }
+        })
+        .populate("kpis");
+
+    if (kpiRecently?.length > 0) {
+        kpiRecently.map(x => {
+            // Chấm điểm ĐIỂM KẾT QUẢ 
+            // Nếu đã có đủ điểm đánh giá thì điểm kết quả bằng trung bình cộng, nếu chưa có thì mặc định là 80
+            if (x.automaticPoint && x.employeePoint && x.approvedPoint) {
+                resultPoint += (x.automaticPoint + x.employeePoint + x.approvedPoint) / 3;
+            } else {
+                resultPoint += 80;
+            }
+
+            // Chấm ĐIỂM QUÁ TRÌNH
+            if (x.kpis.length === 0) {
+                progressPoint = 80;
+                numOfKpis++;
+            } else {
+                x.kpis.map(item => {
+                    numOfKpis++;
+                    if (item.automaticPoint && item.employeePoint && item.approvedPoint) {
+                        progressPoint += (item.automaticPoint + item.employeePoint + item.approvedPoint) / 3;
+                    } else {
+                        progressPoint += 80;
+                    }
+                })
+            }
+        })
+        progressPoint /= numOfKpis;
+        resultPoint /= kpiRecently.length;
+    } else {
+        //Nếu tháng trước đó chưa có KPI thì mặc định ĐIỂM KẾT QUẢ và ĐIỂM QUÁ TRÌNH là 80
+        resultPoint = 80;
+        progressPoint = 80;
+    }
+
+    const completeRatio = Math.round(profilePoint * resultPoint * progressPoint / 10000)
+
+    return completeRatio;
+}
+
+/* Tao kpi tu dong cho cá nhân */
+exports.createEmployeeKpiSetAuto = async (portal, data) => {
+    portal = 'vnist';
+    const { organizationalUnit, month, employee, approver } = data;
+
+    // Config month tìm kiếm
+    let monthSearch, nextMonthSearch;
+
+    monthSearch = new Date(month);
+    nextMonthSearch = new Date(month);
+    nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
+
+    // Kiem tra ton tai kpi duoc tao tu dong chua
+    let check = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).find({
+        type: 'auto',
+        organizationalUnit: organizationalUnit,
+        creator: employee[0],
+        date: new Date(month)
+    })
+    console.log('check ra nay', check)
+    if (check.length > 0) {
+        console.log('da khoi tao roi');
+        return null;
+    }
+    console.log(293)
+    // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
+    let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({
+            organizationalUnit: organizationalUnit,
+            status: 1,
+            date: {
+                $gte: monthSearch, $lt: nextMonthSearch
+            }
+        })
+        .populate("kpis");//status = 1 là kpi đã đc phê duyệt
+
+    console.log(305, organizationalUnitKpiSet)
+    if (organizationalUnitKpiSet) {
+        // console.log(465, organizationalUnitKpiSet)
+        // Tạo thông tin chung cho KPI cá nhân
+        let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+            .create({
+                type: 'auto',
+                organizationalUnit: organizationalUnit,
+                creator: employee[0],
+                approver: approver,
+                date: new Date(month),
+                kpis: []
+            });
+
+        console.log(318)
+        let defaultOrganizationalUnitKpi;
+        if (organizationalUnitKpiSet?.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
+
+        //  Them cac muc tieu mac dinh cua kpi
+        if (defaultOrganizationalUnitKpi) {
+            let defaultEmployeeKpi = await Promise.all(defaultOrganizationalUnitKpi.map(async (item) => {
+                let defaultT = await EmployeeKpi(connect(DB_CONNECTION, portal)).create({
+                    name: item.name,
+                    parent: item._id,
+                    weight: 5,
+                    criteria: item.criteria,
+                    status: null,
+                    type: item.type
+                })
+                return defaultT._id;
+            }));
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
+                )
+        }
+
+        let totalRatio = 0;
+        let completeRatio = {};
+
+        for (let i = 0; i < employee.length; i++) {
+            let ratio = await this.getCompleteRatioTaskOfEmployee(portal, employee[i]);
+            totalRatio += ratio;
+            completeRatio[employee[i]] = { ratio };
+        }
+
+        const avg = totalRatio / employee.length;
+        const { employeeImportances } = organizationalUnitKpiSet;
+        for (let key in completeRatio) {
+            let importance;
+            completeRatio[key].ratio /= avg;
+            if (completeRatio[key].ratio > 1) {
+                completeRatio[key].ratio = 1;
+            }
+
+            for (let j = 0; j < employeeImportances.length; j++) {
+                if (key === employeeImportances[j].employee) {
+                    importance = employeeImportances[j].importance;
+                } else {
+                    importance = 100;
+                }
+            }
+            completeRatio[key] = { ...completeRatio[key], importance }
+        }
+
+        // Phan chia cac muc tieu kpi cho nhan vien
+        //Lay danh sach muc tieu kpi don vi theo trong so giam dan
+        let test = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .aggregate([
+                { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+                { $match: { date: { $gte: monthSearch, $lt: nextMonthSearch } } },
+                { $match: { status: 1 } },
+                {
+                    $lookup: {
+                        from: "organizationalunitkpis",
+                        localField: "kpis",
+                        foreignField: "_id",
+                        as: "kpis"
+                    }
+                },
+
+                { $unwind: '$kpis' },
+                {
+                    $match: {
+                        'kpis.type': 0
+                    }
+                },
+                {
+                    $sort: {
+                        'kpis.weight': -1
+                    }
+                }
+            ])
+
+        // Gan kpi cho nhan vien
+        let kpiEmployee = []
+        let numOfKpis = Math.round(completeRatio[employee[0]].ratio * test.length);
+        console.log(520, numOfKpis)
+        // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
+        console.log(test, completeRatio[employee[0]].importance)
+        if (test.length > 0 && completeRatio[employee[0]].importance < 90) {
+            for (let i = test.length - 1; i >= test.length - numOfKpis; i--) {
+                kpiEmployee.push({
+                    name: test[i].kpis.name,
+                    parent: test[i].kpis.parent,
+                    weight: test[i].kpis.weight,
+                    criteria: test[i].kpis.criteria
+
+                })
+            }
+        } else if (test.length > 0 && completeRatio[employee[0]].importance >= 90) {
+            for (let i = 0; i < numOfKpis; i++) {
+                kpiEmployee.push({
+                    name: test[i].kpis.name,
+                    parent: test[i].kpis.parent,
+                    weight: test[i].kpis.weight,
+                    criteria: test[i].kpis.criteria
+
+                })
+            }
+        }
+        console.log(575, kpiEmployee)
+
+        //  Them cac muc tieu khac
+        // if (dataEmployeeKpis) {
+        //     console.log(344)
+        //     let employeeKpi = await EmployeeKpi(connect(DB_CONNECTION, portal))
+        //         .create({
+        //             name: data.name,
+        //             parent: data.parent,
+        //             weight: data.weight,
+        //             criteria: data.criteria
+        //         })
+        //     const employeeKpiSetId = data.employeeKpiSet;
+        //     employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        //         .findByIdAndUpdate(
+        //             employeeKpiSetId, { $push: { kpis: employeeKpi._id } }, { new: true }
+        //         );
+        // }
+        employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+            .findById(employeeKpiSet._id)
+            .populate('organizationalUnit')
+            .populate({ path: "creator", select: "_id name email avatar" })
+            .populate({ path: "approver", select: "_id name email avatar" })
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate([
+                { path: 'comments.creator', select: 'name email avatar ' },
+                { path: 'comments.comments.creator', select: 'name email avatar' }
+            ])
+        // console.log(369, employeeKpiSet)
+        return employeeKpiSet;
+    }
 }
 
 /* Xóa mục tiêu của KPI cá nhân */
@@ -266,8 +610,8 @@ exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
-            .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -289,8 +633,8 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => 
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit")
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -322,8 +666,8 @@ exports.editEmployeeKpiSet = async (portal, approver, id) => {
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit ")
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "approver", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -663,8 +1007,8 @@ exports.createNewsFeedForEmployeeKpiSet = async (portal, data) => {
     const { creator, title, description, employeeKpiSet, organizationalUnit } = data
 
     let managers = await UserRole(connect(DB_CONNECTION, portal))
-        .find({ roleId: { $in: [...organizationalUnit?.managers] }})
-    
+        .find({ roleId: { $in: [...organizationalUnit?.managers] } })
+
     // Thêm trưởng phòng các đơn vị
     let relatedUsers = []
     relatedUsers = managers?.map(item => item?.userId?.toString())
@@ -682,7 +1026,7 @@ exports.createNewsFeedForEmployeeKpiSet = async (portal, data) => {
         title: title,
         description: description,
         creator: creator,
-        associatedDataObject: { 
+        associatedDataObject: {
             dataType: 2,
             value: employeeKpiSet?._id
         },

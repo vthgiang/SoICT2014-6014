@@ -9,33 +9,33 @@ const {
 const EmployeeController = require("./profile.controller");
 
 const data = [{
-        name: 'fileAvatar',
-        path: '/human-resource/avatars'
-    },
-    {
-        name: 'fileDegree',
-        path: '/human-resource/degrees'
-    },
-    {
-        name: 'fileCertificate',
-        path: '/human-resource/certificates'
-    },
-    {
-        name: 'fileContract',
-        path: '/human-resource/contracts'
-    },
-    {
-        name: 'file',
-        path: '/human-resource/files'
-    },
-    {
-        name: 'healthInsuranceAttachment',
-        path: '/human-resource/healthInsuranceAttachment'
-    }
+    name: 'fileAvatar',
+    path: '/human-resource/avatars'
+},
+{
+    name: 'fileDegree',
+    path: '/human-resource/degrees'
+},
+{
+    name: 'fileCertificate',
+    path: '/human-resource/certificates'
+},
+{
+    name: 'fileContract',
+    path: '/human-resource/contracts'
+},
+{
+    name: 'file',
+    path: '/human-resource/files'
+},
+{
+    name: 'healthInsuranceAttachment',
+    path: '/human-resource/healthInsuranceAttachment'
+}
 ]
 
 // Lấy thông tin cá nhân
-router.get('/employees/:id', auth, EmployeeController.getEmployeeProfile);
+router.get('/employees/:id', EmployeeController.getEmployeeProfile);
 
 // Cập nhật thông tin cá nhân
 router.patch('/employees/:userId', auth, uploadFile([{

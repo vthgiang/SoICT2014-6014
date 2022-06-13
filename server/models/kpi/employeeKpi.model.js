@@ -19,6 +19,14 @@ const EmployeeKpiSchema = new Schema({
         type: String,
         required: true
     },
+    target: {
+        amount: {
+            type: Number,
+        },
+        unit: {
+            type: String,
+        }
+    },
     // null: Chưa phê duyệt, 0: Yêu cầu làm lại,1: Đã kích hoạt, 2: Đã kết thúc
     status: {
         type: Number,

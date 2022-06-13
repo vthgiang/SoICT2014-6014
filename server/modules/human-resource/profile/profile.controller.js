@@ -81,7 +81,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
             data = await EmployeeService.getEmployeesByStartingAndLeaving(req.portal, req.query.organizationalUnits, req.query.startDate, req.query.endDate, req.user.company._id);
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
-        } else if(req.query.searchForPackage){
+        } else if (req.query.searchForPackage) {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
                 professionalSkill: req.query.professionalSkill,
@@ -102,8 +102,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
-                professionalSkills: req.query. professionalSkills,
-                careerFields: req.query. careerFields,
+                professionalSkills: req.query.professionalSkills,
+                careerFields: req.query.careerFields,
                 employeeName: req.query.employeeName,
                 employeeNumber: req.query.employeeNumber,
                 gender: req.query.gender,
@@ -118,7 +118,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
             }
             data = await EmployeeService.searchEmployeeProfiles(req.portal, params, req.user.company._id);
         }
-        
+
         await Log.info(req.user.email, 'GET_EMPLOYEES', req.portal);
         res.status(200).json({
             success: true,
@@ -187,7 +187,7 @@ exports.createEmployee = async (req, res) => {
                     emailInCompany = `${req.body.employeeNumber}@autocreated.dxclan.com`;
                     req.body = { ...req.body, emailInCompany };
                 }
-                    
+
                 // Kiểm tra sự tồn tại của email công ty nhân viên
                 let checkEmail = await EmployeeService.checkEmployeeCompanyEmailExisted(req.portal, emailInCompany);
                 if (checkEmail === true) {
@@ -203,12 +203,12 @@ exports.createEmployee = async (req, res) => {
                             }
                             let user = await UserService.createUser(req.portal, userInfo, req.user.company._id);
                             for (let x in req.body.roles) {
-                                if(req.body.roles[x])
+                                if (req.body.roles[x])
                                     await RoleService.createRelationshipUserRole(req.portal, user._id, req.body.roles[x])
                             };
                         }
                     }
-                    
+
                     await Log.info(req.user.email, 'CREATE_EMPLOYEE', req.portal);
                     res.status(200).json({
                         success: true,
@@ -264,7 +264,7 @@ exports.updateEmployeeInformation = async (req, res) => {
         // Kiểm tra dữ liệu truyền vào
         if (req.body.employee.employeeNumber === undefined || req.body.employee.employeeNumber.trim() === "") {
             throw ["employee_number_required"];
-        }else if (req.body.employee.fullName === undefined || req.body.employee.fullName.trim() === "") {
+        } else if (req.body.employee.fullName === undefined || req.body.employee.fullName.trim() === "") {
             throw ["full_name_required"];
         } else {
             let oldEmployee = await EmployeeService.getEmployeeInforById(req.portal, req.params.id);
@@ -283,7 +283,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                 }
             }
             let data = await EmployeeService.updateEmployeeInformation(req.portal, req.params.id, req.body, fileInfor, req.user.company._id);
-            
+
             await Log.info(req.user.email, 'EDIT_EMPLOYEE', req.portal);
             res.status(200).json({
                 success: true,
@@ -311,7 +311,7 @@ exports.deleteEmployee = async (req, res) => {
         let data = await EmployeeService.deleteEmployee(req.portal, req.params.id);
         if (req.query.emailInCompany)
             await UserService.deleteUserByEmail(req.portal, req.query.emailInCompany);
-        
+
         res.status(200).json({
             success: true,
             messages: ["delete_employee_success"],
@@ -341,7 +341,7 @@ exports.importEmployees = async (req, res) => {
                     o.emailInCompany = `${o.employeeNumber}@autocreated.dxclan.com`.toLowerCase();
                 }
                 return o;
-            })  
+            })
         }
 
         if (req.body.importType === 'Employee_Infor') {
@@ -403,10 +403,10 @@ exports.importEmployees = async (req, res) => {
                             // import roles nhân viên
                             const importDataLength = req.body.importData.length;
                             let importData = req.body.importData;
-                            for (let i = 0; i < importDataLength; i++){
+                            for (let i = 0; i < importDataLength; i++) {
                                 if (importData[i].positionId && importData[i].positionId.length > 0 && importData[i].employeeNumber.toString() === x.employeeNumber.toString()) {
                                     for (let k in importData[i].positionId) {
-                                        if(importData[i].positionId[k])
+                                        if (importData[i].positionId[k])
                                             await RoleService.createRelationshipUserRole(req.portal, userCreated._id, importData[i].positionId[k])
                                     };
                                     break;
@@ -465,32 +465,32 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
  */
 exports.searchEmployeeForPackage = async (req, res) => {
     // try {
-        let data;
+    let data;
 
-        let params = {
-            organizationalUnits: req.query.organizationalUnits,
-            professionalSkill: req.query.professionalSkill,
-            major: req.query.majorInfo,
-            certificatesName: req.query.certificatesName,
-            certificatesType: req.query.certificatesType,
-            certificatesEndDate: req.query.certificatesEndDate,
-            field: req.query.field,
-            package: req.query.package,
-            position: req.query.position,
-            action: req.query.action,
-            exp: Number(req.query.exp),
-            sameExp: Number(req.query.sameExp),
-            page: Number(req.query.page),
-            limit: Number(req.query.limit),
-        }
-        data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company._id);
+    let params = {
+        organizationalUnits: req.query.organizationalUnits,
+        professionalSkill: req.query.professionalSkill,
+        major: req.query.majorInfo,
+        certificatesName: req.query.certificatesName,
+        certificatesType: req.query.certificatesType,
+        certificatesEndDate: req.query.certificatesEndDate,
+        field: req.query.field,
+        package: req.query.package,
+        position: req.query.position,
+        action: req.query.action,
+        exp: Number(req.query.exp),
+        sameExp: Number(req.query.sameExp),
+        page: Number(req.query.page),
+        limit: Number(req.query.limit),
+    }
+    data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company._id);
 
-        await Log.info(req.user.email, 'GET_EMPLOYEES', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ["get_list_employee_success"],
-            content: data
-        });
+    await Log.info(req.user.email, 'GET_EMPLOYEES', req.portal);
+    res.status(200).json({
+        success: true,
+        messages: ["get_list_employee_success"],
+        content: data
+    });
     // } catch (error) {
     //     await Log.error(req.user.email, 'GET_EMPLOYEES', req.portal);
     //     res.status(400).json({

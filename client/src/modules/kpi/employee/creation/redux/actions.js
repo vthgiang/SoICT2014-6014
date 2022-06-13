@@ -12,6 +12,7 @@ export const createKpiSetActions = {
     createEmployeeKpi,
     editEmployeeKpi,
     createEmployeeKpiSet,
+    createEmployeeKpiSetAuto,
     approveEmployeeKpiSet,
 
     createComment,
@@ -235,6 +236,27 @@ function createEmployeeKpiSet(newKPI) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+
+// Khởi tạo KPI cá nhân tu dong
+function createEmployeeKpiSetAuto(data) {
+    return dispatch => {
+        dispatch({ type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_REQUEST });
+
+        createKpiSetService.createEmployeeKpiSetAuto(data)
+            .then(res => {
+                dispatch({
+                    type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_AUTO_FAILURE,
                     payload: error
                 })
             })

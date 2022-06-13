@@ -32,7 +32,7 @@ exports.getEmployeeKpiSet = async (req, res) => {
                 userId: req.user._id
             }
             let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.portal, data);
-         
+
             await Logger.info(req.user.email, ` get employee kpi set by user id `, req.portal);
             res.status(200).json({
                 success: true,
@@ -101,13 +101,13 @@ exports.createEmployeeKpiSet = async (req, res) => {
         }
 
         console.log("req", data);
-        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, data);
+        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, req.body);
 
         // Thêm log
         let log = getDataEmployeeKpiSetLog({
             type: "create",
             creator: req.user._id,
-            organizationalUnit: employeeKpiSet?.organizationalUnit, 
+            organizationalUnit: employeeKpiSet?.organizationalUnit,
             employee: employeeKpiSet?.creator,
             month: employeeKpiSet?.date,
             newData: employeeKpiSet
@@ -141,6 +141,73 @@ exports.createEmployeeKpiSet = async (req, res) => {
 
 }
 
+/** Khởi tạo KPI cá nhân */
+exports.createEmployeeKpiSetAuto = async (req, res) => {
+    try {
+        console.log('req', req.body);
+
+        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSetAuto(req.portal, req.body);
+
+        // Thêm log
+        // let log = getDataEmployeeKpiSetLog({
+        //     type: "create",
+        //     creator: req.body.approver,
+        //     organizationalUnit: employeeKpiSet?.organizationalUnit, 
+        //     employee: employeeKpiSet?.creator,
+        //     month: employeeKpiSet?.date,
+        //     newData: employeeKpiSet
+        // })
+        // await overviewService.createEmployeeKpiSetLogs(req.portal, {
+        //     ...log,
+        //     employeeKpiSetId: employeeKpiSet?._id
+        // })
+
+        // Thêm newsfeed
+        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+            ...log,
+            organizationalUnit: employeeKpiSet?.organizationalUnit,
+            employeeKpiSet: employeeKpiSet
+        });
+
+        // await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['initialize_employee_kpi_set_success'],
+            content: employeeKpiSet
+        })
+    } catch (error) {
+        // await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['initialize_employee_kpi_set_failure'],
+            content: error
+        });
+    }
+
+}
+
+/** test */
+exports.test = async (req, res) => {
+    try {
+        let result = await EmployeeKpiSetService.test(req.portal, req.query);
+
+
+        res.status(200).json({
+            success: true,
+            messages: ['initialize_employee_kpi_set_success'],
+            content: result
+        })
+    } catch (error) {
+        // await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['initialize_employee_kpi_set_failure'],
+            content: error
+        });
+    }
+
+}
+
 /** Tạo 1 mục tiêu KPI mới */
 exports.createEmployeeKpi = async (req, res) => {
     try {
@@ -150,7 +217,7 @@ exports.createEmployeeKpi = async (req, res) => {
         let log = getDataEmployeeKpiSetLog({
             type: "add_kpi",
             creator: req.user._id,
-            organizationalUnit: employeeKpiSet?.organizationalUnit, 
+            organizationalUnit: employeeKpiSet?.organizationalUnit,
             employee: employeeKpiSet?.creator,
             month: employeeKpiSet?.date,
             newData: employeeKpiSet?.kpis?.[employeeKpiSet?.kpis?.length - 1]
@@ -191,12 +258,12 @@ exports.editEmployeeKpiSet = async (req, res) => {
     else {
         try {
             let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.approver, req.params.id);
-            
+
             // THêm logs
             let log = getDataEmployeeKpiSetLog({
                 type: "edit_kpi_set",
                 creator: req.user._id,
-                organizationalUnit: employeeKpiSet?.organizationalUnit, 
+                organizationalUnit: employeeKpiSet?.organizationalUnit,
                 employee: employeeKpiSet?.creator,
                 month: employeeKpiSet?.date,
                 newData: employeeKpiSet
@@ -234,12 +301,12 @@ exports.editEmployeeKpiSet = async (req, res) => {
 exports.updateEmployeeKpiSetStatus = async (req, res) => {
     try {
         let employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status, req.user.company._id);
-       
+
         // Thêm logs
         let log = getDataEmployeeKpiSetLog({
             type: "edit_status",
             creator: req.user._id,
-            organizationalUnit: employeeKpiSet?.organizationalUnit, 
+            organizationalUnit: employeeKpiSet?.organizationalUnit,
             employee: employeeKpiSet?.creator,
             month: employeeKpiSet?.date,
             newData: employeeKpiSet
@@ -278,7 +345,7 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
         let arr = await EmployeeKpiSetService.deleteEmployeeKpiSet(req.portal, req.params.id);
         employeeKpiSet = arr[0];
         kpis = arr[1];
-        
+
         await Logger.info(req.user.email, ` delete employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
@@ -301,12 +368,12 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
 exports.deleteEmployeeKpi = async (req, res) => {
     try {
         let data = await EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.query.employeeKpiSetId);
-        
+
         // Thêm logs
         let log = getDataEmployeeKpiSetLog({
             type: "delete_kpi",
             creator: req.user._id,
-            organizationalUnit: data?.employeeKpiSet?.organizationalUnit, 
+            organizationalUnit: data?.employeeKpiSet?.organizationalUnit,
             employee: data?.employeeKpiSet?.creator,
             month: data?.employeeKpiSet?.date,
             newData: data?.employeeKpi
@@ -322,7 +389,7 @@ exports.deleteEmployeeKpi = async (req, res) => {
             organizationalUnit: data?.employeeKpiSet?.organizationalUnit,
             employeeKpiSet: data?.employeeKpiSet
         });
-        
+
         await Logger.info(req.user.email, ` delete employee kpi `, req.portal)
         res.status(200).json({
             success: true,

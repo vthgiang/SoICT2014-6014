@@ -1,6 +1,3 @@
-import {
-    getStorage
-} from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const createKpiSetService = {
@@ -10,11 +7,12 @@ export const createKpiSetService = {
     updateEmployeeKpiSetStatus,
     deleteEmployeeKpiSet,
     getAllEmployeeKpiSetInOrganizationalUnitsByMonth,
-    
+
     deleteEmployeeKpi,
     createEmployeeKpi,
     editEmployeeKpi,
     createEmployeeKpiSet,
+    createEmployeeKpiSetAuto,
     approveEmployeeKpiSet,
 
     createComment,
@@ -54,7 +52,7 @@ function getAllEmployeeKpiSetByMonth(organizationalUnitIds, userId, startDate, e
 }
 
 /** Lấy tát cả tập KPI của tất cả nhân viên trong 1 mảng đơn vị */
-function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds, startDate, endDate) {    
+function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds, startDate, endDate) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
@@ -66,13 +64,22 @@ function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds,
     }, false, false)
 }
 
-/** Khởi tạo KPI cá nhân */  
+/** Khởi tạo KPI cá nhân */
 function createEmployeeKpiSet(newKPI) {
     console.log(newKPI);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'POST',
         data: newKPI
+    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+}
+
+/** Khởi tạo KPI cá nhân tu dong */
+function createEmployeeKpiSetAuto(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets-auto`,
+        method: 'POST',
+        data: data
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
@@ -205,7 +212,7 @@ function deleteChildComment(setKpiId, commentId, childCommentId) {
 /**
  * Delete file of comment
  */
-function deleteFileComment(fileId,commentId, setKpiId) {
+function deleteFileComment(fileId, commentId, setKpiId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}/files/${fileId}`,
         method: 'DELETE',
