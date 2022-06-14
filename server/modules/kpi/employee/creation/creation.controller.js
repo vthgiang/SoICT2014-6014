@@ -143,37 +143,43 @@ exports.createEmployeeKpiSet = async (req, res) => {
 
 /** Khởi tạo KPI cá nhân */
 exports.createEmployeeKpiSetAuto = async (req, res) => {
+    console.log('146', req.body)
     try {
-        console.log('req', req.body);
+        for (let item of req.body.employees) {
+            const data = {
+                ...req.body,
+                employee: item
+            }
+            console.log('153', data)
+            let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSetAuto(req.portal, data);
+            // Thêm log
+            let log = getDataEmployeeKpiSetLog({
+                type: "create",
+                creator: item,
+                organizationalUnit: employeeKpiSet?.organizationalUnit,
+                employee: employeeKpiSet?.creator,
+                month: employeeKpiSet?.date,
+                newData: employeeKpiSet
+            })
+            await overviewService.createEmployeeKpiSetLogs(req.portal, {
+                ...log,
+                employeeKpiSetId: employeeKpiSet?._id
+            })
 
-        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSetAuto(req.portal, req.body);
+            // Thêm newsfeed
+            await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
+                ...log,
+                organizationalUnit: employeeKpiSet?.organizationalUnit,
+                employeeKpiSet: employeeKpiSet
+            });
+            // await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
+        }
 
-        // Thêm log
-        // let log = getDataEmployeeKpiSetLog({
-        //     type: "create",
-        //     creator: req.body.approver,
-        //     organizationalUnit: employeeKpiSet?.organizationalUnit, 
-        //     employee: employeeKpiSet?.creator,
-        //     month: employeeKpiSet?.date,
-        //     newData: employeeKpiSet
-        // })
-        // await overviewService.createEmployeeKpiSetLogs(req.portal, {
-        //     ...log,
-        //     employeeKpiSetId: employeeKpiSet?._id
-        // })
 
-        // Thêm newsfeed
-        await EmployeeKpiSetService.createNewsFeedForEmployeeKpiSet(req.portal, {
-            ...log,
-            organizationalUnit: employeeKpiSet?.organizationalUnit,
-            employeeKpiSet: employeeKpiSet
-        });
 
-        // await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['initialize_employee_kpi_set_success'],
-            content: employeeKpiSet
         })
     } catch (error) {
         // await Logger.error(req.user.email, ` create employee kpi set `, req.portal)

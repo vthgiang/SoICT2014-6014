@@ -10,8 +10,6 @@ const { auth, uploadFile } = require(`../../../../middleware`);
  * Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
  * Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc
  */
-// route to test
-router.get('/test', EmployeeKpiSetController.test);
 
 router.get('/employee-kpi-sets', auth, EmployeeKpiSetController.getEmployeeKpiSet);
 

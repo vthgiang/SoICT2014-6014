@@ -312,8 +312,9 @@ exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
 
     if (!portal) portal = 'vnist';
     let user = await UserService.getUser(portal, employee);
+    console.log(315, user)
     let inforEmployee = await EmployeeService.getEmployeeProfile(portal, user.email);
-
+    console.log(317, inforEmployee)
     // chấm ĐIỂM PROFILE
     const profile = inforEmployee.employees[0];
 
@@ -370,7 +371,7 @@ exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
             }
         })
         .populate("kpis");
-
+    console.log(373, kpiRecently)
     if (kpiRecently?.length > 0) {
         kpiRecently.map(x => {
             // Chấm điểm ĐIỂM KẾT QUẢ 
@@ -411,9 +412,10 @@ exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
 
 /* Tao kpi tu dong cho cá nhân */
 exports.createEmployeeKpiSetAuto = async (portal, data) => {
+    console.log('data', data)
     portal = 'vnist';
-    const { organizationalUnit, month, employee, approver } = data;
-
+    const { organizationalUnit, month, employees, approver, employee } = data;
+    console.log('416')
     // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
 
@@ -425,35 +427,38 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
     let check = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).find({
         type: 'auto',
         organizationalUnit: organizationalUnit,
-        creator: employee[0],
+        creator: employee,
         date: new Date(month)
     })
     if (check.length > 0) {
+        console.log('432', check)
         return null;
     }
+    console.log('435')
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
             organizationalUnit: organizationalUnit,
-            status: 1,
+            // status: 1,
             date: {
                 $gte: monthSearch, $lt: nextMonthSearch
             }
         })
         .populate("kpis");//status = 1 là kpi đã đc phê duyệt
 
+    console.log('447')
     if (organizationalUnitKpiSet) {
         // Tạo thông tin chung cho KPI cá nhân
         let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
                 type: 'auto',
                 organizationalUnit: organizationalUnit,
-                creator: employee[0],
+                creator: employee,
                 approver: approver,
                 date: new Date(month),
                 kpis: []
             });
-
+        console.log('460', organizationalUnitKpiSet)
         let defaultOrganizationalUnitKpi;
         if (organizationalUnitKpiSet?.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
 
@@ -475,18 +480,22 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                     employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
                 )
         }
-
+        console.log('480')
         let totalRatio = 0;
         let completeRatio = {};
 
-        for (let i = 0; i < employee.length; i++) {
-            let ratio = await this.getCompleteRatioTaskOfEmployee(portal, employee[i]);
-            totalRatio += ratio;
-            completeRatio[employee[i]] = { ratio };
-        }
+        for (let i = 0; i < employees.length; i++) {
+            console.log('487', employees[i])
 
-        const avg = totalRatio / employee.length;
+            let ratio = await this.getCompleteRatioTaskOfEmployee(portal, employees[i]);
+            console.log('480', ratio)
+            totalRatio += ratio;
+            completeRatio[employees[i]] = { ratio };
+        }
+        const avg = totalRatio / employees.length;
         const { employeeImportances } = organizationalUnitKpiSet;
+
+        console.log(494)
         for (let key in completeRatio) {
             let importance;
             completeRatio[key].ratio /= avg;
@@ -502,7 +511,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         }
         // Phan chia cac muc tieu kpi cho nhan vien
         //Lay danh sach muc tieu kpi don vi theo trong so giam dan
-        let test = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        let otherKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .aggregate([
                 { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
                 { $match: { date: { $gte: monthSearch, $lt: nextMonthSearch } } },
@@ -531,53 +540,54 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
 
         // Gan kpi cho nhan vien
         let kpiEmployee = []
-        let numOfKpis = Math.round(completeRatio[employee[0]].ratio * test.length);
-        if (numOfKpis > test.length) {
-            numOfKpis = test.length;
+        let numOfKpis = Math.round(completeRatio[employee].ratio * otherKpis.length);
+        if (numOfKpis > otherKpis.length) {
+            numOfKpis = otherKpis.length;
         }
+        console.log(544, employeeImportances)
 
         // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
-        if (test.length > 0 && completeRatio[employee[0]].importance < 90) {
+        if (otherKpis.length > 0 && completeRatio[employee].importance < 90) {
             let weightOver = 0;
-            for (let k = 0; k < test.length - numOfKpis; k++) {
-                weightOver += test[k].kpis.weight;
+            for (let k = 0; k < otherKpis.length - numOfKpis; k++) {
+                weightOver += otherKpis[k].kpis.weight;
             }
-            for (let i = test.length - numOfKpis; i < test.length; i++) {
-                let calcWeight = test[i].kpis.weight + weightOver;
-                let target = test[i].kpis.target ? Math.round(test[i].kpis.target / employee.length * completeRatio[employee[0]].ratio) : null;
+            for (let i = otherKpis.length - numOfKpis; i < otherKpis.length; i++) {
+                let calcWeight = otherKpis[i].kpis.weight + weightOver;
+                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employeeImportances.length * completeRatio[employee].ratio) : null;
                 kpiEmployee.push({
-                    name: test[i].kpis.name,
-                    parent: test[i].kpis.parent,
+                    name: otherKpis[i].kpis.name,
+                    parent: otherKpis[i].kpis.parent,
                     weight: calcWeight,
-                    criteria: test[i].kpis.criteria,
+                    criteria: otherKpis[i].kpis.criteria,
                     target: target,
-                    unit: test[i].kpis.unit,
+                    unit: otherKpis[i].kpis.unit,
                 })
                 weightOver = 0;
             }
-        } else if (test.length > 0 && completeRatio[employee[0]].importance >= 90) {
+        } else if (otherKpis.length > 0 && completeRatio[employee].importance >= 90) {
             let weightOver = 0;
-            if (numOfKpis < test.length) {
-                for (let k = numOfKpis; k < test.length; k++) {
-                    weightOver += test[k].kpis.weight;
+            if (numOfKpis < otherKpis.length) {
+                for (let k = numOfKpis; k < otherKpis.length; k++) {
+                    weightOver += otherKpis[k].kpis.weight;
                 }
             }
 
             for (let i = 0; i < numOfKpis; i++) {
-                let calcWeight = test[i].kpis.weight + weightOver;
-                let target = test[i].kpis.target ? Math.round(test[i].kpis.target / employee.length * completeRatio[employee[0]].ratio) : null;
+                let calcWeight = otherKpis[i].kpis.weight + weightOver;
+                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employeeImportances.length * completeRatio[employee].ratio) : null;
                 kpiEmployee.push({
-                    name: test[i].kpis.name,
-                    parent: test[i].kpis.parent,
+                    name: otherKpis[i].kpis.name,
+                    parent: otherKpis[i].kpis.parent,
                     weight: calcWeight,
-                    criteria: test[i].kpis.criteria,
+                    criteria: otherKpis[i].kpis.criteria,
                     target: target,
-                    unit: test[i].kpis.unit,
+                    unit: otherKpis[i].kpis.unit,
                 })
                 weightOver = 0
             }
         }
-
+        console.log(586, kpiEmployee)
         if (kpiEmployee) {
             let otherKpiEmployee = await Promise.all(kpiEmployee.map(async (item) => {
                 let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).create(item)
