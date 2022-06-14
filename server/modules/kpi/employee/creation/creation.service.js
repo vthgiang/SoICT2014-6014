@@ -181,7 +181,6 @@ exports.createEmployeeKpiSet = async (portal, data) => {
         date: new Date(month)
     })
     if (check) {
-        console.log('da khoi tao roi');
         return null;
     }
 
@@ -429,12 +428,9 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         creator: employee[0],
         date: new Date(month)
     })
-    console.log('check ra nay', check)
     if (check.length > 0) {
-        console.log('da khoi tao roi');
         return null;
     }
-    console.log(293)
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
@@ -446,9 +442,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         })
         .populate("kpis");//status = 1 là kpi đã đc phê duyệt
 
-    console.log(305, organizationalUnitKpiSet)
     if (organizationalUnitKpiSet) {
-        // console.log(465, organizationalUnitKpiSet)
         // Tạo thông tin chung cho KPI cá nhân
         let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
@@ -460,7 +454,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 kpis: []
             });
 
-        console.log(318)
         let defaultOrganizationalUnitKpi;
         if (organizationalUnitKpiSet?.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
 
@@ -497,9 +490,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         for (let key in completeRatio) {
             let importance;
             completeRatio[key].ratio /= avg;
-            if (completeRatio[key].ratio > 1) {
-                completeRatio[key].ratio = 1;
-            }
 
             for (let j = 0; j < employeeImportances.length; j++) {
                 if (key === employeeImportances[j].employee) {
@@ -510,7 +500,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
             }
             completeRatio[key] = { ...completeRatio[key], importance }
         }
-
         // Phan chia cac muc tieu kpi cho nhan vien
         //Lay danh sach muc tieu kpi don vi theo trong so giam dan
         let test = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -543,48 +532,64 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         // Gan kpi cho nhan vien
         let kpiEmployee = []
         let numOfKpis = Math.round(completeRatio[employee[0]].ratio * test.length);
-        console.log(520, numOfKpis)
+        if (numOfKpis > test.length) {
+            numOfKpis = test.length;
+        }
+
         // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
-        console.log(test, completeRatio[employee[0]].importance)
         if (test.length > 0 && completeRatio[employee[0]].importance < 90) {
-            for (let i = test.length - 1; i >= test.length - numOfKpis; i--) {
+            let weightOver = 0;
+            for (let k = 0; k < test.length - numOfKpis; k++) {
+                weightOver += test[k].kpis.weight;
+            }
+            for (let i = test.length - numOfKpis; i < test.length; i++) {
+                let calcWeight = test[i].kpis.weight + weightOver;
+                let target = test[i].kpis.target ? Math.round(test[i].kpis.target / employee.length * completeRatio[employee[0]].ratio) : null;
                 kpiEmployee.push({
                     name: test[i].kpis.name,
                     parent: test[i].kpis.parent,
-                    weight: test[i].kpis.weight,
-                    criteria: test[i].kpis.criteria
-
+                    weight: calcWeight,
+                    criteria: test[i].kpis.criteria,
+                    target: target,
+                    unit: test[i].kpis.unit,
                 })
+                weightOver = 0;
             }
         } else if (test.length > 0 && completeRatio[employee[0]].importance >= 90) {
+            let weightOver = 0;
+            if (numOfKpis < test.length) {
+                for (let k = numOfKpis; k < test.length; k++) {
+                    weightOver += test[k].kpis.weight;
+                }
+            }
+
             for (let i = 0; i < numOfKpis; i++) {
+                let calcWeight = test[i].kpis.weight + weightOver;
+                let target = test[i].kpis.target ? Math.round(test[i].kpis.target / employee.length * completeRatio[employee[0]].ratio) : null;
                 kpiEmployee.push({
                     name: test[i].kpis.name,
                     parent: test[i].kpis.parent,
-                    weight: test[i].kpis.weight,
-                    criteria: test[i].kpis.criteria
-
+                    weight: calcWeight,
+                    criteria: test[i].kpis.criteria,
+                    target: target,
+                    unit: test[i].kpis.unit,
                 })
+                weightOver = 0
             }
         }
-        console.log(575, kpiEmployee)
 
-        //  Them cac muc tieu khac
-        // if (dataEmployeeKpis) {
-        //     console.log(344)
-        //     let employeeKpi = await EmployeeKpi(connect(DB_CONNECTION, portal))
-        //         .create({
-        //             name: data.name,
-        //             parent: data.parent,
-        //             weight: data.weight,
-        //             criteria: data.criteria
-        //         })
-        //     const employeeKpiSetId = data.employeeKpiSet;
-        //     employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        //         .findByIdAndUpdate(
-        //             employeeKpiSetId, { $push: { kpis: employeeKpi._id } }, { new: true }
-        //         );
-        // }
+        if (kpiEmployee) {
+            let otherKpiEmployee = await Promise.all(kpiEmployee.map(async (item) => {
+                let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).create(item)
+                return kpi._id;
+            }));
+
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    employeeKpiSet, { $push: { kpis: { $each: otherKpiEmployee } } }, { new: true }
+                )
+        }
+
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(employeeKpiSet._id)
             .populate('organizationalUnit')
@@ -595,7 +600,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 { path: 'comments.creator', select: 'name email avatar ' },
                 { path: 'comments.comments.creator', select: 'name email avatar' }
             ])
-        // console.log(369, employeeKpiSet)
+
         return employeeKpiSet;
     }
 }

@@ -19,6 +19,13 @@ const OrganizationalUnitKpiSchema = new Schema({
         type: String,
         required: true
     },
+    target: {
+        type: Number,
+        default: null
+    },
+    unit: {
+        type: String
+    },
     // Đánh đấu các mục tiêu mặc định khi thiết lập kpi cá nhân: 
     // 0 là không phải mục tiêu mặc định
     // 1 là mục tiêu mặc đinh cho vai trò A (người phê duyệt)

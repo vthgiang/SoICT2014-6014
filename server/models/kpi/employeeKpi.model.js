@@ -20,12 +20,11 @@ const EmployeeKpiSchema = new Schema({
         required: true
     },
     target: {
-        amount: {
-            type: Number,
-        },
-        unit: {
-            type: String,
-        }
+        type: Number,
+        default: null
+    },
+    unit: {
+        type: String
     },
     // null: Chưa phê duyệt, 0: Yêu cầu làm lại,1: Đã kích hoạt, 2: Đã kết thúc
     status: {
