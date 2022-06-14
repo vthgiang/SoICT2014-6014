@@ -622,6 +622,19 @@ const LINKS = [
 
   // module quản lý đấu thầu
   {
+    url: "/bidding-dashboard",
+    description: "Dashboard đấu thầu",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/bidding-dashboard"),
+  },
+  {
     url: "/bidding-list-contract",
     description: "Danh sách hợp đồng",
     category: LINK_CATEGORY.BIDDING.name,
@@ -633,7 +646,7 @@ const LINKS = [
       ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink("/bidding-list-contract"),
-  },{
+  }, {
     url: "/bidding-search-for-package",
     description: "Tìm kiếm nhân sự gói thầu",
     category: LINK_CATEGORY.BIDDING.name,

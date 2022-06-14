@@ -122,6 +122,9 @@ const BiddingPackageSchema = new Schema(
                 taskDescription: {
                     type: String
                 },
+                preceedingTasks: {
+                    type: String
+                },
                 // // đầu mục công việc
                 // taskCategory: [{
                 //     type: String
