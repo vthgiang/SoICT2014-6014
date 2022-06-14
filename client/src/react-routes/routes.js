@@ -2121,15 +2121,15 @@ class Routes extends Component {
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/request-management/stock",
+                                link: "/product-request-management/stock",
                                 name: "request_management",
                                 icon: "fa fa-reorder",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/request-management/stock"}
-                        path={"/request-management/stock"}
+                        link={"/product-request-management/stock"}
+                        path={"/product-request-management/stock"}
                         pageName={"request_management"}
                         layout={Layout}
                         component={StockRequestManagement}
@@ -2533,15 +2533,15 @@ class Routes extends Component {
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/request-management/order",
+                                link: "/product-request-management/order",
                                 name: "request_management",
                                 icon: "fa fa-address-card",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/request-management/order"}
-                        path={"/request-management/order"}
+                        link={"/product-request-management/order"}
+                        path={"/product-request-management/order"}
                         pageName={"request_management"}
                         layout={Layout}
                         component={OrderRequestManagement}
@@ -2878,15 +2878,15 @@ class Routes extends Component {
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/request-management/manufacturing",
+                                link: "/product-request-management/manufacturing",
                                 name: "request_management",
                                 icon: "fa fa-navicon",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/request-management/manufacturing"}
-                        path={"/request-management/manufacturing"}
+                        link={"/product-request-management/manufacturing"}
+                        path={"/product-request-management/manufacturing"}
                         pageName={"request_management"}
                         layout={Layout}
                         component={ManufacturingRequestManagement}

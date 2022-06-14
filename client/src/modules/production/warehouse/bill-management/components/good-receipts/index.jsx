@@ -5,7 +5,6 @@ import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotifica
 
 import BillDetailForm from '../genaral/billDetailForm';
 import GoodReceiptEditForm from './goodReceiptEditForm';
-import GoodDetailModal from './goodDetailModal';
 // import GoodReceiptCreateForm from './goodReceiptCreateForm';
 import GoodReceiptCreateFormModal from './goodReceiptCreateFormModal';
 import { BillActions } from '../../redux/actions';
@@ -16,6 +15,7 @@ import { UserGuideCreateBillReceipt } from '../config.js';
 import "../bill.css";
 import { generateCode } from "../../../../../../helpers/generateCode";
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
+import GoodReceiptWorkFlowModal from './goodReceiptWorkFlowModal';
 
 function ReceiptManagement(props) {
 
@@ -33,7 +33,7 @@ function ReceiptManagement(props) {
     })
 
     useEffect(() => {
-        props.getAllRequestByCondition({requestType: 3, type: 1});
+        props.getAllRequestByCondition({ requestType: 3, type: 1 });
     }, [])
 
     const handleEdit = async (bill) => {
@@ -158,12 +158,13 @@ function ReceiptManagement(props) {
         window.$('#modal-good-detail').modal('show');
     }
 
-    const handleStockWorkAssigment = (bill) => {
+    const handleShowWorkFlowModal = (bill) => {
         setState({
             ...state,
-            currentBill: bill,
+            billInfor: bill,
         })
-        window.$('#stock-work-assignment-modal').modal('show');
+        console.log("bill", bill);
+        window.$('#good-receipt-work-flow-modal').modal('show');
     }
 
     const handleSearchByStatus = (status) => {
@@ -197,7 +198,7 @@ function ReceiptManagement(props) {
     const { translate, bills, stocks, user, lots } = props;
     const { listPaginate, totalPages, page, listBillByGroup } = bills;
     const { listStocks } = stocks;
-    const { startDate, endDate, group, currentRow, actionAddLots, createType } = state;
+    const { startDate, endDate, group, currentRow, actionAddLots, createType, billInfor } = state;
     const dataPartner = props.getPartner();
     const userId = localStorage.getItem("userId");
 
@@ -206,6 +207,8 @@ function ReceiptManagement(props) {
             <div className="box-body qlcv">
                 {/* <GoodReceiptCreateForm group={group} /> */}
                 <GoodReceiptCreateFormModal createType={createType} />
+                {billInfor &&
+                    <GoodReceiptWorkFlowModal billId={billInfor._id} billInfor={billInfor} />}
                 {
                     state.currentControl &&
                     <QualityControlForm
@@ -214,17 +217,6 @@ function ReceiptManagement(props) {
                         status={state.qcStatus}
                         content={state.qcContent}
                         listGoods={state.currentControl.goods}
-                    />
-                }
-                {
-                    state.currentBill &&
-                    <GoodDetailModal
-                        billId={state.currentBill._id}
-                        bill={state.currentBill}
-                        code={state.currentBill.code}
-                        listGoods={state.currentBill.goods}
-                        stocks={stocks}
-                        lots={lots}
                     />
                 }
                 <div className="form-inline">
@@ -503,7 +495,7 @@ function ReceiptManagement(props) {
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
                                         {/*Chỉnh sửa phiếu */}
-                                        {props.checkRoleCanEdit(x) && <a onClick={() => handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                        {/* {props.checkRoleCanEdit(x) && <a onClick={() => handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>} */}
                                         {/*Phê duyệt phiếu*/}
                                         {/* {
                                             props.checkRoleApprovers(x) && x.status === '1' &&
@@ -555,15 +547,14 @@ function ReceiptManagement(props) {
                                             ><i className="material-icons">info</i>
                                             </a>
                                         } */}
-                                        {/* {
-                                            props.checkRoleCanEdit(x) &&
+                                        {
                                             <a
                                                 className="text-violet"
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}
-                                                onClick={() => handleStockWorkAssigment(x)}
+                                                onClick={() => handleShowWorkFlowModal(x)}
                                             ><i className="material-icons">assignment_turned_in</i>
                                             </a>
-                                        } */}
+                                        }
                                         {/*Chuyển phiếu sang trạng thái đã hủy*/}
                                         {/* {
                                             props.checkRoleCanEdit(x) && (x.status === '5' || x.status === '3') &&

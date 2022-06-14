@@ -1,6 +1,6 @@
 import React from "react";
 import { DialogModal } from "../../../../../../common-components";
-import "./planCreate.css";
+import "./goodReceipt.css";
 import { connect } from "react-redux";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import BaseInformationComponent from './baseInformationComponent';
@@ -165,7 +165,6 @@ function GoodReceiptCreateFormModal(props) {
     const { step, steps, fromStock, code, sourceType, listGood, manufacturingWork, supplier, description, isHaveDataStep1, isHaveDataStep2,
         peopleInCharge, accountables, accountants, startTime, endTime, startDate, endDate, workAssignment, name, email, address, phone } = state;
     const { translate, createType } = props;
-    console.log(state);
     return (
         <React.Fragment>
             <DialogModal

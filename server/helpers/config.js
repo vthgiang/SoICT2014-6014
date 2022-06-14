@@ -1205,14 +1205,14 @@ const LINKS = [{
     components: getComponentsInLink('/inventory-management')
 },
 {
-    url: '/request-management/stock',
+    url: '/product-request-management/stock',
     description: 'Quản lý đề nghị',
     category: LINK_CATEGORY.WAREHOUSE.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
     ],
-    components: getComponentsInLink('/request-management/stock')
+    components: getComponentsInLink('/product-request-management/stock')
 },
 {
     url: "/manage-sales-order",
@@ -1320,14 +1320,14 @@ const LINKS = [{
     components: getComponentsInLink('/manage-payment'),
 },
 {
-    url: '/request-management/order',
+    url: '/product-request-management/order',
     description: 'Quản lý đề nghị',
     category: LINK_CATEGORY.ORDER.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
     ],
-    components: getComponentsInLink('/request-management/order')
+    components: getComponentsInLink('/product-request-management/order')
 },
 {
     url: "/manage-business-department",
@@ -1655,14 +1655,14 @@ const LINKS = [{
     components: getComponentsInLink('/manage-manufacturing-lot'),
 },
 {
-    url: '/request-management/manufacturing',
+    url: '/product-request-management/manufacturing',
     description: 'Quản lý đề nghị',
     category: LINK_CATEGORY.MANUFACTURING.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
     ],
-    components: getComponentsInLink('/request-management/manufacturing')
+    components: getComponentsInLink('/product-request-management/manufacturing')
 },
 // Quan li van chuyen transport
 {

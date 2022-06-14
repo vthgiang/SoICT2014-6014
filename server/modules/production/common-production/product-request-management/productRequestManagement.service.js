@@ -1,5 +1,5 @@
 const {
-    RequestManagement, ManufacturingCommand, ManufacturingMill, Stock
+    ProductRequestManagement, ManufacturingCommand, ManufacturingMill, Stock
 } = require(`../../../../models`);
 const { getAllManagersOfUnitByRole } = require("../../../super-admin/user/user.service");
 const NotificationServices = require(`../../../notification/notification.service`)
@@ -35,7 +35,7 @@ exports.createRequest = async (user, data, portal) => {
             .populate({ path: "organizationalUnit" });
         stockManagersArray = await getAllManagersOfUnitByRole(portal, stock.organizationalUnit.managers);
     }
-    let newRequest = await RequestManagement(connect(DB_CONNECTION, portal)).create({
+    let newRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         creator: user._id,
         goods: data.goods.map(item => {
@@ -131,7 +131,7 @@ exports.createRequest = async (user, data, portal) => {
     };
     NotificationServices.createNotification(portal, portal, dataNotification)
 
-    let request = await RequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: newRequest._id })
+    let request = await ProductRequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: newRequest._id })
         .populate([
             { path: "creator", select: "name" },
             { path: "goods.good", select: "code name baseUnit" },
@@ -247,7 +247,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
         }
     }
     if (!limit || !page) {
-        let docs = await RequestManagement(connect(DB_CONNECTION, portal))
+        let docs = await ProductRequestManagement(connect(DB_CONNECTION, portal))
             .find(option)
             .populate([
                 { path: "creator", select: "name" },
@@ -263,7 +263,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
         requests.docs = docs;
         return { requests }
     } else {
-        let requests = await RequestManagement(connect(DB_CONNECTION, portal))
+        let requests = await ProductRequestManagement(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 limit: limit,
                 page: page,
@@ -288,7 +288,7 @@ exports.getAllRequestByCondition = async (query, portal) => {
 
 
 exports.getRequestById = async (id, portal) => {
-    let request = await RequestManagement(connect(DB_CONNECTION, portal))
+    let request = await ProductRequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
         .populate([{ path: "creator", select: "name" },
         { path: "goods.good", select: "_id code name baseUnit" },
@@ -330,7 +330,7 @@ function findIndexOfRole(array, approveType) {
 /* Chỉnh sửa yêu cầu*/
 
 exports.editRequest = async (user, id, data, portal) => {
-    let oldRequest = await RequestManagement(connect(DB_CONNECTION, portal))
+    let oldRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
         .populate([
             { path: "orderUnit" },
@@ -495,7 +495,7 @@ exports.editRequest = async (user, id, data, portal) => {
     };
     NotificationServices.createNotification(portal, portal, dataNotification)
 
-    let request = await RequestManagement(connect(DB_CONNECTION, portal))
+    let request = await ProductRequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: oldRequest._id })
         .populate([
             { path: "creator", select: "name" },
@@ -550,13 +550,13 @@ exports.getNumberRequest = async (query, portal) => {
     }
 
     options.status = 1;
-    const request1 = await RequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
+    const request1 = await ProductRequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
 
     options.status = 2;
-    const request2 = await RequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
+    const request2 = await ProductRequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
 
     options.status = 3;
-    const request3 = await RequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
+    const request3 = await ProductRequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
 
     return { request1, request2, request3 }
 }

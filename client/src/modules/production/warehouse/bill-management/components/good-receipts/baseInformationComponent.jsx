@@ -317,6 +317,7 @@ function BaseInformationComponent(props) {
             good: {
                 ...state.good,
                 quantity: value,
+                realQuantity: value,
             },
         });
     };

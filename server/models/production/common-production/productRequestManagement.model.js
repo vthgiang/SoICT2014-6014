@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 // bảng quản lý các yêu cầu liên quan đến các module sản xuất, đơn hàng, kho
-const RequestManagementSchema = new Schema({
+const ProductRequestManagementSchema = new Schema({
     code: { // Mã phiếu
         type: String,
         required: true
@@ -140,10 +140,10 @@ const RequestManagementSchema = new Schema({
 
 });
 
-RequestManagementSchema.plugin(mongoosePaginate);
+ProductRequestManagementSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.RequestManagement)
-        return db.model('RequestManagement', RequestManagementSchema);
-    return db.models.RequestManagement;
+    if (!db.models.ProductRequestManagement)
+        return db.model('ProductRequestManagement', ProductRequestManagementSchema);
+    return db.models.ProductRequestManagement;
 }

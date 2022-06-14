@@ -688,7 +688,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.request_management",
                                             icon: "fa fa-file-text-o",
-                                            path: "/request-management/order",
+                                            path: "/product-request-management/order",
                                         },
                                     ],
                                 }}
@@ -743,7 +743,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.request_management",
                                             icon: "fa fa-reorder",
-                                            path: "/request-management/stock",
+                                            path: "/product-request-management/stock",
                                         },
                                     ],
                                 }}
@@ -822,7 +822,7 @@ class SideBar extends Component {
                                         {
                                             name: "menu.request_management",
                                             icon: "fa fa-file-text-o",
-                                            path: "/request-management/manufacturing",
+                                            path: "/product-request-management/manufacturing",
                                         },
                                     ],
                                 }}

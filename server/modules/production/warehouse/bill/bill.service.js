@@ -5,6 +5,7 @@ const { updateCrmActionsTaskInfo, updateSearchingCustomerTaskInfo } = require('.
 const TaskManagementService = require('../../../task/task-management/task.service');
 const { getStock } = require(`../../warehouse/stock/stock.service`);
 const NotificationServices = require(`../../../notification/notification.service`)
+const InventoryServices = require(`../inventory/inventory.service`);
 
 exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;
@@ -382,8 +383,8 @@ exports.createBill = async (user, data, portal) => {
             return {
                 workAssignmentStaffs: item.workAssignmentStaffs,
                 nameField: item.nameField,
-                startDate: item.startDate,
-                endDate: item.endDate,
+                startDate: item.startDate.split("-").reverse().join("-"),
+                endDate: item.endDate.split("-").reverse().join("-"),
                 startTime: item.startTime,
                 endTime: item.endTime,
             }
@@ -529,7 +530,42 @@ function findIndexOfQuatityStaff(array, id) {
     return result;
 }
 
+function formatDataLots(lot, stock, billId, typeBill, goodId, type) {
+    let data = {
+        lots: [lot],
+        stock: stock,
+        bill: billId,
+        typeBill: typeBill,
+        good: goodId,
+        type: type
+    }
+    return data;
+}
+
+function formatDataBinLocations(lot, stock) {
+    let binLocationInfo = lot.binLocations ? lot.binLocations.map(item => {
+        return {
+            binLocation: {
+                _id: item.id,
+            },
+            quantity: item.quantity,
+        }
+    }) : [];
+    let stocks = {
+        binLocations: binLocationInfo,
+        stock: {
+            _id: stock._id,
+        },
+        quantity: lot.quantity
+    }
+    let data = {
+        stocks: [stocks]
+    }
+    return data;
+}
+
 exports.editBill = async (id, userId, data, portal, companyId) => {
+    console.log("editBill", data);
     let bill = await Bill(connect(DB_CONNECTION, portal)).findById(id);
     bill.fromStock = bill.fromStock;
     bill.toStock = data.toStock ? data.toStock : bill.toStock;
@@ -569,69 +605,99 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             damagedQuantity: item.quantity - item.realQuantity,
             description: item.description,
             lots: item.lots.map(x => {
+                let rfid = {
+                    rfidCode: x.rfidCode,
+                    quantity: x.rfidQuantity
+                }
                 return {
                     lot: x.lot,
                     quantity: x.quantity,
                     returnQuantity: x.returnQuantity,
                     damagedQuantity: x.damagedQuantity ? x.damagedQuantity : 0,
                     realQuantity: x.realQuantity,
-                    note: x.note
+                    note: x.note,
+                    code: x.code,
+                    expirationDate: x.expirationDate,
+                    rfid: rfid,
+                    binLocations: x.binLocations ? x.binLocations.map(y => {
+                        return {
+                            binLocation: y.id,
+                            quantity: y.quantity,
+                            name: y.name,
+                        }
+                    }
+                    ) : []
                 }
             }),
             unpassed_quality_control_lots: item.unpassed_quality_control_lots ? item.unpassed_quality_control_lots.map(x => {
+                let rfid = {
+                    rfidCode: x.rfidCode,
+                    quantity: x.rfidQuantity
+                }
                 return {
                     lot: x.lot,
                     quantity: x.quantity,
                     returnQuantity: x.returnQuantity,
                     damagedQuantity: x.damagedQuantity,
                     realQuantity: x.realQuantity,
-                    note: x.note
+                    note: x.note,
+                    code: x.code,
+                    expirationDate: x.expirationDate,
+                    rfid: rfid,
+                    binLocations: x.binLocations ? x.binLocations.map(y => {
+                        return {
+                            binLocation: y.id,
+                            quantity: y.quantity,
+                            name: y.name,
+                        }
+                    }
+                    ) : []
                 }
             }) : []
         }
     }) : bill.goods;
 
-    if (data.approverId) {
-        let index = findIndexOfApprover(bill.approvers, data.approverId);
+    // if (data.approverId) {
+    //     let index = findIndexOfApprover(bill.approvers, data.approverId);
 
-        if (index !== -1) {
-            bill.approvers[index].approvedTime = new Date(Date.now());
-        }
+    //     if (index !== -1) {
+    //         bill.approvers[index].approvedTime = new Date(Date.now());
+    //     }
 
-        let quantityApproved = 1;
-        bill.approvers.forEach((element, index1) => {
-            if (index1 !== index && element.approvedTime == null) {
-                quantityApproved = 0;
-            }
-        });
-        if (quantityApproved) {
-            bill.status = 2;
-        }
-    }
-    else {
-        bill.status = data.status ? data.status : bill.status;
-    }
+    //     let quantityApproved = 1;
+    //     bill.approvers.forEach((element, index1) => {
+    //         if (index1 !== index && element.approvedTime == null) {
+    //             quantityApproved = 0;
+    //         }
+    //     });
+    //     if (quantityApproved) {
+    //         bill.status = 2;
+    //     }
+    // }
+    // else {
+    //     bill.status = data.status ? data.status : bill.status;
+    // }
 
-    if (data.qualityControlStaffs) {
-        let index = findIndexOfQuatityStaff(bill.qualityControlStaffs, data.qualityControlStaffs.staff);
+    // if (data.qualityControlStaffs) {
+    //     let index = findIndexOfQuatityStaff(bill.qualityControlStaffs, data.qualityControlStaffs.staff);
 
-        if (index !== -1) {
-            bill.qualityControlStaffs[index].time = new Date(Date.now());
-            bill.qualityControlStaffs[index].status = data.qualityControlStaffs.status;
-            bill.qualityControlStaffs[index].code = data.qualityControlStaffs.content;
-        }
+    //     if (index !== -1) {
+    //         bill.qualityControlStaffs[index].time = new Date(Date.now());
+    //         bill.qualityControlStaffs[index].status = data.qualityControlStaffs.status;
+    //         bill.qualityControlStaffs[index].code = data.qualityControlStaffs.content;
+    //     }
 
-        let qualityControlStaff = 1;
-        bill.qualityControlStaffs.forEach((element, index1) => {
-            if (index1 !== index && element.time == null) {
-                quantityqualityControlStaff = 0;
-            }
-        });
-        if (qualityControlStaff) {
-            bill.status = 5;
-        }
-    }
-    bill.status = data.status ? data.status : bill.status;
+    //     let qualityControlStaff = 1;
+    //     bill.qualityControlStaffs.forEach((element, index1) => {
+    //         if (index1 !== index && element.time == null) {
+    //             quantityqualityControlStaff = 0;
+    //         }
+    //     });
+    //     if (qualityControlStaff) {
+    //         bill.status = 5;
+    //     }
+    // }
+    // bill.status = data.status ? data.status : bill.status;
     bill.manufacturingWork = data.manufacturingWork ? data.manufacturingWork : bill.manufacturingWork;
     bill.stockWorkAssignment = data.dataStockWorkAssignment ? data.dataStockWorkAssignment.map(item => {
         return {
@@ -643,6 +709,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             endTime: item.endTime,
         }
     }) : bill.stockWorkAssignment;
+    bill.statusArray = data.statusArray ? data.statusArray : bill.statusArray;
     var log = {};
     log.creator = userId;
     log.createAt = new Date(Date.now());
@@ -669,6 +736,32 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
 
     await bill.save();
 
+    /*Tạo lô hàng và lưu hàng vào trong kho khi hoàn tất công việc trong phiếu*/
+    if (data.statusAll && data.statusAll == 2) {
+        // chuyển trạng thái sang đã hoàn thành
+        bill.status = 2;
+        //Tạo lô hàng
+        data.goods.forEach(item => {
+            if (item.lots && item.lots.length > 0) {
+                item.lots.forEach(async x => {
+                    let dataLots = formatDataLots(x, bill.fromStock, bill.bill, "Nhập kho", item.good._id, item.good.type);
+                    let lot = await InventoryServices.createOrUpdateLots(dataLots, portal);
+                    //Lưu hàng vào kho
+                    let dataBinLocations = formatDataBinLocations(x, bill.fromStock);
+                    await InventoryServices.editLot(lot[0]._id, dataBinLocations, portal);
+                })
+            }
+            if (item.unpassed_quality_control_lots && item.unpassed_quality_control_lots.length > 0) {
+                item.unpassed_quality_control_lots.forEach(async x => {
+                    let dataUnpassedLots = formatDataLots(x, bill.fromStock, bill.bill, "Nhập kho", item.good._id, item.good.type);
+                    let lot = await InventoryServices.createOrUpdateLots(dataUnpassedLots, portal);
+                    //Lưu hàng vào kho
+                    let dataBinLocations = formatDataBinLocations(x, bill.fromStock);
+                    await InventoryServices.editLot(lot[0]._id, dataBinLocations, portal);
+                })
+            }
+        })
+    }
     //--------------------PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG------------------------
     if (parseInt(bill.status) === 5) {//Nếu bill đã hoàn thành
         let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findOne({ bill: bill._id.toString() })
@@ -1110,7 +1203,9 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
+            { path: 'goods.lots.lot.binLocations.binLocation' },
             { path: 'goods.unpassed_quality_control_lots.lot' },
+            { path: 'goods.unpassed_quality_control_lots.lot.binLocations.binLocation' },
             { path: 'goods.good' },
             { path: 'logs.creator', select: "_id name email avatar" }
         ])

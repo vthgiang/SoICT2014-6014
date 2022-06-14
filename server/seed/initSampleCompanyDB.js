@@ -81,7 +81,7 @@ const {
     TransportSchedule, SuppliesPurchaseRequest, Supplies, PurchaseInvoice, AllocationHistory,
 
 } = require("../models");
-const {ObjectId} = require("mongodb");
+const { ObjectId } = require("mongodb");
 
 require("dotenv").config();
 
@@ -149,7 +149,7 @@ const initSampleCompanyDB = async () => {
      * 1.1 Khởi tạo model cho db
      */
     const initModels = (db) => {
-        
+
 
         if (!db.models.Component) Component(db);
         if (!db.models.RoleType) RoleType(db);
@@ -547,6 +547,55 @@ const initSampleCompanyDB = async () => {
         name: "Quản đốc nhà máy thực phẩm chức năng",
         type: roleChucDanh._id,
     });
+    // Kho Trần Đại Nghĩa
+    const nvKhoTDN = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+
+    const keToanKhoTDN = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Kế toán kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+
+    const phoKhoTDN = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTDN._id, keToanKhoTDN._id],
+        name: "Phó kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+
+    const thuKhoTDN = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTDN._id, phoKhoTDN._id, keToanKhoTDN._id],
+        name: "Thủ Kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+    // Kho Tạ Quang Bửu
+
+    const nvKhoTQB = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên kho Tạ Quang Bửu",
+        type: roleChucDanh._id,
+    });
+
+    const keToanKhoTQB = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Kế toán kho Tạ Quang Bửu",
+        type: roleChucDanh._id,
+    });
+
+    const phoKhoTQB = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTQB._id, keToanKhoTQB._id],
+        name: "Phó kho Tạ Quang Bửu",
+        type: roleChucDanh._id,
+    });
+
+    const thuKhoTQB = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTQB._id, phoKhoTQB._id, keToanKhoTQB._id],
+        name: "Thủ Kho Trần Tạ Quang Bửu",
+        type: roleChucDanh._id,
+    });
     // Khỏi tạo role cho phòng chăm sóc khách hàng
 
     const nvPhongCSKH = await Role(vnistDB).create({
@@ -699,6 +748,23 @@ const initSampleCompanyDB = async () => {
             roleId: nvNhaMayTPCN._id,
         },
 
+        // nhân viên kho Trần Đại Nghĩa
+        {
+            userId: users[5]._id,
+            roleId: nvKhoTDN._id,
+        },
+        {
+            userId: users[8]._id,
+            roleId: nvKhoTDN._id,
+        },
+        {
+            userId: users[9]._id,
+            roleId: nvKhoTDN._id,
+        },
+        {
+            userId: users[10]._id,
+            roleId: nvKhoTDN._id,
+        },
         //Gán quyền cho bộ phận kinh doanh
         {
             userId: users[2]._id,
@@ -938,6 +1004,30 @@ const initSampleCompanyDB = async () => {
         employees: [nvPhongKH._id],
         parent: Directorate._id,
     });
+    const bophankho = await OrganizationalUnit(vnistDB).create({
+        name: "Bộ phận kho",
+        description:
+            "Bộ phận kho của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        parent: Directorate._id,
+    });
+    const khoTDN = await OrganizationalUnit(vnistDB).create({
+        name: "Kho Trần Đại Nghĩa",
+        description:
+            "Kho Trần Đại Nghĩa của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        managers: [thuKhoTDN._id],
+        deputyManagers: [phoKhoTDN._id],
+        employees: [nvKhoTDN._id, keToanKhoTDN._id],
+        parent: bophankho._id,
+    });
+    const khoTQB = await OrganizationalUnit(vnistDB).create({
+        name: "Kho Tạ Quang Bửu",
+        description:
+            "Kho Tạ Quang Bửu của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        managers: [thuKhoTQB._id],
+        deputyManagers: [phoKhoTQB._id],
+        employees: [nvKhoTQB._id, keToanKhoTQB._id],
+        parent: bophankho._id,
+    });
     // console.log(
     //     "Đã tạo dữ liệu phòng ban: ",
     //     Directorate,
@@ -997,13 +1087,13 @@ const initSampleCompanyDB = async () => {
                         }
                     }
                 }
-                
-                return {
-                    url: link.url,
-                    category: link.category,
-                    description: link.description,
-                    deleteSoft: false,
-                };
+
+            return {
+                url: link.url,
+                category: link.category,
+                description: link.description,
+                deleteSoft: false,
+            };
         });
 
         if (checkAllSystemApi) {
@@ -1018,7 +1108,7 @@ const initSampleCompanyDB = async () => {
             )
         } else {
             dataApis.map(async (item) => {
-                let systemApi = await SystemApi(systemDB).findOne({path: item.path, method: item.method})
+                let systemApi = await SystemApi(systemDB).findOne({ path: item.path, method: item.method })
                 await Company(systemDB).update(
                     { shortName: 'vnist' },
                     {
@@ -3597,7 +3687,7 @@ const initSampleCompanyDB = async () => {
             proponent: users[4]._id, // Người đề nghị
             suppliesName: 'Máy tính Lenovo',
             suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            supplier: 'Công ty ABC',
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
@@ -3614,7 +3704,7 @@ const initSampleCompanyDB = async () => {
             proponent: users[4]._id, // Người đề nghị
             suppliesName: 'Máy tính Dell',
             suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            supplier: 'Công ty ABC',
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
@@ -3631,7 +3721,7 @@ const initSampleCompanyDB = async () => {
             proponent: users[2]._id, // Người đề nghị
             suppliesName: 'Máy tính Asus',
             suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            supplier: 'Công ty ABC',
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
@@ -3648,7 +3738,7 @@ const initSampleCompanyDB = async () => {
             proponent: users[2]._id, // Người đề nghị
             suppliesName: 'Máy tính Macbook',
             suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            supplier: 'Công ty ABC',
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
@@ -4148,6 +4238,9 @@ const initSampleCompanyDB = async () => {
             code: "ST001",
             address: "Trần Đại Nghĩa - Hai Bà Trưng - Hà Nội",
             description: "D5",
+            startTime: '07:00 AM',
+            endTime: '07:00 PM',
+            organizationalUnit: khoTDN._id,
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
@@ -4183,6 +4276,9 @@ const initSampleCompanyDB = async () => {
             code: "ST002",
             address: "Tạ Quang Bửu - Hai Bà Trưng - Hà Nội",
             description: "B1",
+            startTime: '07:00 AM',
+            endTime: '07:00 PM',
+            organizationalUnit: khoTQB._id,
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
@@ -6136,7 +6232,7 @@ const initSampleCompanyDB = async () => {
                 "priority": 2,
                 "startDate": new Date(year, month, 5),
                 "endDate": new Date(year, month, 25),
-                "customer": listCustomers[(j%10)]._id,
+                "customer": listCustomers[(j % 10)]._id,
                 "creator": users[(j % 3 + 5)]._id,
                 "createdAt": new Date(),
                 "updatedAt": new Date(),
@@ -6144,14 +6240,15 @@ const initSampleCompanyDB = async () => {
                 "__v": 0
             }
             if ((j % 5 + 1) == 3 || (j % 5 + 1) == 5)
-            care ={...care ,
-                evaluation: {
-                    "point": 8.9,
-                    "comment": "<p>khách hàng không có nhận xét về phản hồi</p>",
-                    "result": Math.floor(Math.random() * 2)+1
+                care = {
+                    ...care,
+                    evaluation: {
+                        "point": 8.9,
+                        "comment": "<p>khách hàng không có nhận xét về phản hồi</p>",
+                        "result": Math.floor(Math.random() * 2) + 1
+                    }
                 }
-            }
-                customerCareData = [...customerCareData, care];
+            customerCareData = [...customerCareData, care];
         }
     }
 
