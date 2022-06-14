@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { formatDate, formatFullDate } from '../../../../../../helpers/formatDate';
-import { DialogModal, SelectBox, Errorstrong, SelectMulti } from '../../../../../../common-components';
-import { translate } from 'react-redux-multilingual/lib/utils';
+import { formatDate} from '../../../../../../helpers/formatDate';
+import { DialogModal} from '../../../../../../common-components';
 import { taskManagementActions } from '../../../../../task/task-management/redux/actions';
 import { Gantt } from '../../../../../../common-components';
 
@@ -61,7 +60,7 @@ function BillDetailForm(props) {
         let data = {
             ...DEFAULT_SEARCH,
             "common-params": {
-                organizationalUnitId: ["62867a08cfa7d86ae0e34f96"],
+                organizationalUnitId: ["62a8092c5387be19102a8eaf"],
                 startMonth: state.startMonth,
                 endMonth: state.endMonth,
             },
@@ -142,7 +141,7 @@ function BillDetailForm(props) {
                 let countInTime = 0;
                 let countDelayed = 0;
                 let countNotAchived = 0;
-                for (let i = 1; i < dataAllTaskChart.length; i=i+2) {
+                for (let i = 1; i < dataAllTaskChart.length; i = i + 2) {
                     if (dataAllTaskChart[i].process === 1) {
                         countInTime = countInTime + 1;
                     }
@@ -310,10 +309,9 @@ function BillDetailForm(props) {
                                 </table>
                             </fieldset>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className="gantt qlcv" >
-                                {
-                                    dataCalendar && dataCalendar.dataAllTask && dataCalendar.dataAllTask.data &&
+                        {dataCalendar && dataCalendar.dataAllTask && dataCalendar.dataAllTask.data &&
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className="gantt qlcv" >
                                     <Gantt
                                         ganttId="gantt-chart"
                                         ganttData={dataCalendar?.dataAllTask}
@@ -324,23 +322,23 @@ function BillDetailForm(props) {
                                         unit={true}
                                         onZoomChange={handleZoomChange}
                                     />
-                                }
-                                <div className="form-inline" style={{ textAlign: 'center' }}>
-                                    <div className="form-group">
-                                        <div id="in-time"></div>
-                                        <label id="label-for-calendar">{translate('task.task_management.in_time')}{dataCalendar?.countAllTask?.intime}</label>
-                                    </div>
-                                    <div className="form-group">
-                                        <div id="delay"></div>
-                                        <label id="label-for-calendar">{translate('task.task_management.delayed_time')}{dataCalendar?.countAllTask?.delay}</label>
-                                    </div>
-                                    <div className="form-group">
-                                        <div id="not-achieved"></div>
-                                        <label id="label-for-calendar">{translate('task.task_management.not_achieved')}{dataCalendar?.countAllTask?.notAchived}</label>
+                                    <div className="form-inline" style={{ textAlign: 'center' }}>
+                                        <div className="form-group">
+                                            <div id="in-time"></div>
+                                            <label id="label-for-calendar">{translate('task.task_management.in_time')}{dataCalendar?.countAllTask?.intime}</label>
+                                        </div>
+                                        <div className="form-group">
+                                            <div id="delay"></div>
+                                            <label id="label-for-calendar">{translate('task.task_management.delayed_time')}{dataCalendar?.countAllTask?.delay}</label>
+                                        </div>
+                                        <div className="form-group">
+                                            <div id="not-achieved"></div>
+                                            <label id="label-for-calendar">{translate('task.task_management.not_achieved')}{dataCalendar?.countAllTask?.notAchived}</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>

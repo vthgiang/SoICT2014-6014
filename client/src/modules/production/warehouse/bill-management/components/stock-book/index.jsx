@@ -145,7 +145,6 @@ function BookManagement(props) {
                             <th>{translate('manage_warehouse.bill_management.type')}</th>
                             <th>{translate('manage_warehouse.bill_management.status')}</th>
                             <th>{translate('manage_warehouse.bill_management.creator')}</th>
-                            <th>{translate('manage_warehouse.bill_management.approved')}</th>
                             <th>{translate('manage_warehouse.bill_management.date')}</th>
                             <th>{translate('manage_warehouse.bill_management.stock')}</th>
                             <th>{translate('manage_warehouse.bill_management.partner')}</th>
@@ -159,7 +158,6 @@ function BookManagement(props) {
                                         translate('manage_warehouse.bill_management.type'),
                                         translate('manage_warehouse.bill_management.status'),
                                         translate('manage_warehouse.bill_management.creator'),
-                                        translate('manage_warehouse.bill_management.approved'),
                                         translate('manage_warehouse.bill_management.date'),
                                         translate('manage_warehouse.bill_management.stock'),
                                         translate('manage_warehouse.bill_management.partner'),
@@ -179,7 +177,6 @@ function BookManagement(props) {
                                     <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                     <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                    <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     {x.group === '1' && x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}

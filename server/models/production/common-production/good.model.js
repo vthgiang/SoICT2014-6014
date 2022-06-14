@@ -54,7 +54,32 @@ const GoodSchema = new Schema({
 
         description: {
             type: String
-        }
+        },
+
+        width: {
+            type: Number,
+            default: 0
+        },
+
+        height: {
+            type: Number,
+            default: 0
+        },
+
+        depth: {
+            type: Number,
+            default: 0
+        },
+
+        weight: {
+            type: Number,
+            default: 0
+        },
+
+        volume: {
+            type: Number,
+            default: 0
+        },
     }],
 
     quantity: {
@@ -90,9 +115,34 @@ const GoodSchema = new Schema({
         ref: 'User'
     },
 
-    // packingRule: {
-    //     type: String
-    // },
+    width: {
+        type: Number,
+        default: 0
+    },
+
+    height: {
+        type: Number,
+        default: 0
+    },
+
+    depth: {
+        type: Number,
+        default: 0
+    },
+
+    weight: {
+        type: Number,
+        default: 0
+    },
+
+    volume: {
+        type: Number,
+        default: 0
+    },
+
+    packingRule: {
+        type: String
+    },
 
     numberExpirationDate: {
         type: Number
