@@ -97,9 +97,14 @@ function EditGoodIssueRequestForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 1
             });
             setState({
                 ...state,
@@ -215,7 +220,7 @@ function EditGoodIssueRequestForm(props) {
                 desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
-                approverInFactory: state.approvers,
+                approvers: state.approvers,
                 stock: state.stock,
                 requestType: 1,
                 type: 3,
@@ -256,7 +261,7 @@ function EditGoodIssueRequestForm(props) {
             listGoods: listGoods,
             worksValue: props.worksValue,
             stock: props.stock,
-            approver: props.approver,
+            approver: props.approver[0].information[0].approver._id,
             status: props.status,
             errorDescription: undefined,
             errorDesiredTime: undefined,

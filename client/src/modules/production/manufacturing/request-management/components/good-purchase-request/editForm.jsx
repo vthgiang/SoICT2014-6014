@@ -96,9 +96,14 @@ function EditGoodPurchaseRequestForm(props) {
         }
         if (willUpdateState) {
             let approvers = [];
-            approvers.push({
+            let information = [];
+            information.push({
                 approver: value,
                 approvedTime: null,
+            });
+            approvers.push({
+                information: information,
+                approveType: 1
             });
             setState({
                 ...state,
@@ -143,7 +148,7 @@ function EditGoodPurchaseRequestForm(props) {
                 currentDepartment: currentDepartment,
             });
         }
-        return msg;
+        return msg === undefined;
     }
 
     const getOrganizationalUnit = () => {
@@ -265,7 +270,7 @@ function EditGoodPurchaseRequestForm(props) {
                 desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
-                approverInFactory: state.approvers,
+                approvers: state.approvers,
                 stock: state.stock,
                 requestType: 1,
                 type: 1,
@@ -307,7 +312,7 @@ function EditGoodPurchaseRequestForm(props) {
             listGoods: listGoods,
             worksValue: props.worksValue,
             stock: props.stock,
-            approver: props.approver,
+            approver: props.approver[0].information[0].approver._id,
             status: props.status,
             organizationalUnitValue: props.organizationalUnitValue,
             errorDescription: undefined,

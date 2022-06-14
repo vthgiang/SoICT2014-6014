@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Gantt } from '../../../../../../common-components';
-import dayjs from 'dayjs'
 
 function GanttCalendar(props) {
     const DEFAULT_INFOSEARCH = {
@@ -17,18 +16,19 @@ function GanttCalendar(props) {
         counter: 0,
     })
 
-    const formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        return [day, month, year].join('-');
+    function convertTime12To24(time) {
+        var hours   = Number(time.match(/^(\d+)/)[1]);
+        var minutes = Number(time.match(/:(\d+)/)[1]);
+        var AMPM    = time.match(/\s(.*)$/)[1];
+        if (AMPM === "PM" && hours < 12) hours = hours + 12;
+        if (AMPM === "AM" && hours === 12) hours = hours - 12;
+        var sHours   = hours.toString();
+        var sMinutes = minutes.toString();
+        if (hours < 10) sHours = "0" + sHours;
+        if (minutes < 10) sMinutes = "0" + sMinutes;
+        return (sHours + ":" + sMinutes);
     }
+
     /*Lịch*/
     const handleZoomChange = (zoom) => {
         setState({
@@ -37,15 +37,33 @@ function GanttCalendar(props) {
         });
     }
 
+
+    const findFullUserInfor = (value) => {
+        const { user } = props;
+        let array = [];
+        value.forEach(item => {
+            let userFind = user.list.find(element => element._id === item)
+            if (userFind) {
+                array.push({
+                    id: userFind._id,
+                    name: userFind.name,
+                    email: userFind.email,
+                })
+            }
+        })
+        return array;
+    }
+
     if (props.counter !== state.counter) {
         let formatData = [];
         if (props.dataChart && props.dataChart.length > 0) {
             let dataCalendar = props.dataChart;
             dataCalendar.forEach((item) => {
-                item.workAssignmentStaffs.forEach((itemStaff) => {
+                let itemStaffs = findFullUserInfor(item.workAssignmentStaffs);
+                itemStaffs.forEach((itemStaff) => {
                     formatData.push({
                         id: itemStaff.name,
-                        text: item.nameField + ' - ' + '0%',
+                        text: item.nameField,
                         role: itemStaff.name,
                         start_date: null,
                         duration: null,
@@ -57,9 +75,9 @@ function GanttCalendar(props) {
                         parent: itemStaff.name,
                         process: 1,
                         progress: 0,
-                        text: item.nameField + ' - ' + '0%',
-                        start_date: dayjs(formatDate(item.startDate) + ' ' + item.startTime).format("YYYY-MM-DD HH:mm"),
-                        end_date: dayjs(formatDate(item.endDate) + ' ' + item.endTime).format("YYYY-MM-DD HH:mm"),
+                        text: item.nameField,
+                        start_date: item.startDate.split("-").reverse().join("-") + ' ' + convertTime12To24(item.startTime),
+                        end_date: item.endDate.split("-").reverse().join("-") + ' ' + convertTime12To24(item.endTime),
                     })
                 });
             })

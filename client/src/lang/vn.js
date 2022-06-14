@@ -6299,6 +6299,24 @@ export default {
                     9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
                     10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
                 },
+                purchasing_request_in_order: {
+                    2: { content: "Chờ phê duyệt", color: "orange" },
+                    3: { content: "Đã phê duyệt", color: "violet" },
+                    4: { content: "Đã tạo đơn mua hàng", color: "blue" },
+                    5: { content: "Hàng hóa đã được mua về, đang chờ phê duyệt gửi yêu cầu nhập kho", color: "orange" },
+                    6: { content: "Đã gửi yêu cầu nhập kho", color: "blue" },
+                    7: { content: "Đã phê duyệt yêu cầu nhập kho", color: "green" },
+                    8: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
+                    10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
+                },
+                purchasing_request_in_stock: {
+                    6: { content: "Chờ phê duyệt", color: "blue" },
+                    7: { content: "Đã phê duyệt", color: "green" },
+                    8: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    9: { content: "Đã hủy yêu cầu mua hàng", color: "red" },
+                    10: { content: "Đã hủy yêu cầu nhập kho", color: "red" },
+                },
                 receipt_request_from_order: {
                     1: { content: "Chờ phê duyệt", color: "orange" },
                     2: { content: "Đã phê duyệt, yêu cầu đã được gửi đến kho", color: "green" },
@@ -6319,6 +6337,12 @@ export default {
                     3: { content: "Đã gửi phê duyệt yêu cầu xuất kho", color: "green" },
                     4: { content: "Đã hoàn thành xuất kho", color: "blue" },
                     5: { content: "Đã hủy", color: "red" },
+                },
+                request_create_in_stock: {
+                    1: { content: "Chờ phê duyệt", color: "orange" },
+                    2: { content: "Đã phê duyệt", color: "green" },
+                    3: { content: "Đã hoàn thành nhập kho", color: "blue" },
+                    4: { content: "Đã hủy", color: "red" },
                 },
                 search: "Tìm kiếm",
                 select_status: "Chọn trạng thái",
@@ -6375,7 +6399,8 @@ export default {
                 choose_manufacturing_works: "---Chọn nhà máy---",
                 validate_manufacturing_works: "Bạn cần chọn nhà máy",
                 base_infomation: "Thông tin cơ bản",
-                approved_true: 'Phê duyệt yêu cầu'
+                approved_true: 'Phê duyệt yêu cầu',
+                source_request: 'Nguồn đề nghị',
             },
         },
 

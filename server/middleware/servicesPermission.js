@@ -578,9 +578,9 @@ exports.links = [
             { path: '/bills/:id', method: 'PATCH' },
             { path: '/bills/get-detail-bill/:id', method: 'GET' },
 
-            { path: '/request-management/stock', method: 'GET' },
-            { path: '/request-management/manufacturing', method: 'GET' },
-            { path: '/request-management/order', method: 'GET' },
+            { path: '/product-request-management/stock', method: 'GET' },
+            { path: '/product-request-management/manufacturing', method: 'GET' },
+            { path: '/product-request-management/order', method: 'GET' },
 
             //order
             { path: "/orders", method: "GET" },
@@ -1069,13 +1069,13 @@ exports.links = [
         url: '/manage-manufacturing-lot',
         apis: ['@all']
     }, {
-        url: '/request-management/stock',
+        url: '/product-request-management/stock',
         apis: ['@all']
     }, {
-        url: '/request-management/manufacturing',
+        url: '/product-request-management/manufacturing',
         apis: ['@all']
     }, {
-        url: '/request-management/order',
+        url: '/product-request-management/order',
         apis: ['@all']
     }, {
         url: '/hr-manage-field',

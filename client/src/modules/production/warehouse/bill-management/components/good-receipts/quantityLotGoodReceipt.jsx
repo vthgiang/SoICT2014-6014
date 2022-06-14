@@ -30,14 +30,15 @@ function QuantityLotGoodReceipt(props) {
 
     useEffect(() => {
         state.code = props.lotName;
-        if (props.good !== state.good) {
+        if (props.good !== state.good || props.isPassQualityControl !== state.isPassQualityControl) {
             setState({
                 ...state,
                 good: props.good,
                 lots: props.initialData,
+                isPassQualityControl: props.isPassQualityControl,
             })
         }
-    }, [props.good])
+    }, [props.good, props.isPassQualityControl])
 
     const handleAddLotInfo = async () => {
         setState({
@@ -175,7 +176,11 @@ function QuantityLotGoodReceipt(props) {
 
     const handleAddLot = async (e) => {
         e.preventDefault();
-        let lots = [...(state.lots), state.lot];
+        let lots = [];
+        if (state.lots && state.lots.length > 0) 
+            lots.push(state.lots);
+        lots.push(state.lot);
+        console.log(lots);
         await setState({
             ...state,
             lots: lots,
@@ -268,45 +273,26 @@ function QuantityLotGoodReceipt(props) {
     }
 
     const save = async () => {
-        const { stock, good, quantity, bill, type } = props;
-        const { lots, arrayId } = state;
-        const data = {};
-        data.stock = stock;
-        data.lots = lots;
-        data.bill = bill;
-        data.typeBill = type;
-        if (good.good) {
-            data.good = good.good._id;
-            data.type = good.good.type;
-        }
+        // const { stock, good, quantity, bill, type } = props;
+        // const { lots, arrayId } = state;
+        // const data = {};
+        // data.stock = stock;
+        // data.lots = lots;
+        // data.bill = bill;
+        // data.typeBill = type;
+        // if (good.good) {
+        //     data.good = good.good._id;
+        //     data.type = good.good.type;
+        // }
         // if(arrayId && arrayId.length > 0) {
         //     await props.deleteLot(arrayId);
         // }
 
-        await props.createOrUpdateLots(data);
+        // await props.createOrUpdateLots(data);
 
-        await props.onDataChange(state.lots, data, arrayId);
+        await props.onDataChange(state.lots);
     }
 
-    function formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                day = '' + d.getDate(),
-                month = '' + (d.getMonth() + 1),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        } else {
-            return date
-        }
-    }
     const handleExpirationDateChange = (value) => {
         validateExpirationDate(value, true)
     }
@@ -344,7 +330,7 @@ function QuantityLotGoodReceipt(props) {
     const { translate, group, good, quantity } = props;
     const { lot, errorQuantity, errorRfidQuantity, lots, errorExpirationDate } = state;
     let different = difference();
-
+    console.log(props.isPassQualityControl);
     return (
         <React.Fragment>
             <DialogModal
@@ -355,7 +341,7 @@ function QuantityLotGoodReceipt(props) {
                 msg_failure={translate('manage_warehouse.bill_management.add_faile')}
                 disableSubmit={!isFormValidated()}
                 func={save}
-                size="75"
+                size="100"
             >
                 <form id={`form-edit-quantity-receipt`}>
                     <fieldset className="scheduler-border">

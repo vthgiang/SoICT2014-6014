@@ -11,7 +11,7 @@ export const requestServices = {
 function getAllRequestByCondition(query) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/request-management`,
+            url: `${process.env.REACT_APP_SERVER}/product-request-management`,
             method: "GET",
             params: query
         },
@@ -24,7 +24,7 @@ function getAllRequestByCondition(query) {
 function createRequest(data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/request-management`,
+            url: `${process.env.REACT_APP_SERVER}/product-request-management`,
             method: "POST",
             data
         },
@@ -37,7 +37,7 @@ function createRequest(data) {
 function getDetailRequest(id) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/request-management/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/product-request-management/${id}`,
             method: "GET",
         },
         false,
@@ -49,7 +49,7 @@ function getDetailRequest(id) {
 function editRequest(id, data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/request-management/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/product-request-management/${id}`,
             method: "PATCH",
             data
         },
@@ -62,7 +62,7 @@ function editRequest(id, data) {
 function getNumberStatus(query) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/request-management/get-number-request`,
+            url: `${process.env.REACT_APP_SERVER}/product-request-management/get-number-request`,
             method: "GET",
             params: query
         },

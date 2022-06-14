@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotification } from '../../../../../../common-components';
+import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotification, ButtonModal } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
 import GoodReceiptEditForm from './goodReceiptEditForm';
-import StockWorkAssignmentModal from './stockWorkAssignmentModal';
-import GoodDetailModal from './goodDetailModal';
-import GoodReceiptCreateForm from './goodReceiptCreateForm';
+// import GoodReceiptCreateForm from './goodReceiptCreateForm';
+import GoodReceiptCreateFormModal from './goodReceiptCreateFormModal';
 import { BillActions } from '../../redux/actions';
 import QualityControlForm from '../genaral/quatityControlForm';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 import Swal from "sweetalert2";
 import { UserGuideCreateBillReceipt } from '../config.js';
 import "../bill.css";
+import { generateCode } from "../../../../../../helpers/generateCode";
+import { RequestActions } from '../../../../common-production/request-management/redux/actions';
+import GoodReceiptWorkFlowModal from './goodReceiptWorkFlowModal';
 
 function ReceiptManagement(props) {
 
@@ -30,12 +32,9 @@ function ReceiptManagement(props) {
         actionAddLots: '1', // 1: edit bill, 2: add lot in index screen, 3: add lot to damaged goods in detail screen
     })
 
-    const { translate, bills, stocks, user, lots } = props;
-    const { listPaginate, totalPages, page, listBillByGroup } = bills;
-    const { listStocks } = stocks;
-    const { startDate, endDate, group, currentRow, actionAddLots } = state;
-    const dataPartner = props.getPartner();
-    const userId = localStorage.getItem("userId");
+    useEffect(() => {
+        props.getAllRequestByCondition({ requestType: 3, type: 1 });
+    }, [])
 
     const handleEdit = async (bill) => {
         await setState({
@@ -159,22 +158,57 @@ function ReceiptManagement(props) {
         window.$('#modal-good-detail').modal('show');
     }
 
-    const handleStockWorkAssigment = (bill) => {
+    const handleShowWorkFlowModal = (bill) => {
         setState({
             ...state,
-            currentBill: bill,
+            billInfor: bill,
         })
-        window.$('#stock-work-assignment-modal').modal('show');
+        console.log("bill", bill);
+        window.$('#good-receipt-work-flow-modal').modal('show');
     }
 
     const handleSearchByStatus = (status) => {
         props.handleSearchByStatus(status);
     }
 
+    const handleClickCreate = () => {
+        const value = generateCode("BIRE");
+        setState({
+            ...state,
+            code: value,
+        });
+    };
+
+    const handleClickCreateFromRequest = () => {
+        setState({
+            ...state,
+            createType: 2,
+        });
+        window.$('#modal-create-new-receipt-bill').modal('show');
+    }
+
+    const handleClickCreateDirectly = () => {
+        setState({
+            ...state,
+            createType: 1,
+        });
+        window.$('#modal-create-new-receipt-bill').modal('show');
+    }
+
+    const { translate, bills, stocks, user, lots } = props;
+    const { listPaginate, totalPages, page, listBillByGroup } = bills;
+    const { listStocks } = stocks;
+    const { startDate, endDate, group, currentRow, actionAddLots, createType, billInfor } = state;
+    const dataPartner = props.getPartner();
+    const userId = localStorage.getItem("userId");
+
     return (
         <div id="bill-good-receipts">
             <div className="box-body qlcv">
-                <GoodReceiptCreateForm group={group} />
+                {/* <GoodReceiptCreateForm group={group} /> */}
+                <GoodReceiptCreateFormModal createType={createType} />
+                {billInfor &&
+                    <GoodReceiptWorkFlowModal billId={billInfor._id} billInfor={billInfor} />}
                 {
                     state.currentControl &&
                     <QualityControlForm
@@ -185,24 +219,20 @@ function ReceiptManagement(props) {
                         listGoods={state.currentControl.goods}
                     />
                 }
-                {
-                    state.currentBill &&
-                    <GoodDetailModal
-                        billId={state.currentBill._id}
-                        bill={state.currentBill}
-                        code={state.currentBill.code}
-                        listGoods={state.currentBill.goods}
-                        stocks={stocks}
-                        lots={lots}
-                    />
-                }
-                {
-                    state.currentBill &&
-                    <StockWorkAssignmentModal
-                        billId={state.currentBill._id}
-                        bill={state.currentBill}
-                    />
-                }
+                <div className="form-inline">
+                    <div className="dropdown pull-right" style={{ marginTop: 5 }}>
+                        <button
+                            type="button"
+                            className="btn btn-success dropdown-toggle pull-right"
+                            data-toggle="dropdown"
+                            aria-expanded="true"
+                            title={"Thêm mới phiếu nhập kho"}>{"Thêm mới"}</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li><a style={{ cursor: "pointer" }} title={`Tạo trực tiếp`} onClick={handleClickCreateDirectly}>{"Tạo trực tiếp"}</a></li>
+                            <li><a style={{ cursor: "pointer" }} title={`Tạo từ yêu cầu`} onClick={handleClickCreateFromRequest}>{"Tạo từ phiếu mua hàng"}</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -320,7 +350,7 @@ function ReceiptManagement(props) {
                             <span className="label label-warning" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '2').length} Phiếu</span>
                         </li>
                     </ul>
-                    <ul className="todo-list" style={{marginLeft: "20px"}}>
+                    <ul className="todo-list" style={{ marginLeft: "20px" }}>
                         <li>
                             <span className="text" style={{ cursor: "pointer" }}><a onClick={() => handleSearchByStatus('3')}>Số lượng phiếu chờ kiểm định chất lượng</a></span>
                             <span className="label label-info" style={{ fontSize: '11px' }}>{listBillByGroup.filter(item => item.status === '3').length} Phiếu</span>
@@ -366,28 +396,28 @@ function ReceiptManagement(props) {
                         <tr>
                             <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
                             <th>{translate('manage_warehouse.bill_management.code')}</th>
-                            <th>{translate('manage_warehouse.bill_management.type')}</th>
+                            {/* <th>{translate('manage_warehouse.bill_management.type')}</th> */}
                             <th>{translate('manage_warehouse.bill_management.status')}</th>
                             <th>{translate('manage_warehouse.bill_management.creator')}</th>
-                            <th>{translate('manage_warehouse.bill_management.approved')}</th>
+                            {/* <th>{translate('manage_warehouse.bill_management.approved')}</th> */}
                             <th>{translate('manage_warehouse.bill_management.date')}</th>
                             <th>{translate('manage_warehouse.bill_management.stock')}</th>
                             <th>{translate('manage_warehouse.bill_management.supplier')}</th>
-                            <th>{translate('manage_warehouse.bill_management.infor_of_goods')}</th>
+                            {/* <th>{translate('manage_warehouse.bill_management.infor_of_goods')}</th> */}
                             <th style={{ width: '120px' }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
                                     columnArr={[
                                         translate('manage_warehouse.bill_management.index'),
                                         translate('manage_warehouse.bill_management.code'),
-                                        translate('manage_warehouse.bill_management.type'),
+                                        // translate('manage_warehouse.bill_management.type'),
                                         translate('manage_warehouse.bill_management.status'),
                                         translate('manage_warehouse.bill_management.creator'),
-                                        translate('manage_warehouse.bill_management.approved'),
+                                        // translate('manage_warehouse.bill_management.approved'),
                                         translate('manage_warehouse.bill_management.date'),
                                         translate('manage_warehouse.bill_management.stock'),
                                         translate('manage_warehouse.bill_management.supplier'),
-                                        translate('manage_warehouse.bill_management.infor_of_goods')
+                                        // translate('manage_warehouse.bill_management.infor_of_goods')
                                     ]}
                                     setLimit={props.setLimit}
                                 />
@@ -400,18 +430,18 @@ function ReceiptManagement(props) {
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{x.code}</td>
-                                    <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
+                                    {/* <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td> */}
                                     <td style={{
                                         color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`),
                                         whiteSpace: 'pre-wrap'
                                     }}>{translate(`manage_warehouse.bill_management.bill_receipt_status.${x.status}`)}</td>
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                    <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
+                                    {/* <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td> */}
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                     {x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
                                     {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
-                                    <td>
+                                    {/* <td>
                                         {x.status !== '7' &&
                                             <div>
                                                 <div className="timeline-index">
@@ -460,14 +490,14 @@ function ReceiptManagement(props) {
                                                 </a>
                                             </div>
                                         }
-                                    </td>
+                                    </td> */}
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
                                         {/*Chỉnh sửa phiếu */}
-                                        {props.checkRoleCanEdit(x) && <a onClick={() => handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                        {/* {props.checkRoleCanEdit(x) && <a onClick={() => handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>} */}
                                         {/*Phê duyệt phiếu*/}
-                                        {
+                                        {/* {
                                             props.checkRoleApprovers(x) && x.status === '1' &&
                                             <ConfirmNotification
                                                 icon="question"
@@ -477,9 +507,9 @@ function ReceiptManagement(props) {
                                                 className="text-green"
                                                 func={() => props.handleFinishedApproval(x)}
                                             />
-                                        }
+                                        } */}
                                         {/*Chuyển sang trạng thái đang thực hiện*/}
-                                        {
+                                        {/* {
                                             props.checkRoleCanEdit(x) && x.status === '2' &&
                                             <ConfirmNotification
                                                 icon="question"
@@ -489,14 +519,14 @@ function ReceiptManagement(props) {
                                                 className="text-violet"
                                                 func={() => props.handleInProcessingStatus(x)}
                                             />
-                                        }
+                                        } */}
                                         {/*Kiểm định chất lượng*/}
-                                        {
+                                        {/* {
                                             props.checkRoleQualityControlStaffs(x) && x.status === '3' &&
                                             <a onClick={() => handleFinishedQualityControlStaff(x)} className="text-green" ><i className="material-icons">check_circle</i></a>
-                                        }
+                                        } */}
                                         {/*Hoàn thành phiếu và đánh lô*/}
-                                        {
+                                        {/* {
                                             props.checkRoleCanEdit(x) && x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].time !== null
                                             && (x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 2 || x.qualityControlStaffs[x.qualityControlStaffs.map(y => y.staff._id).indexOf(userId)].status === 3)
                                             && x.status === '4' &&
@@ -506,9 +536,9 @@ function ReceiptManagement(props) {
                                                 onClick={() => handleAddLot(x)}
                                             ><i className="material-icons">add_box</i>
                                             </a>
-                                        }
+                                        } */}
                                         {/*Chi tiết hàng hóa*/}
-                                        {
+                                        {/* {
                                             props.checkRoleCanEdit(x) && x.status === '5' &&
                                             <a
                                                 className="text-violet"
@@ -516,18 +546,17 @@ function ReceiptManagement(props) {
                                                 onClick={() => handleShowGoodDetail(x)}
                                             ><i className="material-icons">info</i>
                                             </a>
-                                        }
+                                        } */}
                                         {
-                                            props.checkRoleCanEdit(x) &&
                                             <a
                                                 className="text-violet"
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}
-                                                onClick={() => handleStockWorkAssigment(x)}
+                                                onClick={() => handleShowWorkFlowModal(x)}
                                             ><i className="material-icons">assignment_turned_in</i>
                                             </a>
                                         }
                                         {/*Chuyển phiếu sang trạng thái đã hủy*/}
-                                        {
+                                        {/* {
                                             props.checkRoleCanEdit(x) && (x.status === '5' || x.status === '3') &&
                                             <ConfirmNotification
                                                 icon="question"
@@ -537,7 +566,7 @@ function ReceiptManagement(props) {
                                                 className="text-red"
                                                 func={() => props.handleCancelBill(x)}
                                             />
-                                        }
+                                        } */}
                                     </td>
                                 </tr>
                             ))
@@ -558,6 +587,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     editBill: BillActions.editBill,
+    getAllRequestByCondition: RequestActions.getAllRequestByCondition,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ReceiptManagement));

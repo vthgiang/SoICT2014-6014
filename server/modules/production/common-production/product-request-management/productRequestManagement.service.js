@@ -1,8 +1,9 @@
 const {
-    RequestManagement, ManufacturingCommand, ManufacturingMill, Stock
+    ProductRequestManagement, ManufacturingCommand, ManufacturingMill, Stock
 } = require(`../../../../models`);
 const { getAllManagersOfUnitByRole } = require("../../../super-admin/user/user.service");
 const NotificationServices = require(`../../../notification/notification.service`)
+const { getStock } = require(`../../warehouse/stock/stock.service`);
 
 const {
     connect
@@ -27,7 +28,6 @@ function getArrayTimeFromString(stringDate) {
 /* Tạo yêu cầu*/
 
 exports.createRequest = async (user, data, portal) => {
-    console.log(data);
     let stockManagersArray = [];
     if (data.requestType != 3) { // lấy dữ liệu người phê duyệt trong kho trong trường hợp tạo phiếu ở trong module kho
         let stock = await Stock(connect(DB_CONNECTION, portal))
@@ -35,7 +35,7 @@ exports.createRequest = async (user, data, portal) => {
             .populate({ path: "organizationalUnit" });
         stockManagersArray = await getAllManagersOfUnitByRole(portal, stock.organizationalUnit.managers);
     }
-    let newRequest = await RequestManagement(connect(DB_CONNECTION, portal)).create({
+    let newRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         creator: user._id,
         goods: data.goods.map(item => {
@@ -48,53 +48,38 @@ exports.createRequest = async (user, data, portal) => {
         description: data.description ? data.description : null,
         status: data.status ? data.status : null,
         manufacturingWork: data.manufacturingWork ? data.manufacturingWork : null,
-        approverInFactory: data.approverInFactory ? data.approverInFactory.map((item) => {
+        approvers: data.approvers ? data.approvers.map((item1) => {
             return {
-                approver: item.approver,
-                approvedTime: item.approvedTime
-            }
-        }) : [],
-        approverInWarehouse: (data.requestType != 3 && stockManagersArray.length != 0) ? stockManagersArray.map((item) => {
-            return {
-                approver: item.userId._id,
-                approvedTime: null
-            }
-        }) :
-            (data.approverInWarehouse ? data.approverInWarehouse.map((item) => {
-                return {
-                    approver: item.approver,
-                    approvedTime: item.approvedTime
-                }
-            }) : []),
-        approverInOrder: data.approverInOrder ? data.approverInOrder.map((item) => {
-            return {
-                approver: item.approver,
-                approvedTime: item.approvedTime
-            }
-        }) : [],
-        approverReceiptRequestInOrder: data.approverReceiptRequestInOrder ? data.approverReceiptRequestInOrder.map((item) => {
-            return {
-                approver: item.approver,
-                approvedTime: item.approvedTime
+                information: item1.information ? item1.information.map((item2) => {
+                    return {
+                        approver: item2.approver,
+                        approvedTime: item2.approvedTime,
+                        note: item2.note ? item2.note : null,
+                    }
+                }) : [],
+                approveType: item1.approveType
             }
         }) : [],
         stock: data.stock,
         orderUnit: data.orderUnit,
         requestType: data.requestType ? data.requestType : 1,
         type: data.type ? data.type : 1,
+        supplier: data.supplier ? data.supplier : null,
     });
 
     /* Tạo thông báo cho người phê duyệt khi tạo yêu cầu */
     let approvers = [];
     let notificationText = "";
     let url = "";
+    if (data.approvers) {
+        data.approvers.map((item) => {
+            item.information.map((item1) => {
+                approvers.push(item1.approver);
+            })
+        })
+    }
     switch (data.requestType) {
         case 1:
-            if (data.approverInFactory) {
-                data.approverInFactory.map((item) => {
-                    approvers.push(item.approver);
-                })
-            }
             switch (data.type) {
                 case 1:
                     notificationText = "mua hàng";
@@ -109,20 +94,10 @@ exports.createRequest = async (user, data, portal) => {
             url = 'manufacturing';
             break;
         case 2:
-            if (data.approverReceiptRequestInOrder) {
-                data.approverReceiptRequestInOrder.map((item) => {
-                    approvers.push(item.approver);
-                })
-            }
             notificationText = "nhập kho hàng hóa";
             url = 'order';
             break;
         case 3:
-            if (data.approverInWarehouse) {
-                data.approverInWarehouse.map((item) => {
-                    approvers.push(item.approver);
-                })
-            }
             switch (data.type) {
                 case 1:
                     notificationText = "nhập kho hàng hóa";
@@ -156,16 +131,15 @@ exports.createRequest = async (user, data, portal) => {
     };
     NotificationServices.createNotification(portal, portal, dataNotification)
 
-    let request = await RequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: newRequest._id })
+    let request = await ProductRequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: newRequest._id })
         .populate([
             { path: "creator", select: "name" },
             { path: "goods.good", select: "code name baseUnit" },
-            { path: "approverInFactory.approver", select: "name" },
-            { path: "approverInWarehouse.approver", select: "name" },
-            { path: "approverInOrder.approver", select: "name" },
-            { path: "approverReceiptRequestInOrder", select: "name" },
-            { path: "stock", select: "name" },
+            { path: "approvers.information.approver" },
+            { path: "refuser.refuser", select: "name" },
+            { path: "stock" },
             { path: "manufacturingWork", select: "name" },
+            { path: "supplier", select: "name" },
             { path: "orderUnit", select: "name" },
         ]);
     return { request }
@@ -273,35 +247,33 @@ exports.getAllRequestByCondition = async (query, portal) => {
         }
     }
     if (!limit || !page) {
-        let docs = await RequestManagement(connect(DB_CONNECTION, portal))
+        let docs = await ProductRequestManagement(connect(DB_CONNECTION, portal))
             .find(option)
             .populate([
                 { path: "creator", select: "name" },
                 { path: "goods.good", select: "code name baseUnit" },
-                { path: "approverInFactory.approver", select: "name" },
-                { path: "approverInWarehouse.approver", select: "name" },
-                { path: "approverInOrder.approver", select: "name" },
-                { path: "approverReceiptRequestInOrder", select: "name" },
-                { path: "stock", select: "name" },
+                { path: "approvers.information.approver" },
+                { path: "refuser.refuser", select: "name" },
+                { path: "stock" },
                 { path: "manufacturingWork", select: "name" },
+                { path: "supplier", select: "name" },
                 { path: "orderUnit", select: "name" },
             ]);
         let requests = {};
         requests.docs = docs;
         return { requests }
     } else {
-        let requests = await RequestManagement(connect(DB_CONNECTION, portal))
+        let requests = await ProductRequestManagement(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 limit: limit,
                 page: page,
                 populate: [{ path: "creator", select: "name" },
                 { path: "goods.good", select: "code name baseUnit" },
-                { path: "approverInFactory.approver", select: "name" },
-                { path: "approverInWarehouse.approver", select: "name" },
-                { path: "approverInOrder.approver", select: "name" },
-                { path: "approverReceiptRequestInOrder", select: "name" },
-                { path: "stock", select: "name" },
+                { path: "approvers.information.approver" },
+                { path: "refuser.refuser", select: "name" },
+                { path: "stock" },
                 { path: "manufacturingWork", select: "name" },
+                { path: "supplier", select: "name" },
                 { path: "orderUnit", select: "name" },
                 ],
                 sort: {
@@ -316,16 +288,15 @@ exports.getAllRequestByCondition = async (query, portal) => {
 
 
 exports.getRequestById = async (id, portal) => {
-    let request = await RequestManagement(connect(DB_CONNECTION, portal))
+    let request = await ProductRequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
         .populate([{ path: "creator", select: "name" },
         { path: "goods.good", select: "_id code name baseUnit" },
-        { path: "approverInFactory.approver", select: "name" },
-        { path: "approverInWarehouse.approver", select: "name" },
-        { path: "approverInOrder.approver", select: "name" },
-        { path: "approverReceiptRequestInOrder", select: "name" },
-        { path: "stock", select: "name" },
+        { path: "approvers.information.approver" },
+        { path: "refuser.refuser", select: "name" },
+        { path: "stock" },
         { path: "manufacturingWork", select: "name" },
+        { path: "supplier", select: "name" },
         { path: "orderUnit", select: "name" },
         ]);
     if (!request) {
@@ -346,10 +317,20 @@ function findIndexOfApprover(array, id) {
     return result;
 }
 
+function findIndexOfRole(array, approveType) {
+    let result = -1;
+    array.forEach((element, index) => {
+        if (element.approveType == approveType) {
+            result = index;
+        }
+    });
+    return result;
+}
+
 /* Chỉnh sửa yêu cầu*/
 
 exports.editRequest = async (user, id, data, portal) => {
-    let oldRequest = await RequestManagement(connect(DB_CONNECTION, portal))
+    let oldRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
         .populate([
             { path: "orderUnit" },
@@ -362,45 +343,23 @@ exports.editRequest = async (user, id, data, portal) => {
     oldRequest.creator = data.creator ? data.creator : oldRequest.creator;
     oldRequest.desiredTime = data.desiredTime ? data.desiredTime : oldRequest.desiredTime;
     oldRequest.description = data.description ? data.description : oldRequest.description;
-    if (data.approverIdInFactory) {
-        let index = findIndexOfApprover(oldRequest.approverInFactory, data.approverIdInFactory);
+    if (data.approvedUser && data.approveType) {
+        let index1 = findIndexOfRole(oldRequest.approvers, data.approveType);
+        let index2 = findIndexOfApprover(oldRequest.approvers[index1].information, data.approvedUser);
 
-        if (index !== -1) {
-            oldRequest.approverInFactory[index].approvedTime = new Date(Date.now());
-            oldRequest.status = 2;
-        }
-    }
-    else {
-        oldRequest.status = data.status ? data.status : oldRequest.status;
-    }
-    // phê duyệt yêu cầu mua hàng
-    if (data.approverIdInOrder) {
-        let index = findIndexOfApprover(oldRequest.approverInOrder, data.approverIdInOrder);
-        if (index !== -1) {
-            oldRequest.approverInOrder[index].approvedTime = new Date(Date.now());
-            oldRequest.status = 3;
-        }
-    }
-    else {
-        oldRequest.status = data.status ? data.status : oldRequest.status;
-    }
-    // phê duyệt yêu trong kho
-    if (data.approverIdInWarehouse) {
-        let index = findIndexOfApprover(oldRequest.approverInWarehouse, data.approverIdInWarehouse);
-        if (index !== -1) {
-            oldRequest.approverInWarehouse[index].approvedTime = new Date(Date.now());
-            oldRequest.status = 3;
-        }
-    }
-    else {
-        oldRequest.status = data.status ? data.status : oldRequest.status;
-    }
-    // Phê duyệt yêu cầu gửi yêu cầu nhập kho,Chuyển trạng thái từ 5. Chờ phê duyệt yêu cầu nhập kho => 6: Đã gửi yêu cầu nhập kho
-    if (data.approverIdReceiptRequestInOrder) {
-        let index = findIndexOfApprover(oldRequest.approverReceiptRequestInOrder, data.approverIdReceiptRequestInOrder);
-        if (index !== -1) {
-            oldRequest.approverReceiptRequestInOrder[index].approvedTime = new Date(Date.now());
-            oldRequest.status = oldRequest.status == 5 ? 6 : 2;
+        if (index2 !== -1) {
+            oldRequest.approvers[index1].information[index2].approvedTime = new Date(Date.now());
+            oldRequest.approvers[index1].information[index2].note = data.note;
+            switch (data.approveType) {
+                case 1: oldRequest.status = 2;
+                    break;
+                case 2: oldRequest.status = 3;
+                    break;
+                case 3: oldRequest.status = oldRequest.status == 5 ? 6 : 2;
+                    break;
+                case 4: oldRequest.status = oldRequest.status == 6 ? 7 : 2;
+                    break;
+            }
         }
     }
     else {
@@ -417,36 +376,71 @@ exports.editRequest = async (user, id, data, portal) => {
             quantity: good.quantity
         }
     }) : oldRequest.goods;
-    oldRequest.approverInFactory = data.approverInFactory ? data.approverInFactory.map((item) => {
-        return {
-            approver: item.approver,
-            approvedTime: item.approvedTime
-        }
-    }) : oldRequest.approverInFactory;
-    // Thêm người phê duyệt yêu cầu nhập kho trong bộ phận đơn hàng
-    if (data.status == 5) {
-        oldRequest.approverReceiptRequestInOrder = data.approverReceiptRequestInOrder ? data.approverReceiptRequestInOrder.map((item) => {
-            return {
-                approver: item.approver,
-                approvedTime: item.approvedTime
+    oldRequest.supplier = data.supplier ? data.supplier : oldRequest.supplier;
+    oldRequest.refuser = data.refuser ? data.refuser : oldRequest.refuser;
+    // Chỉnh sửa người phê duyệt hoặc thêm người phê duyệt mới
+    if (data.approvers && data.approvers.length > 0) {
+        let counter = 0;
+        oldRequest.approvers.forEach((item, index) => {
+            if (item.approveType == data.approvers[0].approveType) {
+                oldRequest.approvers[index].information = data.approvers[0].information.map((item1) => {
+                    return {
+                        approver: item1.approver,
+                        approvedTime: item1.approvedTime,
+                        note: item1.note ? item1.note : null,
+                    }
+                });
+                oldRequest.approvers[index].approveType = item.approveType
+                counter++;
             }
-        }) : oldRequest.approverReceiptRequestInOrder;
-    }
-    oldRequest.approverInWarehouse = data.approverInWarehouse ? data.approverInWarehouse.map((item) => {
-        return {
-            approver: item.approver,
-            approvedTime: item.approvedTime
+        });
+        if (counter == 0) {
+            oldRequest.approvers.push({
+                information: data.approvers[0].information.map((item) => {
+                    return {
+                        approver: item.approver,
+                        approvedTime: item.approvedTime,
+                        note: item.note ? item.note : null,
+                    }
+                }),
+                approveType: data.approvers[0].approveType
+            });
         }
-    }) : oldRequest.approverInWarehouse;
+    }
+
+    // Tự động Thêm người phê duyệt trong đơn hàng vào approvers
 
     if (oldRequest.requestType == 1 && oldRequest.type == 1 && oldRequest.status == 2) {
         let orderManagerArray = await getAllManagersOfUnitByRole(portal, oldRequest.orderUnit.managers);
-        oldRequest.approverInOrder = orderManagerArray ? orderManagerArray.map((item) => {
+        let information = orderManagerArray ? orderManagerArray.map((item) => {
             return {
                 approver: item.userId._id,
-                approvedTime: null
+                approvedTime: null,
+                note: item.note ? item.note : null,
             }
-        }) : oldRequest.approverInOrder;
+        }) : [];
+        let data = {
+            information: information,
+            approveType: 2
+        }
+        oldRequest.approvers.push(data);
+    }
+    // Tự động Thêm người phê duyệt trong kho vào approvers
+    if (oldRequest.requestType == 1 && oldRequest.type == 1 && oldRequest.status == 6) {
+        let stock = await getStock(oldRequest.stock, portal);
+        let warehouseManagerArray = await getAllManagersOfUnitByRole(portal, stock.organizationalUnit.managers[0]._id);
+        let information = warehouseManagerArray ? warehouseManagerArray.map((item) => {
+            return {
+                approver: item.userId._id,
+                approvedTime: null,
+                note: item.note ? item.note : null,
+            }
+        }) : [];
+        let data = {
+            information: information,
+            approveType: 4
+        }
+        oldRequest.approvers.push(data);
     }
     await oldRequest.save();
 
@@ -454,46 +448,36 @@ exports.editRequest = async (user, id, data, portal) => {
     let approvers = [];
     let notificationText = "";
     let url = "";
+    let index = 0;
     if (oldRequest.requestType == 1) {
         switch (oldRequest.status) {
             case 2:
-                if (oldRequest.approverInOrder) {
-                    oldRequest.approverInOrder.map((item) => {
-                        approvers.push(item.approver);
-                    })
-                }
+                index = findIndexOfRole(oldRequest.approvers, 2);
                 notificationText = "mua hàng";
                 url = 'order';
                 break;
             case 5:
-                if (oldRequest.approverReceiptRequestInOrder) {
-                    oldRequest.approverReceiptRequestInOrder.map((item) => {
-                        approvers.push(item.approver);
-                    })
-                }
+                index = findIndexOfRole(oldRequest.approvers, 3);
                 notificationText = "nhập kho hàng hóa";
                 url = 'order';
                 break;
             case 6:
-                if (oldRequest.approverInWarehouse) {
-                    oldRequest.approverInWarehouse.map((item) => {
-                        approvers.push(item.approver);
-                    })
-                }
+                index = findIndexOfRole(oldRequest.approvers, 4);
                 notificationText = "nhập kho hàng hóa";
                 url = 'stock';
                 break;
         }
     }
 
-    if ((oldRequest.requestType == 1 && oldRequest.type == 2 || oldRequest.type == 3) || (oldRequest.requestType == 2 && oldRequest.type == 1)) {
-        if (oldRequest.approverInWarehouse) {
-            oldRequest.approverInWarehouse.map((item) => {
-                approvers.push(item.approver);
-            })
-        }
+    if ((oldRequest.requestType == 1 && (oldRequest.type == 2 || oldRequest.type == 3)) || (oldRequest.requestType == 2 && oldRequest.type == 1)) {
+        index = findIndexOfRole(oldRequest.approvers, 4);
         notificationText = oldRequest.type == 3 ? "xuất kho hàng hóa" : 'nhập kho hàng hóa';
         url = 'stock';
+    }
+    if (oldRequest.approvers[index].information.length > 0) {
+        oldRequest.approvers[index].information.map((item) => {
+            approvers.push(item.approver);
+        })
     }
 
     const date = oldRequest.desiredTime;
@@ -511,17 +495,16 @@ exports.editRequest = async (user, id, data, portal) => {
     };
     NotificationServices.createNotification(portal, portal, dataNotification)
 
-    let request = await RequestManagement(connect(DB_CONNECTION, portal))
+    let request = await ProductRequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: oldRequest._id })
         .populate([
             { path: "creator", select: "name" },
             { path: "goods.good", select: "code name baseUnit" },
-            { path: "approverInFactory.approver", select: "name" },
-            { path: "approverInWarehouse.approver", select: "name" },
-            { path: "approverInOrder.approver", select: "name" },
-            { path: "approverReceiptRequestInOrder", select: "name" },
-            { path: "stock", select: "name" },
+            { path: "approvers.information.approver" },
+            { path: "refuser.refuser", select: "name" },
+            { path: "stock" },
             { path: "manufacturingWork", select: "name" },
+            { path: "supplier", select: "name" },
             { path: "orderUnit", select: "name" },
         ]);
 
@@ -567,13 +550,13 @@ exports.getNumberRequest = async (query, portal) => {
     }
 
     options.status = 1;
-    const request1 = await RequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
+    const request1 = await ProductRequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
 
     options.status = 2;
-    const request2 = await RequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
+    const request2 = await ProductRequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
 
     options.status = 3;
-    const request3 = await RequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
+    const request3 = await ProductRequestManagement(connect(DB_CONNECTION, portal)).find(options).count();
 
     return { request1, request2, request3 }
 }

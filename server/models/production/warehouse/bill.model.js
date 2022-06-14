@@ -48,10 +48,14 @@ const BillSchema = new Schema({
     //1: Chờ phê duyệt, 2: Chờ thực hiện, 3: Chờ kiểm định chất lượng, 4: Chờ đánh lô hàng hóa, 5: Chờ xếp hàng vào kho, 6: Đã xếp hàng vào kho, 7: Đã hủy phiếu
     // Phiếu xuất kho
     //1: Chờ phê duyệt, 2: Chờ thực hiện, 3: Đang thực hiện, 5: Đã hoàn thành, 7: Đã hủy phiếu
-    status: { 
+    status: {
         type: String,
         enum: ["1", "2", "3", "4", "5", "6", "7"]
     },
+
+    statusArray: [{
+        type: Number,
+    }],
 
     users: [{
         type: Schema.Types.ObjectId,
@@ -62,6 +66,38 @@ const BillSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User'
+    },
+
+    manufacturingWork: { // Nhà máy sản xuất
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingWorks"
+    },
+
+    stockWorkAssignment: [{
+        nameField: {
+            type: String,
+        },
+        workAssignmentStaffs: [{
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }],
+        startDate: {
+            type: Date,
+        },
+        startTime: {
+            type: String,
+        },
+        endDate: {
+            type: Date,
+        },
+        endTime: {
+            type: String,
+        },
+    }],
+
+    request: {
+        type: Schema.Types.ObjectId,
+        ref: "ProductRequestManagement"
     },
 
     // LSX
@@ -186,53 +222,87 @@ const BillSchema = new Schema({
                 default: 0
             },
 
-            returnQuantity: {
-                type: Number,
-                default: 0
-            },
-
-            damagedQuantity: {
-                type: Number,
-                default: 0
-            },
-
             realQuantity: {
                 type: Number
             },
 
             note: {
                 type: String
-            }
+            },
+            code: {
+                type: String
+            },
+            expirationDate: {
+                type: Date,
+            },
+            rfid: {
+                rfidCode: [{
+                    type: String,
+                }],
+                quantity: {
+                    type: Number,
+                    default: 0
+                }
+            },
+            binLocations: [{
+                binLocation: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'BinLocation'
+                },
+
+                quantity: {
+                    type: Number
+                },
+                name: {
+                    type: String
+                }
+            }]
         }],
         unpassed_quality_control_lots: [{
-            // LSX
             lot: {
                 type: Schema.Types.ObjectId,
                 ref: 'Lot'
             },
-            // LSX
             quantity: {
                 type: Number,
                 default: 0
             },
 
-            returnQuantity: {
-                type: Number,
-                default: 0
-            },
-
-            damagedQuantity: {
-                type: Number,
-                default: 0
-            },
-
             realQuantity: {
                 type: Number
             },
 
             note: {
                 type: String
-            }
+            },
+            code: {
+                type: String
+            },
+            expirationDate: {
+                type: Date,
+            },
+            rfid: {
+                rfidCode: [{
+                    type: String,
+                }],
+                quantity: {
+                    type: Number,
+                    default: 0
+                }
+            },
+            binLocations: [{
+                binLocation: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'BinLocation'
+                },
+
+                quantity: {
+                    type: Number
+                },
+                name: {
+                    type: String
+                }
+            }]
         }],
 
         description: {

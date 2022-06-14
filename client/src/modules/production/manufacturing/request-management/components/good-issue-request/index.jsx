@@ -63,7 +63,7 @@ function IssueRequestManagementTable(props) {
                     stock={state.currentRow.stock._id}
                     status={state.currentRow.status}
                     worksValue={state.currentRow.manufacturingWork._id}
-                    approver={state.currentRow.approverInFactory[0].approver._id}
+                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 1) : []}
                 />
             }
             <div className="box-body qlcv">
@@ -125,7 +125,7 @@ function IssueRequestManagementTable(props) {
                             <th>{translate('production.request_management.index')}</th>
                             <th>{translate('production.request_management.code')}</th>
                             <th>{translate('production.request_management.creator')}</th>
-                            <th>{translate('production.request_management.approver')}</th>
+                            {/* <th>{translate('production.request_management.approver')}</th> */}
                             <th>{translate('production.request_management.createdAt')}</th>
                             <th>{translate('production.request_management.desiredTime')}</th>
                             <th>{translate('production.request_management.status')}</th>
@@ -137,7 +137,7 @@ function IssueRequestManagementTable(props) {
                                         translate('production.request_management.index'),
                                         translate('production.request_management.code'),
                                         translate('production.request_management.creator'),
-                                        translate('production.request_management.approver'),
+                                        // translate('production.request_management.approver'),
                                         translate('production.request_management.createdAt'),
                                         translate('production.request_management.desiredTime'),
                                         translate('production.request_management.status'),
@@ -157,7 +157,7 @@ function IssueRequestManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
-                                    <td>{request.approverInFactory && request.approverInFactory[0].approver.name}</td>
+                                    {/* <td>{request.approverInFactory && request.approverInFactory[0].approver.name}</td> */}
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
                                     <td style={{ color: request.status <= 5 ?  translate(`production.request_management.issue_request_to_manufacturing.${request.status}.color`) : ''}}>{request.status <= 5 ? translate(`production.request_management.issue_request_to_manufacturing.${request.status}.content`) : ''}</td>

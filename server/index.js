@@ -133,7 +133,7 @@ router.use("/taskreports", require("./modules/report/task-report/taskReport.rout
 router.use("/stocks", require("./modules/production/warehouse/stock/stock.route"));
 router.use("/categories", require("./modules/production/common-production/category/category.route"));
 router.use("/goods", require("./modules/production/common-production/good/good.route"));
-router.use("/request-management", require("./modules/production/common-production/request-management/requestManagement.route"));
+router.use("/product-request-management", require("./modules/production/common-production/product-request-management/productRequestManagement.route"));
 router.use("/bin-locations", require("./modules/production/warehouse/bin-location/binLocation.route"));
 router.use("/lot", require("./modules/production/warehouse/inventory/inventory.route"));
 router.use("/bills", require("./modules/production/warehouse/bill/bill.route"));

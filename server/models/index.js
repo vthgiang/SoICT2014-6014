@@ -74,7 +74,7 @@ module.exports = {
     Lot: require('./production/common-production/lot.model'),
     Category: require('./production/common-production/category.model'),
     Bill: require('./production/warehouse/bill.model'),
-    RequestManagement: require('./production/common-production/requestManagement.model'),
+    ProductRequestManagement: require('./production/common-production/productRequestManagement.model'),
 
     // Customer Management
     Customer: require('./customer-care/customer.model'),

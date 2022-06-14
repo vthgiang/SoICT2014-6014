@@ -12,6 +12,8 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { LazyLoadComponent } from '../../../../../common-components/index';
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { worksActions } from '../../../manufacturing/manufacturing-works/redux/actions';
 
 function RequestManagement(props) {
 
@@ -34,6 +36,8 @@ function RequestManagement(props) {
         props.getUser();
         props.getAllStocks();
         props.getAllDepartments();
+        props.getCustomers();
+        props.getAllManufacturingWorks();
     }, []);
 
     const handleCodeChange = (e) => {
@@ -88,19 +92,25 @@ function RequestManagement(props) {
     }
 
     const checkRoleApprover = (request) => {
-        const { approverInWarehouse } = request;
-        const userId = localStorage.getItem("userId");
-        let approverIds = approverInWarehouse.map(x => x.approver._id);
-        if (approverIds.includes(userId) && approverInWarehouse[approverIds.indexOf(userId)].approvedTime === null) {
-            return true;
-        }
-        return false
+        const { approvers } = request;
+        let count = 0;
+        approvers.forEach(approver => {
+            if (approver.approveType == 4) {
+                const userId = localStorage.getItem("userId");
+                let approverIds = approver.information.map(x => x.approver._id);
+                if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
+                    count++;
+                }
+            }
+        })
+        return count > 0;
     }
 
     const handleFinishedApproval = (request) => {
         const userId = localStorage.getItem("userId");
         const data = {
-            approverIdInWarehouse: userId
+            approvedUser: userId,
+            approveType: 4
         }
         props.editRequest(request._id, data);
     }
@@ -285,6 +295,8 @@ const mapDispatchToProps = {
     getAllStocks: StockActions.getAllStocks,
     editRequest: RequestActions.editRequest,
     getAllDepartments: DepartmentActions.get,
+    getCustomers: CrmCustomerActions.getCustomers,
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RequestManagement));

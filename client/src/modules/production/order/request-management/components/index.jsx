@@ -90,6 +90,31 @@ function RequestManagement(props) {
         props.getAllRequestByCondition(data);
     }
 
+    const checkRoleApprover = (request) => {
+        const { approvers } = request;
+        let count = 0;
+        approvers.forEach(approver => {
+            let approveType = request.status == 2 ? 2 : 3;
+            if ( approver.approveType == approveType) {
+                const userId = localStorage.getItem("userId");
+                let approverIds = approver.information.map(x => x.approver._id);
+                if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
+                    count++;
+                }
+            }
+        })
+        return count > 0;
+    }
+
+    const handleFinishedApproval = (request) => {
+        const userId = localStorage.getItem("userId");
+        const data = {
+            approvedUser: userId,
+            approveType: request.status == 2 ? 2 : 3
+        }
+        props.editRequest(request._id, data);
+    }
+
     const checkRoleApproverReceiptRequestToStock = (request) => {
         const { approverReceiptRequestInOrder } = request;
         const userId = localStorage.getItem("userId");
@@ -179,6 +204,8 @@ function RequestManagement(props) {
                             <PurchaseRequest
                                 setPage={setPage}
                                 setLimit={setLimit}
+                                checkRoleApprover={checkRoleApprover}
+                                handleFinishedApproval={handleFinishedApproval}
                                 handleCancelRequest={handleCancelRequest}
                                 handleCodeChange={handleCodeChange}
                                 handleCreatedAtChange={handleCreatedAtChange}
@@ -197,6 +224,8 @@ function RequestManagement(props) {
                             <ReceiptRequest
                                 setPage={setPage}
                                 setLimit={setLimit}
+                                checkRoleApprover={checkRoleApprover}
+                                handleFinishedApproval={handleFinishedApproval}
                                 handleCancelRequest={handleCancelRequest}
                                 handleCodeChange={handleCodeChange}
                                 handleCreatedAtChange={handleCreatedAtChange}

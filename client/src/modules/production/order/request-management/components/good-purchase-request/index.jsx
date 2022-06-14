@@ -110,8 +110,7 @@ function PurchasingRequestManagementTable(props) {
                             <th>{translate('production.request_management.code')}</th>
                             <th>{translate('production.request_management.creator')}</th>
                             <th>{translate('production.request_management.request_sent_from')}</th>
-                            <th>{translate('production.request_management.approver_in_factory')}</th>
-                            {/* <th>{translate('production.request_management.approver_in_order')}</th> */}
+                            {/* <th>{translate('production.request_management.approver_in_factory')}</th> */}
                             <th>{translate('production.request_management.createdAt')}</th>
                             <th>{translate('production.request_management.desiredTime')}</th>
                             <th>{translate('production.request_management.status')}</th>
@@ -124,8 +123,7 @@ function PurchasingRequestManagementTable(props) {
                                         translate('production.request_management.code'),
                                         translate('production.request_management.creator'),
                                         translate('production.request_management.request_sent_from'),
-                                        translate('production.request_management.approver_in_factory'),
-                                        // translate('production.request_management.approver_in_order'),
+                                        // translate('production.request_management.approver_in_factory'),
                                         translate('production.request_management.createdAt'),
                                         translate('production.request_management.desiredTime'),
                                         translate('production.request_management.status'),
@@ -146,7 +144,7 @@ function PurchasingRequestManagementTable(props) {
                                     <td>{request.code}</td>
                                     <td>{request.creator && request.creator.name}</td>
                                     <td>{request.manufacturingWork && request.manufacturingWork.name}</td>
-                                    <td>{request.approverInFactory && request.approverInFactory.length !== 0 && request.approverInFactory[0].approver.name}</td>
+                                    {/* <td>{request.approverInFactory && request.approverInFactory.length !== 0 && request.approverInFactory[0].approver.name}</td> */}
                                     {/* <td>{request.approverInOrder && request.approverInOrder.map((approver, index) => (
                                         <span key={index}>{approver.approver.name}<br /></span>
                                     ))}</td> */}
@@ -156,6 +154,18 @@ function PurchasingRequestManagementTable(props) {
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
+                                        {/*Phê duyệt yêu cầu*/}
+                                        {
+                                            props.checkRoleApprover(request) &&
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manage_warehouse.bill_management.approved_true')}
+                                                content={translate('manage_warehouse.bill_management.approved_true') + " " + request.code}
+                                                name="check_circle_outline"
+                                                className="text-green"
+                                                func={() => props.handleFinishedApproval(request)}
+                                            />
+                                        }
                                         {request.status == 3 && (
                                             <a
                                                 onClick={() => handleCreatePurchaseOrder(request)}
@@ -166,17 +176,6 @@ function PurchasingRequestManagementTable(props) {
                                                 <i className="material-icons">add</i>
                                             </a>
                                         )}
-                                        {
-                                            props.checkRoleApproverReceiptRequestToStock(request) && request.status == 5 &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('production.request_management.approved_true')}
-                                                content={translate('production.request_management.approved_true') + " " + request.code}
-                                                name="check_circle"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApprovalReceiptRequestToStock(request)}
-                                            />
-                                        }
                                     </td>
                                 </tr>
                             ))

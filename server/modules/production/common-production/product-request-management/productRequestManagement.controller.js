@@ -1,5 +1,5 @@
 const Log = require(`../../../../logs`);
-const RequestService = require('./requestManagement.service');
+const RequestService = require('./productRequestManagement.service');
 
 exports.createRequest = async (req, res) => {
     try {

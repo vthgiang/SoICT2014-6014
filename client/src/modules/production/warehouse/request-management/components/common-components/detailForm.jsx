@@ -46,10 +46,6 @@ function DetailForm(props) {
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <strong>{translate('production.request_management.approver_in_stock')}:&emsp;</strong>
-                                {currentRequest.approverInWarehouse && currentRequest.approverInWarehouse[0].approver.name}
-                            </div>
-                            <div className="form-group">
                                 <strong>{translate('production.request_management.desiredTime')}:&emsp;</strong>
                                 {formatDate(currentRequest.desiredTime)}
                             </div>

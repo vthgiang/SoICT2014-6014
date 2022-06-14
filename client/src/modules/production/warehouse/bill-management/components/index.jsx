@@ -15,6 +15,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { CrmCustomerActions } from '../../../../crm/customer/redux/actions';
 import { millActions } from '../../../manufacturing/manufacturing-mill/redux/actions';
+import { worksActions } from '../../../manufacturing/manufacturing-works/redux/actions';
 
 function BillManagement(props) {
 
@@ -34,6 +35,8 @@ function BillManagement(props) {
         props.getAllGoods();
         props.getCustomers();
         props.getAllManufacturingMills();
+        props.getAllManufacturingWorks();
+        
     }, [])
 
     const handleShowDetailInfo = async (id) => {
@@ -668,7 +671,8 @@ const mapDispatchToProps = {
     getAllGoods: GoodActions.getAllGoods,
     getCustomers: CrmCustomerActions.getCustomers,
     editBill: BillActions.editBill,
-    getAllManufacturingMills: millActions.getAllManufacturingMills
+    getAllManufacturingMills: millActions.getAllManufacturingMills,
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillManagement));
