@@ -134,10 +134,10 @@ export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
     for (let idx in proposalsCopy.tasks) {
         let p = proposalsCopy.tasks[idx]
         let projectTaskData = {
-            code: `Task_${Number(idx) + 1}`,
+            code: p.code,
             name: p.taskName,
             description: p.taskDescription,
-            preceedingTasks: Number(idx) === 0 ? [] : [`Task_${Number(idx)}`],
+            preceedingTasks: p.preceedingTasks?.length > 0 ? p.preceedingTasks?.split(",")?.map(x => x?.trim()) : [],
             estimateNormalTime: p.estimateTime, // thời gian ước lượng
             estimateOptimisticTime: Number(p.estimateTime) === 1 ? '0' : Number(p.estimateTime) === 2 ? '1' : (Number(p.estimateTime) - 2).toString(), // thòi lượng thỏa hiệp
             unitOfTime: p.unitOfTime,

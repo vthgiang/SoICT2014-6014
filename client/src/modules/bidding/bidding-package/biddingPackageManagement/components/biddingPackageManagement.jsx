@@ -321,7 +321,7 @@ const BiddingPackageManagement = (props) => {
                     </div>
                     {/* Thời gian bắt đầu */}
                     <div className="form-group">
-                        <label title="Thời gian bắt đầu" className="form-control-static">Start Date</label>
+                        <label title="Thời gian bắt đầu" className="form-control-static">Thời gian bắt đầu</label>
                         <DatePicker
                             id="month-startDate-contract"
                             value={startDateSearch}
@@ -330,7 +330,7 @@ const BiddingPackageManagement = (props) => {
                     </div>
                     {/* Thời gian kết thúc */}
                     <div className="form-group">
-                        <label title="Thời gian kết thúc" className="form-control-static">End Date</label>
+                        <label title="Thời gian kết thúc" className="form-control-static">Thời gian kết thúc</label>
                         <DatePicker
                             id="month-endDate-contract"
                             value={endDateSearch}

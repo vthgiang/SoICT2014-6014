@@ -114,6 +114,10 @@ const BiddingPackageSchema = new Schema(
                 ],
             },
             tasks: [{
+                // mã công việc
+                code: {
+                    type: String,
+                },
                 // tên công việc
                 taskName: {
                     type: String
@@ -122,6 +126,7 @@ const BiddingPackageSchema = new Schema(
                 taskDescription: {
                     type: String
                 },
+                // công việc tiền nhiệm (luu bằng code của công việc)
                 preceedingTasks: {
                     type: String
                 },

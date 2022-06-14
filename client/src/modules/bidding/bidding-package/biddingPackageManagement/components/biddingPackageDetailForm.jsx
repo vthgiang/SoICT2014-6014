@@ -83,6 +83,7 @@ const BiddingPackageDetailForm = (props) => {
                             <div className="tab-content">
                                 {/* Thông tin chung */}
                                 <GeneralTab
+                                    disableLinkCreateContract={true}
                                     _id={_id}
                                     id={`view_general${_id}`}
                                     biddingPackage={biddingPackageDetail}

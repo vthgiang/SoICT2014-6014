@@ -111,7 +111,7 @@ const BidAndProjectStatistic = (props) => {
                     <div className="row">
                         <div className="col-md-6">
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Thông tin đề xuất của gói thầu</legend>
+                                <legend className="scheduler-border">Thông tin của gói thầu</legend>
                                 {
                                     bid ? <div style={{ lineHeight: 2 }}>
                                         <div><strong>Thời gian thực hiện dự kiến: &nbsp;</strong>{bid?.proposals?.executionTime} ({bid?.proposals?.unitOfTime})</div>

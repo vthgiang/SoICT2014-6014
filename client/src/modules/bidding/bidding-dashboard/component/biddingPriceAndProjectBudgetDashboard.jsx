@@ -73,6 +73,7 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
                 x: {
                     type: 'categories',
                     categories: categories,
+                    label: "Tên gói thầu"
                 },
                 y: {
                     label: "VND",

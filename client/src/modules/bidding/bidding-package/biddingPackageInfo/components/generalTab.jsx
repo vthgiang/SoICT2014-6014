@@ -101,7 +101,7 @@ function GeneralTab(props) {
         <div id={id} className="tab-pane active">
             <div style={{ display: 'flex', justifyContent: "space-between" }}>
                 <div>
-                    {!props.inContractDetail && !hasContract && status === 3 ?
+                    {!props.inContractDetail && !props.disableLinkCreateContract && !hasContract && status === 3 ?
                         <span>
                             {/* <CreateBiddingContract
                                 id={_id ? _id : ''}
