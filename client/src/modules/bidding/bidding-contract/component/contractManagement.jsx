@@ -38,8 +38,7 @@ const ContractManagement = (props) => {
 
     const [state, setState] = useState({
         tableId,
-        status: [0, 1, 2, 3, 4],
-        type: [1, 2, 3, 4, 5],
+        name: "",
         page: 1,
         limit: 10,
         currentRow: null,
@@ -179,6 +178,7 @@ const ContractManagement = (props) => {
 
     /** Function bắt sự kiện tìm kiếm */
     const handleSunmitSearch = async () => {
+        console.log(182, state);
         props.getListBiddingContract(state);
     }
 
@@ -279,7 +279,7 @@ const ContractManagement = (props) => {
                             <th>Tên hợp đồng</th>
                             <th>Mã hợp đồng</th>
                             <th>Gói thầu</th>
-                            <th>Ngày ký kết</th>
+                            <th>Ngày có hiệu lực</th>
                             <th>Ngày hết hạn</th>
                             <th>Giá trị hợp đồng</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>

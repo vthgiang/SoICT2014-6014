@@ -58,7 +58,8 @@ function GeneralTab(props) {
                 hasContract: props.biddingPackage.hasContract,
             }
         })
-    }, [props.id])
+        // console.log(61, props.biddingPackage, props.biddingPackage.hasContract);
+    }, [props.id, JSON.stringify(props.biddingPackage)])
 
     const { translate } = props;
 

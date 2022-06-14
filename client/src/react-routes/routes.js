@@ -67,6 +67,7 @@ const Contract = lazy(() => import("../modules/bidding/bidding-contract/componen
 const BiddingPackagesManagement = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components"))
 const BiddingPackageDetailPage = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components/biddingPackageDetailPage"))
 const ProjectTemplateManagement = lazy(() => import("../modules/bidding/project-template/components"))
+const BidDashboard = lazy(() => import("../modules/bidding/bidding-dashboard/component"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
@@ -1254,6 +1255,25 @@ class Routes extends Component {
                     />
 
                     {/* bidding - routes */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={"bidding_dashboard"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/bidding-dashboard",
+                                name: "bidding_dashboard",
+                                icon: "fa fa-list-alt",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/bidding-dashboard"}
+                        path={"/bidding-dashboard"}
+                        pageName={"bidding_dashboard"}
+                        layout={Layout}
+                        component={BidDashboard}
+                    />
                     <PrivateRoute
                         isLoading={this.props.course.isLoading}
                         key={"list_bidding_contract"}

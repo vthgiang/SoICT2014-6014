@@ -6,14 +6,14 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { EmployeeManagerActions } from '../../../human-resource/profile/employee-management/redux/actions';
 import getAllEmployeeSelectBoxItems from '../../bidding-package/biddingPackageManagement/components/employeeHelper';
-import { convertDepartmentIdToDepartmentName, convertUserIdToUserName, getListDepartments } from '../../../project/projects/components/functionHelper';
+import { convertDepartmentIdToDepartmentName, convertDepartmentIdToNameV2, convertUserIdToUserName, getListDepartments } from '../../../project/projects/components/functionHelper';
 
 function DecisionForImplement(props) {
     const EDIT_TYPE = "EDIT_TYPE", ADD_TYPE = "ADD_TYPE" // , RESET_TYPE = "RESET_TYPE", DELETE_TYPE = "DELETE_TYPE", CANCEL_TYPE = "CANCEL_TYPE";
     const { translate, employeesManager, user } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
-    console.log(16, user.usersInUnitsOfCompany);
+
     const arrUnitTimeList = [
         { text: 'Ngày', value: 'days' },
         { text: 'Giờ', value: 'hours' },
@@ -68,7 +68,7 @@ function DecisionForImplement(props) {
                 }
             })
         })
-    }, [props.id, JSON.stringify(props.biddingContract?.decideToImplement)])
+    }, [props.id, JSON.stringify(props.biddingContract)])
 
     let allEmployee;
     if (employeesManager && employeesManager.listAllEmployees) {
@@ -286,8 +286,9 @@ function DecisionForImplement(props) {
         props.handleChange("decideToImplement", newDecision);
     }, [responsibleEmployeesWithUnit.list])
 
-    console.log(275, decision)
-    console.log(276, responsibleEmployeesWithUnit)
+
+    // console.log(275, decision)
+    // console.log(276, responsibleEmployeesWithUnit)
 
     const renderMembers = () => {
         return (
@@ -320,7 +321,7 @@ function DecisionForImplement(props) {
                             {responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0 &&
                                 responsibleEmployeesWithUnit.list.map((item, index) => (
                                     <tr key={index}>
-                                        <td>{convertDepartmentIdToDepartmentName(user.usersInUnitsOfCompany, item?.unitId)}</td>
+                                        <td>{convertDepartmentIdToNameV2(listDepartments, item?.unitId)}</td>
                                         <td>
                                             {item?.listUsers.map(userItem =>
                                                 convertUserIdToUserName(listUsers, userItem))

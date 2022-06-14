@@ -363,6 +363,7 @@ class SideBar extends Component {
                                     name: "menu.manage_bidding",
                                     icon: "fa fa-folder-open",
                                     list: [
+                                        { name: "menu.bidding_dashboard", icon: "fa fa-tachometer", path: "/bidding-dashboard" },
                                         { name: "menu.list_bidding_package", icon: "fa fa-archive", path: "/bidding-list-package" },
                                         { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/bidding-search-for-package" },
                                         { name: "menu.list_bidding_contract", icon: "fa fa-file-text-o", path: "/bidding-list-contract" },
@@ -393,7 +394,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all"},
+                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all" },
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },

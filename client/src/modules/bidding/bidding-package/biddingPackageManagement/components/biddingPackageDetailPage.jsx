@@ -52,11 +52,16 @@ const BiddingPackageDetailPage = (props) => {
         props.downLoadDocument(id)
     }
 
+    const handleRefresh = () => {
+        props.getDetailBiddingPackage(currentId, {});
+    }
+
     return (
         <div className='box' id={`form-detail-biddingPackage${_id}`} >
-            {/* <CreateBiddingContract
+            <CreateBiddingContract
                 id={_id ? _id : ''}
-            /> */}
+                handleRefresh={handleRefresh}
+            />
             {biddingPackageDetail?._id && (
                 <div className="nav-tabs-custom row box-body" style={{ margin: 0 }}>
                     <ul className="nav nav-tabs">

@@ -1,7 +1,7 @@
 const { freshObject } = require("../../../helpers/functionHelper");
 
 const { BiddingContract } = require("../../../models");
-const { createProjectInfo, createTaskProjectCPM, } = require("../../project-template/projectTemplate.service");
+const { createProjectInfo, createTaskProjectCPM, updateProjectInfoAfterCreateProjectTask, } = require("../../project-template/projectTemplate.service");
 
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -262,7 +262,6 @@ exports.uploadBiddingContractFile = async (
     return contract;
 };
 
-
 exports.createProjectByContract = async (portal, contractId, data, company) => {
     const project = await createProjectInfo(portal, data.project);
     if (!project) throw ["create_project_failed!"];
@@ -270,6 +269,9 @@ exports.createProjectByContract = async (portal, contractId, data, company) => {
     const projectId = project._id;
     const createdTaskList = await createTaskProjectCPM(portal, projectId, data.tasks);
     if (!createdTaskList) throw ["create_task_project_failed!"];
+
+    const updatedProject = await updateProjectInfoAfterCreateProjectTask(portal, projectId, createdTaskList)
+    if (!updatedProject) throw ["failed_to_update_project_after_create_project_task!"];
 
     await BiddingContract(connect(DB_CONNECTION, portal)).findByIdAndUpdate(contractId, { $set: { 'project': projectId } }, { new: true });
 

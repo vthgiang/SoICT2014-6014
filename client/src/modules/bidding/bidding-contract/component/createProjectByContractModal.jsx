@@ -112,12 +112,6 @@ const CreateProjectByContractModal = (props) => {
         currentEmployeeRow: [],
     })
 
-    const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
-
-    useEffect(() => {
-        props.getAllBiddingPackage({ name: '', status: 3, page: undefined, limit: undefined });
-    }, [])
-
     useEffect(() => {
         setId(props.id)
     }, [props.id])
@@ -319,6 +313,7 @@ const CreateProjectByContractModal = (props) => {
 
         // console.log(1718, state, projectInfo, projectTask, taskProjectList)
         props.createProjectByContract(dataRq, id);
+        props.getListBiddingContract({ callId: "statistic", page: undefined, limit: undefined });
     }
 
     const isFormValidated = () => {
@@ -392,7 +387,8 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
-    createProjectByContract: BiddingContractActions.createProjectByContract
+    createProjectByContract: BiddingContractActions.createProjectByContract,
+    getListBiddingContract: BiddingContractActions.getListBiddingContract,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateProjectByContractModal));

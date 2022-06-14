@@ -14,6 +14,7 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getListDepartments } from '../../../project/projects/components/functionHelper';
 import { convertEmployeeToUserInUnit, getDecisionDataWhenUpdateBidPackage, getDepartmentIdByUserId } from './functionHelper';
 import moment from 'moment';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
 const CreateBiddingContract = (props) => {
 	const { translate, biddingContract, biddingPackagesManager, modelConfiguration, user } = props;
@@ -52,6 +53,10 @@ const CreateBiddingContract = (props) => {
 			return date
 		}
 	}
+	useEffect(() => {
+		props.getAllUserInAllUnitsOfCompany();
+		props.getAllUser();
+	}, []);
 
 	const initState = {
 
@@ -126,7 +131,7 @@ const CreateBiddingContract = (props) => {
 				decideToImplement: updatedDecision
 			})
 		}
-	}, [props.id]);
+	}, [props.id, JSON.stringify(listUserDepartment)]);
 
 	useEffect(() => {
 		if (modelConfiguration.biddingConfig != '') {
@@ -300,9 +305,11 @@ const CreateBiddingContract = (props) => {
 
 		console.log(1718, state, formData)
 		props.createBiddingContract(formData);
-		if (state.createType === "create_by_bid") {
+		if (state.createType === "create_by_bid" && props.handleRefresh) {
 			props.handleRefresh();
 		}
+		props.getAllBiddingPackage({ callId: "contract", name: '', status: 3, page: undefined, limit: undefined });
+		props.getListBiddingContract({ callId: "statistic", page: undefined, limit: undefined });
 	}
 
 	const isFormValidated = () => {
@@ -609,6 +616,9 @@ const mapDispatchToProps = {
 	getAllBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage,
 	getConfiguration: ConfigurationActions.getConfiguration,
 	getDetailBiddingPackage: BiddingPackageManagerActions.getDetailBiddingPackage,
+	getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+	getAllUser: UserActions.get,
+	getListBiddingContract: BiddingContractActions.getListBiddingContract,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateBiddingContract));

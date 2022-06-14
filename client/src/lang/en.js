@@ -162,8 +162,9 @@ export default {
             // đấu thầu
             manage_bidding: "Manage bidding",
             list_bidding_contract: "Manage bidding contracts",
-            bidding_project_template_list: "Bidding project template",
+            bidding_project_template_list: "Project template",
             list_search_for_package: "Search employee for package",
+            bidding_dashboard: "Bidding dashboard",
             list_bidding_package: "Manage bidding packages",
             detail_bidding_package: "Detail bidding packages",
 

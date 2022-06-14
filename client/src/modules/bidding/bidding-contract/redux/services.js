@@ -14,11 +14,15 @@ export const BiddingContractService = {
  * @data : Dữ liệu key tìm kiếm 
  */
 function getListBiddingContract(data) {
+    console.log(17, data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/bidding-contracts/bidding-contract`,
         method: 'GET',
         params: {
-            name: data.name,
+            code: data.codeSearch,
+            endDate: data.endDateSearch,
+            startDate: data.startDateSearch,
+            name: data.nameSearch,
             page: data.page,
             limit: data.limit
         }

@@ -36,6 +36,10 @@ export const getListDepartments = (usersInUnitsOfCompany) => {
     }))
 }
 
+export const convertDepartmentIdToNameV2 = (usersInUnitsOfCompany, departmentId) => {
+    return usersInUnitsOfCompany.find(item => String(item.value) === String(departmentId))?.text;
+}
+
 export const convertDepartmentIdToDepartmentName = (usersInUnitsOfCompany, departmentId) => {
     if (!usersInUnitsOfCompany) return [];
     const result = usersInUnitsOfCompany.filter(item => item.id === departmentId)?.[0]?.department;

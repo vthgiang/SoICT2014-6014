@@ -28,7 +28,8 @@ function getListBiddingContract(data) {
             .then(res => {
                 dispatch({
                     type: BiddingContractConstant.GET_BIDDING_CONTRACT_SUCCESS,
-                    payload: res.data.content.listBiddingContract
+                    payload: res.data.content,
+                    callId: data.callId,
                 })
             })
             .catch(err => {
@@ -103,7 +104,7 @@ function deleteBiddingContract(data) {
             .then(res => {
                 dispatch({
                     type: BiddingContractConstant.DELETE_BIDDING_CONTRACT_SUCCESS,
-                    payload: res.data.content.listBiddingContract
+                    payload: res.data.content
                 })
             })
             .catch(err => {

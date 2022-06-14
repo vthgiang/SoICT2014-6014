@@ -6,6 +6,7 @@ const initState = {
     isLoading: false,
     totalList: 0,
     listBiddingContract: [],
+    listBiddingContractStatistic: [],
     error: '',
 }
 
@@ -21,12 +22,21 @@ export function biddingContract(state = initState, action) {
                 isLoading: true,
             };
         case BiddingContractConstant.GET_BIDDING_CONTRACT_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                listBiddingContract: action.payload !== undefined ? action.payload : [],
-                totalList: action.payload.totalList,
-            };
+            if (!action.callId) {
+                return {
+                    ...state,
+                    isLoading: false,
+                    listBiddingContract: action.payload.listBiddingContract !== undefined ? action.payload.listBiddingContract : [],
+                    totalList: action.payload.totalList,
+                };
+            }
+            else if (action.callId === "statistic") {
+                return {
+                    ...state,
+                    listBiddingContractStatistic: action.payload.listBiddingContract ?? [],
+                    isLoading: false
+                };
+            }
         case BiddingContractConstant.CREATE_BIDDING_CONTRACT_SUCCESS:
             return {
                 ...state,
@@ -46,7 +56,8 @@ export function biddingContract(state = initState, action) {
                 ...state,
                 isLoading: false,
                 listBiddingContract: action.payload !== undefined ? action.payload : [],
-                totalList: action.payload.totalList,
+                listBiddingContractStatistic: action.payload !== undefined ? action.payload : [],
+                // totalList: action.payload.totalList,
             };
         case BiddingContractConstant.UPDATE_BIDDING_CONTRACT_SUCCESS:
             return {

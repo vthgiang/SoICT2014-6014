@@ -12,6 +12,7 @@ import { DecisionForImplement } from './decisionAssignImplementContract';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getListDepartments } from '../../../project/projects/components/functionHelper';
 import { getDecisionDataWhenUpdateBidPackage } from './functionHelper';
+import moment from 'moment';
 const EditBiddingContract = (props) => {
 	const { translate, biddingContract, biddingPackagesManager, user } = props;
 	const allUsers = user && user.list
@@ -73,10 +74,10 @@ const EditBiddingContract = (props) => {
 
 	const [state, setState] = useState(initState);
 	const [id, setId] = useState(props.id)
-	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
+	const listActiveBiddingPackage = biddingPackagesManager?.listActiveBiddingPackage;
 
 	useEffect(() => {
-		props.getAllBiddingPackage({ name: '', status: 3, page: undefined, limit: undefined });
+		props.getAllBiddingPackage({ callId: "contract", name: '', status: 3, page: undefined, limit: undefined });
 
 	}, [])
 
@@ -161,8 +162,8 @@ const EditBiddingContract = (props) => {
 		if (value.length === 0) {
 			value = null
 		};
-
-		let bp = props.biddingPackagesManager?.listBiddingPackages?.find(x => x._id == value[0])
+		const effecttiveDate = state.effectiveDate;
+		let bp = props.biddingPackagesManager?.listActiveBiddingPackage?.find(x => x._id == value[0])
 		if (bp) {
 			const updatedDecision = getDecisionDataWhenUpdateBidPackage(bp, allUsers, listUserDepartment)
 
@@ -171,6 +172,7 @@ const EditBiddingContract = (props) => {
 				name: "Hợp đồng " + bp.name,
 				budget: bp.price,
 				addressA: bp.receiveLocal,
+				endDate: moment(effecttiveDate, "DD-MM-YYYY").add(bp.proposals.executionTime, bp.proposals.unitOfTime).format('DD-MM-YYYY'),
 				// representativeNameA: bp.customer,
 				companyA: bp.customer,
 				biddingPackage: value[0],
@@ -445,7 +447,7 @@ const EditBiddingContract = (props) => {
 							id={`bidding-contract-select-package--${id}`}
 							className="form-control select2"
 							style={{ width: "100%" }}
-							items={listBiddingPackages?.map(x => {
+							items={listActiveBiddingPackage?.map(x => {
 								return { text: x.name, value: x._id }
 							})}
 							options={{ placeholder: "Chọn gói thầu" }}

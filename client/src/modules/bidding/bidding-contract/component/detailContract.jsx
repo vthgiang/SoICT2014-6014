@@ -65,11 +65,7 @@ const ViewBiddingContract = (props) => {
 	const [state, setState] = useState(initState);
 	const [id, setId] = useState(props.id)
 	const { translate, biddingContract, biddingPackagesManager, tasks } = props;
-	const listBiddingPackages = biddingPackagesManager?.listBiddingPackages;
-
-	useEffect(() => {
-		props.getAllBiddingPackage({ name: '', status: 3, page: undefined, limit: undefined });
-	}, [])
+	const listActiveBiddingPackage = biddingPackagesManager?.listActiveBiddingPackage;
 
 	useEffect(() => {
 		setId(props.id)
