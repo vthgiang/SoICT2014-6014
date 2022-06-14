@@ -79,10 +79,13 @@ export const performTaskAction = {
     evaluateTaskByAccountableEmployeesProject,
 
     createTaskOutputs,
+    editTaskOutputs,
     getTaskOutputs,
     approveTaskOutputs,
     editSubmissionResults,
-    deleteSubmissionResults
+    deleteSubmissionResults,
+
+    createCommentOfTaskOutput,
 };
 
 
@@ -1280,6 +1283,19 @@ function createTaskOutputs(taskId, taskOutputId, newAction) {
     };
 }
 
+function editTaskOutputs(taskId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_TASK_OUTPUT_REQUEST });
+
+        performTaskService.editTaskOutputs(taskId, data)
+            .then(
+                payload => dispatch({ type: performTaskConstants.EDIT_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.EDIT_TASK_OUTPUT_FAILURE, error })
+            );
+    };
+}
+
+
 function getTaskOutputs(taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_TASK_OUTPUTS_REQUEST });
@@ -1324,6 +1340,18 @@ function deleteSubmissionResults(taskId, taskOutputId, data) {
             .then(
                 payload => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE, error })
+            );
+    };
+}
+
+function createCommentOfTaskOutput(taskId, taskOutputId, newComment) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_REQUEST });
+
+        performTaskService.createCommentOfTaskOutput(taskId, taskOutputId, newComment)
+            .then(
+                payload => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_FAILURE, error })
             );
     };
 }

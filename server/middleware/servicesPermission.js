@@ -368,11 +368,13 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/files/:fileId', method: 'PATCH' },
 
             // task outputs
-            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId', method: 'POST' },
-            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', method: 'PATCH' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs', method: 'PATCH' },
             { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', method: 'DELETE' },
             { path: '/performtask/tasks/:taskId/task-outputs', method: 'GET' },
-            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId', method: 'PATCH' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/approve', method: 'PATCH' },
+
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/comments', method: 'POST' },
 
             //comment of task comment
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST' },

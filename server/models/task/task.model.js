@@ -926,6 +926,9 @@ const TaskSchema = new Schema(
                 status: {
                     type: String
                 },
+                isOutput: {
+                    type: Boolean,
+                },
                 accountableEmployees: [
                     {
                         accountableEmployee: {
@@ -942,9 +945,71 @@ const TaskSchema = new Schema(
                 ],
                 submissionResults:
                 {
+                    creator: {
+                        // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    description: {
+                        type: String,
+                    },
+                    createdAt: {
+                        type: Date,
+                        default: Date.now,
+                    },
+                    updatedAt: {
+                        type: Date,
+                        default: Date.now,
+                    },
+                    files: [
+                        {
+                            // Các file đi báo cáo kết quả giao nộp
+                            name: {
+                                type: String,
+                            },
+                            url: {
+                                type: String,
+                            },
+                        },
+                    ],
+                    // các taskActions được tạo khi chỉnh files
                     taskActions: [{
                         type: String
                     }],
+                    comments: [
+                        {
+                            // Comments của action
+                            creator: {
+                                type: Schema.Types.ObjectId,
+                                ref: "User",
+                            },
+                            status: {
+                                type: String,
+                            },
+                            description: {
+                                type: String,
+                            },
+                            createdAt: {
+                                type: Date,
+                                default: Date.now,
+                            },
+                            updatedAt: {
+                                type: Date,
+                                default: Date.now,
+                            },
+                            files: [
+                                {
+                                    // Các file đi kèm comments
+                                    name: {
+                                        type: String,
+                                    },
+                                    url: {
+                                        type: String,
+                                    },
+                                },
+                            ],
+                        },
+                    ],
                     logs: [{
                         creator: {
                             type: Schema.Types.ObjectId,
@@ -954,9 +1019,6 @@ const TaskSchema = new Schema(
                             type: String
                         },
                         action: {
-                            type: String
-                        },
-                        taskAction: {
                             type: String
                         },
                         createdAt: {

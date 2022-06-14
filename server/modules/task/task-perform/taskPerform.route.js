@@ -121,11 +121,14 @@ router.patch('/process/tasks/:taskId/comments/:commentId/child-comments/:childCo
 router.post('/tasks/:taskId/evaluate-project', auth, PerformTaskController.evaluateTaskProject);
 
 // TaskOutputs
-router.post('/tasks/:taskId/task-outputs/:taskOutputId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskOutputs);
-router.patch('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editSubmissionResults)
-router.get('/tasks/:taskId/task-outputs', auth, PerformTaskController.getTaskOutputs);
-router.patch('/tasks/:taskId/task-outputs/:taskOutputId', auth, PerformTaskController.approveTaskOutputs);
+router.post('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createSubmissionResults);
+router.patch('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editSubmissionResults);
 router.delete('/tasks/:taskId/task-outputs/:taskOutputId/submissionResults', auth, PerformTaskController.deleteSubmissionResults);
+router.patch('/tasks/:taskId/task-outputs', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskOutputs);
+router.get('/tasks/:taskId/task-outputs', auth, PerformTaskController.getTaskOutputs);
+router.patch('/tasks/:taskId/task-outputs/:taskOutputId/approve', auth, PerformTaskController.approveTaskOutputs);
+
+router.post('/tasks/:taskId/task-outputs/:taskOutputId/comments', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createCommentOfTaskOutput);
 
 
 module.exports = router;

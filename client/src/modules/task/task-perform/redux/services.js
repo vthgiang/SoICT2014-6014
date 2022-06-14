@@ -80,10 +80,13 @@ export const performTaskService = {
     evaluateTaskByAccountableEmployeesProject,
 
     createTaskOutputs,
+    editTaskOutputs,
     getTaskOutputs,
     approveTaskOutputs,
     editSubmissionResults,
     deleteSubmissionResults,
+
+    createCommentOfTaskOutput
 };
 
 /**
@@ -844,7 +847,7 @@ function evaluateTaskByAccountableEmployeesProject(data, taskId) {
  */
 function createTaskOutputs(taskId, taskOutputId, newAction) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/submissionResults`,
         method: 'POST',
         data: newAction
     }, true, true, 'task.task_perform');
@@ -859,7 +862,7 @@ function getTaskOutputs(taskId) {
 
 function approveTaskOutputs(taskId, taskOutputId, data) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/approve`,
         method: 'PATCH',
         data: data,
     }, true, true, 'task.task_perform');
@@ -881,4 +884,18 @@ function deleteSubmissionResults(taskId, taskOutputId, newAction) {
     }, true, true, 'task.task_perform');
 }
 
+function editTaskOutputs(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'task.task_perform');
+}
 
+function createCommentOfTaskOutput(taskId, taskOutputId, newComment) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/comments`,
+        method: 'POST',
+        data: newComment
+    }, true, true, 'task.task_perform');
+}

@@ -9,6 +9,21 @@ import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
 import TaskOutputsTab from './taskOutputs';
 
+const formatStatusInfo = (value) => {
+    switch (value) {
+        case "unfinished":
+            return "Chưa hoàn thành";
+        case "waiting_approval":
+            return "Đang chờ phê duyệt";
+        case "rejected":
+            return "Bị từ chối";
+        case "approved":
+            return "Đã phê duyệt";
+        default:
+            return "";
+            break;
+    }
+}
 function OutgoingDataTab(props) {
     const { translate, performtasks } = props;
     const [state, setState] = useState({
@@ -16,11 +31,12 @@ function OutgoingDataTab(props) {
         task: undefined,
         isOutputInformation: {},
         isOutputDocument: {},
+        isOutputTaskOuputs: {}
     })
     const [documents, setDocuments] = useState([])
     const [informations, setInformations] = useState([])
-    const { task, isOutputInformation, isOutputDocument } = state;
-    console.log(23, performtasks)
+    const [taskOutputs, setTaskOutputs] = useState([])
+    const { task, isOutputInformation, isOutputDocument, isOutputTaskOuputs } = state;
     if (props.isOutgoingData && props.taskId !== state.taskId) {
         let isOutputInformation = {}, isOutputDocument = {};
 
@@ -94,7 +110,6 @@ function OutgoingDataTab(props) {
         })
 
         let check = [], element;
-        console.log("dcm 0", documents)
         check = documents.filter(item => {
             if (item._id === document._id) {
                 element = item;
@@ -103,8 +118,6 @@ function OutgoingDataTab(props) {
                 return false
             }
         });
-        console.log("dcm", documents)
-        console.log('check.length', check.length)
         if (check.length !== 0) {
             documents.splice(documents.indexOf(element), 1);
         } else {
@@ -113,11 +126,11 @@ function OutgoingDataTab(props) {
                 description: document.description,
                 isOutput: !document.isOutput,
             }
-            console.log("data", data)
             documents.push(data);
-            console.log("dcm 2", documents)
         }
     }
+
+
 
     const handleSaveEdit = () => {
         const { task } = state;
@@ -130,6 +143,10 @@ function OutgoingDataTab(props) {
         if (documents.length !== 0) {
             props.editDocument(undefined, task._id, documents)
             setDocuments([]);
+        }
+
+        if (taskOutputs.length !== 0) {
+            props.editTaskOutputs(task._id, taskOutputs)
         }
     }
     const requestDownloadFile = (e, path, fileName) => {
@@ -146,9 +163,6 @@ function OutgoingDataTab(props) {
         }
     }
     let task1 = performtasks?.task
-    console.log('state', state)
-    console.log("Document", documents)
-    console.log("Infomation", informations)
     return (
         <React.Fragment>
             {
@@ -232,41 +246,34 @@ function OutgoingDataTab(props) {
                                             type="checkbox"
                                             title={"TaskOutputs"}
                                             name={item.tilte}
-                                            onClick={() => { console.log(235) }}
-                                            // checked={ }
-                                            onChange={e => { }}
+                                            onClick={() => {
+                                                let output = taskOutputs.find((x) => x.id == item._id);
+                                                if (!output) {
+                                                    let newTaskOutputs = [...taskOutputs, {
+                                                        id: item._id,
+                                                        status: !item.isOutput
+                                                    }]
+                                                    setTaskOutputs(newTaskOutputs)
+                                                } else {
+                                                    let newTaskOutputs = [...taskOutputs, {
+                                                        id: item._id,
+                                                        status: !output.status
+                                                    }]
+                                                    setTaskOutputs(newTaskOutputs)
+                                                }
+                                            }}
+                                            checked={item.isOutput}
+                                            disabled={item.status !== "approved"}
+                                        // onChange={e => { }}
                                         />
-                                        {item.title}
+                                        {item.title} ({formatStatusInfo(item.status)})
                                     </label>
                                 </div>
                             )
                         })}
-                        Yêu cầu xác nhận kết quả giao nộp từ các công việc trong quy trình
-                        <div>
-                            <div style={{ marginLeft: "20px" }}>
-                                <span>Xác nhận bước 1</span>
-                                {performtasks.task?.followingTasks.map(x => {
-                                    return (
-                                        <div>
-                                            <input type="checkbox" />
-                                            <span>{x.task.name}</span>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                            <div style={{ marginLeft: "20px" }}>
-                                <span>Xác nhận bước 2</span>
-                                <div>
-                                    <input type="checkbox" />
-                                    <span>Phê duyệt hình thức trình bày</span>
-                                </div>
-                            </div>
-                        </div>
                         <div style={{ marginTop: 20 }}>
                             <button type="button" style={{ width: "100%" }} className="btn btn-block btn-default" onClick={() => handleSaveEdit()} disabled={documents.length === 0 && informations.length === 0}>{translate('task.task_process.save')}</button>
                         </div>
-
-
                     </div>
                     {/* <TaskOutputsTab /> */}
 
@@ -308,6 +315,7 @@ function mapState(state) {
 const actions = {
     editDocument: performTaskAction.editDocument,
     editInformationTask: performTaskAction.editInformationTask,
+    editTaskOutputs: performTaskAction.editTaskOutputs,
     downloadFile: AuthActions.downloadFile,
     createComment: performTaskAction.createComment,
     editComment: performTaskAction.editComment,

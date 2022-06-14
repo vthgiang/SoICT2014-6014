@@ -1063,7 +1063,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.CREATE_TASK_OUTPUT_SUCCESS:
-            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
 
             return {
                 ...state,
@@ -1080,7 +1080,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.GET_TASK_OUTPUTS_SUCCESS:
-            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
 
             return {
                 ...state,
@@ -1097,7 +1097,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.APPROVE_TASK_OUTPUTS_SUCCESS:
-            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
             return {
                 ...state,
                 task: task
@@ -1113,7 +1113,7 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.EDIT_SUBMISSION_RESULTS_SUCCESS:
-            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
             return {
                 ...state,
                 task: task
@@ -1129,12 +1129,45 @@ export function performtasks(state = {}, action) {
                 adding: true
             };
         case performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS:
-            var task = { ...state.task, taskOutputs: action.payload.data.content.taskOutputs }
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
             return {
                 ...state,
                 task: task
             }
         case performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.EDIT_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.EDIT_TASK_OUTPUT_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+
+            return {
+                ...state,
+                task: task,
+            }
+        case performTaskConstants.EDIT_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.CREATE_COMMENT_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.CREATE_COMMENT_TASK_OUTPUT_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.CREATE_COMMENT_TASK_OUTPUT_FAILURE:
             return {
                 ...state,
                 error: action.error
