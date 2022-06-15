@@ -13,7 +13,7 @@ class DatePicker extends Component {
     }
     
     componentDidMount = () => {
-        const { id, dateFormat, onChange, deleteValue = true } = this.props;
+        const { id, dateFormat, onChange, deleteValue = true, pastDate } = this.props;
         let zIndex = 1050;
         dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
@@ -30,13 +30,22 @@ class DatePicker extends Component {
                         viewMode: "years",
                         minViewMode: "years",
                         zIndexOffset: this.zIndex,
-                    }) :
-                    window.$("#" + id).datepicker({
-                        autoclose: true,
-                        format: "dd-mm-yyyy",
-                        todayHighlight: true,
-                        zIndexOffset: this.zIndex,
-                    })
+                    }) : (
+                        pastDate == false ?
+                            window.$("#" + id).datepicker({
+                                autoclose: true,
+                                format: "dd-mm-yyyy",
+                                todayHighlight: true,
+                                zIndexOffset: this.zIndex,
+                                startDate: '0d'
+                            }) :
+                                window.$("#" + id).datepicker({
+                                    autoclose: true,
+                                    format: "dd-mm-yyyy",
+                                    todayHighlight: true,
+                                    zIndexOffset: this.zIndex,
+                                })
+                        )
             )
         if (deleteValue) {
             window.$("#" + id).keyup(function (e) {
@@ -56,7 +65,7 @@ class DatePicker extends Component {
     }
 
     componentDidUpdate = () => {
-        const { id, dateFormat } = this.props;
+        const { id, dateFormat, pastDate } = this.props;
         window.$("#" + id).datepicker("destroy");
         dateFormat === "month-year" ?
             window.$("#" + id).datepicker({
@@ -73,13 +82,22 @@ class DatePicker extends Component {
                         viewMode: "years",
                         minViewMode: "years",
                         zIndexOffset: this.zIndex,
-                    }) :
-                    window.$("#" + id).datepicker({
-                        autoclose: true,
-                        format: "dd-mm-yyyy",
-                        todayHighlight: true,
-                        zIndexOffset: this.zIndex,
-                    })
+                    }) : (
+                        pastDate == false ?
+                            window.$("#" + id).datepicker({
+                                autoclose: true,
+                                format: "dd-mm-yyyy",
+                                todayHighlight: true,
+                                zIndexOffset: this.zIndex,
+                                startDate: '0d'
+                            }) :
+                                window.$("#" + id).datepicker({
+                                    autoclose: true,
+                                    format: "dd-mm-yyyy",
+                                    todayHighlight: true,
+                                    zIndexOffset: this.zIndex,
+                                })
+                        )
             )
 
     }

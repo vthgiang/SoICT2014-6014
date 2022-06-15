@@ -147,6 +147,7 @@ import { schedulingProjects } from "../modules/project/scheduling-projects/redux
 
 // Delegation
 import { delegation } from "../modules/delegation/delegation-list/redux/reducers";
+import { delegationReceive } from "../modules/delegation/delegation-receive/redux/reducers";
 
 import { newsFeeds } from "../modules/home/redux/reducers";
 
@@ -272,6 +273,7 @@ const appReducer = combineReducers({
 
     // delegation
     delegation,
+    delegationReceive,
 
     //example1
     example1,

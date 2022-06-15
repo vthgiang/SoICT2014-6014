@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import dayjs from "dayjs";
-import { formatStatus } from './functionHelper';
+import { colorfyDelegationStatus } from './functionHelper';
 
 function GeneralTab(props) {
     const [state, setState] = useState({
@@ -29,7 +29,9 @@ function GeneralTab(props) {
                 startDate: props.startDate,
                 endDate: props.endDate,
                 revokedDate: props.revokedDate,
-                revokeReason: props.revokeReason
+                revokeReason: props.revokeReason,
+                forReceive: props.forReceive,
+                replyStatus: props.replyStatus
             })
         }
     }, [props.delegationID])
@@ -40,40 +42,9 @@ function GeneralTab(props) {
 
     console.log(state)
 
-    const colorfyDelegationStatus = (status) => {
-        const { translate } = props;
-        let statusColor = "";
-        switch (status) {
-            case "pending":
-                statusColor = "#db8b0b";
-                break;
-            case "declined":
-                statusColor = "#e86969";
-                break;
-            case "confirmed":
-                statusColor = "#31b337";
-                break;
-            case "revoked":
-                statusColor = "#385898";
-                break;
-            case "activated":
-                statusColor = "#31b337";
-                break;
-            default:
-                statusColor = "#385898";
-        }
-
-        return (
-
-            <span style={{ color: statusColor }}>{formatStatus(translate, status)}</span>
-
-        )
-
-    }
-
 
     const { translate } = props;
-    const { delegationName, description, delegator, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTasks, status, allPrivileges, startDate, endDate, revokedDate, revokeReason } = state;
+    const { delegationName, description, delegator, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTasks, status, allPrivileges, startDate, endDate, revokedDate, revokeReason, forReceive, replyStatus } = state;
 
     return (
         <div id={props.id} className="tab-pane active">
@@ -97,8 +68,8 @@ function GeneralTab(props) {
                 </div>
 
                 <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
-                    <label>{translate('manage_delegation.delegate_receiver')}:</label>
-                    <span> {delegatee?.name}</span>
+                    <label>{forReceive ? translate('manage_delegation.delegator') : translate('manage_delegation.delegate_receiver')}:</label>
+                    <span> {forReceive ? delegator?.name : delegatee?.name}</span>
                 </div>
             </div>
 
@@ -112,7 +83,7 @@ function GeneralTab(props) {
             <div class="row">
                 <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
                     <label>{translate('manage_delegation.delegateStatus')}:</label>
-                    <span> {colorfyDelegationStatus(status)}</span>
+                    <span> {colorfyDelegationStatus(status, translate)} - {colorfyDelegationStatus(replyStatus, translate)}</span>
                 </div>
                 {revokeReason &&
                     <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>

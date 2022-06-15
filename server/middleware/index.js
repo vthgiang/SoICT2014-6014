@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Models = require('../models');
-const { User, Role, UserRole, Privilege, Link, Company, PrivilegeApi, SystemApi } = Models;
+const { User, Role, UserRole, Privilege, Link, Company, PrivilegeApi, SystemApi, Delegation } = Models;
 const ObjectId = require("mongoose").Types.ObjectId;
 const { links } = require("./servicesPermission");
 const multer = require("multer");
@@ -8,7 +8,9 @@ const fs = require("fs");
 const CryptoJS = require("crypto-js");
 const { initModels, connect } = require(`../helpers/dbHelper`);
 const { decryptMessage } = require('../helpers/functionHelper');
+const { compareDate } = require('../helpers/functionHelper');
 const rateLimit = require("express-rate-limit");
+const DelegationService = require("../modules/delegation/delegation.service");
 
 
 /**
@@ -173,17 +175,35 @@ exports.authFunc = (checkPage = true) => {
                                 else throw ["page_access_denied"]
                             }
                             if (userrole.delegation) {
-                                
+
+                                // Nếu tồn tại ủy quyền đang hoạt động có endDate < now, re login
+
+                                const delegation = await Delegation(connect(DB_CONNECTION, req.portal)).findOne({ _id: userrole.delegation, status: 'activated' })
+                                if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
+                                    throw ["page_access_denied"]
+                                }
+
                                 if (privilege.delegations.length > 0) {
-                                    
+
 
                                     if (!privilege.delegations.some(delegation => userrole.delegation.toString() == delegation.toString())) {
-                                        
+
                                         throw ["page_access_denied"]
                                     }
 
+
                                 }
                             }
+
+                            // Nếu tồn tại ủy quyền chờ xác nhận có startDate < now, re login
+                            const delegationPending = await Delegation(connect(DB_CONNECTION, req.portal)).find({ delegatee: req.user._id, status: 'pending' })
+                            delegationPending.every(delegation => {
+                                if (delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
+                                    throw ["page_access_denied"]
+                                }
+                            })
+
+
                             if (privilege === null) throw ["page_access_denied"];
                         }
 

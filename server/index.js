@@ -10,6 +10,8 @@ const swaggerUI = require("swagger-ui-express");
 const { auth } = require(`./middleware`);
 const { SystemApiControllers } = require('./modules/system-admin/system-api/system-api-management/systemApi.controller');
 const { openApiData } = require('./api-docs/openapi');
+const schedule = require('node-schedule');
+
 require("dotenv").config();
 // require("./connectDatabase");
 require("./global")(server);
@@ -111,7 +113,7 @@ router.use("/course", require("./modules/trainning/course/course.route"));
 router.use("/assettype", require("./modules/asset/asset-type/asset-type.route"));
 router.use("/asset", require("./modules/asset/asset-management/asset.route"));
 //asset lot
-router.use("/assetlot",require("./modules/asset/asset-lot-management/asset-lot.route"));
+router.use("/assetlot", require("./modules/asset/asset-lot-management/asset-lot.route"));
 
 router.use(
     "/purchase-request",

@@ -158,6 +158,7 @@ const ExampleManagementHooks3 = lazy(() => import("../modules/example/example3/c
 
 // Delegation
 const ManageDelegation = lazy(() => import("../modules/delegation/delegation-list/components"))
+const ManageDelegationReceive = lazy(() => import("../modules/delegation/delegation-receive/components"))
 
 // Manufacturing Managements
 
@@ -2761,6 +2762,27 @@ class Routes extends Component {
                         pageName={"delegation_list"}
                         layout={Layout}
                         component={ManageDelegation}
+                    />
+
+                    {/* Delegation Receive */}
+                    <PrivateRoute
+                        isLoading={this.props.delegationReceive.isLoading}
+                        key={"delegation-receive"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/delegation-receive",
+                                name: "delegation_receive",
+                                icon: "fa fa-circle-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/delegation-receive"}
+                        path={"/delegation-receive"}
+                        pageName={"delegation_receive"}
+                        layout={Layout}
+                        component={ManageDelegationReceive}
                     />
 
                     {/* Manufacturing-management */}

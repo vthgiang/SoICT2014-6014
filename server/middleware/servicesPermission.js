@@ -144,6 +144,10 @@ exports.links = [
             { path: '/delegation/delegations/:id', method: 'GET' },
             { path: '/delegation/delegations/:id', method: 'PATCH' },
             { path: '/delegation/delegations/:id', method: 'DELETE' },
+            { path: '/delegation/delegations', method: 'PATCH' },
+            { path: '/delegation/delegations-receive', method: 'GET' },
+            { path: '/delegation/delegations-reply/:id', method: 'PATCH' },
+
 
             { path: '/educationProgram/educationPrograms', method: 'GET' },
             { path: '/educationProgram/educationPrograms', method: 'POST' },
@@ -733,6 +737,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/delegation-list',
+        apis: ['@all']
+    }, {
+        url: '/delegation-receive',
         apis: ['@all']
     }, {
         url: '/documents-management',

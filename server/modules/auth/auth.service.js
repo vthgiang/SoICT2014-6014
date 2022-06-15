@@ -7,6 +7,8 @@ const fs = require("fs");
 const { connect, initModels } = require(`../../helpers/dbHelper`);
 const { sendEmail } = require("../../helpers/emailHelper");
 const { validateEmailValid } = require("../../helpers/validationHelper");
+const { compareDate } = require('../../helpers/functionHelper');
+const DelegationService = require(`../delegation/delegation.service`);
 
 /**
  * Phương thức đăng nhập
@@ -42,6 +44,24 @@ exports.login = async (fingerprint, data) => {
                 }]
             },
         ]);
+
+
+    const allDelegations = await Delegation(connect(DB_CONNECTION, data.portal)).find({ status: { $in: ['pending', 'activated'] } });
+    // Kích hoạt ủy quyền nếu startDate < now và chưa đến thời hạn thu hồi hoặc thu hồi nếu endDate < now  
+    allDelegations.forEach(async delegation => {
+
+        if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
+            await DelegationService.revokeDelegation(data.portal, [delegation._id], "Automatic revocation")
+        }
+        else {
+            if (delegation.status == 'pending' && delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
+                await DelegationService.assignDelegation(delegation, data.portal)
+                delegation.status = "activated"
+                await delegation.save();
+            }
+        }
+    })
+
 
     if (!user) throw ["email_password_invalid"];
     const validPass = await bcrypt.compare(data.password, user.password);

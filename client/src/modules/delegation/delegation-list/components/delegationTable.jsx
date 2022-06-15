@@ -15,7 +15,7 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { DelegationActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import dayjs from "dayjs";
-import { formatStatus } from './functionHelper';
+import { colorfyDelegationStatus } from './functionHelper';
 
 
 function DelegationTable(props) {
@@ -183,36 +183,6 @@ function DelegationTable(props) {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
-    const colorfyDelegationStatus = (status) => {
-        const { translate } = props;
-        let statusColor = "";
-        switch (status) {
-            case "pending":
-                statusColor = "#db8b0b";
-                break;
-            case "declined":
-                statusColor = "#e86969";
-                break;
-            case "confirmed":
-                statusColor = "#31b337";
-                break;
-            case "revoked":
-                statusColor = "#385898";
-                break;
-            case "activated":
-                statusColor = "#31b337";
-                break;
-            default:
-                statusColor = "#385898";
-        }
-
-        return (
-
-            <span style={{ color: statusColor }}>{formatStatus(translate, status)}</span>
-
-        )
-
-    }
 
     return (
         <React.Fragment>
@@ -253,7 +223,7 @@ function DelegationTable(props) {
                 endDate={curentRowDetail && curentRowDetail.endDate}
                 revokedDate={curentRowDetail && curentRowDetail.revokedDate}
                 revokeReason={curentRowDetail && curentRowDetail.revokeReason}
-
+                replyStatus={curentRowDetail && curentRowDetail.replyStatus}
             />
 
             {user && user.organizationalUnitsOfUser && <DelegationCreateForm
@@ -326,15 +296,15 @@ function DelegationTable(props) {
                             delegatee: <td>{item?.delegatee.name}</td>,
                             delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
                             delegateEndDate: <td>{item.endDate ? formatTime(item?.endDate) : (item.revokedDate ? formatTime(item.revokedDate) : translate("manage_delegation.end_date_tbd"))}</td>,
-                            delegateStatus: <td>{colorfyDelegationStatus(item.status)}</td>,
+                            delegateStatus: <td>{colorfyDelegationStatus(item.status, translate)} - {colorfyDelegationStatus(item.replyStatus, translate)}</td>,
                             // description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>
                                 <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_delegation.detail_info_delegation')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
-                                {item.status == "pending" || item.status == "declined"
+                                {item.status == "pending"
                                     ? <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
                                     : null
                                 }
-                                {item.status == "revoked" || item.status == "declined" ?
+                                {item.status == "revoked" ?
                                     <DeleteNotification
                                         content={translate('manage_delegation.delete')}
                                         data={{

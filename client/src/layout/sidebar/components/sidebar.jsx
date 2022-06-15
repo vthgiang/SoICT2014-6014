@@ -500,7 +500,7 @@ class SideBar extends Component {
                                         },
                                         {
                                             name: "menu.delegation_receive",
-                                            icon: "fa fa-circle",
+                                            icon: "fa fa-circle-o",
                                             path: "/delegation-receive",
                                         },
 

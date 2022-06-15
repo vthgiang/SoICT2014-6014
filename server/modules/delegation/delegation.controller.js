@@ -49,6 +49,58 @@ exports.getDelegations = async (req, res) => {
     }
 }
 
+exports.getDelegationsReceive = async (req, res) => {
+    try {
+        data = await DelegationService.getDelegationsReceive(req.portal, req.query);
+
+        await Log.info(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_all_delegations_success"],
+            content: data
+        });
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "GET_ALL_DELEGATIONS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_all_delegations_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.replyDelegation = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = req.body;
+        await DelegationService.revokeDelegation(req.portal, [id]);
+        await DelegationService.deleteDelegations(req.portal, [id]);
+        let updatedDelegation = await DelegationService.createDelegation(req.portal, [data]);
+        if (updatedDelegation !== -1) {
+            await Log.info(req.user.email, "UPDATED_DELEGATION", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_delegation_success"],
+                content: [id, updatedDelegation]
+            });
+        } else {
+            throw Error("Delegation is invalid");
+        }
+
+    } catch (error) {
+        await Log.error(req.user.email, "UPDATED_DELEGATION", req.portal);
+        console.log(error)
+        res.status(400).json({
+            success: false,
+            messages: ["edit_delegation_fail"],
+            content: error.message
+        });
+    }
+}
+
 //  Lấy ra Ví dụ theo id
 exports.getDelegationById = async (req, res) => {
     try {

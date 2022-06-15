@@ -30,7 +30,7 @@ function DelegationCreateForm(props) {
             startDate: "",
             endDate: "",
             startTime: "",
-            endTime: "11:59 PM",
+            endTime: "11:30 PM",
         },
         showChooseLinks: false,
         showChooseRevoke: false,
@@ -69,9 +69,17 @@ function DelegationCreateForm(props) {
 
     }, [])
 
+    const roundToNearestHour = (date) => {
+        date.setMinutes(date.getMinutes() + 59);
+        date.setMinutes(0, 0, 0);
+
+        return date;
+    }
+
 
     const regenerateTimeAndCode = () => {
-        let currentTime = formatTime(new Date())
+
+        let currentTime = formatTime(roundToNearestHour(new Date()))
         let code = generateCode("UQVT");
         let result = ValidationHelper.validateName(translate, code, 6, 255);
 
@@ -263,7 +271,7 @@ function DelegationCreateForm(props) {
         let startDate = convertDateTime(value, delegateDuration.startTime);
         let endDate = convertDateTime(delegateDuration.endDate, delegateDuration.endTime);
 
-        if (startDate > endDate) {
+        if (startDate >= endDate) {
             msg = translate('task.task_management.add_err_end_date');
         }
         if (willUpdateState) {
@@ -300,7 +308,7 @@ function DelegationCreateForm(props) {
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if (startDate > endDate) {
+        else if (startDate >= endDate) {
             err = translate('task.task_management.add_err_end_date');
             resetErr = undefined;
         }
@@ -326,7 +334,7 @@ function DelegationCreateForm(props) {
         //     err = translate('task.task_management.add_err_empty_end_date');
         // }
         // else
-        if (startDate > endDate) {
+        if (startDate >= endDate) {
             err = translate('task.task_management.add_err_end_date');
             resetErr = undefined;
         }
@@ -352,6 +360,11 @@ function DelegationCreateForm(props) {
         let msg = DelegationFormValidator.validateDelegationEndDate(delegateDuration.startDate, value, translate);
         let endDate = convertDateTime(value, delegateDuration.endTime);
         console.log(endDate);
+        let startDate = convertDateTime(delegateDuration.startDate, delegateDuration.startTime);
+
+        if (startDate >= endDate) {
+            msg = translate('task.task_management.add_err_end_date');
+        }
         if (willUpdateState) {
             setState({
                 ...state,
@@ -412,6 +425,8 @@ function DelegationCreateForm(props) {
     const formatTime = (date) => {
         return dayjs(date).format("h:mm A");
     }
+
+
 
     return (
         <React.Fragment>
@@ -531,12 +546,14 @@ function DelegationCreateForm(props) {
                                 dateFormat="day-month-year"
                                 value={delegateDuration.startDate}
                                 onChange={handleChangeTaskStartDate}
+                                pastDate={false}
                             />
                             <TimePicker
                                 id={`time-picker-1`}
                                 refs={`time-picker-1`}
                                 value={delegateDuration.startTime}
                                 onChange={handleStartTimeChange}
+                                minuteStep={30}
                             />
                             <ErrorLabel content={delegateDuration.errorOnStartDate} />
                         </div>
@@ -547,12 +564,14 @@ function DelegationCreateForm(props) {
                                     id={`datepicker2`}
                                     value={delegateDuration.endDate}
                                     onChange={handleChangeTaskEndDate}
+                                    pastDate={false}
                                 />
-                                < TimePicker
+                                <TimePicker
                                     id={`time-picker-2`}
                                     refs={`time-picker-2`}
                                     value={delegateDuration.endTime}
                                     onChange={handleEndTimeChange}
+                                    minuteStep={30}
                                 />
                                 <ErrorLabel content={delegateDuration.errorOnEndDate} />
                             </div>}

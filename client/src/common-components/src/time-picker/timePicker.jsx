@@ -12,11 +12,11 @@ class TimePicker extends Component {
         this.zIndex = 1050;
     }
     componentDidMount = () => {
-        const { id, dateFormat, onChange, deleteValue = true, getDefaultValue } = this.props;
+        const { id, dateFormat, onChange, deleteValue = true, getDefaultValue, minuteStep } = this.props;
         let zIndex = 1050;
         window.$("#" + id).timepicker({
             template: "dropdown",
-            minuteStep: 5,
+            minuteStep: minuteStep ? minuteStep : 5,
         })
         window.$("#" + id).on("change", () => {
             let value = this.refs.timePicker.value;
@@ -35,10 +35,10 @@ class TimePicker extends Component {
     }
 
     componentDidUpdate = () => {
-        const { id, dateFormat } = this.props;
+        const { id, dateFormat, minuteStep } = this.props;
         window.$("#" + id).timepicker({
             template: "dropdown",
-            minuteStep: 5
+            minuteStep: minuteStep ? minuteStep : 5,
         })
     }
 

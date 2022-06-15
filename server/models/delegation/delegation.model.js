@@ -59,16 +59,28 @@ const DelegationSchema = new Schema({
         type: Date,
     },
     status: {
-        // có 5 trạng thái của ủy quyền
+        // có 3 trạng thái của ủy quyền
         type: String,
         default: "pending",
         enum: [
             "activated", // Đang hoạt động
-            "pending", // Chờ xác nhận
-            "declined", // Từ chối
+            "pending", // Chờ kích hoạt
             "revoked", // Thu hồi
-            "confirmed" // Xác nhận
         ],
+    },
+    replyStatus: {
+        // Có 3 trạng thái phản hồi
+        type: String,
+        default: "wait_confirm",
+        enum: [
+            "declined", // Từ chối
+            "confirmed", // Xác nhận
+            "wait_confirm" // Chờ xác nhận
+        ],
+    },
+    declineReason: {
+        // Lý do từ chối
+        type: String,
     },
     revokeReason: {
         type: String

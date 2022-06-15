@@ -266,7 +266,7 @@ function DelegationEditForm(props) {
         let startDate = convertDateTime(value, delegateDuration.startTime);
         let endDate = convertDateTime(delegateDuration.endDate, delegateDuration.endTime);
 
-        if (startDate > endDate) {
+        if (startDate >= endDate) {
             msg = translate('task.task_management.add_err_end_date');
         }
         if (willUpdateState) {
@@ -303,7 +303,7 @@ function DelegationEditForm(props) {
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if (startDate > endDate) {
+        else if (startDate >= endDate) {
             err = translate('task.task_management.add_err_end_date');
             resetErr = undefined;
         }
@@ -329,7 +329,7 @@ function DelegationEditForm(props) {
         //     err = translate('task.task_management.add_err_empty_end_date');
         // }
         // else
-        if (startDate > endDate) {
+        if (startDate >= endDate) {
             err = translate('task.task_management.add_err_end_date');
             resetErr = undefined;
         }
@@ -355,6 +355,11 @@ function DelegationEditForm(props) {
         let msg = DelegationFormValidator.validateDelegationEndDate(delegateDuration.startDate, value, translate);
         let endDate = convertDateTime(value, delegateDuration.endTime);
         console.log(endDate);
+        let startDate = convertDateTime(delegateDuration.startDate, delegateDuration.startTime);
+
+        if (startDate >= endDate) {
+            msg = translate('task.task_management.add_err_end_date');
+        }
         if (willUpdateState) {
             setState({
                 ...state,
@@ -555,12 +560,14 @@ function DelegationEditForm(props) {
                                 dateFormat="day-month-year"
                                 value={delegateDuration.startDate}
                                 onChange={handleChangeTaskStartDate}
+                                pastDate={false}
                             />
                             <TimePicker
                                 id={`time-picker-1edit`}
                                 refs={`time-picker-1`}
                                 value={delegateDuration.startTime}
                                 onChange={handleStartTimeChange}
+                                minuteStep={60}
                             />
                             <ErrorLabel content={delegateDuration.errorOnStartDate} />
                         </div>
@@ -571,12 +578,14 @@ function DelegationEditForm(props) {
                                     id={`datepicker2edit`}
                                     value={delegateDuration.endDate}
                                     onChange={handleChangeTaskEndDate}
+                                    pastDate={false}
                                 />
                                 < TimePicker
                                     id={`time-picker-2edit`}
                                     refs={`time-picker-2`}
                                     value={delegateDuration.endTime}
                                     onChange={handleEndTimeChange}
+                                    minuteStep={60}
                                 />
                                 <ErrorLabel content={delegateDuration.errorOnEndDate} />
                             </div>}

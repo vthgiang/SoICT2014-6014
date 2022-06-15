@@ -2,16 +2,16 @@ import React from 'react';
 
 import { withTranslate } from "react-redux-multilingual";
 
-import { DelegationTable } from './delegationTable';
+import { DelegationReceiveTable } from './delegationReceiveTable';
 
-function ManageDelegation() {
+function ManageDelegationReceive() {
     return (
         <div className="box" style={{ minHeight: "450px" }}>
             <div className="box-body">
-                <DelegationTable />
+                <DelegationReceiveTable />
             </div>
         </div>
     );
 }
 
-export default (withTranslate(ManageDelegation));
+export default (withTranslate(ManageDelegationReceive));

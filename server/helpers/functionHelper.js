@@ -115,3 +115,25 @@ exports.arrayEquals = (a, b) => {
         a.length === b.length &&
         a.every((val, index) => val.toString() === b[index].toString());
 }
+
+exports.isToday = (someDate) => {
+    const today = new Date()
+    return someDate.getDate() == today.getDate() &&
+        someDate.getMonth() == today.getMonth() &&
+        someDate.getFullYear() == today.getFullYear() &&
+        someDate.getMinutes() == today.getMinutes()
+    // return someDate.getTime() == today.getTime()
+
+}
+
+exports.compareDate = (g1, g2) => {
+    if (g1.getTime() < g2.getTime()) {
+        return -1;
+    }
+    else if (g1.getTime() > g2.getTime()) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
