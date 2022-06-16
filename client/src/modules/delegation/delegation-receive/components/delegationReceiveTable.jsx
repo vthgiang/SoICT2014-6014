@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { PaginateBar, SmartTable, ToolTip } from "../../../../common-components";
+import { PaginateBar, SmartTable, ToolTip, ConfirmNotification } from "../../../../common-components";
 
 import { DelegationDetailInfo } from "../../delegation-list/components/delegationDetailInfo";
 
@@ -26,7 +26,7 @@ function DelegationReceiveTable(props) {
     })
     const [selectedData, setSelectedData] = useState()
 
-    const { delegation, translate } = props;
+    const { delegationReceive, translate } = props;
     const { delegationName, page, perPage, curentRowDetail, tableId } = state;
 
     useEffect(() => {
@@ -106,7 +106,28 @@ function DelegationReceiveTable(props) {
         setSelectedData(value)
     }
 
+    const confirmDelegation = (id) => {
+        props.confirmDelegation({
+            delegationId: id,
+        });
+        props.getDelegations({
+            delegationName,
+            perPage,
+            page: delegationReceive && delegationReceive.lists && delegationReceive.lists.length === 1 ? page - 1 : page
+        });
+    }
 
+    const rejectDelegation = (id) => {
+        props.rejectDelegation({
+            delegationId: id,
+            reason: window.$(`#rejectReason-${id}`).val()
+        });
+        props.getDelegations({
+            delegationName,
+            perPage,
+            page: delegationReceive && delegationReceive.lists && delegationReceive.lists.length === 1 ? page - 1 : page
+        });
+    }
 
 
 
@@ -123,11 +144,11 @@ function DelegationReceiveTable(props) {
     }
 
     let lists = [];
-    if (delegation) {
-        lists = delegation.lists
+    if (delegationReceive) {
+        lists = delegationReceive.lists
     }
 
-    const totalPage = delegation && Math.ceil(delegation.totalList / perPage);
+    const totalPage = delegationReceive && Math.ceil(delegationReceive.totalList / perPage);
     // convert ISODate to String hh:mm AM/PM
     const formatTime = (date) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
@@ -156,6 +177,8 @@ function DelegationReceiveTable(props) {
                 revokeReason={curentRowDetail && curentRowDetail.revokeReason}
                 forReceive={true}
                 replyStatus={curentRowDetail && curentRowDetail.replyStatus}
+                declineReason={curentRowDetail && curentRowDetail.declineReason}
+
             />
 
 
@@ -209,11 +232,36 @@ function DelegationReceiveTable(props) {
                             delegateObject: <td>{item.delegateRole ? item.delegateRole.name : (item.delegateTasks ? <ToolTip dataTooltip={item.delegateTasks.map(task => task.name)} /> : "")}</td>,
                             delegator: <td>{item?.delegator.name}</td>,
                             delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
-                            delegateEndDate: <td>{item.endDate ? formatTime(item?.endDate) : (item.revokedDate ? formatTime(item.revokedDate) : translate("manage_delegation.end_date_tbd"))}</td>,
+                            delegateEndDate: <td>{item.revokedDate && (item.endDate && (new Date(item.revokedDate)).getTime() < (new Date(item.endDate)).getTime()) || (item.revokedDate && !item.endDate) ? formatTime(item.revokedDate) : (item.endDate ? formatTime(item.endDate) : translate("manage_delegation.end_date_tbd"))}</td>,
                             delegateStatus: <td>{colorfyDelegationStatus(item.status, translate)} - {colorfyDelegationStatus(item.replyStatus, translate)}</td>,
                             // description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>
                                 <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_delegation.detail_info_delegation')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
+                                {item.replyStatus == "wait_confirm" || item.replyStatus == "declined"
+                                    ? <ConfirmNotification
+                                        icon="success"
+                                        title={translate('manage_delegation.confirm_delegation')}
+                                        content={`<h4 style='color: green'><div>${translate('manage_delegation.confirm_delegation')}</div> <div>"${item.delegationName}"</div></h4>`}
+                                        name="thumb_up"
+                                        className="text-blue"
+                                        func={() => confirmDelegation(item._id)}
+                                    />
+                                    : null}
+                                {item.replyStatus == "wait_confirm" || item.replyStatus == "confirmed"
+                                    ? <ConfirmNotification
+                                        icon="error"
+                                        title={translate('manage_delegation.reject_reason')}
+                                        content={`<h4 style='color: red'><div>${translate('manage_delegation.reject_delegation')}</div> <div>"${item.delegationName}"</div></h4>
+                                        <br> <div class="form-group">
+                                            <label>${translate('manage_delegation.reject_reason')}</label>
+                                            <textarea id="rejectReason-${item._id}" class="form-control" placeholder="${translate('manage_delegation.reject_reason_placeholder')}"></textarea>
+                                        </div>
+                                        `}
+                                        name="thumb_down"
+                                        className="text-red"
+                                        func={() => rejectDelegation(item._id)}
+                                    />
+                                    : null}
                             </td>
                         }
                     })}
@@ -223,7 +271,7 @@ function DelegationReceiveTable(props) {
                 />
 
                 {/* PaginateBar */}
-                {delegation && delegation.isLoading ?
+                {delegationReceive && delegationReceive.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
@@ -231,7 +279,7 @@ function DelegationReceiveTable(props) {
                     pageTotal={totalPage ? totalPage : 0}
                     currentPage={page}
                     display={lists && lists.length !== 0 && lists.length}
-                    total={delegation && delegation.totalList}
+                    total={delegationReceive && delegationReceive.totalList}
                     func={setPage}
                 />
             </div>
@@ -240,12 +288,15 @@ function DelegationReceiveTable(props) {
 }
 
 function mapState(state) {
-    const { delegation } = state;
-    return { delegation }
+    const { delegationReceive } = state;
+    return { delegationReceive }
 }
 
 const actions = {
     getDelegations: DelegationActions.getDelegations,
+    confirmDelegation: DelegationActions.confirmDelegation,
+    rejectDelegation: DelegationActions.rejectDelegation,
+
 }
 
 const connectedDelegationReceiveTable = connect(mapState, actions)(withTranslate(DelegationReceiveTable));

@@ -5,7 +5,8 @@ import {
 
 export const delegationServices = {
     getDelegations,
-    replyDelegation
+    rejectDelegation,
+    confirmDelegation
 }
 
 function getDelegations(queryData) {
@@ -29,12 +30,30 @@ function getDelegations(queryData) {
 
 
 
-function replyDelegation(id, data) {
+function rejectDelegation(data) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-reply/${id}`,
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-reject`,
             method: "PATCH",
-            data: data
+            data: {
+                delegationId: data?.delegationId,
+                reason: data?.reason
+            }
+        },
+        true,
+        true,
+        "manage_delegation"
+    )
+}
+
+function confirmDelegation(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/delegation/delegations-confirm`,
+            method: "PATCH",
+            data: {
+                delegationId: data?.delegationId,
+            }
         },
         true,
         true,

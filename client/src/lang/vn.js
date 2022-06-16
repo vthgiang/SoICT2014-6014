@@ -1799,7 +1799,18 @@ export default {
             delegator_cant_delegate_chosen_role: "Bạn không được phép ủy quyền vai trò đã chọn",
             // role_cant_be_delegated_by_delegator: "Vai trò đã chọn không được phép ủy quyền bởi bạn",
             delegatee_cant_receive_chosen_role: "Người nhận không được phép nhận ủy quyền vai trò đã chọn",
-            link_cant_be_delegated_for_chosen_role: "Trang thuộc vai trò đã chọn không được phép ủy quyền"
+            link_cant_be_delegated_for_chosen_role: "Trang thuộc vai trò đã chọn không được phép ủy quyền",
+            start_date_past: "Ngày ủy quyền có hiệu lực nhỏ hơn thời gian hiện tại",
+            end_date_past: "Ngày thu hồi ủy quyền nhỏ hơn thời gian hiện tại",
+            confirm_delegation: "Xác nhận ủy quyền",
+            reject_delegation: "Yêu cầu từ chối ủy quyền",
+            reject_reason: "Lý do yêu cầu từ chối",
+            reject_reason_placeholder: "Nhập lý do",
+            reject_success: "Gửi yêu cầu từ chối ủy quyền thành công!",
+            reject_fail: "Gửi yêu cầu từ chối ủy quyền thất bại!",
+            confirm_success: "Xác nhận ủy quyền thành công!",
+            confirm_fail: "Xác nhận ủy quyền thất bại!",
+
         },
         // Modules cấu hình các chức năng
         module_configuration: {
@@ -6026,7 +6037,7 @@ export default {
                 edit_failed: "Sửa phiếu đề nghị thất bại",
                 cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng",
                 number_purchasing_status: "Số lượng phiếu đề nghị mua hàng theo trạng thái"
-            },            
+            },
             work_schedule: {
                 //general
                 time: "Thời gian",

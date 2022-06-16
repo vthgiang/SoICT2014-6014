@@ -16,11 +16,11 @@ class RevokeNotification extends Component {
         func //hàm thực hiện tương ứng
     ) => {
         Swal.fire({
-            html: `<h4 style="color: red"><div>${content}</div> ${data.info ? `<div>"${data.info}"</div>` : ""}</h4><br> <div class="form-group">
+            html: `<h4 style="color: coral"><div>${content}</div> ${data.info ? `<div>"${data.info}"</div>` : ""}</h4><br> <div class="form-group">
             <label>${this.props.translate('manage_delegation.revoke_reason')}</label>
             <textarea id="revokeReason-${data.id}" class="form-control" placeholder="${this.props.translate('manage_delegation.revoke_reason_placeholder')}"></textarea>
         </div>`,
-            icon: 'question',
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',

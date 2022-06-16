@@ -12,7 +12,7 @@ function GeneralTab(props) {
 
     // setState từ props mới
     useEffect(() => {
-        if (props.delegationID !== state.delegationID) {
+        if (props.delegationID !== state.delegationID || props.status !== state.status || props.replyStatus !== state.replyStatus) {
             setState({
                 ...state,
                 delegationID: props.delegationID,
@@ -31,10 +31,11 @@ function GeneralTab(props) {
                 revokedDate: props.revokedDate,
                 revokeReason: props.revokeReason,
                 forReceive: props.forReceive,
-                replyStatus: props.replyStatus
+                replyStatus: props.replyStatus,
+                declineReason: props.declineReason,
             })
         }
-    }, [props.delegationID])
+    }, [props.delegationID, props.status, props.replyStatus])
 
     const formatTime = (date) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
@@ -44,7 +45,7 @@ function GeneralTab(props) {
 
 
     const { translate } = props;
-    const { delegationName, description, delegator, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTasks, status, allPrivileges, startDate, endDate, revokedDate, revokeReason, forReceive, replyStatus } = state;
+    const { delegationName, description, delegator, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTasks, status, allPrivileges, startDate, endDate, revokedDate, revokeReason, forReceive, replyStatus, declineReason } = state;
 
     return (
         <div id={props.id} className="tab-pane active">
@@ -76,7 +77,7 @@ function GeneralTab(props) {
             <div class="row">
                 <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
                     <label>{translate('manage_delegation.delegation_period')}:</label>
-                    <span> {formatTime(startDate)} - {endDate ? formatTime(endDate) : (revokedDate ? formatTime(revokedDate) : translate("manage_delegation.end_date_tbd"))}</span>
+                    <span> {formatTime(startDate)} - {revokedDate && (endDate && (new Date(revokedDate)).getTime() < (new Date(endDate)).getTime()) || (revokedDate && !endDate) ? formatTime(revokedDate) : (endDate ? formatTime(endDate) : translate("manage_delegation.end_date_tbd"))}</span>
                 </div>
             </div>
 
@@ -92,6 +93,13 @@ function GeneralTab(props) {
                     </div>
                 }
             </div>
+            {declineReason &&
+                <div class="row">
+                    <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>
+                        <label>{translate('manage_delegation.reject_reason')}:</label>
+                        <span> {declineReason}</span>
+                    </div>
+                </div>}
             {delegatePrivileges &&
                 <div class="row">
                     <div className={`form-group col-lg-12 col-md-12 col-ms-12 col-xs-12`}>

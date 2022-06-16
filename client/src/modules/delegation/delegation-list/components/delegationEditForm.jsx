@@ -567,7 +567,7 @@ function DelegationEditForm(props) {
                                 refs={`time-picker-1`}
                                 value={delegateDuration.startTime}
                                 onChange={handleStartTimeChange}
-                                minuteStep={60}
+                                minuteStep={30}
                             />
                             <ErrorLabel content={delegateDuration.errorOnStartDate} />
                         </div>
@@ -585,7 +585,7 @@ function DelegationEditForm(props) {
                                     refs={`time-picker-2`}
                                     value={delegateDuration.endTime}
                                     onChange={handleEndTimeChange}
-                                    minuteStep={60}
+                                    minuteStep={30}
                                 />
                                 <ErrorLabel content={delegateDuration.errorOnEndDate} />
                             </div>}

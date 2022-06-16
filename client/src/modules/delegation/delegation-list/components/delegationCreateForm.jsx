@@ -70,8 +70,9 @@ function DelegationCreateForm(props) {
     }, [])
 
     const roundToNearestHour = (date) => {
-        date.setMinutes(date.getMinutes() + 59);
-        date.setMinutes(0, 0, 0);
+        date.setMinutes(date.getMinutes() + 30);
+        date.getMinutes() >= 30 ? date.setMinutes(30, 0, 0) : date.setMinutes(0, 0, 0);
+
 
         return date;
     }

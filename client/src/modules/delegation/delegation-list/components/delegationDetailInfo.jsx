@@ -15,7 +15,7 @@ const DelegationDetailInfo = (props) => {
 
     // Nhận giá trị từ component cha
     useEffect(() => {
-        if (props.delegationID !== state.delegationID || props.status !== state.status) {
+        if (props.delegationID !== state.delegationID || props.status !== state.status || props.replyStatus !== state.replyStatus) {
             setState({
                 ...state,
                 delegationID: props.delegationID,
@@ -34,10 +34,12 @@ const DelegationDetailInfo = (props) => {
                 revokedDate: props.revokedDate,
                 revokeReason: props.revokeReason,
                 forReceive: props.forReceive,
-                replyStatus: props.replyStatus
+                replyStatus: props.replyStatus,
+                declineReason: props.declineReason,
+
             })
         }
-    }, [props.delegationID, props.status])
+    }, [props.delegationID, props.status, props.replyStatus])
 
 
     return (
@@ -79,6 +81,7 @@ const DelegationDetailInfo = (props) => {
                             revokeReason={state.revokeReason}
                             forReceive={state.forReceive}
                             replyStatus={state.replyStatus}
+                            declineReason={state.declineReason}
                         />
 
                         {/* Thông tin thuộc tính subject */}

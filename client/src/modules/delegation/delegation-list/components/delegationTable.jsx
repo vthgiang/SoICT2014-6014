@@ -134,7 +134,7 @@ function DelegationTable(props) {
         props.getDelegations({
             delegationName,
             perPage,
-            page: 1
+            page: delegation && delegation.lists && delegation.lists.length === 1 ? page - 1 : page
         });
     }
 
@@ -224,6 +224,8 @@ function DelegationTable(props) {
                 revokedDate={curentRowDetail && curentRowDetail.revokedDate}
                 revokeReason={curentRowDetail && curentRowDetail.revokeReason}
                 replyStatus={curentRowDetail && curentRowDetail.replyStatus}
+                declineReason={curentRowDetail && curentRowDetail.declineReason}
+
             />
 
             {user && user.organizationalUnitsOfUser && <DelegationCreateForm
@@ -295,7 +297,7 @@ function DelegationTable(props) {
                             delegateObject: <td>{item.delegateRole ? item.delegateRole.name : (item.delegateTasks ? <ToolTip dataTooltip={item.delegateTasks.map(task => task.name)} /> : "")}</td>,
                             delegatee: <td>{item?.delegatee.name}</td>,
                             delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
-                            delegateEndDate: <td>{item.endDate ? formatTime(item?.endDate) : (item.revokedDate ? formatTime(item.revokedDate) : translate("manage_delegation.end_date_tbd"))}</td>,
+                            delegateEndDate: <td>{item.revokedDate && (item.endDate && (new Date(item.revokedDate)).getTime() < (new Date(item.endDate)).getTime()) || (item.revokedDate && !item.endDate) ? formatTime(item.revokedDate) : (item.endDate ? formatTime(item.endDate) : translate("manage_delegation.end_date_tbd"))}</td>,
                             delegateStatus: <td>{colorfyDelegationStatus(item.status, translate)} - {colorfyDelegationStatus(item.replyStatus, translate)}</td>,
                             // description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>

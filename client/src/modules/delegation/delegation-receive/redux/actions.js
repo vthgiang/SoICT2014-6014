@@ -3,7 +3,8 @@ import { delegationServices } from './services';
 
 export const DelegationActions = {
     getDelegations,
-    editDelegation
+    confirmDelegation,
+    rejectDelegation
 }
 
 function getDelegations(queryData) {
@@ -29,22 +30,49 @@ function getDelegations(queryData) {
     }
 }
 
-function editDelegation(id, data) {
+function confirmDelegation(data) {
     return (dispatch) => {
         dispatch({
-            type: delegationConstants.REPLY_DELEGATION_REQUEST
+            type: delegationConstants.CONFIRM_DELEGATION_REQUEST
         });
+
         delegationServices
-            .replyDelegation(id, data)
+            .confirmDelegation(data)
             .then((res) => {
                 dispatch({
-                    type: delegationConstants.REPLY_DELEGATION_SUCCESS,
-                    payload: res.data.content
+                    type: delegationConstants.CONFIRM_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationId: data.delegationId
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: delegationConstants.REPLY_DELEGATION_FAILURE,
+                    type: delegationConstants.CONFIRM_DELEGATION_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function rejectDelegation(data) {
+    return (dispatch) => {
+        dispatch({
+            type: delegationConstants.REJECT_DELEGATION_REQUEST
+        });
+
+        delegationServices
+            .rejectDelegation(data)
+            .then((res) => {
+                dispatch({
+                    type: delegationConstants.REJECT_DELEGATION_SUCCESS,
+                    payload: res.data.content,
+                    delegationId: data.delegationId,
+                    reason: data.reason
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: delegationConstants.REJECT_DELEGATION_FAILURE,
                     error
                 });
             });

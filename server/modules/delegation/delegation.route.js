@@ -9,7 +9,8 @@ router.post('/delegations', auth, DelegationController.createDelegation);
 router.patch('/delegations/:id', auth, DelegationController.editDelegation);
 router.delete('/delegations', auth, DelegationController.deleteDelegations);
 router.patch('/delegations', auth, DelegationController.revokeDelegation);
-router.patch('/delegations-reply/:id', auth, DelegationController.replyDelegation);
+router.patch('/delegations-confirm', auth, DelegationController.confirmDelegation);
+router.patch('/delegations-reject', auth, DelegationController.rejectDelegation);
 router.get('/delegations-receive', auth, DelegationController.getDelegationsReceive);
 
 module.exports = router;

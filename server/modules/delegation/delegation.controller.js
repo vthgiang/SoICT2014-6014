@@ -72,30 +72,49 @@ exports.getDelegationsReceive = async (req, res) => {
     }
 }
 
-exports.replyDelegation = async (req, res) => {
+exports.rejectDelegation = async (req, res) => {
     try {
-        let { id } = req.params;
-        let data = req.body;
-        await DelegationService.revokeDelegation(req.portal, [id]);
-        await DelegationService.deleteDelegations(req.portal, [id]);
-        let updatedDelegation = await DelegationService.createDelegation(req.portal, [data]);
-        if (updatedDelegation !== -1) {
-            await Log.info(req.user.email, "UPDATED_DELEGATION", req.portal);
+        let rejectedDelegation = await DelegationService.rejectDelegation(req.portal, req.body.delegationId, req.body.reason);
+        if (rejectedDelegation) {
+            await Log.info(req.user.email, "REJECTED_DELEGATION", req.portal);
             res.status(200).json({
                 success: true,
-                messages: ["edit_delegation_success"],
-                content: [id, updatedDelegation]
+                messages: ["reject_success"],
+                content: rejectedDelegation
             });
         } else {
             throw Error("Delegation is invalid");
         }
-
     } catch (error) {
-        await Log.error(req.user.email, "UPDATED_DELEGATION", req.portal);
         console.log(error)
+        await Log.error(req.user.email, "REJECTED_DELEGATION", req.portal);
         res.status(400).json({
             success: false,
-            messages: ["edit_delegation_fail"],
+            messages: ["reject_fail"],
+            content: error.message
+        });
+    }
+}
+
+exports.confirmDelegation = async (req, res) => {
+    try {
+        let confirmedDelegation = await DelegationService.confirmDelegation(req.portal, req.body.delegationId);
+        if (confirmedDelegation) {
+            await Log.info(req.user.email, "CONFIRMED_DELEGATION", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["confirm_success"],
+                content: confirmedDelegation
+            });
+        } else {
+            throw Error("Delegation is invalid");
+        }
+    } catch (error) {
+        console.log(error)
+        await Log.error(req.user.email, "CONFIRMED_DELEGATION", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["confirm_fail"],
             content: error.message
         });
     }
