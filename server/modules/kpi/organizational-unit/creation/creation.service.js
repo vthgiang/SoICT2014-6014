@@ -515,7 +515,9 @@ exports.createOrganizationalUnitKpi = async (portal, data) => {
                 name: data.name,
                 parent: data.parent,
                 weight: data.weight,
-                criteria: data.criteria
+                criteria: data.criteria,
+                target: data.target,
+                unit: data.unit,
             })
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(
@@ -574,7 +576,9 @@ exports.editOrganizationalUnitKpi = async (portal, data, id) => {
             name: data.name,
             parent: data.parent,
             weight: data.weight,
-            criteria: data.criteria
+            criteria: data.criteria,
+            target: data.target,
+            unit: data.unit
         }
 
         target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))

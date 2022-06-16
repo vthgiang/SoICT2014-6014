@@ -270,7 +270,7 @@ exports.createEmployeeKpi = async (portal, data) => {
     return employeeKpiSet;
 }
 
-exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
+exports.getCompleteRatioTaskOfEmployee = async (portal, userId) => {
     // Chấm ĐIỂM PROFILE nhân viên. Điểm max = 120
 
     // Tiêu chí chấm điểm profile
@@ -311,8 +311,8 @@ exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
     // Lấy thông tin profile nhân viên
 
     if (!portal) portal = 'vnist';
-    let user = await UserService.getUser(portal, employee);
-    console.log(315, user)
+    let user = await UserService.getUser(portal, userId);
+    console.log(315)
     let inforEmployee = await EmployeeService.getEmployeeProfile(portal, user.email);
     console.log(317, inforEmployee)
     // chấm ĐIỂM PROFILE
@@ -355,7 +355,7 @@ exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
         };
         profilePoint += point;
     }
-
+    console.log(358)
 
     // Chấm điểm ĐIỂM KẾT QUẢ và ĐIỂM QUÁ TRÌNH
     let numOfKpis = 0;
@@ -365,7 +365,7 @@ exports.getCompleteRatioTaskOfEmployee = async (portal, employee) => {
 
     let kpiRecently = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find({
-            creator: employee,
+            creator: userId,
             date: {
                 $gte: before, $lt: now
             }
@@ -415,7 +415,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
     console.log('data', data)
     portal = 'vnist';
     const { organizationalUnit, month, employees, approver, employee } = data;
-    console.log('416')
+    console.log('416', employees)
     // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
 
@@ -515,7 +515,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
             .aggregate([
                 { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
                 { $match: { date: { $gte: monthSearch, $lt: nextMonthSearch } } },
-                { $match: { status: 1 } },
+                // { $match: { status: 1 } },
                 {
                     $lookup: {
                         from: "organizationalunitkpis",
@@ -554,7 +554,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
             }
             for (let i = otherKpis.length - numOfKpis; i < otherKpis.length; i++) {
                 let calcWeight = otherKpis[i].kpis.weight + weightOver;
-                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employeeImportances.length * completeRatio[employee].ratio) : null;
+                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
                 kpiEmployee.push({
                     name: otherKpis[i].kpis.name,
                     parent: otherKpis[i].kpis.parent,
@@ -575,7 +575,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
 
             for (let i = 0; i < numOfKpis; i++) {
                 let calcWeight = otherKpis[i].kpis.weight + weightOver;
-                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employeeImportances.length * completeRatio[employee].ratio) : null;
+                let target = otherKpis[i].kpis.target ? Math.round(otherKpis[i].kpis.target / employees.length * completeRatio[employee].ratio) : null;
                 kpiEmployee.push({
                     name: otherKpis[i].kpis.name,
                     parent: otherKpis[i].kpis.parent,
