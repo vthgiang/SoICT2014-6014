@@ -33,7 +33,8 @@ export const decisionDocxCreate = (contract, listUsers) => {
                         //     left: convertInchesToTwip(0.5),
                         // },
                         spacing: {
-                            line: 276,
+                            // line: 276,
+                            line: 276, before: 20 * 72 * 0.1, after: 20 * 72 * 0.05
                         },
                     },
                 },
@@ -67,8 +68,6 @@ export const decisionDocxCreate = (contract, listUsers) => {
             {
                 children: [
                     renderHeaderTitle(contract),
-                    createText(``),
-                    createText(``),
                     createText(``),
                     createText(``),
                     new Paragraph({
@@ -210,7 +209,7 @@ const renderHeaderTitle = (contract) => {
                                 style: "decision",
                                 alignment: AlignmentType.CENTER
                             }),
-                            createText(``),
+                            // createText(``),
                             new Paragraph({
                                 children: [
                                     new TextRun({
@@ -304,7 +303,7 @@ const renderHeaderTitle = (contract) => {
                                 style: "decision",
                                 alignment: AlignmentType.CENTER
                             }),
-                            createText(``),
+                            // createText(``),
                             new Paragraph({
                                 children: [
                                     new TextRun({

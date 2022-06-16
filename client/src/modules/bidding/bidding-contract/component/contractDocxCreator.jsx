@@ -31,7 +31,8 @@ export const contractDocxCreate = (contract) => {
                         //     left: convertInchesToTwip(0.5),
                         // },
                         spacing: {
-                            line: 276,
+                            // line: 276,
+                            line: 276, before: 20 * 72 * 0.1, after: 20 * 72 * 0.05
                         },
                     },
                 },
@@ -65,16 +66,56 @@ export const contractDocxCreate = (contract) => {
             {
                 children: [
                     new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: `CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM`,
+                                bold: true,
+                                size: 26,
+                                // color: "808080"
+                            }),
+                        ],
+                        style: "contract",
+                        alignment: AlignmentType.CENTER
+                    }),
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: `Độc lập - Tự do - Hạnh phúc`,
+                                bold: true,
+                                size: 26,
+                                // color: "808080"
+                            }),
+                        ],
+                        style: "contract",
+                        alignment: AlignmentType.CENTER
+                    }),
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: `__________________`,
+                                bold: true,
+                                size: 26,
+                                // color: "808080"
+                            }),
+                        ],
+                        style: "decision",
+                        alignment: AlignmentType.CENTER
+                    }),
+                    createText(``),
+                    createText(``),
+                    new Paragraph({
                         text: "HỢP ĐỒNG",
                         heading: HeadingLevel.TITLE,
                         alignment: AlignmentType.CENTER,
                     }),
+                    createText(``),
 
                     new Paragraph({
                         text: formatDateToString("Hà Nội", Date.now()),
                         alignment: AlignmentType.RIGHT,
                         style: "contract",
                     }),
+                    createText(``),
 
                     new Paragraph({
                         text: `Hợp đồng số: ${contract?.code}`,

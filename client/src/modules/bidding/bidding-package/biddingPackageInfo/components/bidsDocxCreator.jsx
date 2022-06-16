@@ -31,7 +31,8 @@ export const bidsDocxCreate = (bid, biddingConfig) => {
                         //     left: convertInchesToTwip(0.5),
                         // },
                         spacing: {
-                            line: 276,
+                            // line: 276,
+                            line: 276, before: 20 * 72 * 0.1, after: 20 * 72 * 0.05,
                         },
                     },
                 },
