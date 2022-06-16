@@ -140,7 +140,8 @@ exports.getDetailBiddingPackage = async (portal, params) => {
     let listBiddingPackages = await BiddingPackage(
         connect(DB_CONNECTION, portal)
     ).findOne({ _id: params.id })
-        .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail" });
+        .populate({ path: "proposals.tasks.directEmployees proposals.tasks.backupEmployees", select: "_id fullName emailInCompany personalEmail personalEmail2 emergencyContactPersonEmail professionalSkill experiences certificates" })
+        .populate({ path: "proposals.tasks.directEmployees.certificates.certificate proposals.tasks.backupEmployees.certificates.certificate" });
 
     let checkHasContract = await BiddingContract(connect(DB_CONNECTION, portal)).findOne({ biddingPackage: params.id });
     let keyPeopleArr = {};

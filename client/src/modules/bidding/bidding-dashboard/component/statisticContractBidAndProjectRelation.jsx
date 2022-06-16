@@ -60,7 +60,7 @@ const ContractBidProjectRelation = (props) => {
                     {/* Tabbed pane */}
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#contract-bid" onClick={() => setSelectedTab("contract-bid")} data-toggle="tab">Gói thầu đang thực hiện nhưng chưa có hợp đồng &nbsp;&nbsp;<small className="label label-danger"> {numOfBP} gói</small></a></li>
-                        <li ><a href={`#contract-prj`} onClick={() => setSelectedTab(`contract-prj`)} data-toggle="tab">Hợp đồng chưa có dự án &nbsp;&nbsp;<small className="label label-danger"> {numOfCT} hợp đồng</small></a></li>
+                        <li ><a href={`#contract-prj`} onClick={() => setSelectedTab(`contract-prj`)} data-toggle="tab">Hợp đồng chưa có dự án phân công thực hiện &nbsp;&nbsp;<small className="label label-danger"> {numOfCT} hợp đồng</small></a></li>
                     </ul>
                     <div className="tab-content">
                         <div className={selectedTab === "contract-bid" ? "active tab-pane" : "tab-pane"} id="contract-bid">

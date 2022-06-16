@@ -42,6 +42,26 @@ const BidAndProjectStatistic = (props) => {
         return result.toFixed(2)
     }
 
+    const formatDate = (date, monthYear = false) => {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
+
     const handleChangeBiddingPackage = (value) => {
         if (value.length === 0) {
             value = null
@@ -185,6 +205,31 @@ const BidAndProjectStatistic = (props) => {
                                                 }
                                             </ul>
                                         </div>
+
+                                        {
+                                            (projectBP?.budgetChangeRequest || projectBP?.endDateRequest) && (
+                                                <div>
+                                                    <strong>Thay đổi phát sinh trong dự án: &nbsp;</strong>
+                                                    <ul>
+                                                        {projectBP?.budgetChangeRequest &&
+                                                            <li key={`budgetChangeRequest}`}>
+                                                                Ngân sách ước lượng hiện tại: <span style={Number(projectBP?.budgetChangeRequest) < Number(bid?.price) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>
+                                                                    {projectBP?.budgetChangeRequest} &nbsp;(VND)
+                                                                </span>
+                                                            </li>
+                                                        }
+                                                        {projectBP?.endDateRequest &&
+                                                            formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) < Number(bid?.proposals?.executionTime) &&
+                                                            <li key={`endDateRequest}`} >
+                                                                Ngày kết thúc thay đổi từ <span style={{ fontWeight: 600 }}>{formatDate(projectBP?.endDate)}</span> thành <span style={formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) < Number(bid?.proposals?.executionTime) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{formatDate(projectBP?.endDateRequest)}</span>
+                                                                <br />
+                                                                Thời gian thực hiện hiện tại: <span style={formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) < Number(bid?.proposals?.executionTime) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest)} </span>&nbsp;({projectBP?.unitTime})
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            )
+                                        }
                                     </div> : <span>Không có thông tin dự án liên quan đến gói thầu này</span>
                                 }
                             </fieldset>

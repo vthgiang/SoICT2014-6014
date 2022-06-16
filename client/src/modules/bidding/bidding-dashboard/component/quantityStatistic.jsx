@@ -29,7 +29,7 @@ const QuantityStatistic = (props) => {
                         <i className="fa fa-handshake-o"></i>
                     </span>
                     <div className="info-box-content">
-                        <span className="info-box-text">Tổng số hợp đồng thầu</span>
+                        <span className="info-box-text">Tổng số hợp đồng đấu thầu</span>
                         <span style={{ fontWeight: 600, fontSize: "20px" }}>{numOfContract}</span>
                     </div>
                 </div>

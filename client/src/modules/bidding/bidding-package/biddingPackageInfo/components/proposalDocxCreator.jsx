@@ -1,6 +1,6 @@
 import { AlignmentType, Document, HeadingLevel, WidthType, VerticalAlign, Table, TableCell, TableRow, LevelFormat, Paragraph, TabStopPosition, TabStopType, BorderStyle, TextRun, convertInchesToTwip } from "docx";
 
-export const proposalDocxCreate = (proposal, listUsers) => {
+export const proposalDocxCreate = (proposal, allEmployee) => {
     let document = new Document({
         styles: {
             default: {
@@ -84,7 +84,7 @@ export const proposalDocxCreate = (proposal, listUsers) => {
                     createText(``),
                     createText(``),
 
-                    renderTask(proposal, listUsers),
+                    renderTask(proposal, allEmployee),
                 ]
             }
         ]
@@ -93,7 +93,33 @@ export const proposalDocxCreate = (proposal, listUsers) => {
     return document;
 }
 
-const renderTask = (proposal, listUsers) => {
+// Trình độ chuyên môn: intermediate_degree - Trung cấp, colleges - Cao đẳng, university - Đại học, bachelor - cử nhân, engineer - kỹ sư, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có
+const formatProfessionalSkill = (skill) => {
+    switch (skill) {
+        case "intermediate_degree":
+        case "colleges":
+        case "university":
+        case "unavailable":
+            return "";
+        case "bachelor": return "Cử nhân. ";
+        case "engineer": return "Kỹ sư. ";
+        case "master_degree": return "Thạc sĩ. ";
+        case "phd": return "Tiến sĩ. ";
+
+        default: return "";
+    }
+}
+
+const formatUnitTime = (unitTime) => {
+    switch (unitTime) {
+        case "days": return "Ngày";
+        case "hours": return "Giờ";
+        case "months": return "Tháng";
+        default: return "Ngày";
+    }
+}
+
+const renderTask = (proposal, allEmployee) => {
     const tasks = proposal?.tasks ?? [];
     let rows = [
         new TableRow({
@@ -113,7 +139,7 @@ const renderTask = (proposal, listUsers) => {
                         }),
                     ],
                     verticalAlign: VerticalAlign.CENTER,
-                    width: { size: 10, type: WidthType.PERCENTAGE },
+                    width: { size: 4, type: WidthType.PERCENTAGE },
                 }),
                 new TableCell({
                     children: [
@@ -130,7 +156,7 @@ const renderTask = (proposal, listUsers) => {
                         }),
                     ],
                     verticalAlign: VerticalAlign.CENTER,
-                    width: { size: 45, type: WidthType.PERCENTAGE },
+                    width: { size: 30, type: WidthType.PERCENTAGE },
                 }),
                 new TableCell({
                     children: [
@@ -147,7 +173,41 @@ const renderTask = (proposal, listUsers) => {
                         }),
                     ],
                     verticalAlign: VerticalAlign.CENTER,
-                    width: { size: 45, type: WidthType.PERCENTAGE },
+                    width: { size: 30, type: WidthType.PERCENTAGE },
+                }),
+                new TableCell({
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `Thời gian (${formatUnitTime(proposal?.unitOfTime)})`,
+                                    bold: true,
+                                    size: 26,
+                                })
+                            ],
+                            style: "decision",
+                            alignment: AlignmentType.CENTER,
+                        }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                    width: { size: 6, type: WidthType.PERCENTAGE },
+                }),
+                new TableCell({
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `Nhân sự`,
+                                    bold: true,
+                                    size: 26,
+                                })
+                            ],
+                            style: "decision",
+                            alignment: AlignmentType.CENTER,
+                        }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                    width: { size: 30, type: WidthType.PERCENTAGE },
                 }),
             ],
         }),
@@ -161,21 +221,36 @@ const renderTask = (proposal, listUsers) => {
                         createText(`${idx + 1}`)
                     ],
                     verticalAlign: VerticalAlign.CENTER,
-                    width: { size: 10, type: WidthType.PERCENTAGE },
+                    width: { size: 4, type: WidthType.PERCENTAGE },
                 }),
                 new TableCell({
                     children: [
                         createText(`${x.taskName}`),
                     ],
                     verticalAlign: VerticalAlign.CENTER,
-                    width: { size: 45, type: WidthType.PERCENTAGE },
+                    width: { size: 30, type: WidthType.PERCENTAGE },
                 }),
                 new TableCell({
                     children: [
                         createText(`${x.taskDescription}`),
                     ],
                     verticalAlign: VerticalAlign.CENTER,
-                    width: { size: 45, type: WidthType.PERCENTAGE },
+                    width: { size: 30, type: WidthType.PERCENTAGE },
+                }),
+                new TableCell({
+                    children: [
+                        createText(`${x.estimateTime}`),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                    width: { size: 6, type: WidthType.PERCENTAGE },
+                }),
+                new TableCell({
+                    children: [
+                        createText(`- Trực tiếp: ${x.directEmployees.map(e => `${formatProfessionalSkill(e.professionalSkill)}${e.fullName}`).join(", ")}`),
+                        createText(`- Dự phòng: ${x.backupEmployees.map(e => `${formatProfessionalSkill(e.professionalSkill)}${e.fullName}`).join(", ")}`),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                    width: { size: 30, type: WidthType.PERCENTAGE },
                 }),
             ],
         })
