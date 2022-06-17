@@ -31,14 +31,14 @@ function OutgoingDataTab(props) {
         task: undefined,
         isOutputInformation: {},
         isOutputDocument: {},
-        isOutputTaskOuputs: {}
+        isOutputTaskOutput: {}
     })
     const [documents, setDocuments] = useState([])
     const [informations, setInformations] = useState([])
     const [taskOutputs, setTaskOutputs] = useState([])
-    const { task, isOutputInformation, isOutputDocument, isOutputTaskOuputs } = state;
+    const { task, isOutputInformation, isOutputDocument, isOutputTaskOutput } = state;
     if (props.isOutgoingData && props.taskId !== state.taskId) {
-        let isOutputInformation = {}, isOutputDocument = {};
+        let isOutputInformation = {}, isOutputDocument = {}, isOutputTaskOutput = {};
 
         if (props.task && props.task.taskInformations && props.task.taskInformations.length !== 0) {
             props.task.taskInformations.map(item => {
@@ -58,12 +58,22 @@ function OutgoingDataTab(props) {
             });
         }
 
+        if (props.task && props.task.taskOutputs && props.task.taskOutputs.length !== 0) {
+            props.task.taskOutputs.map(item => {
+                let element = {};
+                element[item._id] = item.isOutput;
+
+                isOutputTaskOutput = Object.assign(isOutputTaskOutput, element);
+            });
+        }
+
         setState({
             ...state,
             taskId: props.taskId,
             task: props.task,
             isOutputInformation: isOutputInformation,
-            isOutputDocument: isOutputDocument
+            isOutputDocument: isOutputDocument,
+            isOutputTaskOutput: isOutputTaskOutput
         })
     }
 
@@ -130,7 +140,34 @@ function OutgoingDataTab(props) {
         }
     }
 
+    const handleCheckBoxOutputTaskOutput = (taskOutput) => {
+        setState(state => {
+            state.isOutputTaskOutput[taskOutput._id] = !state.isOutputTaskOutput[taskOutput._id];
+            return {
+                ...state,
+            }
+        })
 
+        let check = [], element;
+        check = taskOutputs.filter(item => {
+            if (item._id === taskOutput._id) {
+                element = item;
+                return true
+            } else {
+                return false
+            }
+        });
+        if (check.length !== 0) {
+            taskOutputs.splice(taskOutputs.indexOf(element), 1);
+        } else {
+            let data = {
+                _id: taskOutput._id,
+                description: taskOutput.description,
+                isOutput: !taskOutput.isOutput,
+            }
+            taskOutputs.push(data);
+        }
+    }
 
     const handleSaveEdit = () => {
         const { task } = state;
@@ -146,7 +183,9 @@ function OutgoingDataTab(props) {
         }
 
         if (taskOutputs.length !== 0) {
+            console.log(186, taskOutputs)
             props.editTaskOutputs(task._id, taskOutputs)
+            setTaskOutputs([])
         }
     }
     const requestDownloadFile = (e, path, fileName) => {
@@ -239,40 +278,28 @@ function OutgoingDataTab(props) {
                         <div style={{ marginTop: 10 }}></div>
                         <strong>Kết quả giao nộp:</strong>
                         {performtasks.task?.taskOutputs?.map(item => {
-                            return (
-                                <div>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            title={"TaskOutputs"}
-                                            name={item.tilte}
-                                            onClick={() => {
-                                                let output = taskOutputs.find((x) => x.id == item._id);
-                                                if (!output) {
-                                                    let newTaskOutputs = [...taskOutputs, {
-                                                        id: item._id,
-                                                        status: !item.isOutput
-                                                    }]
-                                                    setTaskOutputs(newTaskOutputs)
-                                                } else {
-                                                    let newTaskOutputs = [...taskOutputs, {
-                                                        id: item._id,
-                                                        status: !output.status
-                                                    }]
-                                                    setTaskOutputs(newTaskOutputs)
-                                                }
-                                            }}
-                                            checked={item.isOutput}
-                                            disabled={item.status !== "approved"}
-                                        // onChange={e => { }}
-                                        />
-                                        {item.title} ({formatStatusInfo(item.status)})
-                                    </label>
-                                </div>
-                            )
+                            if (item.status === "approved") {
+                                return (
+                                    <div>
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                title={"TaskOutputs"}
+                                                name={item.tilte}
+                                                onClick={() => { handleCheckBoxOutputTaskOutput(item) }}
+                                                checked={isOutputTaskOutput && isOutputTaskOutput[item._id]}
+                                            // disabled={item.status !== "approved"}
+                                            // onChange={e => { }}
+                                            />
+                                            {item.title}
+                                        </label>
+                                    </div>
+                                )
+                            }
+                            return <></>;
                         })}
                         <div style={{ marginTop: 20 }}>
-                            <button type="button" style={{ width: "100%" }} className="btn btn-block btn-default" onClick={() => handleSaveEdit()} disabled={documents.length === 0 && informations.length === 0}>{translate('task.task_process.save')}</button>
+                            <button type="button" style={{ width: "100%" }} className="btn btn-block btn-default" onClick={() => handleSaveEdit()} disabled={documents.length === 0 && informations.length === 0 && taskOutputs.length === 0}>{translate('task.task_process.save')}</button>
                         </div>
                     </div>
                     {/* <TaskOutputsTab /> */}

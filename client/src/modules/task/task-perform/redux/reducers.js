@@ -1156,18 +1156,34 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.error
             };
-        case performTaskConstants.CREATE_COMMENT_TASK_OUTPUT_REQUEST:
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_REQUEST:
             return {
                 ...state,
                 adding: true
             };
-        case performTaskConstants.CREATE_COMMENT_TASK_OUTPUT_SUCCESS:
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_SUCCESS:
             var task = { ...state.task, taskOutputs: action.payload.data.content }
             return {
                 ...state,
                 task: task
             }
-        case performTaskConstants.CREATE_COMMENT_TASK_OUTPUT_FAILURE:
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            };
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            };
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_SUCCESS:
+            var task = { ...state.task, taskOutputs: action.payload.data.content }
+            return {
+                ...state,
+                task: task
+            }
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_FAILURE:
             return {
                 ...state,
                 error: action.error

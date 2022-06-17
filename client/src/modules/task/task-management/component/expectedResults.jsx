@@ -72,7 +72,7 @@ function ExpectedResults(props) {
             <div className={`form-group`} >
                 <label className="control-label" htmlFor="inputDescriptionInfo">Mô tả</label>
                 <QuillEditor
-                    id={`expectedResult-${newExpectedResult?.title}`}
+                    id={`expectedResult-${props?.id}-${props.quillId}`}
                     getTextData={handleChangeDescription}
                     quillValueDefault={newExpectedResult.description}
                     embeds={false}

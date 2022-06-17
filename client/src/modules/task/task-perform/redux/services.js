@@ -86,7 +86,8 @@ export const performTaskService = {
     editSubmissionResults,
     deleteSubmissionResults,
 
-    createCommentOfTaskOutput
+    createCommentOfTaskOutput,
+    editCommentOfTaskOutput
 };
 
 /**
@@ -896,6 +897,14 @@ function createCommentOfTaskOutput(taskId, taskOutputId, newComment) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/comments`,
         method: 'POST',
+        data: newComment
+    }, true, true, 'task.task_perform');
+}
+
+function editCommentOfTaskOutput(taskId, taskOutputId, commentId, newComment) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/comments/${commentId}`,
+        method: 'PATCH',
         data: newComment
     }, true, true, 'task.task_perform');
 }

@@ -909,6 +909,8 @@ function AddTaskForm(props) {
                 <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                     <ExpectedResults
                         onChange={handleChangeTaskOutputs}
+                        id={props.id}
+                        quillId={props.quillId}
                     />
                 </div>
             </div>

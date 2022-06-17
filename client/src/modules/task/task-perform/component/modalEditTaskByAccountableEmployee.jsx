@@ -1331,6 +1331,7 @@ function ModalEditTaskByAccountableEmployee(props) {
                         </fieldset>
                         <ExpectedResults
                             onChange={handleChangeTaskOutputs}
+                            id={props.id}
                         // defaultValue={task?.taskOutputs}
                         />
                     </form>

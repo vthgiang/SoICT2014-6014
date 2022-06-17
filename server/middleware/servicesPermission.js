@@ -375,6 +375,7 @@ exports.links = [
             { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/approve', method: 'PATCH' },
 
             { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/comments', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/task-outputs/:taskOutputId/comments/:commentId', method: 'PATCH' },
 
             //comment of task comment
             { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST' },

@@ -9,6 +9,7 @@ import { performTaskAction } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 import Swal from 'sweetalert2';
 import { xor } from 'lodash';
+import { ModalLogTaskOutput } from './modalLogTaskOutput';
 
 const formatTypeInfo = (value) => {
     switch (value) {
@@ -76,7 +77,6 @@ const checkRoleAccountable = (userId, accountable) => {
     let check;
     const accountableEmployee = accountable?.find(item => item.accountableEmployee._id == userId);
     check = accountableEmployee ? true : false;
-    console.log(79, check)
     return check;
 }
 
@@ -104,8 +104,12 @@ const getAcoutableEmployees = (data) => {
     const accountableEmployees = data && data.filter(item => item.action === "approve");
     if (accountableEmployees) {
         let users = "";
-        accountableEmployees.map(item => {
-            users = users + `${item.accountableEmployee.name} `
+        accountableEmployees.map((item, index) => {
+            if (index === accountableEmployees.length - 1) {
+                users = users + `${item.accountableEmployee.name}, `
+            } else {
+                users = users + `${item.accountableEmployee.name}`
+            }
             return item;
         })
         return users;
@@ -116,8 +120,8 @@ const getAcoutableEmployees = (data) => {
 function TaskOutputsTab(props) {
     const { performtasks, auth, role } = props;
     const idUser = getStorage("userId");
-    const [showLogs, setShowLogs] = useState([]);
     const [showPanels, setShowPanels] = useState([]);
+    const [taskOutput, setTaskOutput] = useState();
     const [state, setState] = useState(() => {
         return {
             newAction: {
@@ -184,6 +188,7 @@ function TaskOutputsTab(props) {
                 descriptionDefault: item.description
             }
         })
+        console.log(186, newActionEdited)
     }
     const onEditActionFilesChange = (files) => {
         setState({
@@ -246,13 +251,9 @@ function TaskOutputsTab(props) {
         })
         data.append("type", "edit");
         data.append("actionId", actionId)
-        if (newActionEdited.description === "") {
-            data.append("description", description)
-        } else {
-            data.append("description", newActionEdited.description)
-        }
+        data.append("description", newActionEdited.description)
         data.append("creator", newActionEdited.creator)
-        if (newActionEdited.description || newActionEdited.files) {
+        if (newActionEdited.description !== "" || newActionEdited.files) {
             props.editSubmissionResults(taskId, id, data);
         }
         setState({
@@ -282,6 +283,10 @@ function TaskOutputsTab(props) {
                 showFile: [...state.showFile, id]
             })
         }
+    }
+
+    const showLogTaskOutput = (item) => {
+        window.$(`#modal-log-task-output-${item._id}`).modal('show');
     }
 
     const submitAction = (taskOutputId, taskId, index, type) => {
@@ -456,7 +461,7 @@ function TaskOutputsTab(props) {
 
     return (
         <div>
-            <OutputDetail />
+            <ModalLogTaskOutput taskOutput={taskOutput} />
             <div>
                 {/* Kết quả */}
                 {performtasks.task.taskOutputs.map((item, index) => {
@@ -487,7 +492,7 @@ function TaskOutputsTab(props) {
                                             {formatStatusInfo(item.status)}
                                         </div>
                                         <div className="form-group">
-                                            {checkRoleAccountable(idUser, item.accountableEmployees) &&
+                                            {checkRoleAccountable(idUser, item.accountableEmployees) && item.status === "waiting_for_approval" &&
                                                 <div>
                                                     <button className="btn btn-primary" disabled={item.status === "approved"} style={{ marginRight: "5px" }} onClick={() => { handleApprove("approve", item._id) }}>
                                                         Đồng ý
@@ -606,7 +611,7 @@ function TaskOutputsTab(props) {
                                                                                     <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowFile(item.submissionResults._id)}><i className="fa fa-paperclip" aria-hidden="true"></i> Tập tin đính kèm ({item.submissionResults.files && item.submissionResults.files.length})</a>
                                                                                 </li>
                                                                             }
-                                                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> Yêu cầu chỉnh sửa ({item.submissionResults.comments.length}) &nbsp;</a></li>
+                                                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i>Yêu cầu đã chỉnh sửa ({item.submissionResults.comments.filter((item) => item.status === "edited").length}/{item.submissionResults.comments.length}) &nbsp;</a></li>
                                                                         </React.Fragment>
                                                                     }
                                                                 </ul>}
@@ -654,6 +659,7 @@ function TaskOutputsTab(props) {
                                                                         cancelButtonText={"Hủy bỏ"}
                                                                         handleEdit={(x) => handleEditAction(x)}
                                                                         onTextChange={(value, imgs) => {
+                                                                            console.log(657, value)
                                                                             setState({
                                                                                 ...state,
                                                                                 newActionEdited: {
@@ -670,7 +676,6 @@ function TaskOutputsTab(props) {
                                                                     {item.submissionResults.files.length > 0 &&
                                                                         <div className="tool-level1" style={{ marginTop: -10 }}>
                                                                             {item.submissionResults.files.map((file, index) => {
-                                                                                console.log(557, file)
                                                                                 return <div key={index}>
                                                                                     <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => {
                                                                                         handleDeleteFile(file._id, file.name, item.submissionResults._id, "action")
@@ -681,8 +686,6 @@ function TaskOutputsTab(props) {
                                                                 </div>
                                                             </React.Fragment>
                                                         }
-
-
                                                     </div>
                                                 )
                                             }
@@ -717,13 +720,19 @@ function TaskOutputsTab(props) {
                                                                 <div>
                                                                     <div className="content-level2">
                                                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                                                            <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
-                                                                            {child.status === "not_edited_yet" &&
-                                                                                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "2px 4px", borderRadius: "10px" }}>
-                                                                                    Xác nhận chỉnh sửa
+                                                                            <a style={{ cursor: "pointer", fontWeight: "bold" }}>{child.creator?.name} </a>
+                                                                            {child.status === "not_edited_yet" && role === "responsible" &&
+                                                                                // color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "2px 4px", borderRadius: "10px"
+                                                                                <div style={{ cursor: "pointer" }}
+                                                                                    onClick={() => {
+                                                                                        props.editCommentOfTaskOutput(task._id, item._id, child._id, { status: "edited", creator: idUser })
+                                                                                    }}
+                                                                                >
+                                                                                    <a>Xác nhận chỉnh sửa</a>
                                                                                 </div>
                                                                             }
-                                                                            {child.status === "edited" && <i className='fa fa-check'></i>}
+                                                                            {child.status === "not_edited_yet" && role !== "responsible" && <div>Chưa chỉnh sửa</div>}
+                                                                            {child.status === "edited" && <i className='fa fa-check text-success'> Đã chỉnh sửa</i>}
                                                                         </div>
 
                                                                         {child.description.split('\n').map((item, idx) => {
@@ -765,8 +774,8 @@ function TaskOutputsTab(props) {
                                                                                                         requestDownloadFile={requestDownloadFile}
                                                                                                     />
                                                                                                     :
-                                                                                                    <div>
-                                                                                                        <a style={{ cursor: "pointer" }} style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                                                                    <div style={{ marginTop: "2px" }}>
+                                                                                                        <a style={{ cursor: "pointer" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
                                                                                                         <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
                                                                                                             <u>{elem && checkTypeFile(elem.url) ?
                                                                                                                 <i className="fa fa-eye"></i> : ""}</u>
@@ -788,46 +797,11 @@ function TaskOutputsTab(props) {
                                         </ShowMoreShowLess>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "center" }}>
-                                        <button className="btn btn-default btn-sm" style={{ width: "60%" }} onClick={() => {
-                                            if (showLogs.includes(item._id)) {
-                                                let newShowLogs = showLogs.filter((log) => log !== item._id)
-                                                setShowLogs(newShowLogs)
-                                            } else {
-                                                let newShowLogs = [...showLogs, item._id]
-                                                setShowLogs(newShowLogs)
-                                            }
+                                        <button className="btn btn-default btn-sm" style={{ width: "60%" }} onClick={async () => {
+                                            await setTaskOutput(item);
+                                            showLogTaskOutput(item);
                                         }}>Xem lịch sử thay đổi</button>
                                     </div>
-                                    {/* Hiển thị lịch sử chỉnh sửa */}
-                                    {showLogs.includes(item._id) && <div style={{ marginTop: "10px", borderWidth: "2px" }}>
-                                        {item?.submissionResults.logs.map(x => {
-                                            return (
-                                                <div key={x._id} className={index > 3 ? "hide-component" : ""}>
-                                                    {x.creator ?
-                                                        <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + x.creator.avatar)} alt="User Image" /> :
-                                                        <div className="user-img-level1" />
-                                                    }
-                                                    <div className="content-level1" data-width="100%">
-                                                        {/* Tên người tạo hoạt động */}
-                                                        <div style={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
-                                                            {
-                                                                x.creator && <a style={{ cursor: "pointer" }}>{x.creator?.name} </a>
-                                                            }
-                                                        </div>
-                                                        <div>
-                                                            <i style={{ fontWeight: 'bold' }}>{x.action}</i>
-                                                            <div>{parse(x.description ? x.description : "")}</div>
-                                                        </div>
-                                                    </div>
-                                                    <ul className="list-inline tool-level1">
-                                                        <li><span className="text-sm">{<DateTimeConverter dateTime={x.createdAt} />}</span></li>
-                                                    </ul>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                    }
-
                                 </div>
                             </div>
                         </ShowMoreShowLess>
@@ -852,6 +826,7 @@ const actionCreators = {
     deleteFileAction: performTaskAction.deleteFileAction,
     deleteSubmissionResults: performTaskAction.deleteSubmissionResults,
     createCommentOfTaskOutput: performTaskAction.createCommentOfTaskOutput,
+    editCommentOfTaskOutput: performTaskAction.editCommentOfTaskOutput,
 };
 
 const connectedTaskOutputs = connect(mapState, actionCreators)(withTranslate(TaskOutputsTab));

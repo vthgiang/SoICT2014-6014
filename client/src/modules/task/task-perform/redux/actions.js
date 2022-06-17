@@ -86,6 +86,7 @@ export const performTaskAction = {
     deleteSubmissionResults,
 
     createCommentOfTaskOutput,
+    editCommentOfTaskOutput
 };
 
 
@@ -1352,6 +1353,18 @@ function createCommentOfTaskOutput(taskId, taskOutputId, newComment) {
             .then(
                 payload => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.CREATE_COMMENT_OF_TASK_OUTPUT_FAILURE, error })
+            );
+    };
+}
+
+function editCommentOfTaskOutput(taskId, taskOutputId, commentId, newComment) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_REQUEST });
+
+        performTaskService.editCommentOfTaskOutput(taskId, taskOutputId, commentId, newComment)
+            .then(
+                payload => dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.EDIT_COMMENT_OF_TASK_OUTPUT_FAILURE, error })
             );
     };
 }
