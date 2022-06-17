@@ -1,5 +1,5 @@
-import {  dashboardEmployeeKpiConstants } from "./constants";
-import {  dashboardEmployeeKpiService } from "./services";
+import { dashboardEmployeeKpiConstants } from "./constants";
+import { dashboardEmployeeKpiService } from "./services";
 
 export const DashboardEvaluationEmployeeKpiSetAction = {
     getAllEmployeeKpiSetOfUnitByRole,
@@ -13,10 +13,10 @@ export const DashboardEvaluationEmployeeKpiSetAction = {
  */
 function getAllEmployeeKpiSetOfUnitByRole(role) {
     return dispatch => {
-        dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_REQUEST});
- 
+        dispatch({ type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_REQUEST });
+
         dashboardEmployeeKpiService.getAllEmployeeKpiSetOfUnitByRole(role)
-            .then(res=>{                
+            .then(res => {
                 dispatch({
                     type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_SUCCESS,
                     payload: res.data.content
@@ -34,12 +34,12 @@ function getAllEmployeeKpiSetOfUnitByRole(role) {
  * Lấy tất cả KPI cá nhân theo mảng id đơn vị
  * @param {*} ids 
  */
-function getAllEmployeeKpiSetOfUnitByIds(ids) {
+function getAllEmployeeKpiSetOfUnitByIds(ids, month) {
     return dispatch => {
-        dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST});
- 
+        dispatch({ type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST });
+
         dashboardEmployeeKpiService.getAllEmployeeKpiSetOfUnitByIds(ids)
-            .then(res=>{                
+            .then(res => {
                 dispatch({
                     type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_SUCCESS,
                     payload: res.data.content
@@ -61,10 +61,10 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
  */
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return dispatch => {
-        dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST});
- 
+        dispatch({ type: dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST });
+
         dashboardEmployeeKpiService.getChildrenOfOrganizationalUnitsAsTree(role)
-            .then(res=>{ 
+            .then(res => {
                 dispatch({
                     type: dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_SUCCESS,
                     payload: res.data.content

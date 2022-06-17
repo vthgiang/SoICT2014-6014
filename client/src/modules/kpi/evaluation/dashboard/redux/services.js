@@ -31,7 +31,7 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
         method: 'GET',
         params: {
             role: role,
-            ids: ids
+            ids: ids,
         }
     }, false, true, 'kpi.evaluation');
 }

@@ -16,6 +16,7 @@ import { DatePicker, ExportExcel, SelectBox, SelectMulti } from '../../../../../
 import { showListInSwal } from '../../../../../helpers/showListInSwal';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { EmployeeCreateKpiAutoModal } from './employeeCreateKpiAutoModal';
+import { EmployeeCreateKpiDashboard } from './employeeCreateKpiDashboard';
 
 function EmployeeKpiEvaluationDashboard(props) {
     let currentDate = new Date();
@@ -596,7 +597,9 @@ function EmployeeKpiEvaluationDashboard(props) {
                                         />
                                     </span>
                                 </div>
-
+                                <div className="box-body qlcv">
+                                    <EmployeeCreateKpiDashboard />
+                                </div>
                             </div>
                         </div>
                     </div>
