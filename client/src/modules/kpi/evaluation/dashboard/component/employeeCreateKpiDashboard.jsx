@@ -16,6 +16,7 @@ function EmployeeCreateKpiDashboard(props) {
     const { user, dashboardEvaluationEmployeeKpiSet } = props;
     const [data, setData] = useState();
     const [month, setMonth] = useState(convertMonth(new Date()));
+    const [isFilter, setIsFilter] = useState(false);
 
     // lay data table
     useEffect(() => {
@@ -38,13 +39,36 @@ function EmployeeCreateKpiDashboard(props) {
                     kpiManualCreated: "none",
                 })
 
+                // Lay danh sach tat ca nhan vien cua cac phong ban da chon
                 let employeesUnit = item.employees ? Object.values(item.employees) : [];
+                let managersUnit = item.managers ? Object.values(item.managers) : [];
+                let deputyManagersUnit = item.deputyManagers ? Object.values(item.deputyManagers) : [];
+                let employeesArr = [];
+                let managersArr = [];
+                let deputyManagersArr = [];
+                let allEmployees = []
                 if (employeesUnit.length > 0) {
-                    employeesUnit = employeesUnit[0].members;
+                    for (let element of employeesUnit) {
+                        employeesArr = employeesArr.concat(element.members)
+                    }
                 }
+                if (managersUnit.length > 0) {
+                    for (let element of managersUnit) {
+                        managersArr = managersArr.concat(element.members)
+                    }
+                }
+                if (deputyManagersUnit.length > 0) {
+                    for (let element of deputyManagersUnit) {
+                        deputyManagersArr = deputyManagersArr.concat(element.members)
+                    }
+                }
+
+                allEmployees = managersArr.concat(deputyManagersArr, employeesArr)
                 let status = "Chưa phê duyệt"
-                if (employeesUnit && employeeKpiInMonth) {
-                    for (let employee of employeesUnit) {
+
+                // data table
+                if (allEmployees && employeeKpiInMonth) {
+                    for (let employee of allEmployees) {
                         let kpiAutoCreated = false;
                         let kpiManualCreated = false;
                         let kpiEmployee = [];
@@ -85,7 +109,7 @@ function EmployeeCreateKpiDashboard(props) {
         }
         setData(dataTable);
 
-    }, [month, dashboardEvaluationEmployeeKpiSet.employeeKpiSets, user?.userdepartments])
+    }, [isFilter, dashboardEvaluationEmployeeKpiSet.employeeKpiSets, user?.userdepartments])
 
 
     let column = [
@@ -151,7 +175,7 @@ function EmployeeCreateKpiDashboard(props) {
                         onChange={(e) => { setMonth(e) }}
                         disabled={false}
                     />
-                    <button className='btn btn-success'>Tìm kiếm</button>
+                    <button className='btn btn-success' onClick={() => { setIsFilter(!isFilter) }}>Tìm kiếm</button>
                 </div>
             </div>
             <div className="general_task_unit" id="general-list-task-wrapper" style={{ marginTop: '20px' }}>

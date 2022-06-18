@@ -585,10 +585,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">What is this</h3>
-                                    <span>
-                                        <a className="btn" data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
+                                <div className="box-header with-border" style={{ 'display': 'flex' }}>
+                                    <h3 className="box-title">KPI nhân viên </h3>
+                                    <span style={{ 'marginLeft': 'auto', 'cursor': "pointer" }}>
+                                        <a className="" data-toggle="modal" data-target="#employee-create-kpi-auto" data-backdrop="static" data-keyboard="false">
                                             <i className="fa fa-gears" style={{ fontSize: "16px" }} /> Khởi tạo KPI nhân viên tự động
                                         </a>
                                         <EmployeeCreateKpiAutoModal

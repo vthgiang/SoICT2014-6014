@@ -80,11 +80,15 @@ function ChildOfOrganizationalUnitCreate(props) {
 
     const childrenUnit = childrenOrganizationalUnit?.children || [];
 
-    const options = childrenUnit.map(x => {
+    let options = childrenUnit.map(x => {
         return {
             value: x.id,
             text: x.name
         }
+    })
+    options.unshift({
+        value: childrenOrganizationalUnit?.id,
+        text: childrenOrganizationalUnit?.name,
     })
 
     const handleKpiUnit = (id) => {

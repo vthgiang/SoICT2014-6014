@@ -33,13 +33,18 @@ function EmployeeCreateKpiAutoModal(props) {
     const { organizationalUnit, organizationalUnitId, month, childrenOrganizationalUnit } = props;
 
     const childrenUnit = childrenOrganizationalUnit?.children || [];
-    const options = childrenUnit.map(x => {
+
+    let options = childrenUnit.map(x => {
         return {
             value: x.id,
             text: x.name
         }
     })
-    console.log('41', createKpiUnit, user)
+    options.unshift({
+        value: childrenOrganizationalUnit?.id,
+        text: childrenOrganizationalUnit?.name,
+    })
+
     const [employeeImportancesState, setEmployeeImportancesState] = useState(null);
     const [state, setState] = useState({
         date: null,
@@ -50,7 +55,6 @@ function EmployeeCreateKpiAutoModal(props) {
     const { employees, employeeIds, idUnit, date } = state;
 
     const handleClickCheck = (id) => {
-        console.log(53, employees)
         let employee = employees;
         let employeeIds = [];
         employee[id].check = !employee[id].check;
@@ -93,7 +97,6 @@ function EmployeeCreateKpiAutoModal(props) {
             month: date,
             organizationalUnit: idUnit
         };
-        console.log('data', data)
 
         props.createEmployeeKpiSetAuto(data)
     }
@@ -117,7 +120,6 @@ function EmployeeCreateKpiAutoModal(props) {
     //Get data employee
     useEffect(() => {
         if (createKpiUnit?.currentKPI) {
-            console.log(119, createKpiUnit);
             const employeeOfUnit = {};
             let employeeIds = [];
             for (let item of createKpiUnit.currentKPI.employeeImportances) {
@@ -128,7 +130,6 @@ function EmployeeCreateKpiAutoModal(props) {
                 }
                 employeeIds.push(item?.employee?.id)
             }
-            console.log(145, employeeOfUnit);
             setState({
                 ...state,
                 employees: employeeOfUnit,
@@ -136,7 +137,6 @@ function EmployeeCreateKpiAutoModal(props) {
             });
         }
     }, [createKpiUnit])
-    console.log(185, createKpiUnit)
 
     return (
         <React.Fragment>
