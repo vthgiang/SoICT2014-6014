@@ -32,22 +32,11 @@ function QueueGoodIntoTheWarehouseComponent(props) {
             item.lots.forEach(lot => {
                 lot.goodName = item.good.name;
                 lot.baseUnit = item.good.baseUnit;
+                lot.restQuantity = lot.lot.quantity - lot.quantity;
                 lots.push(lot);
             })
         })
         return lots;
-    }
-
-    const getDataUnPassedLots = (goods) => {
-        let unPassedLots = [];
-        goods.forEach(item => {
-            item.unpassed_quality_control_lots.forEach(lot => {
-                lot.goodName = item.good.name;
-                lot.baseUnit = item.good.baseUnit;
-                unPassedLots.push(lot);
-            })
-        })
-        return unPassedLots;
     }
 
     if (props.billId !== state.billId) {
@@ -58,7 +47,6 @@ function QueueGoodIntoTheWarehouseComponent(props) {
             listGoods: props.billInfor.goods,
             stockInfo: props.billInfor.fromStock,
             dataLots: getDataLots(props.billInfor.goods),
-            dataUnPassedLots: getDataUnPassedLots(props.billInfor.goods),
             statusInventory: props.statusInventory,
 
         })
@@ -102,7 +90,6 @@ function QueueGoodIntoTheWarehouseComponent(props) {
             currentIndex: index,
             lotType: lotType,
         });
-        window.$('#arrange-lot-into-warehouse-modal').modal('show');
     }
 
     const getAllBinLocations = () => {
@@ -181,35 +168,24 @@ function QueueGoodIntoTheWarehouseComponent(props) {
     }
 
     const handleSaveEditBinLocation = () => {
-        let { dataLots, dataUnPassedLots, indexLotEditting, indexBinEditting, listGoods, currentLot, lotType } = state;
+        let { dataLots, indexLotEditting, indexBinEditting, listGoods, currentLot, lotType } = state;
 
         let dataGoods = [...listGoods];
-        if (lotType === 1) {
-            dataLots[indexLotEditting].binLocations[indexBinEditting] = state.binLocation;
-            dataGoods.forEach(good => {
-                good.lots.forEach(lot => {
-                    if (lot.code === currentLot.code) {
-                        lot.binLocations[indexBinEditting] = state.binLocation;
-                    }
-                })
+        dataLots[indexLotEditting].binLocations[indexBinEditting] = state.binLocation;
+        dataGoods.forEach(good => {
+            good.lots.forEach(lot => {
+                if (lot.lot.code === currentLot.lot.code) {
+                    lot.binLocations[indexBinEditting] = state.binLocation;
+                }
             })
-        } else {
-            dataUnPassedLots[indexLotEditting].binLocations[indexBinEditting] = state.binLocation;
-            dataGoods.forEach(good => {
-                good.unpassed_quality_control_lots.forEach(lot => {
-                    if (lot.code === currentLot.code) {
-                        lot.binLocations[indexBinEditting] = state.binLocation;
-                    }
-                })
-            })
-        }
+        })
+
         setState({
             ...state,
             editBinLocation: false,
             binLocation: Object.assign({}, EMPTY_BINLOCATION),
             dataLots: [...dataLots],
             listGoods: [...dataGoods],
-            dataUnPassedLots: [...dataUnPassedLots],
             currentIndex: -1,
         })
     }
@@ -227,32 +203,21 @@ function QueueGoodIntoTheWarehouseComponent(props) {
     }
 
     const handleDeleteBinLocation = (currentLot, binLocation, index, index2) => {
-        let { dataLots, dataUnPassedLots, listGoods, lotType } = state;
+        let { dataLots, listGoods, lotType } = state;
         let dataGoods = [...listGoods];
-        if (lotType === 1) {
-            dataLots[index].binLocations.splice(index2, 1);
-            dataGoods.forEach(good => {
-                good.lots.forEach(lot => {
-                    if (lot.code === currentLot.code) {
-                        lot.binLocations.splice(index2, 1);
-                    }
-                })
+        dataLots[index].binLocations.splice(index2, 1);
+        dataGoods.forEach(good => {
+            good.lots.forEach(lot => {
+                if (lot.lot.code === currentLot.lot.code) {
+                    lot.binLocations.splice(index2, 1);
+                }
             })
-        } else {
-            dataUnPassedLots[index].binLocations.splice(index2, 1);
-            dataGoods.forEach(good => {
-                good.unpassed_quality_control_lots.forEach(lot => {
-                    if (lot.code === currentLot.code) {
-                        lot.binLocations.splice(index2, 1);
-                    }
-                })
-            })
-        }
+        })
+
         setState({
             ...state,
             dataLots: [...dataLots],
             listGoods: [...dataGoods],
-            dataUnPassedLots: [...dataUnPassedLots],
         });
     }
 
@@ -263,38 +228,28 @@ function QueueGoodIntoTheWarehouseComponent(props) {
         let listBinLocation = currentLot.binLocations && currentLot.binLocations.length > 0 ? currentLot.binLocations : [];
         let binLocationArrFilter = listPaginate.filter(x => x._id === binLocation.id);
         if (binLocationArrFilter) {
+            binLocation.binLocation = binLocationArrFilter[0]._id;
             binLocation.name = binLocationArrFilter[0].name;
+
+
         }
         listBinLocation.push(binLocation);
         let dataGoods = [...listGoods];
         let data = {};
-        if (lotType == 1) {
-            data = [...dataLots];
-            data[currentIndex].binLocations = listBinLocation;
-            // data goods
-            dataGoods.forEach(good => {
-                good.lots.forEach(lot => {
-                    if (lot.code === currentLot.code) {
-                        lot.binLocations = listBinLocation;
-                    }
-                })
+        data = [...dataLots];
+        data[currentIndex].binLocations = listBinLocation;
+        // data goods
+        dataGoods.forEach(good => {
+            good.lots.forEach(lot => {
+                if (lot.lot.code === currentLot.lot.code) {
+                    lot.binLocations = listBinLocation;
+                }
             })
-        } else {
-            data = [...dataUnPassedLots];
-            data[currentIndex].binLocations = listBinLocation;
-            // data goods
-            dataGoods.forEach(good => {
-                good.unpassed_quality_control_lots.forEach(lot => {
-                    if (lot.code === currentLot.code) {
-                        lot.binLocations = listBinLocation;
-                    }
-                })
-            })
-        }
+        })
+
         setState({
             ...state,
-            dataLots: lotType == 1 ? data : [...dataLots],
-            dataUnPassedLots: lotType == 2 ? data : [...dataUnPassedLots],
+            dataLots: data,
             listGoods: dataGoods,
             binLocation: Object.assign({}, EMPTY_BINLOCATION),
             currentLot: {},
@@ -303,7 +258,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
     }
 
     const checkDifferentGood = (lot) => {
-        let quantity = lot.quantity;
+        let quantity = lot.restQuantity;
         if (lot.binLocations && lot.binLocations.length > 0) {
             lot.binLocations.forEach(bin => {
                 quantity -= bin.quantity;
@@ -321,7 +276,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
                 lot.binLocations.forEach(bin => {
                     totalQuantity += parseInt(bin.quantity);
                 })
-                if (totalQuantity != parseInt(lot.quantity)) check = 1;
+                if (totalQuantity != parseInt(lot.lot.quantity) - parseInt(lot.quantity)) check = 1;
             }
         })
         return check;
@@ -329,15 +284,10 @@ function QueueGoodIntoTheWarehouseComponent(props) {
 
     const isValidate = () => {
         let check = 0;
-        const { dataLots, dataUnPassedLots } = state;
-        if (dataLots && dataLots.length == 0 && dataUnPassedLots && dataUnPassedLots.length == 0) check = 1;
-        else {
-            if (dataLots && dataLots.length > 0) {
-                check = checkQuantity(dataLots);
-            }
-            if (dataUnPassedLots && dataUnPassedLots.length > 0) {
-                check = checkQuantity(dataUnPassedLots);
-            }
+        const { dataLots } = state;
+        if (dataLots && dataLots.length == 0) check = 1;
+        else if (dataLots && dataLots.length > 0) {
+            check = checkQuantity(dataLots);
         }
         return check === 0;
     }
@@ -355,7 +305,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
     }
 
     const { translate } = props;
-    const { dataLots, code, status, stockInfo, dataUnPassedLots, statusInventory, errorOnStatus, errorBinLocation, errorQuantity, binLocation, currentIndex } = state;
+    const { dataLots, code, status, stockInfo, statusInventory, errorOnStatus, errorBinLocation, errorQuantity, binLocation, currentIndex } = state;
     return (
         <React.Fragment>
             {stockInfo && (
@@ -480,7 +430,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
                                                     <td>{x.code}</td>
                                                     <td>{x.goodName}</td>
                                                     <td>{x.baseUnit}</td>
-                                                    <td>{x.quantity}</td>
+                                                    <td>{x.restQuantity ? x.restQuantity : ''}</td>
                                                     {checkDifferentGood(x) > 0 ?
                                                         <td className="tooltip-abc">
                                                             <span style={{ color: "red" }}>{checkDifferentGood(x)}</span>
@@ -500,61 +450,6 @@ function QueueGoodIntoTheWarehouseComponent(props) {
                                                     <td>{x.expirationDate}</td>
                                                     <td>
                                                         <p type="button" className="btn btn-success" style={{ marginLeft: "10px" }} onClick={() => handleArrangeLot(x, index, 1)}>{"xếp hàng"}</p>
-                                                    </td>
-                                                </tr>
-                                            )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </fieldset>
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{"Thông tin chi tiết lô hàng không đạt kiểm định"}</legend>
-                        <div className={`form-group`}>
-                            {/* Bảng thông tin chi tiết */}
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
-                                        <th title="Mã lô hàng">{"Mã lô hàng"}</th>
-                                        <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
-                                        <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                        <th title={"Số lượng chưa xếp vào kho"}>{"Số lượng chưa xếp vào kho"}</th>
-                                        <th title={"Vị trí lưu trữ/Số lượng"}>{"Vị trí lưu trữ/Số lượng"}</th>
-                                        <th title={"Ngày hết hạn"}>{"Ngày hết hạn"}</th>
-                                        <th title={translate('manage_warehouse.bill_management.action')}>{translate('manage_warehouse.bill_management.action')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody id={`good-bill-edit`}>
-                                    {
-                                        (typeof dataUnPassedLots === 'undefined' || dataUnPassedLots.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                            dataUnPassedLots.map((x, index) =>
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{x.code}</td>
-                                                    <td>{x.goodName}</td>
-                                                    <td>{x.baseUnit}</td>
-                                                    <td>{x.quantity}</td>
-                                                    {checkDifferentGood(x) > 0 ?
-                                                        <td className="tooltip-abc">
-                                                            <span style={{ color: "red" }}>{checkDifferentGood(x)}</span>
-                                                            <span className="tooltiptext"><p style={{ color: "white" }}>{"Lô hàng còn " + checkDifferentGood(x) + x.baseUnit + " chưa xếp hết vào kho"}</p></span>
-                                                        </td> :
-                                                        <td>{"Hàng đã xếp hết vào kho"}</td>}
-                                                    {(x.binLocations && x.binLocations.length > 0) ?
-                                                        <td>{x.binLocations.map((binLocation, index2) =>
-                                                            <div key={index2}>
-                                                                <p>
-                                                                    {binLocation.name + "/" + binLocation.quantity + " " + x.baseUnit}
-                                                                    <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditBinLocation(x, binLocation, index, index2)}><i className="material-icons"></i></a>
-                                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteBinLocation(x, binLocation, index, index2)}><i className="material-icons"></i></a>
-                                                                </p>
-                                                            </div>)}
-                                                        </td> : <td>{''}</td>}
-                                                    <td>{x.expirationDate}</td>
-                                                    <td>
-                                                        <p type="button" className="btn btn-success" style={{ marginLeft: "10px" }} onClick={() => handleArrangeLot(x, index, 2)}>{"xếp hàng"}</p>
                                                     </td>
                                                 </tr>
                                             )

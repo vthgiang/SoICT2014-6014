@@ -30,18 +30,6 @@ function CompleteComponent(props) {
         return msg === undefined;
     }
 
-    const getDataLots = (goods) => {
-        let lots = [];
-        goods.forEach(item => {
-            item.lots.forEach(lot => {
-                lot.goodName = item.good.name;
-                lot.baseUnit = item.good.baseUnit;
-                lots.push(lot);
-            })
-        })
-        return lots;
-    }
-
     const getDataUnPassedLots = (goods) => {
         let unPassedLots = [];
         goods.forEach(item => {
@@ -60,8 +48,7 @@ function CompleteComponent(props) {
             billId: props.billId,
             code: props.billInfor.code,
             listGoods: props.billInfor.goods,
-            dataLots: getDataLots(props.billInfor.goods),
-            dataLots: getDataLots(props.billInfor.goods).concat(getDataUnPassedLots(props.billInfor.goods)),
+            dataLots: getDataUnPassedLots(props.billInfor.goods),
         })
     }
 
@@ -146,7 +133,7 @@ function CompleteComponent(props) {
                                             <td>{x.good.code}</td>
                                             <td>{x.good.name}</td>
                                             <td>{x.good.baseUnit}</td>
-                                            <td>{x.quantity - x.realQuantity}</td>
+                                            <td>{parseInt(x.quantity) - parseInt(x.realQuantity)}</td>
                                         </tr>
                                     )
                                 }
@@ -198,7 +185,7 @@ function CompleteComponent(props) {
                 <div className={`form-group`}>
                     <label>{"Số lượng hàng hóa chưa xếp hết vào kho"}</label>
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{"Thông tin chi tiết lô hàng đạt kiểm định"}</legend>
+                        <legend className="scheduler-border">{"Thông tin chi tiết lô hàng"}</legend>
                         <div className={`form-group`}>
                             {/* Bảng thông tin chi tiết */}
                             <table className="table">

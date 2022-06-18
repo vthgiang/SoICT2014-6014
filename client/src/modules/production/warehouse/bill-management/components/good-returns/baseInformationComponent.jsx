@@ -6,18 +6,16 @@ import { generateCode } from "../../../../../../helpers/generateCode";
 import { LotActions } from "../../../inventory-management/redux/actions";
 import { BillActions } from "../../../bill-management/redux/actions";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
-import GoodBaseInformationComponent from '../../components/genaral/goodBaseInformationComponent';
 
 function BaseInformationComponent(props) {
     const EMPTY_GOOD = {
         good: "",
         quantity: 0,
         returnQuantity: 0,
-        damagedQuantity: 0,
+        // damagedQuantity: 0,
         realQuantity: 0,
         description: "",
         lots: [],
-        group: 1,
         isHaveDataStep1: 0,
     };
 
@@ -213,6 +211,7 @@ function BaseInformationComponent(props) {
         }
         if (willUpdateState) {
             let request = requestManagements.listRequests.find(element => element._id === value)
+            console.log(request.goods);
             setState({
                 ...state,
                 requestValue: value,
@@ -223,21 +222,31 @@ function BaseInformationComponent(props) {
                 supplier: request.supplier ? request.supplier._id : "",
                 sourceType: request.supplier ? "2" : "1",
                 requestId: request._id,
+                bill: request.bill ? request.bill._id : "",
             });
         }
         return msg === undefined;
     }
 
-    // Phần hàng hóa
-
-    const handleGoodChange = (data) => {
-        setState({
-            ...state,
-            listGood: data,
-        });
-    }
-
     // Phần dữ liệu
+
+    const getDataLots = (goods) => {
+        let lots = [];
+        if (goods && goods.length > 0) {
+            goods.forEach(item => {
+                item.lots.forEach(lot => {
+                    lot.goodName = item.good.name;
+                    lot.baseUnit = item.good.baseUnit;
+                    lot.code = lot.lot.code;
+                    lot.expirationDate = lot.lot.expirationDate;
+                    lot.returnQuantity = lot.returnQuantity;
+                    lot.goodId = item.good._id;
+                    lots.push(lot);
+                })
+            })
+        }
+        return lots;
+    }
 
     if (props.isHaveDataStep1 !== state.isHaveDataStep1) {
         setState({
@@ -246,6 +255,7 @@ function BaseInformationComponent(props) {
             code: props.code,
             sourceType: props.sourceType,
             listGood: props.listGood,
+            dataLots: getDataLots(props.listGood),
             worksValue: props.manufacturingWork,
             requestValue: props.requestValue,
             supplier: props.supplier,
@@ -266,6 +276,7 @@ function BaseInformationComponent(props) {
                 requestValue: state.requestValue,
                 supplier: state.supplier,
                 description: state.description,
+                bill: state.bill,
             }
             props.onDataChange(data);
         }
@@ -285,7 +296,7 @@ function BaseInformationComponent(props) {
     const { translate, createType } = props;
     const {
         listGood, good, code, supplier, worksValue, fromStock, type, errorStock, errorType, errorSupplier, worksValueError,
-        errorOnSourceProduct, sourceType, purchaseOrderId, description, requestValue, errorOnRequest, isHaveDataStep1 } = state;
+        errorOnSourceProduct, sourceType, purchaseOrderId, description, requestValue, errorOnRequest, isHaveDataStep1, dataLots } = state;
 
     let dataSource = [
         {
@@ -333,7 +344,7 @@ function BaseInformationComponent(props) {
                                 />
                                 <ErrorLabel content={errorStock} />
                             </div>}
-                        {(createType === 1 || createType === 3) &&
+                        {(createType === 3) &&
                             <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.good_management.good_source')}</label>
                                 <span className="text-red"> * </span>
@@ -352,7 +363,7 @@ function BaseInformationComponent(props) {
                         }
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        {(createType === 1 || createType === 3) &&
+                        {(createType === 3) &&
                             <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.bill_management.stock")}
@@ -452,7 +463,41 @@ function BaseInformationComponent(props) {
                     </div>
                 </fieldset>
             </div>
-            <GoodBaseInformationComponent group={"1"} isHaveDataStep1={isHaveDataStep1} listGood={listGood} sourceType={sourceType} createType={createType} onDataChange={handleGoodChange} />
+            <fieldset className="scheduler-border">
+                <legend className="scheduler-border">{"Thông tin chi tiết lô hàng không đạt kiểm định"}</legend>
+                <div className={`form-group`}>
+                    {/* Bảng thông tin chi tiết */}
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                <th title="Mã lô hàng">{"Mã lô hàng"}</th>
+                                <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
+                                <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
+                                <th title={"Số lượng xuất kho"}>{"Số lượng xuất kho"}</th>
+                                <th title={"Vị lượng trả lại"}>{"Số lượng trả lại"}</th>
+                                <th title={"Ngày hết hạn"}>{"Ngày hết hạn"}</th>
+                            </tr>
+                        </thead>
+                        <tbody id={`data-lot-bill`}>
+                            {
+                                (typeof dataLots === 'undefined' || dataLots.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                    dataLots.map((x, index) =>
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{x.code}</td>
+                                            <td>{x.goodName}</td>
+                                            <td>{x.baseUnit}</td>
+                                            <td>{x.quantity}</td>
+                                            <td>{x.returnQuantity}</td>
+                                            <td>{x.expirationDate}</td>
+                                        </tr>
+                                    )
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
         </React.Fragment>
     );
 }

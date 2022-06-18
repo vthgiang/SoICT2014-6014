@@ -31,6 +31,7 @@ const BillSchema = new Schema({
     },
 
     // LSX 2, 4
+
     // 1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3: Nhập công cụ, dụng cụ, 4: Nhập phế phẩm 
     // 5: Xuất nguyên vật liệu, 6: Xuất sản phẩm, 7: Xuất công cụ, dụng cụ, 8: Xuất phế phẩm
     // 9: Kiểm kê định kỳ, 10: Kiểm kê thường xuyên, 
@@ -38,6 +39,12 @@ const BillSchema = new Schema({
     // 12: "Trả hàng hóa nhập từ nhà cung cấp không đạt",
     // 13: "Trả hàng hóa đã xuất kho", 
     // 14: Luân chuyển
+
+    // group 1: 1.Nhập kho từ nhà máy, 2. Nhập kho từ nhà cung cấp
+    // group 2: 1.Xuất kho tới nhà máy, 2. Xuất kho tới nhà cung cấp, 3. Xuất hàng không đạt tới nhà máy, 4. Xuất hàng không đạt tới nhà cung cấp
+    // group 3: 1. Trả hàng từ nhà máy, 2. Trả hàng từ nhà cung cấp
+    // group 4: 1. Kiểm kê định kỳ, 2. Kiểm kê thường xuyên
+    // group 5: 1. Luân chuyển
     type: {
         type: String,
         enum: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
@@ -53,7 +60,7 @@ const BillSchema = new Schema({
         enum: ["1", "2", "3", "4", "5", "6", "7"]
     },
 
-    statusArray: [{
+    statusSteps: [{
         type: Number,
     }],
 
@@ -211,21 +218,21 @@ const BillSchema = new Schema({
         },
 
         lots: [{
-            // LSX
             lot: {
                 type: Schema.Types.ObjectId,
                 ref: 'Lot'
             },
-            // LSX
             quantity: {
                 type: Number,
                 default: 0
             },
-
             realQuantity: {
                 type: Number
             },
-
+            returnQuantity: {
+                type: Number,
+                default: 0
+            },
             note: {
                 type: String
             },

@@ -176,11 +176,8 @@ function QuantityLotGoodReceipt(props) {
 
     const handleAddLot = async (e) => {
         e.preventDefault();
-        let lots = [];
-        if (state.lots && state.lots.length > 0) 
-            lots.push(state.lots);
+        let lots = (state.lots && state.lots.length) ? state.lots : [];
         lots.push(state.lot);
-        console.log(lots);
         await setState({
             ...state,
             lots: lots,
@@ -330,7 +327,6 @@ function QuantityLotGoodReceipt(props) {
     const { translate, group, good, quantity } = props;
     const { lot, errorQuantity, errorRfidQuantity, lots, errorExpirationDate } = state;
     let different = difference();
-    console.log(props.isPassQualityControl);
     return (
         <React.Fragment>
             <DialogModal
@@ -343,97 +339,95 @@ function QuantityLotGoodReceipt(props) {
                 func={save}
                 size="100"
             >
-                <form id={`form-edit-quantity-receipt`}>
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
-                        {quantity ? (different !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center' }}>{`Bạn cần phải đánh lô cho ${different} số lượng hàng nhập`}</div> :
-                            <div className="form-group" style={{ color: 'green', textAlign: 'center' }}>Bạn đã đánh xong lô cho {quantity} số lượng hàng nhập</div>) : []}
-                        <div className={`form-group`}>
-                            <label>{translate('manage_warehouse.bill_management.lot_number')}</label>
-                            <input type="text" className="form-control" value={lot.code} disabled />
-                        </div>
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
+                    {quantity ? (different !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center' }}>{`Bạn cần phải đánh lô cho ${different} số lượng hàng nhập`}</div> :
+                        <div className="form-group" style={{ color: 'green', textAlign: 'center' }}>Bạn đã đánh xong lô cho {quantity} số lượng hàng nhập</div>) : []}
+                    <div className={`form-group`}>
+                        <label>{translate('manage_warehouse.bill_management.lot_number')}</label>
+                        <input type="text" className="form-control" value={lot.code} disabled />
+                    </div>
 
-                        <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
-                            <label className="control-label">{translate('manage_warehouse.bill_management.number')}</label>
-                            <div>
-                                <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={handleQuantityChange} />
-                            </div>
-                            <ErrorLabel content={errorQuantity} />
+                    <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
+                        <label className="control-label">{translate('manage_warehouse.bill_management.number')}</label>
+                        <div>
+                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={handleQuantityChange} />
                         </div>
+                        <ErrorLabel content={errorQuantity} />
+                    </div>
 
-                        <div className={`form-group ${!errorRfidQuantity ? "" : "has-error"}`}>
-                            <label className="control-label">{translate('manage_warehouse.bill_management.rfid_quantity')}</label>
-                            <div>
-                                <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.rfid_quantity')} value={lot.rfidQuantity} onChange={handleRfidQuantityChange} />
-                            </div>
-                            <ErrorLabel content={errorRfidQuantity} />
+                    <div className={`form-group ${!errorRfidQuantity ? "" : "has-error"}`}>
+                        <label className="control-label">{translate('manage_warehouse.bill_management.rfid_quantity')}</label>
+                        <div>
+                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.rfid_quantity')} value={lot.rfidQuantity} onChange={handleRfidQuantityChange} />
                         </div>
+                        <ErrorLabel content={errorRfidQuantity} />
+                    </div>
 
-                        <div className={`form-group ${!errorExpirationDate ? "" : "has-error"}`}>
-                            <label htmlFor="expirationDate">{translate('manage_warehouse.bill_management.expiration_date')}</label>
-                            <DatePicker
-                                id={`expirationDate-lot`}
-                                value={lot.expirationDate}
-                                onChange={handleExpirationDateChange}
-                            />
-                            <ErrorLabel content={errorExpirationDate} />
+                    <div className={`form-group ${!errorExpirationDate ? "" : "has-error"}`}>
+                        <label htmlFor="expirationDate">{translate('manage_warehouse.bill_management.expiration_date')}</label>
+                        <DatePicker
+                            id={`expirationDate-lot`}
+                            value={lot.expirationDate}
+                            onChange={handleExpirationDateChange}
+                        />
+                        <ErrorLabel content={errorExpirationDate} />
+                    </div>
+
+                    <div className={`form-group`}>
+                        <label className="control-label">{translate('manage_warehouse.bill_management.description')}</label>
+                        <div>
+                            <input type="text" className="form-control" placeholder={translate('manage_warehouse.bill_management.description')} value={lot.note} onChange={handleNoteChange} />
                         </div>
+                    </div>
 
-                        <div className={`form-group`}>
-                            <label className="control-label">{translate('manage_warehouse.bill_management.description')}</label>
-                            <div>
-                                <input type="text" className="form-control" placeholder={translate('manage_warehouse.bill_management.description')} value={lot.note} onChange={handleNoteChange} />
-                            </div>
-                        </div>
+                    <div className="pull-right" style={{ marginBottom: "10px" }}>
+                        <p type="button" className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={!isRfidCodeValidate()} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</p>
+                        {state.editInfo ?
+                            <React.Fragment>
+                                <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                <button className="btn btn-success" disabled={!isLotsValidated()} onClick={handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                            </React.Fragment> :
+                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isLotsValidated()} onClick={handleAddLot}>{translate('task_template.add')}</button>
+                        }
+                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearLot}>{translate('task_template.delete')}</button>
+                    </div>
 
-                        <div className="pull-right" style={{ marginBottom: "10px" }}>
-                            <p type="button" className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={!isRfidCodeValidate()} onClick={handleGenerateRfid}>{translate('manage_warehouse.bill_management.create_rfid_code')}</p>
-                            {state.editInfo ?
-                                <React.Fragment>
-                                    <button className="btn btn-success" onClick={handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                    <button className="btn btn-success" disabled={!isLotsValidated()} onClick={handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                </React.Fragment> :
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!isLotsValidated()} onClick={handleAddLot}>{translate('task_template.add')}</button>
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
+                                <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
+                                <th title={translate('manage_warehouse.bill_management.expiration_date')}>{translate('manage_warehouse.bill_management.expiration_date')}</th>
+                                <th title={translate('manage_warehouse.bill_management.rfid_code')}>{translate('manage_warehouse.bill_management.rfid_code')}</th>
+                                <th>{translate('task_template.action')}</th>
+                            </tr>
+                        </thead>
+                        <tbody id={`quantity-bill-lot-create-${group}`}>
+                            {
+                                (typeof lots !== 'undefined' && lots.length > 0) ?
+                                    lots.map((x, index) =>
+                                        <tr key={index}>
+                                            <td>{x.code}</td>
+                                            <td>{x.quantity}</td>
+                                            <td>{x.note}</td>
+                                            <td>{x.expirationDate}</td>
+                                            <td>{x.rfidCode ? x.rfidCode.map((rfid, index) =>
+                                                <div key={index}>
+                                                    <p>{rfid}<br></br></p>
+                                                </div>) : ''}
+                                            </td>
+                                            <td>
+                                                <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditLot(x, index)}><i className="material-icons"></i></a>
+                                                <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteLot(x.lot, index)}><i className="material-icons"></i></a>
+                                            </td>
+                                        </tr>
+                                    ) : <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr>
                             }
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearLot}>{translate('task_template.delete')}</button>
-                        </div>
-
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.expiration_date')}>{translate('manage_warehouse.bill_management.expiration_date')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.rfid_code')}>{translate('manage_warehouse.bill_management.rfid_code')}</th>
-                                    <th>{translate('task_template.action')}</th>
-                                </tr>
-                            </thead>
-                            <tbody id={`quantity-bill-lot-create-${group}`}>
-                                {
-                                    (typeof lots !== 'undefined' && lots.length > 0) ?
-                                        lots.map((x, index) =>
-                                            <tr key={index}>
-                                                <td>{x.code}</td>
-                                                <td>{x.quantity}</td>
-                                                <td>{x.note}</td>
-                                                <td>{x.expirationDate}</td>
-                                                <td>{x.rfidCode ? x.rfidCode.map((rfid, index) =>
-                                                    <div key={index}>
-                                                        <p>{rfid}<br></br></p>
-                                                    </div>) : ''}
-                                                </td>
-                                                <td>
-                                                    <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => handleEditLot(x, index)}><i className="material-icons"></i></a>
-                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => handleDeleteLot(x.lot, index)}><i className="material-icons"></i></a>
-                                                </td>
-                                            </tr>
-                                        ) : <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr>
-                                }
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </form>
+                        </tbody>
+                    </table>
+                </fieldset>
             </DialogModal>
         </React.Fragment>
     );

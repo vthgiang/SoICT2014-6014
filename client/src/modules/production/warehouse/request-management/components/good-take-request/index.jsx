@@ -63,7 +63,7 @@ function GoodTakeRequestManagementTable(props) {
                     stock={state.currentRow.stock._id}
                     status={state.currentRow.status}
                     worksValue={state.currentRow.manufacturingWork._id}
-                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 1) : []}
+                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 4) : []}
                     stockRequestType={props.stockRequestType}
                 />
             }

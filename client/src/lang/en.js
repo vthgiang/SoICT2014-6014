@@ -4849,12 +4849,9 @@ export default {
                     7: "red",
                 },
                 bill_status: {
-                    1: "Waiting for approval",
-                    2: "Approvaled",
-                    3: "Processing",
-                    4: "Completed quality control",
-                    5: "Completed",
-                    7: "Canceled",
+                    1: "Processing",
+                    2: "Completed",
+                    3: "Canceled",
                 },
                 bill_receipt_status: {
                     1: "Waiting for approval",

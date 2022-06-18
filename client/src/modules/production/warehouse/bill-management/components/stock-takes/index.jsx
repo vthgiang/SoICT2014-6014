@@ -9,7 +9,7 @@ import StockTakeCreateForm from './stockTakeCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 import Swal from "sweetalert2";
-import { UserGuideCreateBillTake } from '../config.js';
+import { UserGuideCreateBillTake } from '../genaral/config.js';
 function TakeManagement(props) {
     const tableId = "take-management-table";
     const defaultConfig = { limit: 5 }

@@ -6,7 +6,7 @@ import DetailForm from '../common-components/detailForm';
 import EditForm from '../common-components/editForm';
 import CreateForm from '../common-components/createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import ApproveForm from './approveForm';
+import ApproveForm from '../common-components/approveForm';
 import GoodReceiptCreateFormModal from '../../../bill-management/components/good-receipts/goodReceiptCreateFormModal';
 
 function GoodReceiptRequestManagementTable(props) {

@@ -5,7 +5,6 @@ import { SelectBox, ErrorLabel } from '../../../../../../common-components';
 
 function CompleteComponent(props) {
     const [state, setState] = useState({
-        quantityPassedTest: [],
         statusAll: 1,
     })
 
@@ -42,18 +41,6 @@ function CompleteComponent(props) {
         return lots;
     }
 
-    const getDataUnPassedLots = (goods) => {
-        let unPassedLots = [];
-        goods.forEach(item => {
-            item.unpassed_quality_control_lots.forEach(lot => {
-                lot.goodName = item.good.name;
-                lot.baseUnit = item.good.baseUnit;
-                unPassedLots.push(lot);
-            })
-        })
-        return unPassedLots;
-    }
-
     if (props.billId !== state.billId) {
         setState({
             ...state,
@@ -61,28 +48,11 @@ function CompleteComponent(props) {
             code: props.billInfor.code,
             listGoods: props.billInfor.goods,
             dataLots: getDataLots(props.billInfor.goods),
-            dataLots: getDataLots(props.billInfor.goods).concat(getDataUnPassedLots(props.billInfor.goods)),
         })
     }
 
-    const checkLots = (lots, quantity) => {
-        if (lots.length === 0) {
-            return false;
-        } else {
-            let totalQuantity = 0;
-            for (let i = 0; i < lots.length; i++) {
-                totalQuantity += Number(lots[i].quantity);
-            }
-            if (Number(quantity) !== Number(totalQuantity)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    
     const checkDifferentGood = (lot) => {
-        let quantity = lot.quantity;
+        let quantity = lot.restQuantity;
         if (lot.binLocations && lot.binLocations.length > 0) {
             lot.binLocations.forEach(bin => {
                 quantity -= bin.quantity;
@@ -91,7 +61,7 @@ function CompleteComponent(props) {
         return quantity;
     }
 
-    const { translate, billInfor, statusQuality, statusLot, statusInventory } = props;
+    const { translate, statusInventory } = props;
 
     const { status, code, listGoods, dataLots, statusAll, errorOnStatus } = state;
 
@@ -117,86 +87,14 @@ function CompleteComponent(props) {
                                 { value: 2, text: "Đã hoàn thành" }]}
                             onChange={handleStatusChange}
                             multiple={false}
-                            disabled={!(statusQuality == 2 && statusLot == 2 && statusInventory == 2)}
+                            disabled={!(statusInventory == 2)}
                         />
                         <ErrorLabel content={errorOnStatus} />
                     </div>
                 </div>
             {(typeof listGoods === 'undefined' || listGoods.length === 0) ? '' :
                 <div className={`form-group`}>
-                    <label>{"Số hàng hóa không đạt kiểm định"}</label>
-                    <fieldset className="scheduler-border">
-                        {/* Bảng thông tin chi tiết */}
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id={`good-bill-edit`}>
-                                {
-                                    listGoods.map((x, index) =>
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{x.good.code}</td>
-                                            <td>{x.good.name}</td>
-                                            <td>{x.good.baseUnit}</td>
-                                            <td>{x.quantity - x.realQuantity}</td>
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </div>
-            }
-            {(typeof listGoods === 'undefined' || listGoods.length === 0) ? '' :
-                <div className={`form-group`}>
-                    <label>{"Số lượng hàng hóa chưa đánh lô"}</label>
-                    <fieldset className="scheduler-border">
-                        {/* Bảng thông tin chi tiết */}
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id={`good-bill-edit`}>
-                                {
-                                    listGoods.map((x, index) =>
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{x.good.code}</td>
-                                            <td>{x.good.name}</td>
-                                            <td>{x.good.baseUnit}</td>
-                                            {(checkLots(x.lots, x.realQuantity)) ? <td>{x.realQuantity}</td> :
-                                                (x.realQuantity == 0 ?
-                                                    <td>{"Không có hàng hóa đạt kiểm định"}</td> :
-                                                    <td className="tooltip-abc">
-                                                        <span style={{ color: "red" }}>{x.realQuantity}</span>
-                                                        <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.bill_management.text')}</p></span>
-                                                    </td>)}
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </div>
-            }
-            {(typeof listGoods === 'undefined' || listGoods.length === 0) ? '' :
-                <div className={`form-group`}>
-                    <label>{"Số lượng hàng hóa chưa xếp hết vào kho"}</label>
+                    <label>{"Thông tin vị trí lưu trữ số hàng hóa còn lại"}</label>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{"Thông tin chi tiết lô hàng đạt kiểm định"}</legend>
                         <div className={`form-group`}>
@@ -223,7 +121,7 @@ function CompleteComponent(props) {
                                                     <td>{x.code}</td>
                                                     <td>{x.goodName}</td>
                                                     <td>{x.baseUnit}</td>
-                                                    <td>{x.quantity}</td>
+                                                    <td>{x.restQuantity}</td>
                                                     {checkDifferentGood(x) > 0 ?
                                                         <td className="tooltip-abc">
                                                             <span style={{ color: "red" }}>{checkDifferentGood(x)}</span>

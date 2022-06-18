@@ -13,6 +13,10 @@ const ProductRequestManagementSchema = new Schema({
         ref: "User",
         required: true
     },
+    bill: {
+        type: Schema.Types.ObjectId,
+        ref: "Bill",
+    },
     // approveType 1. Người phê duyệt trong nhà máy sản xuất
     // approveType 2. Người phê duyệt mua hàng trong đơn hàng
     // approveType 3. Người phê duyệt nhập kho trong đơn hàng
@@ -57,6 +61,23 @@ const ProductRequestManagementSchema = new Schema({
         quantity: {
             type: Number
         },
+        lots: [{
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+            quantity: {
+                type: Number,
+                default: 0
+            },
+            returnQuantity: {
+                type: Number,
+                default: 0
+            },
+            note: {
+                type: String
+            }
+        }],
     }],
     manufacturingWork: { // Nhà máy sản xuất
         type: Schema.Types.ObjectId,

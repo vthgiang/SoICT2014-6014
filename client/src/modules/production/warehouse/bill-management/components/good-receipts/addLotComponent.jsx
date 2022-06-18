@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
+import { SelectBox, ErrorLabel } from '../../../../../../common-components';
 import QuantityLotGoodReceipt from './quantityLotGoodReceipt';
-import { generateCode } from '../../../../../../helpers/generateCode';
-import { LotActions } from '../../../inventory-management/redux/actions';
-import { BillActions } from '../../redux/actions';
-import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import './goodReceipt.css'
 
 function AddLotComponent(props) {
@@ -189,14 +185,13 @@ function AddLotComponent(props) {
     const { translate, group } = props;
     const { lots, lotName, listGood, good, billId, statusLot, fromStock, type, quantity, code, initialData, errorOnStatus, isPassQualityControl } = state;
     const listGoods = getAllGoods();
-    console.log(listGood);
     return (
         <React.Fragment>
             <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={initialData} isPassQualityControl={isPassQualityControl}onDataChange={handleLotsChange} />
             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <div className="form-group">
                     <label>{translate('manage_warehouse.bill_management.code')}</label>
-                    <input type="text" value={code} className="form-control" disabled={true}></input>
+                    <input type="text" value={code ? code : ''} className="form-control" disabled={true}></input>
                 </div>
             </div>
             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -298,10 +293,5 @@ function AddLotComponent(props) {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getLotsByGood: LotActions.getLotsByGood,
-    createOrUpdateLots: LotActions.createOrUpdateLots,
-    deleteLot: LotActions.deleteManyLots,
-    editBill: BillActions.editBill,
-    getGoodsByType: GoodActions.getGoodsByType,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AddLotComponent));

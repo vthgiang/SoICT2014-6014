@@ -37,14 +37,23 @@ exports.createRequest = async (user, data, portal) => {
     }
     let newRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
+        bill: data.bill ? data.bill : null,
         creator: user._id,
         goods: data.goods.map(item => {
             return {
                 good: item.good,
-                quantity: item.quantity
+                quantity: item.quantity,
+                lots: item.lots ? item.lots.map(lot => {
+                    return {
+                        lot: lot.lot,
+                        quantity: lot.quantity,
+                        returnQuantity: lot.returnQuantity,
+                        note: lot.note
+                    }
+                }) : []
             }
         }),
-        desiredTime: data.desiredTime ? data.desiredTime : null,
+        desiredTime: data.desiredTime ? data.desiredTime.split("-").reverse().join("-") : null,
         description: data.description ? data.description : null,
         status: data.status ? data.status : null,
         manufacturingWork: data.manufacturingWork ? data.manufacturingWork : null,
@@ -135,6 +144,8 @@ exports.createRequest = async (user, data, portal) => {
         .populate([
             { path: "creator", select: "name" },
             { path: "goods.good", select: "code name baseUnit" },
+            { path: "goods.lots.lot" },
+            { path: "bill", select: "code" },
             { path: "approvers.information.approver" },
             { path: "refuser.refuser", select: "name" },
             { path: "stock" },
@@ -252,6 +263,8 @@ exports.getAllRequestByCondition = async (query, portal) => {
             .populate([
                 { path: "creator", select: "name" },
                 { path: "goods.good", select: "code name baseUnit" },
+                { path: "goods.lots.lot" },
+                { path: "bill", select: "code" },
                 { path: "approvers.information.approver" },
                 { path: "refuser.refuser", select: "name" },
                 { path: "stock" },
@@ -269,6 +282,8 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 page: page,
                 populate: [{ path: "creator", select: "name" },
                 { path: "goods.good", select: "code name baseUnit" },
+                { path: "goods.lots.lot" },
+                { path: "bill", select: "code" },
                 { path: "approvers.information.approver" },
                 { path: "refuser.refuser", select: "name" },
                 { path: "stock" },
@@ -292,6 +307,8 @@ exports.getRequestById = async (id, portal) => {
         .findById({ _id: id })
         .populate([{ path: "creator", select: "name" },
         { path: "goods.good", select: "_id code name baseUnit" },
+        { path: "goods.lots.lot" },
+        { path: "bill", select: "code" },
         { path: "approvers.information.approver" },
         { path: "refuser.refuser", select: "name" },
         { path: "stock" },
@@ -500,6 +517,8 @@ exports.editRequest = async (user, id, data, portal) => {
         .populate([
             { path: "creator", select: "name" },
             { path: "goods.good", select: "code name baseUnit" },
+            { path: "goods.lots.lot" },
+            { path: "bill", select: "code" },
             { path: "approvers.information.approver" },
             { path: "refuser.refuser", select: "name" },
             { path: "stock" },

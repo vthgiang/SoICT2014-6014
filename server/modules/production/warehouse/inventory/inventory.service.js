@@ -110,6 +110,8 @@ exports.getDetailLot = async (id, portal) => {
 }
 
 exports.createOrUpdateLots = async (data, portal) => {
+    console.log("data", data);
+    console.log("passedQualityControl", data.passedQualityControl)
     let lots = [];
     if (data.lots && data.lots.length > 0) {
         for (let i = 0; i < data.lots.length; i++) {
@@ -131,6 +133,7 @@ exports.createOrUpdateLots = async (data, portal) => {
                 lot.code = lot.code;
                 lot.good = lot.good;
                 lot.type = data.type;
+                lot.passedQualityControl = data.passedQualityControl;
                 lot.rfid = rfids;
                 lot.description = data.lots[i].note;
                 lot.lotLogs[0].bill = data.bill;
@@ -171,6 +174,7 @@ exports.createOrUpdateLots = async (data, portal) => {
                     code: data.lots[i].code,
                     good: data.good,
                     type: data.type,
+                    passedQualityControl: data.passedQualityControl,
                     rfid: rfids,
                     stocks: stocks,
                     originalQuantity: data.lots[i].quantity,
@@ -180,6 +184,7 @@ exports.createOrUpdateLots = async (data, portal) => {
                     lotLogs: lotLogs
 
                 }
+                console.log("query", query)
 
                 let lot = await Lot(connect(DB_CONNECTION, portal)).create(query);
                 lots.push(lot);
@@ -196,6 +201,35 @@ exports.deleteManyLots = async (arrayId, portal) => {
     }
     return arrayId;
 }
+
+exports.loadingGoodIntoBinLocation = async (data, lot, portal) => {
+    if (data.stocks && data.stocks.length > 0) {
+        for (let i = 0; i < data.stocks.length; i++) {
+            if (data.stocks[i].binLocations.length > 0) {
+                for (let j = 0; j < data.stocks[i].binLocations.length; j++) {
+                    let binLocation = await BinLocation(connect(DB_CONNECTION, portal)).findById(data.stocks[i].binLocations[j].binLocation._id)
+                    let number = data.stocks[i].binLocations[j].quantity;
+                    if (binLocation.enableGoods.length > 0) {
+                        for (let k = 0; k < binLocation.enableGoods.length; k++) {
+                            if (binLocation.enableGoods[k].good._id.toString() === lot.good._id.toString()) {
+                                if (binLocation.enableGoods[k].contained !== null) {
+                                    binLocation.enableGoods[k].contained = Number(binLocation.enableGoods[k].contained) + Number(number);
+                                    await binLocation.save();
+                                }
+                                else {
+                                    binLocation.enableGoods[k].contained = 0 + Number(number);
+                                    await binLocation.save();
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 exports.editLot = async (id, data, portal) => {
     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(id);
@@ -259,31 +293,7 @@ exports.editLot = async (id, data, portal) => {
 
     await lot.save();
 
-    if (data.stocks && data.stocks.length > 0) {
-        for (let i = 0; i < data.stocks.length; i++) {
-            if (data.stocks[i].binLocations.length > 0) {
-                for (let j = 0; j < data.stocks[i].binLocations.length; j++) {
-                    let binLocation = await BinLocation(connect(DB_CONNECTION, portal)).findById(data.stocks[i].binLocations[j].binLocation._id)
-                    let number = data.stocks[i].binLocations[j].quantity;
-                    if (binLocation.enableGoods.length > 0) {
-                        for (let k = 0; k < binLocation.enableGoods.length; k++) {
-                            if (binLocation.enableGoods[k].good._id.toString() === lot.good._id.toString()) {
-                                if (binLocation.enableGoods[k].contained !== null) {
-                                    binLocation.enableGoods[k].contained = Number(binLocation.enableGoods[k].contained) + Number(number);
-                                    await binLocation.save();
-                                }
-                                else {
-                                    binLocation.enableGoods[k].contained = 0 + Number(number);
-                                    await binLocation.save();
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-    }
+    this.loadingGoodIntoBinLocation(data, lot, portal);
 
     return await Lot(connect(DB_CONNECTION, portal))
         .findById(id)
@@ -300,12 +310,13 @@ exports.editLot = async (id, data, portal) => {
 }
 
 exports.getLotsByGood = async (query, portal) => {
-    const { good, stock } = query;
+    const { good, stock, billType } = query;
+    let passedQualityControl = billType ? (billType === '1' || billType === '2' ? 1 : 0) : null;
     if (!stock) {
         return [];
     }
     const lots = await Lot(connect(DB_CONNECTION, portal))
-        .find({ good: good, stocks: { $elemMatch: { stock: stock } } })
+        .find({ good: good, passedQualityControl: passedQualityControl, stocks: { $elemMatch: { stock: stock } } })
         .populate([
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation', select: 'id path' },

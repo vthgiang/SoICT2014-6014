@@ -253,7 +253,6 @@ function LotEditForm(props) {
 
     const save = async () => {
         const { id, stocks } = state;
-        console.log(stocks, id);
         await props.editLot(id, {
             stocks: stocks,
         });

@@ -3,12 +3,24 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
-import { formatToTimeZoneDate, formatDate } from '../../../../../../helpers/formatDate';
+import { formatToTimeZoneDate } from '../../../../../../helpers/formatDate';
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 function CreateForm(props) {
 
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
     const [state, setState] = useState({
         code: generateCode("SR"),
         desiredTime: formatDate((new Date()).toISOString()),
@@ -54,7 +66,6 @@ function CreateForm(props) {
     useEffect(() => {
         if (state.stock) {
             let listStocks = getStock();
-            console.log(listStocks);
             let result = findIndex(listStocks, state.stock);
             if (result !== -1) {
                 props.getAllUserOfDepartment(listStocks[result].organizationalUnit);
@@ -299,7 +310,7 @@ function CreateForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: formatToTimeZoneDate(state.desiredTime),
+                desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
                 approvers: state.approvers,
@@ -342,6 +353,7 @@ function CreateForm(props) {
     const dataStock = getStock();
     const dataManufacturingWorks = getListWorks();
     const dataCustomer = getSuplierOptions();
+    console.log(state);
     return (
         <React.Fragment>
             {!NotHaveCreateButton && <ButtonModal onButtonCallBack={handleClickCreate} modalID="modal-create-purchasing-request" button_name={translate('production.request_management.add_request_button')} title={translate('production.request_management.add_request')} />}

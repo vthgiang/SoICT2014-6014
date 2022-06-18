@@ -1,24 +1,25 @@
 import React from "react";
 import { DialogModal } from "../../../../../../common-components";
-import "./goodReceipt.css";
+import "../good-receipts/goodReceipt.css";
 import { connect } from "react-redux";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import BaseInformationComponent from './baseInformationComponent';
-import StockWorkAssignment from "../genaral/stockWorkAssignment";
+import SelectLotComponent from './selectLotComponent';
 import { generateCode } from "../../../../../../helpers/generateCode";
 import { BillActions } from "../../redux/actions";
+import StockWorkAssignment from "../genaral/stockWorkAssignment";
 
-function GoodReceiptCreateFormModal(props) {
+function GoodIssueCreateFormModal(props) {
 
     const [state, setState] = React.useState({
+        code: generateCode("BIIS"),
         fromStock: "",
-        group: "1",
+        group: "2",
         status: "1",
-        sourceType: "",
+        billType: "",
         listGood: "",
         manufacturingWork: "",
         supplier: "",
-        code: generateCode("BIRE"),
         description: "",
         step: 0,
         isHaveDataStep1: 0,
@@ -36,12 +37,16 @@ function GoodReceiptCreateFormModal(props) {
         address: "",
         phone: "",
         dataStockWorkAssignment: [],
-        priority: 3,
         steps: [
             {
                 label: "Tạo phiếu",
                 active: true,
                 disabled: false,
+            },
+            {
+                label: "Chọn lô hàng",
+                active: false,
+                disabled: true,
             },
             {
                 label: "Phân công công việc",
@@ -74,7 +79,7 @@ function GoodReceiptCreateFormModal(props) {
         setState({
             ...state,
             fromStock: data.fromStock,
-            sourceType: data.sourceType,
+            billType: data.billType,
             listGood: data.listGood,
             manufacturingWork: data.manufacturingWork,
             requestValue: data.requestValue,
@@ -85,7 +90,7 @@ function GoodReceiptCreateFormModal(props) {
         });
     }
 
-    const handleStockWorkAssignmentChange = (data, stockWorkAssignmentState, priority) => {
+    const handleStockWorkAssignmentChange = (data, stockWorkAssignmentState) => {
         let peopleInCharge = data[0].workAssignmentStaffs;
         let accountables = data[1].workAssignmentStaffs;
         let accountants = data[2].workAssignmentStaffs;
@@ -103,7 +108,6 @@ function GoodReceiptCreateFormModal(props) {
             endTime: endTime,
             startDate: startDate,
             endDate: endDate,
-            priority: priority,
             workAssignment: stockWorkAssignmentState.workAssignment,
             isHaveDataStep2: state.isHaveDataStep2 + 1,
             dataStockWorkAssignment: dataStockWorkAssignment,
@@ -117,9 +121,35 @@ function GoodReceiptCreateFormModal(props) {
         })
     }
 
+    const checkLots = (lots, quantity) => {
+        if (lots.length === 0) {
+            return false;
+        } else {
+            let totalQuantity = 0;
+            for (let i = 0; i < lots.length; i++) {
+                totalQuantity += Number(lots[i].quantity);
+            }
+            if (Number(quantity) !== Number(totalQuantity)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     const isValidateStep = (index) => {
+        let { listGood } = state;
         if (index == 1) {
             return isHaveDataStep1 > 0;
+        } else if (index == 2) {
+            let counter = 0;
+            if (listGood && listGood.length > 0) {
+                listGood.map(item => {
+                    if (item.lots && item.lots.length > 0) {
+                        counter = !checkLots(item.lots, item.quantity) ? counter + 1 : counter;
+                    }
+                })
+            }
+            return counter === 0;
         }
     };
 
@@ -133,14 +163,13 @@ function GoodReceiptCreateFormModal(props) {
             listGood: props.request.goods,
             fromStock: props.request.stock._id,
             manufacturingWork: props.request.manufacturingWork ? props.request.manufacturingWork._id : "",
-            requestValue: props.requestValue ? props.requestValue : "",
             supplier: props.request.supplier ? props.request.supplier._id : "",
-            sourceType:props.request.supplier ? "2" : "1",
+            billType: props.request.supplier ? "2" : "1",
             requestId: props.requestId,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
         })
     }
-            
+
 
     const save = async () => {
         if (isFormValidated()) {
@@ -148,7 +177,7 @@ function GoodReceiptCreateFormModal(props) {
                 fromStock: state.fromStock,
                 group: state.group,
                 status: state.status,
-                sourceType: state.sourceType,
+                billType: state.billType,
                 goods: state.listGood,
                 manufacturingWork: state.manufacturingWork,
                 supplier: state.supplier,
@@ -165,24 +194,24 @@ function GoodReceiptCreateFormModal(props) {
         }
     }
 
-    const { step, steps, fromStock, code, sourceType, listGood, manufacturingWork, supplier, requestValue, description, isHaveDataStep1, isHaveDataStep2,
-        peopleInCharge, accountables, accountants, startTime, endTime, startDate, endDate, workAssignment, name, email, address, phone, group, priority } = state;
-        const { translate, createType } = props;
+    const { step, steps, fromStock, code, billType, listGood, manufacturingWork, supplier, description, isHaveDataStep1, isHaveDataStep2, requestValue,
+        peopleInCharge, accountables, accountants, startTime, endTime, startDate, endDate, workAssignment, name, email, address, phone, group } = state;
+    const { translate, createType } = props;
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-new-receipt-bill"
+                modalID="modal-create-new-issue-bill"
                 isLoading={false}
-                formID="modal-create-new-receipt-bill"
+                formID="modal-create-new-issue-bill"
                 title={"Tạo mới phiếu nhập kho"}
-                msg_success={"Tạo mới phiếu nhập kho thành công"}
-                msg_failure={"Tạo mới phiếu nhập kho thất bại"}
+                msg_success={"Tạo mới phiếu xuất kho thành công"}
+                msg_failure={"Tạo mới phiếu xuất kho thất bại"}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
                 maxWidth={500}
             >
-                <form id="modal-create-new-receipt-bill">
+                <form id="modal-create-new-issue-bill">
                     <div className="timeline">
                         <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
                         <div className="timeline-items">
@@ -205,17 +234,25 @@ function GoodReceiptCreateFormModal(props) {
                                 isHaveDataStep1={isHaveDataStep1}
                                 code={code}
                                 fromStock={fromStock}
-                                sourceType={sourceType}
+                                billType={billType}
                                 listGood={listGood}
                                 manufacturingWork={manufacturingWork}
                                 supplier={supplier}
                                 description={description}
-                                onDataChange={handleBaseInformationChange}
                                 createType={createType}
                                 requestValue={requestValue}
+                                onDataChange={handleBaseInformationChange}
                             />
                         }
                         {step === 1 &&
+                            <SelectLotComponent
+                                isHaveDataStep2={isHaveDataStep2}
+                                listGood={listGood}
+                                fromStock={fromStock}
+                                billType={billType}
+                            />
+                        }
+                        {step === 2 &&
                             <StockWorkAssignment
                                 isHaveDataStep2={isHaveDataStep2}
                                 peopleInCharge={peopleInCharge}
@@ -232,10 +269,9 @@ function GoodReceiptCreateFormModal(props) {
                                 phone={phone}
                                 code={code}
                                 group={group}
-                                priority={priority}
-                                onDataChange={handleStockWorkAssignmentChange} 
+                                onDataChange={handleStockWorkAssignmentChange}
                                 onTranferInformationChange={handleTranferInformationChange}
-                                />
+                            />
                         }
                     </div>
                     <div style={{ textAlign: "center" }}>{`${step + 1} / ${steps.length}`}</div>
@@ -251,4 +287,4 @@ const mapDispatchToProps = {
     createBill: BillActions.createBill,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReceiptCreateFormModal));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodIssueCreateFormModal));
