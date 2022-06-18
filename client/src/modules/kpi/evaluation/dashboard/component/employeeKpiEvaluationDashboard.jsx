@@ -581,7 +581,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                     </div>
 
 
-                    {/* Dashboard gi do */}
+                    {/* Dashboard trang thai khoi tao kpi nhan vien */}
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box">
@@ -599,6 +599,29 @@ function EmployeeKpiEvaluationDashboard(props) {
                                 </div>
                                 <div className="box-body qlcv">
                                     <EmployeeCreateKpiDashboard />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Thống kê kết quả KPI của nhân viên */}
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Danh gia kha nang thuc hien kpi nhan vien</h3>
+
+                                </div>
+
+                                <div className="box-body qlcv" id="statisticsOfEmployeeKpiSetChart">
+
+
+                                    <div className="col-sm-12 col-xs-12">
+                                        <div className="qlcv">
+                                            Bar chart here
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
