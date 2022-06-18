@@ -36,7 +36,7 @@ const DelegationDetailInfo = (props) => {
                 forReceive: props.forReceive,
                 replyStatus: props.replyStatus,
                 declineReason: props.declineReason,
-
+                delegatePolicy: props.delegatePolicy
             })
         }
     }, [props.delegationID, props.status, props.replyStatus])
@@ -49,7 +49,6 @@ const DelegationDetailInfo = (props) => {
                 title={translate('manage_delegation.detail_info_delegation')}
                 formID={`form-detail-delegation-hooks`}
                 size={50}
-                maxWidth={500}
                 hasSaveButton={false}
                 hasNote={false}
             >
@@ -82,6 +81,8 @@ const DelegationDetailInfo = (props) => {
                             forReceive={state.forReceive}
                             replyStatus={state.replyStatus}
                             declineReason={state.declineReason}
+                            delegatePolicy={state.delegatePolicy}
+
                         />
 
                         {/* Thông tin thuộc tính subject */}

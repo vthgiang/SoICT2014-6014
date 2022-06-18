@@ -35,7 +35,9 @@ exports.createAttribute = async (portal, data) => {
         for (let i = 0; i < attrArray.length; i++) {
             newAttribute = await Attribute(connect(DB_CONNECTION, portal)).create({
                 attributeName: attrArray[i].attributeName.trim(),
-                description: attrArray[i].description.trim()
+                description: attrArray[i].description.trim(),
+                type: attrArray[i].type
+
             });
         }
 
@@ -157,7 +159,11 @@ exports.deleteAttributes = async (portal, attributeIds) => {
                 $or: [
                     { 'subject.user.userAttributes.attributeId': attributeId },
                     { 'subject.role.roleAttributes.attributeId': attributeId },
-                    { 'resource.resourceAttributes.attributeId': attributeId }
+                    { 'resource.resourceAttributes.attributeId': attributeId },
+                    { 'delegator.delegatorAttributes.attributeId': attributeId },
+                    { 'delegatee.delegateeAttributes.attributeId': attributeId },
+                    { 'delegatedObject.delegatedObjectAttributes.attributeId': attributeId }
+
                 ]
             });
         console.log('currentPoliciesHaveThisAttribute', currentPoliciesHaveThisAttribute)

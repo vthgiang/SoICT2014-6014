@@ -27,7 +27,7 @@ function PolicyTable(props) {
     })
     const [selectedData, setSelectedData] = useState()
 
-    const { policy, translate } = props;
+    const { policyDelegation, translate } = props;
     const { policyName, page, perPage, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
@@ -123,7 +123,7 @@ function PolicyTable(props) {
         props.getPolicies({
             policyName,
             perPage,
-            page: policy && policy.lists && policy.lists.length === 1 ? page - 1 : page
+            page: policyDelegation && policyDelegation.lists && policyDelegation.lists.length === 1 ? page - 1 : page
         });
     }
 
@@ -162,11 +162,11 @@ function PolicyTable(props) {
     }
 
     let lists = [];
-    if (policy) {
-        lists = policy.lists
+    if (policyDelegation) {
+        lists = policyDelegation.lists
     }
 
-    const totalPage = policy && Math.ceil(policy.totalList / perPage);
+    const totalPage = policyDelegation && Math.ceil(policyDelegation.totalList / perPage);
 
     return (
         <React.Fragment>
@@ -174,11 +174,13 @@ function PolicyTable(props) {
                 policyID={currentRow && currentRow._id}
                 policyName={currentRow && currentRow.policyName}
                 description={currentRow && currentRow.description}
-                userAttributes={currentRow && currentRow.subject.user.userAttributes}
-                roleAttributes={currentRow && currentRow.subject.role.roleAttributes}
+                delegatorAttributes={currentRow && currentRow.delegator.delegatorAttributes}
+                delegateeAttributes={currentRow && currentRow.delegatee.delegateeAttributes}
+                delegatedObjectAttributes={currentRow && currentRow.delegatedObject.delegatedObjectAttributes}
                 resourceAttributes={currentRow && currentRow.resource.resourceAttributes}
-                userRule={currentRow && currentRow.subject.user.userRule}
-                roleRule={currentRow && currentRow.subject.role.roleRule}
+                delegatorRule={currentRow && currentRow.delegator.delegatorRule}
+                delegatedObjectRule={currentRow && currentRow.delegatedObject.delegatedObjectRule}
+                delegateeRule={currentRow && currentRow.delegatee.delegateeRule}
                 resourceRule={currentRow && currentRow.resource.resourceRule}
                 i={state.i}
                 handleChangeAddRowAttribute={handleChangeAddRowAttribute}
@@ -188,11 +190,13 @@ function PolicyTable(props) {
                 policyID={curentRowDetail && curentRowDetail._id}
                 policyName={curentRowDetail && curentRowDetail.policyName}
                 description={curentRowDetail && curentRowDetail.description}
-                userAttributes={curentRowDetail && curentRowDetail.subject.user.userAttributes}
-                roleAttributes={curentRowDetail && curentRowDetail.subject.role.roleAttributes}
+                delegatorAttributes={curentRowDetail && curentRowDetail.delegator.delegatorAttributes}
+                delegateeAttributes={curentRowDetail && curentRowDetail.delegatee.delegateeAttributes}
+                delegatedObjectAttributes={curentRowDetail && curentRowDetail.delegatedObject.delegatedObjectAttributes}
                 resourceAttributes={curentRowDetail && curentRowDetail.resource.resourceAttributes}
-                userRule={curentRowDetail && curentRowDetail.subject.user.userRule}
-                roleRule={curentRowDetail && curentRowDetail.subject.role.roleRule}
+                delegatorRule={curentRowDetail && curentRowDetail.delegator.delegatorRule}
+                delegatedObjectRule={curentRowDetail && curentRowDetail.delegatedObject.delegatedObjectRule}
+                delegateeRule={curentRowDetail && curentRowDetail.delegatee.delegateeRule}
                 resourceRule={curentRowDetail && curentRowDetail.resource.resourceRule}
                 curentRowDetail={curentRowDetail}
             />
@@ -213,11 +217,11 @@ function PolicyTable(props) {
                 <div className="form-inline">
                     {/* Button thêm mới */}
                     <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
-                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_policy.add_title')} >{translate('manage_policy.add')}</button>
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_delegation_policy.add_title')} >{translate('manage_delegation_policy.add')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-policy-hooks').modal('show')} title={translate('manage_policy.add_one_policy')}>
-                                {translate('manage_policy.add_policy')}</a></li>
-                            {/* <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-policy-hooks').modal('show')} title={translate('manage_policy.add_multi_policy')}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-policy-hooks').modal('show')} title={translate('manage_delegation_policy.add_one_policy')}>
+                                {translate('manage_delegation_policy.add_policy')}</a></li>
+                            {/* <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-policy-hooks').modal('show')} title={translate('manage_delegation_policy.add_multi_policy')}>
                                 {translate('human_resource.salary.add_import')}</a></li> */}
                         </ul>
                     </div>
@@ -225,25 +229,25 @@ function PolicyTable(props) {
 
                     {/* Tìm kiếm */}
                     <div className="form-group">
-                        <label className="form-control-static">{translate('manage_policy.policyName')}</label>
-                        <input type="text" className="form-control" name="policyName" onChange={handleChangePolicyName} placeholder={translate('manage_policy.policyName')} autoComplete="off" />
+                        <label className="form-control-static">{translate('manage_delegation_policy.policyName')}</label>
+                        <input type="text" className="form-control" name="policyName" onChange={handleChangePolicyName} placeholder={translate('manage_delegation_policy.policyName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_policy.search')} onClick={() => handleSubmitSearch()}>{translate('manage_policy.search')}</button>
+                        <button type="button" className="btn btn-success" title={translate('manage_delegation_policy.search')} onClick={() => handleSubmitSearch()}>{translate('manage_delegation_policy.search')}</button>
                     </div>
                 </div>
 
                 <SmartTable
                     tableId={tableId}
                     columnData={{
-                        index: translate('manage_policy.index'),
-                        policyName: translate('manage_policy.policyName'),
-                        description: translate('manage_policy.description')
+                        index: translate('manage_delegation_policy.index'),
+                        policyName: translate('manage_delegation_policy.policyName'),
+                        description: translate('manage_delegation_policy.description')
                     }}
                     tableHeaderData={{
-                        index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_policy.index')}</th>,
-                        policyName: <th>{translate('manage_policy.policyName')}</th>,
-                        description: <th>{translate('manage_policy.description')}</th>,
+                        index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_delegation_policy.index')}</th>,
+                        policyName: <th>{translate('manage_delegation_policy.policyName')}</th>,
+                        description: <th>{translate('manage_delegation_policy.description')}</th>,
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                     }}
                     tableBodyData={lists?.length > 0 && lists.map((item, index) => {
@@ -253,10 +257,10 @@ function PolicyTable(props) {
                             policyName: <td>{item?.policyName}</td>,
                             description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>
-                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_policy.detail_info_policy')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
-                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_policy.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_delegation_policy.detail_info_policy')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_delegation_policy.edit')} onClick={() => handleEdit(item)}><i className="material-icons">edit</i></a>
                                 <DeleteNotification
-                                    content={translate('manage_policy.delete')}
+                                    content={translate('manage_delegation_policy.delete')}
                                     data={{
                                         id: item._id,
                                         info: item.policyName
@@ -272,7 +276,7 @@ function PolicyTable(props) {
                 />
 
                 {/* PaginateBar */}
-                {policy && policy.isLoading ?
+                {policyDelegation && policyDelegation.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
@@ -280,7 +284,7 @@ function PolicyTable(props) {
                     pageTotal={totalPage ? totalPage : 0}
                     currentPage={page}
                     display={lists && lists.length !== 0 && lists.length}
-                    total={policy && policy.totalList}
+                    total={policyDelegation && policyDelegation.totalList}
                     func={setPage}
                 />
             </div>
@@ -289,8 +293,8 @@ function PolicyTable(props) {
 }
 
 function mapState(state) {
-    const policy = state.policy;
-    return { policy }
+    const policyDelegation = state.policyDelegation;
+    return { policyDelegation }
 }
 
 const actions = {

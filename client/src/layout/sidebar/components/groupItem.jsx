@@ -53,21 +53,56 @@ class GroupItem extends Component {
                         <ul className="treeview-menu">
                             {
                                 groupItem.list.map((item, key) => {
-                                    if (this.checkURL(item.path, links))
+                                    if (!item.list)
+                                        if (this.checkURL(item.path, links))
+                                            return (
+                                                <li key={key} className={window.location.pathname === item.path ? "active" : ""}>
+                                                    <Link
+                                                        to={item.path}
+                                                        onClick={() => {
+                                                            store.dispatch({ type: 'SWITCH_PAGE' });
+                                                        }}
+                                                    >
+                                                        <i className={item.icon} />
+                                                        {translate(`${item.name}`)}
+                                                    </Link>
+                                                </li>
+                                            );
+                                        else return null;
+                                    if (item.list)
                                         return (
-                                            <li key={key} className={window.location.pathname === item.path ? "active" : ""}>
-                                                <Link 
-                                                    to={item.path}
-                                                    onClick={() => { 
-                                                        store.dispatch({ type: 'SWITCH_PAGE' });
-                                                    }}
-                                                >
-                                                    <i className={item.icon} />
-                                                    {translate(`${item.name}`)}
-                                                </Link>
+                                            <li key={key} className={item.list.some(c => c.path === window.location.pathname) ? "treeview active" : "treeview"}>
+                                                <a href="">
+                                                    <i className={item.icon} /> <span>{translate(item.name)}</span>
+                                                    <span className="pull-right-container">
+                                                        <i className="fa fa-angle-left pull-right" />
+                                                    </span>
+                                                </a>
+                                                <ul className="treeview-menu">
+                                                    {
+                                                        item.list.map((itemChild, key) => {
+                                                            if (this.checkURL(itemChild.path, links))
+                                                                return (
+                                                                    <li key={key} className={window.location.pathname === itemChild.path ? "active" : ""}>
+                                                                        <Link
+                                                                            to={itemChild.path}
+                                                                            onClick={() => {
+                                                                                store.dispatch({ type: 'SWITCH_PAGE' });
+                                                                            }}
+                                                                        >
+                                                                            <i className={itemChild.icon} />
+                                                                            {translate(`${itemChild.name}`)}
+                                                                        </Link>
+                                                                    </li>
+                                                                );
+                                                            else return null;
+
+                                                        })
+                                                    }
+                                                </ul>
                                             </li>
+
                                         );
-                                    else return null;
                                 })
                             }
                         </ul>

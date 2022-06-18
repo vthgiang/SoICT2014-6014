@@ -58,7 +58,7 @@ class DialogModal extends Component {
         return (
             <React.Fragment>
                 <div id={modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div className={`modal-dialog modal-size-${size}`} style={maxWidth === undefined ? {} : { maxWidth: maxWidth }, marginTop === undefined ? {} : { marginTop: marginTop }}>
+                    <div className={`modal-dialog modal-size-${size}`} style={maxWidth ? marginTop ? { marginTop: marginTop + "px", maxWidth: maxWidth + "px" } : { maxWidth: maxWidth + "px", marginTop: "unset" } : marginTop ? { marginTop: marginTop + "px", maxWidth: "unset" } : { marginTop: "unset", maxWidth: "unset" }}>
                         <div className="modal-content">
                             <div className="modal-header" style={styleCustom}>
                                 <button type="button" className="close" onClick={() => {

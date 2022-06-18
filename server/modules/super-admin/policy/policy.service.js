@@ -6,7 +6,8 @@ const {
     Role,
     Link,
     Component,
-    Privilege
+    Privilege,
+    Delegation
 } = require('../../../models');
 
 const {
@@ -23,8 +24,8 @@ exports.createPolicy = async (portal, data) => {
         if (array.length > 0) {
 
             for (let i = 0; i < array.length; i++) {
-                const checkPolicyCreated = await Policy(connect(DB_CONNECTION, portal)).findOne({ policyName: array[i].policyName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
-                if (checkPolicyCreated) {
+                const checkPolicyCreated = await Policy(connect(DB_CONNECTION, portal)).findOne({ policyName: array[i].policyName, category: "Authorization" }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+                if (checkPolicyCreated && checkPolicyCreated.category == "Authorization") {
                     throw ['policy_name_exist'];
                 }
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -79,6 +80,7 @@ exports.createPolicy = async (portal, data) => {
             newPolicy = await Policy(connect(DB_CONNECTION, portal)).create({
                 policyName: polArray[i].policyName.trim(),
                 description: polArray[i].description.trim(),
+                category: "Authorization",
                 subject: {
                     user: {
                         userAttributes: userDataAttr,
@@ -102,9 +104,126 @@ exports.createPolicy = async (portal, data) => {
     return policy;
 }
 
+exports.createPolicyDelegation = async (portal, data) => {
+    let newPolicy;
+
+    const filterValidPolicyArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            for (let i = 0; i < array.length; i++) {
+                const checkPolicyCreated = await Policy(connect(DB_CONNECTION, portal)).findOne({ policyName: array[i].policyName, category: "Delegation" }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+                if (checkPolicyCreated && checkPolicyCreated.category == "Delegation") {
+                    throw ['policy_name_exist'];
+                }
+                if (array[i]) resArray = [...resArray, array[i]];
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    // array[i] = { ...array[i], name: attribute.attributeName };
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+    const filterValidAttributeData = async (array) => {
+        const attrArray = await filterValidAttributeArray(array);
+        const dataAttr = attrArray.map(attr => {
+            return {
+                attributeId: attr.attributeId,
+                // name: attr.name.trim(),
+                value: attr.value.trim(),
+            }
+        });
+        return dataAttr
+    }
+
+    const polArray = await filterValidPolicyArray(data);
+    console.log(data)
+    if (polArray && polArray.length !== 0) {
+        for (let i = 0; i < polArray.length; i++) {
+            const delegatorDataAttr = await filterValidAttributeData(polArray[i].delegator.delegatorAttributes);
+            const delegateeDataAttr = await filterValidAttributeData(polArray[i].delegatee.delegateeAttributes);
+            const resourceDataAttr = await filterValidAttributeData(polArray[i].resource.resourceAttributes);
+            const delegatedObjectDataAttr = await filterValidAttributeData(polArray[i].delegatedObject.delegatedObjectAttributes);
+
+            newPolicy = await Policy(connect(DB_CONNECTION, portal)).create({
+                policyName: polArray[i].policyName.trim(),
+                description: polArray[i].description.trim(),
+                category: "Delegation",
+                delegator: {
+                    delegatorAttributes: delegatorDataAttr,
+                    delegatorRule: polArray[i].delegator.delegatorRule
+                },
+                delegatee: {
+                    delegateeAttributes: delegateeDataAttr,
+                    delegateeRule: polArray[i].delegatee.delegateeRule
+                },
+                delegatedObject: {
+                    delegatedObjectAttributes: delegatedObjectDataAttr,
+                    delegatedObjectRule: polArray[i].delegatedObject.delegatedObjectRule
+                },
+                resource: {
+                    resourceAttributes: resourceDataAttr,
+                    resourceRule: polArray[i].resource.resourceRule
+                },
+            });
+        }
+
+    }
+
+    let policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: newPolicy._id });;
+    return policy;
+}
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 exports.getPolicies = async (portal, data) => {
-    let keySearch = {};
+    let keySearch = { category: "Authorization" };
+    if (data?.policyName?.length > 0) {
+        keySearch = {
+            policyName: {
+                $regex: data.policyName,
+                $options: "i"
+            }
+        }
+    }
+
+    let page, perPage;
+    page = data?.page ? Number(data.page) : 1;
+    perPage = data?.perPage ? Number(data.perPage) : 20;
+
+    let totalList = await Policy(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let policies = await Policy(connect(DB_CONNECTION, portal)).find(keySearch)
+        .skip((page - 1) * perPage)
+        .limit(perPage);
+
+    return {
+        data: policies,
+        totalList
+    }
+}
+
+// Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
+exports.getPoliciesDelegation = async (portal, data) => {
+    let keySearch = { category: "Delegation" };
     if (data?.policyName?.length > 0) {
         keySearch = {
             policyName: {
@@ -171,10 +290,10 @@ exports.editPolicy = async (portal, id, data) => {
     if (!oldPolicy) {
         return -1;
     }
-    const check = await Policy(connect(DB_CONNECTION, portal)).findOne({ policyName: data.policyName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+    const check = await Policy(connect(DB_CONNECTION, portal)).findOne({ policyName: data.policyName, category: "Authorization" }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
 
     if (oldPolicy.policyName.trim().toLowerCase().replace(/ /g, "") !== data.policyName.trim().toLowerCase().replace(/ /g, "")) {
-        if (check) throw ['policy_name_exist'];
+        if (check && check.category == "Authorization") throw ['policy_name_exist'];
     }
 
     const filterValidAttributeArray = async (array) => {
@@ -241,6 +360,102 @@ exports.editPolicy = async (portal, id, data) => {
     let policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: oldPolicy._id });
 
     return policy;
+}
+
+exports.editPolicyDelegation = async (portal, id, data) => {
+    let oldPolicy = await Policy(connect(DB_CONNECTION, portal)).findById(id);
+    if (!oldPolicy) {
+        return -1;
+    }
+    const check = await Policy(connect(DB_CONNECTION, portal)).findOne({ policyName: data.policyName, category: "Delegation" }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+
+    if (oldPolicy.policyName.trim().toLowerCase().replace(/ /g, "") !== data.policyName.trim().toLowerCase().replace(/ /g, "")) {
+        if (check && check.category == "Delegation") throw ['policy_name_exist'];
+    }
+
+    const filterValidAttributeArray = async (array) => {
+        let resArray = [];
+        if (array.length > 0) {
+
+            if ((new Set(array.map(attr => attr.attributeId.toLowerCase().replace(/ /g, "")))).size !== array.length) {
+                throw ['attribute_selected_duplicate'];
+            }
+
+            for (let i = 0; i < array.length; i++) {
+                // const attribute = await Attribute(connect(DB_CONNECTION, portal)).findOne({ _id: array[i].attributeId });
+                if (array[i]) {
+                    // array[i] = { ...array[i], name: attribute.attributeName };
+                    resArray = [...resArray, array[i]];
+                }
+            }
+
+            return resArray;
+        } else {
+            return [];
+        }
+    }
+    const filterValidAttributeData = async (array) => {
+        const attrArray = await filterValidAttributeArray(array);
+        const dataAttr = attrArray.map(attr => {
+            return {
+                attributeId: attr.attributeId,
+                // name: attr.name.trim(),
+                value: attr.value.trim(),
+            }
+        });
+        return dataAttr
+    }
+
+    const delegatorDataAttr = await filterValidAttributeData(data.delegator.delegatorAttributes);
+    const delegateeDataAttr = await filterValidAttributeData(data.delegatee.delegateeAttributes);
+    const resourceDataAttr = await filterValidAttributeData(data.resource.resourceAttributes);
+    const delegatedObjectDataAttr = await filterValidAttributeData(data.delegatedObject.delegatedObjectAttributes);
+
+    await Policy(connect(DB_CONNECTION, portal)).updateOne({ _id: id }, {
+        $set: {
+            policyName: data.policyName.trim(),
+            description: data.description.trim(),
+            delegator: {
+                delegatorAttributes: delegatorDataAttr,
+                delegatorRule: data.delegator.delegatorRule
+            },
+            delegatee: {
+                delegateeAttributes: delegateeDataAttr,
+                delegateeRule: data.delegatee.delegateeRule
+            },
+            delegatedObject: {
+                delegatedObjectAttributes: delegatedObjectDataAttr,
+                delegatedObjectRule: data.delegatedObject.delegatedObjectRule
+            },
+            resource: {
+                resourceAttributes: resourceDataAttr,
+                resourceRule: data.resource.resourceRule
+            },
+        }
+    });
+
+
+    // Cach 2 de update
+    // await Policy(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    let policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: oldPolicy._id });
+
+    return policy;
+}
+
+
+exports.deletePoliciesDelegation = async (portal, policyIds) => {
+    const delegationsHavePolicy = await Delegation(connect(DB_CONNECTION, portal)).find({ policy: { $in: policyIds } });
+
+    let policies;
+    if (delegationsHavePolicy.length > 0) {
+        throw ['policy_delegation_exist']
+    } else {
+
+        policies = await Policy(connect(DB_CONNECTION, portal))
+            .deleteMany({ _id: { $in: policyIds.map(item => mongoose.Types.ObjectId(item)) } });
+    }
+
+    return policies;
 }
 
 // Xóa một Ví dụ
@@ -392,7 +607,7 @@ exports.cleanPolicy = async (portal, policyId) => {
 }
 
 exports.checkAllPolicies = async (portal) => {
-    const allPolicies = await Policy(connect(DB_CONNECTION, portal)).find();
+    const allPolicies = await Policy(connect(DB_CONNECTION, portal)).find({ category: "Authorization" });
     allPolicies.map(p => p._id).forEach(async policyId => {
         await this.cleanPolicy(portal, policyId)
         await this.addPolicyToRelationship(portal, policyId)

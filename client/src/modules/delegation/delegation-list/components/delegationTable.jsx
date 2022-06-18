@@ -12,6 +12,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { LinkActions } from '../../../super-admin/link/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 
+
 import { DelegationActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import dayjs from "dayjs";
@@ -32,7 +33,7 @@ function DelegationTable(props) {
     })
     const [selectedData, setSelectedData] = useState()
 
-    const { delegation, translate, user, role, link, } = props;
+    const { delegation, translate, user } = props;
     const { delegationName, page, perPage, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
@@ -45,6 +46,7 @@ function DelegationTable(props) {
     useEffect(() => {
         props.getDepartment();
     }, [])
+
 
     /**
      * Hàm xử lý khi tên ví dụ thay đổi
@@ -175,6 +177,7 @@ function DelegationTable(props) {
     let lists = [];
     if (delegation) {
         lists = delegation.lists
+        console.log(delegation)
     }
 
     const totalPage = delegation && Math.ceil(delegation.totalList / perPage);
@@ -202,6 +205,7 @@ function DelegationTable(props) {
                 endDate={currentRow && currentRow.endDate}
                 revokedDate={currentRow && currentRow.revokedDate}
                 revokeReason={currentRow && currentRow.revokeReason}
+                delegatePolicy={currentRow && currentRow.delegatePolicy}
                 showChooseLinks={currentRow && currentRow.allPrivileges == true ? false : true}
                 showChooseRevoke={currentRow && currentRow.revokedDate != null ? true : false}
             />
@@ -225,6 +229,7 @@ function DelegationTable(props) {
                 revokeReason={curentRowDetail && curentRowDetail.revokeReason}
                 replyStatus={curentRowDetail && curentRowDetail.replyStatus}
                 declineReason={curentRowDetail && curentRowDetail.declineReason}
+                delegatePolicy={curentRowDetail && curentRowDetail.delegatePolicy}
 
             />
 
@@ -361,7 +366,7 @@ const actions = {
     getUser: UserActions.get,
     getLinks: LinkActions.get,
     getRoles: RoleActions.get,
-    getDepartment: UserActions.getDepartmentOfUser
+    getDepartment: UserActions.getDepartmentOfUser,
 }
 
 const connectedDelegationTable = connect(mapState, actions)(withTranslate(DelegationTable));

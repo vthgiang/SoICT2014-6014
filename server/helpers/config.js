@@ -385,6 +385,16 @@ const LINKS = [{
     components: getComponentsInLink('/policies-management')
 },
 {
+    url: '/delegation-policies-management',
+    description: 'Quản lý chính sách ủy quyền',
+    category: LINK_CATEGORY.RBAC.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    components: getComponentsInLink('/delegation-policies-management')
+},
+{
     url: '/apis-management',
     description: 'Quản lý API web của công ty',
     category: LINK_CATEGORY.RBAC.name,

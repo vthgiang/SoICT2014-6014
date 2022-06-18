@@ -9,5 +9,11 @@ router.post('/policies', auth, PolicyController.createPolicy);
 router.patch('/policies/:id', auth, PolicyController.editPolicy);
 router.delete('/policies', auth, PolicyController.deletePolicies);
 
+router.get('/policies-delegation', auth, PolicyController.getPoliciesDelegation);
+router.get('/policies-delegation/:id', auth, PolicyController.getPolicyByIdDelegation);
+router.post('/policies-delegation', auth, PolicyController.createPolicyDelegation);
+router.patch('/policies-delegation/:id', auth, PolicyController.editPolicyDelegation);
+router.delete('/policies-delegation', auth, PolicyController.deletePoliciesDelegation);
+
 module.exports = router;
 

@@ -1,7 +1,8 @@
 select#multiSelectDelegateLinks + div .multiselect-container{
     position: inherit;
     width: 100%;
-    max-height: 250px !important
+    max-height: 250px !important;
+    overflow: auto !important
 }
 
 select#multiSelectDelegateLinks + div .multiselect-container .glyphicon{

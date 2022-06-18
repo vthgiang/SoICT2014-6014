@@ -13,16 +13,17 @@ const AttributeDetailInfo = (props) => {
     const { attributeID } = state;
 
     // Nhận giá trị từ component cha
-    if (props.attributeID !== attributeID || props.attributeName !== state.attributeName || props.description !== state.description) {
+    if (props.attributeID !== attributeID || props.attributeName !== state.attributeName || props.description !== state.description || props.type !== state.type) {
         setState({
             ...state,
             attributeID: props.attributeID,
             attributeName: props.attributeName,
             description: props.description,
+            type: props.type
         })
     }
 
-    const { attributeName, description } = state
+    const { attributeName, description, type } = state
 
     return (
         <React.Fragment>
@@ -40,6 +41,11 @@ const AttributeDetailInfo = (props) => {
                     <div className={`form-group`}>
                         <label>{translate('manage_attribute.attributeName')}:</label>
                         <span> {attributeName}</span>
+                    </div>
+
+                    <div className={`form-group`}>
+                        <label>{translate('manage_attribute.add_type')}:</label>
+                        <span> {translate("manage_attribute.type" + "." + type)}</span>
                     </div>
 
                     {/* Mô tả ví dụ */}

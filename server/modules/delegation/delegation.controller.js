@@ -151,10 +151,12 @@ exports.editDelegation = async (req, res) => {
     try {
         let { id } = req.params;
         let data = req.body;
-        await DelegationService.revokeDelegation(req.portal, [id]);
-        await DelegationService.deleteDelegations(req.portal, [id]);
-        let updatedDelegation = await DelegationService.createDelegation(req.portal, [data]);
+        let updatedDelegation = await DelegationService.getNewlyCreateDelegation(id, data, req.portal);
+
         if (updatedDelegation !== -1) {
+            DelegationService.cancelJobDelegation(id)
+            await DelegationService.revokeDelegation(req.portal, [id]);
+            await DelegationService.deleteDelegations(req.portal, [id]);
             await Log.info(req.user.email, "UPDATED_DELEGATION", req.portal);
             res.status(200).json({
                 success: true,
@@ -170,7 +172,7 @@ exports.editDelegation = async (req, res) => {
         console.log(error)
         res.status(400).json({
             success: false,
-            messages: ["edit_delegation_fail"],
+            messages: Array.isArray(error) ? error : ["edit_delegation_fail"],
             content: error.message
         });
     }

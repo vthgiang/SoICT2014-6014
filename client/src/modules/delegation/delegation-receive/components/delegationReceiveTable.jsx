@@ -178,6 +178,7 @@ function DelegationReceiveTable(props) {
                 forReceive={true}
                 replyStatus={curentRowDetail && curentRowDetail.replyStatus}
                 declineReason={curentRowDetail && curentRowDetail.declineReason}
+                delegatePolicy={curentRowDetail && curentRowDetail.delegatePolicy}
 
             />
 

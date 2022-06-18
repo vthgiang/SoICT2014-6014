@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { generateCode } from "../../../../helpers/generateCode";
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
+import { PolicyActions } from '../../../super-admin/policy-delegation/redux/actions';
 
 
 function DelegationCreateForm(props) {
@@ -41,21 +42,22 @@ function DelegationCreateForm(props) {
         validLinks: [],
         unitMembers: [],
         selectDelegateRole: false,
-        errorOnDelegateLinks: undefined
+        errorOnDelegateLinks: undefined,
+        delegatePolicy: ""
     })
 
     console.log(state)
 
 
-    const { translate, delegation, auth, user, role, link, page, perPage } = props;
-    const { delegationName, description, delegationNameError, delegateRole, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateRole, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateRole, errorOnDelegateLinks, unitMembers } = state;
+    const { translate, delegation, auth, user, policyDelegation, role, link, page, perPage } = props;
+    const { delegationName, description, delegationNameError, delegateRole, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateRole, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateRole, errorOnDelegateLinks, unitMembers, errorDelegatePolicy, delegatePolicy } = state;
 
     /**
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
         if (!delegationNameError.status || !validateDelegateRole(state.delegateRole, false) || !validateDelegatee(state.delegatee, false)
-            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || (showChooseLinks && delegateLinks == null)) {
+            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false) || (showChooseLinks && delegateLinks == null)) {
             return false;
         }
         return true;
@@ -67,6 +69,10 @@ function DelegationCreateForm(props) {
             window.$(`#modal-create-delegation-hooks`).unbind('shown.bs.modal', regenerateTimeAndCode);
         }
 
+    }, [])
+
+    useEffect(() => {
+        props.getPolicies();
     }, [])
 
     const roundToNearestHour = (date) => {
@@ -125,7 +131,8 @@ function DelegationCreateForm(props) {
             delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
             delegationEnd: delegationEnd != "" ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
             delegateLinks: showChooseLinks ? delegateLinks.concat(validLinks.filter(link => link.url == "/home" || link.url == "/notifications").map(l => l._id)) : null,
-            allPrivileges: (!showChooseLinks) ? true : validLinks.length - 2 == delegateLinks.length
+            allPrivileges: (!showChooseLinks) ? true : validLinks.length - 2 == delegateLinks.length,
+            delegatePolicy: delegatePolicy
         }
         if (isFormValidated() && delegationName) {
             props.createDelegation([data]);
@@ -212,6 +219,27 @@ function DelegationCreateForm(props) {
     const handleDelegatee = (value) => {
         validateDelegatee(value[0], true);
     }
+
+    const handleDelegatePolicy = (value) => {
+        validateDelegatePolicy(value[0], true);
+    }
+
+    const validateDelegatePolicy = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value) {
+            msg = translate('manage_delegation.no_blank_delegate_policy');
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                delegatePolicy: value,
+                errorDelegatePolicy: msg,
+            })
+        }
+        return msg === undefined;
+    }
+
 
 
     const validateDelegateRole = (value, willUpdateState) => {
@@ -440,7 +468,6 @@ function DelegationCreateForm(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}
-                maxWidth={500}
             >
                 <form id="form-create-delegation-hooks" onSubmit={() => save(translate('manage_delegation.add_success'))}>
 
@@ -578,6 +605,24 @@ function DelegationCreateForm(props) {
                             </div>}
                     </div>
 
+                    <div className="row form-group">
+                        {/* Chọn chính sách ủy quyền*/}
+                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegatePolicy === undefined ? "" : "has-error"}`}>
+                            <label>{translate('manage_delegation.delegate_policy')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id="select-delegate-policy-create"
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={
+                                    policyDelegation.lists.map(policy => { return { value: policy ? policy._id : null, text: policy ? policy.policyName : "" } })
+                                }
+                                onChange={handleDelegatePolicy}
+                                multiple={false}
+                                options={{ placeholder: translate('manage_delegation.choose_delegate_policy') }}
+                            />
+                            <ErrorLabel content={errorDelegatePolicy} />
+                        </div>
+                    </div>
 
                 </form>
             </DialogModal>
@@ -586,8 +631,8 @@ function DelegationCreateForm(props) {
 }
 
 function mapState(state) {
-    const { auth, user, link, role, delegation } = state;
-    return { auth, user, delegation, link, role }
+    const { auth, user, policyDelegation, link, role, delegation } = state;
+    return { auth, user, policyDelegation, delegation, link, role }
 }
 
 const actions = {
@@ -595,6 +640,7 @@ const actions = {
     getDelegations: DelegationActions.getDelegations,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getPolicies: PolicyActions.getPolicies,
 
 }
 

@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
-import { DialogModal, ErrorLabel } from '../../../../common-components';
+import { SelectBox, DialogModal, ErrorLabel } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 import { AttributeActions } from '../redux/actions';
+import { ATTRIBUTE_TYPE } from '../../../../helpers/constants';
 
 function AttributeEditForm(props) {
     // Khởi tạo state
@@ -16,11 +17,12 @@ function AttributeEditForm(props) {
         attributeNameError: {
             message: undefined,
             status: true
-        }
+        },
+        type: ""
     })
 
     const { translate, attribute } = props;
-    const { attributeName, description, attributeNameError, attributeID } = state;
+    const { attributeName, description, attributeNameError, attributeID, type, errorOnTypeField } = state;
 
     // setState từ props mới
     if (props.attributeID !== attributeID) {
@@ -32,7 +34,8 @@ function AttributeEditForm(props) {
             attributeNameError: {
                 message: undefined,
                 status: true
-            }
+            },
+            type: props.type
         })
     }
 
@@ -40,7 +43,7 @@ function AttributeEditForm(props) {
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
-        if (!attributeNameError.status) {
+        if (!attributeNameError.status || !validateAttributeType(state.type, false)) {
             return false;
         }
         return true;
@@ -52,10 +55,33 @@ function AttributeEditForm(props) {
      */
     const save = () => {
         if (isFormValidated) {
-            props.editAttribute(attributeID, { attributeName, description });
+            props.editAttribute(attributeID, { attributeName, description, type });
         }
     }
 
+    const handleChangeAttributeType = (e) => {
+        validateAttributeType(e[0]);
+    }
+
+    const validateAttributeType = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value) {
+            msg = translate('manage_attribute.type_not_selected');
+        }
+        if (willUpdateState) {
+            var { type } = state;
+            type = value;
+            setState(state => {
+                return {
+                    ...state,
+                    errorOnTypeField: msg,
+                    type: type
+                }
+            });
+        }
+        return msg === undefined;
+    }
 
     /**
      * Hàm xử lý khi tên ví dụ thay đổi
@@ -102,6 +128,21 @@ function AttributeEditForm(props) {
                         <label>{translate('manage_attribute.attributeName')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" value={attributeName} onChange={handleAttributeName} />
                         <ErrorLabel content={attributeNameError.message} />
+                    </div>
+
+                    <div className={`form-group ${errorOnTypeField ? "has-error" : ""}`}>
+                        <label>{translate('manage_attribute.add_type')}</label>
+                        <SelectBox
+                            id={`modal-add-type-${attributeID}`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={type}
+                            items={ATTRIBUTE_TYPE.map(type => { return { value: type.name, text: translate("manage_attribute.type" + "." + type.name) } })}
+                            onChange={(e) => handleChangeAttributeType(e)}
+                            multiple={false}
+                            options={{ placeholder: translate('manage_attribute.type_select') }}
+                        />
+                        {errorOnTypeField && <ErrorLabel content={errorOnTypeField} />}
                     </div>
 
                     {/* Mô tả ví dụ */}

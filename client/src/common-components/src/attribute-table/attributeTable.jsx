@@ -5,7 +5,7 @@ import { SelectBox, ErrorLabel } from '../../../common-components';
 import ValidationHelper from '../../../helpers/validationHelper';
 
 function AttributeTable(props) {
-    const [state, setState] = useState({ translation: props.translation, noDescription: props.noDescription ? props.noDescription : false })
+    const [state, setState] = useState({ translation: props.translation, noDescription: props.noDescription ? props.noDescription : false, attributeType: props.attributeType ? props.attributeType : ["Mixed", "Authorization", "Delegation"] })
 
     // Thiet lap cac gia tri tu props vao state
     useEffect(() => {
@@ -180,7 +180,7 @@ function AttributeTable(props) {
     };
 
     const { translate, attribute } = props;
-    const { attributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue, translation, noDescription } = state;
+    const { attributes, errorOnNameFieldPosition, errorOnValuePosition, errorOnNameField, errorOnValue, translation, noDescription, attributeType } = state;
 
     return (
         <React.Fragment>
@@ -216,7 +216,7 @@ function AttributeTable(props) {
                                                     className="form-control select2"
                                                     style={{ width: "100%" }}
                                                     value={attr.attributeId}
-                                                    items={attribute.lists.map(attribute => { return { value: attribute ? attribute._id : null, text: attribute ? attribute.attributeName : "" } })}
+                                                    items={attribute.lists.filter(a => attributeType.includes(a.type)).map(attribute => { return { value: attribute ? attribute._id : null, text: attribute ? attribute.attributeName : "" } })}
                                                     onChange={(e) => handleChangeAttributeName(e, index)}
                                                     multiple={false}
                                                     options={{ placeholder: translate(translation + '.attribute_select') }}

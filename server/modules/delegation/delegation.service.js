@@ -5,7 +5,9 @@ const {
     Role,
     Attribute,
     User,
-    Link
+    Link,
+    Policy,
+    Task
 } = require('../../models');
 
 const {
@@ -15,6 +17,7 @@ const mongoose = require('mongoose');
 const { isToday, compareDate } = require('../../helpers/functionHelper');
 const schedule = require('node-schedule');
 const taskTemplateModel = require('../../models/task/taskTemplate.model');
+const PolicyService = require('../super-admin/policy/policy.service');
 
 // Tạo mới mảng Ví dụ
 exports.createDelegation = async (portal, data) => {
@@ -25,7 +28,7 @@ exports.createDelegation = async (portal, data) => {
 
             for (let i = 0; i < array.length; i++) {
                 const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: array[i].delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
-                if (checkDelegationCreated) {
+                if (checkDelegationCreated && !array[i].notCheck) {
                     throw ['delegation_name_exist'];
                 }
                 if (array[i]) resArray = [...resArray, array[i]];
@@ -56,7 +59,7 @@ exports.createDelegation = async (portal, data) => {
                 }
             })
 
-            if (checkDelegationExist.length > 0) {
+            if (checkDelegationExist.length > 0 && !delArray[i].notCheck) {
                 throw ["delegation_role_exist"];
             }
 
@@ -67,7 +70,7 @@ exports.createDelegation = async (portal, data) => {
                 // delegation: { $in: [[], undefined] }
             })
 
-            if (checkUserHaveRole.length > 0) {
+            if (checkUserHaveRole.length > 0 && !delArray[i].notCheck) {
                 throw ["user_role_exist"]
             }
 
@@ -80,8 +83,9 @@ exports.createDelegation = async (portal, data) => {
             }
 
             // console.log(new Date(delArray[i].delegationStart))
-            if (checkDelegationExist.length == 0 && checkUserHaveRole.length == 0) {
-                if (await this.checkDelegationAttribute(delArray[i].delegator, delArray[i].delegateRole, delArray[i].delegateLinks, delArray[i].delegatee, portal)) {
+            if (delArray[i].notCheck || (checkDelegationExist.length == 0 && checkUserHaveRole.length == 0)) {
+
+                if (await this.checkDelegationPolicy(delArray[i].delegatePolicy, delArray[i].delegator, delArray[i].delegateRole, delArray[i].delegateLinks, delArray[i].delegatee, portal)) {
                     newDelegation = await Delegation(connect(DB_CONNECTION, portal)).create({
                         delegationName: delArray[i].delegationName,
                         description: delArray[i].description,
@@ -93,7 +97,8 @@ exports.createDelegation = async (portal, data) => {
                         delegatePrivileges: delegatePrivileges != null ? delegatePrivileges.map(p => p._id) : null,
                         startDate: delArray[i].delegationStart,
                         endDate: delArray[i].delegationEnd,
-                        status: isToday(new Date(delArray[i].delegationStart)) ? "activated" : "pending"
+                        status: isToday(new Date(delArray[i].delegationStart)) ? "activated" : "pending",
+                        delegatePolicy: delArray[i].delegatePolicy,
                     });
                 }
 
@@ -125,6 +130,7 @@ exports.createDelegation = async (portal, data) => {
         { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
         { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
@@ -137,6 +143,21 @@ exports.createDelegation = async (portal, data) => {
 
 
     return delegation;
+}
+
+exports.getNewlyCreateDelegation = async (id, data, portal) => {
+    let oldDelegation = await this.getDelegationById(portal, id);
+    const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: data.delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
+    let updatedDelegation = -1;
+    if (oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !== data.delegationName.trim().toLowerCase().replace(/ /g, "")) {
+        if (checkDelegationCreated) {
+            throw ['delegation_name_exist'];
+        }
+    } else {
+        data.notCheck = true;
+        updatedDelegation = await this.createDelegation(portal, [data]);
+    }
+    return updatedDelegation;
 }
 
 exports.autoActivateDelegation = async (delegation, portal) => {
@@ -200,6 +221,45 @@ exports.updateMissedDelegation = async (portal) => {
         }
     })
 }
+
+
+exports.checkDelegationPolicy = async (policyId, delegatorId, delegatedObjectId, delegateLinksIds, delegateeId, portal) => {
+
+    let policy = await Policy(connect(DB_CONNECTION, portal)).findById({ _id: policyId });
+    let delegator = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegatorId })
+    let delegatee = await User(connect(DB_CONNECTION, portal)).findById({ _id: delegateeId })
+    let delegateRole = await Role(connect(DB_CONNECTION, portal)).findById({ _id: delegatedObjectId })
+    let delegateTask = await Task(connect(DB_CONNECTION, portal)).findById({ _id: delegatedObjectId })
+
+    if (PolicyService.ruleCheck([delegator], policy.delegator.delegatorAttributes, policy.delegator.delegatorRule).length == 0) {
+        throw ["delegator_invalid_policy"]
+    }
+    if (PolicyService.ruleCheck([delegatee], policy.delegatee.delegateeAttributes, policy.delegatee.delegateeRule).length == 0) {
+        throw ["delegatee_invalid_policy"]
+    }
+    if (delegateRole) {
+        if (PolicyService.ruleCheck([delegateRole], policy.delegatedObject.delegatedObjectAttributes, policy.delegatedObject.delegatedObjectRule).length == 0) {
+            throw ["role_invalid_policy"]
+        }
+    }
+    if (delegateTask) {
+        if (PolicyService.ruleCheck([delegateTask], policy.delegatedObject.delegatedObjectAttributes, policy.delegatedObject.delegatedObjectRule).length == 0) {
+            throw ["task_invalid_policy"]
+        }
+    }
+    if (delegateLinksIds) {
+        let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegateLinksIds } })
+        delegateLinks = delegateLinks.filter(link => link.url != "/home" && link.url != "/notifications");
+
+        if (PolicyService.ruleCheck(delegateLinks, policy.resource.resourceAttributes, policy.resource.resourceRule).length != delegateLinks.length) {
+            throw ["link_invalid_policy"]
+        }
+    }
+
+    return true;
+
+}
+
 
 exports.checkDelegationAttribute = async (delegatorId, delegateRoleId, delegateLinksIds, delegateeId, portal) => {
     let result = true;
@@ -337,6 +397,7 @@ exports.getDelegations = async (portal, data) => {
             { path: 'delegateRole', select: '_id name' },
             { path: 'delegateTasks' },
             { path: 'delegatee', select: '_id name' },
+            { path: 'delegatePolicy', select: '_id policyName' },
             { path: 'delegator', select: '_id name' },
             {
                 path: 'delegatePrivileges', select: '_id resourceId resourceType',
@@ -377,6 +438,7 @@ exports.getDelegationsReceive = async (portal, data) => {
             { path: 'delegateRole', select: '_id name' },
             { path: 'delegateTasks' },
             { path: 'delegatee', select: '_id name' },
+            { path: 'delegatePolicy', select: '_id policyName' },
             { path: 'delegator', select: '_id name' },
             {
                 path: 'delegatePrivileges', select: '_id resourceId resourceType',
@@ -428,6 +490,7 @@ exports.getDelegationById = async (portal, id) => {
         { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
         { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
@@ -444,26 +507,28 @@ exports.getDelegationById = async (portal, id) => {
 }
 
 // Chỉnh sửa một Ví dụ
-exports.editDelegation = async (portal, delegationId, data) => {
+exports.cancelJobDelegation = (delegationId) => {
 
-    schedule.scheduledJobs['Activate_' + delegationId].cancel()
-    schedule.scheduledJobs['Revoke_' + delegationId].cancel()
+    if (schedule.scheduledJobs['Revoke_' + delegationId]) {
+        schedule.scheduledJobs['Revoke_' + delegationId].cancel()
+    }
 
-    // Revoke
-    this.revokeDelegation(portal, [delegationId])
-
-    // Delete
-    this.deleteDelegations(portal, [delegationId])
-
-    // Create
-    let delegation = await this.createDelegation(portal, [data])
-
-    return delegation
+    if (schedule.scheduledJobs['Activate_' + delegationId]) {
+        schedule.scheduledJobs['Activate_' + delegationId].cancel()
+    }
 
 }
 
 // Xóa một Ví dụ
 exports.deleteDelegations = async (portal, delegationIds) => {
+    if (schedule.scheduledJobs['Revoke_' + delegationIds[0]]) {
+        schedule.scheduledJobs['Revoke_' + delegationIds[0]].cancel()
+    }
+
+    if (schedule.scheduledJobs['Activate_' + delegationIds[0]]) {
+        schedule.scheduledJobs['Activate_' + delegationIds[0]].cancel()
+    }
+
     let delegations = await Delegation(connect(DB_CONNECTION, portal))
         .deleteMany({ _id: { $in: delegationIds.map(item => mongoose.Types.ObjectId(item)) } });
     // delegationIds.forEach(async delegationId => {
@@ -496,12 +561,17 @@ exports.revokeDelegation = async (portal, delegationIds, reason) => {
             schedule.scheduledJobs['Revoke_' + result._id].cancel()
         }
     }
+    if (schedule.scheduledJobs['Activate_' + result._id]) {
+        schedule.scheduledJobs['Activate_' + result._id].cancel()
+    }
+
     await result.save();
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationIds[0] }).populate([
         { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
         { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
@@ -528,6 +598,7 @@ exports.rejectDelegation = async (portal, delegationId, reason) => {
         { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
         { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',
@@ -554,6 +625,7 @@ exports.confirmDelegation = async (portal, delegationId) => {
         { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
         { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
         {
             path: 'delegatePrivileges', select: '_id resourceId resourceType',

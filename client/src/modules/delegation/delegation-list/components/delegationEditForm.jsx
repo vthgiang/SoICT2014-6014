@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { generateCode } from "../../../../helpers/generateCode";
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { getStorage } from '../../../../config';
+import { PolicyActions } from '../../../super-admin/policy-delegation/redux/actions';
 
 
 function DelegationEditForm(props) {
@@ -43,7 +44,7 @@ function DelegationEditForm(props) {
                 delegationID: props.delegationID,
                 delegationName: props.delegationName,
                 description: props.description,
-                delegator: props.delegator,
+                delegator: props.delegator._id,
                 delegatee: props.delegatee._id,
                 delegatePrivileges: props.delegatePrivileges,
                 delegateType: props.delegateType,
@@ -63,6 +64,7 @@ function DelegationEditForm(props) {
                 revokeReason: props.revokeReason,
                 showChooseLinks: props.showChooseLinks,
                 showChooseRevoke: props.showChooseRevoke,
+                delegatePolicy: props.delegatePolicy._id,
                 delegateLinks: props.delegatePrivileges.map(pri => pri.resourceId._id),
                 validLinks: link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => role.list.filter(role => role._id == props.delegateRole._id.toString())[0].parents.map(p => p._id).concat(props.delegateRole._id.toString()).includes(r))).sort((a, b) => a.category > b.category ? 1 : -1),
             });
@@ -73,9 +75,9 @@ function DelegationEditForm(props) {
     }, [props.delegationID])
 
 
-    const { delegationID, delegationName, description, delegationNameError, delegateRole, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateRole, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateRole, errorOnDelegateLinks, unitMembers } = state;
+    const { delegationID, delegationName, description, delegationNameError, delegateRole, delegatee, delegateDuration, showChooseLinks, showChooseRevoke, errorDelegateRole, errorDelegatee, delegateLinks, allPrivileges, delegationEnd, validLinks, selectDelegateRole, errorOnDelegateLinks, unitMembers, delegatePolicy, errorDelegatePolicy } = state;
 
-    const { translate, delegation, auth, user, role, link } = props;
+    const { translate, delegation, auth, user, policyDelegation, role, link } = props;
 
 
     /**
@@ -83,13 +85,16 @@ function DelegationEditForm(props) {
      */
     const isFormValidated = () => {
         if (!delegationNameError.status || !validateDelegateRole(state.delegateRole, false) || !validateDelegatee(state.delegatee, false)
-            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || (showChooseLinks && delegateLinks == null)) {
+            || !ValidationHelper.validateEmpty(translate, delegateDuration.startDate).status || !validateDelegatePolicy(state.delegatePolicy, false) || (showChooseLinks && delegateLinks == null)) {
             console.log("hello")
             return false;
         }
         return true;
     }
 
+    useEffect(() => {
+        props.getPolicies();
+    }, [])
 
     // Nhận giá trị từ component cha
 
@@ -107,7 +112,8 @@ function DelegationEditForm(props) {
             delegationStart: convertDateTimeSave(delegateDuration.startDate, delegateDuration.startTime),
             delegationEnd: delegationEnd != "" ? convertDateTimeSave(delegateDuration.endDate, delegateDuration.endTime) : null,
             delegateLinks: showChooseLinks ? delegateLinks.concat(validLinks.filter(link => link.url == "/home" || link.url == "/notifications").map(l => l._id)) : null,
-            allPrivileges: (!showChooseLinks) ? true : validLinks.length - 2 == delegateLinks.length
+            allPrivileges: (!showChooseLinks) ? true : validLinks.length - 2 == delegateLinks.length,
+            delegatePolicy: delegatePolicy
         }
         if (isFormValidated() && delegationName) {
             return props.editDelegation(delegationID, data);
@@ -205,6 +211,25 @@ function DelegationEditForm(props) {
         validateDelegatee(value[0], true);
     }
 
+    const handleDelegatePolicy = (value) => {
+        validateDelegatePolicy(value[0], true);
+    }
+
+    const validateDelegatePolicy = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = props;
+        if (!value) {
+            msg = translate('manage_delegation.no_blank_delegate_policy');
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                delegatePolicy: value,
+                errorDelegatePolicy: msg,
+            })
+        }
+        return msg === undefined;
+    }
 
     const validateDelegateRole = (value, willUpdateState) => {
         let msg = undefined;
@@ -447,7 +472,6 @@ function DelegationEditForm(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}
-                maxWidth={500}
             >
                 <form id="form-edit-delegation-hooks" onSubmit={() => save(translate('manage_delegation.add_success'))}>
 
@@ -591,6 +615,27 @@ function DelegationEditForm(props) {
                             </div>}
                     </div>
 
+                    <div className="row form-group">
+                        {/* Chọn chính sách ủy quyền*/}
+                        <div style={{ marginBottom: "0px" }} className={`col-lg-12 col-md-12 col-ms-12 col-xs-12 form-group ${errorDelegatePolicy === undefined ? "" : "has-error"}`}>
+                            <label>{translate('manage_delegation.delegate_policy')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id="select-delegate-policy-edit"
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={
+                                    policyDelegation.lists.map(policy => { return { value: policy ? policy._id : null, text: policy ? policy.policyName : "" } })
+                                }
+                                value={
+                                    delegatePolicy
+                                }
+                                onChange={handleDelegatePolicy}
+                                multiple={false}
+                                options={{ placeholder: translate('manage_delegation.choose_delegate_policy') }}
+                            />
+                            <ErrorLabel content={errorDelegatePolicy} />
+                        </div>
+                    </div>
 
                 </form>
             </DialogModal>
@@ -599,8 +644,8 @@ function DelegationEditForm(props) {
 }
 
 function mapState(state) {
-    const { auth, user, link, role, delegation } = state;
-    return { auth, user, delegation, link, role }
+    const { auth, user, policyDelegation, link, role, delegation } = state;
+    return { auth, user, policyDelegation, delegation, link, role }
 }
 
 const actions = {
@@ -609,6 +654,7 @@ const actions = {
     getDelegations: DelegationActions.getDelegations,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getPolicies: PolicyActions.getPolicies,
 
 }
 

@@ -16,6 +16,7 @@ import { role } from '../modules/super-admin/role/redux/reducers';
 import { link } from '../modules/super-admin/link/redux/reducers';
 import { attribute } from '../modules/super-admin/attribute/redux/reducers';
 import { policy } from '../modules/super-admin/policy/redux/reducers';
+import { policyDelegation } from '../modules/super-admin/policy-delegation/redux/reducers';
 import { apis } from '../modules/super-admin/api/api-management/redux/reducers';
 import { apiRegistration } from '../modules/super-admin/api/api-registration/redux/reducers'
 import { component } from '../modules/super-admin/component/redux/reducers';
@@ -71,11 +72,11 @@ import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/re
 import { assetLotManager } from "../modules/asset/admin/asset-lot/redux/reducers";
 
 //supplies 
-import { suppliesReducer} from "../modules/supplies/admin/supplies/redux/reducers";
-import { suppliesDashboardReducer} from "../modules/supplies/admin/supplies-dashboard/redux/reducers";
-import { purchaseInvoiceReducer} from "../modules/supplies/admin/purchase-invoice/redux/reducers";
-import { allocationHistoryReducer} from "../modules/supplies/admin/allocation-history/redux/reducers";
-import { purchaseRequest} from "../modules/supplies/admin/purchase-request/redux/reducers";
+import { suppliesReducer } from "../modules/supplies/admin/supplies/redux/reducers";
+import { suppliesDashboardReducer } from "../modules/supplies/admin/supplies-dashboard/redux/reducers";
+import { purchaseInvoiceReducer } from "../modules/supplies/admin/purchase-invoice/redux/reducers";
+import { allocationHistoryReducer } from "../modules/supplies/admin/allocation-history/redux/reducers";
+import { purchaseRequest } from "../modules/supplies/admin/purchase-request/redux/reducers";
 
 //report 
 import { reports } from "../modules/report/task-report/redux/reducers";
@@ -87,7 +88,7 @@ import { goods } from "../modules/production/common-production/good-management/r
 import { binLocations } from "../modules/production/warehouse/bin-location-management/redux/reducers";
 import { lots } from "../modules/production/warehouse/inventory-management/redux/reducers";
 import { bills } from "../modules/production/warehouse/bill-management/redux/reducers";
-import { requestManagements} from "../modules/production/common-production/request-management/redux/reducers";
+import { requestManagements } from "../modules/production/common-production/request-management/redux/reducers";
 
 //crm
 import { customers } from "../modules/crm/customer/redux/reducers";
@@ -170,6 +171,7 @@ const appReducer = combineReducers({
     link,
     attribute,
     policy,
+    policyDelegation,
     apis,
     apiRegistration,
     component,

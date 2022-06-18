@@ -10,7 +10,7 @@ const PolicyDetailInfo = (props) => {
         policyID: undefined,
     })
 
-    const { translate, policy, attribute } = props;
+    const { translate, policyDelegation, attribute } = props;
     const { policyID } = state;
 
     // Nhận giá trị từ component cha
@@ -22,64 +22,66 @@ const PolicyDetailInfo = (props) => {
                 policyID: props.policyID,
                 policyName: props.policyName,
                 description: props.description,
-                userAttributes: props.userAttributes,
-                roleAttributes: props.roleAttributes,
+                delegatorAttributes: props.delegatorAttributes,
+                delegateeAttributes: props.delegateeAttributes,
+                delegatedObjectAttributes: props.delegatedObjectAttributes,
                 resourceAttributes: props.resourceAttributes,
-                userRule: props.userRule,
-                roleRule: props.roleRule,
-                resourceRule: props.resourceRule
+                delegatorRule: props.delegatorRule,
+                delegateeRule: props.delegateeRule,
+                delegatedObjectRule: props.delegatedObjectRule,
+                resourceRule: props.resourceRule,
             })
         }
     }, [props.policyID, props.curentRowDetail])
 
-    const { policyName, description, userRule, roleRule, resourceRule, userAttributes, roleAttributes, resourceAttributes } = state
+    const { policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
 
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-detail-info-policy-hooks`} isLoading={policy.isLoading}
-                title={translate('manage_policy.detail_info_policy')}
+                modalID={`modal-detail-info-policy-hooks`} isLoading={policyDelegation.isLoading}
+                title={translate('manage_delegation_policy.detail_info_policy')}
                 formID={`form-detail-policy-hooks`}
-                size={50}
                 hasSaveButton={false}
                 hasNote={false}
+                size={50}
             >
                 {/* Tên ví dụ */}
                 <div className={`form-group`}>
-                    <label>{translate('manage_policy.policyName')}:</label>
+                    <label>{translate('manage_delegation_policy.policyName')}:</label>
                     <span> {policyName}</span>
                 </div>
 
                 {/* Mô tả ví dụ */}
                 <div className={`form-group`}>
-                    <label>{translate('manage_policy.description')}:</label>
+                    <label>{translate('manage_delegation_policy.description')}:</label>
                     <span> {description}</span>
                 </div>
 
                 <div className={`form-group`}>
-                    <label>{translate('manage_policy.subject_information')}:</label>
+                    <label>{translate('manage_delegation_policy.delegation_information')}:</label>
                     <table className="table table-hover table-bordered detail-policy-attribute-table not-sort">
                         <thead>
                             <tr>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_owner_table')}</label></th>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.rule_table')}</label></th>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_name')}</label></th>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_value')}</label></th>
+                                <th style={{ width: '25%' }}><label>{translate('manage_delegation_policy.attribute_owner_table')}</label></th>
+                                <th style={{ width: '15%' }}><label>{translate('manage_delegation_policy.rule_table')}</label></th>
+                                <th style={{ width: '45%' }}><label>{translate('manage_delegation_policy.attribute_name')}</label></th>
+                                <th style={{ width: '15%' }}><label>{translate('manage_delegation_policy.attribute_value')}</label></th>
                             </tr>
                         </thead>
                         <tbody>
 
                             <tr>
-                                <td rowSpan={(!userAttributes || userAttributes.length == 0) ? 1 : userAttributes.length + 1}>
-                                    {translate('manage_policy.user_table')}
+                                <td rowSpan={(!delegatorAttributes || delegatorAttributes.length == 0) ? 1 : delegatorAttributes.length + 1}>
+                                    {translate('manage_delegation_policy.delegator_table')}
                                 </td>
                                 {
-                                    (!userAttributes || userAttributes.length == 0) ?
+                                    (!delegatorAttributes || delegatorAttributes.length == 0) ?
                                         <td colSpan={3}>
                                             <center> {translate('table.no_data')}</center>
                                         </td> :
                                         <React.Fragment>
-                                            <td rowSpan={userAttributes.length + 1}>{userRule}</td>
+                                            <td rowSpan={delegatorAttributes.length + 1}>{delegatorRule}</td>
 
                                         </React.Fragment>
 
@@ -87,8 +89,8 @@ const PolicyDetailInfo = (props) => {
 
                             </tr>
                             {
-                                (!userAttributes || userAttributes.length <= 0) ? null :
-                                    userAttributes.map((attr, index) => {
+                                (!delegatorAttributes || delegatorAttributes.length <= 0) ? null :
+                                    delegatorAttributes.map((attr, index) => {
                                         return <tr key={index}>
                                             <td>
                                                 {attribute.lists.map(a => a._id == attr.attributeId ? a.attributeName : "")}
@@ -102,16 +104,16 @@ const PolicyDetailInfo = (props) => {
                             }
 
                             <tr>
-                                <td rowSpan={(!roleAttributes || roleAttributes.length == 0) ? 1 : roleAttributes.length + 1}>
-                                    {translate('manage_policy.role_table')}
+                                <td rowSpan={(!delegateeAttributes || delegateeAttributes.length == 0) ? 1 : delegateeAttributes.length + 1}>
+                                    {translate('manage_delegation_policy.delegatee_table')}
                                 </td>
                                 {
-                                    (!roleAttributes || roleAttributes.length == 0) ?
+                                    (!delegateeAttributes || delegateeAttributes.length == 0) ?
                                         <td colSpan={3}>
                                             <center> {translate('table.no_data')}</center>
                                         </td> :
                                         <React.Fragment>
-                                            <td rowSpan={roleAttributes.length + 1}>{roleRule}</td>
+                                            <td rowSpan={delegateeAttributes.length + 1}>{delegateeRule}</td>
 
                                         </React.Fragment>
 
@@ -119,8 +121,8 @@ const PolicyDetailInfo = (props) => {
 
                             </tr>
                             {
-                                (!roleAttributes || roleAttributes.length <= 0) ? null :
-                                    roleAttributes.map((attr, index) => {
+                                (!delegateeAttributes || delegateeAttributes.length <= 0) ? null :
+                                    delegateeAttributes.map((attr, index) => {
                                         return <tr key={index}>
                                             <td>
                                                 {attribute.lists.map(a => a._id == attr.attributeId ? a.attributeName : "")}
@@ -132,26 +134,42 @@ const PolicyDetailInfo = (props) => {
                                         </tr>
                                     })
                             }
-                        </tbody>
-                    </table>
-                </div>
 
-                <div className={`form-group`}>
-                    <label>{translate('manage_policy.resource_information')}:</label>
-                    <table className="table table-hover table-bordered detail-policy-attribute-table not-sort">
-                        <thead>
                             <tr>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_owner_table')}</label></th>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.rule_table')}</label></th>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_name')}</label></th>
-                                <th style={{ width: '20%' }}><label>{translate('manage_policy.attribute_value')}</label></th>
+                                <td rowSpan={(!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ? 1 : delegatedObjectAttributes.length + 1}>
+                                    {translate('manage_delegation_policy.delegatedObject_table')}
+                                </td>
+                                {
+                                    (!delegatedObjectAttributes || delegatedObjectAttributes.length == 0) ?
+                                        <td colSpan={3}>
+                                            <center> {translate('table.no_data')}</center>
+                                        </td> :
+                                        <React.Fragment>
+                                            <td rowSpan={delegatedObjectAttributes.length + 1}>{delegatedObjectRule}</td>
+
+                                        </React.Fragment>
+
+                                }
+
                             </tr>
-                        </thead>
-                        <tbody>
+                            {
+                                (!delegatedObjectAttributes || delegatedObjectAttributes.length <= 0) ? null :
+                                    delegatedObjectAttributes.map((attr, index) => {
+                                        return <tr key={index}>
+                                            <td>
+                                                {attribute.lists.map(a => a._id == attr.attributeId ? a.attributeName : "")}
+                                            </td>
+
+                                            <td style={{ textAlign: "left" }}>
+                                                {attr.value}
+                                            </td>
+                                        </tr>
+                                    })
+                            }
 
                             <tr>
                                 <td rowSpan={(!resourceAttributes || resourceAttributes.length == 0) ? 1 : resourceAttributes.length + 1}>
-                                    {translate('manage_policy.resource_table')}
+                                    {translate('manage_delegation_policy.resource_table')}
                                 </td>
                                 {
                                     (!resourceAttributes || resourceAttributes.length == 0) ?
@@ -183,14 +201,16 @@ const PolicyDetailInfo = (props) => {
                         </tbody>
                     </table>
                 </div>
+
+
             </DialogModal>
         </React.Fragment>
     );
 }
 
 function mapStateToProps(state) {
-    const { policy, attribute } = state;
-    return { policy, attribute };
+    const { policyDelegation, attribute } = state;
+    return { policyDelegation, attribute };
 }
 
 const connectedPolicyDetailInfo = React.memo(connect(mapStateToProps, null)(withTranslate(PolicyDetailInfo)));

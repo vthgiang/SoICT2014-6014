@@ -24,6 +24,7 @@ const ManageLink = lazy(() => import("../modules/super-admin/link/components"))
 const ManageAttribute = lazy(() => import("../modules/super-admin/attribute/components"))
 const ManagePolicy = lazy(() => import("../modules/super-admin/policy/components"))
 const ManageApi = lazy(() => import("../modules/super-admin/api/api-management/components/apiManagement"))
+const ManagePolicyDelegation = lazy(() => import("../modules/super-admin/policy-delegation/components"))
 const ApiRegistration = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistration"))
 const ApiRegistrationEmployee = lazy(() => import("../modules/super-admin/api/api-registration/components/apiRegistrationEmployee"))
 const ManageDepartment = lazy(() => import("../modules/super-admin/organizational-unit/components"))
@@ -504,7 +505,7 @@ class Routes extends Component {
                         component={ManageLink}
                     />
                     <PrivateRoute
-                        isLoading={this.props.link.isLoading}
+                        isLoading={this.props.attribute.isLoading}
                         key={"attributes-management"}
                         arrPage={[
                             {
@@ -527,7 +528,7 @@ class Routes extends Component {
                         component={ManageAttribute}
                     />
                     <PrivateRoute
-                        isLoading={this.props.link.isLoading}
+                        isLoading={this.props.policy.isLoading}
                         key={"policies-management"}
                         arrPage={[
                             {
@@ -537,17 +538,40 @@ class Routes extends Component {
                             },
                             {
                                 link: "/policies-management",
-                                name: "manage_policy",
-                                icon: "fa fa-file-powerpoint-o",
+                                name: "manage_policy_authorization",
+                                icon: "fa fa-circle-o",
                             },
                         ]}
                         auth={auth}
                         exact={true}
                         link={"/policies-management"}
                         path={"/policies-management"}
-                        pageName={"manage_policy"}
+                        pageName={"manage_policy_authorization"}
                         layout={Layout}
                         component={ManagePolicy}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.policyDelegation.isLoading}
+                        key={"delegation-policies-management"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/delegation-policies-management",
+                                name: "manage_policy_delegation",
+                                icon: "fa fa-circle-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/delegation-policies-management"}
+                        path={"/delegation-policies-management"}
+                        pageName={"manage_policy_delegation"}
+                        layout={Layout}
+                        component={ManagePolicyDelegation}
                     />
                     <PrivateRoute
                         isLoading={this.props.api?.isLoading}
@@ -2578,7 +2602,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={Payment}
                     />
-                    
+
                     <PrivateRoute
                         isLoading={false}
                         key={"order-request-management"}

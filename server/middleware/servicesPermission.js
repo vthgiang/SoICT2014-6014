@@ -124,6 +124,13 @@ exports.links = [
             { path: '/policy/policies/:id', method: 'PATCH' },
             { path: '/policy/policies/:id', method: 'DELETE' },
 
+            { path: '/policy/policies-delegation', method: 'GET' },
+            { path: '/policy/policies-delegation', method: 'POST' },
+            { path: '/policy/policies-delegation/:id', method: 'GET' },
+            { path: '/policy/policies-delegation/paginate', method: 'POST' },
+            { path: '/policy/policies-delegation/:id', method: 'PATCH' },
+            { path: '/policy/policies-delegation/:id', method: 'DELETE' },
+
             { path: '/organizational-units/organizational-units', method: 'GET' },
             { path: '/organizational-units/organizational-units', method: 'POST' },
             { path: '/organizational-units/organizational-units/:id', method: 'GET' },
@@ -723,6 +730,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/policies-management',
+        apis: ['@all']
+    }, {
+        url: '/delegation-policies-management',
         apis: ['@all']
     }, {
         url: '/apis-management',

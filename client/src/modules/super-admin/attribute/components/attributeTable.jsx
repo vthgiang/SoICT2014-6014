@@ -160,12 +160,15 @@ function AttributeTable(props) {
                 attributeID={currentRow && currentRow._id}
                 attributeName={currentRow && currentRow.attributeName}
                 description={currentRow && currentRow.description}
+                type={currentRow && currentRow.type}
+
             />
 
             <AttributeDetailInfo
                 attributeID={curentRowDetail && curentRowDetail._id}
                 attributeName={curentRowDetail && curentRowDetail.attributeName}
                 description={curentRowDetail && curentRowDetail.description}
+                type={curentRowDetail && curentRowDetail.type}
             />
 
             <AttributeCreateForm
@@ -207,11 +210,13 @@ function AttributeTable(props) {
                     columnData={{
                         index: translate('manage_attribute.index'),
                         attributeName: translate('manage_attribute.attributeName'),
+                        type: translate('manage_attribute.add_type'),
                         description: translate('manage_attribute.description')
                     }}
                     tableHeaderData={{
                         index: <th className="col-fixed" style={{ width: 60 }}>{translate('manage_attribute.index')}</th>,
                         attributeName: <th>{translate('manage_attribute.attributeName')}</th>,
+                        type: <th>{translate('manage_attribute.add_type')}</th>,
                         description: <th>{translate('manage_attribute.description')}</th>,
                         action: <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                     }}
@@ -220,6 +225,7 @@ function AttributeTable(props) {
                             id: item?._id,
                             index: <td>{index + 1}</td>,
                             attributeName: <td>{item?.attributeName}</td>,
+                            type: <td>{translate("manage_attribute.type" + "." + item?.type)}</td>,
                             description: <td>{item?.description}</td>,
                             action: <td style={{ textAlign: "center" }}>
                                 <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_attribute.detail_info_attribute')} onClick={() => handleShowDetailInfo(item)}><i className="material-icons">visibility</i></a>

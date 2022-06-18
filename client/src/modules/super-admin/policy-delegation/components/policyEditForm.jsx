@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
 import { GeneralTab } from "./generalTab";
-import { SubjectTab } from "./subjectTab";
+import { DelegationTab } from "./delegationTab";
 import { ResourceTab } from "./resourceTab";
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
@@ -17,8 +17,8 @@ function PolicyEditForm(props) {
 
     })
 
-    const { translate, policy } = props;
-    const { policyID, policyName, description, userRule, roleRule, resourceRule, userAttributes, roleAttributes, resourceAttributes } = state;
+    const { translate, policyDelegation } = props;
+    const { policyID, policyName, description, delegatorRule, delegateeRule, delegatedObjectRule, resourceRule, delegatorAttributes, delegateeAttributes, delegatedObjectAttributes, resourceAttributes } = state;
 
     // setState từ props mới
     useEffect(() => {
@@ -28,12 +28,14 @@ function PolicyEditForm(props) {
                 policyID: props.policyID,
                 policyName: props.policyName,
                 description: props.description,
-                userAttributes: props.userAttributes.map((a) => a = { ...a, addOrder: a._id }),
-                roleAttributes: props.roleAttributes.map((a) => a = { ...a, addOrder: a._id }),
+                delegatorAttributes: props.delegatorAttributes.map((a) => a = { ...a, addOrder: a._id }),
+                delegateeAttributes: props.delegateeAttributes.map((a) => a = { ...a, addOrder: a._id }),
+                delegatedObjectAttributes: props.delegatedObjectAttributes.map((a) => a = { ...a, addOrder: a._id }),
                 resourceAttributes: props.resourceAttributes.map((a) => a = { ...a, addOrder: a._id }),
-                userRule: props.userRule,
-                roleRule: props.roleRule,
-                resourceRule: props.resourceRule
+                delegatorRule: props.delegatorRule,
+                delegateeRule: props.delegateeRule,
+                delegatedObjectRule: props.delegatedObjectRule,
+                resourceRule: props.resourceRule,
             })
         }
     }, [props.policyID])
@@ -58,20 +60,20 @@ function PolicyEditForm(props) {
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
     const isFormValidated = () => {
-        if (!ValidationHelper.validateName(translate, policyName, 6, 255).status || !validateRoleAttributes() || !validateUserAttributes() || !validateResourceAttributes()) {
+        if (!ValidationHelper.validateName(translate, policyName, 6, 255).status || !validateDelegatorAttributes() || !validateDelegateeAttributes() || !validateDelegatedObjectAttributes() || !validateResourceAttributes()) {
             return false;
         }
         return true;
     }
 
-    const validateRoleAttributes = () => {
-        var roleAttributes = state.roleAttributes;
+    const validateDelegatorAttributes = () => {
+        var delegatorAttributes = state.delegatorAttributes;
         let result = true;
 
-        if (roleAttributes.length !== 0) {
+        if (delegatorAttributes.length !== 0) {
 
-            for (let n in roleAttributes) {
-                if (!ValidationHelper.validateEmpty(props.translate, roleAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, roleAttributes[n].value).status) {
+            for (let n in delegatorAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, delegatorAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, delegatorAttributes[n].value).status) {
                     result = false;
                     break;
                 }
@@ -79,14 +81,30 @@ function PolicyEditForm(props) {
         }
         return result;
     }
-    const validateUserAttributes = () => {
-        var userAttributes = state.userAttributes;
+    const validateDelegatedObjectAttributes = () => {
+        var delegatedObjectAttributes = state.delegatedObjectAttributes;
         let result = true;
 
-        if (userAttributes.length !== 0) {
+        if (delegatedObjectAttributes.length !== 0) {
 
-            for (let n in userAttributes) {
-                if (!ValidationHelper.validateEmpty(props.translate, userAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, userAttributes[n].value).status) {
+            for (let n in delegatedObjectAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, delegatedObjectAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, delegatedObjectAttributes[n].value).status) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    const validateDelegateeAttributes = () => {
+        var delegateeAttributes = state.delegateeAttributes;
+        let result = true;
+
+        if (delegateeAttributes.length !== 0) {
+
+            for (let n in delegateeAttributes) {
+                if (!ValidationHelper.validateEmpty(props.translate, delegateeAttributes[n].attributeId).status || !ValidationHelper.validateEmpty(props.translate, delegateeAttributes[n].value).status) {
                     result = false;
                     break;
                 }
@@ -118,15 +136,17 @@ function PolicyEditForm(props) {
         const data = {
             policyName: policyName,
             description: description,
-            subject: {
-                user: {
-                    userAttributes: userAttributes,
-                    userRule: userAttributes.length > 0 ? userRule : "",
-                },
-                role: {
-                    roleAttributes: roleAttributes,
-                    roleRule: roleAttributes.length > 0 ? roleRule : "",
-                }
+            delegator: {
+                delegatorAttributes: delegatorAttributes,
+                delegatorRule: delegatorAttributes.length > 0 ? delegatorRule : "",
+            },
+            delegatee: {
+                delegateeAttributes: delegateeAttributes,
+                delegateeRule: delegateeAttributes.length > 0 ? delegateeRule : "",
+            },
+            delegatedObject: {
+                delegatedObjectAttributes: delegatedObjectAttributes,
+                delegatedObjectRule: delegatedObjectAttributes.length > 0 ? delegatedObjectRule : "",
             },
             resource: {
                 resourceAttributes: resourceAttributes,
@@ -143,9 +163,9 @@ function PolicyEditForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-edit-policy-hooks`} isLoading={policy.isLoading}
+                modalID={`modal-edit-policy-hooks`} isLoading={policyDelegation.isLoading}
                 formID={`form-edit-policy-hooks`}
-                title={translate('manage_policy.edit_title')}
+                title={translate('manage_delegation_policy.edit_title')}
                 disableSubmit={!isFormValidated}
                 func={save}
                 size={75}
@@ -154,9 +174,8 @@ function PolicyEditForm(props) {
                 <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                     {/* Nav-tabs */}
                     <ul className="nav nav-tabs">
-                        <li className="active"><a title={translate('manage_policy.general_information')} data-toggle="tab" href={`#edit_general`}>{translate('manage_policy.general_information')}</a></li>
-                        <li><a title={translate('manage_policy.subject_information')} data-toggle="tab" href={`#edit_subject`}>{translate('manage_policy.subject_information')}</a></li>
-                        <li><a title={translate('manage_policy.resource_information')} data-toggle="tab" href={`#edit_resource`}>{translate('manage_policy.resource_information')}</a></li>
+                        <li className="active"><a title={translate('manage_delegation_policy.general_information')} data-toggle="tab" href={`#edit_general`}>{translate('manage_delegation_policy.general_information')}</a></li>
+                        <li><a title={translate('manage_delegation_policy.delegation_information')} data-toggle="tab" href={`#edit_delegation`}>{translate('manage_delegation_policy.delegation_information')}</a></li>
                     </ul>
 
                     <div className="tab-content">
@@ -170,20 +189,24 @@ function PolicyEditForm(props) {
                         />
 
                         {/* Thông tin thuộc tính subject */}
-                        <SubjectTab
-                            id={`edit_subject`}
+                        <DelegationTab
+                            id={`edit_delegation`}
                             handleChange={handleChange}
                             i={props.i}
                             handleChangeAddRowAttribute={handleChangeAddRowAttribute}
                             policyID={policyID}
-                            userAttributes={state.userAttributes}
-                            roleAttributes={state.roleAttributes}
-                            userRule={state.userRule}
-                            roleRule={state.roleRule}
+                            delegatorAttributes={state.delegatorAttributes}
+                            delegateeAttributes={state.delegateeAttributes}
+                            delegatorRule={state.delegatorRule}
+                            delegateeRule={state.delegateeRule}
+                            resourceAttributes={resourceAttributes}
+                            resourceRule={resourceRule}
+                            delegatedObjectAttributes={delegatedObjectAttributes}
+                            delegatedObjectRule={delegatedObjectRule}
                         />
 
                         {/* Thông tin thuộc tính resource */}
-                        <ResourceTab
+                        {/* <ResourceTab
                             id={`edit_resource`}
                             handleChange={handleChange}
                             i={props.i}
@@ -191,7 +214,7 @@ function PolicyEditForm(props) {
                             policyID={policyID}
                             resourceAttributes={resourceAttributes}
                             resourceRule={resourceRule}
-                        />
+                        /> */}
                     </div>
                 </div>
 
@@ -201,8 +224,8 @@ function PolicyEditForm(props) {
 }
 
 function mapState(state) {
-    const policy = state.policy;
-    return { policy }
+    const policyDelegation = state.policyDelegation;
+    return { policyDelegation }
 }
 
 const actions = {

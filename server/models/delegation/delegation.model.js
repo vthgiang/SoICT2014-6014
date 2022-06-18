@@ -85,6 +85,10 @@ const DelegationSchema = new Schema({
     revokeReason: {
         type: String
     },
+    delegatePolicy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Policy'
+    },
     logs: [
         {
             createdAt: {

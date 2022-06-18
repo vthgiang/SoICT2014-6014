@@ -21,3 +21,9 @@ export const POLICY_ATTRIBUTE_RULE_CHECK = [
     { name: "EQUALS", value: "EQUALS" },
     { name: "BELONGS", value: "BELONGS" }
 ]
+
+export const ATTRIBUTE_TYPE = [
+    { name: "Authorization", value: "Authorization" },
+    { name: "Delegation", value: "Delegation" },
+    { name: "Mixed", value: "Mixed" }
+]

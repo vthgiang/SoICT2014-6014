@@ -8,11 +8,14 @@ const PolicySchema = new Schema({
         required: true
     },
     category: {
-        type: String
+        // Loại chính sách: Phân quyền or ủy quyền
+        type: String,
+        enum: ['Authorization', 'Delegation'],
     },
     description: { // Mô tả Ví dụ
         type: String
     },
+    // For authorization policy
     subject: {
         user: {
             userAttributes: [
@@ -45,6 +48,8 @@ const PolicySchema = new Schema({
             }
         }
     },
+    // dùng chung cho cả authorization policy và delegation policy 
+    // trong trường hợp chính sánh ủy quyền vai trò một phần resource(link) trong vai trò
     resource: {
         resourceAttributes: [
             {
@@ -57,6 +62,53 @@ const PolicySchema = new Schema({
             }
         ],
         resourceRule: {
+            type: String
+        }
+    },
+    // For delegation policies
+    delegator: {
+        delegatorAttributes: [
+            {
+                attributeId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Attribute"
+                },
+                // name: String, // tên thuộc tính
+                value: String, //giá trị
+            }
+        ],
+        delegatorRule: {
+            type: String
+        }
+    },
+    delegatee: {
+        delegateeAttributes: [
+            {
+                attributeId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Attribute"
+                },
+                // name: String, // tên thuộc tính
+                value: String, //giá trị
+            }
+        ],
+        delegateeRule: {
+            type: String
+        }
+    },
+    // attribute của role (role delegation) hoặc task (task delegation)
+    delegatedObject: {
+        delegatedObjectAttributes: [
+            {
+                attributeId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Attribute"
+                },
+                // name: String, // tên thuộc tính
+                value: String, //giá trị
+            }
+        ],
+        delegatedObjectRule: {
             type: String
         }
     }

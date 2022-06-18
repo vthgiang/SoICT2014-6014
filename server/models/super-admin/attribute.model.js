@@ -8,6 +8,10 @@ const AttributeSchema = new Schema({
     },
     description: { // Mô tả Ví dụ
         type: String
+    },
+    type: {
+        type: String,
+        enum: ['Authorization', 'Delegation', 'Mixed'],
     }
 });
 

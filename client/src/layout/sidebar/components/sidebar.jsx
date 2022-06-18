@@ -189,8 +189,20 @@ class SideBar extends Component {
                                         {
                                             name: "menu.manage_policy",
                                             icon: "fa fa-file-powerpoint-o",
-                                            path: "/policies-management",
+                                            list: [
+                                                {
+                                                    name: "menu.manage_policy_authorization",
+                                                    icon: "fa fa-circle-o",
+                                                    path: "/policies-management",
+                                                },
+                                                {
+                                                    name: "menu.manage_policy_delegation",
+                                                    icon: "fa fa-circle-o",
+                                                    path: "/delegation-policies-management",
+                                                },
+                                            ]
                                         },
+
                                         {
                                             name: "menu.manage_api",
                                             icon: "fa fa-link",
