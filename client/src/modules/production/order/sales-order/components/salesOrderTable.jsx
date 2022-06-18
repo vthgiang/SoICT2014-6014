@@ -27,7 +27,7 @@ import SalesOrderDetailForm from "./salesOrderDetailForm";
 import SalesOrderCreateForm from "./salesOrderCreateForm";
 import SalesOrderCreateFormFromQuote from "./salesOrderCreateFormFromQuote";
 import SalesOrderEditForm from "./salesOrderEditForm";
-import GoodIssueCreateForm from "../../../warehouse/bill-management/components/good-issues/goodIssueCreateForm";
+// import GoodIssueCreateForm from "../../../warehouse/bill-management/components/good-issues/goodIssueCreateForm";
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
 import SalesOrderApproveForm from "./approveSalesOrder";
 import SalesOrderEditAfterApproveForm from "./editAfterApprove/salesOrderEditAfterApproveForm";
@@ -338,14 +338,14 @@ function SalesOrderTable(props) {
                     <SalesOrderCreateForm code={code} />
                     <SalesOrderCreateFormFromQuote code={code} />
                     <SalesOrderDetailForm modalID={detailModalId} />
-                    <GoodIssueCreateForm
+                    {/* <GoodIssueCreateForm
                         salesOrderAddBill={salesOrderAddBill}
                         createdSource={"salesOrder"}
                         billCode={billCode}
                         modalName={`Lập phiếu yêu cầu xuất kho cho đơn hàng: ${salesOrderAddBill ? salesOrderAddBill.code : ""}`}
                         reloadSalesOrderTable={reloadSalesOrderTable}
                         group={"2"}
-                    />
+                    /> */}
                     <BillDetailForm />
                     <SalesOrderEditForm />
                     {salesOrderEditAfterApprove && (

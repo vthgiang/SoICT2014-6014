@@ -3,12 +3,24 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
-import { formatToTimeZoneDate, formatDate } from '../../../../../../helpers/formatDate';
+import { formatToTimeZoneDate } from '../../../../../../helpers/formatDate';
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 function CreateForm(props) {
 
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
     const [state, setState] = useState({
         code: generateCode("SR"),
         desiredTime: formatDate((new Date()).toISOString()),
@@ -16,6 +28,7 @@ function CreateForm(props) {
         listGoods: [],
         approvers: "",
         stock: "",
+        isAutoSelectStock: false,
     });
 
     // Thời gian mong muốn 
@@ -26,7 +39,7 @@ function CreateForm(props) {
         }
         setState({
             ...state,
-            desiredTime: formatToTimeZoneDate(value)
+            desiredTime: value
         })
     }
 
@@ -54,7 +67,6 @@ function CreateForm(props) {
     useEffect(() => {
         if (state.stock) {
             let listStocks = getStock();
-            console.log(listStocks);
             let result = findIndex(listStocks, state.stock);
             if (result !== -1) {
                 props.getAllUserOfDepartment(listStocks[result].organizationalUnit);
@@ -267,6 +279,14 @@ function CreateForm(props) {
         return msg === undefined;
     };
 
+    const handleChooseTypeOfSelectStock = () => {
+        setState({
+            ...state,
+            isAutoSelectStock: !state.isAutoSelectStock
+        });
+    }
+
+
     // Phần lưu dữ liệu
 
     const handleClickCreate = () => {
@@ -282,8 +302,8 @@ function CreateForm(props) {
         let result = validateApprover(approver, false) &&
             validateStock(stock, false) &&
             validateSourceProduct(state.sourceType, false) &&
-            (validateManufacturingWorks(state.worksValue, false)  ||
-            validateSupplier(state.supplier, false)) &&
+            (validateManufacturingWorks(state.worksValue, false) ||
+                validateSupplier(state.supplier, false)) &&
             listGoods.length > 0
         return result;
     }
@@ -299,7 +319,7 @@ function CreateForm(props) {
             })
             const data = {
                 code: state.code,
-                desiredTime: formatToTimeZoneDate(state.desiredTime),
+                desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
                 approvers: state.approvers,
@@ -322,8 +342,8 @@ function CreateForm(props) {
     }
 
     const { translate, NotHaveCreateButton, bigModal } = props;
-    const { code, desiredTime, errorIntendReceiveTime, description, approver, errorApprover, 
-        errorStock, stock, sourceType, errorOnSourceProduct, errorSupplier, supplier, worksValueError, worksValue } = state;
+    const { code, desiredTime, errorIntendReceiveTime, description, approver, errorApprover,
+        errorStock, stock, sourceType, errorOnSourceProduct, errorSupplier, supplier, worksValueError, worksValue, isAutoSelectStock } = state;
     let dataSource = [
         {
             value: '0',
@@ -342,6 +362,7 @@ function CreateForm(props) {
     const dataStock = getStock();
     const dataManufacturingWorks = getListWorks();
     const dataCustomer = getSuplierOptions();
+    console.log(state);
     return (
         <React.Fragment>
             {!NotHaveCreateButton && <ButtonModal onButtonCallBack={handleClickCreate} modalID="modal-create-purchasing-request" button_name={translate('production.request_management.add_request_button')} title={translate('production.request_management.add_request')} />}
@@ -364,22 +385,6 @@ function CreateForm(props) {
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
                                 <input type="text" disabled={true} value={code} className="form-control"></input>
                             </div>
-                            <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("production.request_management.approver_in_stock")}
-                                    <span className="text-red"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-approver`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={approver}
-                                    items={dataApprover}
-                                    onChange={handleApproverChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={errorApprover} />
-                            </div>
                             <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
                                 <label>{"Nguồn yêu cầu"}</label>
                                 <span className="text-red"> * </span>
@@ -396,23 +401,6 @@ function CreateForm(props) {
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("production.request_management.unit_receiving_request")}
-                                    <span className="text-red"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-stock`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={stock}
-                                    items={dataStock}
-                                    onChange={handleStockChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={errorStock} />
-                            </div>
-
                             <div className={`form-group ${!errorIntendReceiveTime ? "" : "has-error"}`}>
                                 <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
                                 <DatePicker
@@ -465,6 +453,59 @@ function CreateForm(props) {
                         </div>
                     </fieldset>
                     <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} />
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">{"Thông tin kho tiếp nhận yêu cầu"}</legend>
+                        <div className="form-group">
+                            <p type="button" onClick={handleChooseTypeOfSelectStock} className="btn btn-primary">{!isAutoSelectStock ? "Tự động tìm kho" : "Chọn kho thủ công"}</p>
+                        </div>
+                        {
+                            !isAutoSelectStock &&
+                            <div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
+                                        <label>
+                                            {translate("production.request_management.unit_receiving_request")}
+                                            <span className="text-red"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-stock`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={stock}
+                                            items={dataStock}
+                                            onChange={handleStockChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content={errorStock} />
+                                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                        <label>
+                                            {translate("production.request_management.approver_in_stock")}
+                                            <span className="text-red"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-approver`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={approver}
+                                            items={dataApprover}
+                                            onChange={handleApproverChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content={errorApprover} />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        {
+                            isAutoSelectStock &&
+                            <div>
+                                {"Tự động chỗ này"}
+                            </div>
+                        }
+                    </fieldset>
                 </form>
             </DialogModal>
         </React.Fragment >

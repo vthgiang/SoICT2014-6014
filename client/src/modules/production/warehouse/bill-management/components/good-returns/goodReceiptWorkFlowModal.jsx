@@ -1,6 +1,6 @@
 import React from "react";
 import { DialogModal } from "../../../../../../common-components";
-import "./goodReceipt.css";
+import "../good-receipts/goodReceipt.css";
 import { connect } from "react-redux";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import QualityControlComponent from './qualityControlComponent';
@@ -107,16 +107,22 @@ function GoodReceiptWorkFlowModal(props) {
         if (isFormValidated()) {
             const { billInfor } = props;
             let statusSteps = [state.statusQuality, state.statusLot, state.statusInventory];
+            console.log(billInfor.goods);
             await props.editBill(billInfor._id, {
                 statusAll: state.statusAll,
                 goods: billInfor.goods,
                 statusSteps: statusSteps,
+                group: billInfor.group,
+                fromStock: billInfor.fromStock,
+                oldStatus: billInfor.status,
+                code: billInfor.code,
             });
         }
     }
 
     const { step, steps, statusQuality, statusLot, statusInventory } = state;
     const { billInfor } = props;
+    console.log(billInfor);
     return (
         <React.Fragment>
             <DialogModal

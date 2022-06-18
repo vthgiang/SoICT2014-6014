@@ -65,7 +65,6 @@ function QualityControlComponent(props) {
     }
     const { translate, bills, billInfor } = props;
 
-    console.log(billInfor);
     const { statusQuality, content, code, listGoods, errorOnStatus } = state;
 
     return (

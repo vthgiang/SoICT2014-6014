@@ -3,12 +3,13 @@ import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, Gantt, DatePicker, TimePicker } from '../../../../../../common-components';
 import { LotActions } from '../../../inventory-management/redux/actions';
-import { BillActions } from '../../../bill-management/redux/actions';
+import { BillActions } from '../../redux/actions';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 import { TaskFormValidator } from '../../../../../task/task-management/component/taskFormValidator';
 import dayjs from "dayjs";
-import GanttCalendar from '../../../bill-management/components/genaral/GanttCalendar';
+import GanttCalendar from './GanttCalendar';
 import { UserActions } from "../../../../../super-admin/user/redux/actions";
+import { dataWorkAssignment } from './config.js';
 
 function StockWorkAssignment(props) {
 
@@ -25,26 +26,22 @@ function StockWorkAssignment(props) {
             day = '0' + day;
         return [day, month, year].join('-');
     }
-
-    const DEFALT_WORK_ASSIGNMENT = [
-        {
-            nameField: "Công việc vận chuyển, phiếu nhập kho: " + props.code, workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:59 PM", type: 'default', description: 'Vận chuyển hàng hóa đến đúng vị trí'
-        },
-        {
-            nameField: "Công việc kiểm định chất lượng, phiếu nhập kho: " + props.code, workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:59 PM", type: 'default', description: `unpack, kiểm tra số lượng và chất lượng. Phân loại hàng hóa theo danh mục. Đối chiếu, packing. Ghi chú thay đổi`
-        },
-        {
-            nameField: "Đánh lô hàng hóa, phiếu nhập kho: " + props.code, workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:59 PM", type: 'default', description: 'Đánh mã số lô hàng cho hàng hóa khi nhập'
-        },
-        {
-            nameField: "Xếp hàng hóa vào vị trí lưu trữ, phiếu nhập kho: " + props.code, workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:59 PM", type: 'default', description: 'Xếp hàng đến vị trí lưu trữ trong kho'
-        },
-    ]
+    let dataWorkAssignments = [];
+    switch (props.group) {
+        case "1":
+            dataWorkAssignments = dataWorkAssignment.goodReceiptData(props.code);
+            break;
+        case "2":
+            dataWorkAssignments = dataWorkAssignment.goodIssueData(props.code);
+            break;
+        case "3":
+            dataWorkAssignments = dataWorkAssignment.goodReturnData(props.code);
+    }
 
     const [state, setState] = useState({
         userId: localStorage.getItem("userId"),
         currentZoom: props.translate('system_admin.system_setting.backup.date'),
-        workAssignment: DEFALT_WORK_ASSIGNMENT,
+        workAssignment: dataWorkAssignments,
         startDate: formatDate((new Date()).toISOString()),
         endDate: formatDate((new Date()).toISOString()),
         startTime: '',
@@ -58,6 +55,7 @@ function StockWorkAssignment(props) {
         email: "",
         address: "",
         phone: "",
+        priority: 3,
     })
 
     function getUnique(arr, index) {
@@ -77,9 +75,9 @@ function StockWorkAssignment(props) {
         if (userdepartments) {
             let list = [{ value: [], text: translate('manage_warehouse.bill_management.choose_employees') }];
             const { deputyManagers, employees, managers } = userdepartments
-            let keyManagers = Object.keys(managers)
-            let keyDeputyManagers = Object.keys(deputyManagers)
-            let keyEmployees = Object.keys(employees)
+            let keyManagers = managers ? Object.keys(managers) : [];
+            let keyDeputyManagers = deputyManagers ?  Object.keys(deputyManagers) : [];
+            let keyEmployees = employees ? Object.keys(employees) : [];
             if (managers[keyManagers[0]]) {
                 list = managers[keyManagers[0]].members.map(category => { return { value: category._id, text: category.name } });
             }
@@ -91,6 +89,16 @@ function StockWorkAssignment(props) {
             }
             return getUnique(list, 'value');
         }
+    }
+
+    // Độ ưu tiên
+
+    const handleChangeTaskPriority = (event) => {
+        console.log(event.target.value);
+        setState({
+            ...state,
+            priority: event.target.value
+        });
     }
 
     /* Người quản lý*/
@@ -305,7 +313,6 @@ function StockWorkAssignment(props) {
 
     useEffect(() => {
         let currentRole = localStorage.getItem("currentRole")
-        console.log(currentRole);
         props.getAllUserSameDepartment(currentRole)
         regenerateTime();
     }, [])
@@ -562,6 +569,7 @@ function StockWorkAssignment(props) {
             endDate: props.endDate,
             workAssignment: props.workAssignment,
             isHaveDataStep2: props.isHaveDataStep2,
+            priority: props.priority,
         });
     }
 
@@ -593,20 +601,32 @@ function StockWorkAssignment(props) {
 
     const handleOpenCalendarChart = () => {
         if (isFormValidated()) {
+            let groupText = '';
+            switch (props.group) {
+                case "1":
+                    groupText = 'nhập kho';
+                    break;
+                case "2":
+                    groupText = 'xuất kho';
+                    break;
+                case "3":
+                    groupText = 'trả hàng';
+                    break;
+            }
+
             let data = [
                 {
-                    nameField: "Công việc nhập kho phiếu: " + props.code, workAssignmentStaffs: state.peopleInCharge, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                    nameField: "Công việc " + groupText + " phiếu: " + props.code, workAssignmentStaffs: state.peopleInCharge, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
                 },
                 {
-                    nameField: "Giám sát quá trình nhập kho phiếu: " + props.code, workAssignmentStaffs: state.accountables, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                    nameField: "Giám sát quá trình " + groupText + " phiếu: " + props.code, workAssignmentStaffs: state.accountables, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
                 },
                 {
-                    nameField: "Kế toán nhập kho phiếu: " + props.code, workAssignmentStaffs: state.accountants, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
+                    nameField: "Kế toán " + groupText + " phiếu: " + props.code, workAssignmentStaffs: state.accountants, startDate: state.startDate, startTime: state.startTime, endDate: state.endDate, endTime: state.endTime
                 },
             ]
-            props.onDataChange(data, state);
+            props.onDataChange(data, state, state.priority);
             const newArray = data.concat(state.workAssignment);
-            console.log(newArray);
             setState({
                 ...state,
                 dataCalendar: newArray,
@@ -618,7 +638,7 @@ function StockWorkAssignment(props) {
     const { translate, name, phone, email, address } = props;
     const { billId, peopleInCharge, accountables, accountants, startDate, endDate, startTime, endTime, errorOnStartDateAll,
         errorOnEndDateAll, errorPeopleInCharge, errorAccountants, errorAccountables, dataCalendar, errorOnNameFieldPosition,
-        errorOnNameField, workAssignment, counter, isOpenCalendarChart } = state;
+        errorOnNameField, workAssignment, counter, isOpenCalendarChart, priority } = state;
 
     const dataEmployees = getEmployees();
     return (
@@ -626,6 +646,19 @@ function StockWorkAssignment(props) {
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border">{"Danh sách người quản lý, giám sát, thời gian làm việc"}</legend>
+                    <div className={'row'}>
+                        {/* Độ ưu tiên công việc */}
+                        <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12 form-group">
+                            <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
+                            <select className="form-control" value={priority} onChange={handleChangeTaskPriority}>
+                                <option value={5}>{translate('task.task_management.urgent')}</option>
+                                <option value={4}>{translate('task.task_management.high')}</option>
+                                <option value={3}>{translate('task.task_management.standard')}</option>
+                                <option value={2}>{translate('task.task_management.average')}</option>
+                                <option value={1}>{translate('task.task_management.low')}</option>
+                            </select>
+                        </div>
+                    </div>
                     <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                         <div className={`form-group ${!errorPeopleInCharge ? "" : "has-error"}`}>
                             <label>{"Người quản lý"}<span className="text-red"> * </span></label>

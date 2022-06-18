@@ -263,6 +263,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
         let listBinLocation = currentLot.binLocations && currentLot.binLocations.length > 0 ? currentLot.binLocations : [];
         let binLocationArrFilter = listPaginate.filter(x => x._id === binLocation.id);
         if (binLocationArrFilter) {
+            binLocation.binLocation = binLocationArrFilter[0]._id;
             binLocation.name = binLocationArrFilter[0].name;
         }
         listBinLocation.push(binLocation);
@@ -303,7 +304,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
     }
 
     const checkDifferentGood = (lot) => {
-        let quantity = lot.quantity;
+        let quantity = lot.passedQuantity;
         if (lot.binLocations && lot.binLocations.length > 0) {
             lot.binLocations.forEach(bin => {
                 quantity -= bin.quantity;
@@ -356,6 +357,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
 
     const { translate } = props;
     const { dataLots, code, status, stockInfo, dataUnPassedLots, statusInventory, errorOnStatus, errorBinLocation, errorQuantity, binLocation, currentIndex } = state;
+    console.log(dataLots);
     return (
         <React.Fragment>
             {stockInfo && (
@@ -480,7 +482,7 @@ function QueueGoodIntoTheWarehouseComponent(props) {
                                                     <td>{x.code}</td>
                                                     <td>{x.goodName}</td>
                                                     <td>{x.baseUnit}</td>
-                                                    <td>{x.quantity}</td>
+                                                    <td>{x.passedQuantity}</td>
                                                     {checkDifferentGood(x) > 0 ?
                                                         <td className="tooltip-abc">
                                                             <span style={{ color: "red" }}>{checkDifferentGood(x)}</span>

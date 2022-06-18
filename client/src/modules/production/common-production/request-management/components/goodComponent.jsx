@@ -195,6 +195,7 @@ function GoodComponentRequest(props) {
             ...state,
             listGoodsByType: [...listGoodsByType],
         });
+        props.onHandleGoodChange(listGoodsByType);
     }
 
     const handleEditGood = (good, index) => {
@@ -241,6 +242,7 @@ function GoodComponentRequest(props) {
             good: Object.assign({}, EMPTY_GOOD),
             listGoodsByType: [...listGoodsByType]
         })
+        props.onHandleGoodChange(listGoodsByType);
     }
 
     if (props.requestId !== state.requestId) {

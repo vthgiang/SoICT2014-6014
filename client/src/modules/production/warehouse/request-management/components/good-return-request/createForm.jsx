@@ -2,21 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
-import { formatDate, formatToTimeZoneDate } from '../../../../../../helpers/formatDate';
-import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
+import { formatToTimeZoneDate, formatDate } from '../../../../../../helpers/formatDate';
+import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
-import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
+import ModalSelectIssueBill from '../../../bill-management/components/good-returns/modalSelectIssueBill';
+import { BillActions } from '../../../bill-management/redux/actions';
 
-function EditForm(props) {
+function CreateForm(props) {
+    const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
     const [state, setState] = useState({
         code: generateCode("SR"),
-        desiredTime: "",
+        desiredTime: formatDate((new Date()).toISOString()),
         description: "",
         listGoods: [],
-        isAutoSelectStock: false,
+        approvers: "",
+        stock: "",
     });
+
+    // Thời gian mong muốn 
 
     const handleDesiredTimeChange = (value) => {
         if (value.length === 0) {
@@ -24,10 +39,11 @@ function EditForm(props) {
         }
         setState({
             ...state,
-            desiredTime: value
-        });
+            desiredTime: formatToTimeZoneDate(value)
+        })
     }
 
+    // Mô tả
     const handleDescriptionChange = (e) => {
         const { value } = e.target;
         setState({
@@ -50,6 +66,9 @@ function EditForm(props) {
 
     useEffect(() => {
         if (state.stock) {
+            let group = '2';
+            let status = '2';
+            props.getBillsByStatus({ group, status, type: null, fromStock: state.stock });
             let listStocks = getStock();
             let result = findIndex(listStocks, state.stock);
             if (result !== -1) {
@@ -68,7 +87,7 @@ function EditForm(props) {
         let { userdepartments } = user;
         if (userdepartments) {
             userdepartments = userdepartments[0];
-            if (userdepartments.managers && Object.keys(userdepartments.managers).length > 0) { // Nếu kho có nhân viên
+            if (userdepartments && userdepartments.managers && Object.keys(userdepartments.managers).length > 0) { // Nếu kho có nhân viên
                 let managers = userdepartments.managers[Object.keys(userdepartments.managers)[0]].members;
                 if (managers.length) {
                     managers.map((member) => {
@@ -122,7 +141,7 @@ function EditForm(props) {
         validateStock(stock, true);
     };
 
-    const validateStock = (value, willUpdateState = true) => {
+    const validateStock = async (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
         if (!value) {
@@ -263,10 +282,90 @@ function EditForm(props) {
         return msg === undefined;
     };
 
-    const handleChooseTypeOfSelectStock = () => {
+    const handleReturnQuantityChange = (e, index) => {
+        let { value } = e.target;
+
+        let { dataLots } = state;
+        dataLots[index].returnQuantity = value;
         setState({
             ...state,
-            isAutoSelectStock: !state.isAutoSelectStock
+            dataLots,
+        });
+
+        validateReturnQuantityChangeOnTable(value, index, true);
+    };
+
+    const validateReturnQuantityChangeOnTable = (value, index, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value || value === "") {
+            msg = "Giá trị không được bỏ trống!";
+        } else if (parseInt(value) < 0) {
+            msg = "giá trị không được nhỏ hơn 0!";
+        } else if (parseInt(value) > parseInt(state.dataLots[index].quantity)) {
+            msg = "giá trị không được lớn hơn số lượng!";
+        }
+        if (willUpdateState) {
+            setState({
+                ...state,
+                returnQuantityErrorPosition: index,
+                returnQuantityErrorOnTable: msg,
+            });
+        }
+
+        return msg;
+    };
+
+    const selectBill = () => {
+        window.$("#modal-select-bill-issue").modal("show");
+    };
+
+    const getDataLots = (goods) => {
+        let lots = [];
+        goods.forEach(item => {
+            item.lots.forEach(lot => {
+                lot.goodName = item.good.name;
+                lot.baseUnit = item.good.baseUnit;
+                lot.code = lot.lot.code;
+                lot.expirationDate = lot.lot.expirationDate;
+                lot.returnQuantity = 0;
+                lot.goodId = item.good._id;
+                lots.push(lot);
+            })
+        })
+        return lots;
+    }
+
+    const handleBillIssueChange = async (data) => {
+        await setState({
+            ...state,
+            billSelected: data.code + " -- " + formatDate(data.createdAt),
+            bill: data,
+            dataLots: getDataLots(data.goods),
+            worksValue: data.manufacturingWork && data.manufacturingWork._id ? data.manufacturingWork._id : "",
+            sourceType: data.manufacturingWork && data.manufacturingWork._id ? "1" : "2",
+            supplier: data.supplier && data.supplier._id ? data.supplier._id : "",
+            listGoods: data.goods,
+        })
+    };
+
+    const handleBillChange = (value) => {
+    }
+
+    const totalReturnQuantity = (dataLots) => {
+        let total = 0;
+        dataLots.forEach(item => {
+            total += parseInt(item.returnQuantity);
+        })
+        return total;
+    }
+
+    // Phần lưu dữ liệu
+
+    const handleClickCreate = () => {
+        const value = generateCode("SR");
+        setState({
+            ...state,
+            code: value
         });
     }
 
@@ -277,87 +376,58 @@ function EditForm(props) {
             validateSourceProduct(state.sourceType, false) &&
             (validateManufacturingWorks(state.worksValue, false) ||
                 validateSupplier(state.supplier, false)) &&
-            listGoods.length > 0
+            totalReturnQuantity(state.dataLots) > 0
         return result;
     }
 
     const save = () => {
         if (isFormValidated()) {
             let { listGoods } = state;
+            listGoods.forEach((item) => {
+                item.lots = [];
+                dataLots.forEach(lot => {
+                    if (lot.goodId === item.good._id) {
+                        item.lots.push(lot);
+                    }
+                })
+            })
             let goods = listGoods.map((good) => {
                 return {
-                    good: good.goodId,
-                    quantity: good.quantity
+                    good: good.good._id,
+                    quantity: '',
+                    lots: good.lots.map((lot) => {
+                        return {
+                            lot: lot.lot._id,
+                            quantity: lot.quantity,
+                            returnQuantity: lot.returnQuantity
+                        }
+                    })
                 }
             })
             const data = {
                 code: state.code,
+                bill: state.bill._id,
                 desiredTime: state.desiredTime,
                 description: state.description,
                 goods: goods,
                 approvers: state.approvers,
                 stock: state.stock,
-                requestType: 3,
-                type: props.stockRequestType,
                 status: 1,
+                type: props.stockRequestType,
+                requestType: 3,
                 manufacturingWork: state.worksValue,
                 supplier: state.supplier,
+                dataLots: state.dataLots,
             }
-            props.editRequest(state.requestId, data);
+            console.log(data);
+            props.createRequest(data);
         }
     }
 
-    if (props.requestId !== state.requestId) {
-        const { listGoods, goods, translate } = props;
-        const { listGoodsByType } = goods;
-        let goodOptions = [{
-            value: "1",
-            text: translate('production.request_management.choose_good')
-        }];
-
-        loop:
-        for (let i = 0; i < listGoodsByType.length; i++) {
-            for (let j = 0; j < listGoods.length; j++) {
-                if (listGoods[j].goodId === listGoodsByType[i]._id) {
-                    continue loop;
-                }
-            }
-            goodOptions.push({
-                value: listGoodsByType[i]._id,
-                text: listGoodsByType[i].code + " - " + listGoodsByType[i].name
-            });
-        }
-        setState({
-            ...state,
-            requestId: props.requestId,
-            code: props.code,
-            desiredTime: props.desiredTime,
-            description: props.description,
-            listGoods: listGoods,
-            worksValue: props.worksValue,
-            supplier: props.supplier,
-            sourceType: props.worksValue ? "1" : "2",
-            stock: props.stock,
-            approver: props.approver[0].information[0].approver._id,
-            status: props.status,
-            errorDescription: undefined,
-            errorDesiredTime: undefined,
-            goodOptions: goodOptions,
-            errorGood: undefined,
-            errorQuantity: undefined,
-        });
-    }
-
-    const onHandleGoodChange = (data) => {
-        setState({
-            ...state,
-            listGoods: data
-        });
-    }
-
-    const { translate, requestManagements } = props;
-    const { requestId, code, desiredTime, errorDesiredTime, description, listGoods,
-        approver, errorApprover, errorStock, stock, worksValueError, worksValue, sourceType, errorOnSourceProduct, errorSupplier, supplier, isAutoSelectStock } = state;
+    const { translate, NotHaveCreateButton, bills } = props;
+    const { code, desiredTime, errorIntendReceiveTime, description, approver, errorApprover,
+        errorStock, stock, sourceType, errorOnSourceProduct, errorSupplier, supplier, worksValueError,
+        worksValue, errorBill, billSelected, dataLots, returnQuantityErrorPosition, returnQuantityErrorOnTable } = state;
     let dataSource = [
         {
             value: '0',
@@ -376,21 +446,22 @@ function EditForm(props) {
     const dataStock = getStock();
     const dataManufacturingWorks = getListWorks();
     const dataCustomer = getSuplierOptions();
-
     return (
         <React.Fragment>
+            {!NotHaveCreateButton && <ButtonModal onButtonCallBack={handleClickCreate} modalID="modal-create-purchasing-request" button_name={translate('production.request_management.add_request_button')} title={translate('production.request_management.add_request')} />}
             <DialogModal
-                modalID={`modal-edit-request`} isLoading={requestManagements.isLoading}
-                formID="form-edit-request"
+                modalID="modal-create-purchasing-request"
+                formID="form-create-purchasing-request"
                 title={translate('production.request_management.add_request')}
                 msg_success={translate('production.request_management.create_successfully')}
                 msg_failure={translate('production.request_management.create_failed')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={50}
+                size={75}
                 maxWidth={500}
             >
-                <form id={`form-edit-request-${requestId}`}>
+                <ModalSelectIssueBill listBills={bills.listBillByStatus} onDataChange={handleBillIssueChange} />
+                <form id="form-create-purchasing-request">
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate("production.request_management.base_infomation")}</legend>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -398,11 +469,27 @@ function EditForm(props) {
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
                                 <input type="text" disabled={true} value={code} className="form-control"></input>
                             </div>
+                            <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.approver_in_stock")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-approver`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={approver}
+                                    items={dataApprover}
+                                    onChange={handleApproverChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorApprover} />
+                            </div>
                             <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
                                 <label>{"Nguồn yêu cầu"}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
-                                    id={`select-source-type-edit-${requestId}`}
+                                    id={`choose-source-type`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={sourceType}
@@ -414,15 +501,45 @@ function EditForm(props) {
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!errorDesiredTime ? "" : "has-error"}`}>
+                            <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.unit_receiving_request")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-stock`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={stock}
+                                    items={dataStock}
+                                    onChange={handleStockChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorStock} />
+                            </div>
+
+                            <div className={`form-group ${!errorBill ? "" : "has-error"}`}>
+                                <label>{translate('manage_warehouse.bill_management.choose_bill')}<span className="text-red"> * </span></label>
+                                <div>
+                                    <div className="col-md-8 col-lg-8" style={{ padding: 0 }}>
+                                        <input type="text" className="form-control" value={billSelected ? billSelected : ''} onChange={handleBillChange} />
+                                    </div>
+                                    <div className="col-md-4 col-lg-4">
+                                        <p type="button" className="btn btn-info" style={{ marginLeft: "10px" }} onClick={() => selectBill()}>{translate('manage_warehouse.bill_management.choose_bill')}</p>
+                                    </div>
+                                </div>
+                                <ErrorLabel content={errorBill} />
+                            </div>
+
+                            <div style={{ marginTop: "50px" }} className={`form-group ${!errorIntendReceiveTime ? "" : "has-error"}`}>
                                 <label>{translate('production.request_management.desiredTime')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`request-edit-desiredTime-${requestId}`}
-                                    value={formatDate(desiredTime)}
+                                    id={`purchasing-request-create-desiredTime`}
+                                    value={desiredTime}
                                     onChange={handleDesiredTimeChange}
                                     disabled={false}
                                 />
-                                <ErrorLabel content={errorDesiredTime} />
+                                <ErrorLabel content={errorIntendReceiveTime} />
                             </div>
                             {sourceType === "2" ?
                                 (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
@@ -431,7 +548,7 @@ function EditForm(props) {
                                         <span className="text-red"> * </span>
                                     </label>
                                     <SelectBox
-                                        id={`select-customer-edit-${requestId}`}
+                                        id={`select-customer`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={supplier}
@@ -446,7 +563,7 @@ function EditForm(props) {
                                 (<div className={`form-group ${!worksValueError ? "" : "has-error"}`}>
                                     <label>{translate('production.request_management.manufacturing_works')}<span className="text-red">*</span></label>
                                     <SelectBox
-                                        id={`select-works-edit-${requestId}`}
+                                        id={`select-works`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={worksValue}
@@ -457,67 +574,63 @@ function EditForm(props) {
                                     <ErrorLabel content={worksValueError} />
                                 </div>)
                                 : null}
+
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className={`form-group`}>
                                 <label>{translate('production.request_management.description')}</label>
-                                <textarea type="text" className="form-control" value={description ? description : ''} onChange={handleDescriptionChange} />
+                                <textarea type="text" className="form-control" value={description} onChange={handleDescriptionChange} />
                             </div>
                         </div>
                     </fieldset>
-                    <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} requestId={requestId} listGoods={listGoods} />
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{"Thông tin kho tiếp nhận yêu cầu"}</legend>
-                        <div className="form-group">
-                            <p type="button" onClick={handleChooseTypeOfSelectStock} className="btn btn-primary">{!isAutoSelectStock ? "Tự động tìm kho" : "Chọn kho thủ công"}</p>
+                        <legend className="scheduler-border">{"Thông tin chi tiết lô hàng không đạt kiểm định"}</legend>
+                        <div className={`form-group`}>
+                            {/* Bảng thông tin chi tiết */}
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                        <th title="Mã lô hàng">{"Mã lô hàng"}</th>
+                                        <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
+                                        <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
+                                        <th title={"Số lượng xuất kho"}>{"Số lượng xuất kho"}</th>
+                                        <th title={"Vị lượng trả lại"}>{"Số lượng trả lại"}</th>
+                                        <th title={"Ngày hết hạn"}>{"Ngày hết hạn"}</th>
+                                    </tr>
+                                </thead>
+                                <tbody id={`good-return-request-create`}>
+                                    {
+                                        (typeof dataLots === 'undefined' || dataLots.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                            dataLots.map((x, index) =>
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{x.code}</td>
+                                                    <td>{x.goodName}</td>
+                                                    <td>{x.baseUnit}</td>
+                                                    <td>{x.quantity}</td>
+                                                    <td>
+                                                        <div className={`form-group ${parseInt(returnQuantityErrorPosition) === index && returnQuantityErrorOnTable ? "has-error" : ""} `}>
+                                                            <input
+                                                                className="form-control"
+                                                                type="number"
+                                                                value={x.returnQuantity}
+                                                                name="value"
+                                                                style={{ width: "100%" }}
+                                                                onChange={(e) => handleReturnQuantityChange(e, index)}
+                                                            />
+                                                            {parseInt(returnQuantityErrorPosition) === index && returnQuantityErrorOnTable && (
+                                                                <ErrorLabel content={returnQuantityErrorOnTable} />
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td>{x.expirationDate}</td>
+                                                </tr>
+                                            )
+                                    }
+                                </tbody>
+                            </table>
                         </div>
-                        {
-                            !isAutoSelectStock &&
-                            <div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                        <label>
-                                            {translate("production.request_management.unit_receiving_request")}
-                                            <span className="text-red"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-stock-${requestId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={stock}
-                                            items={dataStock}
-                                            onChange={handleStockChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorStock} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>
-                                            {translate("production.request_management.approver_in_stock")}
-                                            <span className="text-red"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-approver-${requestId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={approver}
-                                            items={dataApprover}
-                                            onChange={handleApproverChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorApprover} />
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        {
-                            isAutoSelectStock &&
-                            <div>
-                                {"Tự động chỗ này"}
-                            </div>
-                        }
                     </fieldset>
                 </form>
             </DialogModal>
@@ -528,8 +641,10 @@ function EditForm(props) {
 const mapStateToProps = (state) => state;
 
 const mapDispatchToProps = {
-    editRequest: RequestActions.editRequest,
+    createRequest: RequestActions.createRequest,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
+    getBillsByStatus: BillActions.getBillsByStatus,
+    getDetailBill: BillActions.getDetailBill,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));

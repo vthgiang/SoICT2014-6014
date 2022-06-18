@@ -1,24 +1,25 @@
 import React from "react";
 import { DialogModal } from "../../../../../../common-components";
-import "./goodReceipt.css";
 import { connect } from "react-redux";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import BaseInformationComponent from './baseInformationComponent';
 import StockWorkAssignment from "../genaral/stockWorkAssignment";
 import { generateCode } from "../../../../../../helpers/generateCode";
 import { BillActions } from "../../redux/actions";
+import "../good-receipts/goodReceipt.css";
 
-function GoodReceiptCreateFormModal(props) {
+function GoodReturnCreateFormModal(props) {
 
     const [state, setState] = React.useState({
         fromStock: "",
-        group: "1",
+        group: "3",
         status: "1",
         sourceType: "",
         listGood: "",
+        bill: '',
         manufacturingWork: "",
         supplier: "",
-        code: generateCode("BIRE"),
+        code: generateCode("BIRT"),
         description: "",
         step: 0,
         isHaveDataStep1: 0,
@@ -81,6 +82,7 @@ function GoodReceiptCreateFormModal(props) {
             supplier: data.supplier,
             code: data.code,
             description: data.description,
+            bill: data.bill ? data.bill : state.bill,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
         });
     }
@@ -138,6 +140,7 @@ function GoodReceiptCreateFormModal(props) {
             sourceType:props.request.supplier ? "2" : "1",
             requestId: props.requestId,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
+            bill: props.request.bill._id,
         })
     }
             
@@ -145,6 +148,7 @@ function GoodReceiptCreateFormModal(props) {
     const save = async () => {
         if (isFormValidated()) {
             const data = {
+                bill: state.bill,
                 fromStock: state.fromStock,
                 group: state.group,
                 status: state.status,
@@ -171,18 +175,18 @@ function GoodReceiptCreateFormModal(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-new-receipt-bill"
+                modalID="modal-create-new-return-bill"
                 isLoading={false}
-                formID="modal-create-new-receipt-bill"
-                title={"Tạo mới phiếu nhập kho"}
-                msg_success={"Tạo mới phiếu nhập kho thành công"}
-                msg_failure={"Tạo mới phiếu nhập kho thất bại"}
+                formID="modal-create-new-return-bill"
+                title={"Tạo mới phiếu trả hàng"}
+                msg_success={"Tạo mới phiếu trả hàng thành công"}
+                msg_failure={"Tạo mới phiếu trả hàng thất bại"}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
                 maxWidth={500}
             >
-                <form id="modal-create-new-receipt-bill">
+                <form id="modal-create-new-return-bill">
                     <div className="timeline">
                         <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
                         <div className="timeline-items">
@@ -251,4 +255,4 @@ const mapDispatchToProps = {
     createBill: BillActions.createBill,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReceiptCreateFormModal));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReturnCreateFormModal));
