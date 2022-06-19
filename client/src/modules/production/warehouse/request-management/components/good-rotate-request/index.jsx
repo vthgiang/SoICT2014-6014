@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { formatDate } from '../../../../../../helpers/formatDate';
 import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../../common-components";
 import DetailForm from '../common-components/detailForm';
-import EditForm from '../common-components/editForm';
-import CreateForm from '../common-components/createForm';
+import EditForm from './editForm';
+import CreateForm from './createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { RequestActions } from '../../../../common-production/request-management/redux/actions';
+import GoodIssueCreateFormModal from '../../../bill-management/components/good-issues/goodIssueCreateFormModal';
 
-function GoodTakeRequestManagementTable(props) {
+function GoodRotateRequestManagementTable(props) {
 
     const [state, setState] = useState({
         createdAt: formatDate((new Date()).toISOString()),
@@ -41,6 +43,38 @@ function GoodTakeRequestManagementTable(props) {
         window.$('#modal-edit-request').modal('show');
     }
 
+    const checkRoleApproverInToStock = (request) => {
+        const { approvers } = request;
+        let count = 0;
+        approvers.forEach(approver => {
+            if (approver.approveType == 5) {
+                const userId = localStorage.getItem("userId");
+                let approverIds = approver.information.map(x => x.approver._id);
+                if (approverIds.includes(userId) && approver.information[approverIds.indexOf(userId)].approvedTime === null) {
+                    count++;
+                }
+            }
+        })
+        return count > 0;
+    }
+
+    const handleFinishedApprovalInToStock = (request) => {
+        const userId = localStorage.getItem("userId");
+        const data = {
+            approvedUser: userId,
+            approveType: 5
+        }
+        props.editRequest(request._id, data);
+    }
+
+    const handleCreateIssueBill = async (request) => {
+        await setState({
+            ...state,
+            request: request,
+        });
+        window.$("#modal-create-new-issue-bill").modal("show");
+    }
+
     const { translate, requestManagements } = props;
     let listRequests = [];
     if (requestManagements.listRequests) {
@@ -60,13 +94,19 @@ function GoodTakeRequestManagementTable(props) {
                     desiredTime={state.currentRow.desiredTime}
                     description={state.currentRow.description}
                     listGoods={state.listGoods}
-                    stock={state.currentRow.stock._id}
+                    fromStock={state.currentRow.stock._id}
+                    toStock={state.currentRow.toStock._id}
                     status={state.currentRow.status}
-                    worksValue={state.currentRow.manufacturingWork._id}
-                    approver={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 4) : []}
+                    approverInFromStock={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 4) : []}
+                    approverInToStock={state.currentRow.approvers ? state.currentRow.approvers.filter(x => x.approveType == 5) : []}
                     stockRequestType={props.stockRequestType}
                 />
             }
+            <GoodIssueCreateFormModal
+                createType={4} // 3: create from request in request screen
+                requestId={state.request ? state.request._id : ''}
+                request={state.request} 
+                />
             <div className="box-body qlcv">
                 <CreateForm stockRequestType={props.stockRequestType}/>
                 <div className="form-inline">
@@ -156,7 +196,7 @@ function GoodTakeRequestManagementTable(props) {
                                     <td>{request.creator && request.creator.name}</td>
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{ color: request.status <= 5 ? translate(`production.request_management.receipt_request_from_order.${request.status}.color`) : translate(`production.request_management.purchasing_request.${request.status}.color`) }}>{request.status <= 5 ?  translate(`production.request_management.receipt_request_from_order.${request.status}.content`) : translate(`production.request_management.purchasing_request.${request.status}.content`)}</td>
+                                    <td style={{color: translate(`production.request_management.stock_take_request.${request.status}.color`) }}>{translate(`production.request_management.stock_take_request.${request.status}.content`)}</td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
@@ -175,6 +215,28 @@ function GoodTakeRequestManagementTable(props) {
                                                 className="text-green"
                                                 func={() => props.handleFinishedApproval(request)}
                                             />
+                                        }
+                                        {
+                                            checkRoleApproverInToStock(request) && 
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('production.request_management.approved_true')}
+                                                content={translate('production.request_management.approved_true') + " " + request.code}
+                                                name="check_circle_outline"
+                                                className="text-green"
+                                                func={() => handleFinishedApprovalInToStock(request)}
+                                            />
+                                        }
+                                        {
+                                            request.status == 2 &&
+                                            <a
+                                                onClick={() => handleCreateIssueBill(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Tạo phiếu xuất kho"
+                                            >
+                                                <i className="material-icons">add</i>
+                                            </a>
                                         }
                                         {
                                             request.status == 1 &&
@@ -206,7 +268,7 @@ function GoodTakeRequestManagementTable(props) {
 const mapStateToProps = (state) => state;
 
 const mapDispatchToProps = {
-
+    editRequest: RequestActions.editRequest,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodTakeRequestManagementTable));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodRotateRequestManagementTable));

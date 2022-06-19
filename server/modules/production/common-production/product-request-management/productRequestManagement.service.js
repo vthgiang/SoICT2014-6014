@@ -69,8 +69,10 @@ exports.createRequest = async (user, data, portal) => {
                 approveType: item1.approveType
             }
         }) : [],
-        stock: data.stock,
-        orderUnit: data.orderUnit,
+        stock: data.stock ? data.stock : null,
+        toStock: data.toStock ? data.toStock : null,
+        requestingDepartment: data.requestingDepartment ? data.requestingDepartment : null,
+        orderUnit: data.orderUnit ? data.orderUnit : null,
         requestType: data.requestType ? data.requestType : 1,
         type: data.type ? data.type : 1,
         supplier: data.supplier ? data.supplier : null,
@@ -130,7 +132,7 @@ exports.createRequest = async (user, data, portal) => {
         organizationalUnits: [],
         title: `Xin phê duyệt yêu cầu ${notificationText}`,
         level: "general",
-        content: `<p><strong>${user.name}</strong> đã gửi yêu cầu phê duyệt ${notificationText} đến trước ngày <strong>${date}</strong>, <a href="${process.env.WEBSITE}/request-management/${url}">Xem ngay</a></p>`,
+        content: `<p><strong>${user.name}</strong> đã gửi yêu cầu phê duyệt ${notificationText} đến trước ngày <strong>${date}</strong>, <a href="${process.env.WEBSITE}/product-request-management/${url}">Xem ngay</a></p>`,
         sender: `${user.name}`,
         users: approvers,
         associatedDataObject: {
@@ -149,6 +151,8 @@ exports.createRequest = async (user, data, portal) => {
             { path: "approvers.information.approver" },
             { path: "refuser.refuser", select: "name" },
             { path: "stock" },
+            { path: "toStock" },
+            { path: "requestingDepartment" },
             { path: "manufacturingWork", select: "name" },
             { path: "supplier", select: "name" },
             { path: "orderUnit", select: "name" },
@@ -268,6 +272,8 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "approvers.information.approver" },
                 { path: "refuser.refuser", select: "name" },
                 { path: "stock" },
+                { path: "toStock" },
+                { path: "requestingDepartment" },
                 { path: "manufacturingWork", select: "name" },
                 { path: "supplier", select: "name" },
                 { path: "orderUnit", select: "name" },
@@ -287,6 +293,8 @@ exports.getAllRequestByCondition = async (query, portal) => {
                 { path: "approvers.information.approver" },
                 { path: "refuser.refuser", select: "name" },
                 { path: "stock" },
+                { path: "toStock" },
+                { path: "requestingDepartment" },
                 { path: "manufacturingWork", select: "name" },
                 { path: "supplier", select: "name" },
                 { path: "orderUnit", select: "name" },
@@ -312,6 +320,8 @@ exports.getRequestById = async (id, portal) => {
         { path: "approvers.information.approver" },
         { path: "refuser.refuser", select: "name" },
         { path: "stock" },
+        { path: "toStock" },
+        { path: "requestingDepartment" },
         { path: "manufacturingWork", select: "name" },
         { path: "supplier", select: "name" },
         { path: "orderUnit", select: "name" },
@@ -347,6 +357,7 @@ function findIndexOfRole(array, approveType) {
 /* Chỉnh sửa yêu cầu*/
 
 exports.editRequest = async (user, id, data, portal) => {
+    console.log(data);
     let oldRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
         .populate([
@@ -374,7 +385,29 @@ exports.editRequest = async (user, id, data, portal) => {
                     break;
                 case 3: oldRequest.status = oldRequest.status == 5 ? 6 : 2;
                     break;
-                case 4: oldRequest.status = oldRequest.status == 6 ? 7 : 2;
+                case 4:
+                    if (oldRequest.type !== 4) {
+                        oldRequest.status = oldRequest.status == 6 ? 7 : 2;
+                    } else {
+                        let index1 = findIndexOfRole(oldRequest.approvers, 5);
+                        let check = 0;
+                        oldRequest.approvers[index1].information.forEach(element => {
+                            if (element.approvedTime) {
+                                check++;
+                            }
+                        })
+                        oldRequest.status = check > 0 ? 2 : 1;
+                    }
+                    break;
+                case 5:
+                    let index1 = findIndexOfRole(oldRequest.approvers, 4);
+                    let check = 0;
+                    oldRequest.approvers[index1].information.forEach(element => {
+                        if (element.approvedTime) {
+                            check++;
+                        }
+                    })
+                    oldRequest.status = check > 0 ? 2 : 1;
                     break;
             }
         }
@@ -386,6 +419,8 @@ exports.editRequest = async (user, id, data, portal) => {
     oldRequest.requestType = data.requestType ? data.requestType : oldRequest.requestType;
     oldRequest.type = data.type ? data.type : oldRequest.type;
     oldRequest.stock = data.stock ? data.stock : oldRequest.stock;
+    oldRequest.toStock = data.toStock ? data.toStock : oldRequest.toStock;
+    oldRequest.requestingDepartment = data.requestingDepartment ? data.requestingDepartment : oldRequest.requestingDepartment;
     oldRequest.orderUnit = data.orderUnit ? data.orderUnit : oldRequest.orderUnit;
     oldRequest.goods = data.goods ? data.goods.map((good) => {
         return {
@@ -502,7 +537,7 @@ exports.editRequest = async (user, id, data, portal) => {
         organizationalUnits: [],
         title: `Xin phê duyệt yêu cầu ${notificationText}`,
         level: "general",
-        content: `<p><strong>${user.name}</strong> đã gửi yêu cầu phê duyệt ${notificationText} đến trước ngày <strong>${date}</strong>, <a href="${process.env.WEBSITE}/request-management/${url}">Xem ngay</a></p>`,
+        content: `<p><strong>${user.name}</strong> đã gửi yêu cầu phê duyệt ${notificationText} đến trước ngày <strong>${date}</strong>, <a href="${process.env.WEBSITE}/product-request-management/${url}">Xem ngay</a></p>`,
         sender: `${user.name}`,
         users: approvers,
         associatedDataObject: {
@@ -522,6 +557,8 @@ exports.editRequest = async (user, id, data, portal) => {
             { path: "approvers.information.approver" },
             { path: "refuser.refuser", select: "name" },
             { path: "stock" },
+            { path: "toStock" },
+            { path: "requestingDepartment" },
             { path: "manufacturingWork", select: "name" },
             { path: "supplier", select: "name" },
             { path: "orderUnit", select: "name" },

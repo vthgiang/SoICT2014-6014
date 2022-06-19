@@ -22,7 +22,7 @@ function SelectLotComponent(props) {
             good: good,
             indexInfo: index,
         })
-        await props.getLotsByGood({ good: good.good._id, stock: props.fromStock, billType: props.billType });
+        await props.getLotsByGood({ good: good.good._id, stock: props.fromStock, type: props.type });
         await window.$("#modal-add-quantity-issue").modal("show");
     }
 
@@ -83,7 +83,7 @@ function SelectLotComponent(props) {
                                                 <td>{x.good.baseUnit}</td>
                                                 {(checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> :
                                                     <td className="tooltip-abc">
-                                                        <span style={{ color: "red" }}>{x.realQuantity}</span>
+                                                        <span style={{ color: "red" }}>{x.quantity}</span>
                                                         <span className="tooltiptext"><p style={{ color: "white" }}>{"Chưa chọn đủ lô cho hàng hóa"}</p></span>
                                                     </td>}
                                                 {(x.lots && x.lots.length > 0) ?

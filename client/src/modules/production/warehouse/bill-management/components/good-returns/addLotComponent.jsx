@@ -48,7 +48,6 @@ function AddLotComponent(props) {
     }
 
     const addLotUnPassQualityControl = (lot, index) => {
-        console.log(lot);
         setState({
             ...state,
             indexInfo: index,
@@ -57,12 +56,10 @@ function AddLotComponent(props) {
             initialData: lot.returnLot ? lot.returnLot : [],
             good: lot.good,
         })
-        console.log(state);
         window.$('#modal-edit-quantity-receipt').modal('show');
     }
 
     const handleLotsChange = (lots, data, arrayId) => {
-        console.log(state.indexInfo);
         const dataLot = [...dataLots];
         const dataGoods = [...listGood];
         dataLot[state.indexInfo].lots = lots;
@@ -76,8 +73,6 @@ function AddLotComponent(props) {
                 }
             })
         })
-        console.log(dataGoods);
-        console.log(dataLot);
         setState({
             ...state,
             dataLots: dataLot,
@@ -142,7 +137,6 @@ function AddLotComponent(props) {
     const isValidateAddLotComponent = () => {
         let check = 0;
         let { dataLots } = state;
-        console.log(dataLots);
         if (dataLots && dataLots.length > 0) {
             dataLots.forEach(item => {
                 if (item.lots) {
@@ -164,7 +158,6 @@ function AddLotComponent(props) {
     }
 
     const checkLots = (lots, quantity) => {
-        console.log(lots, quantity);
         if (lots) {
             if (lots.length === 0) {
                 return false;
@@ -183,8 +176,6 @@ function AddLotComponent(props) {
 
     const { translate, group } = props;
     const { dataLots, lots, lotName, listGood, good, billId, statusLot, fromStock, type, quantity, code, initialData, errorOnStatus, isPassQualityControl } = state;
-    console.log("listGood", listGood);
-    console.log("dataLots", dataLots);
     return (
         <React.Fragment>
             <QuantityLotGoodReturn group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={initialData} isPassQualityControl={isPassQualityControl} onDataChange={handleLotsChange} />

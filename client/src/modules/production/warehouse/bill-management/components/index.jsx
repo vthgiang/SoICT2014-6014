@@ -30,7 +30,7 @@ function BillManagement(props) {
         const { limit, page, currentRole, group } = state;
         props.getBillsByType({ page, limit, managementLocation: currentRole });
         props.getAllBillsByGroup({ group, managementLocation: currentRole });
-        props.getAllStocks({ managementLocation: currentRole });
+        props.getAllStocks();
         props.getUser();
         props.getAllGoods();
         props.getCustomers();
@@ -460,7 +460,7 @@ function BillManagement(props) {
                 <li><a href="#bill-good-issues" data-toggle="tab" onClick={() => handleGoodIssue()}>{translate('manage_warehouse.bill_management.good_issue')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '2').length})</a></li>
                 <li><a href="#bill-good-returns" data-toggle="tab" onClick={() => handleGoodReturn()}>{translate('manage_warehouse.bill_management.good_return')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '3').length})</a></li>
                 <li><a href="#bill-stock-takes" data-toggle="tab" onClick={() => handleStockTake()}>{translate('manage_warehouse.bill_management.stock_take')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '4').length})</a></li>
-                <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '5').length})</a></li>
+                {/* <li><a href="#bill-stock-rotates" data-toggle="tab" onClick={() => handleStockRotate()}>{translate('manage_warehouse.bill_management.stock_rotate')} &nbsp;({bills.listBillByGroup.filter(item => item.group === '5').length})</a></li> */}
             </ul>
             <div className="tab-content">
 
@@ -608,7 +608,7 @@ function BillManagement(props) {
                     />
                 }
 
-                {group === '5' &&
+                {/* {group === '5' &&
                     <RotateManagement
                         handleEdit={handleEdit}
                         formatDate={formatDate}
@@ -636,7 +636,7 @@ function BillManagement(props) {
                         handleSearchByStatus={handleSearchByStatus}
 
                     />
-                }
+                } */}
             </div>
         </div>
     );

@@ -387,7 +387,7 @@ function EditForm(props) {
                 msg_failure={translate('production.request_management.create_failed')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={50}
+                size={75}
                 maxWidth={500}
             >
                 <form id={`form-edit-request-${requestId}`}>
@@ -469,7 +469,8 @@ function EditForm(props) {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{"Thông tin kho tiếp nhận yêu cầu"}</legend>
                         <div className="form-group">
-                            <p type="button" onClick={handleChooseTypeOfSelectStock} className="btn btn-primary">{!isAutoSelectStock ? "Tự động tìm kho" : "Chọn kho thủ công"}</p>
+                            <label>{!isAutoSelectStock ? "Chọn kho thủ công" : "Chọn kho tự động"}</label>
+                            <p style={{ float: "right" }} type="button" onClick={handleChooseTypeOfSelectStock} className="btn btn-primary">{!isAutoSelectStock ? "Chọn kho tự động" : "Chọn kho thủ công"}</p>
                         </div>
                         {
                             !isAutoSelectStock &&

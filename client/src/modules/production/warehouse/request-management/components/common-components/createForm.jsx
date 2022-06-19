@@ -341,7 +341,7 @@ function CreateForm(props) {
         });
     }
 
-    const { translate, NotHaveCreateButton, bigModal } = props;
+    const { translate, NotHaveCreateButton } = props;
     const { code, desiredTime, errorIntendReceiveTime, description, approver, errorApprover,
         errorStock, stock, sourceType, errorOnSourceProduct, errorSupplier, supplier, worksValueError, worksValue, isAutoSelectStock } = state;
     let dataSource = [
@@ -362,7 +362,6 @@ function CreateForm(props) {
     const dataStock = getStock();
     const dataManufacturingWorks = getListWorks();
     const dataCustomer = getSuplierOptions();
-    console.log(state);
     return (
         <React.Fragment>
             {!NotHaveCreateButton && <ButtonModal onButtonCallBack={handleClickCreate} modalID="modal-create-purchasing-request" button_name={translate('production.request_management.add_request_button')} title={translate('production.request_management.add_request')} />}
@@ -374,7 +373,7 @@ function CreateForm(props) {
                 msg_failure={translate('production.request_management.create_failed')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={bigModal ? 75 : 50}
+                size={75}
                 maxWidth={500}
             >
                 <form id="form-create-purchasing-request">
@@ -456,7 +455,8 @@ function CreateForm(props) {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{"Thông tin kho tiếp nhận yêu cầu"}</legend>
                         <div className="form-group">
-                            <p type="button" onClick={handleChooseTypeOfSelectStock} className="btn btn-primary">{!isAutoSelectStock ? "Tự động tìm kho" : "Chọn kho thủ công"}</p>
+                            <label>{!isAutoSelectStock ? "Chọn kho thủ công" : "Chọn kho tự động"}</label>
+                            <p style={{ float: "right" }} type="button" onClick={handleChooseTypeOfSelectStock} className="btn btn-primary">{!isAutoSelectStock ? "Chọn kho tự động" : "Chọn kho thủ công"}</p>
                         </div>
                         {
                             !isAutoSelectStock &&

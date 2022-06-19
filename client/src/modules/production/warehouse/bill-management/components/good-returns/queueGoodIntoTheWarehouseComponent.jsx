@@ -357,7 +357,6 @@ function QueueGoodIntoTheWarehouseComponent(props) {
 
     const { translate } = props;
     const { dataLots, code, status, stockInfo, dataUnPassedLots, statusInventory, errorOnStatus, errorBinLocation, errorQuantity, binLocation, currentIndex } = state;
-    console.log(dataLots);
     return (
         <React.Fragment>
             {stockInfo && (

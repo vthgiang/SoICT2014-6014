@@ -7,7 +7,6 @@ import QualityControlForm from '../genaral/quatityControlForm';
 import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 import { UserGuideCreateBillIssue } from '../genaral/config.js';
 import GoodIssueCreateFormModal from './goodIssueCreateFormModal';
-import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodIssueWorkFlowModal from './goodIssueWorkFlowModal';
 import Swal from "sweetalert2";
 import "../bill.css";
@@ -48,10 +47,6 @@ function IssueManagement(props) {
     const handleSearchByStatus = (status) => {
         props.handleSearchByStatus(status);
     }
-
-    useEffect(() => {
-        props.getAllRequestByCondition({ requestType: 3, type: 2 });
-    }, [])
 
     const handleClickCreateFromRequest = () => {
         setState({
@@ -330,6 +325,5 @@ function IssueManagement(props) {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getAllRequestByCondition: RequestActions.getAllRequestByCondition,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(IssueManagement));

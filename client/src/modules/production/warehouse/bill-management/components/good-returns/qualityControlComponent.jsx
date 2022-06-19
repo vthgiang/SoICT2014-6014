@@ -41,7 +41,6 @@ function QualityControlComponent(props) {
         let { value } = e.target;
 
         let { dataLots } = state;
-        console.log(dataLots);
         dataLots[index].passedQuantity = value;
         setState({
             ...state,

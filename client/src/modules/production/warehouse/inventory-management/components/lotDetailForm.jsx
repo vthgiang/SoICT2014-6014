@@ -42,7 +42,6 @@ function LotDetailForm(props) {
 
     const { translate, lots } = props;
     const { lotDetail } = lots;
-    console.log(lotDetail);
     return (
         <React.Fragment>
             <DialogModal

@@ -128,6 +128,12 @@ function GoodReceiptCreateFormModal(props) {
     }
 
     if (props.createType === 3 && props.requestId && (props.requestId !== state.requestId)) {
+        let type = '';
+        if (props.requestType === 3 && props.type === 1) {
+            type = props.request.supplier ? "2" : "1"
+        } else if (props.requestType === 3 && props.type === 4) {
+            type = "3"
+        }
         setState({
             ...state,
             listGood: props.request.goods,
@@ -135,7 +141,7 @@ function GoodReceiptCreateFormModal(props) {
             manufacturingWork: props.request.manufacturingWork ? props.request.manufacturingWork._id : "",
             requestValue: props.requestValue ? props.requestValue : "",
             supplier: props.request.supplier ? props.request.supplier._id : "",
-            sourceType:props.request.supplier ? "2" : "1",
+            sourceType: type,
             requestId: props.requestId,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
         })
