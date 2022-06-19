@@ -170,7 +170,7 @@ function GoodIssueCreateFormModal(props) {
             ...state,
             listGood: props.request.goods,
             fromStock: props.request.stock._id,
-            toStock: props.request.toStock._id,
+            toStock: props.request.toStock ?  props.request.toStock._id : "",
             manufacturingWork: props.request.manufacturingWork ? props.request.manufacturingWork._id : "",
             supplier: props.request.supplier ? props.request.supplier._id : "",
             type: type,
@@ -178,7 +178,6 @@ function GoodIssueCreateFormModal(props) {
             isHaveDataStep1: state.isHaveDataStep1 + 1,
         })
     }
-
 
     const save = async () => {
         if (isFormValidated()) {

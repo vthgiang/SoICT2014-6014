@@ -24,7 +24,6 @@ function BaseInformationComponent(props) {
 
     const [state, setState] = useState({
         currentRole: localStorage.getItem("currentRole"),
-        list: [],
         code: generateCode("BIRE"),
         listGood: [],
         good: Object.assign({}, EMPTY_GOOD),
@@ -60,9 +59,8 @@ function BaseInformationComponent(props) {
         if (willUpdateState) {
             setState({
                 ...state,
-                errorOnSourceProduct: msg,
+                errorOnBillType: msg,
                 type: value,
-                listGood: [],
             });
         }
         return msg === undefined;
@@ -121,7 +119,7 @@ function BaseInformationComponent(props) {
             setState({
                 ...state,
                 fromStock: value,
-                errorStock: msg,
+                errorFromStock: msg,
             });
         }
         return msg === undefined;
@@ -142,7 +140,7 @@ function BaseInformationComponent(props) {
             setState({
                 ...state,
                 toStock: value,
-                errorStock: msg,
+                errorToStock: msg,
             });
         }
         return msg === undefined;
@@ -265,7 +263,7 @@ function BaseInformationComponent(props) {
                 requestValueError: msg,
                 listGood: request.goods,
                 fromStock: request.stock._id,
-                toStock: request.toStock._id,
+                toStock: request.toStock ? request.toStock._id : "",
                 worksValue: request.manufacturingWork ? request.manufacturingWork._id : "",
                 supplier: request.supplier ? request.supplier._id : "",
                 requestId: request._id,
@@ -339,8 +337,8 @@ function BaseInformationComponent(props) {
 
     const { translate, createType } = props;
     const {
-        listGood, good, code, supplier, worksValue, fromStock, errorStock, errorType, errorSupplier, worksValueError,
-        errorOnSourceProduct, type, description, requestValue, errorOnRequest, isHaveDataStep1, toStock } = state;
+        listGood, good, code, supplier, worksValue, fromStock, errorFromStock, errorToStock, errorType, errorSupplier, worksValueError,
+        errorOnBillType, type, description, requestValue, errorOnRequest, isHaveDataStep1, toStock } = state;
     let dataBillType = [
         {
             value: '0',
@@ -382,77 +380,39 @@ function BaseInformationComponent(props) {
                             <label>{translate("manage_warehouse.bill_management.code")}</label>
                             <input type="text" className="form-control" value={code} disabled />
                         </div>
-                        {createType === 2 &&
-                            <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("manage_warehouse.bill_management.stock")}
-                                    <span className="text-red"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-stock-bill-issue-create`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={fromStock}
-                                    items={dataFromStock}
-                                    onChange={handleStockChange}
-                                    multiple={false}
-                                    disabled={createType === 2 || createType === 3}
-                                />
-                                <ErrorLabel content={errorStock} />
-                            </div>}
-                        {(createType === 1 || createType === 3 || createType === 4) &&
-                            <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                <label>
-                                    {translate("manage_warehouse.bill_management.stock")}
-                                    <span className="text-red"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select-stock-bill-issue-create`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={fromStock}
-                                    items={dataFromStock}
-                                    onChange={handleStockChange}
-                                    multiple={false}
-                                    disabled={createType === 2 || createType === 3 || createType === 4}
-                                />
-                                <ErrorLabel content={errorStock} />
-                            </div>}
+                        <div className={`form-group ${!errorFromStock ? "" : "has-error"}`}>
+                            <label>
+                                {translate("manage_warehouse.bill_management.stock")}
+                                <span className="text-red"> * </span>
+                            </label>
+                            <SelectBox
+                                id={`select-from-stock-bill-issue-create`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={fromStock}
+                                items={dataFromStock}
+                                onChange={handleStockChange}
+                                multiple={false}
+                                disabled={createType !== 1}
+                            />
+                            <ErrorLabel content={errorFromStock} />
+                        </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        {(createType === 1 || createType === 3 || createType === 4) &&
-                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
-                                <label>{"Chọn loại xuất kho"}</label>
-                                <span className="text-red"> * </span>
-                                <SelectBox
-                                    id={`select-bill-type`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={type}
-                                    items={dataBillType}
-                                    onChange={handleBillTypeChange}
-                                    multiple={false}
-                                    disabled={createType === 2 || createType === 3 || createType === 4}
-                                />
-                                <ErrorLabel content={errorOnSourceProduct} />
-                            </div>
-                        }
-                        {createType === 2 &&
-                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
-                                <label>{"Chọn loại xuất kho"}</label>
-                                <span className="text-red"> * </span>
-                                <SelectBox
-                                    id={`select-source-type`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={type}
-                                    items={dataBillType}
-                                    onChange={handleBillTypeChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={errorOnSourceProduct} />
-                            </div>
-                        }
+                        <div className={`form-group ${!errorOnBillType ? "" : "has-error"}`}>
+                            <label>{"Chọn loại xuất kho"}</label>
+                            <span className="text-red"> * </span>
+                            <SelectBox
+                                id={`select-bill-type`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={type}
+                                items={dataBillType}
+                                onChange={handleBillTypeChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={errorOnBillType} />
+                        </div>
                         {createType === 2 &&
                             <div className={`form-group ${!errorOnRequest ? "" : "has-error"}`}>
                                 <label>{"Phiếu yêu cầu"}</label>
@@ -499,13 +459,13 @@ function BaseInformationComponent(props) {
                                     items={dataManufacturingWorks}
                                     onChange={handleManufacturingWorksChange}
                                     multiple={false}
-                                    disabled={createType === 2 || createType === 3 }
+                                    disabled={createType === 2 || createType === 3}
                                 />
                                 <ErrorLabel content={worksValueError} />
                             </div>)
                             : null}
                         {(type === "5") ?
-                            (<div className={`form-group ${!errorStock ? "" : "has-error"}`}>
+                            (<div className={`form-group ${!errorToStock ? "" : "has-error"}`}>
                                 <label>
                                     {"Chọn kho nhập"}
                                     <span className="text-red"> * </span>
@@ -520,7 +480,7 @@ function BaseInformationComponent(props) {
                                     multiple={false}
                                     disabled={createType === 2 || createType === 4}
                                 />
-                                <ErrorLabel content={errorStock} />
+                                <ErrorLabel content={errorToStock} />
                             </div>)
                             : null}
                     </div>

@@ -8,6 +8,7 @@ import CreateForm from './createForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodIssueCreateFormModal from '../../../bill-management/components/good-issues/goodIssueCreateFormModal';
+import GoodReceiptCreateFormModal from '../../../bill-management/components/good-receipts/goodReceiptCreateFormModal';
 
 function GoodRotateRequestManagementTable(props) {
 
@@ -70,9 +71,17 @@ function GoodRotateRequestManagementTable(props) {
     const handleCreateIssueBill = async (request) => {
         await setState({
             ...state,
-            request: request,
+            issueRequest: request,
         });
         window.$("#modal-create-new-issue-bill").modal("show");
+    }
+
+    const handleCreateReceiptBill = async (request) => {
+        await setState({
+            ...state,
+            receiptRequest: request,
+        });
+        window.$("#modal-create-new-receipt-bill").modal("show");
     }
 
     const { translate, requestManagements } = props;
@@ -102,10 +111,14 @@ function GoodRotateRequestManagementTable(props) {
                     stockRequestType={props.stockRequestType}
                 />
             }
+            <GoodReceiptCreateFormModal
+                createType={4} // 3: create from request in request screen
+                requestId={state.receiptRequest ? state.receiptRequest._id : ''}
+                request={state.receiptRequest} />
             <GoodIssueCreateFormModal
                 createType={4} // 3: create from request in request screen
-                requestId={state.request ? state.request._id : ''}
-                request={state.request} 
+                requestId={state.issueRequest ? state.issueRequest._id : ''}
+                request={state.issueRequest} 
                 />
             <div className="box-body qlcv">
                 <CreateForm stockRequestType={props.stockRequestType}/>
@@ -196,7 +209,7 @@ function GoodRotateRequestManagementTable(props) {
                                     <td>{request.creator && request.creator.name}</td>
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{color: translate(`production.request_management.stock_take_request.${request.status}.color`) }}>{translate(`production.request_management.stock_take_request.${request.status}.content`)}</td>
+                                    <td style={{color: translate(`production.request_management.stock_rotate_request.${request.status}.color`) }}>{translate(`production.request_management.stock_rotate_request.${request.status}.content`)}</td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
@@ -234,6 +247,17 @@ function GoodRotateRequestManagementTable(props) {
                                                 className="add text-success"
                                                 style={{ width: "5px" }}
                                                 title="Tạo phiếu xuất kho"
+                                            >
+                                                <i className="material-icons">add</i>
+                                            </a>
+                                        }
+                                        {
+                                            request.status == 4 &&
+                                            <a
+                                                onClick={() => handleCreateReceiptBill(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Tạo phiếu nhập kho"
                                             >
                                                 <i className="material-icons">add</i>
                                             </a>

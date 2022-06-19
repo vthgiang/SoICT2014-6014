@@ -6341,7 +6341,7 @@ export default {
                     3: { content: "Đã hoàn thành nhập kho", color: "blue" },
                     4: { content: "Đã hủy", color: "red" },
                 },
-                stock_take_request: {
+                stock_rotate_request: {
                     1: { content: "Chờ phê duyệt", color: "orange" },
                     2: { content: "Đã phê duyệt", color: "green" },
                     3: { content: "Đang tiến hành xuất kho", color: "blue" },

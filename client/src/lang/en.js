@@ -5437,7 +5437,7 @@ export default {
                     4: { content: "Đã hoàn thành nhập kho", color: "blue" },
                     5: { content: "Đã hủy", color: "red" },
                 },
-                stock_take_request: {
+                stock_rotate_request: {
                     1: { content: "waiting for approval", color: "orange" },
                     2: { content: "Approved", color: "green" },
                     3: { content: "Good Receipt in Processing", color: "blue" },
