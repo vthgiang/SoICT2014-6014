@@ -284,6 +284,7 @@ exports.proposalForBiddingPackage = async (req, res) => {
             content: data,
         });
     } catch (error) {
+        console.log(error);
         await Log.error(req.user.email, "PROPOSE_BIDDING_PACKAGE", req.portal);
         res.status(400).json({
             success: false,

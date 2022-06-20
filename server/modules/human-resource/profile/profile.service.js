@@ -411,6 +411,8 @@ exports.getEmployees = async (
                 professionalSkill: 1,
                 status: 1,
                 degrees: 1,
+                certificates: 1,
+                experiences: 1,
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
             return {
@@ -435,7 +437,11 @@ exports.getEmployees = async (
             professionalSkill: 1,
             status: 1,
             degrees: 1,
-        });
+            certificates: 1,
+            experiences: 1,
+        }).populate([
+            { path: "certificates.certificate" },
+        ]);
 
         return {
             totalAllEmployee,

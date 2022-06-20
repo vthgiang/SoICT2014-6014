@@ -789,75 +789,6 @@ exports.getEmployeeByKeyRequired = async (portal, params, companyId) => {
     return listEmpId;
 };
 
-/**
- * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
- * @emailInCompany : Email công ty của nhân viên
- */
-exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (
-    portal,
-    emailInCompany
-) => {
-    let roles = [],
-        organizationalUnits = [];
-    let user = await User(connect(DB_CONNECTION, portal)).findOne(
-        {
-            email: emailInCompany,
-        },
-        {
-            _id: 1,
-        }
-    );
-    if (user !== null) {
-        roles = await UserRole(connect(DB_CONNECTION, portal))
-            .find({
-                userId: user._id,
-            })
-            .populate([
-                {
-                    path: "roleId",
-                },
-            ]);
-        let newRoles = roles.map((role) => role.roleId._id);
-        organizationalUnits = await OrganizationalUnit(
-            connect(DB_CONNECTION, portal)
-        ).find({
-            $or: [
-                {
-                    managers: {
-                        $in: newRoles,
-                    },
-                },
-                {
-                    deputyManagers: {
-                        $in: newRoles,
-                    },
-                },
-                {
-                    employees: {
-                        $in: newRoles,
-                    },
-                },
-            ],
-        });
-    }
-    if (roles !== []) {
-        let arrayRole = [
-            "Admin",
-            "Super Admin",
-            "Employee",
-            "Manager",
-            "Deputy Manager",
-        ];
-        roles = roles.filter((role) => !arrayRole.includes(role.roleId.name));
-    }
-
-    return {
-        roles,
-        organizationalUnits,
-    };
-    // TODO: Còn có role tự tạo, cần loại bỏ Root roles và Company-Defined roles
-};
-
 exports.getEmployeeByPackageId = async (
     portal,
     biddingPackageId,
@@ -979,7 +910,7 @@ exports.getEmployeeByPackageId = async (
 };
 
 const findEmployee = async (
-    keyPeople,
+    keyPeople, // mảng các key people phù hợp với từng vị trí, vidu [[1, 2, 3], [3, 4, 5]] có 2 vị trí, mỗi vị trí có ...
     otherPeople,
     result,
     resultIndex,
@@ -1005,7 +936,7 @@ const findEmployee = async (
         let n = keyPeople[index].length;
         let flat = 0;
         for (let i = 0; i <= t; i++) {
-            let value = resultIndex[index][i];
+            let value = resultIndex[index][i]; // nhãn giá trị đã tìm của vị trí này
             while (value < n - 1) {
                 value = value + 1;
                 if (i < t) {
@@ -1044,19 +975,19 @@ const findEmployee = async (
         }
     } else {
         // nếu chưa
-        result[index] = [];
-        resultIndex[index] = [];
-        let a = keyPeople[index];
-        let n = keyPeople[index].length;
+        result[index] = []; // tâp kết quả cho vị trí index
+        resultIndex[index] = []; // tập kết quả theo nhãn cho vị trí index
+        let a = keyPeople[index]; // thằng key people vị trí index (giá trị là mảng id emp thỏa mãn vị trí index này) 
+        let n = keyPeople[index].length; // số keypeople tìm đc cho vị trí index
         let i = 0;
         let key = 0;
-        for (let j = 0; j <= t; j++) {
-            while (i < n) {
-                if (!otherPeople.includes(a[i].toString())) {
+        for (let j = 0; j <= t; j++) { // 
+            while (i < n) { // chạy theo các thằng tìm đc
+                if (!otherPeople.includes(a[i].toString())) { // nếu other không có thằng a[i] thì nó thêm vào other
                     result[index].push(a[i]);
                     resultIndex[index].push(i);
                     otherPeople.push(a[i].toString());
-                    if (j == t) key = 1;
+                    if (j == t) key = 1; // t là số lượng nhân sự cần thiết cho vị trí này // j == t thì vị trí này đã tìm đủ
                     i = i + 1;
                     break;
                 }
@@ -1199,7 +1130,6 @@ exports.getEmployeeNotInTaskByDate = async (portal, taskBody, startDate) => {
     };
 
     let taskList = await Task(connect(DB_CONNECTION, portal)).find(keySearch);
-    // console.log(1100, taskList.map(x => x.name))
 
     // lấy ra tất cả các user có trong task
     let userIdInTaskArr = [];
@@ -1217,12 +1147,7 @@ exports.getEmployeeNotInTaskByDate = async (portal, taskBody, startDate) => {
             }
         }
 
-        // userIdInTaskArr = [
-        //     ...userIdInTaskArr,
-        //     ...allMemberOfTask
-        // ]
     }
-    // console.log(1121, userIdInTaskArr)
 
     // lấy thông tin user ở trên
     let listUserMember = await User(connect(DB_CONNECTION, portal)).find({
@@ -1241,12 +1166,191 @@ exports.getEmployeeNotInTaskByDate = async (portal, taskBody, startDate) => {
     return availableEmployees
 }
 
+const convertEmployeeToUserInUnit = (allUser, employee) => {
+    if (!allUser?.length) return null;
+    for (let u of allUser) {
+        if (u.email === employee.emailInCompany) {
+            return u;
+        }
+    }
+}
 
+const checkEmpInTask = (task, empId) => {
+    const resArr = task?.responsibleEmployees ?? []
+    const accArr = task?.accountableEmployees ?? []
+    const consultArr = task?.consultedEmployees ?? []
+    const informArr = task?.informedEmployees ?? []
+
+    return (
+        resArr.find(x => String(x) === String(empId)) ||
+        accArr.find(x => String(x) === String(empId)) ||
+        consultArr.find(x => String(x) === String(empId)) ||
+        informArr.find(x => String(x) === String(empId))
+    )
+}
+
+const checkIskeyPeople = (uid, keyPeople) => {
+    let check = false;
+    for (let x of keyPeople) {
+        check = x.employees.find(e => String(e) === String(uid));
+    }
+    return check;
+}
+
+const labelingSkill = (skill) => {
+    // Trình độ chuyên môn: intermediate_degree - Trung cấp, colleges - Cao đẳng, university - Đại học, bachelor - cử nhân, engineer - kỹ sư, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có
+    switch (skill) {
+        case "intermediate_degree": return 1;
+        case "colleges": return 2;
+        case "university": return 3;
+        case "bachelor": return 4;
+        case "engineer": return 5;
+        case "master_degree": return 6;
+        case "phd": return 7;
+
+        default:
+            return 0;
+    }
+}
+
+// a - b
+const compareProfessionalSkill = (skill1, skill2) => {
+    return (labelingSkill(skill2) - labelingSkill(skill1)); // > 0 thì a > b => a sau b tức là ai có skill xịn hơn thì xếp trước
+}
+
+
+exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], allTask = [], startDate = Date.now(), estimateTime = 0, unitOfTime = "days", biddingPackage) => {
+    let start = startDate ?? Date.now();
+    let end = moment(start).add(Number(estimateTime), unitOfTime).toDate();
+    let allEmployee = [];
+    let taskInEstimateTime = {};
+    let keyPeople = biddingPackage?.keyPeople ?? [];
+
+    for (let x of listAllEmployees) {
+        let user = convertEmployeeToUserInUnit(allUser, x);
+        taskInEstimateTime[`${x._id}`] = {
+            employeeInfo: x,
+            user: user,
+            userId: user?._id,
+            empId: x._id,
+            fullName: x.fullName,
+            task: [],
+            isKeyPeople: checkIskeyPeople(x._id, keyPeople) ? 1 : 0,
+        }
+    }
+
+
+    for (let x of listAllEmployees) {
+        let userX = convertEmployeeToUserInUnit(allUser, x);
+        for (let t of allTask) {
+            if (t.status === "wait_for_approval" || t.status === "inprocess") {
+                if (!(new Date(t.startDate) > end || new Date(t.endDate) < start)) {
+                    if (checkEmpInTask(t, userX?._id)) {
+                        taskInEstimateTime[`${x._id}`].task.push(t);
+                    }
+                }
+            }
+        }
+    }
+
+    let formatedListEmp = [];
+    for (let i in taskInEstimateTime) {
+        let item = taskInEstimateTime[i];
+        item.numOfTask = item.task?.length ?? 0;
+
+        formatedListEmp.push(item);
+    }
+
+    // lọc ra nhân viên còn active
+    let formatedListActiveEmp = formatedListEmp.filter(x => x.employeeInfo.status === "active");
+
+    formatedListActiveEmp.sort(function (a, b) {
+        if (a.isKeyPeople !== b.isKeyPeople) {
+            return b.isKeyPeople - a.isKeyPeople // < 0, thì a là key, => a đứng trc b 
+        }
+        else if (a.numOfTask !== b.numOfTask) {
+            return a.numOfTask - b.numOfTask // < 0 thì a xếp trước b
+        }
+        return compareProfessionalSkill(a?.employeeInfo?.professionalSkill, b?.employeeInfo?.professionalSkill);
+    });
+
+    allEmployee = formatedListActiveEmp.map(item => {
+        // let text = item.fullName + `( ${item.emailInCompany} việc phải làm)`
+        let text = item.fullName + `( ${item.numOfTask} việc phải làm)`
+        return {
+            ...item,
+            value: item.empId,
+            text: text,
+        }
+    })
+
+    return allEmployee;
+}
 
 exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
-    const availableEmployees = await this.getEmployeeNotInTaskByDate(portal, body.tasks, Date.now());
+    //bid, estimateTime = 0, unitOfTime = "days", task
+    const { tasks, biddingPackage, unitOfTime, executionTime } = body;
+    const { bidId } = params;
+
+    // lấy all user
+    const allUser = await User(connect(DB_CONNECTION, portal)).find({});
+
+    // lấy all employee active
+    const listAllEmployees = await Employee(connect(DB_CONNECTION, portal)).find({
+        // biddingPackagePersonalStatus: 1,
+        status: "active"
+    })
+
+    // lấy ra tất cả các task
+    const allTask = await Task(connect(DB_CONNECTION, portal)).find({
+        isArchived: false,
+        status: {
+            $in: ["inprocess", "wait_for_approval"],
+        },
+    });
+
+    let proposalTask = [];
+    let isComplete = 0;
+    let startOfTask = Date.now();
+    let endOfTask = Date.now();
+    // return task đề xuất
+    // xử lý task để trả về nhân viên với thông tin các task sẽ phải làm
+    for (let t of tasks) {
+        startOfTask = endOfTask;
+
+        let empWithTask = await this.getEmployeeInfoWithTask(allUser, listAllEmployees, allTask, startOfTask, t.estimateTime, unitOfTime, biddingPackage);
+        endOfTask = moment(startOfTask).add(Number(t.estimateTime), unitOfTime).toDate();
+
+        let directEmpAvailable = empWithTask.map(x => x.value);
+        let backupEmpAvailable = empWithTask.map(x => x.value);
+        let proposalEmpArr = [directEmpAvailable, backupEmpAvailable];
+        let numOfEmpRequireArr = [t.directEmployees.length, t.backupEmployees.length];
+
+        let data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
+
+        if (data.isComplete == 1) {
+            console.log(data.result[0]);
+
+            const newTask = {
+                ...t,
+                directEmployees: data.result[0],
+                backupEmployees: data.result[1],
+            };
+
+            proposalTask.push(newTask);
+
+            isComplete = 1;
+        } else {
+            isComplete = 0;
+        }
+    }
 
     return {
-        availableEmployees: availableEmployees.map(x => { return { id: x._id, value: x._id, text: `${x.fullName}(${x.emailInCompany})` } })
+        proposal: {
+            executionTime,
+            unitOfTime,
+            tasks: proposalTask,
+        },
+        isComplete
     }
 }
