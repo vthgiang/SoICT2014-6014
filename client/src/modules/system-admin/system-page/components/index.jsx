@@ -8,7 +8,7 @@ function ManageSystemAdminPage() {
     return (
         <div className="box" style={{ minHeight: "450px" }}>
             <div className="box-body">
-                Hêloooo
+                <TableSystemAdminPage/>
             </div>
         </div>
     );
