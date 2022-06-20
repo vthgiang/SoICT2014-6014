@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import CreateBiddingContract from '../../bidding-contract/component/createContract'
 import CreateProjectByContractModal from '../../bidding-contract/component/createProjectByContractModal'
+import "./biddingDashboardStyle.css"
 
 const ContractBidProjectRelation = (props) => {
     const { biddingPackagesManager, biddingContract, project } = props;
@@ -92,7 +93,7 @@ const ContractBidProjectRelation = (props) => {
                                                 <div><strong>Mã gói thầu: </strong><span>{item.code}</span></div>
                                                 <div><strong>Bên mời thầu: </strong><span>{item.customer}</span></div>
                                                 <div><strong>Dự toán gói thầu: </strong><span>{item.price} (VND)</span></div>
-                                                <a href="" onClick={() => handleCreateContract(item)} className="seemore-task">Tạo hợp đồng cho gói thầu này <i className="fa fa-arrow-right" ></i></a>
+                                                <a href="" onClick={() => handleCreateContract(item)} className="seemore-task">Tạo hợp đồng cho gói thầu này</a>
                                             </div>
                                         </div>
                                     </section>
@@ -132,7 +133,7 @@ const ContractBidProjectRelation = (props) => {
                                                 <div><strong>Mã hợp đồng: </strong><span>{item.code}</span></div>
                                                 <div><strong>Thời hạn hợp đồng: </strong><span>{formatTimeOfEffection(item.unitOfTime, item.effectiveDate, item.endDate)} ({item.unitOfTime})</span></div>
                                                 <div><strong>Giá trị hợp đồng: </strong><span>{item.budget} ({item.currenceUnit})</span></div>
-                                                <a href="" onClick={() => handleCreateProject(item)} className="seemore-task">Tạo dự án cho hợp đồng này <i className="fa fa-arrow-right" ></i></a>
+                                                <a href="" onClick={() => handleCreateProject(item)} className="seemore-task">Tạo dự án cho hợp đồng này</a>
                                             </div>
                                         </div>
                                     </section>
