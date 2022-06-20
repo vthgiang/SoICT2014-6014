@@ -9,76 +9,93 @@ import { formatDate } from '../../../../helpers/formatDate';
 import { convertDateTime, convertDepartmentIdToDepartmentName, convertUserIdToUserName, formatTime, getListDepartments } from './functionHelper';
 import { getStorage } from '../../../../config';
 import ModalSalaryMembersEdit from './modalSalaryMembersEdit';
-import moment from 'moment';
+import { TaskFormValidator } from '../../../task/task-management/component/taskFormValidator';
 
 const ProjectEditForm = (props) => {
     const { translate, user, projectEdit, projectEditId, currentProjectTasks } = props;
     const userId = getStorage('userId');
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const listDepartments = user && user.usersInUnitsOfCompany ? getListDepartments(user.usersInUnitsOfCompany) : []
-    const [currentSalaryMembers, setCurrentSalaryMembers] = useState(undefined);
+    const [currentSalaryMembers, setCurrentSalaryMembers] = useState([]);
+    
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
         { text: 'USD', value: 'USD' },
     ]
+
     const fakeUnitTimeList = [
         { text: 'Ngày', value: 'days' },
         { text: 'Giờ', value: 'hours' },
     ]
+
     const fakeProjectTypeList = [
         { text: 'QLDA dạng đơn giản', value: 1 },
         { text: 'QLDA phương pháp CPM', value: 2 },
     ]
+
     const preprocessUsersList = useCallback((currentObject) => {
         if (typeof currentObject?.[0] === 'string') {
             return currentObject;
         }
         return currentObject?.map(item => item._id)
     }, [])
-    const [form, setForm] = useState({
-        projectId: '',
-        projectNameError: undefined,
-        codeError: undefined,
-        projectName: projectEdit?.name || "",
-        description: projectEdit?.description || "",
-        projectType: projectEdit?.projectType || "",
-        startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
-        endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
-        projectManager: preprocessUsersList(projectEdit?.projectManager),
-        responsibleEmployees: preprocessUsersList(projectEdit?.responsibleEmployees),
-        unitCost: projectEdit?.unitCost || fakeUnitCostList[0].text,
-        unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
-        estimatedCost: projectEdit?.estimatedCost || '',
-    })
 
-    const [startTime, setStartTime] = useState(formatTime(projectEdit?.startDate) || '08:00 AM');
-    const [endTime, setEndTime] = useState(formatTime(projectEdit?.endDate) || '05:30 PM');
+    const [state, setState] = useState({
+        newProject: {
+            projectName: '',
+            projectType: 2,
+            description: '',
+            startDate: '',
+            endDate: '',
+            projectManager: [],
+            responsibleEmployees: [],
+            unitCost: fakeUnitCostList[0].value,
+            unitTime: fakeUnitTimeList[0].value,
+            estimatedCost: '',
+            startTime:'',
+            endTime: '05:30 PM',
+            responsibleEmployeesWithUnit: {
+                list: [],
+                currentUnitRow: '',
+                currentEmployeeRow: []
+            },
+            errorOnProjectName: undefined,
+            errorOnProjectType: undefined,
+            errorOnStartDate: undefined,
+            errorOnEndDate: undefined,
+            errorOnStartTime: undefined,
+            errorOnEndTime: undefined,
+            errorOnProjectManager: undefined,
+            errorOnResponsibleEmployees: undefined,
+        }
+    });
 
-    const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState({
-        list: [],
-        currentUnitRow: '',
-        currentEmployeeRow: [],
-    })
+    let { newProject } = state;
 
-    const { projectName, projectNameError, codeError, description, projectType, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
+    let { projectName, projectType, description, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost,
+        startTime, endTime,  responsibleEmployeesWithUnit, errorOnProjectName, errorOnProjectType, errorOnStartDate, errorOnEndDate, errorOnStartTime,
+        errorOnEndTime, errorOnProjectManager, errorOnResponsibleEmployees} = state?.newProject;
 
-    if (projectEditId !== projectId) {
-        setForm({
-            projectId: projectEditId,
-            projectNameError: undefined,
-            projectName: projectEdit?.name || "",
-            description: projectEdit?.description || "",
-            projectType: projectEdit?.projectType || 2,
-            startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
-            endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
-            projectManager: preprocessUsersList(projectEdit?.projectManager),
-            responsibleEmployees: preprocessUsersList(projectEdit?.responsibleEmployees),
-            unitCost: projectEdit?.unitCost || fakeUnitCostList[0].text,
-            unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
-            estimatedCost: projectEdit?.estimatedCost || '',
-        })
-        setStartTime(formatTime(projectEdit?.startDate) || '08:00 AM')
-        setEndTime(formatTime(projectEdit?.endDate) || '05:30 PM')
+    useEffect(() => {
+        let newResponsibleEmployeesWithUnit = [];
+        console.log('responsibleEmployeesWithUnit.list', responsibleEmployeesWithUnit.list)
+        // console.log('currentSalaryMembers create project', currentSalaryMembers)
+        if (responsibleEmployeesWithUnit.list) {
+            for (let i = 0; i < responsibleEmployeesWithUnit.list.length; i++) {
+                newResponsibleEmployeesWithUnit.push({
+                    unitId: responsibleEmployeesWithUnit.list[i].unitId,
+                    listUsers: responsibleEmployeesWithUnit.list[i].listUsers.map((item, index) => ({
+                        userId: item,
+                        salary: currentSalaryMembers?.[i]?.listUsers?.[index]?.salary,
+                    }))
+                })
+            }
+            setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
+        }
+    }, [responsibleEmployeesWithUnit.list])
+
+    // Cập nhật lại các trường thông tin nếu chọn dự án khác
+    useEffect(() => {
         let newResponsibleEmployeesWithUnit = [];
         for (let i = 0; i < projectEdit?.responsibleEmployeesWithUnit.length; i++) {
             newResponsibleEmployeesWithUnit.push({
@@ -90,68 +107,413 @@ const ProjectEditForm = (props) => {
             })
         }
         setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
-        setTimeout(() => {
-            setResponsibleEmployeesWithUnit({
-                ...responsibleEmployeesWithUnit,
-                list: projectEdit?.responsibleEmployeesWithUnit?.map((unitItem) => {
-                    return {
-                        unitId: unitItem.unitId,
-                        listUsers: unitItem?.listUsers?.map((userItem) => {
-                            return userItem.userId
-                        })
-                    }
-                }),
-            })
-        }, 10);
-    }
+        setState(state => {
+            return{
+                ...state,
+                newProject: {
+                    projectName: projectEdit?.name || "",
+                    projectType: projectEdit?.projectType || 2,
+                    description: projectEdit?.description || "",
+                    startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
+                    endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
+                    projectManager: preprocessUsersList(projectEdit?.projectManager),
+                    responsibleEmployees: preprocessUsersList(projectEdit?.responsibleEmployees),
+                    unitCost: projectEdit?.unitCost || fakeUnitCostList[0].text,
+                    unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
+                    estimatedCost: projectEdit?.estimatedCost || '',
+                    startTime:formatTime(projectEdit?.startDate) || '',
+                    endTime: formatTime(projectEdit?.endDate) || '05:30 PM',
+                    responsibleEmployeesWithUnit: {
+                        list: projectEdit?.responsibleEmployeesWithUnit?.map((unitItem) => {
+                            return {
+                                unitId: unitItem.unitId,
+                                listUsers: unitItem?.listUsers?.map((userItem) => {
+                                    return userItem.userId
+                                })
+                            }
+                        }),
+                        currentUnitRow: '',
+                        currentEmployeeRow: []
+                    },
+                    errorOnProjectName: undefined,
+                    errorOnProjectType: undefined,
+                    errorOnStartDate: undefined,
+                    errorOnEndDate: undefined,
+                    errorOnStartTime: undefined,
+                    errorOnEndTime: undefined,
+                    errorOnProjectManager: undefined,
+                    errorOnResponsibleEmployees: undefined,
+                }
+            }          
+        })
+    },[projectEditId])
+    
+    // if (projectEditId !== projectId) {
+    //     setForm({
+    //         projectId: projectEditId,
+    //         projectNameError: undefined,
+    //         projectName: projectEdit?.name || "",
+    //         description: projectEdit?.description || "",
+    //         projectType: projectEdit?.projectType || 2,
+    //         startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
+    //         endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
+    //         projectManager: preprocessUsersList(projectEdit?.projectManager),
+    //         responsibleEmployees: preprocessUsersList(projectEdit?.responsibleEmployees),
+    //         unitCost: projectEdit?.unitCost || fakeUnitCostList[0].text,
+    //         unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
+    //         estimatedCost: projectEdit?.estimatedCost || '',
+    //     })
+    //     setStartTime(formatTime(projectEdit?.startDate) || '08:00 AM')
+    //     setEndTime(formatTime(projectEdit?.endDate) || '05:30 PM')
+    //     let newResponsibleEmployeesWithUnit = [];
+    //     for (let i = 0; i < projectEdit?.responsibleEmployeesWithUnit.length; i++) {
+    //         newResponsibleEmployeesWithUnit.push({
+    //             unitId: projectEdit?.responsibleEmployeesWithUnit[i].unitId,
+    //             listUsers: projectEdit?.responsibleEmployeesWithUnit[i].listUsers.map((item, index) => ({
+    //                 userId: item.userId,
+    //                 salary: item.salary,
+    //             }))
+    //         })
+    //     }
+    //     setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
+    //     setTimeout(() => {
+    //         setResponsibleEmployeesWithUnit({
+    //             ...responsibleEmployeesWithUnit,
+    //             list: projectEdit?.responsibleEmployeesWithUnit?.map((unitItem) => {
+    //                 return {
+    //                     unitId: unitItem.unitId,
+    //                     listUsers: unitItem?.listUsers?.map((userItem) => {
+    //                         return userItem.userId
+    //                     })
+    //                 }
+    //             }),
+    //         })
+    //     }, 10);
+    // }
 
-    const handleChangeForm = (event, currentKey) => {
-        if (currentKey === 'projectName') {
-            let { translate } = props;
-            let { message } = ValidationHelper.validateName(translate, event.target.value, 6, 255);
-            setForm({
-                ...form,
-                [currentKey]: event.target.value,
-                projectNameError: message,
-            })
-            return;
-        }
-        const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
-        if (justRenderEventArr.includes(currentKey)) {
-            setForm({
-                ...form,
-                [currentKey]: event,
-            })
-            return;
-        }
-        const renderFirstItemArr = ['unitCost', 'unitTime', 'projectType'];
-        if (renderFirstItemArr.includes(currentKey)) {
-            setForm({
-                ...form,
-                [currentKey]: event[0],
-            })
-            return;
-        }
-        if (currentKey === 'estimatedCost') {
-            setForm({
-                ...form,
-                [currentKey]: event.target.value,
-            })
-            return;
-        }
-        setForm({
-            ...form,
-            [currentKey]: event?.target?.value,
+    // const handleChangeForm = (event, currentKey) => {
+    //     if (currentKey === 'projectName') {
+    //         let { translate } = props;
+    //         let { message } = ValidationHelper.validateName(translate, event.target.value, 6, 255);
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event.target.value,
+    //             projectNameError: message,
+    //         })
+    //         return;
+    //     }
+    //     const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
+    //     if (justRenderEventArr.includes(currentKey)) {
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event,
+    //         })
+    //         return;
+    //     }
+    //     const renderFirstItemArr = ['unitCost', 'unitTime', 'projectType'];
+    //     if (renderFirstItemArr.includes(currentKey)) {
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event[0],
+    //         })
+    //         return;
+    //     }
+    //     if (currentKey === 'estimatedCost') {
+    //         setForm({
+    //             ...form,
+    //             [currentKey]: event.target.value,
+    //         })
+    //         return;
+    //     }
+    //     setForm({
+    //         ...form,
+    //         [currentKey]: event?.target?.value,
+    //     })
+    // }
+
+    // Hàm bắt sự kiện thay đổi tên dự án
+    const handleChangeProjectName = (event) => {
+        let { value } = event.target;
+        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                projectName: value,
+                errorOnProjectName: message,
+            }
+            
         })
     }
 
+    // Hàm bắt sự kiện thay đổi hình thức quản lý dự án
+    const handleChangeProjectType = (event) => {
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                projectType: event[0]
+            }
+        });
+    }
+
+    // Hàm bắt sự kiện thay đổi mô tả dự án
+    const handleChangeProjectDescription = (event) => {
+        let {value} = event.target
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                description: value,
+            } 
+        });
+    }
+
+    // Hàn bắt sự kiện thay đổi ngày bắt đầu dự án
+    const handleChangeProjectStartDate = (value) => {
+        validateProjectStartDate(value, true);
+    }
+
+    const validateProjectStartDate = (value, willUpdateState = true) => {
+        let msg = TaskFormValidator.validateTaskStartDate(value, endDate, translate);
+        let _startDate = convertDateTime(value, startTime);
+        let _endDate = convertDateTime(endDate, endTime);
+
+        if (_startDate > _endDate) {
+            msg = translate('project.add_err_end_date');
+        }
+
+        if (willUpdateState) {
+            console.log(value)
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    startDate: value,
+                    errorOnStartDate: msg,
+                    errorOnEndDate: !msg && endDate? msg: errorOnEndDate
+                }
+            })
+
+        }
+        return msg === undefined;
+    }
+
+    // Hàm bắt sự kiện thay đổi thời điểm bắt đầu dự án
+    const handleStartTimeChange = (value) => {
+        let _startDate = convertDateTime(startDate, value);
+        let _endDate = convertDateTime(endDate, endTime);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('project.add_err_empty_start_date');
+        }
+        else if (_startDate > _endDate) {
+            err = translate('project.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                startTime: value,
+                errorOnStartDate: err,
+                errorOnEndDate: resetErr,
+            }
+        });
+    }
+
+    // Hàm bắt sự kiện thời điểm kết thúc dự án
+    const handleEndTimeChange = (value) => {
+        let _startDate = convertDateTime(startDate, startTime);
+        let _endDate = convertDateTime(endDate, value);
+        let err, resetErr;
+
+        if (value.trim() === "") {
+            err = translate('project.add_err_empty_end_date');
+        }
+        else if (_startDate > _endDate) {
+            err = translate('project.add_err_end_date');
+            resetErr = undefined;
+        }
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                endTime: value,
+                errorOnEndDate: err,
+                errorOnStartDate: resetErr,
+            }
+        })
+    }
+
+    // Hàm bắt sự kiện thay đổi ngày kết thúc dự án
+    const handleChangeProjectEndDate = (value) => {
+        validateProjectEndDate(value, true);
+    }
+
+    const validateProjectEndDate = (value, willUpdateState = true) => {
+        let msg = TaskFormValidator.validateTaskEndDate(startDate, value, translate);
+        if (willUpdateState) {
+            console.log(value);
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    endDate: value,
+                    errorOnEndDate: msg,
+                    errorOnStartDate: !msg && startDate? msg: errorOnStartDate
+                }
+            })
+        }
+        console.log(startDate,endDate)
+        return msg === undefined;
+    }
+
+    // Hàm bắt sự kiện thay đổi đơn vị tính thời gian
+    const handleChangeUnitTime = (event) => {
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                unitTime: event[0]
+            }
+        });
+    }
+
+    // Hàm bắt sự kiện thay đổi đơn vị tính chi phí
+    const handleChangeUnitCost = (event) => {
+        setState({
+            ...state,
+            newProject: {
+                ...state.newProject,
+                unitCost: event[0]
+            }
+        });
+    }
+
+    // Hàm bắt sự kiện thay đổi người quản lý dự án
+    const handleChangeProjectManager = (value) => {
+        validateProjectManager(value, true);
+    }
+    const validateProjectManager = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateArrayLength(translate, value);
+
+        if (willUpdateState) {
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    projectManager: value,
+                    errorOnProjectManager: message
+                }
+            });
+        }
+        return message === undefined;
+    }
+
+    // Hàm bắt sự kiện xoá thành viên tham gia dự án
+    const handleDeleteRow = (index) => {
+        if (responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0) {
+            const cloneArr = [...responsibleEmployeesWithUnit.list];
+            cloneArr.splice(index, 1);
+            let { message } = ValidationHelper.validateArrayLength(props.translate, cloneArr);
+            // responsibleEmployeesWithUnit.list.splice(responsibleEmployeesWithUnit.list.length - 1, 1);
+            setState({
+                ...state,
+                newProject: {
+                    ...state.newProject,
+                    responsibleEmployeesWithUnit: {
+                        ...responsibleEmployeesWithUnit,
+                        list: cloneArr,
+                        currentUnitRow: '',
+                        currentEmployeeRow: [],
+                    },
+                    errorOnResponsibleEmployees: message
+                }
+            })
+        }
+    }
+
+    // Hàm bắt sự kiện thêm thành viên tham gia dự án
+    const handleAddRow = () => {
+        if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
+            // Đề phòng user không chọn gì thì lấy default là Ban giám đốc
+            const currentChosenUnitRow = responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value;
+            const isUnitAlreadyExistedInArr = responsibleEmployeesWithUnit.list.find((item) => {
+                return currentChosenUnitRow === item.unitId
+            })
+            const oldListRow = responsibleEmployeesWithUnit.list;
+            // Nếu unit đã có trong array rồi
+            if (isUnitAlreadyExistedInArr) {
+                let newListRow = oldListRow.map((oldListRowItem) => {
+                    if (String(oldListRowItem.unitId) === String(isUnitAlreadyExistedInArr.unitId)) {
+                        let currentListUsers = oldListRowItem.listUsers;
+                        for (let currentEmployeeRowItem of responsibleEmployeesWithUnit.currentEmployeeRow) {
+                            if (!currentListUsers.includes(currentEmployeeRowItem)) {
+                                currentListUsers.push(currentEmployeeRowItem)
+                            }
+                        }
+                        return {
+                            unitId: oldListRowItem.unitId,
+                            listUsers: currentListUsers,
+                        }
+                    }
+                    return oldListRowItem;
+                })
+                setState({
+                    ...state,
+                    newProject: {
+                        ...state.newProject,
+                        responsibleEmployeesWithUnit: {
+                            ...responsibleEmployeesWithUnit,
+                            list: newListRow,
+                            currentUnitRow: '',
+                            currentEmployeeRow: [],
+                        },
+                        errorOnResponsibleEmployees: undefined
+                    }
+                })
+            }
+            else {
+                const newListRow = [...oldListRow, {
+                    unitId: currentChosenUnitRow,
+                    listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
+                }];
+                setState({
+                    ...state,
+                    newProject: {
+                        ...state.newProject,
+                        responsibleEmployeesWithUnit: {
+                            ...responsibleEmployeesWithUnit,
+                            list: newListRow,
+                            currentUnitRow: '',
+                            currentEmployeeRow: [],
+                        },
+                        errorOnResponsibleEmployees: undefined
+                    }
+                })
+            }
+        }
+    }
+
+    // Mở modal xem lương nhân viên
+    const handleOpenModalSalaryMembers = () => {
+        setTimeout(() => {
+            window.$(`#modal-salary-members-edit-${projectEditId}`).modal("show");
+        }, 10);
+    }
+
+    // Lưu danh sách lương nhân viên
+    const handleSaveCurrentSalaryMember = (data) => {
+        setCurrentSalaryMembers(data);
+    }
+
+    // Kiểm tra xem các thông tin đầu vào có hợp lệ
     const isFormValidated = () => {
-        let { translate } = props;
-        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
-        if (projectManager.length === 0) return false;
-        if (responsibleEmployees.length === 0) return false;
-        if (startDate.length === 0) return false;
-        if (endDate.length === 0) return false;
+        if (!ValidationHelper.validateName(translate, projectName, 6, 255).status|| projectManager.length === 0
+            || responsibleEmployeesWithUnit.list.length === 0|| errorOnStartDate|| errorOnStartDate) return false;
         return true;
     }
 
@@ -174,7 +536,7 @@ const ProjectEditForm = (props) => {
                 }
             }
 
-            await props.editProjectDispatch(projectEdit?._id, {
+            props.editProjectDispatch(projectEdit?._id, {
                 name: projectName,
                 projectType,
                 startDate: start,
@@ -195,95 +557,6 @@ const ProjectEditForm = (props) => {
         }
     }
 
-    const handleDelete = (index) => {
-        if (responsibleEmployeesWithUnit.list && responsibleEmployeesWithUnit.list.length > 0) {
-            const cloneArr = [...responsibleEmployeesWithUnit.list];
-            cloneArr.splice(index, 1);
-            // responsibleEmployeesWithUnit.list.splice(responsibleEmployeesWithUnit.list.length - 1, 1);
-            setResponsibleEmployeesWithUnit({
-                ...responsibleEmployeesWithUnit,
-                list: cloneArr,
-                currentUnitRow: '',
-                currentEmployeeRow: [],
-            })
-        }
-    }
-
-    const handleAddRow = () => {
-        if (responsibleEmployeesWithUnit.currentEmployeeRow.length > 0) {
-            // Đề phòng user không chọn gì thì lấy default là Ban giám đốc
-            const currentChoosenUnitRow = responsibleEmployeesWithUnit.currentUnitRow || listDepartments[0]?.value;
-            const isUnitAlreadyExistedInArr = responsibleEmployeesWithUnit.list.find((item) => {
-                return currentChoosenUnitRow === item.unitId
-            })
-            const oldListRow = responsibleEmployeesWithUnit.list;
-            // Nếu unit đã có trong array rồi
-            if (isUnitAlreadyExistedInArr) {
-                let newListRow = oldListRow.map((oldListRowItem) => {
-                    if (String(oldListRowItem.unitId) === String(isUnitAlreadyExistedInArr.unitId)) {
-                        let currentListUsers = oldListRowItem.listUsers;
-                        for (let currentEmployeeRowItem of responsibleEmployeesWithUnit.currentEmployeeRow) {
-                            if (!currentListUsers.includes(currentEmployeeRowItem)) {
-                                currentListUsers.push(currentEmployeeRowItem)
-                            }
-                        }
-                        return {
-                            unitId: oldListRowItem.unitId,
-                            listUsers: currentListUsers,
-                        }
-                    }
-                    return oldListRowItem;
-                })
-                setResponsibleEmployeesWithUnit({
-                    ...responsibleEmployeesWithUnit,
-                    list: newListRow,
-                    currentUnitRow: '',
-                    currentEmployeeRow: [],
-                })
-            }
-            else {
-                const newListRow = [...oldListRow, {
-                    unitId: currentChoosenUnitRow,
-                    listUsers: responsibleEmployeesWithUnit.currentEmployeeRow,
-                }];
-                setResponsibleEmployeesWithUnit({
-                    ...responsibleEmployeesWithUnit,
-                    list: newListRow,
-                    currentUnitRow: '',
-                    currentEmployeeRow: [],
-                })
-            }
-        }
-    }
-
-    useEffect(() => {
-        let newResponsibleEmployeesWithUnit = [];
-        console.log('responsibleEmployeesWithUnit.list', responsibleEmployeesWithUnit.list)
-        // console.log('currentSalaryMembers create project', currentSalaryMembers)
-        if (responsibleEmployeesWithUnit.list) {
-            for (let i = 0; i < responsibleEmployeesWithUnit.list.length; i++) {
-                newResponsibleEmployeesWithUnit.push({
-                    unitId: responsibleEmployeesWithUnit.list[i].unitId,
-                    listUsers: responsibleEmployeesWithUnit.list[i].listUsers.map((item, index) => ({
-                        userId: item,
-                        salary: currentSalaryMembers?.[i]?.listUsers?.[index]?.salary,
-                    }))
-                })
-            }
-            setCurrentSalaryMembers(newResponsibleEmployeesWithUnit)
-        }
-    }, [responsibleEmployeesWithUnit.list])
-
-    const handleOpenModalSalaryMembers = () => {
-        setTimeout(() => {
-            window.$(`#modal-salary-members-edit-${projectId}`).modal("show");
-        }, 10);
-    }
-
-    const handleSaveCurrentSalaryMember = (data) => {
-        setCurrentSalaryMembers(data);
-    }
-
     const isTasksListEmpty = (!currentProjectTasks || currentProjectTasks.length === 0);
 
     return (
@@ -298,7 +571,7 @@ const ProjectEditForm = (props) => {
             >
                 <ModalSalaryMembersEdit
                     projectDetail={projectEdit}
-                    projectDetailId={projectId}
+                    projectDetailId={projectEditId}
                     isTasksListEmpty={isTasksListEmpty}
                     createProjectCurrentSalaryMember={currentSalaryMembers}
                     responsibleEmployeesWithUnit={responsibleEmployeesWithUnit}
@@ -310,20 +583,22 @@ const ProjectEditForm = (props) => {
                             <legend className="scheduler-border">Thông số dự án</legend>
 
                             <div className="row">
-                                <div className={`form-group col-md-6 col-xs-6 ${!projectNameError ? "" : "has-error"}`}>
+
+                                {/* Tên dự án */}
+                                <div className={`form-group col-md-6 col-xs-6 ${!errorOnProjectName ? "" : "has-error"}`}>
                                     <label>{translate('project.name')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
-                                    <ErrorLabel content={projectNameError} />
+                                    <input type="text" className="form-control" value={projectName} onChange={handleChangeProjectName}></input>
+                                    <ErrorLabel content={errorOnProjectName} />
                                 </div>
 
                                 <div className={`form-group col-md-6 col-xs-6`}>
-                                    <label>Hình thức quản lý dự án<span className="text-red">*</span></label>
+                                    <label>{translate('project.projectType')}<span className="text-red">*</span></label>
                                     <SelectBox
                                         id={`edit-select-project-type`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={fakeProjectTypeList}
-                                        onChange={(e) => handleChangeForm(e, 'projectType')}
+                                        onChange={handleChangeProjectType}
                                         value={projectType}
                                         multiple={false}
                                         disabled={!isTasksListEmpty}
@@ -331,44 +606,47 @@ const ProjectEditForm = (props) => {
                                 </div>
                             </div>
 
+                            {/* Thời gian bắt đầu, kết thúc */}
                             <div className="row">
-                                <div className="form-group col-md-6">
-                                    <label>{translate('project.startDate')}<span className="text-red">* </span></label>
+                                <div className={`col-md-6 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('project.startDate')}<span className="text-red">*</span></label>
                                     {
                                         isTasksListEmpty ?
                                             <DatePicker
                                                 id={`edit-project-start-date`}
                                                 value={startDate}
-                                                onChange={(e) => handleChangeForm(e, 'startDate')}
+                                                onChange={e => handleChangeProjectStartDate(e)}
                                                 dateFormat="day-month-year"
                                             />
                                             : startDate
                                     }
                                 </div>
                                 <div className="form-group col-md-6">
-                                    <label>Thời gian bắt đầu dự án<span className="text-red">* </span></label>
+                                    <label className="control-label">{translate('project.startTime')}<span className="text-red">*</span></label>
                                     {
                                         isTasksListEmpty ?
                                             <TimePicker
                                                 id={`edit-project-start-time`}
                                                 value={startTime}
-                                                onChange={(e) => setStartTime(e)}
+                                                onChange={e => handleStartTimeChange(e)}
                                                 disabled={!isTasksListEmpty}
                                             />
                                             : startTime
                                     }
                                 </div>
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
 
+
                             <div className="row">
-                                <div className="form-group col-md-6">
-                                    <label>{translate('project.endDate')}<span className="text-red">* </span></label>
+                                <div className={`col-md-6 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('project.endDate')}<span className="text-red">*</span></label>
                                     {
                                         isTasksListEmpty ?
                                             <DatePicker
                                                 id={`edit-project-end-date`}
                                                 value={endDate}
-                                                onChange={(e) => handleChangeForm(e, 'endDate')}
+                                                onChange={e => handleChangeProjectEndDate(e)}
                                                 dateFormat="day-month-year"
                                                 disabled={!isTasksListEmpty}
                                             />
@@ -376,66 +654,87 @@ const ProjectEditForm = (props) => {
                                     }
                                 </div>
                                 <div className="form-group col-md-6">
-                                    <label>Thời gian dự kiến kết thúc dự án<span className="text-red">* </span></label>
+                                    <label className="control-label">{translate('project.endTime')}<span className="text-red">*</span></label>
                                     {
                                         isTasksListEmpty ?
                                             <TimePicker
                                                 id={`edit-project-end-time`}
                                                 value={endTime}
-                                                onChange={(e) => setEndTime(e)}
+                                                onChange={e => handleEndTimeChange(e)}
                                                 disabled={!isTasksListEmpty}
                                             />
                                             : endTime
                                     }
                                 </div>
+                                <ErrorLabel content={errorOnEndDate} />
                             </div>
 
+                            {/* Đơn vị tính thời gian */}
                             <div className="form-group">
                                 <label>{translate('project.unitTime')}</label>
                                 <SelectBox
-                                    id={`select-edit-project-unitTime`}
+                                    id={`edit-select-project-unitTime`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={fakeUnitTimeList}
-                                    onChange={(e) => handleChangeForm(e, 'unitTime')}
+                                    onChange={handleChangeUnitTime}
                                     value={unitTime}
                                     multiple={false}
                                     disabled={!isTasksListEmpty}
                                 />
                             </div>
+
+                            {/* Đơn vị tính chi phí */}
                             <div className="form-group">
                                 <label>{translate('project.unitCost')}</label>
-                                <div className="form-control">{unitCost}</div>
+                                <SelectBox
+                                    id={`edit-select-project-unitCost`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={fakeUnitCostList}
+                                    onChange={handleChangeUnitCost}
+                                    value={unitCost}
+                                    multiple={false}
+                                    disabled={!isTasksListEmpty}
+                                />
                             </div>
 
+                            {/* Mô tả dự án */}
                             <div className={`form-group`}>
                                 <label>{translate('project.description')}</label>
-                                <textarea type="text" className="form-control" value={description} onChange={(e) => handleChangeForm(e, 'description')} />
+                                <textarea type="text" className="form-control" value={description} onChange={handleChangeProjectDescription} />
                             </div>
                         </fieldset>
                     </div>
+
                     <div className={"col-sm-6"}>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Nhân lực</legend>
-                            <div className="form-group">
+
+                            {/* Người quản trị dự án */}
+                            <div className={`form-group ${errorOnProjectManager === undefined ? "" : "has-error"}`}>
                                 <label>{translate('project.manager')}<span className="text-red">*</span></label>
                                 {listUsers &&
                                     <SelectBox
-                                        id={`edit-select-project-manager-${projectEdit?._id && projectEditId}`}
+                                        id={`edit-select-project-manager`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listUsers}
-                                        onChange={(e) => handleChangeForm(e, 'projectManager')}
+                                        onChange={handleChangeProjectManager}
                                         value={projectManager}
                                         multiple={true}
                                     />
                                 }
+                                <ErrorLabel content={errorOnProjectManager} />
                             </div>
-                            <div className="form-group">
+                            
+                            {/* Thành viên tham gia dự án */}
+                            <div className={`form-group ${errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <label>{translate('project.member')}<span className="text-red">*</span></label>
                                     <button className="btn-link" onClick={handleOpenModalSalaryMembers}>Xem chi tiết lương nhân viên</button>
                                 </div>
+                                <ErrorLabel content={errorOnResponsibleEmployees} />
                                 <table id="project-table" className="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
@@ -459,7 +758,7 @@ const ProjectEditForm = (props) => {
                                                         isTasksListEmpty
                                                         &&
                                                         <td>
-                                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDelete(index)}><i className="material-icons">delete</i></a>
+                                                            <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteRow(index)}><i className="material-icons">delete</i></a>
                                                         </td>
                                                     }
                                                 </tr>
@@ -479,9 +778,15 @@ const ProjectEditForm = (props) => {
                                                                 items={listDepartments}
                                                                 onChange={(e) => {
                                                                     setTimeout(() => {
-                                                                        setResponsibleEmployeesWithUnit({
-                                                                            ...responsibleEmployeesWithUnit,
-                                                                            currentUnitRow: e[0],
+                                                                        setState({
+                                                                            ...state,
+                                                                            newProject: {
+                                                                                ...state.newProject,
+                                                                                responsibleEmployeesWithUnit: {
+                                                                                    ...responsibleEmployeesWithUnit,
+                                                                                    currentUnitRow: e[0],
+                                                                                },
+                                                                            },  
                                                                         })
                                                                     }, 10);
                                                                 }}
@@ -503,9 +808,15 @@ const ProjectEditForm = (props) => {
                                                                 )}
                                                                 onChange={(e) => {
                                                                     setTimeout(() => {
-                                                                        setResponsibleEmployeesWithUnit({
-                                                                            ...responsibleEmployeesWithUnit,
-                                                                            currentEmployeeRow: e,
+                                                                        setState({
+                                                                            ...state,
+                                                                            newProject: {
+                                                                                ...state.newProject,
+                                                                                responsibleEmployeesWithUnit: {
+                                                                                    ...responsibleEmployeesWithUnit,
+                                                                                    currentEmployeeRow: e,
+                                                                                }
+                                                                            }
                                                                         })
                                                                     }, 10);
                                                                 }}

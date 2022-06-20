@@ -1,5 +1,5 @@
 const {
-    PurchaseOrder, PurchasingRequest
+    PurchaseOrder, ProductRequestManagement
 } = require(`../../../../models`);
 
 const {
@@ -13,11 +13,11 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
     let newPurchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         creator: userId,
-        materials: data.materials ? data.materials.map((material) => {
+        materials: data.goods ? data.goods.map((good) => {
             return {
-                material: material.material,
-                quantity: material.quantity,
-                price: material.price
+                material: good.good,
+                quantity: parseInt(good.quantity),
+                price: parseInt(good.price)
             }
         }) : undefined,
         intendReceiveTime: data.intendReceiveTime,
@@ -35,29 +35,23 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
         paymentAmount: data.paymentAmount
     })
 
-    //Cập nhật trạng thái cho đơn đề nghị
+    // Cập nhật trạng thái cho đơn đề nghị
     if (data.purchasingRequest) {
-        let purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal)).findById({ _id: data.purchasingRequest })
-        purchasingRequest.status = 2;
+        let purchasingRequest = await ProductRequestManagement(connect(DB_CONNECTION, portal)).findById({ _id: data.purchasingRequest })
+        purchasingRequest.status = 4;
         await purchasingRequest.save()
     }
 
-    let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: newPurchaseOrder._id }) .populate([
-        {
-            path: "creator", select: "code name"
-        }, 
-        {
-            path: "materials.material", select: "code name baseUnit"
-        },{
-            path: "stock", select: "code name address"
-        }, {
-            path: "approvers.approver", select: "code name"
-        },{
-            path: "supplier", select: "code name"
-        },{
-            path: "purchasingRequest", select: "code"
-        } ])
-    return {purchaseOrder};
+    let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: newPurchaseOrder._id })
+        .populate([
+            { path: "creator", select: "code name" },
+            { path: "materials.material", select: "code name baseUnit" },
+            { path: "stock", select: "code name address" },
+            { path: "approvers.approver", select: "code name" },
+            { path: "supplier", select: "code name" },
+            { path: "purchasingRequest" }
+        ])
+    return { purchaseOrder };
 }
 
 exports.getAllPurchaseOrders = async (userId, query, portal) => {
@@ -66,8 +60,8 @@ exports.getAllPurchaseOrders = async (userId, query, portal) => {
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
     if (users.length) {
         option = {
-            $or: [{ creator: users},
-                { approvers: { $elemMatch: { approver: userId } } } ],
+            $or: [{ creator: users },
+            { approvers: { $elemMatch: { approver: userId } } }],
         };
     }
     if (query.code) {
@@ -75,50 +69,36 @@ exports.getAllPurchaseOrders = async (userId, query, portal) => {
     }
 
     if (query.status) {
-        option.status = query.status
+        option.status = parseInt(query.status)
     }
 
     if (query.supplier) {
         option.supplier = query.supplier
     }
 
-    if ( !page || !limit ){
+    if (!page || !limit) {
         let allPurchaseOrders = await PurchaseOrder(connect(DB_CONNECTION, portal))
             .find(option)
             .populate([
-                {
-                    path: "creator", select: "code name"
-                }, 
-                {
-                    path: "materials.material", select: "code name baseUnit"
-                },{
-                    path: "stock", select: "code name address"
-                }, {
-                    path: "approvers.approver", select: "code name"
-                },{
-                    path: "supplier", select: "code name"
-                },{
-                    path: "purchasingRequest", select: "code"
-                }])
+                { path: "creator", select: "code name" },
+                { path: "materials.material", select: "code name baseUnit" },
+                { path: "stock", select: "code name address" },
+                { path: "approvers.approver", select: "code name" },
+                { path: "supplier", select: "code name" },
+                { path: "purchasingRequest" }
+            ])
         return { allPurchaseOrders }
     } else {
         let allPurchaseOrders = await PurchaseOrder(connect(DB_CONNECTION, portal)).paginate(option, {
             page,
             limit,
-            populate: [ {
-                path: "creator", select: "code name"
-            }, 
-            {
-                path: "materials.material", select: "code name baseUnit"
-            },{
-                path: "stock", select: "code name address"
-            }, {
-                path: "approvers.approver", select: "code name"
-            },{
-                path: "supplier", select: "code name"
-            },{
-                path: "purchasingRequest", select: "code"
-            }]
+            populate:
+                [{ path: "creator", select: "code name" },
+                { path: "materials.material", select: "code name baseUnit" },
+                { path: "stock", select: "code name address" },
+                { path: "approvers.approver", select: "code name" },
+                { path: "supplier", select: "code name" },
+                { path: "purchasingRequest"}]
         })
         return { allPurchaseOrders }
     }
@@ -129,7 +109,7 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
     if (!oldPurchaseOrder) {
         throw Error("Purchase Order is not existing")
     }
-    
+
     oldPurchaseOrder.status = data.status;
     oldPurchaseOrder.creator = userId;
     oldPurchaseOrder.materials = data.materials ? data.materials.map((material) => {
@@ -138,48 +118,41 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
             quantity: material.quantity,
             price: material.price
         }
-    }) : undefined,
-    oldPurchaseOrder.intendReceiveTime = data.intendReceiveTime,
+    }) : undefined;
+    oldPurchaseOrder.intendReceiveTime = data.intendReceiveTime;
     oldPurchaseOrder.stock = data.stock;
     oldPurchaseOrder.approvers = data.approvers ? data.approvers.map((approver) => {
         return {
             approver: approver.approver,
             status: approver.status
         }
-    }) : undefined,
+    }) : undefined;
     oldPurchaseOrder.supplier = data.supplier;
     oldPurchaseOrder.discount = data.discount;
     oldPurchaseOrder.desciption = data.desciption;
-    oldPurchaseOrder.paymentAmount = data.paymentAmount
+    oldPurchaseOrder.paymentAmount = data.paymentAmount;
 
     await oldPurchaseOrder.save();
 
-    let purchaseOrderUpdate =  await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(id) .populate([
-        {
-            path: "creator", select: "code name"
-        }, 
-        {
-            path: "materials.material", select: "code name baseUnit"
-        },{
-            path: "stock", select: "code name address"
-        }, {
-            path: "approvers.approver", select: "code name"
-        },{
-            path: "supplier", select: "code name"
-        },{
-            path: "purchasingRequest", select: "code"
-        }]);
+    let purchaseOrderUpdate = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(id).populate([
+        { path: "creator", select: "code name" },
+        { path: "materials.material", select: "code name baseUnit" },
+        { path: "stock", select: "code name address" },
+        { path: "approvers.approver", select: "code name" },
+        { path: "supplier", select: "code name" },
+        { path: "purchasingRequest" }
+    ]);
 
-    return {purchaseOrder: purchaseOrderUpdate};
+    return { purchaseOrder: purchaseOrderUpdate };
 }
 
 //Lấy các đơn hàng chưa thanh toán cho 1 nhà cung cấp
 exports.getPurchaseOrdersForPayment = async (supplierId, portal) => {
     //Lấy tất cả các đơn hàng theo nhà cung cấp
-    let purchaseOrdersForPayment = await PurchaseOrder(connect(DB_CONNECTION, portal)).find({ supplier: supplierId, status: [1,2,3,4] });
+    let purchaseOrdersForPayment = await PurchaseOrder(connect(DB_CONNECTION, portal)).find({ supplier: supplierId, status: [1, 2, 3, 4] });
     let purchaseOrders = [];
     if (purchaseOrdersForPayment.length) {
-        for (let index = 0; index < purchaseOrdersForPayment.length; index++){
+        for (let index = 0; index < purchaseOrdersForPayment.length; index++) {
             let paid = await PaymentService.getPaidForPurchaseOrder(purchaseOrdersForPayment[index]._id, portal);
 
             if (paid < purchaseOrdersForPayment[index].paymentAmount) {
@@ -195,12 +168,12 @@ exports.getPurchaseOrdersForPayment = async (supplierId, portal) => {
         }
     }
 
-    return {purchaseOrders}
+    return { purchaseOrders }
 }
 
 function checkStatusApprove(approvers) {
     let count = 0; //Đếm xem số người phê duyệt có trạng thái bằng 2
-    for (let index = 0; index < approvers.length; index++){
+    for (let index = 0; index < approvers.length; index++) {
         if (parseInt(approvers[index].status) === 2) {
             count++;
         } else if (parseInt(approvers[index].status) === 3) {
@@ -214,22 +187,16 @@ function checkStatusApprove(approvers) {
     return -1; //Chưa cần thay đổi trạng thái
 }
 
-exports.approvePurchaseOrder = async ( purchaseOrderId, data, portal) => {
+exports.approvePurchaseOrder = async (purchaseOrderId, data, portal) => {
 
-    let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(purchaseOrderId).populate([{
-        path: "creator", select: "code name"
-    }, 
-    {
-        path: "materials.material", select: "code name baseUnit"
-    },{
-        path: "stock", select: "code name address"
-    }, {
-        path: "approvers.approver", select: "code name"
-    },{
-        path: "supplier", select: "code name"
-    },{
-        path: "purchasingRequest", select: "code"
-    }])
+    let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(purchaseOrderId).populate([
+        { path: "creator", select: "code name" },
+        { path: "materials.material", select: "code name baseUnit" },
+        { path: "stock", select: "code name address" },
+        { path: "approvers.approver", select: "code name" },
+        { path: "supplier", select: "code name" },
+        { path: "purchasingRequest" }
+    ])
 
     if (!purchaseOrder) {
         throw Error("Purchase Order is not existing")
@@ -256,6 +223,3 @@ exports.approvePurchaseOrder = async ( purchaseOrderId, data, portal) => {
     }
     return { purchaseOrder }
 }
-
-
-

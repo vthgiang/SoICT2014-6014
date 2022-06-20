@@ -21,10 +21,12 @@ import PurchaseOrderCreateFormDirectly from "./purchaseOrderCreateFormDirectly";
 import PurchaseOrderCreateFormFromPurchasingRequest from "./purchaseOrderCreateFormFromPurchasingRequest";
 import PurchaseDetailForm from "./purchaseOrderDetailForm";
 import PurchaseOrderEditForm from "./purchaseOrderEditForm";
-import GoodReceiptCreateForm from "../../../warehouse/bill-management/components/good-receipts/goodReceiptCreateForm";
+// import GoodReceiptCreateForm from "../../../warehouse/bill-management/components/good-receipts/goodReceiptCreateForm";
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
 import PurchaseOrderApproveForm from "./purchaseOrderApproveForm";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { RequestActions } from '../../../common-production/request-management/redux/actions';
+import EditForm from '../../request-management/components/good-purchase-request/editForm';
 
 function PurchaseOrderTable(props) {
 
@@ -48,6 +50,7 @@ function PurchaseOrderTable(props) {
         props.getCustomers();
         props.getUser();
         props.getAllGoodsByType({ type: "material" });
+        props.getAllRequestByCondition({ type: 1, requestType: 1, requestFrom: 'order', status: 3 });
     }, [])
 
     const handleClickCreateCode = () => {
@@ -158,15 +161,31 @@ function PurchaseOrderTable(props) {
         window.$("#modal-edit-purchase-order").modal("show");
     };
 
-    const handleAddBill = async (purchaseOrderAddBill) => {
-        await setState((state) => {
-            return {
+    const handleEditRequest = async (purchaseOrder) => {
+        if (purchaseOrder.purchasingRequest && purchaseOrder.code) {
+            let listGoods = [];
+            listGoods = purchaseOrder.materials.map((material) => {
+                return {
+                    goodId: material.material._id,
+                    goodObject: material.material,
+                    quantity: material.quantity
+                }
+            });
+            await setState({
                 ...state,
-                purchaseOrderAddBill,
+                purchaseOrderId: purchaseOrder._id,
+                purchasingRequest: purchaseOrder.purchasingRequest,
+                listGoods: listGoods,
+            });
+            window.$("#modal-edit-request").modal("show");
+        } else {
+            await setState({
+                ...state,
+                purchaseOrder,
                 billCode: generateCode("BIRE"),
-            };
-        });
-        window.$("#modal-create-bill-receipt").modal("show");
+            });
+            window.$("#modal-create-bill-receipt").modal("show");
+        }
     };
 
     const handleShowBillDetail = async (billId) => {
@@ -178,7 +197,7 @@ function PurchaseOrderTable(props) {
         const { approvers } = purchaseOrder;
         const userId = localStorage.getItem("userId");
         // if (approvers) {
-            let checkApprove = approvers.find((element) => element.approver&&element.approver._id === userId);
+        let checkApprove = approvers.find((element) => element.approver && element.approver._id === userId);
         // }
         if (checkApprove) {
             return parseInt(checkApprove.status);
@@ -205,9 +224,14 @@ function PurchaseOrderTable(props) {
     };
 
 
-    const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove, tableId } = state;
+    const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode,
+        purchaseOrderApprove, tableId, purchasingRequest, listGoods, purchaseOrderId } = state;
 
-    const { translate, purchaseOrders } = props;
+    const { translate, purchaseOrders, requestManagements } = props;
+    let listRequests = [];
+    if (requestManagements.listRequests) {
+        listRequests = requestManagements.listRequests
+    }
     const { totalPages, page, listPurchaseOrders } = purchaseOrders;
     const statusConvert = [
         {
@@ -267,17 +291,31 @@ function PurchaseOrderTable(props) {
                     </div>
                 </div>
                 <PurchaseOrderCreateFormDirectly code={codeCreate} />
-                <PurchaseOrderCreateFormFromPurchasingRequest code={codeCreate} />
+                <PurchaseOrderCreateFormFromPurchasingRequest code={codeCreate} listRequests={listRequests} />
                 {purchaseOrderDetail && <PurchaseDetailForm purchaseOrderDetail={purchaseOrderDetail} />}
                 {purchaseOrderEdit && <PurchaseOrderEditForm purchaseOrderEdit={purchaseOrderEdit} />}
-                <GoodReceiptCreateForm
+                {
+                    purchasingRequest && listGoods &&
+                    <EditForm
+                        purchaseOrderId={purchaseOrderId}
+                        requestId={purchasingRequest._id}
+                        code={purchasingRequest.code}
+                        desiredTime={purchasingRequest.desiredTime}
+                        description={purchasingRequest.description}
+                        listGoods={listGoods}
+                        stock={purchasingRequest.stock}
+                        status={purchasingRequest.status}
+                        organizationalUnitValue={purchasingRequest.orderUnit}
+                    />
+                }
+                {/* <GoodReceiptCreateForm
                     purchaseOrderAddBill={purchaseOrderAddBill}
                     createdSource={"purchaseOrder"}
                     billCode={billCode}
                     modalName={`Lập phiếu yêu cầu nhập kho cho đơn hàng: ${purchaseOrderAddBill ? purchaseOrderAddBill.code : ""}`}
                     reloadPurchaseOrderTable={reloadPurchaseOrderTable}
                     group={"1"}
-                />
+                /> */}
                 <BillDetailForm />
                 <PurchaseOrderApproveForm purchaseOrderApprove={purchaseOrderApprove} />
                 <div className="form-inline">
@@ -412,24 +450,14 @@ function PurchaseOrderTable(props) {
                                         >
                                             <i className="material-icons">edit</i>
                                         </a>
-                                        {!item.bill && item.status !== 1 && checkCreator(item) && (
+                                        {!item.bill && item.status === 2 && checkCreator(item) && (
                                             <a
-                                                onClick={() => handleAddBill(item)}
+                                                onClick={() => handleEditRequest(item)}
                                                 className="add text-success"
                                                 style={{ width: "5px" }}
-                                                title="Yêu cầu nhập kho nguyên vật liệu"
+                                                title="Tạo yêu cầu phê duyệt nhập kho"
                                             >
                                                 <i className="material-icons">add</i>
-                                            </a>
-                                        )}
-                                        {item.bill && item.status !== 1 && (
-                                            <a
-                                                onClick={() => handleShowBillDetail(item.bill)}
-                                                className="add text-success"
-                                                style={{ width: "5px" }}
-                                                title="Yêu cầu nhập kho nguyên vật liệu"
-                                            >
-                                                <i className="material-icons">remove_red_eye</i>
                                             </a>
                                         )}
                                     </td>
@@ -452,11 +480,12 @@ function PurchaseOrderTable(props) {
 
 function mapStateToProps(state) {
     const { customers } = state.crm;
-    const { purchaseOrders } = state;
-    return { purchaseOrders, customers };
+    const { purchaseOrders, requestManagements } = state;
+    return { purchaseOrders, customers, requestManagements };
 }
 
 const mapDispatchToProps = {
+    getAllRequestByCondition: RequestActions.getAllRequestByCondition,
     getAllPurchaseOrders: PurchaseOrderActions.getAllPurchaseOrders,
     getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests,
     getAllStocks: StockActions.getAllStocks,

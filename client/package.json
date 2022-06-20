@@ -30,6 +30,7 @@
     "html-react-parser": "^0.13.0",
     "html-to-text": "^7.0.0",
     "interactjs": "^1.9.19",
+    "javascript-lp-solver": "^0.4.24",
     "js-file-download": "^0.4.12",
     "js-pert": "^2.0.1",
     "jsencrypt": "^3.0.0-rc.1",

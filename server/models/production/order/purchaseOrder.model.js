@@ -7,7 +7,7 @@ const PurchaseOrderShema = new Schema({
         type: String,
         required: true
     },
-    status: {//1. Chờ phê duyệt, 2. Đã phê duyệt, 3.Yêu cầu nhập kho, 4. Đã nhập kho, 5. Đã hủy
+    status: {//1. Chờ phê duyệt, 2. Đã phê duyệt, 3.Chờ phê duyệt gửi yêu cầu nhập kho, 4. Đã gửi yêu cầu nhập kho, 5. Đã hủy
         type: Number,
         enum: [1, 2, 3, 4, 5],
         default: 1
@@ -66,7 +66,7 @@ const PurchaseOrderShema = new Schema({
     },
     purchasingRequest: {
         type: Schema.Types.ObjectId,
-        ref: 'PurchasingRequest',
+        ref: 'ProductRequestManagement',
     },
     bill: {//Phiếu đề nghị nhập kho nguyên vật liệu
         type: Schema.Types.ObjectId,

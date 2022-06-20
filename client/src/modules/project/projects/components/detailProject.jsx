@@ -27,6 +27,8 @@ const ProjectDetailForm = (props) => {
                 <div>
                     <div className="description-box" style={{ lineHeight: 1.5 }}>
                         <div className="row">
+
+                            {/* Tên dự án */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
@@ -37,12 +39,14 @@ const ProjectDetailForm = (props) => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Hình thức quản lý dự án */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
-                                        <strong className="col-sm-4">Hình thức quản lý dự án</strong>
+                                        <strong className="col-sm-4"> {translate('project.projectType')} </strong>
                                         <div className="col-sm-8">
-                                            {projectDetail ? renderProjectTypeText(projectDetail?.projectType) : null}
+                                            {projectDetail ? translate(renderProjectTypeText(projectDetail?.projectType)) : null}
                                         </div>
                                     </div>
                                 </div>
@@ -50,6 +54,8 @@ const ProjectDetailForm = (props) => {
                         </div>
 
                         <div className="row">
+
+                            {/* Ngày bắt đầu */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
@@ -60,6 +66,8 @@ const ProjectDetailForm = (props) => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Ngày kết thúc */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
@@ -72,7 +80,10 @@ const ProjectDetailForm = (props) => {
                             </div>
                         </div>
 
+
                         <div className="row">
+
+                            {/* Người quản lý dự án */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
@@ -83,6 +94,8 @@ const ProjectDetailForm = (props) => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Đơn vị tính chi phí */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
@@ -95,7 +108,10 @@ const ProjectDetailForm = (props) => {
                             </div>
                         </div>
 
+
                         <div className="row">
+
+                            {/* Thành viên tham gia */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
@@ -106,6 +122,8 @@ const ProjectDetailForm = (props) => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Đơn vị tính thời gian */}
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">

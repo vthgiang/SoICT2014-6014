@@ -296,7 +296,6 @@ function InventoryManagement(props) {
 
     const totaQuantity = (stocks) => {
         const { stock } = state;
-        console.log(stocks, stock);
         let result = 0;
         if (stock && stock.length > 0) {
             for (let i = 0; i < stock.length; i++) {
@@ -319,7 +318,6 @@ function InventoryManagement(props) {
                 result += quantity;
             }
         }
-        console.log(result);
         return result;
     }
 
@@ -426,7 +424,6 @@ function InventoryManagement(props) {
             quantityTotal += inventoryQuantity[i].quantity
         }
     }
-    console.log(listPaginate);
 
     return (
         <div className="nav-tabs-custom">

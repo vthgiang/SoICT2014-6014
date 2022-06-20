@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Terms = require("../helpers/config");
-const linksPermission = require("../middleware/servicesPermission").links
+const linksPermission = require("../middleware/servicesPermission").links;
 
 const {
     Component,
@@ -21,6 +21,8 @@ const {
     SystemComponent,
     SystemApi,
 
+    Major,
+    Certificate,
     Employee,
     Salary,
     AnnualLeave,
@@ -78,10 +80,13 @@ const {
     TransportDepartment,
     TransportVehicle,
     TransportPlan,
-    TransportSchedule, SuppliesPurchaseRequest, Supplies, PurchaseInvoice, AllocationHistory,
-
+    TransportSchedule,
+    SuppliesPurchaseRequest,
+    Supplies,
+    PurchaseInvoice,
+    AllocationHistory,
 } = require("../models");
-const {ObjectId} = require("mongodb");
+const { ObjectId } = require("mongodb");
 
 require("dotenv").config();
 
@@ -91,43 +96,54 @@ const initSampleCompanyDB = async () => {
     /**
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
-    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD,
-            auth: {
-                authSource: 'admin'
+    let connectOptions =
+        process.env.DB_AUTHENTICATION === "true"
+            ? {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+                user: process.env.DB_USERNAME,
+                pass: process.env.DB_PASSWORD,
+                auth: {
+                    authSource: "admin",
+                },
             }
-        } : {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false
-        }
-    const systemDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`, connectOptions);
+            : {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+            };
+    const systemDB = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME
+        }`,
+        connectOptions
+    );
 
-    let connectVNISTOptions = process.env.DB_AUTHENTICATION === 'true' ?
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD,
-            auth: {
-                authSource: 'admin'
+    let connectVNISTOptions =
+        process.env.DB_AUTHENTICATION === "true"
+            ? {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+                user: process.env.DB_USERNAME,
+                pass: process.env.DB_PASSWORD,
+                auth: {
+                    authSource: "admin",
+                },
             }
-        } : {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false
-        }
-    const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`, connectVNISTOptions);
+            : {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+            };
+    const vnistDB = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`,
+        connectVNISTOptions
+    );
     await Configuration(systemDB).insertMany([
         {
             name: "vnist",
@@ -149,8 +165,6 @@ const initSampleCompanyDB = async () => {
      * 1.1 Khởi tạo model cho db
      */
     const initModels = (db) => {
-        
-
         if (!db.models.Component) Component(db);
         if (!db.models.RoleType) RoleType(db);
         if (!db.models.Role) Role(db);
@@ -234,8 +248,7 @@ const initSampleCompanyDB = async () => {
      * 3. Khởi tạo dữ liệu về công ty VNIST trong database của hệ thống
      */
     const vnist = await Company(systemDB).create({
-        name:
-            "Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        name: "Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         shortName: "vnist",
         description:
             "Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
@@ -363,7 +376,6 @@ const initSampleCompanyDB = async () => {
             password: hash,
             company: vnist._id,
         },
-
     ]);
     // console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
@@ -468,8 +480,13 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const giamDocKinhDoanh = await Role(vnistDB).create({
-        parents: [roleManager._id, nvKinhDoanh247._id, truongPhongKinhDoanh247._id,
-        nvKinhDoanh123._id, truongPhongKinhDoanh123._id],
+        parents: [
+            roleManager._id,
+            nvKinhDoanh247._id,
+            truongPhongKinhDoanh247._id,
+            nvKinhDoanh123._id,
+            truongPhongKinhDoanh123._id,
+        ],
         name: "Giám đốc kinh doanh",
         type: roleChucDanh._id,
     });
@@ -509,7 +526,6 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
 
-
     // Khỏi tạo role cho khối sản xuất
 
     const nvNhaMayThuocBot = await Role(vnistDB).create({
@@ -545,6 +561,55 @@ const initSampleCompanyDB = async () => {
     const quanDocNhaMayTPCN = await Role(vnistDB).create({
         parents: [roleManager._id, nvNhaMayTPCN._id],
         name: "Quản đốc nhà máy thực phẩm chức năng",
+        type: roleChucDanh._id,
+    });
+    // Kho Trần Đại Nghĩa
+    const nvKhoTDN = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+
+    const keToanKhoTDN = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Kế toán kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+
+    const phoKhoTDN = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTDN._id, keToanKhoTDN._id],
+        name: "Phó kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+
+    const thuKhoTDN = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTDN._id, phoKhoTDN._id, keToanKhoTDN._id],
+        name: "Thủ Kho Trần Đại Nghĩa",
+        type: roleChucDanh._id,
+    });
+    // Kho Tạ Quang Bửu
+
+    const nvKhoTQB = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên kho Tạ Quang Bửu",
+        type: roleChucDanh._id,
+    });
+
+    const keToanKhoTQB = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Kế toán kho Tạ Quang Bửu",
+        type: roleChucDanh._id,
+    });
+
+    const phoKhoTQB = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTQB._id, keToanKhoTQB._id],
+        name: "Phó kho Tạ Quang Bửu",
+        type: roleChucDanh._id,
+    });
+
+    const thuKhoTQB = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKhoTQB._id, phoKhoTQB._id, keToanKhoTQB._id],
+        name: "Thủ Kho Trần Tạ Quang Bửu",
         type: roleChucDanh._id,
     });
     // Khỏi tạo role cho phòng chăm sóc khách hàng
@@ -685,7 +750,6 @@ const initSampleCompanyDB = async () => {
             roleId: nvNhaMayThuocNuoc._id,
         },
 
-
         {
             userId: users[8]._id,
             roleId: nvNhaMayTPCN._id,
@@ -697,6 +761,24 @@ const initSampleCompanyDB = async () => {
         {
             userId: users[10]._id,
             roleId: nvNhaMayTPCN._id,
+        },
+
+        // nhân viên kho Trần Đại Nghĩa
+        {
+            userId: users[5]._id,
+            roleId: nvKhoTDN._id,
+        },
+        {
+            userId: users[8]._id,
+            roleId: nvKhoTDN._id,
+        },
+        {
+            userId: users[9]._id,
+            roleId: nvKhoTDN._id,
+        },
+        {
+            userId: users[10]._id,
+            roleId: nvKhoTDN._id,
         },
 
         //Gán quyền cho bộ phận kinh doanh
@@ -735,7 +817,7 @@ const initSampleCompanyDB = async () => {
         {
             userId: users[12]._id,
             roleId: nvSalesAdmin._id,
-        },//2 cái
+        }, //2 cái
         //phân quyền cho phòng CSKH ??? 2 dâu ,
         //, //1 cái
         {
@@ -784,8 +866,7 @@ const initSampleCompanyDB = async () => {
             // tte nhân viên vận chuyển phía bắc
             userId: users[6]._id,
             roleId: vcNvVanChuyen._id,
-        }
-
+        },
     ]);
 
     /**
@@ -796,7 +877,7 @@ const initSampleCompanyDB = async () => {
         name: "Ban giám đốc",
         description:
             "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        managers: [giamDoc._id, roleAdmin._id],
+        managers: [giamDoc._id],
         deputyManagers: [phoGiamDoc._id],
         employees: [thanhVienBGĐ._id],
         parent: null,
@@ -806,8 +887,7 @@ const initSampleCompanyDB = async () => {
     const boPhanKinhDoanh = await OrganizationalUnit(vnistDB).insertMany([
         {
             name: "Bộ phận kinh doanh",
-            description:
-                "Bao gồm các phòng ban kinh doanh",
+            description: "Bao gồm các phòng ban kinh doanh",
             managers: [giamDocKinhDoanh._id],
             parent: Directorate._id,
         },
@@ -816,8 +896,7 @@ const initSampleCompanyDB = async () => {
     const boPhanCSKH = await OrganizationalUnit(vnistDB).insertMany([
         {
             name: "Phòng Chăm sóc khách hàng",
-            description:
-                "Phòng chăm sóc khách hàng",
+            description: "Phòng chăm sóc khách hàng",
             managers: [truongPhongCSKH._id],
             parent: Directorate._id,
             deputyManagers: [phoPhongCSKH._id],
@@ -880,8 +959,7 @@ const initSampleCompanyDB = async () => {
     const departments = await OrganizationalUnit(vnistDB).insertMany([
         {
             name: "Phòng nhân sự",
-            description:
-                "Phòng nhân sự",
+            description: "Phòng nhân sự",
             managers: [truongPhongHC._id],
             deputyManagers: [phoPhongHC._id],
             employees: [nvPhongHC._id],
@@ -927,7 +1005,7 @@ const initSampleCompanyDB = async () => {
         deputyManagers: [],
         employees: [vcNvGiamSat._id, vcNvVanChuyen._id],
         parent: Directorate._id,
-    })
+    });
 
     const phongkehoach = await OrganizationalUnit(vnistDB).create({
         name: "Phòng kế hoạch",
@@ -937,6 +1015,30 @@ const initSampleCompanyDB = async () => {
         deputyManagers: [phoPhongKH._id],
         employees: [nvPhongKH._id],
         parent: Directorate._id,
+    });
+    const bophankho = await OrganizationalUnit(vnistDB).create({
+        name: "Bộ phận kho",
+        description:
+            "Bộ phận kho của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        parent: Directorate._id,
+    });
+    const khoTDN = await OrganizationalUnit(vnistDB).create({
+        name: "Kho Trần Đại Nghĩa",
+        description:
+            "Kho Trần Đại Nghĩa của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        managers: [thuKhoTDN._id],
+        deputyManagers: [phoKhoTDN._id],
+        employees: [nvKhoTDN._id, keToanKhoTDN._id],
+        parent: bophankho._id,
+    });
+    const khoTQB = await OrganizationalUnit(vnistDB).create({
+        name: "Kho Tạ Quang Bửu",
+        description:
+            "Kho Tạ Quang Bửu của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        managers: [thuKhoTQB._id],
+        deputyManagers: [phoKhoTQB._id],
+        employees: [nvKhoTQB._id, keToanKhoTQB._id],
+        parent: bophankho._id,
     });
     // console.log(
     //     "Đã tạo dữ liệu phòng ban: ",
@@ -972,8 +1074,8 @@ const initSampleCompanyDB = async () => {
                 path: "roles",
             });
 
-        let checkAllSystemApi = false
-        let dataApis = []
+        let checkAllSystemApi = false;
+        let dataApis = [];
         let dataLinks = allLinks.map((link) => {
             if (checkIndex(link, activeLinks) === -1)
                 return {
@@ -981,53 +1083,57 @@ const initSampleCompanyDB = async () => {
                     category: link.category,
                     description: link.description,
                 };
-            else
-                if (!checkAllSystemApi) {
-                    let url = linksPermission.filter(item => item.url === link.url)?.[0]
-                    if (url?.apis?.length === 1 && url.apis[0] === '@all') {
-                        checkAllSystemApi = true
-                    } else {
-                        if (url?.apis?.length > 0) {
-                            url.apis.map(api => {
-                                checkDuplicate = dataApis.filter(item => item.path === api.path && item.method === api.method)
-                                if (checkDuplicate?.length === 0) {
-                                    dataApis.push(api)
-                                }
-                            })
-                        }
+            else if (!checkAllSystemApi) {
+                let url = linksPermission.filter((item) => item.url === link.url)?.[0];
+                if (url?.apis?.length === 1 && url.apis[0] === "@all") {
+                    checkAllSystemApi = true;
+                } else {
+                    if (url?.apis?.length > 0) {
+                        url.apis.map((api) => {
+                            checkDuplicate = dataApis.filter(
+                                (item) => item.path === api.path && item.method === api.method
+                            );
+                            if (checkDuplicate?.length === 0) {
+                                dataApis.push(api);
+                            }
+                        });
                     }
                 }
-                
-                return {
-                    url: link.url,
-                    category: link.category,
-                    description: link.description,
-                    deleteSoft: false,
-                };
+            }
+
+            return {
+                url: link.url,
+                category: link.category,
+                description: link.description,
+                deleteSoft: false,
+            };
         });
 
         if (checkAllSystemApi) {
-            let systemApis = await SystemApi(systemDB).find()
+            let systemApis = await SystemApi(systemDB).find();
             await Company(systemDB).update(
-                { shortName: 'vnist' },
+                { shortName: "vnist" },
                 {
                     $set: {
-                        apis: systemApis.map(item => item._id)
-                    }
+                        apis: systemApis.map((item) => item._id),
+                    },
                 }
-            )
+            );
         } else {
             dataApis.map(async (item) => {
-                let systemApi = await SystemApi(systemDB).findOne({path: item.path, method: item.method})
+                let systemApi = await SystemApi(systemDB).findOne({
+                    path: item.path,
+                    method: item.method,
+                });
                 await Company(systemDB).update(
-                    { shortName: 'vnist' },
+                    { shortName: "vnist" },
                     {
                         $push: {
-                            apis: systemApi._id
-                        }
+                            apis: systemApi._id,
+                        },
                     }
-                )
-            })
+                );
+            });
         }
 
         let links = await Link(vnistDB).insertMany(dataLinks);
@@ -1080,8 +1186,7 @@ const initSampleCompanyDB = async () => {
             ...arr2,
         ]);
         dataSystemComponents.filter(
-            (component, index) =>
-                dataSystemComponents.indexOf(component) === index
+            (component, index) => dataSystemComponents.indexOf(component) === index
         );
         const systemComponents = await SystemComponent(systemDB)
             .find({ _id: { $in: dataSystemComponents } })
@@ -1137,10 +1242,216 @@ const initSampleCompanyDB = async () => {
     await createCompanyComponents(linkArr);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU NHÂN VIÊN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU NHÂN VIÊN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+
+    // const majorsParent = await Major(vnistDB).insertMany([
+    //   {
+    //     // 0
+    //     name: "Công nghệ thông tin",
+    //     code: "74802",
+    //     parents: [],
+    //     company: vnist._id,
+    //   },
+    //   {
+    //     // 1
+    //     name: "Máy tính",
+    //     code: "74801",
+    //     parents: [],
+    //     company: vnist._id,
+    //   },
+    //   {
+    //     // 2
+    //     name: "Toán học",
+    //     code: "74601",
+    //     parents: [],
+    //     company: vnist._id,
+    //   },
+    //   {
+    //     // 3
+    //     name: "Công nghệ kỹ thuật điện, điện tử và viễn thông",
+    //     code: "75103",
+    //     parents: [],
+    //     company: vnist._id,
+    //   },
+    //   {
+    //     // 4
+    //     name: "Kỹ thuật điện, điện tử và viễn thông",
+    //     code: "75202",
+    //     parents: [],
+    //     company: vnist._id,
+    //   },
+    // ]);
+
+    const majors = await Major(vnistDB).insertMany([
+        {
+            // 0
+            name: "Công nghệ thông tin",
+            code: "7480201",
+            // parents: [majorsParent[0]._id],
+            company: vnist._id,
+        },
+        {
+            // 1
+            name: "An toàn thông tin",
+            code: "7480202",
+            // parents: [majorsParent[0]._id],
+            company: vnist._id,
+        },
+        {
+            // 2
+            name: "Khoa học máy tính",
+            code: "7480101",
+            // parents: [majorsParent[1]._id],
+            company: vnist._id,
+        },
+        {
+            // 3
+            name: "Mạng máy tính và truyền thông dữ liệu",
+            code: "7480102",
+            // parents: [majorsParent[1]._id],
+            company: vnist._id,
+        },
+        {
+            // 4
+            name: "Kỹ thuật phần mềm",
+            code: "7480103",
+            // parents: [majorsParent[1]._id],
+            company: vnist._id,
+        },
+        {
+            // 5
+            name: "Hệ thống thông tin",
+            code: "7480104",
+            // parents: [majorsParent[1]._id],
+            company: vnist._id,
+        },
+        {
+            // 6
+            name: "Kỹ thuật máy tính",
+            code: "7480106",
+            // parents: [majorsParent[1]._id],
+            company: vnist._id,
+        },
+        {
+            // 7
+            name: "Công nghệ kỹ thuật máy tính",
+            code: "7480108",
+            // parents: [majorsParent[1]._id],
+            company: vnist._id,
+        },
+        {
+            // 8
+            name: "Toán học",
+            code: "7460101",
+            // parents: [majorsParent[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 9
+            name: "Khoa học tính toán",
+            code: "7480108",
+            // parents: [majorsParent[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 10
+            name: "Toán ứng dụng",
+            code: "7460112",
+            // parents: [majorsParent[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 11
+            name: "Toán cơ",
+            code: "7460115",
+            // parents: [majorsParent[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 12
+            name: "Toán tin",
+            code: "7460117",
+            // parents: [majorsParent[2]._id],
+            company: vnist._id,
+        },
+    ]);
+
+    const certificates = await Certificate(vnistDB).insertMany([
+        {
+            // 0
+            name: "Offensive Security Certified Expert",
+            abbreviation: "OSCE",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 1
+            name: "Offensive Security Certified Professional",
+            abbreviation: "OSCP",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 2
+            name: "Certified Ethical Hacker",
+            abbreviation: "CEH",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 3
+            name: "Certified Information System Security Professional",
+            abbreviation: "CISSP",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 4
+            name: "Computer Hacking Forensic Investigator",
+            abbreviation: "CHFI",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 5
+            name: "CREST Practitioner Security Analyst",
+            abbreviation: "CSPA",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 6
+            name: "EC-Council Certified Security Analyst",
+            abbreviation: "CSPA",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 7
+            name: "Offensive Security Web Expert",
+            abbreviation: "OSWE",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 8
+            name: "Global Infomation Assurance Cetification Penetration Tester",
+            abbreviation: "GPEN",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+        {
+            // 9
+            name: "GIAC Exploit Researcher & Advanced Penetration Tester",
+            abbreviation: "GXPN",
+            majors: [majors[2]._id],
+            company: vnist._id,
+        },
+    ]);
+
     await Employee(vnistDB).insertMany([
         {
             avatar: "/upload/human-resource/avatars/avatar5.png",
@@ -1179,8 +1490,7 @@ const initSampleCompanyDB = async () => {
             permanentResidenceCity: "Nam Định",
             permanentResidenceDistrict: "Hải Hậu",
             permanentResidenceWard: "Hải Phương",
-            temporaryResidence:
-                "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+            temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
             temporaryResidenceCountry: "Việt Nam",
             temporaryResidenceCity: "Hà Nội",
             temporaryResidenceDistrict: "Hai Bà Trưng",
@@ -1210,18 +1520,19 @@ const initSampleCompanyDB = async () => {
                     issuedBy: "Đại học Bách Khoa",
                     year: 2020,
                     degreeType: "good",
+                    major: majors[Math.floor(Math.random() * 12)]._id,
                     urlFile:
                         "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
                 },
             ],
             certificates: [
                 {
+                    certificate: certificates[Math.floor(Math.random() * 10)]._id,
                     name: "PHP",
                     issuedBy: "Hà Nội",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
-                    urlFile:
-                        "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm",
+                    urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm",
                 },
             ],
             experiences: [
@@ -1284,8 +1595,7 @@ const initSampleCompanyDB = async () => {
             permanentResidenceCity: "Nam Định",
             permanentResidenceDistrict: "Hải Hậu",
             permanentResidenceWard: "Hải Phương",
-            temporaryResidence:
-                "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+            temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
             temporaryResidenceCountry: "Việt Nam",
             temporaryResidenceCity: "Hà Nội",
             temporaryResidenceDistrict: "Hai Bà Trưng",
@@ -1315,18 +1625,19 @@ const initSampleCompanyDB = async () => {
                     issuedBy: "Đại học Bách Khoa",
                     year: 2020,
                     degreeType: "good",
+                    major: majors[Math.floor(Math.random() * 12)]._id,
                     urlFile:
                         "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
                 },
             ],
             certificates: [
                 {
+                    certificate: certificates[Math.floor(Math.random() * 10)]._id,
                     name: "PHP",
                     issuedBy: "Hà Nội",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
-                    urlFile:
-                        "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm",
+                    urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm",
                 },
             ],
             experiences: [
@@ -1391,8 +1702,7 @@ const initSampleCompanyDB = async () => {
         permanentResidenceCity: "Nam Định",
         permanentResidenceDistrict: "Hải Hậu",
         permanentResidenceWard: "Hải Phương",
-        temporaryResidence:
-            "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+        temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
         temporaryResidenceCountry: "Việt Nam",
         temporaryResidenceCity: "Hà Nội",
         temporaryResidenceDistrict: "Hai Bà Trưng",
@@ -1422,18 +1732,19 @@ const initSampleCompanyDB = async () => {
                 issuedBy: "Đại học Bách Khoa",
                 year: 2020,
                 degreeType: "good",
+                major: majors[Math.floor(Math.random() * 12)]._id,
                 urlFile:
                     "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
             },
         ],
         certificates: [
             {
+                certificate: certificates[Math.floor(Math.random() * 10)]._id,
                 name: "PHP",
                 issuedBy: "Hà Nội",
                 startDate: new Date("2019-10-25"),
                 endDate: new Date("2020-10-25"),
-                urlFile:
-                    "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm",
+                urlFile: "lib/fileEmployee/1582031878201-viavet-khoi-san-xuat.xlsm",
             },
         ],
         experiences: [
@@ -1471,10 +1782,10 @@ const initSampleCompanyDB = async () => {
     //END
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU NGHỊ PHÉP
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU NGHỊ PHÉP
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu nghỉ phép!");
     await AnnualLeave(vnistDB).insertMany([
         {
@@ -1499,10 +1810,10 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin nghỉ phép đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU LƯƠNG NHÂN VIÊN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU LƯƠNG NHÂN VIÊN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu lương nhân viên!");
     await Salary(vnistDB).insertMany([
         {
@@ -1537,10 +1848,10 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin lương nhân viên đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU KHEN THƯỞNG NHÂN VIÊN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU KHEN THƯỞNG NHÂN VIÊN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
     await Commendation(vnistDB).insertMany([
         {
@@ -1565,10 +1876,10 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin khen thưởng đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU KỶ LUẬT NHÂN VIÊN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU KỶ LUẬT NHÂN VIÊN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu kỷ luật!");
     await Discipline(vnistDB).insertMany([
         {
@@ -1595,10 +1906,10 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin kỷ luật đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU CHƯƠNG TRÌNH ĐÀO TẠO
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU CHƯƠNG TRÌNH ĐÀO TẠO
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu chương trình đào tạo bắt buộc!");
     var educationProgram = await EducationProgram(vnistDB).insertMany([
@@ -1621,10 +1932,10 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin chương trình đào tạo  đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU KHOÁ ĐÀO TẠO
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU KHOÁ ĐÀO TẠO
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu khoá đào tạo bắt buộc!");
     await Course(vnistDB).insertMany([
@@ -1765,8 +2076,7 @@ const initSampleCompanyDB = async () => {
         {
             company: vnist._id,
             name: "Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm",
-            description:
-                "Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm",
+            description: "Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm",
             parent: domains[0]._id,
         },
 
@@ -1786,8 +2096,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            name:
-                "Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng",
+            name: "Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng",
             description:
                 "Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng",
             parent: domains[1]._id,
@@ -1826,8 +2135,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            name:
-                "Hồ sơ kết quả xác nhận giá trị sử dụng của thiết kế sản phẩm",
+            name: "Hồ sơ kết quả xác nhận giá trị sử dụng của thiết kế sản phẩm",
             description:
                 "Hồ sơ kết quả xác nhận giá trị sử dụng của thiết kế sản phẩm",
             parent: domains[1]._id,
@@ -2027,8 +2335,7 @@ const initSampleCompanyDB = async () => {
             archives: [archives3[3]],
             versions: [
                 {
-                    versionName:
-                        "Giấy chứng nhận đăng ký chất lượng sản phẩm v1.0",
+                    versionName: "Giấy chứng nhận đăng ký chất lượng sản phẩm v1.0",
                     issuingDate: "2020-08-16",
                     effectiveDate: "2020-08-16",
                     expiredDate: "2020-08-16",
@@ -2077,8 +2384,7 @@ const initSampleCompanyDB = async () => {
             archives: [archives3[3]],
             versions: [
                 {
-                    versionName:
-                        "Giấy chứng nhận đăng ký chất lượng thực phẩm v1.0",
+                    versionName: "Giấy chứng nhận đăng ký chất lượng thực phẩm v1.0",
                     issuingDate: "2020-08-16",
                     effectiveDate: "2020-08-16",
                     expiredDate: "2020-08-16",
@@ -2089,10 +2395,10 @@ const initSampleCompanyDB = async () => {
     ]);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU lOẠI TÀI SẢN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU lOẠI TÀI SẢN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu loại tài sản");
     var listAssetType = await AssetType(vnistDB).insertMany([
         {
@@ -2312,10 +2618,10 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin loại tài sản đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU PHIẾU ĐĂNG KÝ MUA SẮM TÀI SẢN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU PHIẾU ĐĂNG KÝ MUA SẮM TÀI SẢN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu phiếu đăng ký mua sắm tài sản");
     var listRecommendProcure = await RecommendProcure(vnistDB).insertMany([
         {
@@ -2382,10 +2688,10 @@ const initSampleCompanyDB = async () => {
     console.log(`Xong! Thông tin phiếu đăng ký mua sắm tài sản đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU TÀI SẢN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU TÀI SẢN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu tài sản");
     var listAsset = await Asset(vnistDB).insertMany([
         {
@@ -3506,10 +3812,10 @@ const initSampleCompanyDB = async () => {
     //END
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU ĐĂNG KÝ SỬ DỤNG TÀI SẢN
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU ĐĂNG KÝ SỬ DỤNG TÀI SẢN
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu đăng ký sử dụng tài sản!");
     var recommmenddistribute = await RecommendDistribute(vnistDB).insertMany([
         {
@@ -3580,30 +3886,30 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
 
-
-
     /*---------------------------------------------------------------------------------------------
-   -----------------------------------------------------------------------------------------------
-       TẠO DỮ LIỆU VẬT TƯ
-   -----------------------------------------------------------------------------------------------
-   ----------------------------------------------------------------------------------------------- */
+     -----------------------------------------------------------------------------------------------
+         TẠO DỮ LIỆU VẬT TƯ
+     -----------------------------------------------------------------------------------------------
+     ----------------------------------------------------------------------------------------------- */
 
     // TẠO DỮ LIỆU ĐĂNG KÝ CẤP VẬT TƯ
-    const suppliesPurchaseRequests = await SuppliesPurchaseRequest(vnistDB).insertMany([
+    const suppliesPurchaseRequests = await SuppliesPurchaseRequest(
+        vnistDB
+    ).insertMany([
         {
             company: vnist._id,
             recommendNumber: "DNMS20220421.231192",
             dateCreate: Date.now(),
             proponent: users[4]._id, // Người đề nghị
-            suppliesName: 'Máy tính Lenovo',
-            suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            suppliesName: "Máy tính Lenovo",
+            suppliesDescription: "None",
+            supplier: "Công ty ABC",
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
             estimatePrice: 10000000,
             note: null,
-            status: 'waiting_for_approval',
+            status: "waiting_for_approval",
             files: null,
             recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
         },
@@ -3612,15 +3918,15 @@ const initSampleCompanyDB = async () => {
             recommendNumber: "DNMS20220421.231194",
             dateCreate: Date.now(),
             proponent: users[4]._id, // Người đề nghị
-            suppliesName: 'Máy tính Dell',
-            suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            suppliesName: "Máy tính Dell",
+            suppliesDescription: "None",
+            supplier: "Công ty ABC",
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
             estimatePrice: 10000000,
             note: null,
-            status: 'approved',
+            status: "approved",
             files: null,
             recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
         },
@@ -3629,15 +3935,15 @@ const initSampleCompanyDB = async () => {
             recommendNumber: "DNMS20220421.231196",
             dateCreate: Date.now(),
             proponent: users[2]._id, // Người đề nghị
-            suppliesName: 'Máy tính Asus',
-            suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            suppliesName: "Máy tính Asus",
+            suppliesDescription: "None",
+            supplier: "Công ty ABC",
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
             estimatePrice: 10000000,
             note: null,
-            status: 'approved',
+            status: "approved",
             files: null,
             recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
         },
@@ -3646,55 +3952,55 @@ const initSampleCompanyDB = async () => {
             recommendNumber: "DNMS20220421.231196",
             dateCreate: Date.now(),
             proponent: users[2]._id, // Người đề nghị
-            suppliesName: 'Máy tính Macbook',
-            suppliesDescription: 'None',
-            supplier:'Công ty ABC',
+            suppliesName: "Máy tính Macbook",
+            suppliesDescription: "None",
+            supplier: "Công ty ABC",
             approver: [users[1]._id], // Người phê duyệt
             total: 12,
             unit: 5,
             estimatePrice: 10000000,
             note: null,
-            status: 'waiting_for_approval',
+            status: "waiting_for_approval",
             files: null,
             recommendUnits: [new ObjectId("6260be256c016d1b48a23fd1")],
-        }
-    ])
+        },
+    ]);
 
     // TẠO DỮ LIỆU VẬT TƯ
     const supplies = await Supplies(vnistDB).insertMany([
         {
             company: vnist._id,
-            code: 'VVTM20220421.162431',
-            suppliesName: 'Macbook',
+            code: "VVTM20220421.162431",
+            suppliesName: "Macbook",
             totalPurchase: 4,
             totalAllocation: 2,
-            price: 10000000
+            price: 10000000,
         },
         {
             company: vnist._id,
-            code: 'VVTM20220421.162433',
-            suppliesName: 'Surface',
+            code: "VVTM20220421.162433",
+            suppliesName: "Surface",
             totalPurchase: 4,
             totalAllocation: 2,
-            price: 10000000
+            price: 10000000,
         },
         {
             company: vnist._id,
-            code: 'VVTM20220421.162435',
-            suppliesName: 'Apple watch',
+            code: "VVTM20220421.162435",
+            suppliesName: "Apple watch",
             totalPurchase: 4,
             totalAllocation: 2,
-            price: 10000000
+            price: 10000000,
         },
         {
             company: vnist._id,
-            code: 'VVTM20220421.162437',
-            suppliesName: 'Tables',
+            code: "VVTM20220421.162437",
+            suppliesName: "Tables",
             totalPurchase: 4,
             totalAllocation: 2,
-            price: 10000000
-        }
-    ])
+            price: 10000000,
+        },
+    ]);
 
     // TẠO DỮ LIỆU HÓA ĐƠN MUA VẬT TƯ
     const purchaseInvoice = await PurchaseInvoice(vnistDB).insertMany([
@@ -3704,7 +4010,7 @@ const initSampleCompanyDB = async () => {
             price: "1213",
             quantity: "12",
             supplier: "Công ty A",
-            supplies: supplies[0]._id
+            supplies: supplies[0]._id,
         },
         {
             codeInvoice: "DNMS20220421.253015",
@@ -3712,7 +4018,7 @@ const initSampleCompanyDB = async () => {
             price: "1213",
             quantity: "12",
             supplier: "Công ty A",
-            supplies: supplies[1]._id
+            supplies: supplies[1]._id,
         },
         {
             codeInvoice: "DNMS20220421.253017",
@@ -3720,7 +4026,7 @@ const initSampleCompanyDB = async () => {
             price: "1213",
             quantity: "12",
             supplier: "Công ty A",
-            supplies: supplies[2]._id
+            supplies: supplies[2]._id,
         },
         {
             codeInvoice: "DNMS20220421.253019",
@@ -3728,9 +4034,9 @@ const initSampleCompanyDB = async () => {
             price: "1213",
             quantity: "12",
             supplier: "Công ty A",
-            supplies: supplies[3]._id
-        }
-    ])
+            supplies: supplies[3]._id,
+        },
+    ]);
 
     // TẠO DỮ LIỆU LỊCH SỬ CẤP PHÁT
     const allocationHistory = await AllocationHistory(vnistDB).insertMany([
@@ -3739,35 +4045,105 @@ const initSampleCompanyDB = async () => {
             allocationToUser: users[4]._id,
             date: "2022-04-21T00:00:00.000Z",
             quantity: "12",
-            supplies: supplies[0]._id
+            supplies: supplies[0]._id,
         },
         {
             allocationToOrganizationalUnit: "6260be256c016d1b48a23fcf",
             allocationToUser: users[4]._id,
             date: "2022-04-21T00:00:00.000Z",
             quantity: "12",
-            supplies: supplies[1]._id
+            supplies: supplies[1]._id,
         },
         {
             allocationToOrganizationalUnit: "6260be256c016d1b48a23fcf",
             allocationToUser: users[2]._id,
             date: "2022-04-21T00:00:00.000Z",
             quantity: "12",
-            supplies: supplies[2]._id
+            supplies: supplies[2]._id,
         },
         {
             allocationToOrganizationalUnit: "6260be256c016d1b48a23fcf",
             allocationToUser: users[2]._id,
             date: "2022-04-21T00:00:00.000Z",
             quantity: "12",
-            supplies: supplies[3]._id
-        }
-    ])
+            supplies: supplies[3]._id,
+        },
+    ]);
     /*---------------------------------------------------------------------------------------------
-   -----------------------------------------------------------------------------------------------
-       TẠO DỮ LIỆU NHÀ MÁY VÀ XƯỞNG SẢN XUẤT
-   -----------------------------------------------------------------------------------------------
-   ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu đăng ký sử dụng tài sản!");
+    var recommmenddistribute = await RecommendDistribute(vnistDB).insertMany([
+      {
+        company: vnist._id,
+        asset: asset._id,
+        recommendNumber: "CP0001",
+        dateCreate: new Date("2020-05-19"),
+        proponent: users[4]._id,
+        reqContent: "Đăng ký sử dụng tài sản",
+        dateStartUse: new Date("2020-05-19"),
+        dateEndUse: new Date("2020-06-19"),
+        approver: users[1]._id,
+        note: "",
+        status: "waiting_for_approval",
+      },
+      {
+        company: vnist._id,
+        asset: assetManagedByEmployee1._id,
+        recommendNumber: "CP0002",
+        dateCreate: new Date("2020-05-19"),
+        proponent: users[4]._id,
+        reqContent: "Đăng ký sử dụng tài sản",
+        dateStartUse: new Date("2020-05-19"),
+        dateEndUse: new Date("2020-07-19"),
+        approver: users[5]._id,
+        note: "",
+        status: "waiting_for_approval",
+      },
+      {
+        company: vnist._id,
+        asset: assetManagedByEmployee2._id,
+        recommendNumber: "CP0003",
+        dateCreate: new Date("2020-05-19"),
+        proponent: users[4]._id,
+        reqContent: "Đăng ký sử dụng tài sản",
+        dateStartUse: new Date("2020-05-19"),
+        dateEndUse: new Date("2020-06-19"),
+        approver: users[5]._id,
+        note: "",
+        status: "waiting_for_approval",
+      },
+      {
+        company: vnist._id,
+        asset: listAsset2[4]._id,
+        recommendNumber: "CP0003",
+        dateCreate: new Date("2020-05-19"),
+        proponent: users[4]._id,
+        reqContent: "Đăng ký sử dụng tài sản",
+        dateStartUse: "8:00 AM 10-09-2020",
+        dateEndUse: "10:00 AM 10-09-2020",
+        approver: users[5]._id,
+        note: "",
+        status: "waiting_for_approval",
+      },
+      {
+        company: vnist._id,
+        asset: listAsset2[4]._id,
+        recommendNumber: "CP0003",
+        dateCreate: new Date("2020-05-19"),
+        proponent: users[4]._id,
+        reqContent: "Đăng ký sử dụng tài sản",
+        dateStartUse: "1:00 PM 10-09-2020",
+        dateEndUse: "5:00 PM 10-09-2020",
+        approver: users[5]._id,
+        note: "",
+        status: "waiting_for_approval",
+      },
+    ]);
+    console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
+    /*---------------------------------------------------------------------------------------------
+     -----------------------------------------------------------------------------------------------
+         TẠO DỮ LIỆU NHÀ MÁY VÀ XƯỞNG SẢN XUẤT
+     -----------------------------------------------------------------------------------------------
+     ----------------------------------------------------------------------------------------------- */
     const manufacturingWorksData = [
         {
             code: "NMSX202011111",
@@ -3779,7 +4155,6 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thuốc bột của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythuocbot._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
-            turn: 5
         },
         {
             code: "NMSX202011112",
@@ -3791,7 +4166,6 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thuốc nước của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythuocnuoc._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
-            turn: 6
         },
         {
             code: "NMSX202011113",
@@ -3803,7 +4177,6 @@ const initSampleCompanyDB = async () => {
                 "Nhà máy sản xuất thực phẩm chức năng của công ty trách nhiệm hữu hạn VNIST Việt Nam",
             organizationalUnit: nhamaythucphamchucnang._id,
             manageRoles: [roleSuperAdmin._id, roleAdmin._id],
-            turn: 7
         },
     ];
     const manufacturingWorks = await ManufacturingWorks(vnistDB).insertMany(
@@ -3840,8 +4213,7 @@ const initSampleCompanyDB = async () => {
         {
             code: "XSX202010003",
             name: "Xưởng thuốc nước uống",
-            description:
-                "Xưởng thuốc nước uống của nhà máy sản xuất thuốc nước",
+            description: "Xưởng thuốc nước uống của nhà máy sản xuất thuốc nước",
             manufacturingWorks: manufacturingWorks[1]._id,
             status: 1,
             teamLeader: users[5]._id,
@@ -3910,13 +4282,11 @@ const initSampleCompanyDB = async () => {
     ];
     await manufacturingWorks2.save();
 
-
-
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU DANH MỤC HÀNG HÓA
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu danh mục hàng hóa cha");
     var listCategory = await Category(vnistDB).insertMany([
         {
@@ -3929,15 +4299,14 @@ const initSampleCompanyDB = async () => {
             name: "Công cụ dụng cụ",
             code: "CT002",
             parent: null,
-            description:
-                "Những mặt hàng chỉ mới hoàn thành một giai đoạn sản xuất",
+            description: "Những mặt hàng chỉ mới hoàn thành một giai đoạn sản xuất",
         },
         {
             name: "Nguyên vật liệu",
             code: "CT003",
             parent: null,
             description: "Những mặt hàng phục vụ cho sản xuất tạo sản phẩm",
-        }
+        },
     ]);
 
     console.log("Khởi tạo dữ liệu danh mục hàng hóa cha");
@@ -3969,10 +4338,10 @@ const initSampleCompanyDB = async () => {
     ]);
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU HÀNG HÓA
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU HÀNG HÓA
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu hàng hóa");
     var listGood = await Good(vnistDB).insertMany([
         {
@@ -3981,9 +4350,9 @@ const initSampleCompanyDB = async () => {
             name: "Jucca Nước",
             code: "MT001",
             type: "material",
-            sourceType: "1",
             baseUnit: "ml",
             unit: [],
+            sourceType: "1",
             quantity: 20,
             description: "Nguyên liệu thuốc thú u",
         },
@@ -3993,9 +4362,9 @@ const initSampleCompanyDB = async () => {
             name: "Propylen Glycon",
             code: "MT002",
             type: "material",
-            sourceType: "1",
             baseUnit: "kg",
             unit: [],
+            sourceType: "1",
             quantity: 30,
             description: "Nguyên vật liệu thuốc thú y",
         },
@@ -4005,9 +4374,9 @@ const initSampleCompanyDB = async () => {
             name: "Bình ắc quy",
             code: "EQ001",
             type: "material",
-            sourceType: "1",
             baseUnit: "Chiếc",
             unit: [],
+            sourceType: "1",
             quantity: 10,
             description: "Công cụ dụng cụ thuốc thú y",
         },
@@ -4017,9 +4386,9 @@ const initSampleCompanyDB = async () => {
             name: "Máy nén",
             code: "EQ002",
             type: "material",
-            sourceType: "1",
             baseUnit: "Chiếc",
             unit: [],
+            sourceType: "1",
             quantity: 10,
             description: "Công cụ dụng cụ thuốc thú y",
         },
@@ -4032,7 +4401,6 @@ const initSampleCompanyDB = async () => {
             name: "ĐƯỜNG ACESULFAME K",
             code: "PR001",
             type: "product",
-            sourceType: "1",
             baseUnit: "Thùng",
             unit: [],
             quantity: 20,
@@ -4048,17 +4416,20 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 800,
             description: "Sản phẩm thuốc thú y",
-            manufacturingMills: [{
-                manufacturingMill: manufacturingMills[0]._id,
-                productivity: 100,
-                personNumber: 3
-            }, {
-                manufacturingMill: manufacturingMills[1]._id,
-                productivity: 50,
-                personNumber: 4
-            }],
+            manufacturingMills: [
+                {
+                    manufacturingMill: manufacturingMills[0]._id,
+                    productivity: 100,
+                    personNumber: 3,
+                },
+                {
+                    manufacturingMill: manufacturingMills[1]._id,
+                    productivity: 50,
+                    personNumber: 4,
+                },
+            ],
             pricePerBaseUnit: 90000,
-            salesPriceVariance: 9000
+            salesPriceVariance: 9000,
         },
         {
             company: vnist._id,
@@ -4066,7 +4437,6 @@ const initSampleCompanyDB = async () => {
             name: "ACID CITRIC MONO",
             code: "PR002",
             type: "product",
-            sourceType: "1",
             baseUnit: "Bao",
             unit: [],
             quantity: 20,
@@ -4082,17 +4452,20 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 900,
             description: "Sản phẩm thuốc thú y",
-            manufacturingMills: [{
-                manufacturingMill: manufacturingMills[1]._id,
-                productivity: 200,
-                personNumber: 2
-            }, {
-                manufacturingMill: manufacturingMills[2]._id,
-                productivity: 150,
-                personNumber: 3
-            }],
+            manufacturingMills: [
+                {
+                    manufacturingMill: manufacturingMills[1]._id,
+                    productivity: 200,
+                    personNumber: 2,
+                },
+                {
+                    manufacturingMill: manufacturingMills[2]._id,
+                    productivity: 150,
+                    personNumber: 3,
+                },
+            ],
             pricePerBaseUnit: 80000,
-            salesPriceVariance: 8000
+            salesPriceVariance: 8000,
         },
         {
             company: vnist._id,
@@ -4100,7 +4473,6 @@ const initSampleCompanyDB = async () => {
             name: "TIFFY",
             code: "PR003",
             type: "product",
-            sourceType: "1",
             baseUnit: "Gói",
             unit: [],
             quantity: 100,
@@ -4116,30 +4488,34 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 1000,
             description: "Sản phẩm trị cảm cúm",
-            manufacturingMills: [{
-                manufacturingMill: manufacturingMills[3]._id,
-                productivity: 100,
-                personNumber: 3
-            }, {
-                manufacturingMill: manufacturingMills[4]._id,
-                productivity: 100,
-                personNumber: 2
-            }, {
-                manufacturingMill: manufacturingMills[1]._id,
-                productivity: 50,
-                personNumber: 1
-            }],
+            manufacturingMills: [
+                {
+                    manufacturingMill: manufacturingMills[3]._id,
+                    productivity: 100,
+                    personNumber: 3,
+                },
+                {
+                    manufacturingMill: manufacturingMills[4]._id,
+                    productivity: 100,
+                    personNumber: 2,
+                },
+                {
+                    manufacturingMill: manufacturingMills[1]._id,
+                    productivity: 50,
+                    personNumber: 1,
+                },
+            ],
             pricePerBaseUnit: 100000,
-            salesPriceVariance: 10000
+            salesPriceVariance: 10000,
         },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU THÔNG TIN KHO
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU THÔNG TIN KHO
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu thông tin kho");
     var listStock = await Stock(vnistDB).insertMany([
         {
@@ -4148,15 +4524,18 @@ const initSampleCompanyDB = async () => {
             code: "ST001",
             address: "Trần Đại Nghĩa - Hai Bà Trưng - Hà Nội",
             description: "D5",
+            startTime: '07:00 AM',
+            endTime: '07:00 PM',
+            organizationalUnit: khoTDN._id,
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
-                    managementGood: ["product", "material", "waste"]
+                    managementGood: ["product", "material", "waste"],
                 },
                 {
                     role: roleAdmin._id,
-                    managementGood: ["material"]
-                }
+                    managementGood: ["material"],
+                },
             ],
             status: "1",
             goods: [
@@ -4183,15 +4562,18 @@ const initSampleCompanyDB = async () => {
             code: "ST002",
             address: "Tạ Quang Bửu - Hai Bà Trưng - Hà Nội",
             description: "B1",
+            startTime: '07:00 AM',
+            endTime: '07:00 PM',
+            organizationalUnit: khoTQB._id,
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
-                    managementGood: ["product", "material", "waste"]
+                    managementGood: ["product", "material", "waste"],
                 },
                 {
                     role: roleAdmin._id,
-                    managementGood: ["product"]
-                }
+                    managementGood: ["product"],
+                },
             ],
             status: "1",
             goods: [
@@ -4216,10 +4598,10 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo xong danh sách thông tin kho");
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-        TẠO DỮ LIỆU THÔNG TIN KHO
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU THÔNG TIN KHO
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu thông tin lưu trữ kho");
     var listBinLocations = await BinLocation(vnistDB).insertMany([
         {
@@ -4468,49 +4850,51 @@ const initSampleCompanyDB = async () => {
     ]);
 
     console.log("Cập nhật nút con của thông tin lưu trữ kho");
-    var listBin = await BinLocation(vnistDB).updateOne({
-        _id: listBinLocations[0]._id
-    }, {
-        code: "T1",
-        name: "Tầng 1",
-        description: "Dãy nhà dùng cho việc nghiên cứu",
-        stock: listStock[1]._id,
-        status: "1",
-        parent: null,
-        path: "ST002-T1",
-        unit: "mét khối",
-        capacity: 200,
-        contained: 10,
-        child: [
-            listBinLocationChilds[0]._id,
-            listBinLocationChilds[1]._id,
-            listBinLocationChilds[2]._id,
-        ],
-        enableGoods: [
-            {
-                good: listGood[0]._id,
-                contained: 0,
-                capacity: 200,
-            },
-            {
-                good: listGood[1]._id,
-                contained: 0,
-                capacity: 300,
-            },
-            {
-                good: listProduct[0]._id,
-                contained: 80,
-                capacity: 100,
-            },
-        ],
-    });
+    var listBin = await BinLocation(vnistDB).updateOne(
+        {
+            _id: listBinLocations[0]._id,
+        },
+        {
+            code: "T1",
+            name: "Tầng 1",
+            description: "Dãy nhà dùng cho việc nghiên cứu",
+            stock: listStock[1]._id,
+            status: "1",
+            parent: null,
+            path: "ST002-T1",
+            unit: "mét khối",
+            capacity: 200,
+            contained: 10,
+            child: [
+                listBinLocationChilds[0]._id,
+                listBinLocationChilds[1]._id,
+                listBinLocationChilds[2]._id,
+            ],
+            enableGoods: [
+                {
+                    good: listGood[0]._id,
+                    contained: 0,
+                    capacity: 200,
+                },
+                {
+                    good: listGood[1]._id,
+                    contained: 0,
+                    capacity: 300,
+                },
+                {
+                    good: listProduct[0]._id,
+                    contained: 80,
+                    capacity: 100,
+                },
+            ],
+        }
+    );
 
     /*---------------------------------------------------------------------------------------------
-       -----------------------------------------------------------------------------------------------
-           TẠO DỮ LIỆU THÔNG TIN MODULE SẢN XUẤT
-       -----------------------------------------------------------------------------------------------
-       ----------------------------------------------------------------------------------------------- */
-
+         -----------------------------------------------------------------------------------------------
+             TẠO DỮ LIỆU THÔNG TIN MODULE SẢN XUẤT
+         -----------------------------------------------------------------------------------------------
+         ----------------------------------------------------------------------------------------------- */
 
     // ****************** Tạo mẫu dữ liệu mẫu kế hoạch sản xuất********************
 
@@ -4723,13 +5107,13 @@ const initSampleCompanyDB = async () => {
                     staff: users[11]._id,
                     time: null,
                     status: 1,
-                    content: null
+                    content: null,
                 },
                 {
                     staff: users[0]._id,
                     time: new Date("2020-11-03 6:00:00"),
                     status: 2,
-                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A",
                 },
             ],
             status: 2,
@@ -4754,13 +5138,13 @@ const initSampleCompanyDB = async () => {
                     staff: users[5]._id,
                     time: null,
                     status: 1,
-                    content: null
+                    content: null,
                 },
                 {
                     staff: users[0]._id,
                     time: new Date("2020-11-03 6:00:00"),
                     status: 2,
-                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A",
                 },
             ],
             creator: users[13]._id,
@@ -4783,13 +5167,13 @@ const initSampleCompanyDB = async () => {
                     staff: users[8]._id,
                     time: null,
                     status: 1,
-                    content: null
+                    content: null,
                 },
                 {
                     staff: users[0]._id,
                     time: new Date("2020-11-03 6:00:00"),
                     status: 2,
-                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A",
                 },
             ],
             status: 1,
@@ -4813,13 +5197,13 @@ const initSampleCompanyDB = async () => {
                     staff: users[11]._id,
                     time: null,
                     status: 1,
-                    content: null
+                    content: null,
                 },
                 {
                     staff: users[0]._id,
                     time: new Date("2020-11-03 6:00:00"),
                     status: 2,
-                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A",
                 },
             ],
             status: 2,
@@ -4830,28 +5214,42 @@ const initSampleCompanyDB = async () => {
         },
     ];
 
-    const manufacturingCommands = await ManufacturingCommand(
-        vnistDB
-    ).insertMany(manufacturingCommandData);
+    const manufacturingCommands = await ManufacturingCommand(vnistDB).insertMany(
+        manufacturingCommandData
+    );
 
     console.log("Tạo lệnh sản xuất");
 
     // Gán lệnh SX vào trong kế hoạch sản xuất
 
-    const manufacturingPlansNumber0 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[0]._id);
-    manufacturingPlansNumber0.manufacturingCommands.push(manufacturingCommands[0]._id);
+    const manufacturingPlansNumber0 = await ManufacturingPlan(vnistDB).findById(
+        manufacturingPlans[0]._id
+    );
+    manufacturingPlansNumber0.manufacturingCommands.push(
+        manufacturingCommands[0]._id
+    );
     await manufacturingPlansNumber0.save();
-    const manufacturingPlansNumber2 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[2]._id);
-    manufacturingPlansNumber2.manufacturingCommands.push(manufacturingCommands[1]._id);
+    const manufacturingPlansNumber2 = await ManufacturingPlan(vnistDB).findById(
+        manufacturingPlans[2]._id
+    );
+    manufacturingPlansNumber2.manufacturingCommands.push(
+        manufacturingCommands[1]._id
+    );
     await manufacturingPlansNumber2.save();
-    const manufacturingPlansNumber3 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[3]._id);
-    manufacturingPlansNumber3.manufacturingCommands.push(manufacturingCommands[2]._id);
+    const manufacturingPlansNumber3 = await ManufacturingPlan(vnistDB).findById(
+        manufacturingPlans[3]._id
+    );
+    manufacturingPlansNumber3.manufacturingCommands.push(
+        manufacturingCommands[2]._id
+    );
     await manufacturingPlansNumber3.save();
-    const manufacturingPlansNumber4 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[4]._id);
-    manufacturingPlansNumber4.manufacturingCommands.push(manufacturingCommands[3]._id);
+    const manufacturingPlansNumber4 = await ManufacturingPlan(vnistDB).findById(
+        manufacturingPlans[4]._id
+    );
+    manufacturingPlansNumber4.manufacturingCommands.push(
+        manufacturingCommands[3]._id
+    );
     await manufacturingPlansNumber4.save();
-
-
 
     // ****************** Tạo mẫu dữ liệu mẫu lịch làm việc cho xưởng và công nhân********************
     let array30days = [];
@@ -5556,14 +5954,13 @@ const initSampleCompanyDB = async () => {
             approver: users[1]._id,
             receiver: {
                 name: "Phạm Đại Tài",
-                phone: '0344213030',
+                phone: 0344213030,
                 email: "thangbao2698@gmail.com",
                 address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
             },
             status: "2",
             timestamp: "02-06-2020",
             description: "Nhập kho thành phẩm",
-            sourceType: "1",
             goods: [
                 {
                     good: listProduct[0]._id,
@@ -5572,10 +5969,10 @@ const initSampleCompanyDB = async () => {
                         {
                             lot: listLot[0]._id,
                             quantity: 200,
-                        }
+                        },
                     ],
                     description: "Nhập hàng",
-                }
+                },
             ],
         },
         // {
@@ -5740,68 +6137,69 @@ const initSampleCompanyDB = async () => {
         // },
     ]);
 
-
-
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
 
-
-
-    var lotUpdate = await Lot(vnistDB).updateOne({
-        _id: listLot[0]._id
-    }, {
-        name: "LOT001",
-        good: listProduct[0]._id,
-        type: "product",
-        stocks: [
-            {
-                stock: listStock[1]._id,
-                quantity: 200,
-                binLocations: [
-                    {
-                        binLocation: listBinLocationChilds[0]._id,
-                        quantity: 80,
-                    },
-                    {
-                        binLocation: listBinLocationChilds[1]._id,
-                        quantity: 120,
-                    },
-                ],
-            },
-        ],
-        originalQuantity: 200,
-        quantity: 200,
-        expirationDate: new Date("12-12-2021"),
-        description: "Lô hàng tự tạo",
-        lotLogs: [
-            {
-                bill: listBill[0]._id,
-                quantity: 200,
-                description: "Nhập hàng lần đầu",
-                type: "Nhập kho thành phẩm",
-                createdAt: new Date("05-06-2020"),
-                stock: listStock[1]._id,
-                binLocations: [
-                    {
-                        binLocation: listBinLocationChilds[0]._id,
-                        quantity: 80,
-                    },
-                    {
-                        binLocation: listBinLocationChilds[1]._id,
-                        quantity: 120,
-                    },
-                ],
-            }
-        ],
-    });
+    var lotUpdate = await Lot(vnistDB).updateOne(
+        {
+            _id: listLot[0]._id,
+        },
+        {
+            name: "LOT001",
+            good: listProduct[0]._id,
+            type: "product",
+            stocks: [
+                {
+                    stock: listStock[1]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80,
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120,
+                        },
+                    ],
+                },
+            ],
+            originalQuantity: 200,
+            quantity: 200,
+            expirationDate: new Date("12-12-2021"),
+            description: "Lô hàng tự tạo",
+            lotLogs: [
+                {
+                    bill: listBill[0]._id,
+                    quantity: 200,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("05-06-2020"),
+                    stock: listStock[1]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80,
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120,
+                        },
+                    ],
+                },
+            ],
+        }
+    );
     //**********************************Tạo dữ liệu đơn vị chăm sóc khách hàng */
     const CustomerUnitData = [
         {
-            "organizationalUnit": boPhanCSKH[0]._id,
-            "creator": users[5]._id,
-            "createdAt": new Date(),
-        }
+            organizationalUnit: boPhanCSKH[0]._id,
+            creator: users[5]._id,
+            createdAt: new Date(),
+        },
     ];
-    const customerCareUnits = await CustomerCareUnit(vnistDB).insertMany(CustomerUnitData);
+    const customerCareUnits = await CustomerCareUnit(vnistDB).insertMany(
+        CustomerUnitData
+    );
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************
     console.log("Tạo mẫu dữ liệu nhóm khách hàng");
@@ -5811,111 +6209,110 @@ const initSampleCompanyDB = async () => {
             name: "Khách bán buôn",
             code: "NHKHKBB",
             description: "Nhóm khách chỉ bán buôn",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
             name: "Sỉ lẻ",
             code: "NKHBBSL",
             description: "Nhóm khách chỉ bán sĩ lẻ",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
             name: "Nhóm khách theo khu vực",
             code: "NKHKV",
             description: "Nhóm khách theo khu vực",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
             name: "Khách VIP",
             code: "KHVIP1",
             description: "Khách VIP",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
     ];
-    const customerGroups = await CustomerGroup(vnistDB).insertMany(customerGroupData);
+    const customerGroups = await CustomerGroup(vnistDB).insertMany(
+        customerGroupData
+    );
     console.log("Xong! Đã tạo mẫu dữ liệu nhóm khách hàng");
 
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [
         {
-
             code: "ST001",
             name: "Tiềm năng",
             description: "Khách hàng mới toanh",
             active: false,
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
-
             code: "ST002",
             name: "Quan tâm sản phẩm",
             description: "Khách hàng hứng thú với sản phẩm của công ty",
             active: false,
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
-
             code: "ST003",
             name: "Đã báo giá",
             description: "Khách hàng đã được báo giá",
             active: false,
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
-
             code: "ST005",
             name: "Đã kí hợp đồng",
             description: "Khách hàng đã kỹ hợp đồng với công ty",
             active: false,
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
-
             code: "ST004",
             name: "Đã mua sản phẩm",
             description: "Khách hàng đã mua sản phẩm",
             active: false,
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
     ];
-    const customerStatuss = await CustomerStatus(vnistDB).insertMany(customerStatusData);
+    const customerStatuss = await CustomerStatus(vnistDB).insertMany(
+        customerStatusData
+    );
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng");
 
     // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
@@ -5924,178 +6321,187 @@ const initSampleCompanyDB = async () => {
         {
             name: "Gọi điện tư vấn",
             description: "Gọi điện tư vấn",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
             name: "Gửi Email",
             description: "Gửi Email giới thiệu ...",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
             name: "Gặp mặt trực tiếp",
             description: "Hẹn gặp khách hàng trực tiếp",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
     ];
-    const customerCareTypes = await CustomerCareType(vnistDB).insertMany(customerCareType);
+    const customerCareTypes = await CustomerCareType(vnistDB).insertMany(
+        customerCareType
+    );
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
     // ****************** Tạo mẫu dữ liệu xếp hạng khách hàng********************
 
     const customerRankPoints = [
         {
-
-            "name": "Đồng",
-            "point": 0,
-            "description": "Xếp hạng đồng",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
-
-        }
-        ,
+            name: "Đồng",
+            point: 0,
+            description: "Xếp hạng đồng",
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
+        },
         /* 2 */
         {
-
-            "name": "Bạc",
-            "point": 500,
-            "description": "Xếp hạng bạc",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
-
-        }
-        ,
-
-        {
-            "name": "Vàng",
-            "point": 1000,
-            "description": "Xếp hạng bạc",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
-
+            name: "Bạc",
+            point: 500,
+            description: "Xếp hạng bạc",
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
         },
         {
-            "name": "Bạch kim",
-            "point": 10000,
-            "description": "Xếp hạng bạch kim ",
-            "creator": users[5]._id,
-            "updatedBy": users[5]._id,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-            customerCareUnit: customerCareUnits[0]._id
-
-        }
+            name: "Vàng",
+            point: 1000,
+            description: "Xếp hạng bạc",
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
+        },
+        {
+            name: "Bạch kim",
+            point: 10000,
+            description: "Xếp hạng bạch kim ",
+            creator: users[5]._id,
+            updatedBy: users[5]._id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            customerCareUnit: customerCareUnits[0]._id,
+        },
     ];
 
     await CustomerRankPoint(vnistDB).insertMany(customerRankPoints);
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************
-    var surname = ['Ngô', 'Đinh', 'Lê', 'Lý', 'Trần', 'Hồ', 'Trịnh', 'Nguyễn'];
-    var middleName = ['Văn', 'Thị', 'Hương', 'Bá', 'Trung', 'Duy', 'Viết', 'An', 'Xuân', 'Hoàng'];
-    var name = ['Thái', 'Quyền', 'Lĩnh', 'Hoàn', 'Cảnh', 'Ly', 'Ánh', 'Trực', 'An', 'Tùng', 'Nam', 'Việt'];
+    var surname = ["Ngô", "Đinh", "Lê", "Lý", "Trần", "Hồ", "Trịnh", "Nguyễn"];
+    var middleName = [
+        "Văn",
+        "Thị",
+        "Hương",
+        "Bá",
+        "Trung",
+        "Duy",
+        "Viết",
+        "An",
+        "Xuân",
+        "Hoàng",
+    ];
+    var name = [
+        "Thái",
+        "Quyền",
+        "Lĩnh",
+        "Hoàn",
+        "Cảnh",
+        "Ly",
+        "Ánh",
+        "Trực",
+        "An",
+        "Tùng",
+        "Nam",
+        "Việt",
+    ];
     const getRandomCustomerName = () => {
         var surnameIndex = Math.floor(Math.random() * 8);
         var middleNameIndex = Math.floor(Math.random() * 10);
         var nameIndex = Math.floor(Math.random() * 12);
-        return `${surname[surnameIndex]} ${middleName[middleNameIndex]} ${name[nameIndex]}`
-    }
+        return `${surname[surnameIndex]} ${middleName[middleNameIndex]} ${name[nameIndex]}`;
+    };
     let listCustomerData = [];
     for (let i = 0; i < 6; i++) {
         for (let j = 0; j < 50; j++) {
             const name = await getRandomCustomerName();
             const now = new Date();
-            const month = (now.getMonth() - i > 0) ? now.getMonth() - i : now.getMonth() - i + 12;
-            //const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
-            const year = now.getFullYear();
+            const month =
+                now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
+            const year =
+                now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
             const customer = {
-
-                "owner": [
-                    users[(j % 3 + 5)]._id
-                ],
-                "customerStatus": [
-                    customerStatuss[j % 5]._id
-                ],
-                "point": 0,
-                "isDeleted": false,
-                "code": `KH${i * 50 + j + 1}`,
-                "name": name,
-                "customerType": 1,
-                "customerGroup": customerGroups[j % 4]._id,
-                "gender": 2,
-                "birthDate": new Date("1998-09-03"),
-                "mobilephoneNumber": 123456789,
-                "email": "ThaiNguyen@gmail.com",
-                "address": "Nghệ An",
-                "telephoneNumber": 123456789,
-                "taxNumber": "Tax 123456789",
-                "location": 1,
-                "customerSource": "FaceBook",
-                "statusHistories": [
+                owner: [users[(j % 3) + 5]._id],
+                customerStatus: [customerStatuss[j % 5]._id],
+                point: 0,
+                isDeleted: false,
+                code: `KH${i * 50 + j + 1}`,
+                name: name,
+                customerType: 1,
+                customerGroup: customerGroups[j % 4]._id,
+                gender: 2,
+                birthDate: new Date("1998-09-03"),
+                mobilephoneNumber: 123456789,
+                email: "ThaiNguyen@gmail.com",
+                address: "Nghệ An",
+                telephoneNumber: 123456789,
+                taxNumber: "Tax 123456789",
+                location: 1,
+                customerSource: "FaceBook",
+                statusHistories: [
                     {
-
-                        "createdAt": new Date(),
-                        "oldValue": customerStatuss[1]._id,
-                        "newValue": customerStatuss[1]._id,
-                        "createdBy": users[(j % 3 + 5)]._id,
-                        "description": "Khách hàng được khởi tạo"
+                        createdAt: new Date(),
+                        oldValue: customerStatuss[1]._id,
+                        newValue: customerStatuss[1]._id,
+                        createdBy: users[(j % 3) + 5]._id,
+                        description: "Khách hàng được khởi tạo",
                     },
                     {
-
-                        "oldValue": customerStatuss[1]._id,
-                        "newValue": customerStatuss[(j % 5)]._id,
-                        "createdAt": new Date(),
-                        "createdBy": users[(j % 3) + 5]._id,
-                        "description": "Khách hàng đã được chuyển trạng thái"
-                    }
+                        oldValue: customerStatuss[1]._id,
+                        newValue: customerStatuss[j % 5]._id,
+                        createdAt: new Date(),
+                        createdBy: users[(j % 3) + 5]._id,
+                        description: "Khách hàng đã được chuyển trạng thái",
+                    },
                 ],
-                "creator": users[(j % 3 + 5)]._id,
-                "rankPoints": [
+                creator: users[(j % 3) + 5]._id,
+                rankPoints: [
                     {
-
-                        "point": Math.floor(Math.random() * 9876),
-                        "expirationDate": new Date(year, 12)
+                        point: Math.floor(Math.random() * 9876),
+                        expirationDate: new Date(year, 12),
                     },
                     {
-
-                        "point": Math.floor(Math.random() * 98),
-                        "expirationDate": new Date(year, 12)
-                    }
+                        point: Math.floor(Math.random() * 98),
+                        expirationDate: new Date(year, 12),
+                    },
                 ],
-                "files": [],
-                "promotions": [],
-                "createdAt": new Date(year, month),
-                "updatedAt": new Date(),
-                "__v": 0,
-                "address2": "",
-                "company": "",
-                "companyEstablishmentDate": null,
-                "email2": "",
-                "linkedIn": "",
-                "note": "",
-                "represent": "",
-                "website": "",
-                customerCareUnit: customerCareUnits[0]._id
-            }
+                files: [],
+                promotions: [],
+                createdAt: new Date(year, month),
+                updatedAt: new Date(),
+                __v: 0,
+                address2: "",
+                company: "",
+                companyEstablishmentDate: null,
+                email2: "",
+                linkedIn: "",
+                note: "",
+                represent: "",
+                website: "",
+                customerCareUnit: customerCareUnits[0]._id,
+            };
             listCustomerData = [...listCustomerData, customer];
         }
     }
@@ -6103,67 +6509,62 @@ const initSampleCompanyDB = async () => {
     var listCustomers = await Customer(vnistDB).insertMany(listCustomerData);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng");
 
-
-
     // ****************** Tạo mẫu dữ liệu chăm sóc khách hàng********************
     const getRamdomCareName = () => {
-        const first = ['Gọi điện', 'Email', 'Gặp mặt']
-        const middle = ['tư vấn', 'phản hồi khiếu nại', 'trả lời thắc mắc']
-        const last = ['về dịch vụ', 'về sản phẩm', 'về công ty']
+        const first = ["Gọi điện", "Email", "Gặp mặt"];
+        const middle = ["tư vấn", "phản hồi khiếu nại", "trả lời thắc mắc"];
+        const last = ["về dịch vụ", "về sản phẩm", "về công ty"];
         const firstIndex = Math.floor(Math.random() * 3);
         const middleIndex = Math.floor(Math.random() * 3);
         const lastIndex = Math.floor(Math.random() * 3);
         return `${first[firstIndex]} ${middle[middleIndex]} ${last[lastIndex]}`;
-    }
-    let customerCareData = []
+    };
+    let customerCareData = [];
     for (let i = 0; i < 6; i++) {
         for (let j = 0; j < 50; j++) {
             const careName = await getRamdomCareName();
             const now = new Date();
-            const month = (now.getMonth() - i > 0) ? now.getMonth() - i : now.getMonth() - i + 12;
-            const year = (now.getMonth() - i > 0) ? now.getFullYear() : now.getFullYear() - 1;
-            let care =
-            {
-                "customerCareStaffs": [
-                    users[(j % 3 + 5)]._id
-                ],
-                "customerCareTypes": [
-                    customerCareTypes[(j % 3)]._id
-                ],
-                "status": (j % 5 + 1),
-                "name": careName,
-                "description": `<p>${careName} </p>`,
-                "priority": 2,
-                "startDate": new Date(year, month, 5),
-                "endDate": new Date(year, month, 25),
-                "customer": listCustomers[(j%10)]._id,
-                "creator": users[(j % 3 + 5)]._id,
-                "createdAt": new Date(),
-                "updatedAt": new Date(),
+            const month =
+                now.getMonth() - i > 0 ? now.getMonth() - i : now.getMonth() - i + 12;
+            const year =
+                now.getMonth() - i > 0 ? now.getFullYear() : now.getFullYear() - 1;
+            let care = {
+                customerCareStaffs: [users[(j % 3) + 5]._id],
+                customerCareTypes: [customerCareTypes[j % 3]._id],
+                status: (j % 5) + 1,
+                name: careName,
+                description: `<p>${careName} </p>`,
+                priority: 2,
+                startDate: new Date(year, month, 5),
+                endDate: new Date(year, month, 25),
+                customer: listCustomers[j % 10]._id,
+                creator: users[(j % 3) + 5]._id,
+                createdAt: new Date(),
+                updatedAt: new Date(),
                 customerCareUnit: customerCareUnits[0]._id,
-                "__v": 0
-            }
-            if ((j % 5 + 1) == 3 || (j % 5 + 1) == 5)
-            care ={...care ,
-                evaluation: {
-                    "point": 8.9,
-                    "comment": "<p>khách hàng không có nhận xét về phản hồi</p>",
-                    "result": Math.floor(Math.random() * 2)+1
-                }
-            }
-                customerCareData = [...customerCareData, care];
+                __v: 0,
+            };
+            if ((j % 5) + 1 == 3 || (j % 5) + 1 == 5)
+                care = {
+                    ...care,
+                    evaluation: {
+                        point: 8.9,
+                        comment: "<p>khách hàng không có nhận xét về phản hồi</p>",
+                        result: Math.floor(Math.random() * 2) + 1,
+                    },
+                };
+            customerCareData = [...customerCareData, care];
         }
     }
-
 
     await CustomerCare(vnistDB).insertMany(customerCareData);
     console.log("Xong! Đã tạo mẫu dữ liệu  chăm sóc khách hàng");
 
     /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
-      TẠO DỮ LIỆU THÔNG TIN THUẾ
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
+      -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU THÔNG TIN THUẾ
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu thông tin thuế");
     var listTaxs = await Tax(vnistDB).insertMany([
@@ -6172,61 +6573,70 @@ const initSampleCompanyDB = async () => {
             code: "TAX_2011112342",
             description: "Thuế giá trị gia tăng",
             creator: users[1]._id,
-            goods: [{
-                good: listProduct[0]._id,
-                percent: 5
-            },
-            {
-                good: listProduct[1]._id,
-                percent: 10
-            },
-            {
-                good: listProduct[2]._id,
-                percent: 10
-            }],
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    percent: 5,
+                },
+                {
+                    good: listProduct[1]._id,
+                    percent: 10,
+                },
+                {
+                    good: listProduct[2]._id,
+                    percent: 10,
+                },
+            ],
             status: true,
             lastVersion: true,
-            version: 1
+            version: 1,
         },
-
     ]);
     console.log("Khởi tạo xong danh sách thông tin thuế");
 
     /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU THÔNG TIN CAM KẾT CHẤT LƯỢNG
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
+        -----------------------------------------------------------------------------------------------
+            TẠO DỮ LIỆU THÔNG TIN CAM KẾT CHẤT LƯỢNG
+        -----------------------------------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu thông tin cam kết chất lượng");
-    var listServiceLevelAgreements = await ServiceLevelAgreement(vnistDB).insertMany([
+    var listServiceLevelAgreements = await ServiceLevelAgreement(
+        vnistDB
+    ).insertMany([
         {
             title: "Chất lượng sản phẩm đi đầu",
             code: "SLA_201124144445",
-            descriptions: ["Sản phẩm đi đầu về chất lượng", "Đóng gói đúng quy trình"],
+            descriptions: [
+                "Sản phẩm đi đầu về chất lượng",
+                "Đóng gói đúng quy trình",
+            ],
             creator: users[1]._id,
             goods: [listProduct[0]._id, listProduct[1]._id, listProduct[2]._id],
             status: true,
             lastVersion: true,
-            version: 1
+            version: 1,
         },
         {
             title: "Quy cách về hàng hóa",
             code: "SLA_20111219136",
-            descriptions: ["Sản phẩm đạt tiêu chuẩn an toàn", "Sản phẩm được đóng gói theo tiêu chuẩn quốc tế"],
+            descriptions: [
+                "Sản phẩm đạt tiêu chuẩn an toàn",
+                "Sản phẩm được đóng gói theo tiêu chuẩn quốc tế",
+            ],
             creator: users[1]._id,
             goods: [listProduct[0]._id, listProduct[1]._id],
             status: true,
             lastVersion: true,
-            version: 1
+            version: 1,
         },
     ]);
     console.log("Khởi tạo xong danh sách thông tin cam kết chất lượng");
 
     /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU THÔNG TIN KHUYẾN MÃI
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
+        -----------------------------------------------------------------------------------------------
+            TẠO DỮ LIỆU THÔNG TIN KHUYẾN MÃI
+        -----------------------------------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu thông tin khuyến mãi");
     var listDistcounts = await Discount(vnistDB).insertMany([
@@ -6239,14 +6649,18 @@ const initSampleCompanyDB = async () => {
             type: 0,
             creator: users[1]._id,
             formality: "4",
-            discounts: [{
-                minimumThresholdToBeApplied: 1000000,
-                customerType: 2,
-                bonusGoods: [{
-                    good: listProduct[1],
-                    quantityOfBonusGood: 2
-                }]
-            }],
+            discounts: [
+                {
+                    minimumThresholdToBeApplied: 1000000,
+                    customerType: 2,
+                    bonusGoods: [
+                        {
+                            good: listProduct[1],
+                            quantityOfBonusGood: 2,
+                        },
+                    ],
+                },
+            ],
             version: 1,
             status: true,
             lastVersion: true,
@@ -6260,14 +6674,18 @@ const initSampleCompanyDB = async () => {
             type: 1,
             creator: users[1]._id,
             formality: "4",
-            discounts: [{
-                minimumThresholdToBeApplied: 10,
-                customerType: 2,
-                bonusGoods: [{
-                    good: listProduct[2],
-                    quantityOfBonusGood: 3
-                }]
-            }],
+            discounts: [
+                {
+                    minimumThresholdToBeApplied: 10,
+                    customerType: 2,
+                    bonusGoods: [
+                        {
+                            good: listProduct[2],
+                            quantityOfBonusGood: 3,
+                        },
+                    ],
+                },
+            ],
             version: 1,
             status: true,
             lastVersion: true,
@@ -6288,16 +6706,16 @@ const initSampleCompanyDB = async () => {
                     customerType: 0,
                     discountOnGoods: [
                         {
-                            good: listProduct[0]._id
+                            good: listProduct[0]._id,
                         },
                         {
-                            good: listProduct[1]._id
+                            good: listProduct[1]._id,
                         },
                         {
-                            good: listProduct[2]._id
-                        }
-                    ]
-                }
+                            good: listProduct[2]._id,
+                        },
+                    ],
+                },
             ],
             version: 1,
             status: true,
@@ -6319,16 +6737,16 @@ const initSampleCompanyDB = async () => {
                     customerType: 2,
                     discountOnGoods: [
                         {
-                            good: listProduct[0]._id
+                            good: listProduct[0]._id,
                         },
                         {
-                            good: listProduct[1]._id
+                            good: listProduct[1]._id,
                         },
                         {
-                            good: listProduct[2]._id
-                        }
-                    ]
-                }
+                            good: listProduct[2]._id,
+                        },
+                    ],
+                },
             ],
             version: 1,
             status: true,
@@ -6353,17 +6771,17 @@ const initSampleCompanyDB = async () => {
                     discountOnGoods: [
                         {
                             good: listProduct[0],
-                            discountedPrice: 60000
+                            discountedPrice: 60000,
                         },
                         {
                             good: listProduct[0],
-                            discountedPrice: 65000
+                            discountedPrice: 65000,
                         },
                         {
                             good: listProduct[0],
-                            discountedPrice: 69000
+                            discountedPrice: 69000,
                         },
-                    ]
+                    ],
                 },
                 {
                     minimumThresholdToBeApplied: 16,
@@ -6372,17 +6790,17 @@ const initSampleCompanyDB = async () => {
                     discountOnGoods: [
                         {
                             good: listProduct[0],
-                            discountedPrice: 50000
+                            discountedPrice: 50000,
                         },
                         {
                             good: listProduct[0],
-                            discountedPrice: 55000
+                            discountedPrice: 55000,
                         },
                         {
                             good: listProduct[0],
-                            discountedPrice: 65000
+                            discountedPrice: 65000,
                         },
-                    ]
+                    ],
                 },
             ],
             version: 1,
@@ -6403,7 +6821,7 @@ const initSampleCompanyDB = async () => {
                     maximumFreeShippingCost: 20000,
                     minimumThresholdToBeApplied: 0,
                     customerType: 2,
-                }
+                },
             ],
             version: 1,
             status: true,
@@ -6423,7 +6841,7 @@ const initSampleCompanyDB = async () => {
                     discountedPercentage: 10,
                     minimumThresholdToBeApplied: 100000,
                     customerType: 2,
-                }
+                },
             ],
             version: 1,
             status: true,
@@ -6443,7 +6861,7 @@ const initSampleCompanyDB = async () => {
                     loyaltyCoin: 1000,
                     minimumThresholdToBeApplied: 30000,
                     customerType: 2,
-                }
+                },
             ],
             version: 1,
             status: true,
@@ -6465,45 +6883,41 @@ const initSampleCompanyDB = async () => {
                     customerType: 2,
                     discountOnGoods: [
                         {
-                            good: listProduct[0]._id
+                            good: listProduct[0]._id,
                         },
                         {
-                            good: listProduct[1]._id
+                            good: listProduct[1]._id,
                         },
                         {
-                            good: listProduct[2]._id
-                        }
-                    ]
-                }
+                            good: listProduct[2]._id,
+                        },
+                    ],
+                },
             ],
             version: 1,
             status: true,
             lastVersion: true,
-        }
+        },
     ]);
     console.log("Khởi tạo xong danh sách thông tin khuyến mãi");
 
     /*---------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------
- TẠO DỮ LIỆU CẤU HÌNH ĐƠN VỊ KINH DOANH
------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------ */
+  -----------------------------------------------------------------------------------------------
+   TẠO DỮ LIỆU CẤU HÌNH ĐƠN VỊ KINH DOANH
+  -----------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu cấu hình đơn vị kinh doanh");
     var listBusinessDepartments = await BusinessDepartment(vnistDB).insertMany([
-        {
-        },
-
+        {},
     ]);
     console.log("Khởi tạo xong cấu hình đơn vị kinh doanh");
 
-
     /*---------------------------------------------------------------------------------------------
-       -----------------------------------------------------------------------------------------------
-           TẠO DỮ LIỆU THÔNG TIN BÁO GIÁ
-       -----------------------------------------------------------------------------------------------
-       ----------------------------------------------------------------------------------------------- */
-
+         -----------------------------------------------------------------------------------------------
+             TẠO DỮ LIỆU THÔNG TIN BÁO GIÁ
+         -----------------------------------------------------------------------------------------------
+         ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu thông tin báo giá");
     var listQuote = await Quote(vnistDB).insertMany([
@@ -6529,10 +6943,13 @@ const initSampleCompanyDB = async () => {
                     quantity: 12,
                     serviceLevelAgreements: [
                         {
-                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            descriptions: [
+                                "Đóng gói đúng quy trình",
+                                "Sản phẩm đi đầu về chất lượng",
+                            ],
                             _id: listServiceLevelAgreements[0]._id,
-                            title: "Chất lượng sản phẩm đi đầu"
-                        }
+                            title: "Chất lượng sản phẩm đi đầu",
+                        },
                     ],
                     taxs: [
                         {
@@ -6541,12 +6958,12 @@ const initSampleCompanyDB = async () => {
                             name: "VAT",
                             description: listTaxs[0]._id,
                             percent: 5,
-                        }
+                        },
                     ],
                     discounts: [],
                     amount: 720000,
                     amountAfterDiscount: 720000,
-                    amountAfterTax: 792000
+                    amountAfterTax: 792000,
                 },
             ],
             discounts: [
@@ -6580,7 +6997,6 @@ const initSampleCompanyDB = async () => {
                     expirationDate: listDistcounts[7].expirationDate,
                     loyaltyCoin: 1000,
                 },
-
             ],
             shippingFee: 100000,
             deliveryTime: "2020-12-18T00:00:00.000Z",
@@ -6610,10 +7026,13 @@ const initSampleCompanyDB = async () => {
                     quantity: 12,
                     serviceLevelAgreements: [
                         {
-                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            descriptions: [
+                                "Đóng gói đúng quy trình",
+                                "Sản phẩm đi đầu về chất lượng",
+                            ],
                             _id: listServiceLevelAgreements[0]._id,
-                            title: "Chất lượng sản phẩm đi đầu"
-                        }
+                            title: "Chất lượng sản phẩm đi đầu",
+                        },
                     ],
                     taxs: [
                         {
@@ -6622,12 +7041,12 @@ const initSampleCompanyDB = async () => {
                             name: "VAT",
                             description: listTaxs[0]._id,
                             percent: 5,
-                        }
+                        },
                     ],
                     discounts: [],
                     amount: 720000,
                     amountAfterDiscount: 720000,
-                    amountAfterTax: 792000
+                    amountAfterTax: 792000,
                 },
             ],
             discounts: [
@@ -6661,7 +7080,6 @@ const initSampleCompanyDB = async () => {
                     expirationDate: listDistcounts[7].expirationDate,
                     loyaltyCoin: 1000,
                 },
-
             ],
             shippingFee: 100000,
             deliveryTime: "2020-12-18T00:00:00.000Z",
@@ -6691,10 +7109,13 @@ const initSampleCompanyDB = async () => {
                     quantity: 12,
                     serviceLevelAgreements: [
                         {
-                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            descriptions: [
+                                "Đóng gói đúng quy trình",
+                                "Sản phẩm đi đầu về chất lượng",
+                            ],
                             _id: listServiceLevelAgreements[0]._id,
-                            title: "Chất lượng sản phẩm đi đầu"
-                        }
+                            title: "Chất lượng sản phẩm đi đầu",
+                        },
                     ],
                     taxs: [
                         {
@@ -6703,12 +7124,12 @@ const initSampleCompanyDB = async () => {
                             name: "VAT",
                             description: listTaxs[0]._id,
                             percent: 5,
-                        }
+                        },
                     ],
                     discounts: [],
                     amount: 720000,
                     amountAfterDiscount: 720000,
-                    amountAfterTax: 792000
+                    amountAfterTax: 792000,
                 },
             ],
             discounts: [
@@ -6742,7 +7163,6 @@ const initSampleCompanyDB = async () => {
                     expirationDate: listDistcounts[7].expirationDate,
                     loyaltyCoin: 1000,
                 },
-
             ],
             shippingFee: 100000,
             deliveryTime: "2020-12-18T00:00:00.000Z",
@@ -6772,10 +7192,13 @@ const initSampleCompanyDB = async () => {
                     quantity: 12,
                     serviceLevelAgreements: [
                         {
-                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            descriptions: [
+                                "Đóng gói đúng quy trình",
+                                "Sản phẩm đi đầu về chất lượng",
+                            ],
                             _id: listServiceLevelAgreements[0]._id,
-                            title: "Chất lượng sản phẩm đi đầu"
-                        }
+                            title: "Chất lượng sản phẩm đi đầu",
+                        },
                     ],
                     taxs: [
                         {
@@ -6784,12 +7207,12 @@ const initSampleCompanyDB = async () => {
                             name: "VAT",
                             description: listTaxs[0]._id,
                             percent: 5,
-                        }
+                        },
                     ],
                     discounts: [],
                     amount: 720000,
                     amountAfterDiscount: 720000,
-                    amountAfterTax: 792000
+                    amountAfterTax: 792000,
                 },
             ],
             discounts: [
@@ -6823,7 +7246,6 @@ const initSampleCompanyDB = async () => {
                     expirationDate: listDistcounts[7].expirationDate,
                     loyaltyCoin: 1000,
                 },
-
             ],
             shippingFee: 100000,
             deliveryTime: "2020-12-18T00:00:00.000Z",
@@ -6853,10 +7275,13 @@ const initSampleCompanyDB = async () => {
                     quantity: 12,
                     serviceLevelAgreements: [
                         {
-                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            descriptions: [
+                                "Đóng gói đúng quy trình",
+                                "Sản phẩm đi đầu về chất lượng",
+                            ],
                             _id: listServiceLevelAgreements[0]._id,
-                            title: "Chất lượng sản phẩm đi đầu"
-                        }
+                            title: "Chất lượng sản phẩm đi đầu",
+                        },
                     ],
                     taxs: [
                         {
@@ -6865,12 +7290,12 @@ const initSampleCompanyDB = async () => {
                             name: "VAT",
                             description: listTaxs[0]._id,
                             percent: 5,
-                        }
+                        },
                     ],
                     discounts: [],
                     amount: 720000,
                     amountAfterDiscount: 720000,
-                    amountAfterTax: 792000
+                    amountAfterTax: 792000,
                 },
             ],
             discounts: [
@@ -6904,7 +7329,6 @@ const initSampleCompanyDB = async () => {
                     expirationDate: listDistcounts[7].expirationDate,
                     loyaltyCoin: 1000,
                 },
-
             ],
             shippingFee: 100000,
             deliveryTime: "2020-12-18T00:00:00.000Z",
@@ -6934,10 +7358,13 @@ const initSampleCompanyDB = async () => {
                     quantity: 12,
                     serviceLevelAgreements: [
                         {
-                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            descriptions: [
+                                "Đóng gói đúng quy trình",
+                                "Sản phẩm đi đầu về chất lượng",
+                            ],
                             _id: listServiceLevelAgreements[0]._id,
-                            title: "Chất lượng sản phẩm đi đầu"
-                        }
+                            title: "Chất lượng sản phẩm đi đầu",
+                        },
                     ],
                     taxs: [
                         {
@@ -6946,12 +7373,12 @@ const initSampleCompanyDB = async () => {
                             name: "VAT",
                             description: listTaxs[0]._id,
                             percent: 5,
-                        }
+                        },
                     ],
                     discounts: [],
                     amount: 720000,
                     amountAfterDiscount: 720000,
-                    amountAfterTax: 792000
+                    amountAfterTax: 792000,
                 },
             ],
             discounts: [
@@ -6985,7 +7412,6 @@ const initSampleCompanyDB = async () => {
                     expirationDate: listDistcounts[7].expirationDate,
                     loyaltyCoin: 1000,
                 },
-
             ],
             shippingFee: 100000,
             deliveryTime: "2020-12-18T00:00:00.000Z",
@@ -6993,7 +7419,6 @@ const initSampleCompanyDB = async () => {
             paymentAmount: 871500,
             note: "Khách hàng quen thuộc",
         },
-
     ]);
     console.log("Khởi tạo xong danh sách thông tin báo giá");
 
@@ -7003,7 +7428,7 @@ const initSampleCompanyDB = async () => {
         let currentDate = new Date();
         currentDate.setDate(currentDate.getDate() + n);
         return new Date(currentDate);
-    }
+    };
 
     const newTransportAssetVehicle = await Asset(vnistDB).insertMany([
         {
@@ -7019,8 +7444,8 @@ const initSampleCompanyDB = async () => {
             code: "VVTM20210603.182181",
             serial: "123",
             group: "vehicle",
-            purchaseDate: (new Date()).toISOString(),
-            warrantyExpirationDate: (transportGetNextNDates(100)).toISOString(),
+            purchaseDate: new Date().toISOString(),
+            warrantyExpirationDate: transportGetNextNDates(100).toISOString(),
             managedBy: users[1]._id,
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
@@ -7031,13 +7456,12 @@ const initSampleCompanyDB = async () => {
             detailInfo: [
                 {
                     nameField: "volume",
-                    value: "16"
+                    value: "16",
                 },
                 {
-
                     nameField: "payload",
-                    value: "3000"
-                }
+                    value: "3000",
+                },
             ],
             depreciationType: "none",
             maintainanceLogs: [],
@@ -7065,8 +7489,8 @@ const initSampleCompanyDB = async () => {
             code: "VVTM20210603.182182",
             serial: "1234",
             group: "vehicle",
-            purchaseDate: (new Date()).toISOString(),
-            warrantyExpirationDate: (transportGetNextNDates(101)).toISOString(),
+            purchaseDate: new Date().toISOString(),
+            warrantyExpirationDate: transportGetNextNDates(101).toISOString(),
             managedBy: users[1]._id,
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
@@ -7077,13 +7501,12 @@ const initSampleCompanyDB = async () => {
             detailInfo: [
                 {
                     nameField: "volume",
-                    value: "20"
+                    value: "20",
                 },
                 {
-
                     nameField: "payload",
-                    value: "2000"
-                }
+                    value: "2000",
+                },
             ],
             depreciationType: "none",
             maintainanceLogs: [],
@@ -7097,8 +7520,8 @@ const initSampleCompanyDB = async () => {
             documents: [],
             unitsProducedDuringTheYears: [],
             informations: [],
-        }
-    ])
+        },
+    ]);
 
     const transportDepartment = await TransportDepartment(vnistDB).insertMany([
         {
@@ -7116,9 +7539,9 @@ const initSampleCompanyDB = async () => {
                     roleOrganizationalUnit: vcNvVanChuyen._id,
                     roleTransport: 3,
                 },
-            ]
-        }
-    ])
+            ],
+        },
+    ]);
 
     const transportVehicle = await TransportVehicle(vnistDB).insertMany([
         {
@@ -7138,20 +7561,21 @@ const initSampleCompanyDB = async () => {
             volume: 20,
             usable: 1,
             department: transportDepartment[0]._id,
-        }
-    ])
+        },
+    ]);
 
     const transportRequirement = await TransportRequirement(vnistDB).insertMany([
-        { //0
+        {
+            //0
             geocode: {
                 fromAddress: {
                     lat: 21.1256643,
-                    lng: 105.4758682
+                    lng: 105.4758682,
                 },
                 toAddress: {
                     lat: 20.6639930000001,
-                    lng: 105.787069
-                }
+                    lng: 105.787069,
+                },
             },
             status: 3,
             code: "YCVC20210602.244971",
@@ -7164,30 +7588,31 @@ const initSampleCompanyDB = async () => {
                     good: listGood[2]._id,
                     quantity: 10,
                     volume: 2,
-                    payload: 10
-                }
+                    payload: 10,
+                },
             ],
             timeRequests: [
                 {
-                    timeRequest: (transportGetNextNDates(5)).toISOString(),
+                    timeRequest: transportGetNextNDates(5).toISOString(),
                     description: "",
-                }
+                },
             ],
             volume: 2,
             payload: 10,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
-        { //1
+        {
+            //1
             geocode: {
                 fromAddress: {
                     lat: 11.20385642,
-                    lng: 107.356440853
+                    lng: 107.356440853,
                 },
                 toAddress: {
                     lat: 11.3130384470001,
-                    lng: 106.024041001
-                }
+                    lng: 106.024041001,
+                },
             },
             status: 1,
             code: "YCVC20210602.224869",
@@ -7200,30 +7625,31 @@ const initSampleCompanyDB = async () => {
                     good: listGood[1]._id,
                     quantity: 10,
                     volume: 2,
-                    payload: 10
-                }
+                    payload: 10,
+                },
             ],
             timeRequests: [
                 {
                     timeRequest: transportGetNextNDates(6),
-                    description: ""
-                }
+                    description: "",
+                },
             ],
             volume: 2,
             payload: 10,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
-        { //2
+        {
+            //2
             geocode: {
                 fromAddress: {
                     lat: 20.9991964035554,
-                    lng: 105.845662549979
+                    lng: 105.845662549979,
                 },
                 toAddress: {
                     lat: 20.988961633,
-                    lng: 105.628865767
-                }
+                    lng: 105.628865767,
+                },
             },
             status: 3,
             code: "YCVC20210602.185942",
@@ -7236,30 +7662,31 @@ const initSampleCompanyDB = async () => {
                     good: listGood[3]._id,
                     quantity: 10,
                     volume: 3,
-                    payload: 20
-                }
+                    payload: 20,
+                },
             ],
             timeRequests: [
                 {
                     timeRequest: transportGetNextNDates(7),
-                    description: ""
-                }
+                    description: "",
+                },
             ],
             volume: 3,
             payload: 20,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
-        { //3
+        {
+            //3
             geocode: {
                 fromAddress: {
                     lat: 21.0077937,
-                    lng: 105.84602459
+                    lng: 105.84602459,
                 },
                 toAddress: {
                     lat: 21.005383514547,
-                    lng: 105.93770476731
-                }
+                    lng: 105.93770476731,
+                },
             },
             status: 1,
             code: "YCVC20210602.141576",
@@ -7272,30 +7699,31 @@ const initSampleCompanyDB = async () => {
                     good: listGood[3]._id,
                     quantity: 15,
                     volume: 5,
-                    payload: 25
-                }
+                    payload: 25,
+                },
             ],
             timeRequests: [
                 {
-                    timeRequest: (transportGetNextNDates(14)).toISOString(),
+                    timeRequest: transportGetNextNDates(14).toISOString(),
                     description: "",
-                }
+                },
             ],
             volume: 5,
             payload: 25,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
-        { //4
+        {
+            //4
             geocode: {
                 fromAddress: {
                     lat: 21.032005984,
-                    lng: 105.909988812
+                    lng: 105.909988812,
                 },
                 toAddress: {
                     lat: 20.984650683,
-                    lng: 105.842763967
-                }
+                    lng: 105.842763967,
+                },
             },
             status: 1,
             code: "YCVC20210602.257818",
@@ -7308,30 +7736,31 @@ const initSampleCompanyDB = async () => {
                     good: listGood[3]._id,
                     quantity: 10,
                     volume: 100,
-                    payload: 100
-                }
+                    payload: 100,
+                },
             ],
             timeRequests: [
                 {
-                    timeRequest: (transportGetNextNDates(4)).toISOString(),
+                    timeRequest: transportGetNextNDates(4).toISOString(),
                     description: "",
-                }
+                },
             ],
             volume: 100,
             payload: 100,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
-        { //5
+        {
+            //5
             geocode: {
                 fromAddress: {
                     lat: 20.9830403964559,
-                    lng: 105.73100465623
+                    lng: 105.73100465623,
                 },
                 toAddress: {
                     lat: 20.997942715,
-                    lng: 105.816376617
-                }
+                    lng: 105.816376617,
+                },
             },
             status: 1,
             code: "YCVC20210602.257918",
@@ -7344,30 +7773,31 @@ const initSampleCompanyDB = async () => {
                     good: listGood[3]._id,
                     quantity: 10,
                     volume: 6,
-                    payload: 40
-                }
+                    payload: 40,
+                },
             ],
             timeRequests: [
                 {
-                    timeRequest: (transportGetNextNDates(4)).toISOString(),
+                    timeRequest: transportGetNextNDates(4).toISOString(),
                     description: "",
-                }
+                },
             ],
             volume: 6,
             payload: 40,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
-        { //6
+        {
+            //6
             geocode: {
                 fromAddress: {
                     lat: 20.9826710470001,
-                    lng: 105.825478283
+                    lng: 105.825478283,
                 },
                 toAddress: {
                     lat: 21.0874567001676,
-                    lng: 105.661148675343
-                }
+                    lng: 105.661148675343,
+                },
             },
             status: 1,
             code: "YCVC20210602.181053",
@@ -7380,25 +7810,28 @@ const initSampleCompanyDB = async () => {
                     good: listGood[3]._id,
                     quantity: 10,
                     volume: 4,
-                    payload: 30
-                }
+                    payload: 30,
+                },
             ],
             timeRequests: [
                 {
-                    timeRequest: (transportGetNextNDates(8)).toISOString(),
+                    timeRequest: transportGetNextNDates(8).toISOString(),
                     description: "",
-                }
+                },
             ],
             volume: 4,
             payload: 30,
             approver: users[2]._id,
             department: transportDepartment[0]._id,
         },
-    ])
+    ]);
 
     const transportPlan = await TransportPlan(vnistDB).insertMany([
         {
-            transportRequirements: [transportRequirement[0]._id, transportRequirement[2]._id],
+            transportRequirements: [
+                transportRequirement[0]._id,
+                transportRequirement[2]._id,
+            ],
             code: "KHVC20210603.237299",
             supervisor: users[3]._id,
             creator: users[2]._id,
@@ -7416,25 +7849,30 @@ const initSampleCompanyDB = async () => {
                         },
                         {
                             carrier: users[5]._id,
-                        }
-                    ]
+                        },
+                    ],
                 },
                 {
                     vehicle: transportVehicle[1]._id,
                     carriers: [
                         {
-
                             carrier: users[6]._id,
-                            pos: 1
-                        }
-                    ]
-                }
+                            pos: 1,
+                        },
+                    ],
+                },
             ],
             department: transportDepartment[0]._id,
-        }
-    ])
-    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[0]._id }, { $set: { transportPlan: transportPlan[0]._id } });
-    await TransportRequirement(vnistDB).updateOne({ _id: transportRequirement[2]._id }, { $set: { transportPlan: transportPlan[0]._id } });
+        },
+    ]);
+    await TransportRequirement(vnistDB).updateOne(
+        { _id: transportRequirement[0]._id },
+        { $set: { transportPlan: transportPlan[0]._id } }
+    );
+    await TransportRequirement(vnistDB).updateOne(
+        { _id: transportRequirement[2]._id },
+        { $set: { transportPlan: transportPlan[0]._id } }
+    );
 
     const transportSchedule = await TransportSchedule(vnistDB).insertMany([
         {
@@ -7447,15 +7885,15 @@ const initSampleCompanyDB = async () => {
                             transportRequirement: transportRequirement[2]._id,
                             type: 1,
                             distance: 0,
-                            duration: 0
+                            duration: 0,
                         },
                         {
                             transportRequirement: transportRequirement[2]._id,
                             type: 2,
                             distance: 26,
-                            duration: 61
-                        }
-                    ]
+                            duration: 61,
+                        },
+                    ],
                 },
                 {
                     transportVehicle: transportVehicle[0]._id,
@@ -7464,16 +7902,16 @@ const initSampleCompanyDB = async () => {
                             transportRequirement: transportRequirement[0]._id,
                             type: 1,
                             distance: 0,
-                            duration: 0
+                            duration: 0,
                         },
                         {
                             transportRequirement: transportRequirement[0]._id,
                             type: 2,
                             distance: 75,
-                            duration: 174
-                        }
-                    ]
-                }
+                            duration: 174,
+                        },
+                    ],
+                },
             ],
             transportVehicles: [
                 {
@@ -7483,18 +7921,18 @@ const initSampleCompanyDB = async () => {
                 {
                     transportRequirements: [transportRequirement[2]._id],
                     transportVehicle: transportVehicle[1]._id,
-                }
+                },
             ],
-        }
-    ])
+        },
+    ]);
 
     console.log("Khởi tạo xong dữ liệu vận chuyển");
 
     /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU ĐƠN BÁN HÀNG
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
+        -----------------------------------------------------------------------------------------------
+            TẠO DỮ LIỆU ĐƠN BÁN HÀNG
+        -----------------------------------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------- */
     // console.log("Khởi tạo dữ liệu đơn bán hàng");
     // var listSalesOrder = await SalesOrder(vnistDB).insertMany([
     //     {
@@ -7504,10 +7942,10 @@ const initSampleCompanyDB = async () => {
     // console.log("Khởi tạo xong danh sách đơn bán hàng");
 
     /*---------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------------
-   TẠO DỮ LIỆU ĐƠN MUA NGUYÊN VẬT LIỆU
- -----------------------------------------------------------------------------------------------
- ----------------------------------------------------------------------------------------------- */
+   -----------------------------------------------------------------------------------------------
+     TẠO DỮ LIỆU ĐƠN MUA NGUYÊN VẬT LIỆU
+   -----------------------------------------------------------------------------------------------
+   ----------------------------------------------------------------------------------------------- */
 
     // console.log("Khởi tạo dữ liệu đơn mua nguyên vật liệu");
     // var listPurchaseOrder = await PurchaseOrder(vnistDB).insertMany([
@@ -7519,10 +7957,10 @@ const initSampleCompanyDB = async () => {
     // console.log("Khởi tạo xong danh sách đơn mua nguyên vật liệu");
 
     /*---------------------------------------------------------------------------------------------
-      -----------------------------------------------------------------------------------------------
-          TẠO DỮ LIỆU THÔNG TIN THANH TOÁN ĐƠN MUA HÀNG, ĐƠN MUA NGUYÊN VẬT LIỆU
-      -----------------------------------------------------------------------------------------------
-      ----------------------------------------------------------------------------------------------- */
+        -----------------------------------------------------------------------------------------------
+            TẠO DỮ LIỆU THÔNG TIN THANH TOÁN ĐƠN MUA HÀNG, ĐƠN MUA NGUYÊN VẬT LIỆU
+        -----------------------------------------------------------------------------------------------
+        ----------------------------------------------------------------------------------------------- */
     // console.log("Khởi tạo dữ liệu thông tin thanh toán đơn hàng, đơn mua nvl");
     // var listPurchaseOrders = await purchaseDate(vnistDB).insertMany([
     //     {
@@ -7531,15 +7969,9 @@ const initSampleCompanyDB = async () => {
     // ]);
     // console.log("Khởi tạo xong danh sách thông tin thanh toán đơn hàng, đơn mua nvl");
 
-
     /**
      * Ngắt kết nối db
      */
-
-
-
-
-
 
     systemDB.close();
     vnistDB.close();

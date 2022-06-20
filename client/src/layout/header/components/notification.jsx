@@ -116,12 +116,13 @@ function Notification(props) {
     const { notify, sound, idTabPaneActive, showInfoNotifycation } = state;
     let notifyUnRead = notify?.length ? notify.filter(notification => !notification.readed) : [];
     const count = notifyUnRead.length;
-    let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyDefault = [];
+    let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyProductionUnRead = [], notifyDefault = [];
 
     const data = NotificationFilterByModules(notifyUnRead);
     notifyTaskUnRead = data.notifyTask;
     notifyAssetUnRead = data.notifyAsset;
     notifyKPIUnRead = data.notifyKPI;
+    notifyProductionUnRead = data.notifyProduction;
     notifyDefault = data.notifyDefault;
 
     return (
@@ -183,6 +184,7 @@ function Notification(props) {
                             <li><a className="notify-action" href="#allNotificationOfTask" data-toggle="tab" onClick={() => checkTabPaneScroll("allNotificationOfTask")}>{`Công việc (${notifyTaskUnRead.length})`}</a></li>
                             <li><a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab" onClick={() => checkTabPaneScroll("allNotificationOfAsset")}>{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
                             <li><a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab" onClick={() => checkTabPaneScroll("allNotificationOfKPI")}>{`KPI (${notifyKPIUnRead.length})`}</a></li>
+                            <li><a className="notify-action" href="#allNotificationOfProduction" data-toggle="tab" onClick={() => checkTabPaneScroll("allNotificationOfProduction")}>{`Sản phẩm (${notifyProductionUnRead.length})`}</a></li>
                         </ul>
 
                         <div className="tab-content">
@@ -253,6 +255,27 @@ function Notification(props) {
                             <div className="tab-pane notifi-tab-pane" id="allNotificationOfKPI">
                                 {
                                     notifyKPIUnRead.length > 0 ? notifyKPIUnRead.map((notification, index) => {
+                                        return <div className="notify-wrapper" key={index} onClick={() => showInfoNotification(notification)}>
+                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                {
+                                                    notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
+                                                        notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
+                                                            notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
+                                                                <i className="fa fa-bomb text-red" />
+                                                }
+                                                <span className="notify-title" >
+                                                    {notification.associatedDataObject && notification.associatedDataObject.description ?
+                                                        parse(notification.associatedDataObject.description) : notification.title}
+                                                    <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
+                                }
+                            </div>
+                            <div className="tab-pane notifi-tab-pane" id="allNotificationOfProduction">
+                                {
+                                    notifyProductionUnRead.length > 0 ? notifyProductionUnRead.map((notification, index) => {
                                         return <div className="notify-wrapper" key={index} onClick={() => showInfoNotification(notification)}>
                                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                                 {

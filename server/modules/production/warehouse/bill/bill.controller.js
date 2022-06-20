@@ -87,7 +87,7 @@ exports.getDetailBill = async (req, res) => {
 
 exports.createBill = async (req, res) => {
     try {
-        const bill = await BillService.createBill(req.user._id, req.body, req.portal);
+        const bill = await BillService.createBill(req.user, req.body, req.portal);
 
         await Logger.info(req.user.email, 'CREATE_BILL_SUCCESS', req.portal);
         res.status(200).json({

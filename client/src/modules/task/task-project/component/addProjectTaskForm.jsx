@@ -423,7 +423,7 @@ const AddProjectTaskForm = (props) => {
             const newCurrentTask = {
                 ...state.newTask,
                 estimateNormalTime: value,
-                estimateOptimisticTime: predictEstimateOptimisticTime,
+                estimateOptimisticTime: estimateOptimisticTime ?estimateOptimisticTime :predictEstimateOptimisticTime,
                 errorOnTimeEst: message,
                 endDate: curEndDate,
             }

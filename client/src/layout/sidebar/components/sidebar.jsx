@@ -693,6 +693,11 @@ class SideBar extends Component {
                                             icon: "fa fa-bank",
                                             path: "/manage-bank-account",
                                         },
+                                        {
+                                            name: "menu.request_management",
+                                            icon: "fa fa-file-text-o",
+                                            path: "/product-request-management/order",
+                                        },
                                     ],
                                 }}
                             />
@@ -742,6 +747,11 @@ class SideBar extends Component {
                                             name: "menu.inventory_management",
                                             icon: "fa fa-times-circle-o",
                                             path: "/inventory-management",
+                                        },
+                                        {
+                                            name: "menu.request_management",
+                                            icon: "fa fa-reorder",
+                                            path: "/product-request-management/stock",
                                         },
                                     ],
                                 }}
@@ -816,6 +826,11 @@ class SideBar extends Component {
                                             name: "menu.manage_manufacturing_mill",
                                             icon: "fa fa-home",
                                             path: "/manage-manufacturing-mill",
+                                        },
+                                        {
+                                            name: "menu.request_management",
+                                            icon: "fa fa-file-text-o",
+                                            path: "/product-request-management/manufacturing",
                                         },
                                     ],
                                 }}

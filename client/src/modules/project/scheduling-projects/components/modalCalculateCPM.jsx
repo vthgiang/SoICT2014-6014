@@ -39,13 +39,13 @@ const ModalCalculateCPM = (props) => {
                 id: item.code,
                 optimisticTime: Number(item.estimateOptimisticTime),
                 mostLikelyTime: Number(item.estimateNormalTime),
-                pessimisticTime: Number(item.estimateNormalTime) + 2,
+                pessimisticTime:2 * Number(item.estimateNormalTime) - Number(item.estimateOptimisticTime),
                 predecessors: item.preceedingTasks,
             }
         }
     }
     const pert = jsPERT(formattedTasksData || {});
-    // const pert = jsPERT(fakeObj);
+    console.log(pert);
 
     useEffect(() => {
         const currentRole = getStorage("currentRole");

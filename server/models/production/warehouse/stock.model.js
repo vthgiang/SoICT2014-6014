@@ -60,10 +60,19 @@ const StockSchema = new Schema ({
             type: Number
         }
     }],
-    manageDepartment: {
+    organizationalUnit: {// Kho thuộc cơ cấu tổ chức nào
         type: Schema.Types.ObjectId,
         ref: "OrganizationalUnit"
-    }
+    },
+    startTime: {
+        type: String,
+        required: true
+    },
+
+    endTime: {
+        type: String,
+        required: true
+    },
 
 });
 
