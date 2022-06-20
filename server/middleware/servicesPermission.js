@@ -659,6 +659,9 @@ exports.links = [
         url: '/system/apis-default-management',
         apis: ['@all']
     }, {
+        url: '/system/manage-system-admin-page', 
+        apis: ['@all']
+    }, {
         url: '/system/privilege-api-management',
         apis: ['@all']
     }, {

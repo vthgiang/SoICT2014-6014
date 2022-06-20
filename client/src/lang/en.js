@@ -96,6 +96,7 @@ export default {
             manage_configuration: "Configuration",
             manage_system: "Backup and Restore",
             manage_company: "Manage Company",
+            manage_system_admin_page: "Manage System-Admin's page",
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
             manage_component: "Manage permissions on page",
@@ -714,6 +715,18 @@ export default {
                 //Thông điệp trả về từ server
                 get_system_page_apis_success: 'Get system page APIs successfully',
                 get_system_page_api_failure: 'Can not get system page APIs',
+
+                add_title: 'Add a new URL',
+                add_success: "Add URL successfully!",
+                add_fail: "Add URL fail!",
+                URL: "URL address",
+                page_description: "Page description",
+                add: "Thêm ví dụ",
+                search: "Search",
+                index: "Index",
+                description: "Description",
+                detail_info_page: "Detail infomation of page",
+                delete: "Delete this page",
             },
 
             privilege_system_api: {

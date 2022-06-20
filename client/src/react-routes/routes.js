@@ -189,6 +189,7 @@ const EmployeeTimeSheetLog = lazy(() => import("../modules/task/task-dashboard/s
 
 const Notifications = lazy(() => import("../modules/notification/components/index"))
 const SystemSetting = lazy(() => import("../modules/system-admin/system-setting/components"))
+const ManageSystemAdminPage = lazy(() => import("../modules/system-admin/system-page/components"))
 const Company = lazy(() => import("../modules/system-admin/company/components"))
 const ManageLinkSystem = lazy(() => import("../modules/system-admin/system-link/components"))
 const SystemApiManagement = lazy(() => import("../modules/system-admin/system-api/system-api-management/components/systemApiManagement"))
@@ -255,6 +256,30 @@ class Routes extends Component {
                         pageName={"manage_system"}
                         layout={Layout}
                         component={SystemSetting}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage_system_admin_page"}
+                        arrPage={[
+                            {
+                                link: "#",
+                                name: "system_administration",
+                                icon: "fa fa-key",
+                            },
+                            {
+                                link: "/system/manage-system-admin-page",
+                                name: "manage_system_admin_page",
+                                icon: "fa fa-gears",
+                            },
+                        ]}
+                        // type='system-admin'
+                        auth={auth}
+                        exact={true}
+                        link={"/system/manage-system-admin-page"}
+                        path={"/system/manage-system-admin-page"}
+                        pageName={"manage_system_admin_page"}
+                        layout={Layout}
+                        component={ManageSystemAdminPage}
                     />
                     <PrivateRoute
                         isLoading={this.props.rootRoles.isLoading}

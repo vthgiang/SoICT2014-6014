@@ -3,6 +3,7 @@ const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 const sumBy = require('lodash/sumBy');
+const { sendEmail } = require(`../../../helpers/emailHelper`);
 
 const { Task, User, UserRole, Role, OrganizationalUnit, OrganizationalUnitKpi, EmployeeKpi } = require(`../../../models`);
 
@@ -1590,6 +1591,10 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
     description: body.description,
     files: files,
   };
+
+  console.log("-------params", params);
+  console.log("-------comment", body);
+  console.log("-------user", user);
   const taskComment = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
     params.taskId,
     {
@@ -1722,14 +1727,19 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
     ]);
 
-  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => o._id);
-  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => o._id);
+  console.log("---------taskComment", taskComment);
+  const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => { return {_id: o._id, email: o.email} });
+  const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => { return {_id: o._id, email: o.email} });
 
-  const userReceive = [...resEmployees, ...accEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
+  const userReceive = [...resEmployees, ...accEmployees].map(o => o._id).filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
+  const emailReceive = [...resEmployees, ...accEmployees].map(o => o.email).filter(obj => JSON.stringify(obj) !== JSON.stringify(user.email))
   const associatedData = {
     dataType: "realtime_tasks",
     value: taskComment
   }
+  console.log("---------user", user);
+  console.log("---------userReceive", userReceive);
+  console.log("---------emailRecive", emailReceive);
 
   const data = {
     organizationalUnits: taskComment.organizationalUnit && taskComment.organizationalUnit._id,
@@ -1744,9 +1754,89 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
       description: `<p><strong>${taskComment.name}:</strong> ${user.name} đã thêm một bình luận mới trong mục trao đổi.</p>`
     }
   };
+  let emailContent = `<html>
+          <head>
+              <style>
+                  .wrapper {
+                      width: 100%;
+                      min-width: 580px;
+                      background-color: #FAFAFA;
+                      padding: 10px 0;
+                  }
+                  .userName {
+                    font-weight: 700;
+                    color: #385898;
+                    cursor: pointer;
+                  }
+          
+                  .info {
+                      list-style-type: none;
+                  }
+          
+                  @media screen and (max-width: 900px) {
+                      .form {
+                          border: solid 1px #dddddd;
+                          padding: 50px 30px;
+                          border-radius: 3px;
+                          margin: 0px 5%;
+                          background-color: #FFFFFF;
+                      }
+                  }
+          
+                  .form {
+                      border: solid 1px #dddddd;
+                      padding: 50px 30px;
+                      border-radius: 3px;
+                      margin: 0px 25%;
+                      background-color: #FFFFFF;
+                  }
+          
+                  .title {
+                      text-align: center;
+                  }
+          
+                  .footer {
+                      margin: 0px 25%;
+                      text-align: center;
+          
+                  }
+              </style>
+          </head>
+          
+          <body>
+              <div class="wrapper">
+                  <div class="title">
+                      <h1>${process.env.WEB_NAME}</h1>
+                  </div>
+                  <div class="form">
+                      <p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${taskComment.name}</a></p>
+                      <br>
+                      <a class="userName">${user.name}</a>
+                      ${body.description}
+                  </div>
+                  <div class="footer">
+                      <p>Copyright by
+                          <i>Công ty Cổ phần Công nghệ
+                              <br />
+                              An toàn thông tin và Truyền thông Việt Nam</i>
+                      </p>
+                  </div>
+              </div>
+          </body>
+        </html>`;
 
-  if (userReceive && userReceive.length > 0)
-    NotificationServices.createNotification(portal, user.company._id, data)
+  //console.log("-----------------emailContent", emailContent, emailReceive, taskComment.name);
+  if (userReceive && userReceive.length > 0) {
+    NotificationServices.createNotification(portal, user.company._id, data);
+  }
+  if (emailReceive && emailReceive.length > 0) {
+    sendEmail(
+      emailReceive,
+      taskComment.name,
+      '',
+      emailContent,
+    )
+  }
 
   return taskComment.taskComments;
 };
@@ -5065,6 +5155,8 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
     ]);
   newTask.evaluations.reverse();
+
+  console.log("--------newTask", newTask.evaluations[0].results);
 
   return newTask;
 };

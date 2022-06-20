@@ -1985,7 +1985,6 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
         `<h3>Nội dung công việc</h3>` +
-        // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
@@ -2008,7 +2007,73 @@ exports.sendEmailForCreateTask = async (portal, task) => {
             }).join('')}
                     </ul>` : ""}`
         ;
-    var html = `<p>Bạn có công việc mới: ` + body;
+    let html = `<html>
+          <head>
+              <style>
+                  .wrapper {
+                      width: 100%;
+                      min-width: 580px;
+                      background-color: #FAFAFA;
+                      padding: 10px 0;
+                  }
+                  .userName {
+                    font-weight: 700;
+                    color: #385898;
+                    cursor: pointer;
+                  }
+          
+                  .info {
+                      list-style-type: none;
+                  }
+          
+                  @media screen and (max-width: 900px) {
+                      .form {
+                          border: solid 1px #dddddd;
+                          padding: 50px 30px;
+                          border-radius: 3px;
+                          margin: 0px 5%;
+                          background-color: #FFFFFF;
+                      }
+                  }
+          
+                  .form {
+                      border: solid 1px #dddddd;
+                      padding: 50px 30px;
+                      border-radius: 3px;
+                      margin: 0px 25%;
+                      background-color: #FFFFFF;
+                  }
+          
+                  .title {
+                      text-align: center;
+                  }
+          
+                  .footer {
+                      margin: 0px 25%;
+                      text-align: center;
+          
+                  }
+              </style>
+          </head>
+          
+          <body>
+              <div class="wrapper">
+                  <div class="title">
+                      <h1>${process.env.WEB_NAME}</h1>
+                  </div>
+                  <div class="form">
+                    <p>Bạn có công việc mới:  ${body};
+                  </div>
+                  <div class="footer">
+                      <p>Copyright by
+                          <i>Công ty Cổ phần Công nghệ
+                              <br />
+                              An toàn thông tin và Truyền thông Việt Nam</i>
+                      </p>
+                  </div>
+              </div>
+          </body>
+        </html>`;
     collaboratedHtml = `<p>Đơn vị bạn được phối hợp thực hiện công việc mới: ` + body;
 
 

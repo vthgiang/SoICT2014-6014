@@ -458,10 +458,11 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId) => {
             resourceType: "Link",
         })
         .populate({ path: "resourceId" });
+    console.log("privilege get duoc", privilege);
     const links = await privilege
         .filter((pri) => pri.resourceId.deleteSoft === false)
         .map((pri) => pri.resourceId);
-
+    console.log("Links get duoc", links);
     return links;
 };
 

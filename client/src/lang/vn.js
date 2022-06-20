@@ -97,6 +97,7 @@ export default {
             manage_configuration: "Cấu hình hệ thống",
             manage_system: "Sao lưu phục hồi",
             manage_company: "Doanh nghiệp",
+            manage_system_admin_page: "Quản lý trang quản trị hệ thống",
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
             manage_component: "Quản lý phân quyền trên các trang",
@@ -770,6 +771,18 @@ export default {
                 //Thông điệp trả về từ server
                 get_system_page_apis_success: 'Lấy system page API thành công',
                 get_system_page_api_failure: 'Lấy system page API thất bại',
+
+                add_title: 'Thêm mới URL',
+                add_success: "Thêm mới URL thành công!",
+                add_fail: "Thêm URL thất bại!",
+                URL: "Đường dẫn",
+                page_description: "Mô tả trang",
+                add: "Thêm trang mới",
+                search: "Tìm kiếm",
+                index: "STT",
+                description: "Mô tả",
+                detail_info_page: "Thông tin chi tiết trang",
+                delete: "Xóa URL",
             },
 
             privilege_system_api: {

@@ -73,6 +73,17 @@ function CompanyEditForm(props) {
         });
     }
 
+    const handleChangeShortName = (e) => {
+        let { value } = e.target;
+        let { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        setState({
+            ...state,
+            companyShortName: value,
+            shortNameError: message
+        });
+    }
+
     const handleChangeDescription = (e) => {
         let { value } = e.target;
         let { translate } = props;
@@ -148,7 +159,7 @@ function CompanyEditForm(props) {
 
                         <div className={`form-group col-sm-9 ${shortNameError === undefined ? "" : "has-error"}`}>
                             <label>{translate('system_admin.company.table.short_name')}</label>
-                            <input type="text" className="form-control" value={companyShortName} disabled={true} />
+                            <input type="text" className="form-control" onChange={handleChangeShortName} value={companyShortName} />
                             <ErrorLabel content={shortNameError} />
                         </div>
                         <div className="form-group col-sm-3">

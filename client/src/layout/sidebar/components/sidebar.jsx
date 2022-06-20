@@ -145,6 +145,14 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            <Item
+                                item={{
+                                    name: "menu.manage_system_admin_page",
+                                    icon: "fa fa-gears",
+                                    path: "/system/manage-system-admin-page"
+                                }}
+                            />
+
                             {/* Phân quyền IAM-RBAC */}
                             <GroupItem
                                 groupItem={{
