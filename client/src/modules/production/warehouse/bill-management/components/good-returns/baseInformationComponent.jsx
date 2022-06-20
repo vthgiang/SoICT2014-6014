@@ -211,7 +211,6 @@ function BaseInformationComponent(props) {
         }
         if (willUpdateState) {
             let request = requestManagements.listRequests.find(element => element._id === value)
-            console.log(request.goods);
             setState({
                 ...state,
                 requestValue: value,

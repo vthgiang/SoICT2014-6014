@@ -77,7 +77,6 @@ function GoodIssueWorkFlowModal(props) {
         if (isFormValidated()) {
             const { billInfor } = props;
             let statusSteps = [state.statusInventory];
-            console.log(billInfor.goods);
             await props.editBill(billInfor._id, {
                 statusAll: state.statusAll,
                 goods: billInfor.goods,

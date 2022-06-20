@@ -20,7 +20,8 @@ const ProductRequestManagementSchema = new Schema({
     // approveType 1. Người phê duyệt trong nhà máy sản xuất
     // approveType 2. Người phê duyệt mua hàng trong đơn hàng
     // approveType 3. Người phê duyệt nhập kho trong đơn hàng
-    // approveType 4. Người phê duyệt trong kho
+    // approveType 4. Người phê duyệt trong kho, nếu là luân chuyển hàng trong kho thì là kho xuất
+    // approveType 5. Người phê duyệt trong kho nhập nếu là luân chuyển hàng trong kho
 
     approvers: [{ // Người phê duyệt
         information: [{
@@ -83,9 +84,17 @@ const ProductRequestManagementSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "ManufacturingWorks"
     },
-    stock: { // liên quan đến kho nào
+    stock: { // liên quan đến kho nào, nếu là luân chuyển hàng thì là kho xuất
         type: Schema.Types.ObjectId,
         ref: 'Stock'
+    },
+    toStock: { // Nếu là luân chuyển hàng thì là kho tiếp nhận
+        type: Schema.Types.ObjectId,
+        ref: 'Stock'
+    },
+    requestingDepartment: { // Phòng ban yêu cầu
+        type: Schema.Types.ObjectId,
+        ref: 'OrganizationalUnit'
     },
     orderUnit: {// Bộ phận đơn hàng
         type: Schema.Types.ObjectId,
@@ -98,6 +107,7 @@ const ProductRequestManagementSchema = new Schema({
     // 1: trong sản xuất
     // 2: trong đơn hàng
     // 3: Trong kho
+    // 4: Vận chuyển
     requestType: {
         type: Number,
         default: 1
@@ -105,6 +115,7 @@ const ProductRequestManagementSchema = new Schema({
     // requestType = 1: mua hàng: type = 1, nhập kho: type = 2, xuất kho : type = 3
     // requestType = 2: nhập kho: type = 1
     // requestType = 3: nhập kho: type = 1, xuất kho: type = 2, trả hàng: type = 3, luân chuyển: type = 4 , vận chuyển: type = 5
+    // requestType = 4: vận chuyển: type = 1: nhập kho: type = 2, xuất kho: type = 3: trả hàng: type = 4, luân chuyển: type = 5
     type: { // loại yêu cầu
         type: Number,
         default: 1
@@ -147,6 +158,11 @@ const ProductRequestManagementSchema = new Schema({
      1: Chờ phê duyệt, 2: Đã phê duyệt yêu cầu luân chuyển kho, 3: Đang tiến hành luân chuyển kho, 4: Đã hoàn thành luân chuyển
      5: Đã hủy yêu cầu luân chuyển
      */
+    /*
+    Yêu cầu vận chuyển: requestType = 4
+    1. Chờ phê duyệt, 2. Đã phê duyệt, chờ lập lịch vận chuyển, 3. Lập lịch vận chuyển thành công,
+    4. Đang vận chuyển, 5: Đã hoàn thành vận chuyển, 6: lập lịch vận chuyển thất bại, từ chối vận chuyển
+    */ 
     status: {
         type: Number,
         default: 1

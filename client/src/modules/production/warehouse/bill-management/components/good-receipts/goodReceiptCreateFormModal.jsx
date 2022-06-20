@@ -12,9 +12,10 @@ function GoodReceiptCreateFormModal(props) {
 
     const [state, setState] = React.useState({
         fromStock: "",
+        toStock: "",
         group: "1",
         status: "1",
-        sourceType: "",
+        type: "",
         listGood: "",
         manufacturingWork: "",
         supplier: "",
@@ -74,7 +75,8 @@ function GoodReceiptCreateFormModal(props) {
         setState({
             ...state,
             fromStock: data.fromStock,
-            sourceType: data.sourceType,
+            toStock: data.toStock,
+            type: data.type,
             listGood: data.listGood,
             manufacturingWork: data.manufacturingWork,
             requestValue: data.requestValue,
@@ -128,27 +130,34 @@ function GoodReceiptCreateFormModal(props) {
     }
 
     if (props.createType === 3 && props.requestId && (props.requestId !== state.requestId)) {
+        let type = '';
+        if (props.request.requestType === 3 && props.request.type === 1) {
+            type = props.request.supplier ? "2" : "1"
+        } else if (props.request.requestType === 3 && props.request.type === 4) {
+            type = "3"
+        }
         setState({
             ...state,
             listGood: props.request.goods,
-            fromStock: props.request.stock._id,
+            fromStock:type !== '3' ?  props.request.stock._id : props.request.toStock._id,
+            toStock: type !== '3' ? "" : props.request.stock._id ,
             manufacturingWork: props.request.manufacturingWork ? props.request.manufacturingWork._id : "",
             requestValue: props.requestValue ? props.requestValue : "",
             supplier: props.request.supplier ? props.request.supplier._id : "",
-            sourceType:props.request.supplier ? "2" : "1",
+            type: type,
             requestId: props.requestId,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
         })
     }
-            
 
     const save = async () => {
         if (isFormValidated()) {
             const data = {
                 fromStock: state.fromStock,
+                toStock: state.toStock,
                 group: state.group,
                 status: state.status,
-                sourceType: state.sourceType,
+                type: state.type,
                 goods: state.listGood,
                 manufacturingWork: state.manufacturingWork,
                 supplier: state.supplier,
@@ -165,7 +174,7 @@ function GoodReceiptCreateFormModal(props) {
         }
     }
 
-    const { step, steps, fromStock, code, sourceType, listGood, manufacturingWork, supplier, requestValue, description, isHaveDataStep1, isHaveDataStep2,
+    const { step, steps, fromStock, toStock, code, type, listGood, manufacturingWork, supplier, requestValue, description, isHaveDataStep1, isHaveDataStep2,
         peopleInCharge, accountables, accountants, startTime, endTime, startDate, endDate, workAssignment, name, email, address, phone, group, priority } = state;
         const { translate, createType } = props;
     return (
@@ -205,7 +214,8 @@ function GoodReceiptCreateFormModal(props) {
                                 isHaveDataStep1={isHaveDataStep1}
                                 code={code}
                                 fromStock={fromStock}
-                                sourceType={sourceType}
+                                toStock={toStock}
+                                type={type}
                                 listGood={listGood}
                                 manufacturingWork={manufacturingWork}
                                 supplier={supplier}

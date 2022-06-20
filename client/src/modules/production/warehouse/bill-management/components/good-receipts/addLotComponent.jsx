@@ -47,30 +47,6 @@ function AddLotComponent(props) {
         return msg === undefined;
     }
 
-    const getAllGoods = () => {
-        let { translate } = props;
-        let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
-        let listGoodsCheckBySourceType = [];
-        let goods = props.goods.listALLGoods;
-        for (let i = 0; i < goods.length; i++) {
-            if (goods[i].sourceType === state.sourceType) {
-                listGoodsCheckBySourceType.push(goods[i]);
-            }
-        }
-        listGoodsCheckBySourceType.map(item => {
-            goodArr.push({
-                value: item._id,
-                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
-                code: item.code,
-                name: item.name,
-                baseUnit: item.baseUnit,
-                type: item.type
-            })
-        })
-
-        return goodArr;
-    }
-
     const addLotPassQualityControl = (good, index) => {
         setState({
             ...state,
@@ -184,7 +160,6 @@ function AddLotComponent(props) {
 
     const { translate, group } = props;
     const { lots, lotName, listGood, good, billId, statusLot, fromStock, type, quantity, code, initialData, errorOnStatus, isPassQualityControl } = state;
-    const listGoods = getAllGoods();
     return (
         <React.Fragment>
             <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} initialData={initialData} isPassQualityControl={isPassQualityControl}onDataChange={handleLotsChange} />

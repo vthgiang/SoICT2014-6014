@@ -310,8 +310,8 @@ exports.editLot = async (id, data, portal) => {
 }
 
 exports.getLotsByGood = async (query, portal) => {
-    const { good, stock, billType } = query;
-    let passedQualityControl = billType ? (billType === '1' || billType === '2' ? 1 : 0) : null;
+    const { good, stock, type } = query;
+    let passedQualityControl = type ? (type === '1' || type === '2' ? 1 : 0) : null;
     if (!stock) {
         return [];
     }

@@ -77,18 +77,8 @@ function GoodBaseInformationComponent(props) {
     const getAllGoods = () => {
         let { translate } = props;
         let goodArr = [{ value: "", text: translate("manage_warehouse.bill_management.choose_good") }];
-        let listGoodsCheckBySourceType = [];
         let goods = props.goods.listGoods;
-        if (props.group === '1') {
-            for (let i = 0; i < goods.length; i++) {
-                if (goods[i].sourceType === props.sourceType) {
-                    listGoodsCheckBySourceType.push(goods[i]);
-                }
-            }
-        } else {
-            listGoodsCheckBySourceType = goods;
-        }
-        listGoodsCheckBySourceType.map((item) => {
+        goods.map((item) => {
             goodArr.push({
                 value: item._id,
                 text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",

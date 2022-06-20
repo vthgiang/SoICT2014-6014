@@ -419,7 +419,6 @@ function CreateForm(props) {
                 supplier: state.supplier,
                 dataLots: state.dataLots,
             }
-            console.log(data);
             props.createRequest(data);
         }
     }

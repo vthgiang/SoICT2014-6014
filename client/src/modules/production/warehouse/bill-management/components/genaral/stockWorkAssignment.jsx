@@ -94,7 +94,6 @@ function StockWorkAssignment(props) {
     // Độ ưu tiên
 
     const handleChangeTaskPriority = (event) => {
-        console.log(event.target.value);
         setState({
             ...state,
             priority: event.target.value

@@ -107,7 +107,6 @@ function GoodReceiptWorkFlowModal(props) {
         if (isFormValidated()) {
             const { billInfor } = props;
             let statusSteps = [state.statusQuality, state.statusLot, state.statusInventory];
-            console.log(billInfor.goods);
             await props.editBill(billInfor._id, {
                 statusAll: state.statusAll,
                 goods: billInfor.goods,
@@ -122,7 +121,6 @@ function GoodReceiptWorkFlowModal(props) {
 
     const { step, steps, statusQuality, statusLot, statusInventory } = state;
     const { billInfor } = props;
-    console.log(billInfor);
     return (
         <React.Fragment>
             <DialogModal

@@ -14,9 +14,10 @@ function GoodIssueCreateFormModal(props) {
     const [state, setState] = React.useState({
         code: generateCode("BIIS"),
         fromStock: "",
+        toStock: "",
         group: "2",
         status: "1",
-        billType: "",
+        type: "",
         listGood: "",
         manufacturingWork: "",
         supplier: "",
@@ -79,7 +80,8 @@ function GoodIssueCreateFormModal(props) {
         setState({
             ...state,
             fromStock: data.fromStock,
-            billType: data.billType,
+            toStock: data.toStock,
+            type: data.type,
             listGood: data.listGood,
             manufacturingWork: data.manufacturingWork,
             requestValue: data.requestValue,
@@ -157,27 +159,34 @@ function GoodIssueCreateFormModal(props) {
         return isHaveDataStep1 > 0 && isHaveDataStep2 > 0;
     }
 
-    if (props.createType === 3 && props.requestId && (props.requestId !== state.requestId)) {
+    if ((props.createType === 3 || props.createType === 4)  && props.requestId && (props.requestId !== state.requestId)) {
+        let type = '';
+        if (props.request.requestType === 3 && props.request.type === 2) {
+            type = props.request.supplier ? "2" : "1"
+        } else if (props.request.requestType === 3 && props.request.type === 4) {
+            type = "5"
+        }
         setState({
             ...state,
             listGood: props.request.goods,
             fromStock: props.request.stock._id,
+            toStock: props.request.toStock ?  props.request.toStock._id : "",
             manufacturingWork: props.request.manufacturingWork ? props.request.manufacturingWork._id : "",
             supplier: props.request.supplier ? props.request.supplier._id : "",
-            billType: props.request.supplier ? "2" : "1",
+            type: type,
             requestId: props.requestId,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
         })
     }
 
-
     const save = async () => {
         if (isFormValidated()) {
             const data = {
                 fromStock: state.fromStock,
+                toStock: state.toStock,
                 group: state.group,
                 status: state.status,
-                billType: state.billType,
+                type: state.type,
                 goods: state.listGood,
                 manufacturingWork: state.manufacturingWork,
                 supplier: state.supplier,
@@ -194,7 +203,7 @@ function GoodIssueCreateFormModal(props) {
         }
     }
 
-    const { step, steps, fromStock, code, billType, listGood, manufacturingWork, supplier, description, isHaveDataStep1, isHaveDataStep2, requestValue,
+    const { step, steps, fromStock, toStock, code, type, listGood, manufacturingWork, supplier, description, isHaveDataStep1, isHaveDataStep2, requestValue,
         peopleInCharge, accountables, accountants, startTime, endTime, startDate, endDate, workAssignment, name, email, address, phone, group } = state;
     const { translate, createType } = props;
     return (
@@ -234,7 +243,8 @@ function GoodIssueCreateFormModal(props) {
                                 isHaveDataStep1={isHaveDataStep1}
                                 code={code}
                                 fromStock={fromStock}
-                                billType={billType}
+                                toStock={toStock}
+                                type={type}
                                 listGood={listGood}
                                 manufacturingWork={manufacturingWork}
                                 supplier={supplier}
@@ -249,7 +259,8 @@ function GoodIssueCreateFormModal(props) {
                                 isHaveDataStep2={isHaveDataStep2}
                                 listGood={listGood}
                                 fromStock={fromStock}
-                                billType={billType}
+                                toStock={toStock}
+                                type={type}
                             />
                         }
                         {step === 2 &&
