@@ -43,11 +43,11 @@ const BillSchema = new Schema({
     // group 1: 1.Nhập kho từ nhà máy, 2. Nhập kho từ nhà cung cấp, 3: nhập kho luân chuyển
     // group 2: 1.Xuất kho tới nhà máy, 2. Xuất kho tới nhà cung cấp, 3. Xuất hàng không đạt tới nhà máy, 4. Xuất hàng không đạt tới nhà cung cấp, 5: xuất kho luân chuyển
     // group 3: 1. Trả hàng từ nhà máy, 2. Trả hàng từ nhà cung cấp
-    // group 4: 1. Kiểm kê định kỳ, 2. Kiểm kê thường xuyên
-    // group 5: 1. Luân chuyển
+    // group 4: 1. Kiểm kê thường xuyên, 2: Kiểm kê định kỳ, 3: Kiểm kê dựa trên yêu cầu nhập kho
+    // 4. Kiểm kê dựa trên yêu cầu xuất kho, 5: Kiểm kê dựa trên yêu cầu trả hàng, 6: Kiểm kê dựa trên yêu cầu luân chuyển
     type: {
         type: String,
-        enum: ["1", "2", "3", "4", "5"]
+        enum: ["1", "2", "3", "4", "5", "6"]
     },
 
     // LSX 1
