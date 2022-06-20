@@ -258,7 +258,7 @@ exports.deletePoliciesDelegation = async (req, res) => {
         await Log.error(req.user.email, "DELETED_POLICY", req.portal);
         res.status(400).json({
             success: false,
-            messages: ["delete_fail"],
+            messages: Array.isArray(error) ? error : ["delete_fail"],
             content: error.message
         });
     }

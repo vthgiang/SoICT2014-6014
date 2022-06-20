@@ -234,9 +234,6 @@ exports.checkDelegationPolicy = async (policyId, delegatorId, delegatedObjectId,
     if (PolicyService.ruleCheck([delegator], policy.delegator.delegatorAttributes, policy.delegator.delegatorRule).length == 0) {
         throw ["delegator_invalid_policy"]
     }
-    if (PolicyService.ruleCheck([delegatee], policy.delegatee.delegateeAttributes, policy.delegatee.delegateeRule).length == 0) {
-        throw ["delegatee_invalid_policy"]
-    }
     if (delegateRole) {
         if (PolicyService.ruleCheck([delegateRole], policy.delegatedObject.delegatedObjectAttributes, policy.delegatedObject.delegatedObjectRule).length == 0) {
             throw ["role_invalid_policy"]
@@ -246,6 +243,10 @@ exports.checkDelegationPolicy = async (policyId, delegatorId, delegatedObjectId,
         if (PolicyService.ruleCheck([delegateTask], policy.delegatedObject.delegatedObjectAttributes, policy.delegatedObject.delegatedObjectRule).length == 0) {
             throw ["task_invalid_policy"]
         }
+    }
+
+    if (PolicyService.ruleCheck([delegatee], policy.delegatee.delegateeAttributes, policy.delegatee.delegateeRule).length == 0) {
+        throw ["delegatee_invalid_policy"]
     }
     if (delegateLinksIds) {
         let delegateLinks = await Link(connect(DB_CONNECTION, portal)).find({ _id: { $in: delegateLinksIds } })

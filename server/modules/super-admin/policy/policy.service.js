@@ -444,7 +444,7 @@ exports.editPolicyDelegation = async (portal, id, data) => {
 
 
 exports.deletePoliciesDelegation = async (portal, policyIds) => {
-    const delegationsHavePolicy = await Delegation(connect(DB_CONNECTION, portal)).find({ policy: { $in: policyIds } });
+    const delegationsHavePolicy = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatePolicy: { $in: policyIds } });
 
     let policies;
     if (delegationsHavePolicy.length > 0) {
