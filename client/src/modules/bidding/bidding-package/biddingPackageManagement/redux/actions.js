@@ -14,7 +14,8 @@ export const BiddingPackageManagerActions = {
     deleteBiddingPackage,
     getDetailBiddingPackage,
     getDetailEditBiddingPackage,
-    downloadPackageDocument
+    downloadPackageDocument,
+    proposeEmployeeForTask,
     // importBiddingPackages
 };
 
@@ -230,3 +231,30 @@ function downloadPackageDocument(id) {
 //             })
 //     }
 // }
+
+/**
+ * Tải file minh chứng nhân sự chủ chốt
+ * @id : id gói thầu
+ */
+
+function proposeEmployeeForTask(id, data) {
+    return dispatch => {
+        dispatch({
+            type: BiddingPackageConstants.PROPOSE_EMPLOYEE_FOR_TASK_REQUEST
+        });
+
+        BiddingPackageService.proposeEmployeeForTask(id, data)
+            .then(res => {
+                dispatch({
+                    type: BiddingPackageConstants.PROPOSE_EMPLOYEE_FOR_TASK_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: BiddingPackageConstants.PROPOSE_EMPLOYEE_FOR_TASK_FAILURE,
+                    error: err
+                });
+            })
+    }
+}

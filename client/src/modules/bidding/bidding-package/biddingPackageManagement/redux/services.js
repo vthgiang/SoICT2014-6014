@@ -9,7 +9,8 @@ export const BiddingPackageService = {
     deleteBiddingPackage,
     importBiddingPackages,
     getDetailBiddingPackage,
-    getDetailEditBiddingPackage
+    getDetailEditBiddingPackage,
+    proposeEmployeeForTask,
 }
 /**
  * Lấy danh sách nhân viên
@@ -17,7 +18,7 @@ export const BiddingPackageService = {
  */
 function getAll(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages`,
         method: 'GET',
         params: {
             status: data ? data.status : data,
@@ -34,7 +35,7 @@ function getAll(data) {
 
 function getDetailBiddingPackage(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages/${id}`,
         method: 'GET',
         params: data
     }, false, true, 'human_resource.profile.bidding_package');
@@ -42,7 +43,7 @@ function getDetailBiddingPackage(id, data) {
 
 function getDetailEditBiddingPackage(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages/${id}/edit`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages/${id}/edit`,
         method: 'GET',
         params: data
     }, false, true, 'human_resource.profile.bidding_package');
@@ -54,7 +55,7 @@ function getDetailEditBiddingPackage(id, data) {
  */
 function searchForPackage(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages`,
         method: 'GET',
         params: data,
     }, false, true, 'human_resource.profile.bidding_package');
@@ -66,7 +67,7 @@ function searchForPackage(data) {
  */
 function addNewBiddingPackage(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.profile.bidding_package');
@@ -79,7 +80,7 @@ function addNewBiddingPackage(data) {
  */
 function updateBiddingPackage(id, data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.profile.bidding_package');
@@ -91,7 +92,7 @@ function updateBiddingPackage(id, data) {
  */
 function deleteBiddingPackage(id) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.profile.bidding_package');
 }
@@ -102,8 +103,21 @@ function deleteBiddingPackage(id) {
  */
 function importBiddingPackages(data) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/bidding-package/bidding-packages/import`,
+        url: `${process.env.REACT_APP_SERVER}/bidding-package/bidding-packages/import`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.profile.bidding_package');
+}
+
+/**
+ * đề xuất nhân sự cho cviec gói thầu
+ * @param {*} data : dữ liệu
+ */
+function proposeEmployeeForTask(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/bidding-package//bidding-packages/:bidId/semi-auto-proposal`,
+        method: 'POST',
+        data: data,
+        params: { bidId: id }
+    }, false, false, 'human_resource.profile.bidding_package');
 }

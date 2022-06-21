@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ConfirmNotification, DataTableSetting, DatePicker, ExportExcel, SelectBox } from '../../../../../common-components';
-import { BiddingPackageManagerActions } from '../../biddingPackageManagement/redux/actions';
-import { BiddingPackageReduxAction } from '../../redux/actions';
 import { saveAs } from "file-saver";
 import { Packer } from "docx";
 import { proposalDocxCreate } from './proposalDocxCreator';
@@ -87,6 +83,7 @@ function Proposals(props) {
                                     <div className="box-body collapse" data-toggle="collapse" id={`task-proposal-${index}`} style={{ lineHeight: 2 }}>
                                         <div><strong>Tên công việc: </strong><span>{item.taskName}</span></div>
                                         <div><strong>Mô tả công việc: </strong><span>{item.taskDescription}</span></div>
+                                        <div><strong>Thẻ công việc: </strong><span>{item.tag}</span></div>
                                         <div><strong>Thời gian thực hiện: </strong><span>{item.estimateTime} ({arrUnitTimeList.find(x => x.value === item.unitOfTime)?.text})</span></div>
                                         <div><strong>Nhân viên trực tiếp: </strong><span>{item.directEmployees.map(x => x.fullName).join(", ")}</span></div>
                                         <div><strong>Nhân viên dự phòng: </strong><span>{item.backupEmployees.map(x => x.fullName).join(", ")}</span></div>
@@ -103,8 +100,8 @@ function Proposals(props) {
 };
 
 const mapState = (state) => {
-    const { auth } = state;
-    return { auth };
+    const { auth, employeesManager } = state;
+    return { auth, employeesManager };
 }
 
 const connectComponent = connect(mapState, null)(withTranslate(Proposals));

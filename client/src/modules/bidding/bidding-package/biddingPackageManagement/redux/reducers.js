@@ -6,6 +6,10 @@ const initState = {
     exportData: [],
 
     totalList: 0,
+    propsalData: {
+        proposal: null,
+        isComplete: 0,
+    },
 
     biddingPackageDetail: [],
     listBiddingPackages: [],
@@ -22,6 +26,7 @@ export function biddingPackagesManager(state = initState, action) {
         case BiddingPackageConstants.DELETE_BIDDING_PACKAGE_REQUEST:
         case BiddingPackageConstants.GET_DOCUMENT_REQUEST:
         case BiddingPackageConstants.IMPORT_BIDDING_PACKAGE_REQUEST:
+        case BiddingPackageConstants.PROPOSE_EMPLOYEE_FOR_TASK_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -82,13 +87,22 @@ export function biddingPackagesManager(state = initState, action) {
                 importBiddingPackages: action.payload.content,
                 error: ""
             }
+        case BiddingPackageConstants.PROPOSE_EMPLOYEE_FOR_TASK_SUCCESS:
+            console.log('PROPOSE_EMPLOYEE_FOR_TASK_SUCCESS', action.payload.content);
+            return {
+                ...state,
+                isLoading: false,
+                propsalData: action.payload,
+                error: ""
+            }
         case BiddingPackageConstants.GETALL_FAILURE:
         case BiddingPackageConstants.GET_DETAIL_FAILURE:
         case BiddingPackageConstants.ADD_BIDDING_PACKAGE_FAILURE:
         case BiddingPackageConstants.UPDATE_INFOR_BIDDING_PACKAGE_FAILURE:
         case BiddingPackageConstants.DELETE_BIDDING_PACKAGE_FAILURE:
         case BiddingPackageConstants.IMPORT_BIDDING_PACKAGE_FAILURE:
-        case BiddingPackageConstants.IMPORT_BIDDING_PACKAGE_FAILURE:
+        case BiddingPackageConstants.GET_DOCUMENT_REQUEST:
+        case BiddingPackageConstants.PROPOSE_EMPLOYEE_FOR_TASK_FAILURE:
             return {
                 ...state,
                 isLoading: false,
