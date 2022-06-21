@@ -493,432 +493,16 @@ exports.getBiddingPackageDocument = async (biddingPackageId, portal) => {
     if (fs.existsSync(rootPath)) return rootPath;
 };
 
-
-/**
- * các thuật toán đề xuất nhân sự cho hồ sơ đề xuất
- */
-exports.getEmployeeByKeyRequired = async (portal, params, companyId) => {
-    let noResultsPerPage = parseInt(params.limit);
-    let pageNumber = parseInt(params.page);
-    let keySearch = [{ $match: { status: "active" } }];
-
-    // tìm các nhân viên đang không có trong dự án nào hết
-    if (
-        params.biddingPackagePersonalStatus &&
-        params.biddingPackagePersonalStatus.length
-    ) {
-        keySearch = [
-            ...keySearch,
-            {
-                $match: {
-                    biddingPackagePersonalStatus: {
-                        $in: params.biddingPackagePersonalStatus,
-                    },
-                },
-            },
-        ];
-    } else {
-        keySearch = [
-            ...keySearch,
-            {
-                $match: {
-                    biddingPackagePersonalStatus: 1,
-                },
-            },
-        ];
-    }
-
-    if (params.majors) {
-        // Bắt sựu kiện theo chuyên ngành
-        if (params.professionalSkill) {
-            keySearch = [
-                ...keySearch,
-                {
-                    $match: {
-                        $and: [
-                            {
-                                "degrees.major": {
-                                    $in: params.majors.map((item) =>
-                                        mongoose.Types.ObjectId(item)
-                                    ),
-                                },
-                            },
-                            {
-                                "degrees.degreeQualification": {
-                                    $gte: Number(params.professionalSkill),
-                                },
-                            },
-                        ],
-                    },
-                },
-            ];
-        } else {
-            keySearch = [
-                ...keySearch,
-                {
-                    $match: {
-                        "degrees.major": {
-                            $in: params.majors.map((item) =>
-                                mongoose.Types.ObjectId(item)
-                            ),
-                        },
-                    },
-                },
-            ];
-        }
-    } else {
-        if (params.professionalSkill) {
-            keySearch = [
-                ...keySearch,
-                {
-                    $match: {
-                        "degrees.degreeQualification": {
-                            $gte: Number(params.professionalSkill),
-                        },
-                    },
-                },
-            ];
-        }
-    }
-
-    // Bắt sự kiện tìm kiếm theo số năm kinh nghiệm
-    if (params.exp) {
-        let year = new Date();
-        let yearOfExp = year.getFullYear() - params.exp;
-        year.setFullYear(yearOfExp);
-        let lever = 2;
-        if (
-            params.professionalSkill &&
-            Number(params.professionalSkill) < lever
-        ) {
-            lever = Number(params.professionalSkill);
-        }
-
-        keySearch = [
-            ...keySearch,
-            {
-                $match: {
-                    $and: [
-                        {
-                            "degrees.year": {
-                                $lte: year,
-                            },
-                        },
-                        {
-                            "degrees.degreeQualification": {
-                                $gte: lever,
-                            },
-                        },
-                    ],
-                },
-            },
-        ];
-    }
-
-    // Bắt sựu kiện theo tên chứng chỉ
-    if (params.certificates) {
-        let certificatesCount = 1;
-        if (params.certificatesCount) {
-            certificatesCount = Number(params.certificatesCount);
-        }
-
-        keySearch = [
-            ...keySearch,
-            {
-                $unwind: "$certificates",
-            },
-            {
-                $match: {
-                    "certificates.certificate": {
-                        $in: params.certificates.map((item) =>
-                            mongoose.Types.ObjectId(item)
-                        ),
-                    },
-                },
-            },
-        ];
-
-        if (params.certificatesEndDate) {
-            let splitter = params.certificatesEndDate.split("-");
-            let date = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-            keySearch = [
-                ...keySearch,
-                {
-                    $match: {
-                        "certificates.endDate": {
-                            $gte: date,
-                        },
-                    },
-                },
-            ];
-        }
-
-        keySearch = [
-            ...keySearch,
-            {
-                $group: {
-                    _id: "$_id",
-                    careerPositions: { $first: "$careerPositions" },
-                    count: { $sum: 1 },
-                },
-            },
-            {
-                $match: { count: { $gte: certificatesCount } },
-            },
-        ];
-    }
-
-    // Bắt sựu kiện tìm kiếm vị trí cv
-    if (
-        params.careerPosition &&
-        params.careerPosition?.length &&
-        params.sameExp
-    ) {
-        keySearch = [
-            ...keySearch,
-            {
-                $unwind: "$careerPositions",
-            },
-            {
-                $match: {
-                    "careerPositions.careerPosition": {
-                        $in: params.careerPosition.map((item) =>
-                            mongoose.Types.ObjectId(item)
-                        ),
-                    },
-                },
-            },
-        ];
-    }
-
-    if (params.sameExp || params.numblePackageWorkInCarreer) {
-        let expInMiliseconds = params.sameExp * 86400000 * 365;
-
-        keySearch = [
-            ...keySearch,
-            {
-                $unwind: "$careerPositions",
-            },
-            {
-                $addFields: {
-                    "careerPositions._id": "$_id",
-                },
-            },
-            {
-                $replaceRoot: {
-                    newRoot: "$careerPositions",
-                },
-            },
-            {
-                $project: {
-                    position: 1,
-                    action: 1,
-                    field: 1,
-                    package: 1,
-                    empId: 1,
-                    dateDifference: {
-                        $subtract: ["$endDate", "$startDate"],
-                    },
-                    id: "$_id",
-                },
-            },
-        ];
-
-        // kiểm tra thêm điều kiện để dùng group
-
-        keySearch = [
-            ...keySearch,
-            {
-                $group: {
-                    _id: "$_id",
-                    totalExp: {
-                        $sum: "$dateDifference",
-                    },
-                    count: {
-                        $sum: 1,
-                    },
-                },
-            },
-        ];
-
-        if (params.sameExp) {
-            keySearch = [
-                ...keySearch,
-                {
-                    $match: {
-                        totalExp: {
-                            $gte: expInMiliseconds,
-                        },
-                    },
-                },
-            ];
-        }
-
-        if (params.numblePackageWorkInCarreer) {
-            keySearch = [
-                ...keySearch,
-                {
-                    $match: {
-                        count: {
-                            $gte: params.numblePackageWorkInCarreer,
-                        },
-                    },
-                },
-            ];
-        }
-    }
-
-    // console.log("xxxxxxxxxxxxxx", keySearch);
-
-    // Lấy danh sách nhân viên
-    let listData = [];
-    let listEmployees = [];
-    let totalList = 1000;
-
-    listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(
-        keySearch
-    );
-
-    let listEmpId = listData.map((e) => e._id.toString());
-    // if (params.sameExp || params.certificates) {
-    //     listEmpId = listData.map((e) => e._id.employee.toString());
-    // } else {
-    //     listEmpId = listData.map((e) => e._id.toString());
-    // }
-
-    return listEmpId;
-};
-
-exports.getEmployeeByPackageId = async (
-    portal,
-    biddingPackageId,
-    companyId
-) => {
-    let biddingPackage = await BiddingPackage(
-        connect(DB_CONNECTION, portal)
-    ).find({
-        _id: {
-            $in: mongoose.Types.ObjectId(biddingPackageId),
-        },
-    });
-
-    let employees = [];
-
-    let numberEmployees = biddingPackage[0]?.keyPersonnelRequires.map(
-        (item) => item.count
-    );
-
-    for (const require of biddingPackage[0]?.keyPersonnelRequires) {
-        let careerPosition = require?.careerPosition
-            ? [String(require?.careerPosition)]
-            : [];
-        let sameCareerPositions = require?.sameCareerPosition
-            ? require?.sameCareerPosition.map((item) => String(item))
-            : [];
-        let careerPositions = Array.from(
-            new Set(careerPosition.concat(sameCareerPositions))
-        );
-        if (require) {
-            let params = {
-                careerPosition: careerPositions ? careerPositions : NaN,
-                professionalSkill: require?.professionalSkill
-                    ? Number(require?.professionalSkill)
-                    : NaN,
-                majors: require?.majors
-                    ? require?.majors?.map((item) => String(item))
-                    : NaN,
-                certificates: require?.certificateRequirements?.certificates
-                    ? require?.certificateRequirements?.certificates?.map(
-                        (item) => String(item)
-                    )
-                    : NaN,
-                certificatesCount: require?.certificateRequirements?.count
-                    ? require?.certificateRequirements?.count
-                    : 0,
-                certificatesEndDate: require?.certificateRequirements
-                    ?.certificatesEndDate
-                    ? moment(
-                        require?.certificateRequirements?.certificatesEndDate
-                    ).format("DD-MM-YYYY")
-                    : null,
-                exp: require?.numberYearsOfExperience
-                    ? require?.numberYearsOfExperience
-                    : NaN,
-                sameExp: require?.experienceWorkInCarreer
-                    ? require?.experienceWorkInCarreer
-                    : NaN,
-                numblePackageWorkInCarreer: require?.numblePackageWorkInCarreer
-                    ? require?.numblePackageWorkInCarreer
-                    : NaN,
-                page: 0,
-                limit: 500,
-            };
-            let employee = await this.getEmployeeByKeyRequired(
-                portal,
-                params,
-                companyId
-            );
-
-            if (employee.length === 0)
-                return {
-                    listEmployees: null,
-                    isComplete: 0,
-                };
-
-            employees.push(employee);
-        }
-    }
-    // console.log("employees", employees);
-
-    let [valid] = await Promise.all([
-        employees.filter((item, index) => item.length < numberEmployees[index]),
-    ]);
-
-    if (valid?.length)
-        return {
-            listEmployees: null,
-            isComplete: 0,
-        };
-
-    let data = await findEmployee(employees, [], [], [], numberEmployees, 0);
-
-    let listEmployees = [];
-    if (data.isComplete == 1) {
-        for (const [index, item] of data.result.entries()) {
-            let a = await this.getEmployeeInforByListId(portal, item, {
-                page: 0,
-                limit: 100,
-            });
-            listEmployees.push({
-                careerPosition:
-                    biddingPackage[0]?.keyPersonnelRequires[index]
-                        .careerPosition,
-                employees: a.listEmployees,
-            });
-        }
-
-        return {
-            listEmployees,
-            isComplete: 1,
-        };
-    } else {
-        return {
-            listEmployees: null,
-            isComplete: 0,
-        };
-    }
-};
-
 const findEmployee = async (
-    keyPeople, // mảng các key people phù hợp với từng vị trí, vidu [[1, 2, 3], [3, 4, 5]] có 2 vị trí, mỗi vị trí có ...
+    availableEmployees, // mảng các emp phù hợp với từng vị trí, vidu mảng là [[1, 2, 3], [3, 4, 5]] có 2 vị trí - ứng với vị trí nhân sự trực tiếp và nhân sự gián tiếp, mỗi vị trí có ...
     otherPeople,
     result,
     resultIndex,
     number,
     index
 ) => {
-    // console.log("otherPeople", keyPeople,  otherPeople)
-    if (index >= keyPeople.length) {
+    // console.log("otherPeople", availableEmployees,  otherPeople)
+    if (index >= availableEmployees.length) {
         return {
             result: result,
             isComplete: 1,
@@ -932,8 +516,8 @@ const findEmployee = async (
     let flat = 0;
 
     if (result[index]) {
-        let a = keyPeople[index];
-        let n = keyPeople[index].length;
+        let a = availableEmployees[index];
+        let n = availableEmployees[index].length;
         let flat = 0;
         for (let i = 0; i <= t; i++) {
             let value = resultIndex[index][i]; // nhãn giá trị đã tìm của vị trí này
@@ -953,7 +537,7 @@ const findEmployee = async (
                     otherPeople.push(a[value]);
                     index = index + 1;
                     let data = await findEmployee(
-                        keyPeople,
+                        availableEmployees,
                         otherPeople,
                         result,
                         resultIndex,
@@ -977,8 +561,8 @@ const findEmployee = async (
         // nếu chưa
         result[index] = []; // tâp kết quả cho vị trí index
         resultIndex[index] = []; // tập kết quả theo nhãn cho vị trí index
-        let a = keyPeople[index]; // thằng key people vị trí index (giá trị là mảng id emp thỏa mãn vị trí index này) 
-        let n = keyPeople[index].length; // số keypeople tìm đc cho vị trí index
+        let a = availableEmployees[index]; // những thằng nhân sự thỏa mãn vị trí index (giá trị là mảng id emp thỏa mãn vị trí index này) 
+        let n = availableEmployees[index]?.length; // số nhân sự thỏa mãn tìm đc cho vị trí index
         let i = 0;
         let key = 0;
         for (let j = 0; j <= t; j++) { // 
@@ -996,7 +580,7 @@ const findEmployee = async (
         }
         if (key == 1) {
             let data = await findEmployee(
-                keyPeople,
+                availableEmployees,
                 otherPeople,
                 result,
                 resultIndex,
@@ -1016,7 +600,7 @@ const findEmployee = async (
                     isComplete: 0,
                 };
             let data = await findEmployee(
-                keyPeople,
+                availableEmployees,
                 oldOtherPeople,
                 oldResult,
                 oldResultIndex,
@@ -1029,66 +613,6 @@ const findEmployee = async (
             };
         }
     }
-};
-
-exports.getEmployeeInforByListId = async (portal, listId, params) => {
-    listEmployees = await Employee(connect(DB_CONNECTION, portal))
-        .find({
-            _id: {
-                $in: listId,
-            },
-        })
-        .populate([
-            { path: "degrees.field" },
-            { path: "careerPositions.careerPosition" },
-            { path: "degrees.major" },
-            { path: "certificates.certificate" },
-        ])
-        .sort({
-            createdAt: 1,
-        })
-        .skip(params.page * params.limit)
-        .limit(params.limit);
-
-    totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
-        _id: {
-            $in: listId,
-        },
-    });
-
-    let arrEmployee = [];
-    for (let i = 0; i < listEmployees.length; i++) {
-        let idCompany = listEmployees[i].company;
-        let company = await Company(
-            connect(DB_CONNECTION, process.env.DB_NAME)
-        ).findById(idCompany);
-        let contactPerson = await User(
-            connect(DB_CONNECTION, company.shortName)
-        ).findById(company.contactPerson);
-        company.contactPerson = contactPerson;
-
-        let email = listEmployees[i].emailInCompany;
-        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(
-            portal,
-            email
-        );
-
-        listEmployees[i].company = company;
-
-        let newItem = Object.assign(listEmployees[i]._doc, value);
-        arrEmployee.push(newItem);
-
-        listEmployees[i] = {
-            ...listEmployees[i]._doc, // sua lỗi thừa thuộc tính
-            ...value,
-            company,
-        };
-    }
-
-    return {
-        listEmployees,
-        totalList,
-    };
 };
 
 exports.getEmployeeNotInBiddingPackage = async (portal) => {
@@ -1219,23 +743,45 @@ const compareProfessionalSkill = (skill1, skill2) => {
 }
 
 
-exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], allTask = [], startDate = Date.now(), estimateTime = 0, unitOfTime = "days", biddingPackage) => {
+exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], allTask = [], startDate = Date.now(), estimateTime = 0, unitOfTime = "days", prevTask = null, biddingPackage, oldEmployees = []) => {
     let start = startDate ?? Date.now();
     let end = moment(start).add(Number(estimateTime), unitOfTime).toDate();
     let allEmployee = [];
     let taskInEstimateTime = {};
     let keyPeople = biddingPackage?.keyPeople ?? [];
 
-    for (let x of listAllEmployees) {
-        let user = convertEmployeeToUserInUnit(allUser, x);
-        taskInEstimateTime[`${x._id}`] = {
-            employeeInfo: x,
-            user: user,
-            userId: user?._id,
-            empId: x._id,
-            fullName: x.fullName,
-            task: [],
-            isKeyPeople: checkIskeyPeople(x._id, keyPeople) ? 1 : 0,
+    if (oldEmployees.length == 0) {
+        for (let x of listAllEmployees) {
+            let user = convertEmployeeToUserInUnit(allUser, x);
+            taskInEstimateTime[`${x._id}`] = {
+                employeeInfo: x,
+                user: user,
+                userId: user?._id,
+                empId: x._id,
+                fullName: x.fullName,
+                emailInCompany: x.emailInCompany,
+                numOfFree: 0, // số lượng công việc liên tiếp không tham gia trong đề xuất // ConsecutiveProposalTask
+                numOfInvole: 0, // số lượng công việc liên tiếp tham gia trong đề xuất
+                notAvailable: 0, // chỉ số kiểm tra người đó có làm nhiều hơn 2 cv liên tiếp hay ko, nếu numOfInvole == 2 -> notAvailable = 1 (không cho làm nữa, đẩy nó xuống cuối mảng), nếu numOfFree == 2 -> notAvailable = 0
+                task: [],
+                isKeyPeople: checkIskeyPeople(x._id, keyPeople) ? 1 : 0,
+            }
+        }
+    } else {
+        for (let x of oldEmployees) {
+            taskInEstimateTime[`${x.empId}`] = {
+                employeeInfo: x.employeeInfo,
+                user: x.user,
+                userId: x.userId,
+                empId: x.empId,
+                fullName: x.fullName,
+                emailInCompany: x.emailInCompany,
+                numOfFree: x.numOfFree,
+                numOfInvole: x.numOfInvole,
+                notAvailable: x.notAvailable,
+                task: [],
+                isKeyPeople: checkIskeyPeople(x.empId, keyPeople) ? 1 : 0,
+            }
         }
     }
 
@@ -1253,6 +799,36 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
         }
     }
 
+    // xử lý prevTask trong proposal xem người nhân sự nào tham gia -> cập nhật numOfFree, numOfInvole, notAvailable.
+    if (prevTask) {
+        for (let i in taskInEstimateTime) {
+            let item = taskInEstimateTime[i];
+            let checkDirectEmp = prevTask.directEmployees?.find(x => String(x) === String(item.empId));
+            if (checkDirectEmp) {
+                item.numOfInvole = item.numOfInvole + 1;
+                item.numOfFree = 0;
+                if (item.numOfInvole === 2) {
+                    item.notAvailable = 1;
+                }
+            } else {
+                item.numOfFree = item.numOfFree + 1;
+                item.numOfInvole = 0;
+                if (item.numOfFree == 2) {
+                    item.notAvailable = 0;
+                }
+            }
+            if (String(item.empId) === String("62a80f13679d48374c40a12e")) {
+                console.log(
+                    // prevTask,
+                    !checkDirectEmp ?? "có nhân viên",
+                    item.numOfFree,
+                    item.numOfInvole,
+                    item.notAvailable
+                );
+            }
+        }
+    }
+
     let formatedListEmp = [];
     for (let i in taskInEstimateTime) {
         let item = taskInEstimateTime[i];
@@ -1265,7 +841,10 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
     let formatedListActiveEmp = formatedListEmp.filter(x => x.employeeInfo.status === "active");
 
     formatedListActiveEmp.sort(function (a, b) {
-        if (a.isKeyPeople !== b.isKeyPeople) {
+        if (a.notAvailable !== b.notAvailable) {
+            return a.notAvailable - b.notAvailable
+        }
+        else if (a.isKeyPeople !== b.isKeyPeople) {
             return b.isKeyPeople - a.isKeyPeople // < 0, thì a là key, => a đứng trc b 
         }
         else if (a.numOfTask !== b.numOfTask) {
@@ -1289,7 +868,7 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
 
 exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     //bid, estimateTime = 0, unitOfTime = "days", task
-    const { tasks, biddingPackage, unitOfTime, executionTime } = body;
+    const { tags, tasks, biddingPackage, unitOfTime, executionTime } = body;
     const { bidId } = params;
 
     // lấy all user
@@ -1313,18 +892,28 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     let isComplete = 0;
     let startOfTask = Date.now();
     let endOfTask = Date.now();
+    let prevTask = null;
+    let oldEmployees = [];
     // return task đề xuất
     // xử lý task để trả về nhân viên với thông tin các task sẽ phải làm
     for (let t of tasks) {
         startOfTask = endOfTask;
 
-        let empWithTask = await this.getEmployeeInfoWithTask(allUser, listAllEmployees, allTask, startOfTask, t.estimateTime, unitOfTime, biddingPackage);
+        // danh sách tất cả nhân viên với task
+        let empWithTask = await this.getEmployeeInfoWithTask(allUser, listAllEmployees, allTask, startOfTask, t.estimateTime, unitOfTime, prevTask, biddingPackage, oldEmployees);
         endOfTask = moment(startOfTask).add(Number(t.estimateTime), unitOfTime).toDate();
+        oldEmployees = empWithTask;
 
-        let directEmpAvailable = empWithTask.map(x => x.value);
-        let backupEmpAvailable = empWithTask.map(x => x.value);
+        // tìm danh sách emp tương ứng với tag
+        let tagOfTask = tags.find(x => x.name === t.tag)
+        let listEmpByTag = [];
+        if (tagOfTask) listEmpByTag = tagOfTask.employees;
+
+        let directEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
+        let backupEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let proposalEmpArr = [directEmpAvailable, backupEmpAvailable];
         let numOfEmpRequireArr = [t.directEmployees.length, t.backupEmployees.length];
+        // console.log("\n\n", listEmpByTag, proposalEmpArr);
 
         let data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
 
@@ -1336,6 +925,7 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
                 directEmployees: data.result[0],
                 backupEmployees: data.result[1],
             };
+            prevTask = newTask;
 
             proposalTask.push(newTask);
 
@@ -1349,6 +939,7 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
         proposal: {
             executionTime,
             unitOfTime,
+            tags,
             tasks: proposalTask,
         },
         isComplete
