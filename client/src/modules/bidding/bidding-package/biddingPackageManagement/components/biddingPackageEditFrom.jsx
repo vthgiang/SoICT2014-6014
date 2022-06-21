@@ -223,6 +223,8 @@ const BiddingPackageEditFrom = (props) => {
                             />
                             {/* Hồ sơ đề xuất */}
                             <Proposals
+                                type={`edit`}
+                                bidId={_id}
                                 id={`proposals_edit_${_id}`}
                                 handleChange={handleChange}
                                 proposals={state.biddingPackage.proposals}

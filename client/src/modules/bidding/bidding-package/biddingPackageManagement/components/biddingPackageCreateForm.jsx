@@ -238,6 +238,7 @@ const BiddingPackageCreateForm = (props) => {
                         />
                         {/* Hồ sơ đề xuất */}
                         <Proposals
+                            type={`create`}
                             id={`proposals_create`}
                             handleChange={handleChange}
                             proposals={state.biddingPackage.proposals}

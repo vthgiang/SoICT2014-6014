@@ -50,6 +50,8 @@ function Proposals(props) {
         tagType: ADD_TYPE,
         currentTag: initTag,
         currentTagIndex: null,
+        showFormTask: true,
+        showFormTag: true
     });
 
     const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : initProposal);
@@ -368,7 +370,12 @@ function Proposals(props) {
 
     useEffect(() => {
         props.getAllEmployee();
-        setState({ ...state, id: props.id });
+        setState({
+            ...state,
+            id: props.id,
+            proposalType: props.type,
+            bidId: props.bidId
+        });
         props.getPaginateTasks({ getAll: true });
     }, [props.id]);
 
@@ -377,7 +384,7 @@ function Proposals(props) {
         allEmployee = employeesManager.listAllEmployees
     }
 
-    const { id, currentIndex, currentTask, currentTag, currentTagIndex } = state;
+    const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType } = state;
     const { currentStep, steps } = step;
     let listEmpInfoFormated = getEmployeeInfoWithTask(allUsers, allEmployee, tasks?.tasks ?? [], proposals?.executionTime ?? 0, proposals?.unitOfTime, biddingPackage);
     useEffect(() => {
@@ -399,7 +406,6 @@ function Proposals(props) {
         return listEmpByTag;
     }
     let listEmpbyTag = getListEmpByTag(currentTask.tag);
-    console.log(402, proposals);
 
     return (
         <div id={id} className="tab-pane">
@@ -444,13 +450,13 @@ function Proposals(props) {
                     <div >
                         <div className="form-group">
                             <label>Tên thẻ<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name={`name-tag-${currentIndex}`} onChange={(value) => handleChangeTagForm("name", value)} value={currentTag?.name} placeholder="Tên thẻ" autoComplete="off" />
+                            <input type="text" className="form-control" name={`name-tag-${currentTagIndex}`} onChange={(value) => handleChangeTagForm("name", value)} value={currentTag?.name} placeholder="Tên thẻ" autoComplete="off" />
                             <ErrorLabel content={currentTag?.tagNameError} />
                         </div>
                         <div className="form-group">
                             <label>Mô tả thẻ</label>
                             <textarea type="text" rows={3} style={{ minHeight: '73.5px' }}
-                                name={`desc-tag-${currentIndex}`}
+                                name={`desc-tag-${currentTagIndex}`}
                                 onChange={(value) => handleChangeTagForm("description", value)}
                                 value={currentTag?.description}
                                 className="form-control"
@@ -461,7 +467,7 @@ function Proposals(props) {
                         <div className={`form-group`}>
                             <label className="control-label">Nhân sự thực hiện<span className="text-red">*</span></label>
                             {listEmpInfoFormated && <SelectBox
-                                id={`tag-employees-${currentIndex}-${id}`}
+                                id={`tag-employees-${currentTagIndex}-${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={listEmpInfoFormated ? listEmpInfoFormated : []}
@@ -477,7 +483,7 @@ function Proposals(props) {
                         {state.tagType === EDIT_TYPE &&
                             <>
                                 <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancelTag() }}>Hủy</button>
-                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTag(state.currentTagIndex) }}>Lưu</button>
+                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTag(currentTagIndex) }}>Lưu</button>
                             </>
                         }
                         {state.tagType === ADD_TYPE &&
@@ -610,7 +616,11 @@ function Proposals(props) {
                     {proposals?.tasks?.length ? <div>
                         <ModalProposeEmpForTask
                             id={id ?? ""}
+                            bidId={bidId}
+                            proposalType={proposalType}
                             data={{
+                                bidId: bidId,
+                                type: proposalType,
                                 proposals: proposals,
                                 biddingPackage: biddingPackage,
                                 unitOfTime: proposals?.unitOfTime,

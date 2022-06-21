@@ -868,7 +868,7 @@ exports.getEmployeeInfoWithTask = async (allUser = [], listAllEmployees = [], al
 
 exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     //bid, estimateTime = 0, unitOfTime = "days", task
-    const { tags, tasks, biddingPackage, unitOfTime, executionTime } = body;
+    const { tags, tasks, biddingPackage, unitOfTime, executionTime, type } = body;
     const { bidId } = params;
 
     // lấy all user
@@ -936,6 +936,8 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     }
 
     return {
+        type: type,
+        id: bidId,
         proposal: {
             executionTime,
             unitOfTime,
