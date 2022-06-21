@@ -3,7 +3,8 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const dashboardEmployeeKpiService = {
     getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
-    getChildrenOfOrganizationalUnitsAsTree
+    getChildrenOfOrganizationalUnitsAsTree,
+    getEmployeeKpiPerformance,
 };
 
 /**
@@ -46,6 +47,20 @@ function getChildrenOfOrganizationalUnitsAsTree(role) {
         method: 'GET',
         params: {
             role: role
+        }
+    }, false, true, 'kpi.evaluation');
+}
+
+/**
+ * Lấy các đơn vị con của một đơn vị và đơn vị đó
+ * @param {*} role 
+ */
+function getEmployeeKpiPerformance(ids) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/get-employee-kpi-performance`,
+        method: 'GET',
+        params: {
+            ids
         }
     }, false, true, 'kpi.evaluation');
 }

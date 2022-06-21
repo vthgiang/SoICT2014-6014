@@ -17,6 +17,7 @@ import { showListInSwal } from '../../../../../helpers/showListInSwal';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { EmployeeCreateKpiAutoModal } from './employeeCreateKpiAutoModal';
 import { EmployeeCreateKpiDashboard } from './employeeCreateKpiDashboard';
+import { PerformanceKpiOfEmployeeChart } from './performanceKpiOfEmployeeChart';
 
 function EmployeeKpiEvaluationDashboard(props) {
     let currentDate = new Date();
@@ -609,7 +610,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                         <div className="col-md-12">
                             <div className="box">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Danh gia kha nang thuc hien kpi nhan vien</h3>
+                                    <h3 className="box-title">Điểm đánh giá thực hiện KPI nhân viên</h3>
 
                                 </div>
 
@@ -618,7 +619,7 @@ function EmployeeKpiEvaluationDashboard(props) {
 
                                     <div className="col-sm-12 col-xs-12">
                                         <div className="qlcv">
-                                            Bar chart here
+                                            <PerformanceKpiOfEmployeeChart />
                                         </div>
 
                                     </div>

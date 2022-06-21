@@ -17,4 +17,7 @@ router.post('/employee-kpis/:id/set-task-importance-level', auth, KPIPersonalCon
 
 router.post('/employee-kpis/:id/set-point-all-kpi', auth, KPIPersonalController.setPointAllKpi);
 
+// Tinh diem hieu suat thuc hien kpi
+router.get('/get-employee-kpi-performance', auth, KPIPersonalController.getEmployeeKpiPerformance);
+
 module.exports = router;

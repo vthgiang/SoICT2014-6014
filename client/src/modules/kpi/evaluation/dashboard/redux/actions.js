@@ -4,7 +4,8 @@ import { dashboardEmployeeKpiService } from "./services";
 export const DashboardEvaluationEmployeeKpiSetAction = {
     getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
-    getChildrenOfOrganizationalUnitsAsTree
+    getChildrenOfOrganizationalUnitsAsTree,
+    getEmployeeKpiPerformance
 };
 
 /**
@@ -73,6 +74,30 @@ function getChildrenOfOrganizationalUnitsAsTree(role) {
             .catch(error => {
                 dispatch({
                     type: dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+
+/**
+ * Lấy tất cả KPI cá nhân theo mảng id đơn vị
+ * @param {*} ids 
+ */
+function getEmployeeKpiPerformance(ids) {
+    return dispatch => {
+        dispatch({ type: dashboardEmployeeKpiConstants.GET_EMPLOYEE_KPI_PERFORMANCE_REQUEST });
+
+        dashboardEmployeeKpiService.getEmployeeKpiPerformance(ids)
+            .then(res => {
+                dispatch({
+                    type: dashboardEmployeeKpiConstants.GET_EMPLOYEE_KPI_PERFORMANCE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardEmployeeKpiConstants.GET_EMPLOYEE_KPI_PERFORMANCE_FAILURE,
                     payload: error
                 })
             })

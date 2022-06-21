@@ -143,14 +143,12 @@ exports.createEmployeeKpiSet = async (req, res) => {
 
 /** Khởi tạo KPI cá nhân */
 exports.createEmployeeKpiSetAuto = async (req, res) => {
-    console.log('146', req.body)
     try {
         for (let item of req.body.employees) {
             const data = {
                 ...req.body,
                 employee: item
             }
-            console.log('153', data)
             let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSetAuto(req.portal, data);
             // Thêm log
             let log = getDataEmployeeKpiSetLog({
@@ -172,17 +170,15 @@ exports.createEmployeeKpiSetAuto = async (req, res) => {
                 organizationalUnit: employeeKpiSet?.organizationalUnit,
                 employeeKpiSet: employeeKpiSet
             });
-            // await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
+            await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
         }
-
-
 
         res.status(200).json({
             success: true,
             messages: ['initialize_employee_kpi_set_success'],
         })
     } catch (error) {
-        // await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
+        await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
         res.status(400).json({
             success: false,
             messages: ['initialize_employee_kpi_set_failure'],
@@ -412,6 +408,7 @@ exports.deleteEmployeeKpi = async (req, res) => {
     }
     return EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.params.kpipersonal);
 }
+
 
 /**
  * Tạo comment trong trang create KPI employee

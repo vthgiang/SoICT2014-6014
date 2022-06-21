@@ -7,8 +7,7 @@ const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSe
 
 const NotificationServices = require(`../../../notification/notification.service`)
 const NewsFeedService = require('../../../news-feed/newsFeed.service')
-const EmployeeService = require('../../../human-resource/profile/profile.service')
-const UserService = require('../../../super-admin/user/user.service');
+const EmployeeEvaluationService = require('../../../kpi/evaluation/employee-evaluation/employeeEvaluation.service');
 const { getPaginatedTasksThatUserHasResponsibleRole } = require('../../../task/task-management/task.service');
 
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
@@ -270,152 +269,9 @@ exports.createEmployeeKpi = async (portal, data) => {
     return employeeKpiSet;
 }
 
-exports.getCompleteRatioTaskOfEmployee = async (portal, userId) => {
-    // Chấm ĐIỂM PROFILE nhân viên. Điểm max = 120
-
-    // Tiêu chí chấm điểm profile
-    const statusPoint = {
-        active: 10,
-        probationary: 10,
-        leave: -100,
-        maternity_leave: -100,
-        unpaid_leave: -100,
-        sick_leave: -100
-    }
-
-    const professionalSkillPoint = {
-        unavailable: 5,
-        intermediate_degree: 5,
-        colleges: 10,
-        university: 10,
-        bachelor: 10,
-        engineer: 10,
-        master_degree: 15,
-        phd: 15
-    }
-
-    const degreePoint = {
-        unknown: 0,
-        no_rating: 0,
-        ordinary: 10,
-        average_good: 10,
-        good: 15,
-        very_good: 15,
-        excellent: 15
-    }
-
-    let profilePoint = 0;
-    let resultPoint = 0;
-    let progressPoint = 0;
-
-    // Lấy thông tin profile nhân viên
-
-    if (!portal) portal = 'vnist';
-    let user = await UserService.getUser(portal, userId);
-    console.log(315)
-    let inforEmployee = await EmployeeService.getEmployeeProfile(portal, user.email);
-    console.log(317, inforEmployee)
-    // chấm ĐIỂM PROFILE
-    const profile = inforEmployee.employees[0];
-
-    if (profile.status) {
-        profilePoint += statusPoint[profile.status];
-    }
-    if (profile.professionalSkill) {
-        profilePoint += professionalSkillPoint[profile.professionalSkill];
-    }
-    if (profile?.degrees.length > 0) {
-        let point = 0;
-        profile.degrees.map(x => {
-            point += degreePoint[x.degreeType];
-        })
-        if (point > 15) {
-            point = 20;
-        };
-        profilePoint += point;
-    }
-    if (profile?.certificates) {
-        let point = 20 * profile.certificates.length;
-        if (point > 20) {
-            point = 25;
-        };
-        profilePoint += point;
-    }
-    if (profile?.experiences) {
-        let point = 20 * profile.experiences.length;
-        if (point > 20) {
-            point = 25;
-        };
-        profilePoint += point;
-    }
-    if (profile?.workProcess) {
-        let point = 20 * profile.workProcess.length;
-        if (point > 20) {
-            point = 25;
-        };
-        profilePoint += point;
-    }
-    console.log(358)
-
-    // Chấm điểm ĐIỂM KẾT QUẢ và ĐIỂM QUÁ TRÌNH
-    let numOfKpis = 0;
-    let now = new Date();
-    let before = new Date();
-    before.setMonth(now.getMonth() - 3);
-
-    let kpiRecently = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .find({
-            creator: userId,
-            date: {
-                $gte: before, $lt: now
-            }
-        })
-        .populate("kpis");
-    console.log(373, kpiRecently)
-    if (kpiRecently?.length > 0) {
-        kpiRecently.map(x => {
-            // Chấm điểm ĐIỂM KẾT QUẢ 
-            // Nếu đã có đủ điểm đánh giá thì điểm kết quả bằng trung bình cộng, nếu chưa có thì mặc định là 80
-            if (x.automaticPoint && x.employeePoint && x.approvedPoint) {
-                resultPoint += (x.automaticPoint + x.employeePoint + x.approvedPoint) / 3;
-            } else {
-                resultPoint += 80;
-            }
-
-            // Chấm ĐIỂM QUÁ TRÌNH
-            if (x.kpis.length === 0) {
-                progressPoint = 80;
-                numOfKpis++;
-            } else {
-                x.kpis.map(item => {
-                    numOfKpis++;
-                    if (item.automaticPoint && item.employeePoint && item.approvedPoint) {
-                        progressPoint += (item.automaticPoint + item.employeePoint + item.approvedPoint) / 3;
-                    } else {
-                        progressPoint += 80;
-                    }
-                })
-            }
-        })
-        progressPoint /= numOfKpis;
-        resultPoint /= kpiRecently.length;
-    } else {
-        //Nếu tháng trước đó chưa có KPI thì mặc định ĐIỂM KẾT QUẢ và ĐIỂM QUÁ TRÌNH là 80
-        resultPoint = 80;
-        progressPoint = 80;
-    }
-
-    const completeRatio = Math.round(profilePoint * resultPoint * progressPoint / 10000)
-
-    return completeRatio;
-}
-
 /* Tao kpi tu dong cho cá nhân */
 exports.createEmployeeKpiSetAuto = async (portal, data) => {
-    console.log('data', data)
-    portal = 'vnist';
     const { organizationalUnit, month, employees, approver, employee } = data;
-    console.log('416', employees)
     // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
 
@@ -431,10 +287,9 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         date: new Date(month)
     })
     if (check.length > 0) {
-        console.log('432', check)
         return null;
     }
-    console.log('435')
+
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
@@ -446,7 +301,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         })
         .populate("kpis");//status = 1 là kpi đã đc phê duyệt
 
-    console.log('447')
     if (organizationalUnitKpiSet) {
         // Tạo thông tin chung cho KPI cá nhân
         let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -458,7 +312,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 date: new Date(month),
                 kpis: []
             });
-        console.log('460', organizationalUnitKpiSet)
         let defaultOrganizationalUnitKpi;
         if (organizationalUnitKpiSet?.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
 
@@ -480,22 +333,18 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                     employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
                 )
         }
-        console.log('480')
         let totalRatio = 0;
         let completeRatio = {};
 
         for (let i = 0; i < employees.length; i++) {
-            console.log('487', employees[i])
 
-            let ratio = await this.getCompleteRatioTaskOfEmployee(portal, employees[i]);
-            console.log('480', ratio)
-            totalRatio += ratio;
-            completeRatio[employees[i]] = { ratio };
+            let ratio = await EmployeeEvaluationService.getEmployeeKpiPerformance(portal, employees[i]);
+            totalRatio += ratio.completeRatio;
+            completeRatio[employees[i]] = ratio.completeRatio;
         }
         const avg = totalRatio / employees.length;
         const { employeeImportances } = organizationalUnitKpiSet;
 
-        console.log(494)
         for (let key in completeRatio) {
             let importance;
             completeRatio[key].ratio /= avg;
@@ -544,7 +393,6 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
         if (numOfKpis > otherKpis.length) {
             numOfKpis = otherKpis.length;
         }
-        console.log(544, employeeImportances)
 
         // Neu do quan trong nhan vien duoi 90 thi nhan cac tieu chi co do quan trong tu thap den cao va nguoc lai
         if (otherKpis.length > 0 && completeRatio[employee].importance < 90) {
@@ -587,7 +435,7 @@ exports.createEmployeeKpiSetAuto = async (portal, data) => {
                 weightOver = 0
             }
         }
-        console.log(586, kpiEmployee)
+
         if (kpiEmployee) {
             let otherKpiEmployee = await Promise.all(kpiEmployee.map(async (item) => {
                 let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).create(item)
