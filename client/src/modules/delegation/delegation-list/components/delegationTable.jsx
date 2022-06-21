@@ -208,6 +208,8 @@ function DelegationTable(props) {
                 delegatePolicy={currentRow && currentRow.delegatePolicy}
                 showChooseLinks={currentRow && currentRow.allPrivileges == true ? false : true}
                 showChooseRevoke={currentRow && currentRow.revokedDate != null ? true : false}
+                logs={currentRow && currentRow.logs}
+
             />
 
             }
@@ -230,6 +232,7 @@ function DelegationTable(props) {
                 replyStatus={curentRowDetail && curentRowDetail.replyStatus}
                 declineReason={curentRowDetail && curentRowDetail.declineReason}
                 delegatePolicy={curentRowDetail && curentRowDetail.delegatePolicy}
+                logs={curentRowDetail && curentRowDetail.logs}
 
             />
 

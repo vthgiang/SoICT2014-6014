@@ -33,7 +33,8 @@ function GeneralTab(props) {
                 forReceive: props.forReceive,
                 replyStatus: props.replyStatus,
                 declineReason: props.declineReason,
-                delegatePolicy: props.delegatePolicy
+                delegatePolicy: props.delegatePolicy,
+                logs: state.logs
             })
         }
     }, [props.delegationID, props.status, props.replyStatus])
@@ -92,7 +93,7 @@ function GeneralTab(props) {
             <div class="row">
                 <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>
                     <label>{translate('manage_delegation.delegateStatus')}:</label>
-                    <span> {colorfyDelegationStatus(status, translate)} - {colorfyDelegationStatus(replyStatus, translate)}</span>
+                    <span style={{ fontWeight: 600 }}> {colorfyDelegationStatus(status, translate)} - {colorfyDelegationStatus(replyStatus, translate)}</span>
                 </div>
                 {revokeReason &&
                     <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12`}>

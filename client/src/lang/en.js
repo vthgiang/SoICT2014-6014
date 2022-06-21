@@ -1757,7 +1757,7 @@ export default {
         },
 
         manage_delegation: {
-            delegationName: "Delegation Name",
+            delegationName: "Delegation code",
             delegateType: "Delegation Type",
             delegateObject: "Role/Task",
             delegatee: "Delegatee",
@@ -1843,7 +1843,19 @@ export default {
             role_invalid_policy: "Role does not satisfy chosen delegation policy",
             task_invalid_policy: "Task does not satisfy chosen delegation policy",
             link_invalid_policy: "Links of role do not satisfy chosen delegation policy",
-
+            log_activity_tab: {
+                login: "Login with received role ",
+                logout: "Logout",
+                page_access: "Access page ",
+                create: "Add new delegation ",
+                edit: "Edit delegation ",
+                revoke: "Revoke delegation ",
+                confirm: "Confirm delegation ",
+                reject: "Reject delegation ",
+                activate: "Activate delegation ",
+                system: "System",
+                automatic: "Automatic"
+            }
         },
 
         // Modules cấu hình các chức năng

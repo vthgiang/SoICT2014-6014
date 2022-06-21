@@ -11,7 +11,7 @@ const { decryptMessage } = require('../helpers/functionHelper');
 const { compareDate } = require('../helpers/functionHelper');
 const rateLimit = require("express-rate-limit");
 const DelegationService = require("../modules/delegation/delegation.service");
-
+const pushLog = false;
 
 /**
  * ****************************************
@@ -183,11 +183,31 @@ exports.authFunc = (checkPage = true) => {
                                     throw ["page_access_denied"]
                                 }
 
+
+                                // Log delegation truy cập trang
+                                if (delegation) {
+                                    // Log nếu mỗi lần truy cập cách nhau > 5s
+                                    if ((!delegation.logs || delegation.logs.length == 0) || (delegation.logs.length > 0 && ((new Date()).getTime() - (new Date(delegation.logs[delegation.logs.length - 1].createdAt)).getTime()) / 1000 > 5)) {
+
+                                        await Delegation(connect(DB_CONNECTION, req.portal)).updateOne({ _id: delegation._id }, {
+                                            logs: [
+                                                ...delegation.logs,
+                                                {
+                                                    createdAt: new Date(),
+                                                    user: userId,
+                                                    content: link.url + " - " + link.description,
+                                                    time: new Date(),
+                                                    category: "page_access"
+                                                }
+                                            ]
+                                        })
+                                    }
+
+
+                                }
+
                                 if (privilege.delegations.length > 0) {
-
-
                                     if (!privilege.delegations.some(delegation => userrole.delegation.toString() == delegation.toString())) {
-
                                         throw ["page_access_denied"]
                                     }
 
@@ -275,6 +295,7 @@ exports.authFunc = (checkPage = true) => {
 
             next();
         } catch (error) {
+            console.log(error)
             res.status(400).json({
                 success: false,
                 messages: Array.isArray(error) ? error : ['auth_error'],

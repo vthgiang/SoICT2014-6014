@@ -1,6 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { ShowMoreShowLess } from '../../../../common-components';
+import { colorfyLog } from './functionHelper';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 function LogActivityTab(props) {
     const [state, setState] = useState({
@@ -10,7 +14,7 @@ function LogActivityTab(props) {
 
     // setState từ props mới
     useEffect(() => {
-        if (props.delegationID !== state.delegationID) {
+        if (props.delegationID !== state.delegationID || props.logs !== state.logs) {
             setState({
                 ...state,
                 delegationID: props.delegationID,
@@ -27,29 +31,39 @@ function LogActivityTab(props) {
                 startDate: props.startDate,
                 endDate: props.endDate,
                 revokedDate: props.revokedDate,
-                revokeReason: props.revokeReason
+                revokeReason: props.revokeReason,
+                logs: props.logs
             })
         }
-    }, [props.delegationID])
+    }, [props.delegationID, props.logs])
 
 
 
     const { translate } = props;
-    const { delegationName, description } = state;
+    const { delegationID, delegator, delegatee, startDate, endDate, revokedDate, logs } = state;
 
     return (
         <div id={props.id} className="tab-pane">
-            {/* Tên ví dụ */}
-            <div className={`form-group`}>
-                <label>{translate('manage_delegation.delegationName')}:</label>
-                <span> {delegationName}</span>
-            </div>
+            {logs &&
+                <ShowMoreShowLess
+                    id={`detail_log_activity_${delegationID}`}
+                    styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
+                >
+                    {
+                        logs.map((item, index) =>
+                            <div key={item._id} className={`item-box ${index > 5 ? "hide-component" : ""}`}>
+                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.user ? (item.user == delegator._id ? delegator.name : delegatee.name) : translate("manage_delegation.log_activity_tab.system")} </a>
+                                <span> - </span><span style={{ fontStyle: 'italic' }} className={item.user ? (item.user == delegator._id ? "text-green" : "text-red") : "text-orange"}>{item.user ? (item.user == delegator._id ? translate('manage_delegation.delegator') : translate('manage_delegation.delegate_receiver')) : translate("manage_delegation.log_activity_tab.automatic")}</span>
+                                <br></br>{colorfyLog(item.category, translate)}<span style={{ fontWeight: 600 }}>{item.content ? item.content : ''}</span>&nbsp;
+                                <span>
+                                    ({moment(item.time).format("HH:mm:ss DD/MM/YYYY")})
+                                </span>
 
-            {/* Mô tả ví dụ */}
-            <div className={`form-group`}>
-                <label>{translate('manage_delegation.description')}:</label>
-                <span> {description}</span>
-            </div>
+                            </div>
+                        )
+                    }
+                </ShowMoreShowLess>
+            }
         </div>
     );
 };

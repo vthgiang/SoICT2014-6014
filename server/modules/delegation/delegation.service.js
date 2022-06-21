@@ -20,7 +20,7 @@ const taskTemplateModel = require('../../models/task/taskTemplate.model');
 const PolicyService = require('../super-admin/policy/policy.service');
 
 // Tạo mới mảng Ví dụ
-exports.createDelegation = async (portal, data) => {
+exports.createDelegation = async (portal, data, logs = []) => {
     let newDelegation;
     const filterValidDelegationArray = async (array) => {
         let resArray = [];
@@ -99,6 +99,7 @@ exports.createDelegation = async (portal, data) => {
                         endDate: delArray[i].delegationEnd,
                         status: isToday(new Date(delArray[i].delegationStart)) ? "activated" : "pending",
                         delegatePolicy: delArray[i].delegatePolicy,
+                        logs: logs
                     });
                 }
 
@@ -147,16 +148,18 @@ exports.createDelegation = async (portal, data) => {
 
 exports.getNewlyCreateDelegation = async (id, data, portal) => {
     let oldDelegation = await this.getDelegationById(portal, id);
+    console.log(oldDelegation.logs)
     const checkDelegationCreated = await Delegation(connect(DB_CONNECTION, portal)).findOne({ delegationName: data.delegationName }).collation({ "locale": "vi", strength: 2, alternate: "shifted", maxVariable: "space" })
     let updatedDelegation = -1;
     if (oldDelegation.delegationName.trim().toLowerCase().replace(/ /g, "") !== data.delegationName.trim().toLowerCase().replace(/ /g, "")) {
         if (checkDelegationCreated) {
             throw ['delegation_name_exist'];
         }
-    } else {
-        data.notCheck = true;
-        updatedDelegation = await this.createDelegation(portal, [data]);
     }
+
+    data.notCheck = true;
+    updatedDelegation = await this.createDelegation(portal, [data], oldDelegation.logs);
+
     return updatedDelegation;
 }
 
@@ -166,6 +169,14 @@ exports.autoActivateDelegation = async (delegation, portal) => {
     const job = schedule.scheduleJob("Activate_" + delegation._id, date, async function () {
         await a.assignDelegation(delegation, portal)
         delegation.status = "activated"
+        delegation.logs.push(
+            {
+                createdAt: new Date(),
+                user: null,
+                content: delegation.delegationName,
+                time: new Date(delegation.startDate),
+                category: "activate"
+            })
         await delegation.save();
     });
 
@@ -178,6 +189,18 @@ exports.autoRevokeDelegation = async (delegation, portal) => {
     const a = this;
     const job = schedule.scheduleJob("Revoke_" + delegation._id, date, async function () {
         await a.revokeDelegation(portal, [delegation._id], "Automatic revocation")
+        await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
+            logs: [
+                ...delegation.logs,
+                {
+                    createdAt: new Date(),
+                    user: null,
+                    content: delegation.delegationName,
+                    time: new Date(delegation.endDate),
+                    category: "revoke"
+                }
+            ]
+        })
     });
 
     return job;
@@ -210,12 +233,32 @@ exports.updateMissedDelegation = async (portal) => {
     allDelegations.forEach(async delegation => {
 
         if (delegation.endDate != null && compareDate(delegation.endDate, new Date()) < 0) {
-            await this.revokeDelegation(portal, [delegation._id], "Automatic revocation")
+            await this.revokeDelegation(portal, [delegation._id], "Automatic revocation");
+            await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
+                logs: [
+                    ...delegation.logs,
+                    {
+                        createdAt: new Date(),
+                        user: null,
+                        content: delegation.delegationName,
+                        time: new Date(delegation.endDate),
+                        category: "revoke"
+                    }
+                ]
+            })
         }
         else {
             if (delegation.status == 'pending' && delegation.startDate != null && compareDate(delegation.startDate, new Date()) < 0) {
                 await this.assignDelegation(delegation, portal)
                 delegation.status = "activated"
+                delegation.logs.push(
+                    {
+                        createdAt: new Date(),
+                        user: null,
+                        content: delegation.delegationName,
+                        time: new Date(delegation.startDate),
+                        category: "activate"
+                    })
                 await delegation.save();
             }
         }
@@ -623,6 +666,42 @@ exports.confirmDelegation = async (portal, delegationId) => {
     await delegation.save();
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId }).populate([
+        { path: 'delegateRole', select: '_id name' },
+        { path: 'delegateTasks' },
+        { path: 'delegatee', select: '_id name' },
+        { path: 'delegatePolicy', select: '_id policyName' },
+        { path: 'delegator', select: '_id name' },
+        {
+            path: 'delegatePrivileges', select: '_id resourceId resourceType',
+            populate: {
+                path: 'resourceId',
+                select: '_id url category description'
+            }
+        }
+    ]);
+
+    return newDelegation;
+}
+
+exports.saveLog = async (portal, delegation, userId, content, category, time) => {
+    if ((!delegation.logs || delegation.logs.length == 0) || (delegation.logs.length > 0 && ((new Date()).getTime() - (new Date(delegation.logs[delegation.logs.length - 1].createdAt)).getTime()) / 1000 > 5) || category == "logout") {
+        console.log("alo")
+        await Delegation(connect(DB_CONNECTION, portal)).updateOne({ _id: delegation._id }, {
+            logs: [
+                ...delegation.logs,
+                {
+                    createdAt: new Date(),
+                    user: userId,
+                    content: content,
+                    time: new Date(time),
+                    category: category
+                }
+            ]
+        })
+    }
+
+
+    let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegation._id }).populate([
         { path: 'delegateRole', select: '_id name' },
         { path: 'delegateTasks' },
         { path: 'delegatee', select: '_id name' },

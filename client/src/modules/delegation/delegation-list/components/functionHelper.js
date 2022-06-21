@@ -32,3 +32,43 @@ export const colorfyDelegationStatus = (status, translate) => {
     )
 
 }
+
+export const formatLog = (translate, data) => {
+    if (data === "edit") return translate('manage_delegation.log_activity_tab.edit');
+    else if (data === "reject") return translate('manage_delegation.log_activity_tab.reject');
+    else if (data === "confirm") return translate('manage_delegation.log_activity_tab.confirm');
+    else if (data === "revoke") return translate('manage_delegation.log_activity_tab.revoke');
+    else if (data === "create") return translate('manage_delegation.log_activity_tab.create');
+    else if (data === "page_access") return translate('manage_delegation.log_activity_tab.page_access');
+    else if (data === "login") return translate('manage_delegation.log_activity_tab.login');
+    else if (data === "logout") return translate('manage_delegation.log_activity_tab.logout');
+    else if (data === "activate") return translate('manage_delegation.log_activity_tab.activate');
+
+}
+
+export const colorfyLog = (status, translate) => {
+    let statusColor = "";
+    switch (status) {
+        case "edit":
+            statusColor = "#db8b0b";
+            break;
+        case "revoke":
+        case "reject":
+            statusColor = "#e34724";
+            break;
+        case "create":
+        case "confirm":
+        case "activate":
+            statusColor = "#31b337";
+            break;
+        default:
+            statusColor = "#4b76cd";
+    }
+
+    return (
+
+        <span style={{ color: statusColor, fontWeight: 600 }}>{formatLog(translate, status)}</span>
+
+    )
+
+}

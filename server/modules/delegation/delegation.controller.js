@@ -4,7 +4,9 @@ const Log = require(`../../logs`);
 // Thêm mới một ví dụ
 exports.createDelegation = async (req, res) => {
     try {
-        const newDelegation = await DelegationService.createDelegation(req.portal, req.body);
+        let newDelegation = await DelegationService.createDelegation(req.portal, req.body);
+
+        newDelegation = await DelegationService.saveLog(req.portal, newDelegation, newDelegation.delegator, newDelegation.delegationName, "create", newDelegation.createdAt)
 
         await Log.info(req.user.email, 'CREATED_NEW_DELEGATION', req.portal);
 
@@ -75,6 +77,8 @@ exports.getDelegationsReceive = async (req, res) => {
 exports.rejectDelegation = async (req, res) => {
     try {
         let rejectedDelegation = await DelegationService.rejectDelegation(req.portal, req.body.delegationId, req.body.reason);
+        rejectedDelegation = await DelegationService.saveLog(req.portal, rejectedDelegation, rejectedDelegation.delegatee, rejectedDelegation.delegationName, "reject", new Date())
+
         if (rejectedDelegation) {
             await Log.info(req.user.email, "REJECTED_DELEGATION", req.portal);
             res.status(200).json({
@@ -99,6 +103,8 @@ exports.rejectDelegation = async (req, res) => {
 exports.confirmDelegation = async (req, res) => {
     try {
         let confirmedDelegation = await DelegationService.confirmDelegation(req.portal, req.body.delegationId);
+        confirmedDelegation = await DelegationService.saveLog(req.portal, confirmedDelegation, confirmedDelegation.delegatee, confirmedDelegation.delegationName, "confirm", new Date())
+
         if (confirmedDelegation) {
             await Log.info(req.user.email, "CONFIRMED_DELEGATION", req.portal);
             res.status(200).json({
@@ -157,6 +163,7 @@ exports.editDelegation = async (req, res) => {
             DelegationService.cancelJobDelegation(id)
             await DelegationService.revokeDelegation(req.portal, [id]);
             await DelegationService.deleteDelegations(req.portal, [id]);
+            updatedDelegation = await DelegationService.saveLog(req.portal, updatedDelegation, updatedDelegation.delegator, updatedDelegation.delegationName, "edit", updatedDelegation.createdAt)
             await Log.info(req.user.email, "UPDATED_DELEGATION", req.portal);
             res.status(200).json({
                 success: true,
@@ -205,6 +212,8 @@ exports.deleteDelegations = async (req, res) => {
 exports.revokeDelegation = async (req, res) => {
     try {
         let revokedDelegation = await DelegationService.revokeDelegation(req.portal, req.body.delegationIds, req.body.reason);
+        revokedDelegation = await DelegationService.saveLog(req.portal, revokedDelegation, revokedDelegation.delegator, revokedDelegation.delegationName, "revoke", revokedDelegation.revokedDate)
+
         if (revokedDelegation) {
             await Log.info(req.user.email, "REVOKED_DELEGATION", req.portal);
             res.status(200).json({

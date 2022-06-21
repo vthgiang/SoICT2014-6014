@@ -120,7 +120,6 @@ function AttributeEditForm(props) {
                 disableSubmit={!isFormValidated}
                 func={save}
                 size={50}
-                maxWidth={500}
             >
                 <form id={`form-edit-attribute-hooks`}>
                     {/* Tên ví dụ */}

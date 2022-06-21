@@ -114,7 +114,6 @@ function AttributeCreateForm(props) {
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={50}
-                maxWidth={500}
             >
                 <form id="form-create-attribute-hooks" onSubmit={() => save(translate('manage_attribute.add_success'))}>
                     {/* Tên ví dụ */}

@@ -32,7 +32,6 @@ const AttributeDetailInfo = (props) => {
                 title={translate('manage_attribute.detail_info_attribute')}
                 formID={`form-detail-attribute-hooks`}
                 size={50}
-                maxWidth={500}
                 hasSaveButton={false}
                 hasNote={false}
             >

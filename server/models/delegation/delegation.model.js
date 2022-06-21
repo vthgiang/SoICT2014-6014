@@ -91,20 +91,40 @@ const DelegationSchema = new Schema({
     },
     logs: [
         {
+            // Thời gian tạo log
             createdAt: {
                 type: Date,
                 default: Date.now,
             },
-            creator: {
+            // User
+            user: {
                 type: Schema.Types.ObjectId,
                 ref: "User",
             },
-            title: {
+            // Nội dung
+            content: {
                 type: String,
             },
-            description: {
-                type: String,
+            // Thời gian
+            time: {
+                type: Date
             },
+            // Loại log
+            category: {
+                type: String,
+                default: "page_access",
+                enum: [
+                    "login",
+                    "logout",
+                    "page_access",
+                    "create",
+                    "edit",
+                    "revoke",
+                    "confirm",
+                    "decline",
+                    "activate"
+                ],
+            }
         },
     ]
 }, {

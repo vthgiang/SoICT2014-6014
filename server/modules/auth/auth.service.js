@@ -39,7 +39,7 @@ exports.login = async (fingerprint, data) => {
                 }, {
                     path: "delegation",
                     select: "_id delegator",
-                    populate: { path: "delegator", select: "name" }
+                    populate: { path: "delegator", select: "_id name" }
                 }]
             },
         ]);
@@ -138,7 +138,14 @@ exports.logout = async (portal, id, requestToken) => {
     if (user?.tokens?.length) {
         user.tokens = user?.tokens.filter(currentElement => currentElement !== requestToken);
     }
-    user.save();
+
+    let delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatee: id });
+    delegations.forEach(async delegation => {
+        console.log("hello")
+        await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
+    })
+
+    await user.save();
     return user;
 };
 
@@ -149,6 +156,10 @@ exports.logout = async (portal, id, requestToken) => {
 exports.logoutAllAccount = async (portal, id) => {
     let user = await User(connect(DB_CONNECTION, portal)).findById(id);
     user.tokens = [];
+    let delegations = await Delegation(connect(DB_CONNECTION, portal)).find({ delegatee: id });
+    delegations.forEach(async delegation => {
+        await DelegationService.saveLog(portal, delegation, delegation.delegatee, null, "logout", new Date())
+    })
     await user.save();
 
     return user;
@@ -490,6 +501,8 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
     let delegationAllowedLinks = [];
     // Nếu role đó là role được ủy quyền
     if (userrole.delegation) {
+        let delegateeDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: userrole.delegation });
+
         privilege.forEach(pri => {
             if (pri.delegations.length > 0) {
                 // Kiểm tra privilege có được delegate không thì thêm links
@@ -502,6 +515,8 @@ exports.getLinksThatRoleCanAccess = async (portal, roleId, userId) => {
         })
         // Lọc ra các link được phép truy cập theo tùy chọn trang trong cấu hình ủy quyền
         links = delegationAllowedLinks.length > 0 ? links.filter(link => delegationAllowedLinks.includes(link)) : links;
+        await DelegationService.saveLog(portal, delegateeDelegation, delegateeDelegation.delegatee, role.name, "login", new Date())
+
     }
 
     return links;

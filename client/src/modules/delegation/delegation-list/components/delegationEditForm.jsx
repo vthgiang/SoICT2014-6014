@@ -65,8 +65,9 @@ function DelegationEditForm(props) {
                 showChooseLinks: props.showChooseLinks,
                 showChooseRevoke: props.showChooseRevoke,
                 delegatePolicy: props.delegatePolicy._id,
-                delegateLinks: props.delegatePrivileges.map(pri => pri.resourceId._id),
+                delegateLinks: !props.allPrivileges ? props.delegatePrivileges.map(pri => pri.resourceId._id) : null,
                 validLinks: link.list.filter(link => link.roles.filter(role => role.policies.length > 0).length == 0 && link.roles.map(role => role.roleId._id).some(r => role.list.filter(role => role._id == props.delegateRole._id.toString())[0].parents.map(p => p._id).concat(props.delegateRole._id.toString()).includes(r))).sort((a, b) => a.category > b.category ? 1 : -1),
+                logs: props.logs
             });
             window.$('#delegateLinksEdit').prop("checked", props.showChooseLinks);
             window.$('#delegateRevokeEdit').prop("checked", props.showChooseRevoke);

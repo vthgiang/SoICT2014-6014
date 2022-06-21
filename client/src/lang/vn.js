@@ -1727,7 +1727,7 @@ export default {
             add_success: "Thêm chính sách thành công!",
             add_fail: "Thêm chính sách thất bại!",
             policy_description: "Mô tả chính sách",
-            edit_title: "Cập nhật chính sách",
+            edit_title: "Cập nhật chính sách ủy quyền",
             edit_policy_success: "Cập nhật chính sách thành công!",
             edit_policy_fail: "Cập nhật chính sách thất bại!",
             detail_info_policy: "Thông tin chi tiết chính sách",
@@ -1938,6 +1938,19 @@ export default {
             role_invalid_policy: "Vai trò không thỏa mãn chính sách ủy quyền đã chọn",
             task_invalid_policy: "Công việc không thỏa mãn chính sách ủy quyền đã chọn",
             link_invalid_policy: "Trang thuộc vai trò không thỏa mãn chính sách ủy quyền đã chọn",
+            log_activity_tab: {
+                login: "Đăng nhập với vai trò ủy quyền ",
+                logout: "Đăng xuất",
+                page_access: "Truy cập trang ",
+                create: "Thêm mới ủy quyền ",
+                edit: "Chỉnh sửa ủy quyền ",
+                revoke: "Thu hồi ủy quyền ",
+                confirm: "Xác nhận ủy quyền ",
+                reject: "Từ chối ủy quyền ",
+                activate: "Kích hoạt ủy quyền ",
+                system: "Hệ thống",
+                automatic: "Tự động"
+            }
         },
         // Modules cấu hình các chức năng
         module_configuration: {
