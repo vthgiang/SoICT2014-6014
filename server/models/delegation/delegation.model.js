@@ -121,7 +121,7 @@ const DelegationSchema = new Schema({
                     "edit",
                     "revoke",
                     "confirm",
-                    "decline",
+                    "reject",
                     "activate"
                 ],
             }
