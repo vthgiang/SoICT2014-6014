@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DialogModal } from '../../../../../common-components';
 import { BiddingPackageManagerActions } from '../redux/actions';
 import { BiddingPackageService } from '../redux/services';
+import { convertEmpIdToName } from './employeeHelper';
 
 const ModalProposeEmpForTask = (props) => {
     const [state, setState] = useState({
@@ -16,11 +17,14 @@ const ModalProposeEmpForTask = (props) => {
     const [proposedData, setProposedData] = useState({
         // type: "",
         // id: "",
+        // compareVersion: [],
         // proposal: null,
         // isComplete: 0,
     });
     const [isLoading, setLoading] = useState(false);
     const [showFormula, setShowFormula] = useState(false);
+    const [showListTag, setShowListTag] = useState(true);
+    const [showKeyMember, setShowKeyMember] = useState(true);
 
     const [dataProp, setDataProp] = useState(props.data);
     const save = async () => {
@@ -31,14 +35,16 @@ const ModalProposeEmpForTask = (props) => {
     }
 
     const { biddingPackagesManager, translate } = props;
-    const { id, bidId } = state;
+    const { id, bidId, allEmployee, listCareer } = state;
 
     useEffect(() => {
         setState({
             ...state,
             id: props.id,
             type: props.proposalType,
-            bidId: props.bidId
+            bidId: props.bidId,
+            allEmployee: props.allEmployee,
+            listCareer: props.listCareer,
         })
         setDataProp(props.data);
     }, [props.id,
@@ -63,6 +69,7 @@ const ModalProposeEmpForTask = (props) => {
             setProposedData({
                 id: null,
                 type: "",
+                compareVersion: [],
                 proposal: null,
                 isComplete: 0,
             })
@@ -71,11 +78,11 @@ const ModalProposeEmpForTask = (props) => {
         })
     }
 
-    // useEffect(() => {
-    //     if (biddingPackagesManager.propsalData) {
-    //         setProposedData(biddingPackagesManager.propsalData)
-    //     }
-    // }, [JSON.stringify(biddingPackagesManager.propsalData)])
+    const checkInArr = (item, arr) => {
+        let check = arr.find(x => String(x) === String(item));
+        if (check) return true;
+        return false;
+    }
 
     return (
         <React.Fragment>
@@ -97,10 +104,65 @@ const ModalProposeEmpForTask = (props) => {
                             <p>Các nhân viên sẽ được sắp xếp theo danh sách độ ưu tiên phân công vào công việc giảm dần.</p>
                             <p>Trong đó, độ ưu tiên này sẽ dựa vào các tiêu chí:</p>
                             <ul>
-                                <li>Các nhân sự chủ chốt sẽ được sắp xếp lên đầu danh sách</li>
+                                <li>Các nhân sự chủ chốt sẽ được sắp xếp lên đầu danh sách ( <a style={{ cursor: 'pointer' }} onClick={() => setShowKeyMember(!showKeyMember)}>{showKeyMember ? "Ẩn danh sách nhân sự chủ chốt" : "Hiển thị danh sách nhân sự chủ chốt"}</a> )
+                                    {!showKeyMember ? null : <>
+                                        <table id="key-member-explain-show-data" className="table not-has-action table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Vị trí công việc</th>
+                                                    <th>Nhân sự chủ chốt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    dataProp.biddingPackage?.keyPeople?.map((item, listIndex) => {
+                                                        return (
+                                                            <tr key={`tag-${listIndex}`}>
+                                                                <td>{listIndex + 1}</td>
+                                                                <td>{listCareer?.find(x => String(item?.careerPosition) === String(x._id))?.name}</td>
+                                                                <td>{item?.employees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <br />
+                                    </>}
+                                </li>
                                 <li>Giữa các nhân viên sẽ được sắp xếp theo thứ tự ưu tiên trình độ từ Tiến sĩ - Thạc sĩ - Kỹ sư...</li>
                                 <li>Giữa nhân viên cũng sẽ được sắp xếp theo số lượng công việc nhân viên đó phải làm trong thời gian diễn ra công việc đang muốn phân công</li>
-                                <li>Các nhân sự ứng có khả năng thực hiện công việc sẽ lấy ra theo danh sách nhân viên phù hợp với các thẻ công việc (cần tối thiểu 2 nhân sự ứng với mỗi thẻ công việc)</li>
+                                <li>Các nhân sự ứng có khả năng thực hiện công việc sẽ lấy ra theo danh sách nhân viên phù hợp với các thẻ công việc (cần tối thiểu 2 nhân sự ứng với mỗi thẻ công việc)
+                                    ( <a style={{ cursor: 'pointer' }} onClick={() => setShowListTag(!showListTag)}>{showListTag ? "Ẩn danh sách" : "Hiển thị danh sách"}</a> )
+                                    {!showListTag ? null : <>
+                                        <table id="tag-explain-show-data" className="table not-has-action table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Tên thẻ</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Nhân sự thực hiện</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    dataProp.proposals?.tags?.map((item, listIndex) => {
+                                                        return (
+                                                            <tr key={`tag-${listIndex}`}>
+                                                                <td>{listIndex + 1}</td>
+                                                                <td>{item?.name}</td>
+                                                                <td>{item?.description}</td>
+                                                                <td>{item?.employees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <br />
+                                    </>}
+                                </li>
                                 <li>Bên cạnh đó cơ chế đề xuất sẽ hỗ trợ hạn chế vấn đề mỗi nhân viên được đề xuất không phải làm quá nhiều công việc liên tiếp</li>
                             </ul>
                             <p>Sau khi tiền xử lý dữ liệu. Hệ thống sẽ sử dụng thuật toán đề xuất nhân sự (đệ quy, quay lui) để tính toán đề xuất.</p>
@@ -116,8 +178,55 @@ const ModalProposeEmpForTask = (props) => {
                     {!proposedData ? null :
                         <div>
                             {isLoading === false && proposedData.isComplete === 0 && <div style={{ display: 'flex', justifyContent: 'center', color: 'red' }}>Không tính toán được, hãy kiểm tra lại danh sách nhân viên cho từng công việc!</div>}
-                            {isLoading === false && proposedData.isComplete === 1 && <div style={{ display: 'flex', justifyContent: 'center', color: 'green' }}>Đã tính toán xong - hãy nhấn lưu để xem kết quả!</div>}
-
+                            {isLoading === false && proposedData.isComplete === 1 && <>
+                                <div style={{ display: 'flex', justifyContent: 'center', color: 'green' }}>Đã tính toán xong - hãy nhấn lưu để áp dụng kết quả đề xuất!</div>
+                                <table id="proposal-result-show-data" className="table not-has-action table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Công việc</th>
+                                            <th>Nhân sự phân công ban đầu</th>
+                                            <th>Nhân sự đề xuất tự động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            proposedData.compareVersion?.map((item, listIndex) => {
+                                                return (
+                                                    <tr key={`tag-${listIndex}`}>
+                                                        <td>{listIndex + 1}</td>
+                                                        <td>{item?.name}</td>
+                                                        <td>
+                                                            <div><strong>Nhân sự trực tiếp: </strong>
+                                                                {item?.old?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}
+                                                            </div>
+                                                            <div><strong>Nhân sự dự phòng: </strong>
+                                                                {item?.old?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div><strong>Nhân sự trực tiếp: </strong>
+                                                                {item?.new?.directEmployees.map(userItem => {
+                                                                    return <span> {/** &cedil; */}
+                                                                        <span style={checkInArr(userItem, item?.old?.directEmployees) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{`${convertEmpIdToName(allEmployee, userItem)}`}</span>&#44;
+                                                                    </span>
+                                                                })}
+                                                            </div>
+                                                            <div><strong>Nhân sự dự phòng: </strong>
+                                                                {item?.new?.backupEmployees.map(userItem => {
+                                                                    return <span> {/** &cedil; */}
+                                                                        <span style={checkInArr(userItem, item?.old?.backupEmployees) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{`${convertEmpIdToName(allEmployee, userItem)}`}</span>&#44;
+                                                                    </span>
+                                                                })}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                            </>}
                         </div>
                     }
                 </div>

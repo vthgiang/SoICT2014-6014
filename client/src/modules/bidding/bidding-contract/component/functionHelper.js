@@ -144,6 +144,7 @@ export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
             responsibleEmployees: [],
             accountableEmployees: [],
             totalResWeight: 80,
+            // tags: [p.tag],
         }
         for (let emp of p.directEmployees) {
             let cvtEmp = convertEmployeeToUserInUnit(allUsers, emp);

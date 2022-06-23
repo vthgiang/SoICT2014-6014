@@ -227,6 +227,7 @@ const BiddingPackageEditFrom = (props) => {
                                 bidId={_id}
                                 id={`proposals_edit_${_id}`}
                                 handleChange={handleChange}
+                                listCareer={career?.listPosition}
                                 proposals={state.biddingPackage.proposals}
                                 biddingPackage={biddingPackage}
                             />

@@ -894,6 +894,7 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     let endOfTask = Date.now();
     let prevTask = null;
     let oldEmployees = [];
+    let compareVersion = [];
     // return task đề xuất
     // xử lý task để trả về nhân viên với thông tin các task sẽ phải làm
     for (let t of tasks) {
@@ -913,7 +914,6 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
         let backupEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let proposalEmpArr = [directEmpAvailable, backupEmpAvailable];
         let numOfEmpRequireArr = [t.directEmployees.length, t.backupEmployees.length];
-        // console.log("\n\n", listEmpByTag, proposalEmpArr);
 
         let data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
 
@@ -927,6 +927,14 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
             };
             prevTask = newTask;
 
+            compareVersion.push({
+                code: t.code,
+                tag: t.tag,
+                name: t.taskName,
+                old: t,
+                new: newTask
+            })
+
             proposalTask.push(newTask);
 
             isComplete = 1;
@@ -938,6 +946,7 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     return {
         type: type,
         id: bidId,
+        compareVersion: compareVersion,
         proposal: {
             executionTime,
             unitOfTime,

@@ -179,3 +179,8 @@ export const getEmployeeInfoWithTask = (allUser = [], listAllEmployees = [], all
 
     return allEmployee;
 }
+
+export const convertEmpIdToName = (allEmployee, id) => {
+    const emp = allEmployee?.find(x => String(x._id) === String(id));
+    return emp?.fullName;
+}

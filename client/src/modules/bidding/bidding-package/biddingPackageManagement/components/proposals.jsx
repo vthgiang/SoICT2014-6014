@@ -376,7 +376,8 @@ function Proposals(props) {
             ...state,
             id: props.id,
             proposalType: props.type,
-            bidId: props.bidId
+            bidId: props.bidId,
+            listCareer: props.listCareer,
         });
         props.getPaginateTasks({ getAll: true });
     }, [props.id]);
@@ -386,7 +387,7 @@ function Proposals(props) {
         allEmployee = employeesManager.listAllEmployees
     }
 
-    const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType } = state;
+    const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType, listCareer } = state;
     const { currentStep, steps } = step;
     let listEmpInfoFormated = getEmployeeInfoWithTask(allUsers, allEmployee, tasks?.tasks ?? [], proposals?.executionTime ?? 0, proposals?.unitOfTime, biddingPackage);
     useEffect(() => {
@@ -496,7 +497,7 @@ function Proposals(props) {
                         <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTag() }}>Xóa trắng</button>
                     </div>
 
-                    <table id="project-table" className="table table-striped table-bordered table-hover">
+                    <table id="tags-proposal-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>Tên thẻ</th>
@@ -622,6 +623,8 @@ function Proposals(props) {
                                 id={id ?? ""}
                                 bidId={bidId}
                                 proposalType={proposalType}
+                                allEmployee={allEmployee}
+                                listCareer={listCareer}
                                 data={{
                                     bidId: bidId,
                                     type: proposalType,
@@ -659,7 +662,7 @@ function Proposals(props) {
                         !isTable ? <ViewTaskInGantt
                             taskList={proposals?.tasks}
                             allEmployee={allEmployee}
-                        /> : <table id="project-table" className="table table-striped table-bordered table-hover">
+                        /> : <table id="task-proposal-table" className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Mã công việc</th>
