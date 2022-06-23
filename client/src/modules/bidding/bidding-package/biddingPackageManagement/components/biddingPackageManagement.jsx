@@ -356,7 +356,7 @@ const BiddingPackageManagement = (props) => {
                             <th>Loại gói thầu</th>
                             <th>Trạng thái</th>
                             <th>Mô tả</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                            <th style={{ width: '150px', textAlign: 'center' }}>{translate('general.action')}</th>
                         </tr>
                     </thead>
                     <tbody>

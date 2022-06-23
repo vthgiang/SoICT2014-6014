@@ -194,7 +194,7 @@ function ProjectTemplateManage(props) {
                                 <th>Người tạo</th>
                                 <th>Người quản lý</th>
                                 <th>Thành viên</th>
-                                <th style={{ width: "120px", textAlign: "center" }}>
+                                <th style={{ width: "150px", textAlign: "center" }}>
                                     {translate('table.action')}
                                     <DataTableSetting
                                         tableId={tableId}

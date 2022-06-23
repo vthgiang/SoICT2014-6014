@@ -282,7 +282,7 @@ const ContractManagement = (props) => {
                             <th>Ngày có hiệu lực</th>
                             <th>Ngày hết hạn</th>
                             <th>Giá trị hợp đồng</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                            <th style={{ width: '150px', textAlign: 'center' }}>{translate('general.action')}</th>
                         </tr>
                     </thead>
                     <tbody>
