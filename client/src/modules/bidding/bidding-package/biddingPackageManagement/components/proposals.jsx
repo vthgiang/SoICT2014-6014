@@ -9,6 +9,7 @@ import { taskManagementActions } from '../../../../task/task-management/redux/ac
 import { ModalViewEmployee } from './modalViewEmployee';
 import { ModalProposeEmpForTask } from './modalProposalTask';
 import "./timelineStyle.css";
+import { ViewTaskInGantt } from './viewTaskInGantt';
 
 function Proposals(props) {
     const EDIT_TYPE = "EDIT_TYPE", ADD_TYPE = "ADD_TYPE" // , RESET_TYPE = "RESET_TYPE", DELETE_TYPE = "DELETE_TYPE", CANCEL_TYPE = "CANCEL_TYPE";
@@ -23,7 +24,8 @@ function Proposals(props) {
 
     const initTaskData = {
         code: "",
-        tag: "",
+        // tag: proposals.tags?.length ? proposals.tags[0].name : "",
+        tag: null,
         preceedingTasks: "",
         taskName: "",
         taskDescription: "",
@@ -53,9 +55,9 @@ function Proposals(props) {
         showFormTask: true,
         showFormTag: true
     });
-
     const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : initProposal);
     const [biddingPackage, setBiddingPackage] = useState(props.biddingPackage ? props.biddingPackage : {});
+    const [isTable, setIsTable] = useState(true);
     const [step, setStep] = useState({
         currentStep: 0,
         steps: [
@@ -166,7 +168,7 @@ function Proposals(props) {
     const handleResetTask = () => {
         setState({
             ...state,
-            type: ADD_TYPE,
+            // type: ADD_TYPE,
             currentTask: initTaskData,
             currentIndex: null
         })
@@ -278,7 +280,7 @@ function Proposals(props) {
     const handleResetTag = () => {
         setState({
             ...state,
-            type: ADD_TYPE,
+            // tagType: ADD_TYPE,
             currentTag: initTag,
             currentTagIndex: null
         })
@@ -287,7 +289,7 @@ function Proposals(props) {
     const handleCancelTag = () => {
         setState({
             ...state,
-            type: ADD_TYPE,
+            tagType: ADD_TYPE,
             currentTag: initTag,
             currentTagIndex: null
         })
@@ -296,7 +298,7 @@ function Proposals(props) {
     const handleEditTag = (listIndex) => {
         setState({
             ...state,
-            type: EDIT_TYPE,
+            tagType: EDIT_TYPE,
             currentTag: proposals.tags[listIndex],
             currentTagIndex: listIndex
         })
@@ -319,7 +321,7 @@ function Proposals(props) {
 
         setState({
             ...state,
-            type: ADD_TYPE,
+            tagType: ADD_TYPE,
             currentTag: initTag,
             currentTagIndex: null
         })
@@ -341,7 +343,7 @@ function Proposals(props) {
 
         setState({
             ...state,
-            type: ADD_TYPE,
+            tagType: ADD_TYPE,
             currentTag: initTag,
             currentTagIndex: null
         })
@@ -398,7 +400,8 @@ function Proposals(props) {
     }
 
     let listTag = proposals?.tags?.map(x => { return { text: x.name, value: x.name } })
-    // listTag ?? listTag.unshift({ text: "---Chọn thẻ---", value: "" });
+    // if (listTag) listTag.unshift({ text: "---Chọn thẻ---", value: null });
+    // console.log(listTag);
 
     const getListEmpByTag = (tag) => {
         let emps = proposals?.tags?.find(x => x.name === tag)?.employees ?? [];
@@ -466,8 +469,9 @@ function Proposals(props) {
                         </div>
                         <div className={`form-group`}>
                             <label className="control-label">Nhân sự thực hiện<span className="text-red">*</span></label>
-                            {listEmpInfoFormated && <SelectBox
-                                id={`tag-employees-${currentTagIndex}-${id}`}
+                            {listEmpInfoFormated && proposalType && <SelectBox
+                                id={`${proposalType}-tag-employees-${currentIndex}-${id}`}
+                                // ${currentTagIndex}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={listEmpInfoFormated ? listEmpInfoFormated : []}
@@ -566,7 +570,7 @@ function Proposals(props) {
                             <div className={`form-group`}>
                                 <label className="control-label">Thẻ công việc<span className="text-red">*</span></label>
                                 {listTag?.length ? <SelectBox
-                                    id={`tag-task-${currentIndex}-${id}`}
+                                    id={`${proposalType}--tag-task-${currentIndex}-${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={listTag ? listTag : []}
@@ -612,74 +616,88 @@ function Proposals(props) {
                             </div>
                         </div>
                     </div>
-
-                    {proposals?.tasks?.length ? <div>
-                        <ModalProposeEmpForTask
-                            id={id ?? ""}
-                            bidId={bidId}
-                            proposalType={proposalType}
-                            data={{
-                                bidId: bidId,
-                                type: proposalType,
-                                proposals: proposals,
-                                biddingPackage: biddingPackage,
-                                unitOfTime: proposals?.unitOfTime,
-                                executionTime: proposals?.executionTime,
-                            }}
-                            handleAcceptProposal={handleAcceptProposal}
-                        />
-                        <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handelProposeModal(id) }}>Đề xuất tự động</button>
-                    </div> : null
-                    }
-                    <div className="pull-right row" style={{ marginRight: 0, marginBottom: "15px" }}>
-                        {state.type === EDIT_TYPE &&
-                            <>
-                                <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancel() }}>Hủy</button>
-                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTask(state.currentIndex) }}>Lưu</button>
-                            </>
+                    <div style={{ display: 'flex', justifyContent: "space-between" }}>
+                        {proposals?.tasks?.length ? <div>
+                            <ModalProposeEmpForTask
+                                id={id ?? ""}
+                                bidId={bidId}
+                                proposalType={proposalType}
+                                data={{
+                                    bidId: bidId,
+                                    type: proposalType,
+                                    proposals: proposals,
+                                    biddingPackage: biddingPackage,
+                                    unitOfTime: proposals?.unitOfTime,
+                                    executionTime: proposals?.executionTime,
+                                }}
+                                handleAcceptProposal={handleAcceptProposal}
+                            />
+                            <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handelProposeModal(id) }}>Đề xuất tự động</button>
+                        </div> : null
                         }
-                        {state.type === ADD_TYPE &&
-                            <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTask() }}>Thêm</button>
-                        }
-                        <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
-                    </div>
-                    <table id="project-table" className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Mã công việc</th>
-                                <th>Tên công việc</th>
-                                <th>Công việc tiền nhiệm</th>
-                                <th>Thẻ công việc</th>
-                                <th>Thời gian thực hiện</th>
-                                <th>Mô tả công việc</th>
-                                <th>Nhân sự trực tiếp</th>
-                                <th>Nhân sự dự phòng</th>
-                                <th>{translate('task_template.action')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                proposals.tasks?.map((item, listIndex) => {
-                                    return (
-                                        <tr key={listIndex}>
-                                            <td>{item?.code}</td>
-                                            <td>{item?.taskName}</td>
-                                            <td>{item?.preceedingTasks}</td>
-                                            <td>{item?.tag}</td>
-                                            <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
-                                            <td>{item?.taskDescription}</td>
-                                            <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
-                                            <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
-                                            <td>
-                                                <a className="edit" title={translate('general.delete')} onClick={() => handleEditTask(listIndex)}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(listIndex)}><i className="material-icons">delete</i></a>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                        <div className="row" style={{ marginRight: 0, marginBottom: "15px" }}>
+                            {state.type === EDIT_TYPE &&
+                                <>
+                                    <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancel() }}>Hủy</button>
+                                    <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTask(state.currentIndex) }}>Lưu</button>
+                                </>
                             }
-                        </tbody>
-                    </table>
+                            {state.type === ADD_TYPE &&
+                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTask() }}>Thêm</button>
+                            }
+                            <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
+                        </div>
+                    </div>
+                    <br />
+                    <div className="box-tools" style={{ marginBottom: '5px' }}>
+                        <div className="btn-group">
+                            <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${isTable ? "btn-danger" : "active"}`}>Bảng</button>
+                            <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? "btn-danger" : "active"}`}>Biểu đồ Gantt</button>
+                        </div>
+                    </div>
+                    {
+                        !isTable ? <ViewTaskInGantt
+                            taskList={proposals?.tasks}
+                            allEmployee={allEmployee}
+                        /> : <table id="project-table" className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã công việc</th>
+                                    <th>Tên công việc</th>
+                                    <th>Công việc tiền nhiệm</th>
+                                    <th>Thẻ công việc</th>
+                                    <th>Thời gian thực hiện</th>
+                                    <th>Mô tả công việc</th>
+                                    <th>Nhân sự trực tiếp</th>
+                                    <th>Nhân sự dự phòng</th>
+                                    <th>{translate('task_template.action')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    proposals.tasks?.map((item, listIndex) => {
+                                        return (
+                                            <tr key={listIndex}>
+                                                <td>{item?.code}</td>
+                                                <td>{item?.taskName}</td>
+                                                <td>{item?.preceedingTasks}</td>
+                                                <td>{item?.tag}</td>
+                                                <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
+                                                <td>{item?.taskDescription}</td>
+                                                <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                                <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                                <td>
+                                                    <a className="edit" title={translate('general.delete')} onClick={() => handleEditTask(listIndex)}><i className="material-icons">edit</i></a>
+                                                    <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(listIndex)}><i className="material-icons">delete</i></a>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    }
+
                     {proposals.tasks?.length <= 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                 </fieldset>
             </div>}
