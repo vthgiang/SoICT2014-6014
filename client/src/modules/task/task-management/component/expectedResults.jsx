@@ -31,11 +31,13 @@ function ExpectedResults(props) {
     const [newExpectedResult, setNewExpectedResult] = useState({
         title: '',
         description: '',
+        descriptionDefault: '',
         type: 0,
     })
     const [expectedResults, setExpectedResults] = useState(initValue)
 
     const handleChangeDescription = async (value, imgs) => {
+        console.log(39, value)
         setNewExpectedResult({
             ...newExpectedResult,
             description: value,
@@ -73,9 +75,13 @@ function ExpectedResults(props) {
                 <label className="control-label" htmlFor="inputDescriptionInfo">Mô tả</label>
                 <QuillEditor
                     id={`expectedResult-${props?.id}-${props.quillId}`}
-                    getTextData={handleChangeDescription}
-                    quillValueDefault={newExpectedResult.description}
+                    table={false}
                     embeds={false}
+                    quillValueDefault={newExpectedResult.descriptionDefault}
+                    maxHeight={180}
+                    getTextData={(value, imgs) => {
+                        handleChangeDescription(value, imgs)
+                    }}
                 />
             </div>
             <div className="form-group" >
@@ -190,7 +196,8 @@ function ExpectedResults(props) {
                                 <td>{formatTypeInfo(item.type)}</td>
                                 <td>
                                     <a href="#abc" className="edit" title={"Edit"} onClick={() => {
-                                        setNewExpectedResult(item);
+                                        const expectedResult = { ...item, descriptionDefault: item.description }
+                                        setNewExpectedResult(expectedResult);
                                         setItemStatus({ index: index, status: "edit" })
                                     }}><i className="material-icons"></i></a>
                                     <a href="#abc" className="delete" title={"Delete"} onClick={() => {
