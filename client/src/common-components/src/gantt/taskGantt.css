@@ -1,0 +1,30 @@
+/* .baseline {
+    position: absolute;
+    border-radius: 2px;
+    opacity: 0.6;
+    margin-top: -7px;
+    height: 12px;
+    border: 1px solid #DCDCDC;
+    background: #DCDCDC;
+} */
+
+.gantt_task_line,
+.gantt_line_wrapper {
+    margin-top: -9px;
+}
+
+.gantt_side_content {
+    margin-bottom: 7px;
+}
+
+.gantt_task_link .gantt_link_arrow {
+    margin-top: -10px
+}
+
+.gantt_side_content.gantt_right {
+    bottom: 0;
+}
+
+.gantt_tooltip {
+    z-index: 100000;
+}
