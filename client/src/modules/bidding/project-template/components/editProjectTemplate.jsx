@@ -177,8 +177,8 @@ const EditProjectTemplateForm = (props) => {
                                     type={"edit"}
                                     id={`edit-template-${id}`}
                                     taskList={projectData?.tasks}
+                                    projectDetail={generalInfo}
                                 // currentProjectTasks={tasksInfo}
-                                // projectDetail={generalInfo}
                                 // listUsers={listUsers}
                                 />
                             </div>

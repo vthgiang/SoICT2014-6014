@@ -12,6 +12,7 @@ import { convertUserIdToUserName, getListDepartments } from './functionHelper';
 import { checkIfHasCommonItems, getSalaryFromUserId, numberWithCommas } from '../../../task/task-management/component/functionHelpers';
 import { getStorage } from '../../../../config';
 import { withTranslate } from 'react-redux-multilingual';
+import { ViewTaskProjectTemplateInGantt } from './viewTaskProjectTemplateInGantt';
 
 export const CreateTaskProjectTemplate = (props) => {
     const { translate, taskInProjectTemplate, userSelectOptions, respEmployeesWithUnit, user, taskList } = props;
@@ -24,6 +25,14 @@ export const CreateTaskProjectTemplate = (props) => {
         { value: "2", text: translate('task.task_management.average') },
         { value: "1", text: translate('task.task_management.low') },
     ];
+    const fakeUnitCostList = [
+        { text: 'VND', value: 'VND' },
+        { text: 'USD', value: 'USD' },
+    ]
+    const fakeUnitTimeList = [
+        { text: 'Ngày', value: 'days' },
+        { text: 'Giờ', value: 'hours' },
+    ]
     const initTaskData = {
         code: "",
         name: "",
@@ -55,6 +64,20 @@ export const CreateTaskProjectTemplate = (props) => {
     const [optionUsers, setOptionUsers] = useState(userSelectOptions);
     const [id, setId] = useState(props.id);
     const [tasks, setTasks] = useState(taskList ?? []);
+    const [prjGeneralInfo, setPrjGeneralInfo] = useState({
+        projectNameError: undefined,
+        projectName: "",
+        projectType: 2,
+        description: "",
+        startDate: '',
+        endDate: '',
+        projectManager: [],
+        responsibleEmployees: [],
+        currenceUnit: fakeUnitCostList[0].value,
+        unitOfTime: fakeUnitTimeList[0].value,
+        estimatedCost: ''
+    });
+    const [isTable, setIsTable] = useState(true);
     const [responsibleEmployeesWithUnit, setResponsibleEmployeesWithUnit] = useState(respEmployeesWithUnit);
     const EDIT_TYPE = "EDIT_TYPE", ADD_TYPE = "ADD_TYPE" // , RESET_TYPE = "RESET_TYPE", DELETE_TYPE = "DELETE_TYPE", CANCEL_TYPE = "CANCEL_TYPE";
     const [state, setState] = useState({
@@ -66,6 +89,7 @@ export const CreateTaskProjectTemplate = (props) => {
     useEffect(() => {
         setTasks(taskList ?? [])
         setId(props.id)
+        setPrjGeneralInfo(props.projectDetail)
     }, [props.id])
 
     useEffect(() => {
@@ -426,7 +450,17 @@ export const CreateTaskProjectTemplate = (props) => {
                 <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
             </div>
 
-            <table id="project-template-task-table" className="table table-striped table-bordered table-hover">
+            <div className="box-tools" style={{ marginBottom: '5px' }}>
+                <div className="btn-group">
+                    <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${isTable ? "btn-danger" : "active"}`}>Bảng</button>
+                    <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? "btn-danger" : "active"}`}>Biểu đồ Gantt</button>
+                </div>
+            </div>
+            <br />
+            {!isTable ? <ViewTaskProjectTemplateInGantt
+                taskList={tasks}
+                unitOfTime={prjGeneralInfo.unitOfTime}
+            /> : <table id="project-template-task-table" className="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>Mã công việc</th>
@@ -470,7 +504,7 @@ export const CreateTaskProjectTemplate = (props) => {
                         ))
                     }
                 </tbody>
-            </table>
+            </table>}
         </div>
     )
 }
