@@ -39,8 +39,20 @@ function RevenueSourceChart(props) {
             bindto: document.getElementById("revenueSourceChart"),
 
             data: {
-                columns: [data],
-                type: 'bar'
+                columns: [
+                    ['Chi phí', 30, 200, 100],
+                    ['Lợi nhuận', 130, 100, 140],
+                    ['Tỉ lệ', 20, 25, 27]
+                ],
+                axes: {
+                    'Chi phí': 'y',
+                    'Tỉ lệ': 'y2'
+                },
+                types: {
+                    'Chi phí': 'bar',
+                    'Lợi nhuận': 'bar',
+                    'Tỉ lệ': 'line',
+                },
             },
 
             legend: {
@@ -56,8 +68,11 @@ function RevenueSourceChart(props) {
             axis: {
                 x: {
                     type: 'category',
-                    categories: labels,
+                    // categories: labels,
                     rotate: true
+                },
+                y2: {
+                    show: true
                 }
             },
         });

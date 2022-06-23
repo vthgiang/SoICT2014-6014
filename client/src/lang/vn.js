@@ -182,6 +182,7 @@ export default {
             kpi_unit_create_for_admin: "Khởi tạo KPI toàn công ty",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
+            kpi_unit_sales_dashboard: "Dashboard KPI phòng kinh doanh",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
             kpi_unit_statistic: "Phân tích tính hợp lý trong thiết lập KPI đơn vị",
             kpi_unit_manager: "Quản lý KPI đơn vị",
@@ -4058,8 +4059,8 @@ export default {
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
-                select_task_process_template:"Chọn quy trình mẫu",
-                process_template_name:"Tên mẫu quy trình",
+                select_task_process_template: "Chọn quy trình mẫu",
+                process_template_name: "Tên mẫu quy trình",
             },
             task_dashboard: {
                 general_unit_task: "Tổng quan công việc",
@@ -4985,7 +4986,7 @@ export default {
                 equipment: "Công cụ dụng cụ",
                 asset: "Tài sản",
                 category_tree: "Danh mục cây",
-                category_table:"Danh mục bảng",
+                category_table: "Danh mục bảng",
                 bin_location: "Nơi lưu trữ",
                 archive: "Danh mục lưu trữ",
                 1: {
@@ -5756,7 +5757,7 @@ export default {
                 edit_failed: "Sửa phiếu đề nghị thất bại",
                 cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng",
                 number_purchasing_status: "Số lượng phiếu đề nghị mua hàng theo trạng thái"
-            },            
+            },
             work_schedule: {
                 //general
                 time: "Thời gian",

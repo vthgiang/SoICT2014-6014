@@ -60,6 +60,9 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "project") {
         getTasksByProject(req, res)
     }
+    else if (req.query.type === "all_task") {
+        getAllTasks(req, res)
+    }
 }
 
 
@@ -896,6 +899,30 @@ getTasksByUser = async (req, res) => {
     }
 }
 
+/**
+ * lấy các công việc 
+ */
+getAllTasks = async (req, res) => {
+    try {
+        const tasks = await TaskManagementService.getAllTasks(req.portal, req.query);
+
+        await Logger.info(req.user.email, 'get_tasks', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_tasks_success'],
+            content: tasks
+        });
+    }
+    catch (error) {
+        await Logger.error(req.user.email, 'get_tasks', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_tasks_fail'],
+            content: error
+        });
+    }
+}
+
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
@@ -1020,7 +1047,7 @@ exports.getUserTimeSheet = async (req, res) => {
         if (requireActions) {
             timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
         } else {
-            timesheetlogs = await TaskManagementService.getAllUserTimeSheetLog(portal, month, year,  rowLimit, page, timeLimit, unitArray, sortType);
+            timesheetlogs = await TaskManagementService.getAllUserTimeSheetLog(portal, month, year, rowLimit, page, timeLimit, unitArray, sortType);
         }
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)

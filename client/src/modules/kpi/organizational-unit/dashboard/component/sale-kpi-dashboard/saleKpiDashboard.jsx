@@ -131,4 +131,4 @@ const actions = {
 }
 
 const connectedSaleKpiDashboard = connect(mapState, actions)(withTranslate(SaleKpiDashboard));
-export { connectedSaleKpiDashboard as SaleKpiDashboard };
+export default connectedSaleKpiDashboard;

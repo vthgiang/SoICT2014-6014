@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
-import { SaleKpiDashboard } from './sale-kpi-dashboard/saleKpiDashboard';
+import { CEOKpiDashboard } from './monitoring-dashboard/kpiDashboardCEO';
 
 
 
@@ -223,8 +223,8 @@ function OrganizationalUnitKpiDashboard(props) {
 
     return (
         <React.Fragment>
-            {/* <CEOKpiDashboard></CEOKpiDashboard> */}
-            <SaleKpiDashboard />
+            <CEOKpiDashboard></CEOKpiDashboard>
+            {/* <SaleKpiDashboard /> */}
         </React.Fragment>
         // <React.Fragment>
         //     {childrenOrganizationalUnit

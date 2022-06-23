@@ -4,8 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker } from '../../../../../../common-components';
 
 import { exampleDataSale } from '../../example-data/exampleDataSale';
-import { KpiCard } from "./kpiCard";
-import { ProfitAndCostChartChart } from './profitAndCostRatioChart';
+import { KpiCard } from './kpiCard';
+import { PreviewKpiUnit } from './previewKpiUnit';
+import { ProgressKpiUnitChart } from './progressKpiUnit';
 import { RevenueChart } from './revenueChart';
 import { RevenueSourceChart } from './revenueSourceChart';
 
@@ -49,7 +50,7 @@ const CEOKpiDashboard = () => {
                 </div>
 
                 <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>Phân tích</button>
-                <a className="btn btn-success" href='/kpi-units/sales-dashboard'>KPI phòng kinh doanh</a>
+                <a className="btn btn-success" href='/kpi-units/sales-dashboard' target={'_blank'}>KPI phòng kinh doanh</a>
             </div>
             <br />
             <div className="row">
@@ -68,21 +69,19 @@ const CEOKpiDashboard = () => {
             </div>
             <br></br>
             <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-7">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">Doanh số bán hàng</div>
+                            <div className="box-title">Doanh thu</div>
                         </div>
                         <RevenueChart data={exampleDataSale} />
 
                     </div>
                 </div>
-            </div>
-            <div className='row'>
-                <div className="col-md-7">
+                <div className="col-md-5">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">Nguồn thu nhập</div>
+                            <div className="box-title">Chi phí và lợi nhuận</div>
                         </div>
                         {saleData ?
                             <RevenueSourceChart data={saleData} />
@@ -90,6 +89,19 @@ const CEOKpiDashboard = () => {
                         }
                     </div>
                 </div>
+            </div>
+            <PreviewKpiUnit />
+            <br />
+            <div className="box box-primary">
+                <div className="box-header with-border">
+                    <div className="box-title">Tiến độ thực hiện KPI phòng ban</div>
+                </div>
+                <ProgressKpiUnitChart />
+
+
+            </div>
+            {/* <div className='row'>
+
                 <div className="col-md-5">
                     <div className="box box-primary">
                         <div className="box-header with-border">
@@ -101,7 +113,7 @@ const CEOKpiDashboard = () => {
                         }
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
 
     </React.Fragment>

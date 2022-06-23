@@ -7,23 +7,23 @@ import { withTranslate } from 'react-redux-multilingual';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-function RevenueChart(props) {
+function ProgressKpiUnitChart(props) {
     const { data } = props;
     const refMultiLineChart = React.createRef();
 
     useEffect(() => {
-        const revenue = ['Doanh thu'];
-        const cost = ['Chi phí'];
-        const profit = ['Lợi nhuận'];
-        const labels = [];
-        for (let item of data) {
-            revenue.push(item.revenue);
-            cost.push(item.cost);
-            profit.push(item.profit);
-            labels.push(item.date)
-        }
-        multiLineChart(revenue, cost, profit, labels);
-    }, [data])
+        // const revenue = ['Doanh thu'];
+        // const cost = ['Chi phí'];
+        // const profit = ['Lợi nhuận'];
+        // const labels = [];
+        // for (let item of data) {
+        //     revenue.push(item.revenue);
+        //     cost.push(item.cost);
+        //     profit.push(item.profit);
+        //     labels.push(item.date)
+        // }
+        multiLineChart();
+    }, [])
 
     const removePreviosMultiLineChart = () => {
         const chart = refMultiLineChart.current;
@@ -35,7 +35,7 @@ function RevenueChart(props) {
         }
     };
 
-    const multiLineChart = (revenue, cost, profit, labels) => {
+    const multiLineChart = () => {
         removePreviosMultiLineChart();
         const { translate } = props;
 
@@ -49,15 +49,17 @@ function RevenueChart(props) {
                 bottom: 20,
                 right: 20
             },
-
             data: {
                 columns: [
-                    [10, 12, 13, 15, 8, 11, 16, 18, 20, 18, 16, 19, 21, 25]
+                    ['Tiến độ', 30, 20, 50, 40, 60, 50],
+                    ['Mục tiêu', 45, 45, 45, 45, 45, 45],
                 ],
+                type: 'bar',
                 types: {
-                    'Doanh thu': 'area',
-                }
+                    'Mục tiêu': 'line',
+                },
             },
+
             axis: {
                 x: {
                     type: 'category',
@@ -92,6 +94,6 @@ const actions = {
     // getAllOrganizationalUnitKpiSetByTime: createUnitKpiActions.getAllOrganizationalUnitKpiSetByTime
 }
 
-const connectedResultsOfOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(RevenueChart));
-export { connectedResultsOfOrganizationalUnitKpiChart as RevenueChart };
+const connectedProgressKpiUnit = connect(mapState, actions)(withTranslate(ProgressKpiUnitChart));
+export { connectedProgressKpiUnit as ProgressKpiUnitChart };
 
