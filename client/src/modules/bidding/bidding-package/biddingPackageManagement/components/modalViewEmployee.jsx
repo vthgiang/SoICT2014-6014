@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DialogModal } from '../../../../../common-components';
 import { nonAccentVietnamese, stringToSlug } from '../../../../../helpers/stringMethod';
+import { EmployeeDetailForm } from '../../../../human-resource/profile/employee-management/components/employeeDetailForm';
 
 import { EmployeeManagerActions } from '../../../../human-resource/profile/employee-management/redux/actions';
 import { taskManagementActions } from '../../../../task/task-management/redux/actions';
@@ -15,6 +16,7 @@ const ModalViewEmployee = (props) => {
         page: 1,
         limit: 10,
         nameSearch: "",
+        currentRowView: null
     });
     const tableId = "list-employee-table-formated";
     const [listEmployee, setListEmployee] = useState([]);
@@ -24,7 +26,7 @@ const ModalViewEmployee = (props) => {
     }
 
     const { employeesManager, tasks, translate } = props;
-    const { id } = state;
+    const { id, currentRowView } = state;
 
     useEffect(() => {
         // props.getAllEmployee();
@@ -35,7 +37,6 @@ const ModalViewEmployee = (props) => {
     useEffect(() => {
         setListEmployee(props.listEmployee);
     }, [JSON.stringify(props.listEmployee)]);
-    // console.log(35, "/n", listEmployee);
 
     let allEmployee;
     if (employeesManager && employeesManager.listAllEmployees) {
@@ -71,6 +72,23 @@ const ModalViewEmployee = (props) => {
             default:
                 return "Không có dữ liệu";
         }
+    }
+
+    /**
+     *  Bắt sự kiện click xem thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    const handleView = async (value) => {
+        await setState(state => {
+            return {
+                ...state,
+                currentRowView: value
+            }
+        });
+        setTimeout(() => {
+            window.$(`#modal-detail-employee${value.empId}`).modal('show');
+        }, 500);
+
     }
 
     return (
@@ -139,8 +157,7 @@ const ModalViewEmployee = (props) => {
                                                 <td>{formatSkill(x?.employeeInfo?.professionalSkill)}</td>
                                                 <td>{x?.task?.length || "không có công việc"}</td>
                                                 <td style={{ textAlign: "center" }}>
-                                                    {/* onClick={() => handleView(x)} */}
-                                                    <a style={{ width: '5px' }} title="detail"><i className="material-icons">view_list</i></a>
+                                                    <a style={{ width: '5px' }} onClick={() => handleView(x)} title="detail"><i className="material-icons">view_list</i></a>
                                                 </td>
                                             </tr>
                                         )
@@ -156,12 +173,18 @@ const ModalViewEmployee = (props) => {
                             (!listEmployee || listEmployee?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                         {/* <PaginateBar
-                        pageTotal={totalPage ? totalPage : 0}
-                        currentPage={page}
-                        display={lists && lists.length !== 0 && lists.length}
-                        total={project && project.data.totalDocs}
-                        func={setPage}
-                    /> */}
+                            pageTotal={totalPage ? totalPage : 0}
+                            currentPage={page}
+                            display={lists && lists.length !== 0 && lists.length}
+                            total={project && project.data.totalDocs}
+                            func={setPage}
+                        /> */}
+
+                        {/* From xem thông tin nhân viên */
+                            <EmployeeDetailForm
+                                _id={currentRowView ? currentRowView.empId : ""}
+                            />
+                        }
                     </div>
                 </div>
 
