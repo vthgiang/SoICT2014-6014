@@ -257,19 +257,8 @@ function ReturnManagement(props) {
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
-                                        {/*Chuyển phiếu sang trạng thái đã hủy*/}
-                                        {/* {
-                                            props.checkRoleCanEdit(x) && (x.status === '5' || x.status === '3') &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.cancel_bill')}
-                                                content={translate('manage_warehouse.bill_management.cancel_bill') + " " + x.code}
-                                                name="cancel"
-                                                className="text-red"
-                                                func={() => props.handleCancelBill(x)}
-                                            />
-                                        } */}
-                                        {
+                                        {/*Thực hiện công việc*/}
+                                        { x.status === '1' &&
                                             <a
                                                 className="text-violet"
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}

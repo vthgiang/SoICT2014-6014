@@ -297,18 +297,6 @@ function IssueManagement(props) {
                                                 <i className="material-icons">assignment_turned_in</i>
                                             </a>
                                         }
-                                        {/*Chuyển phiếu sang trạng thái đã hủy*/}
-                                        {/* {
-                                            props.checkRoleCanEdit(x) && x.status == '1' &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.cancel_bill')}
-                                                content={translate('manage_warehouse.bill_management.cancel_bill') + " " + x.code}
-                                                name="cancel"
-                                                className="text-red"
-                                                func={() => props.handleCancelBill(x)}
-                                            />
-                                        } */}
                                     </td>
                                 </tr>
                             ))
