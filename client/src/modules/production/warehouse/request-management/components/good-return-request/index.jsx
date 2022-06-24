@@ -72,7 +72,9 @@ function GoodReturnRequestManagementTable(props) {
             {<DetailForm requestDetail={state.requestDetail} />}
             <ApproveForm
                 requestId={state.requestApprove ? state.requestApprove._id : ''}
-                requestApprove={state.requestApprove} />
+                requestApprove={state.requestApprove} 
+                createGoodTakesType={4} 
+                />
             <GoodReturnCreateFormModal
                 createType={3} // 3: create from request in request screen
                 requestId={state.request ? state.request._id : ''}

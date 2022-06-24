@@ -158,8 +158,9 @@ function ReceiptManagement(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                { value: '1', text: translate('manage_warehouse.bill_management.billType.1') },
-                                { value: '2', text: translate('manage_warehouse.bill_management.billType.2') }
+                                { value: '1', text: translate('manage_warehouse.bill_management.goodReceiptBillType.1') },
+                                { value: '2', text: translate('manage_warehouse.bill_management.goodReceiptBillType.2') },
+                                { value: '3', text: translate('manage_warehouse.bill_management.goodReceiptBillType.3') }
                             ]}
                             onChange={props.handleTypeChange}
                         />

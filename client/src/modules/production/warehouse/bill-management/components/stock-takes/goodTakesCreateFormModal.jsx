@@ -4,23 +4,20 @@ import "../good-receipts/goodReceipt.css";
 import { connect } from "react-redux";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import BaseInformationComponent from './baseInformationComponent';
-import SelectLotComponent from './selectLotComponent';
 import { generateCode } from "../../../../../../helpers/generateCode";
 import { BillActions } from "../../redux/actions";
 import StockWorkAssignment from "../genaral/stockWorkAssignment";
 
-function GoodIssueCreateFormModal(props) {
+function GoodTakesCreateFormModal(props) {
 
     const [state, setState] = React.useState({
         code: generateCode("BIIS"),
         fromStock: "",
         toStock: "",
-        group: "2",
+        group: "4",
         status: "1",
         type: "",
         listGood: "",
-        manufacturingWork: "",
-        supplier: "",
         description: "",
         step: 0,
         isHaveDataStep1: 0,
@@ -43,11 +40,6 @@ function GoodIssueCreateFormModal(props) {
                 label: "Tạo phiếu",
                 active: true,
                 disabled: false,
-            },
-            {
-                label: "Chọn lô hàng",
-                active: false,
-                disabled: true,
             },
             {
                 label: "Phân công công việc",
@@ -83,9 +75,7 @@ function GoodIssueCreateFormModal(props) {
             toStock: data.toStock,
             type: data.type,
             listGood: data.listGood,
-            manufacturingWork: data.manufacturingWork,
             requestValue: data.requestValue,
-            supplier: data.supplier,
             code: data.code,
             description: data.description,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
@@ -123,35 +113,10 @@ function GoodIssueCreateFormModal(props) {
         })
     }
 
-    const checkLots = (lots, quantity) => {
-        if (lots.length === 0) {
-            return false;
-        } else {
-            let totalQuantity = 0;
-            for (let i = 0; i < lots.length; i++) {
-                totalQuantity += Number(lots[i].quantity);
-            }
-            if (Number(quantity) !== Number(totalQuantity)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     const isValidateStep = (index) => {
         let { listGood } = state;
         if (index == 1) {
             return isHaveDataStep1 > 0;
-        } else if (index == 2) {
-            let counter = 0;
-            if (listGood && listGood.length > 0) {
-                listGood.map(item => {
-                    if (item.lots && item.lots.length > 0) {
-                        counter = !checkLots(item.lots, item.quantity) ? counter + 1 : counter;
-                    }
-                })
-            }
-            return counter === 0;
         }
     };
 
@@ -159,20 +124,27 @@ function GoodIssueCreateFormModal(props) {
         return isHaveDataStep1 > 0 && isHaveDataStep2 > 0;
     }
 
-    if ((props.createType === 3 || props.createType === 4)  && props.requestId && (props.requestId !== state.requestId)) {
+    if ((props.createType !== 1) && props.requestId && (props.requestId !== state.requestId)) {
         let type = '';
-        if (props.request.requestType === 3 && props.request.type === 2) {
-            type = props.request.supplier ? "2" : "1"
-        } else if (props.request.requestType === 3 && props.request.type === 4) {
-            type = "5"
+        switch (props.createType) {
+            case 2:
+                type = "3";
+                break;
+            case 3:
+                type = "4";
+                break;
+            case 4:
+                type = "5";
+                break;
+            case 5:
+                type = "6";
+                break;
         }
         setState({
             ...state,
             listGood: props.request.goods,
             fromStock: props.request.stock._id,
-            toStock: props.request.toStock ?  props.request.toStock._id : "",
-            manufacturingWork: props.request.manufacturingWork ? props.request.manufacturingWork._id : "",
-            supplier: props.request.supplier ? props.request.supplier._id : "",
+            toStock: props.request.toStock ? props.request.toStock._id : "",
             type: type,
             requestId: props.requestId,
             isHaveDataStep1: state.isHaveDataStep1 + 1,
@@ -188,8 +160,6 @@ function GoodIssueCreateFormModal(props) {
                 status: state.status,
                 type: state.type,
                 goods: state.listGood,
-                manufacturingWork: state.manufacturingWork,
-                supplier: state.supplier,
                 code: state.code,
                 description: state.description,
                 dataStockWorkAssignment: state.dataStockWorkAssignment,
@@ -209,18 +179,18 @@ function GoodIssueCreateFormModal(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-create-new-issue-bill"
+                modalID="modal-create-new-takes-bill"
                 isLoading={false}
-                formID="modal-create-new-issue-bill"
-                title={"Tạo mới phiếu xuất kho"}
-                msg_success={"Tạo mới phiếu xuất kho thành công"}
-                msg_failure={"Tạo mới phiếu xuất kho thất bại"}
+                formID="modal-create-new-takes-bill"
+                title={"Tạo mới phiếu kiểm kê"}
+                msg_success={"Tạo mới phiếu kiểm kê thành công"}
+                msg_failure={"Tạo mới phiếu kiểm kê thất bại"}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
                 maxWidth={500}
             >
-                <form id="modal-create-new-issue-bill">
+                <form id="modal-create-new-takes-bill">
                     <div className="timeline">
                         <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
                         <div className="timeline-items">
@@ -246,8 +216,6 @@ function GoodIssueCreateFormModal(props) {
                                 toStock={toStock}
                                 type={type}
                                 listGood={listGood}
-                                manufacturingWork={manufacturingWork}
-                                supplier={supplier}
                                 description={description}
                                 createType={createType}
                                 requestValue={requestValue}
@@ -255,15 +223,6 @@ function GoodIssueCreateFormModal(props) {
                             />
                         }
                         {step === 1 &&
-                            <SelectLotComponent
-                                isHaveDataStep2={isHaveDataStep2}
-                                listGood={listGood}
-                                fromStock={fromStock}
-                                toStock={toStock}
-                                type={type}
-                            />
-                        }
-                        {step === 2 &&
                             <StockWorkAssignment
                                 isHaveDataStep2={isHaveDataStep2}
                                 peopleInCharge={peopleInCharge}
@@ -298,4 +257,4 @@ const mapDispatchToProps = {
     createBill: BillActions.createBill,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodIssueCreateFormModal));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodTakesCreateFormModal));

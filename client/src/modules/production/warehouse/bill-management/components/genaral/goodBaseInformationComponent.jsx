@@ -202,7 +202,10 @@ function GoodBaseInformationComponent(props) {
         let value = e.target.value;
         setState({
             ...state,
-            description: value,
+            good: {
+                ...state.good,
+                description: value,
+            },
         });
     };
 
@@ -221,84 +224,87 @@ function GoodBaseInformationComponent(props) {
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate("manage_warehouse.bill_management.goods")}</legend>
-                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                    <div className={`form-group ${!errorType ? "" : "has-error"}`}>
-                        <label>
-                            {"Loại hàng hóa"}
-                            <span className="text-red"> * </span>
-                        </label>
-                        <SelectBox
-                            id={`select-type-receipt-create`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={type}
-                            items={dataType}
-                            onChange={handleTypeChange}
-                            multiple={false}
-                        />
-                        <ErrorLabel content={errorType} />
+                {(createType === 1) ? <div>
+                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div className={`form-group ${!errorType ? "" : "has-error"}`}>
+                            <label>
+                                {"Loại hàng hóa"}
+                                <span className="text-red"> * </span>
+                            </label>
+                            <SelectBox
+                                id={`select-type-receipt-create`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={type}
+                                items={dataType}
+                                onChange={handleTypeChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={errorType} />
+                        </div>
                     </div>
-                </div>
-                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                    <div className="form-group">
-                        <label>{translate("manage_warehouse.bill_management.choose_good")}</label>
-                        <SelectBox
-                            id={`select-good-receipt-create`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={good.good ? good.good._id : "1"}
-                            items={listGoods}
-                            onChange={handleGoodChange}
-                            multiple={false}
-                        />
+                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div className="form-group">
+                            <label>{translate("manage_warehouse.bill_management.choose_good")}</label>
+                            <SelectBox
+                                id={`select-good-receipt-create`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={good.good ? good.good._id : "1"}
+                                items={listGoods}
+                                onChange={handleGoodChange}
+                                multiple={false}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                    <div className="form-group">
-                        <label>{translate("manage_warehouse.bill_management.number")}</label>
-                        <input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />
+                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div className="form-group">
+                            <label>{translate("manage_warehouse.bill_management.number")}</label>
+                            <input className="form-control" value={good.quantity} onChange={handleQuantityChange} type="number" />
+                        </div>
                     </div>
-                </div>
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div className="form-group">
-                        <label>{translate("manage_warehouse.bill_management.description")}</label>
-                        <textarea
-                            type="text"
-                            className="form-control"
-                            value={good.description}
-                            onChange={handleGoodDescriptionChange}
-                        />
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className="form-group">
+                            <label>{translate("manage_warehouse.bill_management.description")}</label>
+                            <textarea
+                                type="text"
+                                className="form-control"
+                                value={good.description}
+                                onChange={handleGoodDescriptionChange}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="pull-right" style={{ marginBottom: "10px" }}>
-                    {state.editInfo ? (
-                        <React.Fragment>
-                            <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>
-                                {translate("task_template.cancel_editing")}
-                            </button>
+                    <div className="pull-right" style={{ marginBottom: "10px" }}>
+                        {state.editInfo ? (
+                            <React.Fragment>
+                                <button className="btn btn-success" onClick={handleCancelEditGood} style={{ marginLeft: "10px" }}>
+                                    {translate("task_template.cancel_editing")}
+                                </button>
+                                <button
+                                    className="btn btn-success"
+                                    disabled={!isGoodsValidated()}
+                                    onClick={handleSaveEditGood}
+                                    style={{ marginLeft: "10px" }}
+                                >
+                                    {translate("task_template.save")}
+                                </button>
+                            </React.Fragment>
+                        ) : (
                             <button
                                 className="btn btn-success"
-                                disabled={!isGoodsValidated()}
-                                onClick={handleSaveEditGood}
                                 style={{ marginLeft: "10px" }}
+                                disabled={!isGoodsValidated()}
+                                onClick={handleAddGood}
                             >
-                                {translate("task_template.save")}
+                                {translate("task_template.add")}
                             </button>
-                        </React.Fragment>
-                    ) : (
-                        <button
-                            className="btn btn-success"
-                            style={{ marginLeft: "10px" }}
-                            disabled={(createType === 2 || createType === 3) ? true : !isGoodsValidated()}
-                            onClick={handleAddGood}
-                        >
-                            {translate("task_template.add")}
+                        )}
+                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>
+                            {translate("task_template.delete")}
                         </button>
-                    )}
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearGood}>
-                        {translate("task_template.delete")}
-                    </button>
-                </div>
+                    </div>
+                </div> : ''}
+
                 <div className={`form-group`}>
                     {/* Bảng thông tin chi tiết */}
                     <table className="table">

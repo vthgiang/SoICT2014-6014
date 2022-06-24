@@ -42,8 +42,7 @@ export const dataWorkAssignment = {
     goodReceiptData,
     goodIssueData,
     goodReturnData,
-    // goodTakeData,
-    // goodRotateData,
+    goodTakesData,
 }
 
 
@@ -109,4 +108,127 @@ function goodReturnData(code) {
         },
     ]
     return data;
+}
+
+function goodTakesData(code) {
+    const data = [
+        {
+            nameField: "Công việc 1: " + code, workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:59 PM", type: 'default', description: 'Vận chuyển hàng hóa đến đúng vị trí'
+        },
+        {
+            nameField: "Công việc 2: " + code, workAssignmentStaffs: [], startDate: formatDate((new Date()).toISOString()), startTime: "", endDate: formatDate((new Date()).toISOString()), endTime: "11:59 PM", type: 'default', description: `unpack, kiểm tra số lượng và chất lượng. Phân loại hàng hóa theo danh mục. Đối chiếu, packing. Ghi chú thay đổi`
+        }
+    ]
+    return data;
+}
+
+export const datasBillType = {
+    goodReceiptBillType,
+    goodIssueBillType,
+    goodReturnBillType,
+    goodTakesBillType,
+}
+
+function goodReceiptBillType() {
+    let dataBillType = [
+        {
+            value: '0',
+            text: 'Chọn loại phiếu',
+        },
+        {
+            value: '1',
+            text: 'Nhập hàng hóa từ nhà máy sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Nhập hàng hóa từ nhà cung cấp',
+        },
+        {
+            value: '3',
+            text: 'Nhập hàng hóa luân chuyển kho',
+        }
+    ];
+    return dataBillType;
+}
+
+function goodIssueBillType() {
+    let dataBillType = [
+        {
+            value: '0',
+            text: 'Chọn loại xuất kho',
+        },
+        {
+            value: '1',
+            text: 'Xuất hàng đạt kiểm định đến nhà máy',
+        },
+        {
+            value: '2',
+            text: 'Xuất hàng đạt kiểm định đến khách hàng',
+        },
+        {
+            value: '3',
+            text: 'Xuất hàng không đạt kiểm định đến nhà máy',
+        },
+        {
+            value: '4',
+            text: 'Xuất hàng không đạt kiểm định đến khách hàng',
+        },
+        {
+            value: '5',
+            text: 'Xuất hàng đến kho khác',
+        }
+    ];
+    return dataBillType;
+}
+
+function goodReturnBillType() {
+    let dataBillType = [
+        {
+            value: '0',
+            text: 'Chọn nguồn hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Trả hàng hóa từ nhà máy sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Trả hàng hóa từ nhà cung cấp',
+        }
+    ];
+    return dataBillType;
+}
+
+function goodTakesBillType() {
+    let dataBillType = [
+        {
+            value: '0',
+            text: 'Chọn loại xuất kho',
+        },
+        {
+            value: '1',
+            text: 'Kiểm kê thường xuyên',
+        },
+        {
+            value: '2',
+            text: 'Kiểm kê định kỳ',
+        },
+        {
+            value: '3',
+            text: 'kiểm kê dựa trên yêu cầu nhập kho',
+        },
+        {
+            value: '4',
+            text: 'kiểm kê dựa trên yêu cầu xuất kho',
+        },
+        {
+            value: '5',
+            text: 'kiểm kê dựa trên yêu cầu trả hàng',
+        },
+        {
+            value: '6',
+            text: 'kiểm kê dựa trên yêu cầu luân chuyển',
+        }
+    ];
+    return dataBillType;
 }

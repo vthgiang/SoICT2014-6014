@@ -9,6 +9,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
 import GoodIssueCreateFormModal from '../../../bill-management/components/good-issues/goodIssueCreateFormModal';
 import GoodReceiptCreateFormModal from '../../../bill-management/components/good-receipts/goodReceiptCreateFormModal';
+import ApproveForm from '../common-components/approveForm';
 
 function GoodRotateRequestManagementTable(props) {
 
@@ -59,14 +60,23 @@ function GoodRotateRequestManagementTable(props) {
         return count > 0;
     }
 
-    const handleFinishedApprovalInToStock = (request) => {
-        const userId = localStorage.getItem("userId");
-        const data = {
-            approvedUser: userId,
-            approveType: 5
-        }
-        props.editRequest(request._id, data);
+    const handleShowApproveInToStock = async (request) => {
+        await setState({
+            ...state,
+            requestApprove: request,
+            fromStock: false
+        });
+        await window.$("#modal-approve-form").modal("show");
     }
+
+    const handleShowApproveInFromStock = async (request) => {
+        await setState({
+            ...state,
+            requestApprove: request,
+            fromStock: true
+        });
+        await window.$("#modal-approve-form").modal("show");
+    };
 
     const handleCreateIssueBill = async (request) => {
         await setState({
@@ -90,7 +100,7 @@ function GoodRotateRequestManagementTable(props) {
         listRequests = requestManagements.listRequests
     }
     const { totalPages, page } = requestManagements;
-    const { code, createdAt, planCode, desiredTime } = state;
+    const { code, createdAt, planCode, desiredTime, fromStock } = state;
 
     return (
         <React.Fragment>
@@ -118,10 +128,16 @@ function GoodRotateRequestManagementTable(props) {
             <GoodIssueCreateFormModal
                 createType={4} // 3: create from request in request screen
                 requestId={state.issueRequest ? state.issueRequest._id : ''}
-                request={state.issueRequest} 
-                />
+                request={state.issueRequest}
+            />
+            <ApproveForm
+                requestId={state.requestApprove ? state.requestApprove._id : ''}
+                requestApprove={state.requestApprove}
+                fromStock={fromStock}
+                createGoodTakesType={5} 
+            />
             <div className="box-body qlcv">
-                <CreateForm stockRequestType={props.stockRequestType}/>
+                <CreateForm stockRequestType={props.stockRequestType} />
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('production.request_management.code')}</label>
@@ -209,7 +225,7 @@ function GoodRotateRequestManagementTable(props) {
                                     <td>{request.creator && request.creator.name}</td>
                                     <td>{formatDate(request.createdAt)}</td>
                                     <td>{formatDate(request.desiredTime)}</td>
-                                    <td style={{color: translate(`production.request_management.stock_rotate_request.${request.status}.color`) }}>{translate(`production.request_management.stock_rotate_request.${request.status}.content`)}</td>
+                                    <td style={{ color: translate(`production.request_management.stock_rotate_request.${request.status}.color`) }}>{translate(`production.request_management.stock_rotate_request.${request.status}.content`)}</td>
                                     <td>{request.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a style={{ width: '5px' }} title={translate('production.request_management.request_detail')} onClick={() => { handleShowDetailRequest(request) }}><i className="material-icons">view_list</i></a>
@@ -219,26 +235,26 @@ function GoodRotateRequestManagementTable(props) {
                                         }
                                         {/*Phê duyệt yêu cầu*/}
                                         {
-                                            props.checkRoleApprover(request) && 
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('production.request_management.approved_true')}
-                                                content={translate('production.request_management.approved_true') + " " + request.code}
-                                                name="check_circle_outline"
-                                                className="text-green"
-                                                func={() => props.handleFinishedApproval(request)}
-                                            />
+                                            props.checkRoleApprover(request) &&
+                                            <a
+                                                onClick={() => handleShowApproveInFromStock(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Phê duyệt đơn"
+                                            >
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
                                         }
                                         {
-                                            checkRoleApproverInToStock(request) && 
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('production.request_management.approved_true')}
-                                                content={translate('production.request_management.approved_true') + " " + request.code}
-                                                name="check_circle_outline"
-                                                className="text-green"
-                                                func={() => handleFinishedApprovalInToStock(request)}
-                                            />
+                                            checkRoleApproverInToStock(request) &&
+                                            <a
+                                                onClick={() => handleShowApproveInToStock(request)}
+                                                className="add text-success"
+                                                style={{ width: "5px" }}
+                                                title="Phê duyệt đơn"
+                                            >
+                                                <i className="material-icons">check_circle_outline</i>
+                                            </a>
                                         }
                                         {
                                             request.status == 2 &&
@@ -252,7 +268,7 @@ function GoodRotateRequestManagementTable(props) {
                                             </a>
                                         }
                                         {
-                                            request.status == 4 &&
+                                            // request.status == 4 &&
                                             <a
                                                 onClick={() => handleCreateReceiptBill(request)}
                                                 className="add text-success"

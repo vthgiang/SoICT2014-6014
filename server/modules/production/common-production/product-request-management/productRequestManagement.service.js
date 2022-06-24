@@ -373,6 +373,7 @@ exports.editRequest = async (user, id, data, portal) => {
     oldRequest.description = data.description ? data.description : oldRequest.description;
     if (data.approvedUser && data.approveType) {
         let index1 = findIndexOfRole(oldRequest.approvers, data.approveType);
+        console.log(oldRequest.approvers[index1].information);
         let index2 = findIndexOfApprover(oldRequest.approvers[index1].information, data.approvedUser);
 
         if (index2 !== -1) {

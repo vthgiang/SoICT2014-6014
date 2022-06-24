@@ -260,6 +260,13 @@ const BillSchema = new Schema({
                 quantity: {
                     type: Number
                 },
+                realQuantity: {
+                    type: Number
+                },
+                status: {
+                    type: Boolean,
+                    default: false
+                },
                 name: {
                     type: String
                 }

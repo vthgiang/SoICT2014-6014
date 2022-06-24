@@ -124,7 +124,8 @@ function ReturnManagement(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                { value: '7', text: translate('manage_warehouse.bill_management.billType.7') },
+                                { value: '1', text: translate('manage_warehouse.bill_management.goodReturnBillType.1') },
+                                { value: '2', text: translate('manage_warehouse.bill_management.goodReturnBillType.2') },
                             ]}
                             onChange={props.handleTypeChange}
                         />
@@ -246,7 +247,7 @@ function ReturnManagement(props) {
                                     <td>{index + 1}</td>
                                     <td>{x.code}</td>
                                     <td><a href="#" onClick={() => props.handleShowDetailInfo(x.bill ? x.bill._id : '')}>{x.bill ? x.bill.code : ''}</a></td>
-                                    <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
+                                    <td>{translate(`manage_warehouse.bill_management.goodReturnBillType.${x.type}`)}</td>
                                     <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
