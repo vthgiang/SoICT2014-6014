@@ -78,7 +78,7 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
       { path: "hoursSpentOnTask.contributions.employee", select: "name" },
       {
         path: "process",
-        populate: {
+        populate: [{
           path: "tasks",
           populate: [
             { path: "parent", select: "name" },
@@ -136,7 +136,8 @@ exports.getTaskById = async (portal, id, userId, thirdParty = false) => {
               select: "name email avatar",
             },
           ],
-        },
+        },{ path: 'processTemplate' },
+            { path: 'processTemplate', populate: { path: 'processTemplates.process' } }],
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
