@@ -45,6 +45,9 @@ function Proposals(props) {
         tags: [],
         tasks: [],
     }
+    const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : initProposal);
+    const [biddingPackage, setBiddingPackage] = useState(props.biddingPackage ? props.biddingPackage : {});
+    const [isTable, setIsTable] = useState(true);
     const [state, setState] = useState({
         type: ADD_TYPE,
         currentTask: initTaskData,
@@ -52,12 +55,9 @@ function Proposals(props) {
         tagType: ADD_TYPE,
         currentTag: initTag,
         currentTagIndex: null,
-        showFormTask: true,
-        showFormTag: true
+        showFormTask: proposals?.tasks?.length === 0 ? true : false,
+        showFormTag: proposals?.tags?.length === 0 ? true : false,
     });
-    const [proposals, setProposals] = useState(props.biddingPackage.proposals ? props.biddingPackage.proposals : initProposal);
-    const [biddingPackage, setBiddingPackage] = useState(props.biddingPackage ? props.biddingPackage : {});
-    const [isTable, setIsTable] = useState(true);
     const [step, setStep] = useState({
         currentStep: 0,
         steps: [
@@ -188,7 +188,8 @@ function Proposals(props) {
             ...state,
             type: EDIT_TYPE,
             currentTask: proposals.tasks[listIndex],
-            currentIndex: listIndex
+            currentIndex: listIndex,
+            showFormTask: true,
         })
     }
 
@@ -300,7 +301,8 @@ function Proposals(props) {
             ...state,
             tagType: EDIT_TYPE,
             currentTag: proposals.tags[listIndex],
-            currentTagIndex: listIndex
+            currentTagIndex: listIndex,
+            showFormTag: true
         })
     }
 
@@ -387,7 +389,7 @@ function Proposals(props) {
         allEmployee = employeesManager.listAllEmployees
     }
 
-    const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType, listCareer } = state;
+    const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType, listCareer, showFormTag, showFormTask } = state;
     const { currentStep, steps } = step;
     let listEmpInfoFormated = getEmployeeInfoWithTask(allUsers, allEmployee, tasks?.tasks ?? [], proposals?.executionTime ?? 0, proposals?.unitOfTime, biddingPackage);
     useEffect(() => {
@@ -451,51 +453,57 @@ function Proposals(props) {
                 </fieldset>
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border">Đề xuất thẻ công việc</legend>
-                    <div >
-                        <div className="form-group">
-                            <label>Tên thẻ<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name={`name-tag-${currentTagIndex}`} onChange={(value) => handleChangeTagForm("name", value)} value={currentTag?.name} placeholder="Tên thẻ" autoComplete="off" />
-                            <ErrorLabel content={currentTag?.tagNameError} />
-                        </div>
-                        <div className="form-group">
-                            <label>Mô tả thẻ</label>
-                            <textarea type="text" rows={3} style={{ minHeight: '73.5px' }}
-                                name={`desc-tag-${currentTagIndex}`}
-                                onChange={(value) => handleChangeTagForm("description", value)}
-                                value={currentTag?.description}
-                                className="form-control"
-                                placeholder="Mô tả công việc"
-                                autoComplete="off"
-                            />
-                        </div>
-                        <div className={`form-group`}>
-                            <label className="control-label">Nhân sự thực hiện<span className="text-red">*</span></label>
-                            {listEmpInfoFormated && proposalType && <SelectBox
-                                id={`${proposalType}-tag-employees-${currentIndex}-${id}`}
-                                // ${currentTagIndex}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listEmpInfoFormated ? listEmpInfoFormated : []}
-                                onChange={(value) => handleChangeTagEmployee("employees", value)}
-                                options={{ placeholder: "Chọn nhân sự" }}
-                                value={currentTag?.employees}
-                                multiple={true}
-                            />}
-                        </div>
-                    </div>
+                    <a style={{ cursor: 'pointer' }} onClick={() => setState({ ...state, showFormTag: !showFormTag })}>{showFormTag ? "Ẩn form" : "Hiển thị form"}</a>
+                    {!showFormTag ? null :
+                        <div>
+                            <div >
+                                <div className="form-group">
+                                    <label>Tên thẻ<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name={`name-tag-${currentTagIndex}`} onChange={(value) => handleChangeTagForm("name", value)} value={currentTag?.name} placeholder="Tên thẻ" autoComplete="off" />
+                                    <ErrorLabel content={currentTag?.tagNameError} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Mô tả thẻ</label>
+                                    <textarea type="text" rows={3} style={{ minHeight: '73.5px' }}
+                                        name={`desc-tag-${currentTagIndex}`}
+                                        onChange={(value) => handleChangeTagForm("description", value)}
+                                        value={currentTag?.description}
+                                        className="form-control"
+                                        placeholder="Mô tả công việc"
+                                        autoComplete="off"
+                                    />
+                                </div>
+                                <div className={`form-group`}>
+                                    <label className="control-label">Nhân sự thực hiện<span className="text-red">*</span></label>
+                                    {listEmpInfoFormated && proposalType && <SelectBox
+                                        id={`${proposalType}-tag-employees-${currentIndex}-${id}`}
+                                        // ${currentTagIndex}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listEmpInfoFormated ? listEmpInfoFormated : []}
+                                        onChange={(value) => handleChangeTagEmployee("employees", value)}
+                                        options={{ placeholder: "Chọn nhân sự" }}
+                                        value={currentTag?.employees}
+                                        multiple={true}
+                                    />}
+                                </div>
+                            </div>
 
-                    <div className="pull-right row" style={{ marginRight: 0, marginBottom: "15px" }}>
-                        {state.tagType === EDIT_TYPE &&
-                            <>
-                                <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancelTag() }}>Hủy</button>
-                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTag(currentTagIndex) }}>Lưu</button>
-                            </>
-                        }
-                        {state.tagType === ADD_TYPE &&
-                            <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTag() }}>Thêm</button>
-                        }
-                        <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTag() }}>Xóa trắng</button>
-                    </div>
+                            <div className="pull-right row" style={{ marginRight: 0, marginBottom: "15px" }}>
+                                {state.tagType === EDIT_TYPE &&
+                                    <>
+                                        <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancelTag() }}>Hủy</button>
+                                        <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTag(currentTagIndex) }}>Lưu</button>
+                                    </>
+                                }
+                                {state.tagType === ADD_TYPE &&
+                                    <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTag() }}>Thêm</button>
+                                }
+                                <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTag() }}>Xóa trắng</button>
+                            </div>
+                        </div>
+                    }
+
 
                     <table id="tags-proposal-table" className="table table-striped table-bordered table-hover">
                         <thead>
@@ -531,93 +539,116 @@ function Proposals(props) {
             {currentStep === 1 && <div>
                 <fieldset className="scheduler-border">
                     <legend className="scheduler-border">Đề xuất công việc</legend>
-                    <div className="">{/** box-body */}
-                        <div className="row" style={{ paddingTop: '10px' }}>
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>Tên công việc<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name={`taskName-${currentIndex}`} onChange={(value) => handleChangeForm("taskName", value)} value={currentTask?.taskName} placeholder="Tên công việc" autoComplete="off" />
-                                    <ErrorLabel content={currentTask?.taskNameError} />
+                    <a style={{ cursor: 'pointer' }} onClick={() => setState({ ...state, showFormTask: !showFormTask })}>{showFormTask ? "Ẩn form" : "Hiển thị form"}</a>
+                    <br />
+                    {!showFormTask ? null : <div>
+                        <div>
+                            <div className="row" style={{ paddingTop: '10px' }}>
+                                <div className="col-md-6">
+                                    <div className="form-group">
+                                        <label>Tên công việc<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" name={`taskName-${currentIndex}`} onChange={(value) => handleChangeForm("taskName", value)} value={currentTask?.taskName} placeholder="Tên công việc" autoComplete="off" />
+                                        <ErrorLabel content={currentTask?.taskNameError} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Mã công việc<span className="text-red">*</span></label>
+                                        <input type="text" className="form-control" name={`code-${currentIndex}`} onChange={(value) => handleChangeForm("code", value)} value={currentTask?.code} placeholder="Mã công việc" autoComplete="off" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Công việc tiền nhiệm</label>
+                                        <input type="text" className="form-control" name={`preceedingTasks-${currentIndex}`} onChange={(value) => handleChangeForm("preceedingTasks", value)} value={currentTask?.preceedingTasks} placeholder="Công việc tiền nhiệm" autoComplete="off" />
+                                    </div>
                                 </div>
-                                <div className="form-group">
-                                    <label>Mã công việc<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name={`code-${currentIndex}`} onChange={(value) => handleChangeForm("code", value)} value={currentTask?.code} placeholder="Mã công việc" autoComplete="off" />
-                                </div>
-                                <div className="form-group">
-                                    <label>Công việc tiền nhiệm</label>
-                                    <input type="text" className="form-control" name={`preceedingTasks-${currentIndex}`} onChange={(value) => handleChangeForm("preceedingTasks", value)} value={currentTask?.preceedingTasks} placeholder="Công việc tiền nhiệm" autoComplete="off" />
+                                <div className="col-md-6">
+                                    <div className="form-group">
+                                        <label>Thời gian thực hiện<span className="text-red">*</span></label>
+                                        <input type="number" className="form-control" name={`estimateTime-${currentIndex}`} onChange={(value) => handleChangeForm("estimateTime", value)} value={currentTask?.estimateTime} placeholder="Thời gian thực hiện" autoComplete="off" />
+                                        <ErrorLabel content={currentTask?.estimateTimeError} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Mô tả công việc</label>
+                                        <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
+                                            name={`desc-${currentIndex}`}
+                                            onChange={(value) => handleChangeForm("taskDescription", value)}
+                                            value={currentTask?.taskDescription}
+                                            className="form-control"
+                                            placeholder="Mô tả công việc"
+                                            autoComplete="off"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>Thời gian thực hiện<span className="text-red">*</span></label>
-                                    <input type="number" className="form-control" name={`estimateTime-${currentIndex}`} onChange={(value) => handleChangeForm("estimateTime", value)} value={currentTask?.estimateTime} placeholder="Thời gian thực hiện" autoComplete="off" />
-                                    <ErrorLabel content={currentTask?.estimateTimeError} />
+                            <div>
+                                <div className={`form-group`}>
+                                    <label className="control-label">Thẻ công việc<span className="text-red">*</span></label>
+                                    {listTag?.length ? <SelectBox
+                                        id={`${proposalType}--tag-task-${currentIndex}-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listTag ? listTag : []}
+                                        onChange={(value) => handleChangeSelectValue("tag", value)}
+                                        options={{ placeholder: "Chọn thẻ cho công việc" }}
+                                        value={currentTask?.tag}
+                                        multiple={false}
+                                    /> : <span>Chưa có danh sách thẻ - hãy tạo thẻ ở trên!</span>}
                                 </div>
-                                <div className="form-group">
-                                    <label>Mô tả công việc</label>
-                                    <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
-                                        name={`desc-${currentIndex}`}
-                                        onChange={(value) => handleChangeForm("taskDescription", value)}
-                                        value={currentTask?.taskDescription}
-                                        className="form-control"
-                                        placeholder="Mô tả công việc"
-                                        autoComplete="off"
-                                    />
+                                <div className={`form-group`}>
+                                    {/* style={{display: "flex", justifyContent: "flex-end"}} */}
+                                    <div className='pull-right'>
+                                        <ModalViewEmployee
+                                            id={id ?? ""}
+                                            listEmployee={listEmpInfoFormated}
+                                        />
+                                        <a style={{ cursor: "pointer" }} onClick={() => handleShowViewEmployee(id)}>Xem thông tin nhân viên</a>
+                                    </div>
+                                    <label className="control-label">Nhân sự trực tiếp<span className="text-red">*</span></label>
+                                    {listEmpbyTag && <SelectBox
+                                        id={`direct-employee-${currentIndex}-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listEmpbyTag?.length > 0 ? listEmpbyTag : listEmpInfoFormated ?? []}
+                                        onChange={(value) => handleChangeSelectValue("directEmployees", value)}
+                                        options={{ placeholder: "Chọn nhân sự trực tiếp" }}
+                                        value={currentTask?.directEmployees}
+                                        multiple={true}
+                                    />}
+                                </div>
+                                <div className={`form-group`}>
+                                    <label className="control-label">Nhân sự dự phòng<span className="text-red">*</span></label>
+                                    {listEmpbyTag && <SelectBox
+                                        id={`backup-employee-${currentIndex}-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listEmpbyTag?.length > 0 ? listEmpbyTag : listEmpInfoFormated ?? []}
+                                        onChange={(value) => handleChangeSelectValue("backupEmployees", value)}
+                                        options={{ placeholder: "Chọn nhân sự dự phòng" }}
+                                        value={currentTask?.backupEmployees}
+                                        multiple={true}
+                                    />}
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div className={`form-group`}>
-                                <label className="control-label">Thẻ công việc<span className="text-red">*</span></label>
-                                {listTag?.length ? <SelectBox
-                                    id={`${proposalType}--tag-task-${currentIndex}-${id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={listTag ? listTag : []}
-                                    onChange={(value) => handleChangeSelectValue("tag", value)}
-                                    options={{ placeholder: "Chọn thẻ cho công việc" }}
-                                    value={currentTask?.tag}
-                                    multiple={false}
-                                /> : <span>Chưa có danh sách thẻ - hãy tạo thẻ ở trên!</span>}
-                            </div>
-                            <div className={`form-group`}>
-                                {/* style={{display: "flex", justifyContent: "flex-end"}} */}
-                                <div className='pull-right'>
-                                    <ModalViewEmployee
-                                        id={id ?? ""}
-                                        listEmployee={listEmpInfoFormated}
-                                    />
-                                    <a style={{ cursor: "pointer" }} onClick={() => handleShowViewEmployee(id)}>Xem thông tin nhân viên</a>
-                                </div>
-                                <label className="control-label">Nhân sự trực tiếp<span className="text-red">*</span></label>
-                                {listEmpbyTag && <SelectBox
-                                    id={`direct-employee-${currentIndex}-${id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={listEmpbyTag?.length > 0 ? listEmpbyTag : listEmpInfoFormated ?? []}
-                                    onChange={(value) => handleChangeSelectValue("directEmployees", value)}
-                                    options={{ placeholder: "Chọn nhân sự trực tiếp" }}
-                                    value={currentTask?.directEmployees}
-                                    multiple={true}
-                                />}
-                            </div>
-                            <div className={`form-group`}>
-                                <label className="control-label">Nhân sự dự phòng<span className="text-red">*</span></label>
-                                {listEmpbyTag && <SelectBox
-                                    id={`backup-employee-${currentIndex}-${id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={listEmpbyTag?.length > 0 ? listEmpbyTag : listEmpInfoFormated ?? []}
-                                    onChange={(value) => handleChangeSelectValue("backupEmployees", value)}
-                                    options={{ placeholder: "Chọn nhân sự dự phòng" }}
-                                    value={currentTask?.backupEmployees}
-                                    multiple={true}
-                                />}
-                            </div>
+                        <div className="row" style={{ marginRight: 0, marginBottom: "15px", display: "flex", justifyContent: "flex-end" }}>
+                            {state.type === EDIT_TYPE &&
+                                <>
+                                    <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancel() }}>Hủy</button>
+                                    <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTask(state.currentIndex) }}>Lưu</button>
+                                </>
+                            }
+                            {state.type === ADD_TYPE &&
+                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTask() }}>Thêm</button>
+                            }
+                            <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
                         </div>
                     </div>
+                    }
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
+                        <div className="box-tools" style={{ marginBottom: '5px' }}>
+                            <div className="btn-group">
+                                <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${isTable ? "btn-danger" : "active"}`}>Bảng</button>
+                                <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? "btn-danger" : "active"}`}>Biểu đồ Gantt</button>
+                            </div>
+                        </div>
                         {proposals?.tasks?.length ? <div>
                             <ModalProposeEmpForTask
                                 id={id ?? ""}
@@ -635,29 +666,13 @@ function Proposals(props) {
                                 }}
                                 handleAcceptProposal={handleAcceptProposal}
                             />
-                            <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handelProposeModal(id) }}>Đề xuất tự động</button>
+                            <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600" }} onClick={() => { handelProposeModal(id) }}>
+                                Đề xuất tự động <i className='fa fa-arrow-circle-right'></i>
+                            </a>
                         </div> : null
                         }
-                        <div className="row" style={{ marginRight: 0, marginBottom: "15px" }}>
-                            {state.type === EDIT_TYPE &&
-                                <>
-                                    <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancel() }}>Hủy</button>
-                                    <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTask(state.currentIndex) }}>Lưu</button>
-                                </>
-                            }
-                            {state.type === ADD_TYPE &&
-                                <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTask() }}>Thêm</button>
-                            }
-                            <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTask() }}>Xóa trắng</button>
-                        </div>
                     </div>
                     <br />
-                    <div className="box-tools" style={{ marginBottom: '5px' }}>
-                        <div className="btn-group">
-                            <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${isTable ? "btn-danger" : "active"}`}>Bảng</button>
-                            <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? "btn-danger" : "active"}`}>Biểu đồ Gantt</button>
-                        </div>
-                    </div>
                     {
                         !isTable ? <ViewTaskInGantt
                             taskList={proposals?.tasks}
