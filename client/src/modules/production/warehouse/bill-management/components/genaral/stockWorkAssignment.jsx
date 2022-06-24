@@ -36,6 +36,10 @@ function StockWorkAssignment(props) {
             break;
         case "3":
             dataWorkAssignments = dataWorkAssignment.goodReturnData(props.code);
+            break;
+        case "4":
+            dataWorkAssignments = dataWorkAssignment.goodTakesData(props.code);
+            break;
     }
 
     const [state, setState] = useState({
@@ -610,6 +614,9 @@ function StockWorkAssignment(props) {
                     break;
                 case "3":
                     groupText = 'trả hàng';
+                    break;
+                case "4":
+                    groupText = 'kiểm kê';
                     break;
             }
 

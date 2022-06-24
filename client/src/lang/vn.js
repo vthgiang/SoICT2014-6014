@@ -5071,21 +5071,29 @@ export default {
             bill_management: {
                 text: "Chưa đánh lô cho hàng hóa",
 
-                billType: {
-                    1: "Nhập nguyên vật liệu",
-                    2: "Nhập thành phẩm",
-                    3: "Nhập công cụ, dụng cụ",
-                    4: "Nhập phế phẩm",
-                    5: "Xuất nguyên vật liệu",
-                    6: "Xuất thành phẩm",
-                    7: "Xuất công cụ, dụng cụ",
-                    8: "Xuất phế phẩm",
-                    9: "Kiểm kê định kỳ",
-                    10: "Kiểm kê thường xuyên",
-                    11: "Trả hàng hóa tự sản xuất không đạt kiểm định",
-                    12: "Trả hàng hóa nhập từ nhà cung cấp không đạt kiểm định",
-                    13: "Trả hàng hóa đã xuất kho",
-                    14: "Luân chuyển",
+                goodReceiptBillType: {
+                    1: "Nhập hàng từ nhà máy sản xuất",
+                    2: "Nhập hàng từ nhà cung cấp",
+                    3: "Nhập hàng hóa luân chuyển kho",
+                },
+                goodRIssueBillType: {
+                    1: "Xuất hàng đạt kiểm định đến nhà máy",
+                    2: "Xuất hàng đạt kiểm định đến khách hàng",
+                    3: "Xuất hàng không đạt kiểm định đến nhà máy",
+                    4: "Xuất hàng không đạt kiểm định đến khách hàng",
+                    5: "Xuất hàng luân chuyển kho",
+                },
+                goodReturnBillType: {
+                    1: "Trả hàng từ nhà máy sản xuất",
+                    2: "Trả hàng từ nhà cung cấp",
+                },
+                goodTakeBillType: {
+                    1: "Kiểm kê thường xuyên",
+                    2: "Kiểm kê định kỳ",
+                    3: "kiểm kê dựa trên yêu cầu nhập kho",
+                    4: "kiểm kê dựa trên yêu cầu xuất kho",
+                    5: "kiểm kê dựa trên yêu cầu trả hàng",
+                    6: "kiểm kê dựa trên yêu cầu luân chuyển"
                 },
                 1: {
                     status: "Chờ phê duyệt",

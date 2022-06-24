@@ -91,7 +91,7 @@ exports.getDetailLot = async (id, portal) => {
         .findById(id)
         .populate([
             { path: 'good' },
-            { path: 'stocks.binLocations.binLocation', select: 'id path' },
+            { path: 'stocks.binLocations.binLocation', select: 'id path name' },
             { path: 'stocks.stock' },
             { path: "manufacturingCommand" },
             {
@@ -110,8 +110,6 @@ exports.getDetailLot = async (id, portal) => {
 }
 
 exports.createOrUpdateLots = async (data, portal) => {
-    console.log("data", data);
-    console.log("passedQualityControl", data.passedQualityControl)
     let lots = [];
     if (data.lots && data.lots.length > 0) {
         for (let i = 0; i < data.lots.length; i++) {
@@ -184,7 +182,6 @@ exports.createOrUpdateLots = async (data, portal) => {
                     lotLogs: lotLogs
 
                 }
-                console.log("query", query)
 
                 let lot = await Lot(connect(DB_CONNECTION, portal)).create(query);
                 lots.push(lot);
@@ -234,7 +231,6 @@ exports.loadingGoodIntoBinLocation = async (data, lot, portal) => {
 exports.editLot = async (id, data, portal) => {
     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(id);
     const oldLot = lot;
-
     if (oldLot.stocks && oldLot.stocks.length > 0) {
         for (let i = 0; i < oldLot.stocks.length; i++) {
             if (oldLot.stocks[i].binLocations.length > 0) {
@@ -266,11 +262,11 @@ exports.editLot = async (id, data, portal) => {
         return {
             stock: item.stock,
             quantity: item.quantity,
-            binLocations: item.binLocations.map(x => { return { binLocation: x.binLocation, quantity: x.quantity } }),
+            binLocations: item.binLocations.map(x => { return { binLocation: x.binLocation._id, quantity: x.quantity } }),
         }
     }) : lot.stocks;
     lot.originalQuantity = data.originalQuantity ? data.originalQuantity : lot.originalQuantity;
-    lot.quantity = data.originalQuantity ? data.originalQuantity : lot.quantity;
+    lot.quantity = lot.stocks.map(item => { return item.quantity }).reduce((a, b) => a + b, 0);
     lot.expirationDate = data.expirationDate ? data.expirationDate : lot.expirationDate;
     lot.description = data.description ? data.description : lot.description;
     lot.lotLogs = data.lotLogs ? data.lotLogs.map(item => {
@@ -305,21 +301,38 @@ exports.editLot = async (id, data, portal) => {
             { path: 'lotLogs.binLocations.binLocation' },
             { path: 'lotLogs.stock', select: 'id name' },
             { path: 'manufacturingCommand' },
-            { path: 'creator',select:"_id name email avatar" }
+            { path: 'creator', select: "_id name email avatar" }
         ])
 }
 
 exports.getLotsByGood = async (query, portal) => {
     const { good, stock, type } = query;
     let passedQualityControl = type ? (type === '1' || type === '2' ? 1 : 0) : null;
-    if (!stock) {
-        return [];
+    let goodData = '';
+    let option = {};
+    if (Array.isArray(good) && good.length > 0) {
+        var arrayGood = [];
+        for (let i = 0; i < good.length; i++) {
+            arrayGood = [...arrayGood, good[i]];
+        }
+        goodData = {
+            $in: arrayGood
+        }
+    } else {
+        goodData = good;
     }
+    if (goodData)
+        option.good = goodData;
+    if (stock)
+        option.stocks = { $elemMatch: { stock: stock } }
+    else option.stocks = [];
+    if (passedQualityControl)
+        option.passedQualityControl = passedQualityControl;
     const lots = await Lot(connect(DB_CONNECTION, portal))
-        .find({ good: good, passedQualityControl: passedQualityControl, stocks: { $elemMatch: { stock: stock } } })
+        .find(option)
         .populate([
             { path: 'good' },
-            { path: 'stocks.binLocations.binLocation', select: 'id path' },
+            { path: 'stocks.binLocations.binLocation', select: 'id path name' },
             { path: 'stocks.stock' },
             { path: 'lotLogs.bill', select: 'id code type' },
             { path: 'lotLogs.binLocations.binLocation' },
@@ -501,7 +514,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                         }]
                     }]
                 }, {
-                    path: "creator",select:"_id name email avatar"
+                    path: "creator", select: "_id name email avatar"
                 }],
                 sort: {
                     "updatedAt": "desc"
@@ -540,7 +553,7 @@ exports.getDetailManufacturingLot = async (id, portal) => {
                 }]
             }]
         }, {
-            path: "creator",select:"_id name email avatar"
+            path: "creator", select: "_id name email avatar"
         }, {
             path: 'lotLogs.bill', select: 'id code type'
         }, {

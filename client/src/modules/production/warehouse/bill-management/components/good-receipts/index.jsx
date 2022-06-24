@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, DataTableSetting, PaginateBar} from '../../../../../../common-components';
+import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
 import BillDetailForm from '../genaral/billDetailForm';
 import GoodReceiptCreateFormModal from './goodReceiptCreateFormModal';
 import { BillActions } from '../../redux/actions';
@@ -158,8 +158,9 @@ function ReceiptManagement(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                { value: '1', text: translate('manage_warehouse.bill_management.billType.1') },
-                                { value: '2', text: translate('manage_warehouse.bill_management.billType.2') }
+                                { value: '1', text: translate('manage_warehouse.bill_management.goodReceiptBillType.1') },
+                                { value: '2', text: translate('manage_warehouse.bill_management.goodReceiptBillType.2') },
+                                { value: '3', text: translate('manage_warehouse.bill_management.goodReceiptBillType.3') }
                             ]}
                             onChange={props.handleTypeChange}
                         />
@@ -249,7 +250,6 @@ function ReceiptManagement(props) {
                             <th>{translate('manage_warehouse.bill_management.creator')}</th>
                             <th>{translate('manage_warehouse.bill_management.date')}</th>
                             <th>{translate('manage_warehouse.bill_management.stock')}</th>
-                            <th>{translate('manage_warehouse.bill_management.supplier')}</th>
                             <th style={{ width: '120px' }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
@@ -260,7 +260,6 @@ function ReceiptManagement(props) {
                                         translate('manage_warehouse.bill_management.creator'),
                                         translate('manage_warehouse.bill_management.date'),
                                         translate('manage_warehouse.bill_management.stock'),
-                                        translate('manage_warehouse.bill_management.supplier'),
                                     ]}
                                     setLimit={props.setLimit}
                                 />
@@ -280,14 +279,11 @@ function ReceiptManagement(props) {
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
                                     <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                    {x.sourceType === '2' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
-                                    {x.sourceType === '1' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
-
                                     <td style={{ textAlign: 'center' }}>
                                         {/*show detail */}
                                         <a onClick={() => props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
-                                        {/*Chỉnh sửa phiếu */}
-                                        {
+                                        {/*Thực hiện công việc */}
+                                        {x.status === '1' &&
                                             <a
                                                 className="text-violet"
                                                 title={translate('manage_warehouse.inventory_management.add_lot')}

@@ -156,8 +156,11 @@ function IssueManagement(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                { value: '3', text: translate('manage_warehouse.bill_management.billType.3') },
-                                { value: '4', text: translate('manage_warehouse.bill_management.billType.4') },
+                                { value: '1', text: translate('manage_warehouse.bill_management.goodRIssueBillType.1') },
+                                { value: '2', text: translate('manage_warehouse.bill_management.goodRIssueBillType.2') },
+                                { value: '3', text: translate('manage_warehouse.bill_management.goodRIssueBillType.3') },
+                                { value: '4', text: translate('manage_warehouse.bill_management.goodRIssueBillType.4') },
+                                { value: '5', text: translate('manage_warehouse.bill_management.goodRIssueBillType.5') },
                             ]}
                             onChange={props.handleTypeChange}
                         />
@@ -271,7 +274,7 @@ function IssueManagement(props) {
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{x.code}</td>
-                                    <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
+                                    <td>{translate(`manage_warehouse.bill_management.goodRIssueBillType.${x.type}`)}</td>
                                     <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
                                     <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
@@ -294,18 +297,6 @@ function IssueManagement(props) {
                                                 <i className="material-icons">assignment_turned_in</i>
                                             </a>
                                         }
-                                        {/*Chuyển phiếu sang trạng thái đã hủy*/}
-                                        {/* {
-                                            props.checkRoleCanEdit(x) && x.status == '1' &&
-                                            <ConfirmNotification
-                                                icon="question"
-                                                title={translate('manage_warehouse.bill_management.cancel_bill')}
-                                                content={translate('manage_warehouse.bill_management.cancel_bill') + " " + x.code}
-                                                name="cancel"
-                                                className="text-red"
-                                                func={() => props.handleCancelBill(x)}
-                                            />
-                                        } */}
                                     </td>
                                 </tr>
                             ))

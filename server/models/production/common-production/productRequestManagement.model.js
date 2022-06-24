@@ -115,7 +115,7 @@ const ProductRequestManagementSchema = new Schema({
     // requestType = 1: mua hàng: type = 1, nhập kho: type = 2, xuất kho : type = 3
     // requestType = 2: nhập kho: type = 1
     // requestType = 3: nhập kho: type = 1, xuất kho: type = 2, trả hàng: type = 3, luân chuyển: type = 4 , vận chuyển: type = 5
-    // requestType = 4: vận chuyển: type = 1: nhập kho: type = 2, xuất kho: type = 3: trả hàng: type = 4, luân chuyển: type = 5
+    // requestType = 4: vận chuyển: type = 1: nhập kho type = 2: xuất kho, type = 3: trả hàng, type = 4: luân chuyển: type = 5
     type: { // loại yêu cầu
         type: Number,
         default: 1
@@ -160,8 +160,8 @@ const ProductRequestManagementSchema = new Schema({
      */
     /*
     Yêu cầu vận chuyển: requestType = 4
-    1. Chờ phê duyệt, 2. Đã phê duyệt, chờ lập lịch vận chuyển, 3. Lập lịch vận chuyển thành công,
-    4. Đang vận chuyển, 5: Đã hoàn thành vận chuyển, 6: lập lịch vận chuyển thất bại, từ chối vận chuyển
+    1. chờ phê duyệt đề nghị vận chuyển, 2. đã phê duyệt đề nghị vận chuyển, 3. đang tiến hành vận chuyển, 
+    4. đã hoàn thành vận chuyển
     */ 
     status: {
         type: Number,

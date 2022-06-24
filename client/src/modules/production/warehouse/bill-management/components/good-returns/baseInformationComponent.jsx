@@ -6,6 +6,7 @@ import { generateCode } from "../../../../../../helpers/generateCode";
 import { LotActions } from "../../../inventory-management/redux/actions";
 import { BillActions } from "../../../bill-management/redux/actions";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
+import { datasBillType } from '../genaral/config';
 
 function BaseInformationComponent(props) {
     const EMPTY_GOOD = {
@@ -28,7 +29,7 @@ function BaseInformationComponent(props) {
         customer: "",
         status: "1",
         fromStock: "",
-        sourceType: "",
+        type: "",
         description: "",
     })
 
@@ -42,22 +43,21 @@ function BaseInformationComponent(props) {
 
     // Nguồn gốc hàng hóa
 
-    const handleSourceChange = (value) => {
-        validateSourceProduct(value[0], true);
+    const handleBillTypeChange = (value) => {
+        validateBillTypeProduct(value[0], true);
     }
 
-    const validateSourceProduct = (value, willUpdateState = true) => {
+    const validateBillTypeProduct = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = props;
-        if (value !== "1" && value !== "2") {
+        if (value === '0') {
             msg = translate("manage_warehouse.good_management.validate_source_product");
         }
         if (willUpdateState) {
             setState({
                 ...state,
-                errorOnSourceProduct: msg,
-                sourceType: value,
-                listGood: [],
+                errorOnBillType: msg,
+                type: value,
             });
         }
         return msg === undefined;
@@ -219,7 +219,7 @@ function BaseInformationComponent(props) {
                 fromStock: request.stock._id,
                 worksValue: request.manufacturingWork ? request.manufacturingWork._id : "",
                 supplier: request.supplier ? request.supplier._id : "",
-                sourceType: request.supplier ? "2" : "1",
+                type: request.supplier ? "2" : "1",
                 requestId: request._id,
                 bill: request.bill ? request.bill._id : "",
             });
@@ -252,7 +252,7 @@ function BaseInformationComponent(props) {
             ...state,
             fromStock: props.fromStock,
             code: props.code,
-            sourceType: props.sourceType,
+            type: props.type,
             listGood: props.listGood,
             dataLots: getDataLots(props.listGood),
             worksValue: props.manufacturingWork,
@@ -269,7 +269,7 @@ function BaseInformationComponent(props) {
                 code: state.code,
                 fromStock: state.fromStock,
                 group: state.group,
-                sourceType: state.sourceType,
+                type: state.type,
                 listGood: state.listGood,
                 manufacturingWork: state.worksValue,
                 requestValue: state.requestValue,
@@ -279,13 +279,13 @@ function BaseInformationComponent(props) {
             }
             props.onDataChange(data);
         }
-    }, [state.fromStock, state.worksValue, state.sourceType, state.supplier, state.listGood, state.description, state.requestValue]);
+    }, [state.fromStock, state.worksValue, state.type, state.supplier, state.listGood, state.description, state.requestValue]);
 
     const isFormValidated = () => {
         let { fromStock, listGood } = state;
         let result =
             validateStock(fromStock, false) &&
-            validateSourceProduct(state.sourceType, false) &&
+            validateBillTypeProduct(state.type, false) &&
             (validateManufacturingWorks(state.worksValue, false) ||
                 validateSupplier(state.supplier, false)) &&
             listGood.length > 0
@@ -294,23 +294,11 @@ function BaseInformationComponent(props) {
 
     const { translate, createType } = props;
     const {
-        listGood, good, code, supplier, worksValue, fromStock, type, errorStock, errorType, errorSupplier, worksValueError,
-        errorOnSourceProduct, sourceType, purchaseOrderId, description, requestValue, errorOnRequest, isHaveDataStep1, dataLots } = state;
+        listGood, good, code, supplier, worksValue, fromStock, errorStock, errorType, errorSupplier, worksValueError,
+        errorOnBillType, type, purchaseOrderId, description, requestValue, errorOnRequest, isHaveDataStep1, dataLots } = state;
 
-    let dataSource = [
-        {
-            value: '0',
-            text: 'Chọn nguồn hàng hóa',
-        },
-        {
-            value: '1',
-            text: 'Hàng hóa tự sản xuất',
-        },
-        {
-            value: '2',
-            text: 'Hàng hóa nhập từ nhà cung cấp',
-        }
-    ];
+    const dataBillType = datasBillType.goodReturnBillType();
+
     const dataCustomer = getSupplier();
     const dataManufacturingWorks = getListWorks();
     const dataStock = getStock();
@@ -344,20 +332,20 @@ function BaseInformationComponent(props) {
                                 <ErrorLabel content={errorStock} />
                             </div>}
                         {(createType === 3) &&
-                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                            <div className={`form-group ${!errorOnBillType ? "" : "has-error"}`}>
+                                <label>{"Loại phiếu"}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
-                                    id={`select-source-type`}
+                                    id={`select-bill-type`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    value={sourceType}
-                                    items={dataSource}
-                                    onChange={handleSourceChange}
+                                    value={type}
+                                    items={dataBillType}
+                                    onChange={handleBillTypeChange}
                                     multiple={false}
                                     disabled={createType === 2 || createType === 3}
                                 />
-                                <ErrorLabel content={errorOnSourceProduct} />
+                                <ErrorLabel content={errorOnBillType} />
                             </div>
                         }
                     </div>
@@ -397,23 +385,23 @@ function BaseInformationComponent(props) {
                             </div>
                         }
                         {createType === 2 &&
-                            <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
-                                <label>{translate('manage_warehouse.good_management.good_source')}</label>
+                            <div className={`form-group ${!errorOnBillType ? "" : "has-error"}`}>
+                                <label>{"Loại phiếu"}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
-                                    id={`select-source-type`}
+                                    id={`select-bill-type`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    value={sourceType}
-                                    items={dataSource}
-                                    onChange={handleSourceChange}
+                                    value={type}
+                                    items={dataBillType}
+                                    onChange={handleBillTypeChange}
                                     multiple={false}
                                     disabled={createType === 2 || createType === 3}
                                 />
-                                <ErrorLabel content={errorOnSourceProduct} />
+                                <ErrorLabel content={errorOnBillType} />
                             </div>
                         }
-                        {sourceType === "2" ?
+                        {type === "2" ?
                             (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
                                 <label>
                                     {translate("manage_warehouse.bill_management.supplier")}
@@ -432,7 +420,7 @@ function BaseInformationComponent(props) {
                                 <ErrorLabel content={errorSupplier} />
                             </div>)
                             : null}
-                        {sourceType === "1" ?
+                        {type === "1" ?
                             (<div className={`form-group ${!worksValueError ? "" : "has-error"}`}>
                                 <label>{translate('production.request_management.manufacturing_works')}<span className="text-red">*</span></label>
                                 <SelectBox

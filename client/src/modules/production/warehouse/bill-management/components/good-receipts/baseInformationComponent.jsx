@@ -8,6 +8,7 @@ import { BillActions } from "../../../bill-management/redux/actions";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import GoodBaseInformationComponent from '../../components/genaral/goodBaseInformationComponent';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
+import { datasBillType } from '../genaral/config';
 
 function BaseInformationComponent(props) {
     const EMPTY_GOOD = {
@@ -340,24 +341,8 @@ function BaseInformationComponent(props) {
         listGood, good, code, supplier, worksValue, fromStock, toStock, errorFromStock, errorToStock, errorType, errorSupplier, worksValueError,
         errorOnBillType, type, description, requestValue, errorOnRequest, isHaveDataStep1 } = state;
 
-    let dataBillType = [
-        {
-            value: '0',
-            text: 'Chọn loại phiếu',
-        },
-        {
-            value: '1',
-            text: 'Nhập hàng hóa tự sản xuất',
-        },
-        {
-            value: '2',
-            text: 'Nhập hàng hóa từ nhà cung cấp',
-        },
-        {
-            value: '3',
-            text: 'Nhập hàng hóa luân chuyển kho',
-        }
-    ];
+    const dataBillType = datasBillType.goodReceiptBillType();
+
     const dataCustomer = getSupplier();
     const dataManufacturingWorks = getListWorks();
     const dataFromStock = getFromStock();

@@ -28,10 +28,6 @@ exports.getBillsByType = async (query, userId, portal) => {
         return await Bill(connect(DB_CONNECTION, portal)).find(options)
             .populate([
                 { path: 'creator' },
-                { path: 'approvers.approver' },
-                { path: 'qualityControlStaffs.staff' },
-                { path: 'responsibles' },
-                { path: 'accountables' },
                 { path: 'manufacturingMill' },
                 { path: 'manufacturingCommand' },
                 { path: 'manufacturingWork' },
@@ -53,18 +49,6 @@ exports.getBillsByType = async (query, userId, portal) => {
             $or: [
                 {
                     creator: userId,
-                },
-                {
-                    approvers: { $elemMatch: { approver: userId } }
-                },
-                {
-                    qualityControlStaffs: { $elemMatch: { staff: userId } }
-                },
-                {
-                    responsibles: { $in: userId }
-                },
-                {
-                    accountables: { $in: userId }
                 }
             ]
         };
@@ -157,10 +141,6 @@ exports.getBillsByType = async (query, userId, portal) => {
                 limit,
                 populate: [
                     { path: 'creator', select: "_id name email avatar" },
-                    { path: 'approvers.approver' },
-                    { path: 'qualityControlStaffs.staff' },
-                    { path: 'responsibles' },
-                    { path: 'accountables' },
                     { path: 'manufacturingMill' },
                     { path: 'manufacturingCommand' },
                     { path: 'manufacturingWork' },
@@ -258,10 +238,6 @@ exports.getDetailBill = async (id, portal) => {
     return await Bill(connect(DB_CONNECTION, portal)).findById(id)
         .populate([
             { path: 'creator', select: "_id name email avatar" },
-            { path: 'approvers.approver' },
-            { path: 'qualityControlStaffs.staff' },
-            { path: 'responsibles' },
-            { path: 'accountables' },
             { path: 'manufacturingMill' },
             { path: 'manufacturingCommand' },
             { path: 'manufacturingWork' },
@@ -281,8 +257,6 @@ exports.getDetailBill = async (id, portal) => {
 
 exports.getBillsByStatus = async (query, portal) => {
     const { group, status, fromStock, type } = query;
-    // let sourceType = type !== '13' ? (type === '11' ? '1' : '2') : null;
-    // let qualityControlStaffsStatus = group === '1' ? (type !== '13' ? "3" : '2') : '';
     return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock, type })
         .populate([
             { path: 'creator', select: "_id name email avatar" },
@@ -471,10 +445,6 @@ exports.createBill = async (user, data, portal) => {
         .findById(bill._id)
         .populate([
             { path: 'creator', select: "_id name email avatar" },
-            { path: 'approvers.approver', select: "_id name email avatar" },
-            { path: 'qualityControlStaffs.staff' },
-            { path: 'responsibles' },
-            { path: 'accountables' },
             { path: 'manufacturingMill' },
             { path: 'manufacturingCommand' },
             { path: 'manufacturingWork' },
@@ -522,6 +492,30 @@ function formatDataBinLocations(lot, stock) {
         quantity: lot.quantity
     }
     let data = {
+        stocks: [stocks]
+    }
+    return data;
+}
+
+function formatDataLotsForBillTake(lot, stock) {
+    let binLocationInfo = lot.binLocations ? lot.binLocations.map(item => {
+        return {
+            binLocation: {
+                _id: item.binLocation,
+            },
+            quantity: item.realQuantity,
+        }
+    }) : [];
+    let stocks = {
+        binLocations: binLocationInfo,
+        stock: {
+            _id: stock._id,
+        },
+        quantity: lot.realQuantity,
+    }
+    let data = {
+        quantity: lot.realQuantity,
+        originalQuantity: lot.quantity,
         stocks: [stocks]
     }
     return data;
@@ -577,6 +571,8 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                             binLocation: y.id,
                             quantity: y.quantity,
                             name: y.name,
+                            realQuantity: y.realQuantity ? y.realQuantity : 0,
+                            status: y.status,
                         }
                     }
                     ) : []
@@ -630,26 +626,10 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     log.versions = "versions " + (bill.logs.length + 1);
     bill.logs = [...bill.logs, log];
 
-    // if (data.group === '3' && data.oldStatus === '4' && data.status === '5') {
-    //     let billIssue = await Bill(connect(DB_CONNECTION, portal)).findById(bill.bill._id);
-    //     billIssue.goods = billIssue.goods ? billIssue.goods.map((item, key) => {
-    //         return {
-    //             good: item.good,
-    //             quantity: item.quantity,
-    //             returnQuantity: item.returnQuantity + data.goods[key].returnQuantity,
-    //             realQuantity: item.realQuantity - item.returnQuantity - data.goods[key].returnQuantity,
-    //             damagedQuantity: item.damagedQuantity,
-    //             description: item.description,
-    //             lots: item.lots,
-    //             unpassed_quality_control_lots: item.unpassed_quality_control_lots,
-    //         }
-    //     }) : billIssue.goods;
-    //     await billIssue.save();
-    // }
-
     /*Tạo lô hàng và lưu hàng vào trong kho khi hoàn tất công việc trong phiếu*/
     if (data.statusAll && data.statusAll == 2) {
         bill.status = '2';
+        // phiếu nhập kho
         if (bill.group === '1') {
             // chuyển trạng thái sang đã hoàn thành
             //Tạo lô hàng
@@ -674,6 +654,62 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                 }
             })
         }
+        // phiếu xuất kho
+        if (data.group === '2') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            var quantity = data.goods[i].lots[j].quantity;
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            lot.quantity = Number(lot.quantity) - Number(quantity);
+                            if (lot.stocks && lot.stocks.length > 0) {
+                                for (let k = 0; k < lot.stocks.length; k++) {
+                                    if (lot.stocks[k].stock.toString() === data.fromStock._id.toString()) {
+                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
+                                        if (lot.stocks[k].binLocations.length > 0) {
+                                            for (let j = 0; j < lot.stocks[k].binLocations.length; j++) {
+                                                let binLocation = await BinLocation(connect(DB_CONNECTION, portal)).findById(lot.stocks[k].binLocations[j].binLocation._id)
+                                                let number = lot.stocks[k].binLocations[j].quantity;
+                                                if (binLocation.enableGoods.length > 0) {
+                                                    for (let k = 0; k < binLocation.enableGoods.length; k++) {
+                                                        if (binLocation.enableGoods[k].good._id.toString() === lot.good._id.toString()) {
+                                                            if (binLocation.enableGoods[k].contained !== null) {
+                                                                binLocation.enableGoods[k].contained = Number(binLocation.enableGoods[k].contained) - Number(number);
+                                                                await binLocation.save();
+                                                            } else {
+                                                                binLocation.enableGoods[k].contained = 0 - Number(number);
+                                                                await binLocation.save();
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        lot.stocks[k].binLocations = [];
+                                    }
+                                }
+                            }
+                            lot.stocks[0].binLocations = data.goods[i].lots[j].binLocations;
+                            let lotLog = {};
+                            lotLog.bill = bill._id;
+                            lotLog.quantity = quantity;
+                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+                            lotLog.type = bill.type;
+                            lotLog.createdAt = bill.updatedAt;
+                            lotLog.stock = data.fromStock;
+                            lot.lotLogs = [...lot.lotLogs, lotLog];
+                            await lot.save();
+                            let dataBinLocations = formatDataBinLocations(data.goods[i].lots[j], data.fromStock);
+                            await InventoryServices.loadingGoodIntoBinLocation(dataBinLocations, lot, portal);
+                        }
+                    }
+                }
+            }
+        }
+        // phiếu trả hàng
         if (bill.group === '3') {
             //Tạo lô hàng không đạt kiểm định khi trả hàng
             data.goods.forEach(item => {
@@ -684,6 +720,54 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                         //Lưu hàng vào kho
                         let dataBinLocations = formatDataBinLocations(x, bill.fromStock);
                         await InventoryServices.editLot(lot[0]._id, dataBinLocations, portal);
+                    })
+                }
+            })
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            var passedReturnQuantity = data.goods[i].lots[j].passedQuantity;
+                            if (passedReturnQuantity > 0) {
+                                let lotId = data.goods[i].lots[j].lot._id;
+                                let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                                lot.quantity = Number(lot.quantity) + Number(passedReturnQuantity);
+                                if (lot.stocks && lot.stocks.length > 0) {
+                                    for (let k = 0; k < lot.stocks.length; k++) {
+                                        if (lot.stocks[k].stock.toString() === data.fromStock._id.toString()) {
+                                            lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(passedReturnQuantity);
+                                            // lot.stocks[k].binLocations = [];
+                                        }
+                                    }
+                                }
+                                let dataBinLocations = formatDataBinLocations(data.goods[i].lots[j], data.fromStock);
+                                await InventoryServices.loadingGoodIntoBinLocation(dataBinLocations, lot, portal);
+                                data.goods[i].lots[j].binLocations.forEach(bin => {
+                                    lot.stocks[0].binLocations.push(bin);
+                                })
+                                let lotLog = {};
+                                lotLog.bill = bill._id;
+                                lotLog.quantity = passedReturnQuantity;
+                                lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+                                lotLog.type = bill.type;
+                                lotLog.createdAt = bill.updatedAt;
+                                lotLog.stock = data.fromStock;
+                                lot.lotLogs = [...lot.lotLogs, lotLog];
+                                await lot.save();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //phiếu kiểm kê
+        if (bill.group === '4') {
+            //Chỉnh sửa lô hàng khi kiểm kê
+            data.goods.forEach(item => {
+                if (item.lots && item.lots.length > 0) {
+                    item.lots.forEach(async x => {
+                        let dataLots = formatDataLotsForBillTake(x, bill.fromStock);
+                        await InventoryServices.editLot(x.lot, dataLots, portal);
                     })
                 }
             })
@@ -747,60 +831,6 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
 
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
     //Nếu là phiếu xuất kho hệ thống cập nhật lại số lượng tồn kho
-    if (data.group === '2' && data.statusAll === '2') {
-        if (data.goods && data.goods.length > 0) {
-            for (let i = 0; i < data.goods.length; i++) {
-                if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                    for (let j = 0; j < data.goods[i].lots.length; j++) {
-                        var quantity = data.goods[i].lots[j].quantity;
-                        let lotId = data.goods[i].lots[j].lot._id;
-                        let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                        lot.quantity = Number(lot.quantity) - Number(quantity);
-                        if (lot.stocks && lot.stocks.length > 0) {
-                            for (let k = 0; k < lot.stocks.length; k++) {
-                                if (lot.stocks[k].stock.toString() === data.fromStock._id.toString()) {
-                                    lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
-                                    if (lot.stocks[k].binLocations.length > 0) {
-                                        for (let j = 0; j < lot.stocks[k].binLocations.length; j++) {
-                                            let binLocation = await BinLocation(connect(DB_CONNECTION, portal)).findById(lot.stocks[k].binLocations[j].binLocation._id)
-                                            let number = lot.stocks[k].binLocations[j].quantity;
-                                            if (binLocation.enableGoods.length > 0) {
-                                                for (let k = 0; k < binLocation.enableGoods.length; k++) {
-                                                    if (binLocation.enableGoods[k].good._id.toString() === lot.good._id.toString()) {
-                                                        if (binLocation.enableGoods[k].contained !== null) {
-                                                            binLocation.enableGoods[k].contained = Number(binLocation.enableGoods[k].contained) - Number(number);
-                                                            await binLocation.save();
-                                                        } else {
-                                                            binLocation.enableGoods[k].contained = 0 - Number(number);
-                                                            await binLocation.save();
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                    lot.stocks[k].binLocations = [];
-                                }
-                            }
-                        }
-                        lot.stocks[0].binLocations = data.goods[i].lots[j].binLocations;
-                        let lotLog = {};
-                        lotLog.bill = bill._id;
-                        lotLog.quantity = quantity;
-                        lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-                        lotLog.type = bill.type;
-                        lotLog.createdAt = bill.updatedAt;
-                        lotLog.stock = data.fromStock;
-                        lot.lotLogs = [...lot.lotLogs, lotLog];
-                        await lot.save();
-                        let dataBinLocations = formatDataBinLocations(data.goods[i].lots[j], data.fromStock);
-                        await InventoryServices.loadingGoodIntoBinLocation(dataBinLocations, lot, portal);
-                    }
-                }
-            }
-        }
-    }
 
     // if (data.group === '1' && data.type === '1' && data.oldStatus === '4' && data.status === '5') {
     //     if (data.goods && data.goods.length > 0) {
@@ -831,302 +861,258 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
 
     // }
 
-    //Nếu là phiếu trả hàng
-    if (data.group === '3' && data.statusAll == '2') {
-        if (data.goods && data.goods.length > 0) {
-            for (let i = 0; i < data.goods.length; i++) {
-                if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                    for (let j = 0; j < data.goods[i].lots.length; j++) {
-                        var passedReturnQuantity = data.goods[i].lots[j].passedQuantity;
-                        if (passedReturnQuantity > 0) {
-                            let lotId = data.goods[i].lots[j].lot._id;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            lot.quantity = Number(lot.quantity) + Number(passedReturnQuantity);
-                            if (lot.stocks && lot.stocks.length > 0) {
-                                for (let k = 0; k < lot.stocks.length; k++) {
-                                    if (lot.stocks[k].stock.toString() === data.fromStock._id.toString()) {
-                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(passedReturnQuantity);
-                                        // lot.stocks[k].binLocations = [];
-                                    }
-                                }
-                            }
-                            let dataBinLocations = formatDataBinLocations(data.goods[i].lots[j], data.fromStock);
-                            await InventoryServices.loadingGoodIntoBinLocation(dataBinLocations, lot, portal);
-                            data.goods[i].lots[j].binLocations.forEach(bin => {
-                                lot.stocks[0].binLocations.push(bin);
-                            })
-                            let lotLog = {};
-                            lotLog.bill = bill._id;
-                            lotLog.quantity = passedReturnQuantity;
-                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-                            lotLog.type = bill.type;
-                            lotLog.createdAt = bill.updatedAt;
-                            lotLog.stock = data.fromStock;
-                            lot.lotLogs = [...lot.lotLogs, lotLog];
-                            await lot.save();
-                        }
-                    }
-                }
-            }
-        }
-    }
+    // if (data.group === '4' && data.oldStatus === '4' && data.status === '5') {
+    //     if (data.goods && data.goods.length > 0) {
+    //         for (let i = 0; i < data.goods.length; i++) {
+    //             if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+    //                 for (let j = 0; j < data.goods[i].lots.length; j++) {
+    //                     var damagedQuantity = data.goods[i].lots[j].damagedQuantity;
+    //                     if (damagedQuantity !== 0) {
+    //                         let lotId = data.goods[i].lots[j].lot._id;
+    //                         let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                         lot.quantity = Number(lot.quantity) + Number(damagedQuantity);
+    //                         if (lot.stocks && lot.stocks.length > 0) {
+    //                             for (let k = 0; k < lot.stocks.length; k++) {
+    //                                 if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+    //                                     lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(damagedQuantity);
+    //                                 }
+    //                             }
+    //                         }
+    //                         let lotLog = {};
+    //                         lotLog.bill = bill._id;
+    //                         lotLog.quantity = damagedQuantity;
+    //                         lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+    //                         lotLog.type = bill.type;
+    //                         lotLog.createdAt = bill.updatedAt;
+    //                         lotLog.stock = data.fromStock;
+    //                         lot.lotLogs = [...lot.lotLogs, lotLog];
+    //                         await lot.save();
+    //                     }
 
-    if (data.group === '4' && data.oldStatus === '4' && data.status === '5') {
-        if (data.goods && data.goods.length > 0) {
-            for (let i = 0; i < data.goods.length; i++) {
-                if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                    for (let j = 0; j < data.goods[i].lots.length; j++) {
-                        var damagedQuantity = data.goods[i].lots[j].damagedQuantity;
-                        if (damagedQuantity !== 0) {
-                            let lotId = data.goods[i].lots[j].lot._id;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            lot.quantity = Number(lot.quantity) + Number(damagedQuantity);
-                            if (lot.stocks && lot.stocks.length > 0) {
-                                for (let k = 0; k < lot.stocks.length; k++) {
-                                    if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
-                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(damagedQuantity);
-                                    }
-                                }
-                            }
-                            let lotLog = {};
-                            lotLog.bill = bill._id;
-                            lotLog.quantity = damagedQuantity;
-                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-                            lotLog.type = bill.type;
-                            lotLog.createdAt = bill.updatedAt;
-                            lotLog.stock = data.fromStock;
-                            lot.lotLogs = [...lot.lotLogs, lotLog];
-                            await lot.save();
-                        }
-
-                    }
-                }
-            }
-        }
-    }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     // Nếu trạng thái đơn chuyển từ đã hoàn thành sang đã hủy
-    if (data.oldStatus === '5' && data.status === '7') {
-        //Phiếu xuất kho
-        if (data.group === '2') {
-            if (data.oldGoods && data.oldGoods.length > 0) {
-                for (let i = 0; i < data.oldGoods.length; i++) {
-                    if (data.oldGoods[i].lots && data.oldGoods[i].lots.length > 0) {
-                        for (let j = 0; j < data.oldGoods[i].lots.length; j++) {
-                            var quantity = data.oldGoods[i].lots[j].quantity;
-                            let lotId = data.oldGoods[i].lots[j].lot._id;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            lot.quantity = Number(lot.quantity) + Number(quantity);
-                            if (lot.stocks && lot.stocks.length > 0) {
-                                for (let k = 0; k < lot.stocks.length; k++) {
-                                    if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
-                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(quantity);
-                                    }
-                                }
-                            }
-                            lot.lotLogs = lot.lotLogs.filter(item => item.bill !== bill._id);
-                            await lot.save();
-                        }
-                    }
-                }
-            }
-        }
+    // if (data.oldStatus === '5' && data.status === '7') {
+    //Phiếu xuất kho
+    // if (data.group === '2') {
+    //     if (data.oldGoods && data.oldGoods.length > 0) {
+    //         for (let i = 0; i < data.oldGoods.length; i++) {
+    //             if (data.oldGoods[i].lots && data.oldGoods[i].lots.length > 0) {
+    //                 for (let j = 0; j < data.oldGoods[i].lots.length; j++) {
+    //                     var quantity = data.oldGoods[i].lots[j].quantity;
+    //                     let lotId = data.oldGoods[i].lots[j].lot._id;
+    //                     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                     lot.quantity = Number(lot.quantity) + Number(quantity);
+    //                     if (lot.stocks && lot.stocks.length > 0) {
+    //                         for (let k = 0; k < lot.stocks.length; k++) {
+    //                             if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+    //                                 lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(quantity);
+    //                             }
+    //                         }
+    //                     }
+    //                     lot.lotLogs = lot.lotLogs.filter(item => item.bill !== bill._id);
+    //                     await lot.save();
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
-        //Nếu là phiếu trả hàng
-        if (data.group === '3') {
-            if (data.oldGoods && data.oldGoods.length > 0) {
-                for (let i = 0; i < data.oldGoods.length; i++) {
-                    if (data.oldGoods[i].lots && data.oldGoods[i].lots.length > 0) {
-                        for (let j = 0; j < data.oldGoods[i].lots.length; j++) {
-                            var returnQuantity = data.oldGoods[i].lots[j].returnQuantity;
-                            if (returnQuantity > 0) {
-                                let lotId = data.oldGoods[i].lots[j].lot._id;
-                                let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                                lot.quantity = Number(lot.quantity) - Number(returnQuantity);
-                                if (lot.stocks && lot.stocks.length > 0) {
-                                    for (let k = 0; k < lot.stocks.length; k++) {
-                                        if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
-                                            lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(returnQuantity);
-                                        }
-                                    }
-                                }
-                                lot.lotLogs = lot.lotLogs.filter(item => item.bill !== bill._id);
-                                await lot.save();
-                            }
+    //Nếu là phiếu trả hàng
+    // if (data.group === '3') {
+    //     if (data.oldGoods && data.oldGoods.length > 0) {
+    //         for (let i = 0; i < data.oldGoods.length; i++) {
+    //             if (data.oldGoods[i].lots && data.oldGoods[i].lots.length > 0) {
+    //                 for (let j = 0; j < data.oldGoods[i].lots.length; j++) {
+    //                     var returnQuantity = data.oldGoods[i].lots[j].returnQuantity;
+    //                     if (returnQuantity > 0) {
+    //                         let lotId = data.oldGoods[i].lots[j].lot._id;
+    //                         let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                         lot.quantity = Number(lot.quantity) - Number(returnQuantity);
+    //                         if (lot.stocks && lot.stocks.length > 0) {
+    //                             for (let k = 0; k < lot.stocks.length; k++) {
+    //                                 if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+    //                                     lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(returnQuantity);
+    //                                 }
+    //                             }
+    //                         }
+    //                         lot.lotLogs = lot.lotLogs.filter(item => item.bill !== bill._id);
+    //                         await lot.save();
+    //                     }
 
-                        }
-                    }
-                }
-            }
-        }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
-        if (data.group === '4') {
-            if (data.oldGoods && data.oldGoods.length > 0) {
-                for (let i = 0; i < data.oldGoods.length; i++) {
-                    if (data.oldGoods[i].lots && data.oldGoods[i].lots.length > 0) {
-                        for (let j = 0; j < data.oldGoods[i].lots.length; j++) {
-                            var damagedQuantity = data.oldGoods[i].lots[j].damagedQuantity;
-                            if (damagedQuantity !== 0) {
-                                let lotId = data.oldGoods[i].lots[j].lot._id;
-                                let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                                lot.quantity = Number(lot.quantity) - Number(damagedQuantity);
-                                if (lot.stocks && lot.stocks.length > 0) {
-                                    for (let k = 0; k < lot.stocks.length; k++) {
-                                        if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
-                                            lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(damagedQuantity);
-                                        }
-                                    }
-                                }
-                                lot.lotLogs = lot.lotLogs.filter(item => item.bill !== bill._id);
-                                await lot.save();
-                            }
+    //     if (data.group === '4') {
+    //         if (data.oldGoods && data.oldGoods.length > 0) {
+    //             for (let i = 0; i < data.oldGoods.length; i++) {
+    //                 if (data.oldGoods[i].lots && data.oldGoods[i].lots.length > 0) {
+    //                     for (let j = 0; j < data.oldGoods[i].lots.length; j++) {
+    //                         var damagedQuantity = data.oldGoods[i].lots[j].damagedQuantity;
+    //                         if (damagedQuantity !== 0) {
+    //                             let lotId = data.oldGoods[i].lots[j].lot._id;
+    //                             let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                             lot.quantity = Number(lot.quantity) - Number(damagedQuantity);
+    //                             if (lot.stocks && lot.stocks.length > 0) {
+    //                                 for (let k = 0; k < lot.stocks.length; k++) {
+    //                                     if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+    //                                         lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(damagedQuantity);
+    //                                     }
+    //                                 }
+    //                             }
+    //                             lot.lotLogs = lot.lotLogs.filter(item => item.bill !== bill._id);
+    //                             await lot.save();
+    //                         }
 
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
-    if (data.group === '5') {
-        //chuyển trạng thái từ đã phê duyệt sang thực hiện
-        //Thực hiện việc xuất kho của kho xuất
-        if (data.oldStatus === '2' && data.status === '3') {
-            if (data.goods && data.goods.length > 0) {
-                for (let i = 0; i < data.goods.length; i++) {
-                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                        for (let j = 0; j < data.goods[i].lots.length; j++) {
-                            var quantity = data.goods[i].lots[j].quantity;
-                            let lotId = data.goods[i].lots[j].lot._id;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            lot.quantity = Number(lot.quantity) - Number(quantity);
-                            if (lot.stocks && lot.stocks.length > 0) {
-                                for (let k = 0; k < lot.stocks.length; k++) {
-                                    if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
-                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
-                                    }
-                                }
-                            }
-                            await lot.save();
-                        }
-                    }
-                }
-            }
-        }
-        // chuyển trạng thái từ đang thực hiện sang đã hoàn thành
-        // thực hiện việc nhập kho và lưu thông tin
-        if (data.oldStatus === '4' && data.status === '5') {
-            if (data.goods && data.goods.length > 0) {
-                for (let i = 0; i < data.goods.length; i++) {
-                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                        for (let j = 0; j < data.goods[i].lots.length; j++) {
-                            var quantity = data.goods[i].lots[j].quantity;
-                            let lotId = data.goods[i].lots[j].lot._id;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            lot.quantity = Number(lot.quantity) + Number(quantity);
-                            if (lot.stocks && lot.stocks.length > 0) {
-                                let check = 0;
-                                for (let k = 0; k < lot.stocks.length; k++) {
-                                    if (lot.stocks[k].stock.toString() === data.toStock.toString()) {
-                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(quantity);
-                                        check = 1;
-                                    }
-                                }
-                                if (check === 0) {
-                                    let stock = {};
-                                    stock.stock = data.toStock;
-                                    stock.quantity = quantity;
-                                    lot.stocks = [...lot.stocks, stock];
-                                }
-                            }
-                            let lotLog = {};
-                            lotLog.bill = bill._id;
-                            lotLog.quantity = quantity;
-                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
-                            lotLog.type = bill.type;
-                            lotLog.createdAt = bill.updatedAt;
-                            lotLog.stock = data.fromStock;
-                            lotLog.toStock = data.toStock;
-                            lot.lotLogs = [...lot.lotLogs, lotLog];
-                            await lot.save();
-                        }
-                    }
-                }
-            }
-        }
+    // if (data.group === '5') {
+    //chuyển trạng thái từ đã phê duyệt sang thực hiện
+    //Thực hiện việc xuất kho của kho xuất
+    // if (data.oldStatus === '2' && data.status === '3') {
+    //     if (data.goods && data.goods.length > 0) {
+    //         for (let i = 0; i < data.goods.length; i++) {
+    //             if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+    //                 for (let j = 0; j < data.goods[i].lots.length; j++) {
+    //                     var quantity = data.goods[i].lots[j].quantity;
+    //                     let lotId = data.goods[i].lots[j].lot._id;
+    //                     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                     lot.quantity = Number(lot.quantity) - Number(quantity);
+    //                     if (lot.stocks && lot.stocks.length > 0) {
+    //                         for (let k = 0; k < lot.stocks.length; k++) {
+    //                             if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+    //                                 lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
+    //                             }
+    //                         }
+    //                     }
+    //                     await lot.save();
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // chuyển trạng thái từ đang thực hiện sang đã hoàn thành
+    // thực hiện việc nhập kho và lưu thông tin
+    // if (data.oldStatus === '4' && data.status === '5') {
+    //     if (data.goods && data.goods.length > 0) {
+    //         for (let i = 0; i < data.goods.length; i++) {
+    //             if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+    //                 for (let j = 0; j < data.goods[i].lots.length; j++) {
+    //                     var quantity = data.goods[i].lots[j].quantity;
+    //                     let lotId = data.goods[i].lots[j].lot._id;
+    //                     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                     lot.quantity = Number(lot.quantity) + Number(quantity);
+    //                     if (lot.stocks && lot.stocks.length > 0) {
+    //                         let check = 0;
+    //                         for (let k = 0; k < lot.stocks.length; k++) {
+    //                             if (lot.stocks[k].stock.toString() === data.toStock.toString()) {
+    //                                 lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(quantity);
+    //                                 check = 1;
+    //                             }
+    //                         }
+    //                         if (check === 0) {
+    //                             let stock = {};
+    //                             stock.stock = data.toStock;
+    //                             stock.quantity = quantity;
+    //                             lot.stocks = [...lot.stocks, stock];
+    //                         }
+    //                     }
+    //                     let lotLog = {};
+    //                     lotLog.bill = bill._id;
+    //                     lotLog.quantity = quantity;
+    //                     lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+    //                     lotLog.type = bill.type;
+    //                     lotLog.createdAt = bill.updatedAt;
+    //                     lotLog.stock = data.fromStock;
+    //                     lotLog.toStock = data.toStock;
+    //                     lot.lotLogs = [...lot.lotLogs, lotLog];
+    //                     await lot.save();
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
-        //chuyển trạng thái từ đang thực hiện sang trạng thái đã hủy
-        // Thực hiện lại việc nhập kho, trả lại thông tin cho từng lô hàng
-        if (data.oldStatus === '1' && data.status === '3') {
-            if (data.goods && data.goods.length > 0) {
-                for (let i = 0; i < data.goods.length; i++) {
-                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                        for (let j = 0; j < data.goods[i].lots.length; j++) {
-                            var quantity = data.goods[i].lots[j].quantity;
-                            let lotId = data.goods[i].lots[j].lot._id;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            lot.quantity = Number(lot.quantity) + Number(quantity);
-                            if (lot.stocks && lot.stocks.length > 0) {
-                                for (let k = 0; k < lot.stocks.length; k++) {
-                                    if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
-                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(quantity);
-                                    }
-                                }
-                            }
-                            await lot.save();
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //chuyển trạng thái từ đang thực hiện sang trạng thái đã hủy
+    // Thực hiện lại việc nhập kho, trả lại thông tin cho từng lô hàng
+    //     if (data.oldStatus === '1' && data.status === '3') {
+    //         if (data.goods && data.goods.length > 0) {
+    //             for (let i = 0; i < data.goods.length; i++) {
+    //                 if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+    //                     for (let j = 0; j < data.goods[i].lots.length; j++) {
+    //                         var quantity = data.goods[i].lots[j].quantity;
+    //                         let lotId = data.goods[i].lots[j].lot._id;
+    //                         let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                         lot.quantity = Number(lot.quantity) + Number(quantity);
+    //                         if (lot.stocks && lot.stocks.length > 0) {
+    //                             for (let k = 0; k < lot.stocks.length; k++) {
+    //                                 if (lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+    //                                     lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(quantity);
+    //                                 }
+    //                             }
+    //                         }
+    //                         await lot.save();
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     //Nếu nhập kho thành phẩm từ xưởng sản xuất
     //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
     //Thay đổi trạng thái lô sản xuất thành đã nhập kho
-    if (data.group === '1') {
-        if (data.oldStatus === '1' && data.status === '2') {
-            if (data.goods && data.goods.length > 0) {
-                for (let i = 0; i < data.goods.length; i++) {
-                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                        for (let j = 0; j < data.goods[i].lots.length; j++) {
-                            let lotId = data.goods[i].lots[j].lot._id;
-                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            if (lot && lot.status) {
-                                lot.status = '3';
-                                await lot.save();
-                            }
+    // if (data.group === '1') {
+    //     if (data.oldStatus === '1' && data.status === '2') {
+    //         if (data.goods && data.goods.length > 0) {
+    //             for (let i = 0; i < data.goods.length; i++) {
+    //                 if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+    //                     for (let j = 0; j < data.goods[i].lots.length; j++) {
+    //                         let lotId = data.goods[i].lots[j].lot._id;
+    //                         let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    //                         if (lot && lot.status) {
+    //                             lot.status = '3';
+    //                             await lot.save();
+    //                         }
 
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
-    if (data.group === '1') {
-        if (data.oldStatus === '2' && data.status === '3') {
-            if (data.goods && data.goods.length > 0) {
-                for (let i = 0; i < data.goods.length; i++) {
-                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
-                        for (let j = 0; j < data.goods[i].lots.length; j++) {
-                            let lotId = data.goods[i].lots[j].lot._id;
-                            await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: lotId });
-                        }
-                    }
-                }
-            }
-        }
-    }
+    // if (data.group === '1') {
+    //     if (data.oldStatus === '2' && data.status === '3') {
+    //         if (data.goods && data.goods.length > 0) {
+    //             for (let i = 0; i < data.goods.length; i++) {
+    //                 if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+    //                     for (let j = 0; j < data.goods[i].lots.length; j++) {
+    //                         let lotId = data.goods[i].lots[j].lot._id;
+    //                         await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: lotId });
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
         .populate([
             { path: 'creator', select: "_id name email avatar" },
-            { path: 'approvers.approver', select: "_id name email avatar" },
-            { path: 'qualityControlStaffs.staff' },
-            { path: 'responsibles' },
-            { path: 'accountables' },
             { path: 'manufacturingMill' },
             { path: 'manufacturingCommand' },
             { path: 'manufacturingWork' },
@@ -1155,10 +1141,6 @@ exports.getBillsByCommand = async (query, portal) => {
         })
         .populate([
             { path: 'creator', select: "_id name email avatar" },
-            { path: 'approvers.approver', select: "_id name email avatar" },
-            { path: 'qualityControlStaffs.staff' },
-            { path: 'responsibles' },
-            { path: 'accountables' },
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
@@ -1191,21 +1173,6 @@ exports.createManyProductBills = async (data, portal) => {
             status: x.status,
             users: x.users,
             creator: x.creator,
-            approvers: x.approvers ? x.approvers.map((item) => {
-                return {
-                    approver: item.approver,
-                    role: item.role,
-                    approvedTime: item.approvedTime
-                }
-            }) : [],
-            accountables: x.accountables,
-            responsibles: x.responsibles,
-            qualityControlStaffs: x.qualityControlStaffs ? x.qualityControlStaffs.map(item => {
-                return {
-                    staff: item.staff,
-                    status: item.status
-                }
-            }) : [],
             customer: x.customer ? x.customer : null,
             supplier: x.supplier ? x.supplier : null,
             receiver: {

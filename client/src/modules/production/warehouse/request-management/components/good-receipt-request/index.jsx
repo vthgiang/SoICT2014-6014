@@ -97,7 +97,9 @@ function GoodReceiptRequestManagementTable(props) {
             }
             <ApproveForm
                 requestId={state.requestApprove ? state.requestApprove._id : ''}
-                requestApprove={state.requestApprove} />
+                requestApprove={state.requestApprove} 
+                createGoodTakesType={2} 
+                />
             <GoodReceiptCreateFormModal
                 createType={3} // 3: create from request in request screen
                 requestId={state.request ? state.request._id : ''}

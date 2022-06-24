@@ -200,10 +200,10 @@ function BillDetailForm(props) {
                                     <strong>{translate('manage_warehouse.bill_management.code')}:&emsp;</strong>
                                     {billDetail.code}
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.type')}:&emsp;</strong>
-                                    {translate(`manage_warehouse.bill_management.billType.${billDetail.type}`)}
-                                </div>
+                                    {translate(`manage_warehouse.bill_management.goodReceiptBillType.${billDetail.type}`)}
+                                </div> */}
                                 <div className="form-group">
                                     <strong>{translate(`manage_warehouse.bill_management.status`)}:&emsp;</strong>
                                     {billDetail ? <a style={{ color: translate(`manage_warehouse.bill_management.bill_color.${billDetail.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${billDetail.status}`)}</a> : []}

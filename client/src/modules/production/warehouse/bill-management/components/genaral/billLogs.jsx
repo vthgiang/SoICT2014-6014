@@ -41,7 +41,7 @@ function BillLogs(props) {
                                                 <td>{x.creator ? x.creator.name : 'Creator is deleted'}</td>
                                                 <td>{x.versions}</td>
                                                 <td>{x.createAt ? formatFullDate(x.createAt) : ''}</td>
-                                                <td>{translate(`manage_warehouse.bill_management.billType.${x.title}`)}</td>
+                                                {/* <td>{translate(`manage_warehouse.bill_management.billType.${x.title}`)}</td> */}
                                             </tr>
                                         ) : <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr>
                                 }

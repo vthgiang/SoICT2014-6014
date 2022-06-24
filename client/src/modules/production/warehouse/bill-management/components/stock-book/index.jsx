@@ -66,14 +66,9 @@ function BookManagement(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                { value: '1', text: translate('manage_warehouse.bill_management.billType.1') },
-                                { value: '2', text: translate('manage_warehouse.bill_management.billType.2') },
-                                { value: '3', text: translate('manage_warehouse.bill_management.billType.3') },
-                                { value: '4', text: translate('manage_warehouse.bill_management.billType.4') },
-                                { value: '5', text: translate('manage_warehouse.bill_management.billType.5') },
-                                { value: '6', text: translate('manage_warehouse.bill_management.billType.6') },
-                                { value: '7', text: translate('manage_warehouse.bill_management.billType.7') },
-                                { value: '8', text: translate('manage_warehouse.bill_management.billType.8') },
+                                { value: '1', text: translate('manage_warehouse.bill_management.goodReceiptBillType.1') },
+                                { value: '2', text: translate('manage_warehouse.bill_management.goodReceiptBillType.2') },
+                                { value: '3', text: translate('manage_warehouse.bill_management.goodReceiptBillType.3') },
                             ]}
                             onChange={props.handleTypeChange}
                         />
@@ -174,7 +169,7 @@ function BookManagement(props) {
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{x.code}</td>
-                                    <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
+                                    <td>{translate(`manage_warehouse.bill_management.goodReceiptBillType.${x.type}`)}</td>
                                     <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                     <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
                                     <td>{props.formatDate(x.updatedAt)}</td>
