@@ -2051,12 +2051,12 @@ exports.createSubmissionResults = async (req, res) => {
             req.files.forEach((elem, index) => {
                 let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
-
             })
         }
 
         // let task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
         // let taskAction = task.taskActions?.[0];
+        console.log(2059, files)
         let taskOutputs = await PerformTaskService.createSubmissionResults(req.portal, req.params, req.body, files);
 
         res.status(200).json({
@@ -2138,6 +2138,7 @@ exports.editSubmissionResults = async (req, res) => {
                 files.push({ name: elem.originalname, url: path })
             })
         }
+        console.log(2141)
         let taskOutputs = await PerformTaskService.editSubmissionResults(req.portal, req.params, req.body, files);
         res.status(200).json({
             success: true,
@@ -2156,20 +2157,7 @@ exports.editSubmissionResults = async (req, res) => {
 
 exports.deleteSubmissionResults = async (req, res) => {
     try {
-        let files = [];
-        if (req.files !== undefined) {
-            req.files.forEach((elem, index) => {
-                let path = elem.destination + '/' + elem.filename;
-                files.push({ name: elem.originalname, url: path })
-
-            })
-        }
-        const params = {
-            ...req.params,
-            actionId: req.body.actionId
-        }
-        let task = await PerformTaskService.deleteTaskAction(req.portal, params);
-        let taskOutputs = await PerformTaskService.deleteSubmissionResults(req.portal, req.params, req.body);
+        let taskOutputs = await PerformTaskService.deleteSubmissionResults(req.portal, req.params);
 
         res.status(200).json({
             success: true,

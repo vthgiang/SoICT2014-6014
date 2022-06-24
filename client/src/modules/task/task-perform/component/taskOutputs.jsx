@@ -93,13 +93,24 @@ const checkRoleAccountable = (userId, accountable) => {
     return check;
 }
 
-const valueType = (idUser, accountableEmployees) => {
-    const accountableEmployee = accountableEmployees.find(taskOutput => taskOutput.accountableEmployee._id === idUser);
-    if (!accountableEmployee) {
-        return "waiting_for_approval";
+const formatActionAccountable = (value) => {
+    switch (value) {
+        case "approve":
+            return "Đồng ý"
+        case "reject":
+            return "Từ chối"
+        default:
+            return "Chưa phê duyệt"
+            break;
     }
-    return accountableEmployee.action;
 }
+// const valueType = (idUser, accountableEmployees) => {
+//     const accountableEmployee = accountableEmployees.find(taskOutput => taskOutput.accountableEmployee._id === idUser);
+//     if (!accountableEmployee) {
+//         return "waiting_for_approval";
+//     }
+//     return accountableEmployee.action;
+// }
 
 const getAcountableEmployees = (data) => {
     const accountableEmployees = data && data.filter(taskOutput => (taskOutput.action !== "approve" && taskOutput.action !== "reject"));
@@ -181,7 +192,6 @@ function TaskOutputsTab(props) {
     }
 
     const handleEditAction = async (taskOutput) => {
-        console.log(184, taskOutput._id)
         await setState({
             ...state,
             editAction: taskOutput._id,
@@ -190,9 +200,7 @@ function TaskOutputsTab(props) {
                 descriptionDefault: taskOutput.submissionResults.description
             }
         })
-        console.log(193, editAction)
     }
-    console.log(195, newActionEdited)
     const onEditActionFilesChange = (files) => {
         setState({
             ...state,
@@ -502,22 +510,25 @@ function TaskOutputsTab(props) {
                                 </div>
                                 <div style={{ display: `${showPanels.includes(taskOutput._id) ? "" : "none"}` }}>
                                     <div className='description'>
-                                        <div className='acountable-employees'><strong>{getAcountableEmployees(taskOutput.accountableEmployees)} chưa phê duyệt kết quả giao nộp</strong></div>
                                         <div><strong>Yêu cầu:</strong> {parse(taskOutput.description)}</div>
                                         <div><strong>Kiểu dữ liệu:</strong> {formatTypeInfo(taskOutput.type)}</div>
                                         {/* <div><strong>Người đã phê duyệt: </strong>{getAcoutableEmployees(taskOutput.accountableEmployees)}</div> */}
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div>
-                                                <span style={{ fontWeight: 600 }}>Kết quả giao nộp lần 1</span>
-                                                <span className="text-sm" style={{ paddingRight: "10px", paddingLeft: "5px" }}>(<DateTimeConverter dateTime={taskOutput.submissionResults.createdAt} />)</span>
+                                                <span style={{ fontWeight: 600 }}>Kết quả giao nộp lần {taskOutput.versions.length + 1}</span>
                                                 {
                                                     taskOutput.status === "inprogess" && role === "responsible" &&
                                                     <a style={{ cursor: "pointer" }} onClick={() => { handleApprove("waiting_for_approval", taskOutput._id) }}>Yêu cầu phê duyệt</a>
                                                 }
                                             </div>
                                             <div style={{ display: "flex" }}>
+                                                <a style={{ cursor: "pointer", marginRight: "3px" }}
+                                                    onClick={async () => {
+                                                        await setTaskOutput(taskOutput);
+                                                        showVersionsTaskOutput(taskOutput);
+                                                    }} ><i className="fa fa-history" aria-hidden="true"></i> Lịch sử giao nộp</a>
                                                 <a className="edit text-yellow" style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleEditAction(taskOutput)}><i className="material-icons">edit</i></a>
-                                                <a className="delete text-red" style={{ display: "flex", alignItems: "center" }} onClick={() => { }}><i className="material-icons" id="delete-event"></i></a>
+                                                <a className="delete text-red" style={{ display: "flex", alignItems: "center" }} onClick={() => { props.deleteSubmissionResults(performtasks.task._id, taskOutput._id) }}><i className="material-icons" id="delete-event"></i></a>
                                             </div>
                                         </div>
                                         {role === "responsible" && !taskOutput?.submissionResults?.description && <React.Fragment>
@@ -571,22 +582,31 @@ function TaskOutputsTab(props) {
                                                                 </div>
                                                                 {/* Các action lựa chọn của người phê duyệt */}
 
-                                                                <ul className="list-inline" style={{ display: "flex", justifyContent: "end" }}>
-                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => handleShowFile(taskOutput.submissionResults._id)} ><i className="fa fa-paperclip" aria-hidden="true"></i> Tập tin đính kèm ({taskOutput.submissionResults.files && taskOutput.submissionResults.files.length})</a></li>
-                                                                    {
-                                                                        checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected") &&
-                                                                        <>
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a></li>
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a></li>
-                                                                        </>
-                                                                    }
-                                                                    <li><a style={{ cursor: "pointer" }}
-                                                                        onClick={async () => {
-                                                                            await setTaskOutput(taskOutput);
-                                                                            showVersionsTaskOutput(taskOutput);
-                                                                        }} ><i className="fa fa-history" aria-hidden="true"></i> Lịch sử giao nộp</a></li>
+                                                                <ul className="list-inline" style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+                                                                    <li className="text-sm" style={{ paddingRight: "10px", paddingLeft: "5px" }}><DateTimeConverter dateTime={taskOutput.submissionResults.createdAt} /></li>
+
+                                                                    <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowFile(taskOutput.submissionResults._id)} ><i className="fa fa-paperclip" aria-hidden="true"></i> Tập tin đính kèm ({taskOutput.submissionResults.files && taskOutput.submissionResults.files.length})</a></li>
                                                                 </ul>
 
+                                                                {
+                                                                    checkRoleAccountable(idUser, taskOutput.accountableEmployees) && (taskOutput.status === "waiting_for_approval" || taskOutput.status === "rejected") &&
+                                                                    <div style={{ display: "flex" }}>
+                                                                        <span style={{ paddingRight: "10px" }}>Phê duyệt kết quả:</span>
+                                                                        <a style={{ cursor: "pointer", paddingRight: "15px" }} onClick={() => { handleApprove("approve", taskOutput._id) }} ><i className="fa fa-check" aria-hidden="true"></i> Phê duyệt</a>
+                                                                        <a style={{ cursor: "pointer" }} onClick={() => { handleApprove("reject", taskOutput._id) }} ><i className="fa fa-times" aria-hidden="true"></i> Từ chối</a>
+                                                                    </div>
+                                                                }
+
+                                                                {taskOutput.accountableEmployees.map((item, idx) => {
+                                                                    return (
+                                                                        <div key={idx}>
+                                                                            <b> {item.accountableEmployee?.name} </b>
+                                                                            <span style={{ fontSize: 10, marginRight: 10 }} className="text-green">[ Người phê duyệt ]</span>
+                                                                            {formatActionAccountable(item.action)}
+                                                                            &ensp;
+                                                                        </div >
+                                                                    )
+                                                                })}
                                                                 {showFile.some(obj => obj === taskOutput.submissionResults._id) &&
                                                                     <div style={{ cursor: "pointer" }}>
                                                                         <div>Tập tin đính kèm:</div>

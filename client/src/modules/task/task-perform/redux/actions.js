@@ -1333,11 +1333,11 @@ function editSubmissionResults(taskId, taskOutputId, data) {
     };
 }
 
-function deleteSubmissionResults(taskId, taskOutputId, data) {
+function deleteSubmissionResults(taskId, taskOutputId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_REQUEST });
 
-        performTaskService.deleteSubmissionResults(taskId, taskOutputId, data)
+        performTaskService.deleteSubmissionResults(taskId, taskOutputId)
             .then(
                 payload => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.DELETE_SUBMISSION_RESULTS_FAILURE, error })

@@ -877,11 +877,10 @@ function editSubmissionResults(taskId, taskOutputId, newAction) {
     }, true, true, 'task.task_perform');
 }
 
-function deleteSubmissionResults(taskId, taskOutputId, newAction) {
+function deleteSubmissionResults(taskId, taskOutputId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-outputs/${taskOutputId}/submissionResults`,
         method: 'DELETE',
-        data: newAction
     }, true, true, 'task.task_perform');
 }
 

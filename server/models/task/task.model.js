@@ -935,18 +935,18 @@ const TaskSchema = new Schema(
                             type: Schema.Types.ObjectId,
                             ref: "User",
                         },
-                        taskId: {
-                            type: Schema.Types.ObjectId
-                        }, // id của công việc cần xác nhận phê duyệt
                         action: {
                             type: String
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
                         }
                     }
                 ],
                 submissionResults:
                 {
                     creator: {
-                        // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
                         type: Schema.Types.ObjectId,
                         ref: "User",
                     },
@@ -972,61 +972,85 @@ const TaskSchema = new Schema(
                             },
                         },
                     ],
-                    // các taskActions được tạo khi chỉnh files
-                    taskActions: [{
+                },
+                comments: [
+                    {
+                        // Comments của taskoutput
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        version: { // trường này cho biết comments tương ứng với từng version
+                            type: String,
+                        },
+                        description: {
+                            type: String,
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        files: [
+                            {
+                                // Các file đi kèm comments
+                                name: {
+                                    type: String,
+                                },
+                                url: {
+                                    type: String,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                versions: [{
+                    creator: {
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    description: {
                         type: String
-                    }],
-                    comments: [
+                    },
+                    status: {
+                        type: String,
+                    },
+                    accountableEmployees: [
                         {
-                            // Comments của action
-                            creator: {
+                            accountableEmployee: {
                                 type: Schema.Types.ObjectId,
                                 ref: "User",
                             },
-                            status: {
-                                type: String,
-                            },
                             description: {
                                 type: String,
-                            },
-                            createdAt: {
-                                type: Date,
-                                default: Date.now,
+                            }, // id của công việc cần xác nhận phê duyệt
+                            action: {
+                                type: String
                             },
                             updatedAt: {
                                 type: Date,
                                 default: Date.now,
                             },
-                            files: [
-                                {
-                                    // Các file đi kèm comments
-                                    name: {
-                                        type: String,
-                                    },
-                                    url: {
-                                        type: String,
-                                    },
-                                },
-                            ],
+                        }
+                    ],
+                    files: [
+                        {
+                            name: {
+                                type: String,
+                            },
+                            url: {
+                                type: String,
+                            },
                         },
                     ],
-                    logs: [{
-                        creator: {
-                            type: Schema.Types.ObjectId,
-                            ref: "User",
-                        },
-                        description: {
-                            type: String
-                        },
-                        action: {
-                            type: String
-                        },
-                        createdAt: {
-                            type: Date,
-                            default: Date.now,
-                        }
-                    }]
-                }
+                    createdAt: {
+                        type: Date,
+                        default: Date.now,
+                    }
+                }]
             }
         ],
         memberWeight: {
