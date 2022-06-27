@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, ErrorLabel, SelectBox } from '../../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 import { EmployeeManagerActions } from '../../../../human-resource/profile/employee-management/redux/actions';
-import getAllEmployeeSelectBoxItems, { getAllEmployeeWithTaskSelectBoxItems, getEmployeeInfoWithTask } from './employeeHelper';
+import getAllEmployeeSelectBoxItems, { convertTagIdToTagName, getAllEmployeeWithTaskSelectBoxItems, getEmployeeInfoWithTask } from './employeeHelper';
 import { taskManagementActions } from '../../../../task/task-management/redux/actions';
 import { ModalViewEmployee } from './modalViewEmployee';
 import { ModalProposeEmpForTask } from './modalProposalTask';
 import "./timelineStyle.css";
 import { ViewTaskInGantt } from './viewTaskInGantt';
+import { TagActions } from '../../../tags/redux/actions';
+import CreateTagForm from '../../../tags/component/createForm';
 
 function Proposals(props) {
     const EDIT_TYPE = "EDIT_TYPE", ADD_TYPE = "ADD_TYPE" // , RESET_TYPE = "RESET_TYPE", DELETE_TYPE = "DELETE_TYPE", CANCEL_TYPE = "CANCEL_TYPE";
@@ -18,7 +20,7 @@ function Proposals(props) {
         { text: 'Giờ', value: 'hours' },
         // { text: 'Tháng', value: 'months' },
     ];
-    const { translate, employeesManager, user, tasks } = props;
+    const { translate, employeesManager, user, tasks, tag } = props;
     const allUsers = user && user.list
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
 
@@ -26,9 +28,10 @@ function Proposals(props) {
         code: "",
         // tag: proposals.tags?.length ? proposals.tags[0].name : "",
         tag: null,
-        preceedingTasks: "",
+        preceedingTasks: [],
         taskName: "",
         taskDescription: "",
+        numberOfEmployees: 1,
         directEmployees: [],
         backupEmployees: [],
         estimateTime: 1,
@@ -66,7 +69,7 @@ function Proposals(props) {
                 active: true,
             },
             {
-                label: "Đề xuất công việc",
+                label: "Tối ưu đề xuất",
                 active: false,
             },
         ]
@@ -161,6 +164,11 @@ function Proposals(props) {
             ...proposals,
             tasks: newList,
         }
+        setState({
+            ...state,
+            currentTask: initTaskData,
+            currentIndex: null
+        })
         setProposals(newProposal);
         props.handleChange("proposals", newProposal);
     }
@@ -243,121 +251,15 @@ function Proposals(props) {
     }
     // end --- hàm xử lý tasks
 
-
-    // begin --- Các hàm xử lý TAG
-    const handleChangeTagForm = (key, e) => {
-        let { value } = e.target;
-
-        setState({
-            ...state,
-            currentTag: {
-                ...state.currentTag,
-                [key]: value
-            }
-        })
-    }
-    const handleChangeTagEmployee = (key, value) => {
-        setState({
-            ...state,
-            currentTag: {
-                ...state.currentTag,
-                [key]: value
-            }
-        })
-    }
-
-    const handleDeleteTag = (listIndex) => {
-        let newList = proposals.tags
-        newList.splice(listIndex, 1)
-
-        let newProposal = {
-            ...proposals,
-            tags: newList,
-        }
-        setProposals(newProposal);
-        props.handleChange("proposals", newProposal);
-    }
-
-    const handleResetTag = () => {
-        setState({
-            ...state,
-            // tagType: ADD_TYPE,
-            currentTag: initTag,
-            currentTagIndex: null
-        })
-    }
-
-    const handleCancelTag = () => {
-        setState({
-            ...state,
-            tagType: ADD_TYPE,
-            currentTag: initTag,
-            currentTagIndex: null
-        })
-    }
-
-    const handleEditTag = (listIndex) => {
-        setState({
-            ...state,
-            tagType: EDIT_TYPE,
-            currentTag: proposals.tags[listIndex],
-            currentTagIndex: listIndex,
-            showFormTag: true
-        })
-    }
-
-    const handleSaveTag = (listIndex) => {
-        let { currentTag } = state;
-        let newList = proposals.tags.map((x, idx) => {
-
-            if (idx === listIndex) {
-                x = { ...currentTag }
-            }
-            return x;
-        })
-
-        let newProposal = {
-            ...proposals,
-            tags: newList,
-        }
-
-        setState({
-            ...state,
-            tagType: ADD_TYPE,
-            currentTag: initTag,
-            currentTagIndex: null
-        })
-        setProposals(newProposal);
-        props.handleChange("proposals", newProposal);
-    }
-
-    const handleAddTag = () => {
-        let { currentTag } = state
-        let newList = proposals.tags
-
-        newList.push(currentTag)
-
-        let newProposal = {
-            ...proposals,
-            tags: newList,
-        }
-
-
-        setState({
-            ...state,
-            tagType: ADD_TYPE,
-            currentTag: initTag,
-            currentTagIndex: null
-        })
-        setProposals(newProposal);
-        props.handleChange("proposals", newProposal);
-    }
-
-    // end --- Các hàm xử lý tag
-
     const handleShowViewEmployee = (id) => {
         setTimeout(() => {
             window.$(`#modal-view-employee-${id}`).modal('show');
+        }, 500);
+    }
+
+    const handleShowCreateTag = (id) => {
+        setTimeout(() => {
+            window.$(`#modal-create-tag-${id}`).modal('show');
         }, 500);
     }
 
@@ -384,6 +286,10 @@ function Proposals(props) {
         props.getPaginateTasks({ getAll: true });
     }, [props.id]);
 
+    useEffect(() => {
+        props.getListTag({});
+    }, [])
+
     let allEmployee;
     if (employeesManager && employeesManager.listAllEmployees) {
         allEmployee = employeesManager.listAllEmployees
@@ -391,6 +297,7 @@ function Proposals(props) {
 
     const { id, currentIndex, currentTask, currentTag, currentTagIndex, bidId, proposalType, listCareer, showFormTag, showFormTask } = state;
     const { currentStep, steps } = step;
+
     let listEmpInfoFormated = getEmployeeInfoWithTask(allUsers, allEmployee, tasks?.tasks ?? [], proposals?.executionTime ?? 0, proposals?.unitOfTime, biddingPackage);
     useEffect(() => {
         listEmpInfoFormated = getEmployeeInfoWithTask(allUsers, allEmployee, tasks?.tasks ?? [], proposals?.executionTime ?? 0, proposals?.unitOfTime, biddingPackage);
@@ -402,9 +309,12 @@ function Proposals(props) {
         return emp?.fullName;
     }
 
-    let listTag = proposals?.tags?.map(x => { return { text: x.name, value: x.name } })
-    // if (listTag) listTag.unshift({ text: "---Chọn thẻ---", value: null });
-    // console.log(listTag);
+    let alltag = [];
+    if (tag && tag.listTag) {
+        alltag = tag?.listTag
+    }
+
+    let listTag = alltag?.map(x => { return { text: x?.name, value: x?._id } })
 
     const getListEmpByTag = (tag) => {
         let emps = proposals?.tags?.find(x => x.name === tag)?.employees ?? [];
@@ -412,6 +322,8 @@ function Proposals(props) {
         return listEmpByTag;
     }
     let listEmpbyTag = getListEmpByTag(currentTask.tag);
+
+    let listPreTask = proposals?.tasks?.map(x => { return { text: x.code, value: x.code?.trim() } }) ?? []
 
     return (
         <div id={id} className="tab-pane">
@@ -452,95 +364,12 @@ function Proposals(props) {
                     </div>
                 </fieldset>
                 <fieldset className="scheduler-border">
-                    <legend className="scheduler-border">Đề xuất thẻ công việc</legend>
-                    <a style={{ cursor: 'pointer' }} onClick={() => setState({ ...state, showFormTag: !showFormTag })}>{showFormTag ? "Ẩn form" : "Hiển thị form"}</a>
-                    {!showFormTag ? null :
-                        <div>
-                            <div >
-                                <div className="form-group">
-                                    <label>Tên thẻ<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name={`name-tag-${currentTagIndex}`} onChange={(value) => handleChangeTagForm("name", value)} value={currentTag?.name} placeholder="Tên thẻ" autoComplete="off" />
-                                    <ErrorLabel content={currentTag?.tagNameError} />
-                                </div>
-                                <div className="form-group">
-                                    <label>Mô tả thẻ</label>
-                                    <textarea type="text" rows={3} style={{ minHeight: '73.5px' }}
-                                        name={`desc-tag-${currentTagIndex}`}
-                                        onChange={(value) => handleChangeTagForm("description", value)}
-                                        value={currentTag?.description}
-                                        className="form-control"
-                                        placeholder="Mô tả công việc"
-                                        autoComplete="off"
-                                    />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label className="control-label">Nhân sự thực hiện<span className="text-red">*</span></label>
-                                    {listEmpInfoFormated && proposalType && <SelectBox
-                                        id={`${proposalType}-tag-employees-${currentIndex}-${id}`}
-                                        // ${currentTagIndex}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={listEmpInfoFormated ? listEmpInfoFormated : []}
-                                        onChange={(value) => handleChangeTagEmployee("employees", value)}
-                                        options={{ placeholder: "Chọn nhân sự" }}
-                                        value={currentTag?.employees}
-                                        multiple={true}
-                                    />}
-                                </div>
-                            </div>
-
-                            <div className="pull-right row" style={{ marginRight: 0, marginBottom: "15px" }}>
-                                {state.tagType === EDIT_TYPE &&
-                                    <>
-                                        <button className='btn btn-danger' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleCancelTag() }}>Hủy</button>
-                                        <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleSaveTag(currentTagIndex) }}>Lưu</button>
-                                    </>
-                                }
-                                {state.tagType === ADD_TYPE &&
-                                    <button className='btn btn-success' style={{ marginRight: '5px' }} type={"button"} onClick={() => { handleAddTag() }}>Thêm</button>
-                                }
-                                <button className='btn btn-primary' type={"button"} onClick={() => { handleResetTag() }}>Xóa trắng</button>
-                            </div>
-                        </div>
-                    }
-
-
-                    <table id="tags-proposal-table" className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Tên thẻ</th>
-                                <th>Mô tả</th>
-                                <th>Nhân sự thực hiện</th>
-                                <th>{translate('task_template.action')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                proposals.tags?.map((item, listIndex) => {
-                                    return (
-                                        <tr key={`tag-${listIndex}`}>
-                                            <td>{item?.name}</td>
-                                            <td>{item?.description}</td>
-                                            <td>{item?.employees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
-                                            <td>
-                                                <a className="edit" title={translate('general.delete')} onClick={() => handleEditTag(listIndex)}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTag(listIndex)}><i className="material-icons">delete</i></a>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
-
-                    {proposals.tags?.length <= 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
-                </fieldset>
-            </div>}
-            {currentStep === 1 && <div>
-                <fieldset className="scheduler-border">
                     <legend className="scheduler-border">Đề xuất công việc</legend>
                     <a style={{ cursor: 'pointer' }} onClick={() => setState({ ...state, showFormTask: !showFormTask })}>{showFormTask ? "Ẩn form" : "Hiển thị form"}</a>
                     <br />
+                    <CreateTagForm
+                        id={`${currentIndex}-${id}`}
+                    />
                     {!showFormTask ? null : <div>
                         <div>
                             <div className="row" style={{ paddingTop: '10px' }}>
@@ -556,7 +385,17 @@ function Proposals(props) {
                                     </div>
                                     <div className="form-group">
                                         <label>Công việc tiền nhiệm</label>
-                                        <input type="text" className="form-control" name={`preceedingTasks-${currentIndex}`} onChange={(value) => handleChangeForm("preceedingTasks", value)} value={currentTask?.preceedingTasks} placeholder="Công việc tiền nhiệm" autoComplete="off" />
+                                        <SelectBox
+                                            id={`${proposalType}--preceeding-task-${currentIndex}-${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={listPreTask ? listPreTask : []}
+                                            onChange={(value) => handleChangeSelectValue("preceedingTasks", value)}
+                                            options={{ placeholder: "Chọn công việc tiền nhiệm" }}
+                                            value={currentTask?.preceedingTasks}
+                                            multiple={true}
+                                        />
+                                        {/* <input type="text" className="form-control" name={`preceedingTasks-${currentIndex}`} onChange={(value) => handleChangeForm("preceedingTasks", value)} value={currentTask?.preceedingTasks} placeholder="Công việc tiền nhiệm" autoComplete="off" /> */}
                                     </div>
                                 </div>
                                 <div className="col-md-6">
@@ -580,8 +419,10 @@ function Proposals(props) {
                             </div>
                             <div>
                                 <div className={`form-group`}>
-                                    <label className="control-label">Thẻ công việc<span className="text-red">*</span></label>
-                                    {listTag?.length ? <SelectBox
+                                    <label className="control-label">Thẻ công việc<span className="text-red">*</span>
+                                        ( <a style={{ cursor: "pointer" }} onClick={() => handleShowCreateTag(`${currentIndex}-${id}`)}>Quản lý</a> )
+                                    </label>
+                                    {<SelectBox
                                         id={`${proposalType}--tag-task-${currentIndex}-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
@@ -590,41 +431,11 @@ function Proposals(props) {
                                         options={{ placeholder: "Chọn thẻ cho công việc" }}
                                         value={currentTask?.tag}
                                         multiple={false}
-                                    /> : <span>Chưa có danh sách thẻ - hãy tạo thẻ ở trên!</span>}
-                                </div>
-                                <div className={`form-group`}>
-                                    {/* style={{display: "flex", justifyContent: "flex-end"}} */}
-                                    <div className='pull-right'>
-                                        <ModalViewEmployee
-                                            id={id ?? ""}
-                                            listEmployee={listEmpInfoFormated}
-                                        />
-                                        <a style={{ cursor: "pointer" }} onClick={() => handleShowViewEmployee(id)}>Xem thông tin nhân viên</a>
-                                    </div>
-                                    <label className="control-label">Nhân sự trực tiếp<span className="text-red">*</span></label>
-                                    {listEmpbyTag && <SelectBox
-                                        id={`direct-employee-${currentIndex}-${id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={listEmpbyTag?.length > 0 ? listEmpbyTag : listEmpInfoFormated ?? []}
-                                        onChange={(value) => handleChangeSelectValue("directEmployees", value)}
-                                        options={{ placeholder: "Chọn nhân sự trực tiếp" }}
-                                        value={currentTask?.directEmployees}
-                                        multiple={true}
                                     />}
                                 </div>
-                                <div className={`form-group`}>
-                                    <label className="control-label">Nhân sự dự phòng<span className="text-red">*</span></label>
-                                    {listEmpbyTag && <SelectBox
-                                        id={`backup-employee-${currentIndex}-${id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={listEmpbyTag?.length > 0 ? listEmpbyTag : listEmpInfoFormated ?? []}
-                                        onChange={(value) => handleChangeSelectValue("backupEmployees", value)}
-                                        options={{ placeholder: "Chọn nhân sự dự phòng" }}
-                                        value={currentTask?.backupEmployees}
-                                        multiple={true}
-                                    />}
+                                <div className="form-group">
+                                    <label>Số người thực hiện<span className="text-red">*</span></label>
+                                    <input type="number" className="form-control" name={`numberOfEmployees-${currentIndex}`} onChange={(value) => handleChangeForm("numberOfEmployees", value)} value={currentTask?.numberOfEmployees} placeholder="Số người thực hiện" autoComplete="off" />
                                 </div>
                             </div>
                         </div>
@@ -642,6 +453,7 @@ function Proposals(props) {
                         </div>
                     </div>
                     }
+
                     <div style={{ display: 'flex', justifyContent: "space-between" }}>
                         <div className="box-tools" style={{ marginBottom: '5px' }}>
                             <div className="btn-group">
@@ -649,28 +461,6 @@ function Proposals(props) {
                                 <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? "btn-danger" : "active"}`}>Biểu đồ Gantt</button>
                             </div>
                         </div>
-                        {proposals?.tasks?.length ? <div>
-                            <ModalProposeEmpForTask
-                                id={id ?? ""}
-                                bidId={bidId}
-                                proposalType={proposalType}
-                                allEmployee={allEmployee}
-                                listCareer={listCareer}
-                                data={{
-                                    bidId: bidId,
-                                    type: proposalType,
-                                    proposals: proposals,
-                                    biddingPackage: biddingPackage,
-                                    unitOfTime: proposals?.unitOfTime,
-                                    executionTime: proposals?.executionTime,
-                                }}
-                                handleAcceptProposal={handleAcceptProposal}
-                            />
-                            <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600" }} onClick={() => { handelProposeModal(id) }}>
-                                Đề xuất tự động <i className='fa fa-arrow-circle-right'></i>
-                            </a>
-                        </div> : null
-                        }
                     </div>
                     <br />
                     {
@@ -686,9 +476,29 @@ function Proposals(props) {
                                     <th>Thẻ công việc</th>
                                     <th>Thời gian thực hiện</th>
                                     <th>Mô tả công việc</th>
-                                    <th>Nhân sự trực tiếp</th>
-                                    <th>Nhân sự dự phòng</th>
-                                    <th>{translate('task_template.action')}</th>
+                                    {/* <th>Nhân sự trực tiếp</th>
+                                    <th>Nhân sự dự phòng</th> */}
+                                    <th>Số người thực hiện</th>
+                                    <th style={{ width: '90px', textAlign: 'center' }}>
+                                        {translate('table.action')}
+                                        <DataTableSetting
+                                            columnName={translate('table.action')}
+                                            columnArr={[
+                                                "Mã công việc",
+                                                "Tên công việc",
+                                                "Công việc tiền nhiệm",
+                                                "Thẻ công việc",
+                                                "Thời gian thực hiện",
+                                                "Mô tả công việc",
+                                                // "Nhân sự trực tiếp",
+                                                // "Nhân sự dự phòng",
+                                                "Số người thực hiện",
+                                            ]}
+                                            tableId={`task-proposal-table`}
+                                            tableContainerId="task-proposal-table-container"
+                                            tableWidth="1300px"
+                                        />
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -698,12 +508,13 @@ function Proposals(props) {
                                             <tr key={listIndex}>
                                                 <td>{item?.code}</td>
                                                 <td>{item?.taskName}</td>
-                                                <td>{item?.preceedingTasks}</td>
-                                                <td>{item?.tag}</td>
+                                                <td>{item?.preceedingTasks?.join(", ")}</td>
+                                                <td>{convertTagIdToTagName(alltag, item?.tag)}</td>
                                                 <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
                                                 <td>{item?.taskDescription}</td>
-                                                <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
-                                                <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                                <td>{item?.numberOfEmployees}</td>
+                                                {/* <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                                <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td> */}
                                                 <td>
                                                     <a className="edit" title={translate('general.delete')} onClick={() => handleEditTask(listIndex)}><i className="material-icons">edit</i></a>
                                                     <a className="delete" title={translate('general.delete')} onClick={() => handleDeleteTask(listIndex)}><i className="material-icons">delete</i></a>
@@ -719,19 +530,112 @@ function Proposals(props) {
                     {proposals.tasks?.length <= 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                 </fieldset>
             </div>}
+            {currentStep === 1 && <div>
+                <div style={{ display: 'flex', justifyContent: "space-between" }}>
+                    <div className="box-tools" style={{ marginBottom: '5px' }}>
+                        <div className="btn-group">
+                            <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${isTable ? "btn-danger" : "active"}`}>Bảng</button>
+                            <button type="button" onClick={() => setIsTable(!isTable)} className={`btn btn-xs ${!isTable ? "btn-danger" : "active"}`}>Biểu đồ Gantt</button>
+                        </div>
+                    </div>
+                    {proposals?.tasks?.length ? <div>
+                        <ModalProposeEmpForTask
+                            id={id ?? ""}
+                            bidId={bidId}
+                            proposalType={proposalType}
+                            allEmployee={allEmployee}
+                            listCareer={listCareer}
+                            allTag={alltag}
+                            data={{
+                                bidId: bidId,
+                                type: proposalType,
+                                proposals: proposals,
+                                biddingPackage: biddingPackage,
+                                unitOfTime: proposals?.unitOfTime,
+                                executionTime: proposals?.executionTime,
+                            }}
+                            handleAcceptProposal={handleAcceptProposal}
+                        />
+                        <a style={{ margin: '0 0 5px 5px', textDecoration: "underline", fontWeight: "600", cursor: "pointer" }} onClick={() => { handelProposeModal(id) }}>
+                            Tối ưu đề xuất nhân sự<i className='fa fa-arrow-circle-right'></i>
+                        </a>
+                    </div> : null
+                    }
+                </div>
+                <br />
+
+                <DataTableSetting
+                    columnName={translate('table.action')}
+                    columnArr={[
+                        "Mã công việc",
+                        "Tên công việc",
+                        "Công việc tiền nhiệm",
+                        "Thẻ công việc",
+                        "Thời gian thực hiện",
+                        "Mô tả công việc",
+                        "Nhân sự trực tiếp",
+                        "Nhân sự dự phòng",
+                        // "Số người thực hiện",
+                    ]}
+                    tableId={`task-proposal-table-result`}
+                    tableContainerId="task-proposal-table-result-container"
+                    tableWidth="1300px"
+                />
+                {
+                    !isTable ? <ViewTaskInGantt
+                        taskList={proposals?.tasks}
+                        allEmployee={allEmployee}
+                    /> : <table id="task-proposal-table-result" className="table not-has-action table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã công việc</th>
+                                <th>Tên công việc</th>
+                                <th>Công việc tiền nhiệm</th>
+                                <th>Thẻ công việc</th>
+                                <th>Thời gian thực hiện</th>
+                                <th>Mô tả công việc</th>
+                                <th>Nhân sự trực tiếp</th>
+                                <th>Nhân sự dự phòng</th>
+                                {/* <th>{translate('task_template.action')}</th> */}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                proposals.tasks?.map((item, listIndex) => {
+                                    return (
+                                        <tr key={listIndex}>
+                                            <td>{item?.code}</td>
+                                            <td>{item?.taskName}</td>
+                                            <td>{item?.preceedingTasks?.join(", ")}</td>
+                                            <td>{convertTagIdToTagName(alltag, item?.tag)}</td>
+                                            <td>{item?.estimateTime} ({arrUnitTimeList.find(x => x.value === item?.unitOfTime)?.text || ""})</td>
+                                            <td>{item?.taskDescription}</td>
+                                            <td>{item?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                            <td>{item?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                {proposals.tasks?.length <= 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+            </div>}
         </div>
     );
 };
 
 
 function mapState(state) {
-    const { employeesManager, user, tasks } = state;
-    return { employeesManager, user, tasks };
+    const { employeesManager, user, tasks, tag } = state;
+    return { employeesManager, user, tasks, tag };
 }
 
 const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     getPaginateTasks: taskManagementActions.getPaginateTasks,
+    getListTag: TagActions.getListTag,
 };
 
 const connectComponent = connect(mapState, actionCreators)(withTranslate(Proposals));

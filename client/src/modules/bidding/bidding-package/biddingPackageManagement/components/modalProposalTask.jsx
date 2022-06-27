@@ -35,7 +35,7 @@ const ModalProposeEmpForTask = (props) => {
     }
 
     const { biddingPackagesManager, translate } = props;
-    const { id, bidId, allEmployee, listCareer } = state;
+    const { id, bidId, allEmployee, listCareer, allTag } = state;
 
     useEffect(() => {
         setState({
@@ -45,6 +45,7 @@ const ModalProposeEmpForTask = (props) => {
             bidId: props.bidId,
             allEmployee: props.allEmployee,
             listCareer: props.listCareer,
+            allTag: props.allTag,
         })
         setDataProp(props.data);
     }, [props.id,
@@ -147,7 +148,7 @@ const ModalProposeEmpForTask = (props) => {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    dataProp.proposals?.tags?.map((item, listIndex) => {
+                                                    allTag?.filter(x => dataProp?.proposals?.tasks?.find(t => String(t?.tag) === String(x?._id))).map((item, listIndex) => {
                                                         return (
                                                             <tr key={`tag-${listIndex}`}>
                                                                 <td>{listIndex + 1}</td>

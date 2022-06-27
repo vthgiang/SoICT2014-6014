@@ -184,3 +184,8 @@ export const convertEmpIdToName = (allEmployee, id) => {
     const emp = allEmployee?.find(x => String(x._id) === String(id));
     return emp?.fullName;
 }
+
+export const convertTagIdToTagName = (listTag, id) => {
+    const emp = listTag?.find(x => String(x._id) === String(id));
+    return emp?.name;
+}
