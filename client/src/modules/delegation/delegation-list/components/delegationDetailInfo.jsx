@@ -26,7 +26,7 @@ const DelegationDetailInfo = (props) => {
                 delegatePrivileges: props.delegatePrivileges,
                 delegateType: props.delegateType,
                 delegateRole: props.delegateRole,
-                delegateTasks: props.delegateTasks,
+                delegateTask: props.delegateTask,
                 status: props.status,
                 allPrivileges: props.allPrivileges,
                 startDate: props.startDate,
@@ -72,7 +72,7 @@ const DelegationDetailInfo = (props) => {
                             delegatePrivileges={state.delegatePrivileges}
                             delegateType={state.delegateType}
                             delegateRole={state.delegateRole}
-                            delegateTasks={state.delegateTasks}
+                            delegateTask={state.delegateTask}
                             status={state.status}
                             allPrivileges={state.allPrivileges}
                             startDate={state.startDate}
@@ -98,7 +98,7 @@ const DelegationDetailInfo = (props) => {
                             delegatePrivileges={state.delegatePrivileges}
                             delegateType={state.delegateType}
                             delegateRole={state.delegateRole}
-                            delegateTasks={state.delegateTasks}
+                            delegateTask={state.delegateTask}
                             status={state.status}
                             allPrivileges={state.allPrivileges}
                             startDate={state.startDate}

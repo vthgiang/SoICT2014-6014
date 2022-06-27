@@ -23,10 +23,15 @@ const DelegationSchema = new Schema({
         type: String,
         enum: ['Role', 'Task'], // tên model tương ứng - không đổi về dạng chữ thường
     },
-    delegateTasks: [{
-        // 5. Array các task ủy ủy quyền
+    delegateTask: {
+        // 5. Task ủy ủy quyền
         type: Schema.Types.ObjectId,
         ref: 'Task'
+    },
+    delegateTaskRoles: [{
+        // Vai trò công việc ủy quyền RACI 
+        type: String,
+        enum: ['responsible', 'accountable', 'consulted', 'informed']
     }],
     delegateRole: {
         // 6. Role ủy quyền

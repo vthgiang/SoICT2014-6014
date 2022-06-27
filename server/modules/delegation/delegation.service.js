@@ -129,7 +129,7 @@ exports.createDelegation = async (portal, data, logs = []) => {
 
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: newDelegation._id }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTasks' },
+        { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -439,7 +439,7 @@ exports.getDelegations = async (portal, data) => {
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate([
             { path: 'delegateRole', select: '_id name' },
-            { path: 'delegateTasks' },
+            { path: 'delegateTask' },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
             { path: 'delegator', select: '_id name' },
@@ -480,7 +480,7 @@ exports.getDelegationsReceive = async (portal, data) => {
     let delegations = await Delegation(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate([
             { path: 'delegateRole', select: '_id name' },
-            { path: 'delegateTasks' },
+            { path: 'delegateTask' },
             { path: 'delegatee', select: '_id name' },
             { path: 'delegatePolicy', select: '_id policyName' },
             { path: 'delegator', select: '_id name' },
@@ -532,7 +532,7 @@ exports.getOnlyDelegationName = async (portal, data) => {
 exports.getDelegationById = async (portal, id) => {
     let delegation = await Delegation(connect(DB_CONNECTION, portal)).findById({ _id: id }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTasks' },
+        { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -613,7 +613,7 @@ exports.revokeDelegation = async (portal, delegationIds, reason) => {
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationIds[0] }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTasks' },
+        { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -640,7 +640,7 @@ exports.rejectDelegation = async (portal, delegationId, reason) => {
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTasks' },
+        { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -667,7 +667,7 @@ exports.confirmDelegation = async (portal, delegationId) => {
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegationId }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTasks' },
+        { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },
@@ -703,7 +703,7 @@ exports.saveLog = async (portal, delegation, userId, content, category, time) =>
 
     let newDelegation = await Delegation(connect(DB_CONNECTION, portal)).findOne({ _id: delegation._id }).populate([
         { path: 'delegateRole', select: '_id name' },
-        { path: 'delegateTasks' },
+        { path: 'delegateTask' },
         { path: 'delegatee', select: '_id name' },
         { path: 'delegatePolicy', select: '_id policyName' },
         { path: 'delegator', select: '_id name' },

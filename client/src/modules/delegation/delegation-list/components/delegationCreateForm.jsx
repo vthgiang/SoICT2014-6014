@@ -198,8 +198,8 @@ function DelegationCreateForm(props) {
         if (delegateRole != "") {
             let selectedRoleUnit = user.organizationalUnitsOfUser.find(item =>
                 item.managers.find(manager => manager === delegateRole) === delegateRole
-                || item.deputyManagers[0] === delegateRole
-                || item.employees[0] === delegateRole);
+                || item.deputyManagers.find(deputyManager => deputyManager === delegateRole) === delegateRole
+                || item.employees.find(employee => employee === delegateRole) === delegateRole);
 
             usersInUnitsOfCompany = usersInUnitsOfCompany.filter(unit => unit.id == selectedRoleUnit._id || unit.parent == selectedRoleUnit._id)
 

@@ -23,7 +23,7 @@ function GeneralTab(props) {
                 delegatePrivileges: props.delegatePrivileges,
                 delegateType: props.delegateType,
                 delegateRole: props.delegateRole,
-                delegateTasks: props.delegateTasks,
+                delegateTask: props.delegateTask,
                 status: props.status,
                 allPrivileges: props.allPrivileges,
                 startDate: props.startDate,
@@ -47,7 +47,7 @@ function GeneralTab(props) {
 
 
     const { translate } = props;
-    const { delegationName, description, delegator, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTasks, status, allPrivileges, startDate, endDate, revokedDate, revokeReason, forReceive, replyStatus, declineReason, delegatePolicy } = state;
+    const { delegationName, description, delegator, delegatee, delegatePrivileges, delegateType, delegateRole, delegateTask, status, allPrivileges, startDate, endDate, revokedDate, revokeReason, forReceive, replyStatus, declineReason, delegatePolicy } = state;
 
     return (
         <div id={props.id} className="tab-pane active">

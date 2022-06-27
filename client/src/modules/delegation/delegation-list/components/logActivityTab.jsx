@@ -25,7 +25,7 @@ function LogActivityTab(props) {
                 delegatePrivileges: props.delegatePrivileges,
                 delegateType: props.delegateType,
                 delegateRole: props.delegateRole,
-                delegateTasks: props.delegateTasks,
+                delegateTask: props.delegateTask,
                 status: props.status,
                 allPrivileges: props.allPrivileges,
                 startDate: props.startDate,

@@ -198,7 +198,7 @@ function DelegationTable(props) {
                 delegatePrivileges={currentRow && currentRow.delegatePrivileges}
                 delegateType={currentRow && currentRow.delegateType}
                 delegateRole={currentRow && currentRow.delegateRole}
-                delegateTasks={currentRow && currentRow.delegateTasks}
+                delegateTask={currentRow && currentRow.delegateTask}
                 status={currentRow && currentRow.status}
                 allPrivileges={currentRow && currentRow.allPrivileges}
                 startDate={currentRow && currentRow.startDate}
@@ -222,7 +222,7 @@ function DelegationTable(props) {
                 delegatePrivileges={curentRowDetail && curentRowDetail.delegatePrivileges}
                 delegateType={curentRowDetail && curentRowDetail.delegateType}
                 delegateRole={curentRowDetail && curentRowDetail.delegateRole}
-                delegateTasks={curentRowDetail && curentRowDetail.delegateTasks}
+                delegateTask={curentRowDetail && curentRowDetail.delegateTask}
                 status={curentRowDetail && curentRowDetail.status}
                 allPrivileges={curentRowDetail && curentRowDetail.allPrivileges}
                 startDate={curentRowDetail && curentRowDetail.startDate}
@@ -302,7 +302,7 @@ function DelegationTable(props) {
                             index: <td>{index + 1}</td>,
                             delegationName: <td>{item?.delegationName}</td>,
                             delegateType: <td>{translate('manage_delegation.delegateType' + item?.delegateType)}</td>,
-                            delegateObject: <td>{item.delegateRole ? item.delegateRole.name : (item.delegateTasks ? <ToolTip dataTooltip={item.delegateTasks.map(task => task.name)} /> : "")}</td>,
+                            delegateObject: <td>{item.delegateRole ? item.delegateRole.name : (item.delegateTask ? item.delegateTask.name : "")}</td>,
                             delegatee: <td>{item?.delegatee.name}</td>,
                             delegateStartDate: <td>{formatTime(item?.startDate)}</td>,
                             delegateEndDate: <td>{item.revokedDate && (item.endDate && (new Date(item.revokedDate)).getTime() < (new Date(item.endDate)).getTime()) || (item.revokedDate && !item.endDate) ? formatTime(item.revokedDate) : (item.endDate ? formatTime(item.endDate) : translate("manage_delegation.end_date_tbd"))}</td>,

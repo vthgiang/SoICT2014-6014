@@ -903,17 +903,17 @@ const TaskSchema = new Schema(
             // Số bé hơn 1
             timeWeight: {
                 type: Number,
-                default: 1/3,
+                default: 1 / 3,
             },
             // Số bé hơn 1
             qualityWeight: {
                 type: Number,
-                default: 1/3,
+                default: 1 / 3,
             },
             // Số bé hơn 1
             costWeight: {
                 type: Number,
-                default: 1/3,
+                default: 1 / 3,
             },
         },
         memberWeight: {
@@ -938,6 +938,22 @@ const TaskSchema = new Schema(
                 default: 0.25,
             },
         },
+        attributes: [
+            {
+                attributeId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Attribute"
+                },
+                // thuộc tính của role
+                // name: String, // tên thuộc tính
+                value: String, //giá trị
+                description: String // mô tả
+            },
+        ],
+        delegations: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Delegation'
+        }],
     },
     {
         timestamps: true,

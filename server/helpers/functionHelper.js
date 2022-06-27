@@ -113,7 +113,7 @@ exports.arrayEquals = (a, b) => {
     return Array.isArray(a) &&
         Array.isArray(b) &&
         a.length === b.length &&
-        a.every((val, index) => val.toString() === b[index].toString());
+        a.every((val, index) => val?.toString() === b[index]?.toString());
 }
 
 exports.isToday = (someDate) => {
