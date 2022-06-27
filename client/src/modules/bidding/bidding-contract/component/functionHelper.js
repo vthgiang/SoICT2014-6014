@@ -137,7 +137,7 @@ export const getProjectTaskDataWhenCreateByContract = (bp, allUsers) => {
             code: p.code,
             name: p.taskName,
             description: p.taskDescription,
-            preceedingTasks: p.preceedingTasks?.length > 0 ? p.preceedingTasks?.split(",")?.map(x => x?.trim()) : [],
+            preceedingTasks: p.preceedingTasks?.length > 0 ? p.preceedingTasks?.map(x => x?.trim()) : [],
             estimateNormalTime: p.estimateTime, // thời gian ước lượng
             estimateOptimisticTime: Number(p.estimateTime) === 1 ? '0' : Number(p.estimateTime) === 2 ? '1' : (Number(p.estimateTime) - 2).toString(), // thòi lượng thỏa hiệp
             unitOfTime: p.unitOfTime,

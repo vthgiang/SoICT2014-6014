@@ -64,7 +64,7 @@ const ViewTaskInGantt = (props) => {
                 let now = moment(new Date());
 
                 if (taskItem.preceedingTasks && taskItem.preceedingTasks.length > 0) {
-                    let preceedingTaskArr = taskItem.preceedingTasks.split(',').map(x => x.trim());
+                    let preceedingTaskArr = taskItem.preceedingTasks?.map(x => x.trim()) ?? [];
 
                     let preTasks = taskWithTime.filter(x => preceedingTaskArr.indexOf(String(x.code.trim())) !== -1);
                     preTasks.sort((a, b) => {
@@ -98,7 +98,8 @@ const ViewTaskInGantt = (props) => {
 
                 // Nếu task có các task tiền nhiệm thì tạo link
                 if (taskItem.preceedingTasks && taskItem.preceedingTasks.length > 0) {
-                    let preceedingTaskArr = taskItem.preceedingTasks.split(',').map(x => x.trim());
+                    // let preceedingTaskArr = taskItem.preceedingTasks.split(',').map(x => x.trim());
+                    let preceedingTaskArr = taskItem.preceedingTasks?.map(x => x.trim()) ?? [];
                     for (let preceedingItem of preceedingTaskArr) {
                         links.push({
                             id: linkId,

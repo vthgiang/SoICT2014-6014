@@ -143,12 +143,18 @@ const BiddingPackageSchema = new Schema(
                     type: String
                 },
                 // công việc tiền nhiệm (luu bằng code của công việc)
-                preceedingTasks: {
+                preceedingTasks: [{
                     type: String
-                },
+                }],
                 // tag của cviec
                 tag: {
-                    type: String,
+                    // type: String,
+                    type: Schema.Types.ObjectId,
+                    ref: "Tag",
+                },
+                numberOfEmployees: {
+                    type: Number,
+                    default: 1,
                 },
                 // nhân sự trực tiếp
                 directEmployees: [{

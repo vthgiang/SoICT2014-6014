@@ -1,4 +1,4 @@
-const { BiddingPackage, Employee, User, Task, BiddingContract } = require("../../../models");
+const { BiddingPackage, Employee, User, Task, BiddingContract, Tag } = require("../../../models");
 const fs = require("fs");
 const { connect } = require(`../../../helpers/dbHelper`);
 const { getEmployeeInforByListId } = require("../profile/profile.service");
@@ -874,6 +874,9 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
     // lấy all user
     const allUser = await User(connect(DB_CONNECTION, portal)).find({});
 
+    // lấy all user
+    const allTag = await Tag(connect(DB_CONNECTION, portal)).find({});
+
     // lấy all employee active
     const listAllEmployees = await Employee(connect(DB_CONNECTION, portal)).find({
         // biddingPackagePersonalStatus: 1,
@@ -906,14 +909,14 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
         oldEmployees = empWithTask;
 
         // tìm danh sách emp tương ứng với tag
-        let tagOfTask = tags.find(x => x.name === t.tag)
+        // let tagOfTask = tags.find(x => x.name === t.tag)
         let listEmpByTag = [];
-        if (tagOfTask) listEmpByTag = tagOfTask.employees;
+        if (allTag?.length > 0) listEmpByTag = allTag.find(x => String(t.tag) === String(x._id))?.employees ?? [];
 
         let directEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let backupEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let proposalEmpArr = [directEmpAvailable, backupEmpAvailable];
-        let numOfEmpRequireArr = [t.directEmployees.length, t.backupEmployees.length];
+        let numOfEmpRequireArr = [t.numberOfEmployees, t.numberOfEmployees];
 
         let data = await findEmployee(proposalEmpArr, [], [], [], numOfEmpRequireArr, 0);
 
