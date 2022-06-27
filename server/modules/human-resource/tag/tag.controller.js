@@ -13,7 +13,7 @@ exports.searchTag = async (req, res) => {
         let data = {};
 
         let params = {
-            TagName: req.query.name,
+            tagName: req.query.name,
             page: Number(req.query.page),
             limit: Number(req.query.limit),
         };

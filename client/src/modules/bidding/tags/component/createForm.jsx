@@ -24,6 +24,10 @@ const CreateTag = (props) => {
         props.getAllEmployee();
     }, []);
 
+    useEffect(() => {
+        setId(props.id);
+    }, [props.id]);
+
     const save = () => {
         let data = {
             name: state.name,
@@ -33,6 +37,9 @@ const CreateTag = (props) => {
         }
         console.log(1718, state, data)
         props.createTag(data);
+
+        // get all tag
+        props.getListTag({});
     }
 
     const isFormValidated = () => {
@@ -98,7 +105,7 @@ const CreateTag = (props) => {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-create-tag`}
+                modalID={`modal-create-tag-${id}`}
                 formID="form-create-tag"
                 title="Thêm tag"
                 disableSubmit={!isFormValidated()}
@@ -126,7 +133,7 @@ const CreateTag = (props) => {
                         <div className={`form-group`}>
                             <label className="control-label">Nhân sự phù hợp<span className="text-red">*</span></label>
                             {allEmployeeCompany && <SelectBox
-                                id={`tag-employees-create`}
+                                id={`tag-employees-create-${id}`}
                                 // ${currentTagIndex}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
@@ -182,6 +189,7 @@ const mapStateToProps = state => state;
 const mapDispatchToProps = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     createTag: TagActions.createTag,
+    getListTag: TagActions.getListTag,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateTag));

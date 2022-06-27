@@ -36,7 +36,7 @@ function TagTable(props) {
         setState({
             ...state,
         });
-        window.$('#modal-create-tag').modal('show');
+        window.$('#modal-create-tag-create').modal('show');
     }
 
     const handleEdit = async (tag) => {
