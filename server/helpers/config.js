@@ -705,6 +705,19 @@ const LINKS = [
     ],
     components: getComponentsInLink("/bidding-project-template"),
   },
+  {
+    url: "/tags-management",
+    description: "Quản lý danh mục tag",
+    category: LINK_CATEGORY.BIDDING.name,
+    roles: [
+      ROOT_ROLES.SUPER_ADMIN.name,
+      ROOT_ROLES.ADMIN.name,
+      ROOT_ROLES.MANAGER.name,
+      ROOT_ROLES.DEPUTY_MANAGER.name,
+      ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink("/tags-management"),
+  },
 
   // KPI
   {

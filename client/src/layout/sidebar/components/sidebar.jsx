@@ -368,6 +368,7 @@ class SideBar extends Component {
                                         { name: "menu.list_search_for_package", icon: "fa fa-search", path: "/bidding-search-for-package" },
                                         { name: "menu.list_bidding_contract", icon: "fa fa-file-text-o", path: "/bidding-list-contract" },
                                         { name: "menu.bidding_project_template_list", icon: "fa fa-flash", path: "/bidding-project-template" },
+                                        { name: "menu.manage_tag", icon: "fa fa-tags", path: "/tags-management" },
                                     ],
                                 }}
                             />

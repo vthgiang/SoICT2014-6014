@@ -18,6 +18,7 @@ module.exports = {
     Timesheet: require('./human-resource/timesheet.model'),
     Field: require('./human-resource/field.model'),
 
+    Tag: require('./human-resource/tag.model'),
     Major: require('./human-resource/major.model'),
     Certificate: require('./human-resource/certificate.model'),
     CareerPosition: require('./human-resource/careerPosition.model'),

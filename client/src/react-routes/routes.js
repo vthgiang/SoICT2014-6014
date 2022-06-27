@@ -68,6 +68,7 @@ const BiddingPackagesManagement = lazy(() => import("../modules/bidding/bidding-
 const BiddingPackageDetailPage = lazy(() => import("../modules/bidding/bidding-package/biddingPackageManagement/components/biddingPackageDetailPage"))
 const ProjectTemplateManagement = lazy(() => import("../modules/bidding/project-template/components"))
 const BidDashboard = lazy(() => import("../modules/bidding/bidding-dashboard/component"))
+const TagManagement = lazy(() => import("../modules/bidding/tags/component"))
 
 const CreateEmployeeKpiSet = lazy(() => import("../modules/kpi/employee/creation/component/employeeKpiCreate"))
 const KPIPersonalManager = lazy(() => import("../modules/kpi/employee/management/component/employeeKpiManagement"))
@@ -1311,6 +1312,25 @@ class Routes extends Component {
                         pageName={"bidding_project_template_list"}
                         layout={Layout}
                         component={ProjectTemplateManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/tags-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/tags-management",
+                                name: "manage_tag",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/tags-management"}
+                        path={"/tags-management"}
+                        pageName={"manage_tag"}
+                        layout={Layout}
+                        component={TagManagement}
                     />
                     <PrivateRoute
                         isLoading={this.props.course.isLoading}

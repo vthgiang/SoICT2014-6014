@@ -51,6 +51,7 @@ router.use("/get-employee-dashboard-data", require("./modules/human-resource/get
 
 router.use("/bidding-contracts", require("./modules/human-resource/bidding-contract/biddingContract.route"));
 router.use("/majors", require("./modules/human-resource/major/major.route"));
+router.use("/tags", require("./modules/human-resource/tag/tag.route"));
 router.use(
     "/career-positions",
     require("./modules/human-resource/career-position/careerPosition.route")

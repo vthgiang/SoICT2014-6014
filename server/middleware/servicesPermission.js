@@ -813,6 +813,9 @@ exports.links = [{
 }, {
     url: '/bidding-project-template',
     apis: ['@all']
+}, {
+    url: '/tags-management',
+    apis: ['@all']
 },
 {
     url: '/kpi-units/create-for-admin',

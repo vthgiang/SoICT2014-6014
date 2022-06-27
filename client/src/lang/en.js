@@ -163,6 +163,7 @@ export default {
             manage_bidding: "Manage bidding",
             list_bidding_contract: "Manage bidding contracts",
             bidding_project_template_list: "Project template",
+            manage_tag: "Manage tags",
             list_search_for_package: "Search employee for package",
             bidding_dashboard: "Bidding dashboard",
             list_bidding_package: "Manage bidding packages",

@@ -37,6 +37,7 @@ import { certificate } from '../modules/human-resource/certificate/redux/reducer
 import { biddingPackageInfo } from '../modules/bidding/bidding-package/redux/reducers';
 import { biddingPackagesManager } from '../modules/bidding/bidding-package/biddingPackageManagement/redux/reducers';
 import { biddingContract } from '../modules/bidding/bidding-contract/redux/reducers';
+import { tag } from '../modules/bidding/tags/redux/reducers';
 
 import { employeeDashboardData } from '../modules/human-resource/employee-dashboard/redux/reducers'
 
@@ -200,6 +201,7 @@ const appReducer = combineReducers({
     career,
     major,
     biddingContract,
+    tag,
     certificate,
     biddingPackageInfo,
     biddingPackagesManager,
