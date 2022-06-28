@@ -92,8 +92,8 @@ const BiddingPriceAndProjectBudgetDashboard = (props) => {
 
     return (
         <div className='box'>
-            <div class="box-header with-border">
-                <div class="box-title">Tương quan giữa dự toán gói thầu và ngân sách dự án</div>
+            <div className="box-header with-border">
+                <div className="box-title">Tương quan giữa dự toán gói thầu và ngân sách dự án</div>
             </div>
             <div className="box-body">
                 <section ref={refPriceBudget}></section>

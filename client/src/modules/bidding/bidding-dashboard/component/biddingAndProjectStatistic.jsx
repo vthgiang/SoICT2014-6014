@@ -104,8 +104,8 @@ const BidAndProjectStatistic = (props) => {
 
     return (
         <div className="box box-primary">
-            <div class="box-header with-border">
-                <div class="box-title">Tương quan thông tin gói thầu và dự án</div>
+            <div className="box-header with-border">
+                <div className="box-title">Tương quan thông tin gói thầu và dự án</div>
             </div>
             <div className="box-body qlcv">
                 <div className="form-inline" style={{ marginBottom: 15 }}>
@@ -211,7 +211,7 @@ const BidAndProjectStatistic = (props) => {
                                                 <div>
                                                     <strong>Thay đổi phát sinh trong dự án: &nbsp;</strong>
                                                     <ul>
-                                                        {projectBP?.budgetChangeRequest &&
+                                                        {projectBP?.budgetChangeRequest && projectBP?.budgetChangeRequest !== projectBP?.budget &&
                                                             <li key={`budgetChangeRequest}`}>
                                                                 Ngân sách ước lượng hiện tại: <span style={Number(projectBP?.budgetChangeRequest) < Number(bid?.price) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>
                                                                     {projectBP?.budgetChangeRequest} &nbsp;(VND)
@@ -219,7 +219,8 @@ const BidAndProjectStatistic = (props) => {
                                                             </li>
                                                         }
                                                         {projectBP?.endDateRequest &&
-                                                            formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) < Number(bid?.proposals?.executionTime) &&
+                                                            // formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) < Number(bid?.proposals?.executionTime) &&
+                                                            formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) !== formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDate) &&
                                                             <li key={`endDateRequest}`} >
                                                                 Ngày kết thúc thay đổi từ <span style={{ fontWeight: 600 }}>{formatDate(projectBP?.endDate)}</span> thành <span style={formatTimeOfEffection(projectBP?.unitTime, projectBP?.startDate, projectBP?.endDateRequest) < Number(bid?.proposals?.executionTime) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{formatDate(projectBP?.endDateRequest)}</span>
                                                                 <br />

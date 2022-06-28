@@ -74,8 +74,8 @@ const BiddingInProcessStatistic = (props) => {
 
     return (
         <div className="box box-primary">
-            <div class="box-header with-border">
-                <div class="box-title">Thống kê theo quy trình đấu thầu và thực hiện dự án</div>
+            <div className="box-header with-border">
+                <div className="box-title">Thống kê theo quy trình đấu thầu và thực hiện dự án</div>
             </div>
             <div className="box-body qlcv">
                 <div className="form-inline" style={{ marginBottom: 15 }}>

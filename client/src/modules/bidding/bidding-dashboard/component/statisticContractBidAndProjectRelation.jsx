@@ -53,8 +53,8 @@ const ContractBidProjectRelation = (props) => {
 
     return (
         <div className="box box-primary">
-            <div class="box-header with-border">
-                <div class="box-title">Thống kê tổng quan</div>
+            <div className="box-header with-border">
+                <div className="box-title">Thống kê tổng quan</div>
             </div>
             <div className="box-body">
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
