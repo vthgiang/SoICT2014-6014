@@ -37,6 +37,10 @@ const {
   CareerPosition,
   Certificate,
   Major,
+  Tag,
+  BiddingContract,
+  BiddingPackage,
+  ProjectTemplate,
 } = require("../models");
 
 require("dotenv").config();
@@ -77,15 +81,13 @@ const days = [
   "28",
 ];
 function randomDateOld() {
-  let date = `${Math.floor(Math.random() * 40) + 1960}-${
-    months[Math.floor(Math.random() * 12)]
-  }-${days[Math.floor(Math.random() * 19)]}`;
+  let date = `${Math.floor(Math.random() * 40) + 1960}-${months[Math.floor(Math.random() * 12)]
+    }-${days[Math.floor(Math.random() * 19)]}`;
   return date;
 }
 function randomDateNew() {
-  let date = `${Math.floor(Math.random() * 20) + 2000}-${
-    months[Math.floor(Math.random() * 12)]
-  }-${days[Math.floor(Math.random() * 19)]}`;
+  let date = `${Math.floor(Math.random() * 20) + 2000}-${months[Math.floor(Math.random() * 12)]
+    }-${days[Math.floor(Math.random() * 19)]}`;
   return date;
 }
 
@@ -129,9 +131,8 @@ const namesMale = [
   "Danh",
 ];
 function randomDateNameMale() {
-  let name = `${surnames[Math.floor(Math.random() * 13)]} ${
-    middleNamesMale[Math.floor(Math.random() * 7)]
-  } ${namesMale[Math.floor(Math.random() * 13)]}`;
+  let name = `${surnames[Math.floor(Math.random() * 13)]} ${middleNamesMale[Math.floor(Math.random() * 7)]
+    } ${namesMale[Math.floor(Math.random() * 13)]}`;
   return name;
 }
 
@@ -156,9 +157,8 @@ const namesFemale = [
 const currentYear = new Date().getFullYear();
 const beforCurrentYear = new Date().getFullYear() - 1;
 function randomDateNameFemale() {
-  let name = `${surnames[Math.floor(Math.random() * 13)]} ${
-    middleNamesFemale[Math.floor(Math.random() * 4)]
-  } ${namesFemale[Math.floor(Math.random() * 14)]}`;
+  let name = `${surnames[Math.floor(Math.random() * 13)]} ${middleNamesFemale[Math.floor(Math.random() * 4)]
+    } ${namesFemale[Math.floor(Math.random() * 14)]}`;
   return name;
 }
 function removeVietnameseTones(str) {
@@ -202,22 +202,21 @@ const initHumanResourceData = async () => {
   let connectOptions =
     process.env.DB_AUTHENTICATION === "true"
       ? {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-          user: process.env.DB_USERNAME,
-          pass: process.env.DB_PASSWORD,
-        }
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+      }
       : {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-        };
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      };
   const systemDB = mongoose.createConnection(
-    `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-      process.env.DB_NAME
+    `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME
     }`,
     connectOptions
   );
@@ -225,19 +224,19 @@ const initHumanResourceData = async () => {
   let connectVNISTOptions =
     process.env.DB_AUTHENTICATION === "true"
       ? {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-          user: process.env.DB_USERNAME,
-          pass: process.env.DB_PASSWORD,
-        }
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+      }
       : {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-        };
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      };
   const vnistDB = mongoose.createConnection(
     `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`,
     connectVNISTOptions
@@ -1132,8 +1131,7 @@ const initHumanResourceData = async () => {
   const maritalStatus = ["single", "married"];
   usersFake.forEach((x, index) => {
     let contractEndDate = new Date(
-      `${index < 50 ? currentYear : currentYear - 1}-${
-        months[Math.floor(Math.random() * 12)]
+      `${index < 50 ? currentYear : currentYear - 1}-${months[Math.floor(Math.random() * 12)]
       }-${days[Math.floor(Math.random() * 19)]}`
     );
     staffFake = [
@@ -1147,23 +1145,20 @@ const initHumanResourceData = async () => {
         employeeTimesheetId: `CC${100 + index}`,
         gender: index <= 100 ? "male" : "female",
         startingDate: new Date(
-          `${
-            index < 70
-              ? currentYear - 1
-              : index > 120
+          `${index < 70
+            ? currentYear - 1
+            : index > 120
               ? currentYear
               : currentYear - 2
-          }-${months[Math.floor(Math.random() * 12)]}-${
-            days[Math.floor(Math.random() * 19)]
+          }-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
           }`
         ),
         leavingDate:
           70 <= index && index <= 120
             ? new Date(
-                `${currentYear}-${months[Math.floor(Math.random() * 12)]}-${
-                  days[Math.floor(Math.random() * 19)]
-                }`
-              )
+              `${currentYear}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
+              }`
+            )
             : null,
         birthdate: new Date(randomDateOld()),
         birthplace: "Hai Bà Trưng - Hà Nội",
@@ -1206,19 +1201,16 @@ const initHumanResourceData = async () => {
         temporaryResidenceDistrict: "Hai Bà Trưng",
         temporaryResidenceWard: "Bạch Mai",
         educationalLevel: "12/12",
-        foreignLanguage: `${
-          foreignLanguage[Math.floor(Math.random() * 7)]
-        } Toeic`,
+        foreignLanguage: `${foreignLanguage[Math.floor(Math.random() * 7)]
+          } Toeic`,
         professionalSkill: professionalSkill[Math.floor(Math.random() * 8)],
         healthInsuranceNumber: `N1236589${index}`,
         healthInsuranceStartDate: new Date(
-          `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-            days[Math.floor(Math.random() * 19)]
+          `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
           }`
         ),
         healthInsuranceEndDate: new Date(
-          `${currentYear}-${months[Math.floor(Math.random() * 12)]}-${
-            days[Math.floor(Math.random() * 19)]
+          `${currentYear}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
           }`
         ),
         socialInsuranceNumber: `XH${1569874 + index}`,
@@ -1288,13 +1280,11 @@ const initHumanResourceData = async () => {
             careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
             company: "Vnist",
             startDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
             endDate: new Date(
-              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
           },
@@ -1302,13 +1292,11 @@ const initHumanResourceData = async () => {
             careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
             company: "Vnist",
             startDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
             endDate: new Date(
-              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
           },
@@ -1316,13 +1304,11 @@ const initHumanResourceData = async () => {
             careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
             company: "Vnist",
             startDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
             endDate: new Date(
-              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
           },
@@ -1330,13 +1316,11 @@ const initHumanResourceData = async () => {
             careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
             company: "Vnist",
             startDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
             endDate: new Date(
-              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
           },
@@ -1344,13 +1328,11 @@ const initHumanResourceData = async () => {
             careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
             company: "Vnist",
             startDate: new Date(
-              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
             endDate: new Date(
-              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
           },
@@ -1368,16 +1350,14 @@ const initHumanResourceData = async () => {
         contracts: [
           {
             name: "Thực tập",
-            contractType: `${
-              index < 50
-                ? "Thử việc"
-                : index > 150
+            contractType: `${index < 50
+              ? "Thử việc"
+              : index > 150
                 ? "Hợp đồng ngắn hạn hạn"
                 : "Hợp đồng dài hạn"
-            }`,
+              }`,
             startDate: new Date(
-              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-                days[Math.floor(Math.random() * 19)]
+              `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
               }`
             ),
             endDate: contractEndDate,
@@ -1502,13 +1482,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1516,13 +1494,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1530,13 +1506,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1544,13 +1518,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1558,13 +1530,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1696,13 +1666,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1710,13 +1678,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1724,13 +1690,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1738,13 +1702,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1752,13 +1714,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1891,13 +1851,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1905,13 +1863,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1919,13 +1875,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1933,13 +1887,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -1947,13 +1899,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2086,13 +2036,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2100,13 +2048,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2114,13 +2060,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2128,13 +2072,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2142,13 +2084,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2281,13 +2221,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2295,13 +2233,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2309,13 +2245,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2323,13 +2257,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2337,13 +2269,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2483,13 +2413,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2497,13 +2425,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2511,13 +2437,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2525,13 +2449,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2539,13 +2461,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2678,13 +2598,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2692,13 +2610,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2706,13 +2622,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2720,13 +2634,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2734,13 +2646,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2873,13 +2783,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2887,13 +2795,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2901,13 +2807,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2915,13 +2819,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -2929,13 +2831,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3068,13 +2968,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3082,13 +2980,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3096,13 +2992,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3110,13 +3004,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3124,13 +3016,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3263,13 +3153,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3277,13 +3165,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3291,13 +3177,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3305,13 +3189,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3319,13 +3201,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3458,13 +3338,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3472,13 +3350,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3486,13 +3362,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3500,13 +3374,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3514,13 +3386,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3653,13 +3523,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3667,13 +3535,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3681,13 +3547,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3695,13 +3559,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3709,13 +3571,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3847,13 +3707,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3861,13 +3719,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3875,13 +3731,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3889,13 +3743,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -3903,13 +3755,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4041,13 +3891,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4055,13 +3903,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4069,13 +3915,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4083,13 +3927,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4097,13 +3939,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4235,13 +4075,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4249,13 +4087,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4263,13 +4099,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4277,13 +4111,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4291,13 +4123,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4429,13 +4259,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4443,13 +4271,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4457,13 +4283,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4471,13 +4295,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4485,13 +4307,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4623,13 +4443,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4637,13 +4455,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4651,13 +4467,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4665,13 +4479,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4679,13 +4491,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4817,13 +4627,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4831,13 +4639,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4845,13 +4651,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4859,13 +4663,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -4873,13 +4675,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5011,13 +4811,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5025,13 +4823,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5039,13 +4835,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5053,13 +4847,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5067,13 +4859,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5205,13 +4995,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5219,13 +5007,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5233,13 +5019,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5247,13 +5031,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5261,13 +5043,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5413,13 +5193,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5427,13 +5205,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5441,13 +5217,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5455,13 +5229,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5469,13 +5241,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5607,13 +5377,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5621,13 +5389,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5635,13 +5401,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5649,13 +5413,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5663,13 +5425,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5801,13 +5561,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5815,13 +5573,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5829,13 +5585,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5843,13 +5597,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5857,13 +5609,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -5995,13 +5745,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6009,13 +5757,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6023,13 +5769,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6037,13 +5781,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6051,13 +5793,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6190,13 +5930,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6204,13 +5942,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6218,13 +5954,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6232,13 +5966,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6246,13 +5978,11 @@ const initHumanResourceData = async () => {
           careerPosition: careerPositions[Math.floor(Math.random() * 15)]._id,
           company: "Vnist",
           startDate: new Date(
-            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 2}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
           endDate: new Date(
-            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${
-              days[Math.floor(Math.random() * 19)]
+            `${currentYear - 1}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]
             }`
           ),
         },
@@ -6787,8 +6517,7 @@ const initHumanResourceData = async () => {
         decisionNumber: `${12345 + index}`,
         organizationalUnit: unit[0]._id,
         startDate: new Date(
-          `${index > 100 ? currentYear : currentYear - 1}-${
-            months[Math.floor(Math.random() * 12)]
+          `${index > 100 ? currentYear : currentYear - 1}-${months[Math.floor(Math.random() * 12)]
           }-${days[Math.floor(Math.random() * 19)]}`
         ),
         type: "Thưởng tiền",
@@ -6874,13 +6603,11 @@ const initHumanResourceData = async () => {
         decisionNumber: `${15645 + index}`,
         organizationalUnit: unit[0]._id,
         startDate: new Date(
-          `${index > 100 ? currentYear : currentYear - 1}-${
-            months[Math.floor(Math.random() * 6)]
+          `${index > 100 ? currentYear : currentYear - 1}-${months[Math.floor(Math.random() * 6)]
           }-${day}`
         ),
         endDate: new Date(
-          `${index > 100 ? currentYear : currentYear - 1}-${
-            months[Math.floor(Math.random() * 6) + 6]
+          `${index > 100 ? currentYear : currentYear - 1}-${months[Math.floor(Math.random() * 6) + 6]
           }-${day}`
         ),
         type: "Phạt tiền",
@@ -7227,6 +6954,703 @@ const initHumanResourceData = async () => {
   // }])
 
   // console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
+
+
+
+  // ============================================================
+
+  console.log("Khởi tạo dữ liệu cấu hình module quản lý nhân sự!");
+
+  const configModule = await ModuleConfiguration(vnistDB).create({
+    humanResource: {
+      contractNoticeTime: 15,
+      timekeepingType: "shift",
+      timekeepingByShift: {
+        shift1Time: 4,
+        shift2Time: 4,
+        shift3Time: 4,
+      },
+    },
+    bidding: {
+      company: vnist.name,
+      address: "Tầng 10, số 266 Đội Cấn, quận Ba Đình, Hà Nội",
+      email: "vnist@gmail.com",
+      phone: "0987654345",
+      taxCode: "564651658496456",
+      representative: {
+        name: "Nguyễn Văn An",
+        role: "Giám đốc"
+      },
+      bank: {
+        name: "SHB - chi nhánh Ba Đình",
+        accountNumber: "98676745678"
+      }
+    },
+  });
+
+  console.log(`Xong! thông tin cấu hình module quản lý nhân sự đã được tạo`);
+
+  /**
+   * ==================================================================
+   */
+
+  // nhân viên
+  const anNV = await Employee(vnistDB).findOne({ emailInCompany: "nva.vnist@gmail.com" });
+  const binhTV = await Employee(vnistDB).findOne({ emailInCompany: "tvb.vnist@gmail.com" });
+  const cucVT = await Employee(vnistDB).findOne({ emailInCompany: "vtc.vnist@gmail.com" });
+  const danhNV = await Employee(vnistDB).findOne({ emailInCompany: "nvd.vnist@gmail.com" })
+  const dungNT = await Employee(vnistDB).findOne({ emailInCompany: "ngotridung.vnist@gmail.com" })
+  const daiNK = await Employee(vnistDB).findOne({ emailInCompany: "nguyenkhacdai.vnist@gmail.com" })
+
+  console.log("Khởi tạo dữ liệu tag!");
+
+
+  const tags = await Tag(vnistDB).insertMany([
+    { // 0
+      employees: [
+        cucVT._id,
+        anNV._id,
+        dungNT._id,
+        danhNV._id,
+      ],
+      name: "backend",
+      description: "Triển khai hệ thống backend cho website",
+      employeeWithSuitability: [
+        {
+          suitability: 8,
+          employee: cucVT._id
+        },
+        {
+          suitability: 7,
+          employee: anNV._id
+        },
+        {
+          suitability: 8,
+          employee: dungNT._id
+        },
+        {
+          suitability: 9,
+          employee: danhNV._id
+        }
+      ]
+    },
+    { // 1
+      employees: [
+        cucVT._id,
+        binhTV._id,
+        daiNK._id,
+        danhNV._id,
+      ],
+      name: "frontend",
+      description: "Xây dựng giao diện cho website",
+      employeeWithSuitability: [
+        {
+          suitability: 7,
+          employee: cucVT._id
+        },
+        {
+          suitability: 7,
+          employee: binhTV._id
+        },
+        {
+          suitability: 5,
+          employee: daiNK._id
+        },
+        {
+          suitability: 9,
+          employee: danhNV._id
+        }
+      ]
+    },
+    { // 2
+      employees: [
+        binhTV._id,
+        daiNK._id,
+        dungNT._id,
+        danhNV._id,
+      ],
+      name: "trainnig_security",
+      description: "Hướng dẫn triển khai, kiểm tra bảo mật hệ thống",
+      employeeWithSuitability: [
+        {
+          suitability: 8,
+          employee: binhTV._id
+        },
+        {
+          suitability: 7,
+          employee: daiNK._id
+        },
+        {
+          suitability: 9,
+          employee: dungNT._id
+        },
+        {
+          suitability: 9,
+          employee: danhNV._id
+        }
+      ]
+    },
+    { // 3
+      employees: [
+        cucVT._id,
+        anNV._id,
+        daiNK._id,
+        danhNV._id,
+      ],
+      name: "implement_security",
+      description: "Triển khai ứng dụng bảo mật cho hệ thống máy tính công ty",
+      employeeWithSuitability: [
+        {
+          suitability: 9,
+          employee: cucVT._id
+        },
+        {
+          suitability: 7,
+          employee: anNV._id
+        },
+        {
+          suitability: 8,
+          employee: daiNK._id
+        },
+        {
+          suitability: 8,
+          employee: danhNV._id
+        }
+      ]
+    },
+    { // 4
+      employees: [
+        binhTV._id,
+        daiNK._id,
+        cucVT._id,
+      ],
+      name: "collecting_data",
+      description: "Thu thập dữ liệu, tìm kiếm thông tin",
+      employeeWithSuitability: [
+        {
+          suitability: 7,
+          employee: binhTV._id
+        },
+        {
+          suitability: 8,
+          employee: daiNK._id
+        },
+        {
+          suitability: 7,
+          employee: cucVT._id
+        },
+      ]
+    },
+    { // 5
+      employees: [
+        binhTV._id,
+        anNV._id,
+        dungNT._id,
+        daiNK._id,
+        danhNV._id,
+      ],
+      name: "devops",
+      description: "Deploy sản phẩm lên server, làm việc với cloud,..",
+      employeeWithSuitability: [
+        {
+          suitability: 9,
+          employee: binhTV._id
+        },
+        {
+          suitability: 8,
+          employee: anNV._id
+        },
+        {
+          suitability: 7,
+          employee: dungNT._id
+        },
+        {
+          suitability: 7,
+          employee: daiNK._id
+        },
+        {
+          suitability: 8,
+          employee: danhNV._id
+        }
+      ]
+    },
+  ]);
+
+  console.log("Xong! Thông tin tag đã đc tạo!");
+
+  /**
+   * ==================================================================
+   */
+
+  console.log("Khởi tạo dữ liệu gói thầu!");
+  var now__ = new Date();
+  var currentYear__ = now__.getFullYear();
+  var currentMonth__ = now__.getMonth();
+  const startDate__ = new Date(currentYear__, currentMonth__ - 1, 1, 12);
+  const endDate__ = new Date(currentYear__, currentMonth__ - 1, 30, 12);
+
+  const biddingPackage = await BiddingPackage(vnistDB).insertMany([
+    {
+      proposals: {
+        executionTime: 20,
+        unitOfTime: "days",
+        tasks: [
+          {
+            preceedingTasks: [],
+            numberOfEmployees: 1,
+            directEmployees: [],
+            backupEmployees: [],
+            unitOfTime: "days",
+            code: "T01",
+            taskName: "Hướng dẫn thu thập thông tin qua các search engine",
+            taskDescription: "Thu thập thông tin qua các search engine",
+            estimateTime: 5,
+            tag: tags[4]
+          },
+          {
+            preceedingTasks: [],
+            numberOfEmployees: 1,
+            directEmployees: [],
+            backupEmployees: [],
+            unitOfTime: "days",
+            code: "T02",
+            taskName: "Triển khai nhận diện ứng dụng",
+            taskDescription: "Nhận diện ứng dụng phiên bản ứng dụng, các thành phần, component của ứng dụng",
+            estimateTime: 3,
+            tag: tags[3]
+          },
+          {
+            preceedingTasks: [
+              "T01",
+              "T02"
+            ],
+            numberOfEmployees: 1,
+            directEmployees: [],
+            backupEmployees: [],
+            unitOfTime: "days",
+            code: "T03",
+            taskName: "Thay đổi phiên bản máy chủ web",
+            taskDescription: "Thay đổi phiên bản máy chủ web",
+            estimateTime: 4,
+            tag: tags[3]
+          },
+          {
+            preceedingTasks: [
+              "T03"
+            ],
+            numberOfEmployees: 2,
+            directEmployees: [],
+            backupEmployees: [],
+            unitOfTime: "days",
+            code: "T04",
+            taskName: "Thiết lập Cấu hình bảo mật mới cho trang web",
+            taskDescription: "Thiết lập Cấu hình bảo mật mới cho trang web.",
+            estimateTime: 5,
+            tag: tags[3]
+          }
+        ]
+      },
+      type: 1,
+      status: 3,
+      name: "Triển khai công nghệ bảo mật mới cho web site công ty Lomo",
+      code: "20220614-LOMO-01",
+      customer: "Lomo Solution",
+      price: 32000000,
+      openLocal: "Đội Cấn, Ba Đình, Hà Nội",
+      receiveLocal: "Đội Cấn, Ba Đình, Hà Nội",
+      startDate: startDate__,
+      endDate: endDate__,
+      description: "Triển khai công nghệ bảo mật mới cho web site công ty Lomo",
+      keyPeople: [],
+      keyPersonnelRequires: [],
+      company: vnist._id,
+    },
+    {
+      "proposals": {
+        "unitOfTime": "days",
+        "executionTime": 15,
+        "tasks": [
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T01",
+            "preceedingTasks": [],
+            "taskName": "Xây đường ống thoát nước",
+            "taskDescription": "Xây đường ống",
+            "estimateTime": 6
+          },
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T02",
+            "preceedingTasks": ["T01"],
+            "taskName": "Làm mới vỉa hè",
+            "taskDescription": "Làm mới vỉa hè",
+            "estimateTime": 7
+          }
+        ]
+      },
+      "type": 4,
+      "status": 1,
+      "name": "Gói thầu xây dựng công trình đô thị Bắc Ninh",
+      "code": "20220614-BN-06",
+      "customer": "Công ty Xây Dựng Văn Phú",
+      "price": 12000000,
+      "openLocal": "Hà Nội",
+      "receiveLocal": "Bắc Ninh",
+      "startDate": startDate__,
+      "endDate": endDate__,
+      "description": "Gói thầu xây dựng công trình đô thị",
+      "keyPeople": [],
+      "keyPersonnelRequires": [],
+      "company": vnist._id,
+    },
+    {
+      "proposals": {
+        "unitOfTime": "days",
+        "executionTime": 20,
+        "tasks": [
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T01",
+            "preceedingTasks": [],
+            "taskName": "Tư vấn dịch vụ bảo mật cho máy chủ công ty",
+            "taskDescription": "Tư vấn dịch vụ bảo mật cho máy chủ",
+            "estimateTime": 7
+          },
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T02",
+            "preceedingTasks": ["T01"],
+            "taskName": "Hướng dẫn triển khai ứng dụng bảo mật cho công ty",
+            "taskDescription": "Hướng dẫn triển khai ứng dụng bảo mật ",
+            "estimateTime": 7
+          }
+        ]
+      },
+      "type": 1,
+      "status": 2,
+      "name": "Tư vấn giám sát hệ thống ATTT công ty Qmobile",
+      "code": "20220614-ATTT-01",
+      "customer": "Lomo Solution",
+      "price": 30000000,
+      "openLocal": "Hà Nội",
+      "receiveLocal": "Hà Nội",
+      "startDate": startDate__,
+      "endDate": endDate__,
+      "description": "Tư vấn giám sát hệ thống ATTT công ty ",
+      "keyPeople": [],
+      "keyPersonnelRequires": [],
+      "company": vnist._id,
+    },
+    {
+      "proposals": {
+        "executionTime": 30,
+        "unitOfTime": "days",
+        "tasks": [
+          {
+            "preceedingTasks": [],
+            "numberOfEmployees": 1,
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T01",
+            "taskName": "Thu thập thông tin qua các search engine",
+            "taskDescription": "Thông tin về hệ thống được thu thập phổ biến như GG, Bing, Baidu,...",
+            "estimateTime": 7,
+          },
+          {
+            "preceedingTasks": [
+              "T01"
+            ],
+            "numberOfEmployees": 1,
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T02",
+            "taskName": "Thu thập thông tin qua các web server",
+            "taskDescription": "Thu thập thông tin qua các web server",
+            "estimateTime": 6,
+          },
+          {
+            "preceedingTasks": [
+              "T02"
+            ],
+            "numberOfEmployees": 2,
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T03",
+            "taskName": "Nhận diện ứng dụng",
+            "taskDescription": "Nhận diện ứng dụng phiên bản ứng dụng, các thành phần, component của ứng dụng",
+            "estimateTime": 7,
+          },
+          {
+            "preceedingTasks": [
+              "T03"
+            ],
+            "numberOfEmployees": 1,
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T04",
+            "taskName": "Đánh giá quá trình truyền thông tin đăng nhập",
+            "taskDescription": "Đánh giá quá trình truyền nội dung thông tin đăng nhập",
+            "estimateTime": 4,
+          }
+        ]
+      },
+      "type": 2,
+      "status": 3,
+      "name": "Kiểm tra đánh giá an toàn thông tin và rà soát mã độc",
+      "code": "20220614-ATTT-02",
+      "customer": "Công Ty TNHH DXC",
+      "price": 40000000,
+      "startDate": startDate__,
+      "endDate": endDate__,
+      "description": "Kiểm tra đánh giá an toàn thông tin và rà soát mã độc",
+      "keyPeople": [],
+      "keyPersonnelRequires": [],
+      "company": vnist._id,
+      "openLocal": "Hà Nội",
+      "receiveLocal": "Hà Nội",
+    },
+    {
+      "proposals": {
+        "unitOfTime": "days",
+        "executionTime": 25,
+        "tasks": [
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T01",
+            "preceedingTasks": [],
+            "taskName": "Dựng giao diện cho website",
+            "taskDescription": "Dựng giao diện cho website",
+            "estimateTime": 6,
+          },
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T02",
+            "preceedingTasks": [],
+            "taskName": "Xây dựng server cho website",
+            "taskDescription": "Xây dựng server cho website",
+            "estimateTime": 7,
+          },
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T03",
+            "preceedingTasks": ["T01, T02"],
+            "taskName": "Ghép nối backend và frontend",
+            "taskDescription": "Ghép nối backend và frontend",
+            "estimateTime": 4,
+          },
+          {
+            "directEmployees": [],
+            "backupEmployees": [],
+            "unitOfTime": "days",
+            "code": "T04",
+            "preceedingTasks": ["T03"],
+            "taskName": "Deploy web ra product",
+            "taskDescription": "Deploy web ra product",
+            "estimateTime": 3,
+          }
+        ],
+      },
+      "type": 1,
+      "status": 3,
+      "name": "Triển khai trang website QLCV cho công ty DXC",
+      "code": "20200614-QLCV-01",
+      "customer": "Công Ty TNHH DXC",
+      "price": 15000000,
+      "openLocal": "Hà Nội",
+      "receiveLocal": "Hà Nội",
+      "startDate": startDate__,
+      "endDate": endDate__,
+      "description": "Xây dựng website cho QLCV",
+      "keyPeople": [],
+      "keyPersonnelRequires": [],
+      "company": vnist._id,
+    }
+  ]);
+
+  console.log(`Xong! Danh sách gói thầu đã được tạo`);
+
+  /**
+   * Khởi tạo mẫu dự án
+   */
+
+  // người dùng
+  const usAnNV = await User(vnistDB).findOne({ email: "nva.vnist@gmail.com" });
+  const usBinhTV = await User(vnistDB).findOne({ email: "tvb.vnist@gmail.com" });
+  const usCucVT = await User(vnistDB).findOne({ email: "vtc.vnist@gmail.com" });
+  const usDanhNV = await User(vnistDB).findOne({ email: "nvd.vnist@gmail.com" });
+
+  console.log(`Khởi tạo dữ liệu mẫu dự án`);
+
+  const prjTemplate = await ProjectTemplate(vnistDB).insertMany([
+    /* 1 */
+    {
+      "projectType": 2,
+      "numberOfUse": 0,
+      "unitOfTime": "days",
+      "currenceUnit": "VND",
+      "projectManager": [
+        usDanhNV._id
+      ],
+      "responsibleEmployees": [
+        usAnNV._id,
+        usBinhTV._id,
+        usCucVT._id,
+        usDanhNV._id,
+      ],
+      "name": "Mẫu dự án đánh giá kiểm tra cơ sở hạn tầng mạng nội bộ",
+      "description": "Mẫu dự án đánh giá kiểm tra cơ sở hạn tầng mạng nội bộ Bảo Việt",
+      "creator": usDanhNV._id,
+      "responsibleEmployeesWithUnit": [
+        {
+          "unitId": Directorate._id,
+          "listUsers": [
+            {
+              "userId": usAnNV._id,
+              "salary": 10000000
+            },
+            {
+              "userId": usBinhTV._id,
+              "salary": 9000000
+            },
+            {
+              "userId": usCucVT._id,
+              "salary": 11000000
+            },
+            {
+              "userId": usDanhNV._id,
+              "salary": 10000000
+            }
+          ]
+        }
+      ],
+      "tasks": [
+        {
+          "taskWeight": {
+            "timeWeight": 0.333333333333333,
+            "qualityWeight": 0.333333333333333,
+            "costWeight": 0.333333333333333
+          },
+          "memberWeight": {
+            "timeWeight": 0.25,
+            "qualityWeight": 0.25,
+            "costWeight": 0.25,
+            "timedistributionWeight": 0.25
+          },
+          "code": "T01",
+          "tags": [],
+          "priority": 3,
+          "inactiveEmployees": [],
+          "responsibleEmployees": [
+            usBinhTV._id
+          ],
+          "accountableEmployees": [
+            usAnNV._id
+          ],
+          "consultedEmployees": [],
+          "informedEmployees": [],
+          "formula": "progress / (daysUsed / totalDays) - (10 - averageActionRating) * 10",
+          "formulaProjectTask": "taskTimePoint + taskQualityPoint + taskCostPoint",
+          "formulaProjectMember": "memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint",
+          "name": "Tìm kiếm thông tin bảo mật",
+          "description": "Tìm kiếm thông tin bảo mật",
+          "collaboratedWithOrganizationalUnits": [],
+          "preceedingTasks": [],
+          "estimateNormalTime": 4,
+          "estimateOptimisticTime": 2,
+          "estimateNormalCost": null,
+          "estimateMaxCost": null,
+          "estimateAssetCost": 1000000,
+          "actorsWithSalary": [
+            {
+              "userId": usBinhTV._id,
+              "salary": 0,
+              "weight": 80
+            },
+            {
+              "userId": usAnNV._id,
+              "salary": 0,
+              "weight": 20
+            }
+          ],
+          "totalResWeight": 80,
+          "taskInformations": [],
+          "taskActions": []
+        },
+        {
+          "taskWeight": {
+            "timeWeight": 0.333333333333333,
+            "qualityWeight": 0.333333333333333,
+            "costWeight": 0.333333333333333
+          },
+          "memberWeight": {
+            "timeWeight": 0.25,
+            "qualityWeight": 0.25,
+            "costWeight": 0.25,
+            "timedistributionWeight": 0.25
+          },
+          "code": "T02",
+          "tags": [],
+          "priority": 3,
+          "inactiveEmployees": [],
+          "responsibleEmployees": [
+            usDanhNV._id
+          ],
+          "accountableEmployees": [
+            usCucVT._id
+          ],
+          "consultedEmployees": [],
+          "informedEmployees": [],
+          "formula": "progress / (daysUsed / totalDays) - (10 - averageActionRating) * 10",
+          "formulaProjectTask": "taskTimePoint + taskQualityPoint + taskCostPoint",
+          "formulaProjectMember": "memberTimePoint + memberQualityPoint + memberCostPoint + memberTimedistributionPoint",
+          "name": "Đánh giá cơ sở hạ tầng mạng nội bộ",
+          "description": "Đánh giá cơ sở hạ tầng mạng nội bộ",
+          "collaboratedWithOrganizationalUnits": [],
+          "preceedingTasks": ["T01"],
+          "estimateNormalTime": 6,
+          "estimateOptimisticTime": 4,
+          "estimateNormalCost": null,
+          "estimateMaxCost": null,
+          "estimateAssetCost": 1000000,
+          "actorsWithSalary": [
+            {
+              "userId": usDanhNV._id,
+              "salary": 0,
+              "weight": 80
+            },
+            {
+              "userId": usCucVT._id,
+              "salary": 0,
+              "weight": 20
+            }
+          ],
+          "totalResWeight": 80,
+          "taskInformations": [],
+          "taskActions": []
+        }
+      ],
+    }
+  ])
+
+  console.log(`Xong! Dữ liệu mẫu dự án đã được tạo`);
 
   /**
    * Ngắt kết nối db

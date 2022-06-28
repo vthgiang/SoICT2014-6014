@@ -85,6 +85,9 @@ const {
   Supplies,
   PurchaseInvoice,
   AllocationHistory,
+  BiddingPackage,
+  BiddingContract,
+  Tag,
 } = require("../models");
 const { ObjectId } = require("mongodb");
 
@@ -99,25 +102,24 @@ const initSampleCompanyDB = async () => {
   let connectOptions =
     process.env.DB_AUTHENTICATION === "true"
       ? {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-          user: process.env.DB_USERNAME,
-          pass: process.env.DB_PASSWORD,
-          auth: {
-            authSource: "admin",
-          },
-        }
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+        auth: {
+          authSource: "admin",
+        },
+      }
       : {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-        };
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      };
   const systemDB = mongoose.createConnection(
-    `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-      process.env.DB_NAME
+    `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME
     }`,
     connectOptions
   );
@@ -125,22 +127,22 @@ const initSampleCompanyDB = async () => {
   let connectVNISTOptions =
     process.env.DB_AUTHENTICATION === "true"
       ? {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-          user: process.env.DB_USERNAME,
-          pass: process.env.DB_PASSWORD,
-          auth: {
-            authSource: "admin",
-          },
-        }
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+        auth: {
+          authSource: "admin",
+        },
+      }
       : {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          useCreateIndex: true,
-          useFindAndModify: false,
-        };
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      };
   const vnistDB = mongoose.createConnection(
     `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`,
     connectVNISTOptions
@@ -181,6 +183,9 @@ const initSampleCompanyDB = async () => {
     if (!db.models.SystemLink) SystemLink(db);
     if (!db.models.SystemComponent) SystemComponent(db);
 
+    if (!db.models.Employee) BiddingPackage(db);
+    if (!db.models.Employee) BiddingContract(db);
+    if (!db.models.Employee) Tag(db);
     if (!db.models.Employee) Employee(db);
     if (!db.models.Salary) Salary(db);
     if (!db.models.AnnualLeave) AnnualLeave(db);
@@ -1885,37 +1890,6 @@ const initSampleCompanyDB = async () => {
     },
   ]);
   console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
-
-  console.log("Khởi tạo dữ liệu cấu hình module quản lý nhân sự!");
-
-  await ModuleConfiguration(vnistDB).create({
-    humanResource: {
-      contractNoticeTime: 15,
-      timekeepingType: "shift",
-      timekeepingByShift: {
-        shift1Time: 4,
-        shift2Time: 4,
-        shift3Time: 4,
-      },
-    },
-    bidding: {
-      company: vnist.name,
-      address: "Tầng 10, số 266 Đội Cấn, quận Ba Đình, Hà Nội",
-      email: "vnist@gmail.com",
-      phone: "0987654345",
-      taxCode: "564651658496456",
-      representative: {
-        name: users[2].name,
-        role: giamDoc.name
-      },
-      bank: {
-        name: "SHB - chi nhánh Ba Đình",
-        accountNumber: "98676745678"
-      }
-    },
-  });
-
-  console.log(`Xong! thông tin cấu hình module quản lý nhân sự đã được tạo`);
 
   /**
    * Tạo dữ liệu tài liệu

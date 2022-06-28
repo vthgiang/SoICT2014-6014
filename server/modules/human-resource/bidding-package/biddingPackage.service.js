@@ -913,6 +913,8 @@ exports.proposalForBiddingPackage = async (portal, body, params, companyId) => {
         let listEmpByTag = [];
         if (allTag?.length > 0) listEmpByTag = allTag.find(x => String(t.tag) === String(x._id))?.employees ?? [];
 
+        if (!listEmpByTag?.length) listEmpByTag = [...empWithTask];
+
         let directEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let backupEmpAvailable = empWithTask.filter(x => listEmpByTag.indexOf(String(x.empId)) !== -1).map(x => x.empId);
         let proposalEmpArr = [directEmpAvailable, backupEmpAvailable];
