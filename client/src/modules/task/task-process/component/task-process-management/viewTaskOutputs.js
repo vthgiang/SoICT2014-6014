@@ -13,7 +13,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../process-template/processDiagram.css';
 import { ViewProcessChild } from "./viewProcessChild";
-import { ModalViewTaskOutput } from "./modalViewTaskOutput";
+import { ModalTaskOutputs } from "./modalTaskOutputs";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -27,10 +27,28 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
     return entries;
 }
 
+const formatStatusTaskOutput = (value) => {
+    switch (value) {
+        case "unfinished":
+            return "Chưa hoàn thành";
+        case "inprogess":
+            return "Đang thực hiện"
+        case "waiting_for_approval":
+            return "Đang chờ phê duyệt";
+        case "rejected":
+            return "Bị từ chối";
+        case "approved":
+            return "Đã phê duyệt";
+        default:
+            return "";
+            break;
+    }
+}
+
 // khởi tạo giá trị mặc định zoomIn zoomOut
 var zlevel = 1;
 
-function ViewProcess(props) {
+function ViewTaskOutputs(props) {
 
     let { data } = props;
     const [state, setState] = useState({
@@ -57,7 +75,7 @@ function ViewProcess(props) {
             ],
         })
     )
-    const generateId = 'viewtaskprocesstab';
+    const generateId = 'viewtaskoutputtab';
     useEffect(() => {
         modeler.attachTo('#' + generateId);
         var eventBus = modeler.get('eventBus');
@@ -102,6 +120,7 @@ function ViewProcess(props) {
         })
         props.getDepartment();
         let { user } = props;
+
         let defaultUnit;
         if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
             item.manager === state.currentRole
@@ -120,44 +139,51 @@ function ViewProcess(props) {
 
                 if (infoTask) {
                     for (let i in infoTask) {
-                        console.log(122, i)
                         let responsible = []
                         let accountable = []
-                        infoTask[i].responsibleEmployees.forEach(x => {
-                            responsible.push(x.name)
-                        })
-                        infoTask[i].accountableEmployees.forEach(x => {
-                            accountable.push(x.name)
-                        })
+                        let taskOutputs = []
+                        if (infoTask[i].taskOutputs?.length > 0) {
+                            infoTask[i].taskOutputs.forEach(x => {
+                                let check = formatStatusTaskOutput(x.status);
+                                let title = x.title;
+                                taskOutputs.push(title)
+                            })
+                        } else {
+                            taskOutputs.push("Không có yêu cầu kết quả giao nộp")
+                        }
+
+                        console.log(155, taskOutputs)
                         let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
                         element1 && modeling.updateProperties(element1, {
                             progress: infoTask[i].progress,
                             shapeName: infoTask[i].name,
                             responsibleName: responsible,
-                            accountableName: accountable
+                            accountableName: accountable,
+                            taskOutputs: taskOutputs,
                         });
-                        if (infoTask[i].status === "finished") {
-                            element1 && modeling.setColor(element1, {
-                                fill: '#f9f9f9',
-                                stroke: '#c4c4c7'
-                            });
-
-                            var outgoing = element1.outgoing;
-                            outgoing.forEach(x => {
-                                if (info?.[x?.businessObject?.targetRef?.id]?.status === "inprocess") {
-                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
-
-                                    modeling.setColor(outgoingEdge, {
-                                        stroke: '#c4c4c7',
-                                        width: '5px'
-                                    })
-                                }
-                            })
+                        let checkStatusTaskOutputs = "normal";
+                        let check = 0;
+                        for (let x in infoTask[i].taskOutputs) {
+                            if (x.status !== "approved") {
+                                checkStatusTaskOutputs = "unfinished";
+                            } else {
+                                check = check + 1;
+                            }
                         }
-                        if (infoTask[i].status === "inprocess") {
+                        if (check == infoTask[i].taskOutputs.length) {
+                            checkStatusTaskOutputs = "approved"
+                        }
+
+                        if (checkStatusTaskOutputs === "approved") {
                             element1 && modeling.setColor(element1, {
                                 fill: '#84ffb8',
                                 stroke: '#14984c', //E02001
+                            });
+                        }
+                        if (checkStatusTaskOutputs === "unfinished") {
+                            element1 && modeling.setColor(element1, {
+                                fill: 'rgba(254, 202, 202)',
+                                stroke: 'rgba(239, 68, 68)', //E02001
                                 width: '5px'
                             });
 
@@ -169,13 +195,16 @@ function ViewProcess(props) {
         }
     }, [props.idProcess])
 
+    const { id, info, startDate, endDate, status,
+        processDescription, processName, showProcessChild, processChilds, showInfo } = state;
+
     // Các hàm  xử lý sự kiện của bpmn
 
-    const interactPopup = (event) => {
+    const interactPopup = async (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
         // console.log(element.businessObject.id);
-        setState(state => {
+        await setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
                 if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
@@ -216,7 +245,7 @@ function ViewProcess(props) {
 
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
-            window.$(`#modal-detail-task-view-process`).modal("show");
+            window.$(`#modal-task-outputs-of-task`).modal("show");
         }
         if (element.type === 'bpmn:SubProcess') {
             window.$(`#modal-view-process-child`).modal("show");
@@ -380,24 +409,24 @@ function ViewProcess(props) {
     }
 
     const { translate, role, user } = props;
-    const { id, info, startDate, endDate, status,
-        processDescription, processName, showProcessChild, processChilds, showInfo } = state;
+
     console.log(processChilds);
     const { isTabPane } = props
     // if (id){
     //     console.log(info[`${id}`]);
     // }
     //`contain-border ${showInfo ||showInfoProcess? 'col-md-8' : 'col-md-12'}`
+    console.log(420, id && info && info[`${id}`]);
     return (
         <React.Fragment>
             <div>
                 {id !== undefined && showInfo &&
-                    <ModalDetailTask action={"view-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                    <ModalTaskOutputs action={"view-process"} id={id} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
                 }
-                {id !== undefined && showProcessChild &&
+                {/* {id !== undefined && showProcessChild &&
                     <ViewProcessChild id={id}
                         processChild={(processChilds && processChilds[`${id}`]) && processChilds[`${id}`]} />
-                }
+                } */}
                 <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
                     {/* Quy trình công việc */}
                     <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
@@ -459,13 +488,13 @@ function ViewProcess(props) {
                             </div>
 
                             <div style={{ display: "flex", alignItems: "center" }}>
-                                <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.wait_for_approval")}
+                                <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>Không có yêu cầu kết quả giao nộp
                             </div>
                             <div style={{ display: "flex", alignItems: "center" }}>
-                                <div style={{ backgroundColor: "#84ffb8", height: "30px", width: "40px", border: "2px solid #14984c", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.inprocess")}
+                                <div style={{ backgroundColor: "#84ffb8", height: "30px", width: "40px", border: "2px solid #14984c", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>Đã được phê duyệt
                             </div>
                             <div style={{ display: "flex", alignItems: "center" }}>
-                                <div style={{ backgroundColor: "#f9f9f9", height: "30px", width: "40px", border: "2px solid #c4c4c7", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.finished")}
+                                <div style={{ backgroundColor: "rgba(254, 202, 202)", height: "30px", width: "40px", border: "2px solid rgba(239, 68, 68)", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>Chưa hoàn thành
                             </div>
                         </div>
                     </div>
@@ -487,5 +516,5 @@ const actionCreators = {
     getAllUsersWithRole: UserActions.getAllUsersWithRole,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 };
-const connectedViewProcess = connect(mapState, actionCreators)(withTranslate(ViewProcess));
-export { connectedViewProcess as ViewProcess };
+const connectedViewProcess = connect(mapState, actionCreators)(withTranslate(ViewTaskOutputs));
+export { connectedViewProcess as ViewTaskOutputs };

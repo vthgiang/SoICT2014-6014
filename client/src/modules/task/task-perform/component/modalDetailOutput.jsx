@@ -6,6 +6,26 @@ import parse from 'html-react-parser';
 import { getStorage } from '../../../../config';
 import { AuthActions } from '../../../auth/redux/actions';
 
+const formatStatusInfo = (value) => {
+    switch (value) {
+        case "rejected":
+            return (
+                <div style={{ color: "rgba(239, 68, 68)", backgroundColor: "rgba(254, 202, 202)", padding: "1px 5px", borderRadius: "4px" }}>
+                    Bị từ chối
+                </div>
+            );
+        case "approved":
+            return (
+                <div style={{ color: "rgba(16, 185, 129)", backgroundColor: "rgba(167, 243, 208)", padding: "1px 5px", borderRadius: "4px" }}>
+                    Đã phê duyệt
+                </div>
+            );
+        default:
+            return "";
+            break;
+    }
+}
+
 const formatTypeInfo = (value) => {
     switch (value) {
         case 0:
@@ -316,15 +336,51 @@ function TaskOutputDetail(props) {
                         </div>
                     </div>
                     {showLogs && <div>
-                        {taskOutput?.submissionResults.logs.map((x, index) => {
+                        {taskOutput?.versions.map((item, index) => {
                             return (
-                                <div key={x._id} className={index > 3 ? "hide-component" : ""}>
+                                <div key={item._id} className={index > 3 ? "hide-component" : ""}>
                                     <div className='item-box'>
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                            <div><i><a style={{ fontWeight: 'bold' }}>{x.creator?.name}</a> {x.action}</i></div>
-                                            <span className="text-sm">{<DateTimeConverter dateTime={x.createdAt} />}</span>
+                                            <div style={{ fontWeight: "bold" }}>
+                                                Kết quả giao nộp lần {index + 1}
+                                                <span className="text-sm"> ({<DateTimeConverter dateTime={item.createdAt} />})</span>
+                                            </div>
+                                            <div>{formatStatusInfo(item.status)}</div>
                                         </div>
-                                        <div>{parse(x.description ? x.description : "")}</div>
+                                        <div style={{ marginBottom: "5px" }}>
+                                            <span style={{ marginRight: '10px' }}><strong>Người đã phê duyệt: </strong>{getAcoutableEmployees(item.accountableEmployees)}</span>
+                                        </div>
+                                        <div style={{ marginBottom: "5px" }}>
+                                            <strong>Mô tả:</strong> {parse(item.description)}
+                                        </div>
+                                        {item.files && <div style={{ marginBottom: "5px" }}>
+                                            <strong>Tập tin đính kèm: {item.files.length} tập tin</strong>
+                                            {item.files.map((elem, index) => {
+                                                let listImage = item.files?.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
+                                                return <div key={index} className="show-files-task">
+                                                    {isImage(elem.name) ?
+                                                        <ApiImage
+                                                            listImage={listImage}
+                                                            className="attachment-img files-attach"
+                                                            style={{ marginTop: "5px" }}
+                                                            src={elem.url}
+                                                            file={elem}
+                                                            requestDownloadFile={requestDownloadFile}
+                                                        />
+                                                        :
+                                                        <div>
+                                                            <a style={{ marginTop: "2px" }} onClick={(e) => requestDownloadFile(e, elem.url, elem.name)}> {elem.name}</a>
+                                                            &nbsp;&nbsp;&nbsp;
+                                                            <a href="#" onClick={() => showFilePreview(elem && elem.url)}>
+                                                                <u>{elem && checkTypeFile(elem.url) ?
+                                                                    <i className="fa fa-eye fa-1"></i> : ""}</u>
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            })}
+                                        </div>
+                                        }
                                     </div>
                                 </div>
                             )

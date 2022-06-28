@@ -9,8 +9,6 @@ import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
 import { TaskOutputDetail } from './modalDetailOutput';
 
-
-
 function IncomingDataTab(props) {
     const { translate, performtasks } = props;
     const [state, setState] = useState({

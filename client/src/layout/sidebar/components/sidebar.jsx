@@ -248,6 +248,11 @@ class SideBar extends Component {
                                             path: "/task-template",
                                         },
                                         {
+                                            name: "menu.task_process_dashboard",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-process-dashboard",
+                                        },
+                                        {
                                             name: "menu.task_process_template",
                                             icon: "fa fa-circle-o",
                                             path: "/task-process-template",
@@ -378,7 +383,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all"},
+                                        { name: "menu.employee_time_sheet_log", icon: "fa fa-calendar", path: "/time-sheet-log/all" },
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },

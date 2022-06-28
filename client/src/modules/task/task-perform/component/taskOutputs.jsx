@@ -26,44 +26,6 @@ const formatTypeInfo = (value) => {
     }
 }
 
-const formatStatusInfo = (value) => {
-    switch (value) {
-        case "unfinished":
-            return (
-                <div style={{ color: "rgba(239, 68, 68)", backgroundColor: "rgba(254, 202, 202)", padding: "1px 5px", borderRadius: "4px" }}>
-                    Chưa hoàn thành
-                </div>
-            );
-        case "inprogess":
-            return (
-                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "1px 5px", borderRadius: "4px" }}>
-                    Đang thực hiện
-                </div>
-            );
-        case "waiting_for_approval":
-            return (
-                <div style={{ color: "rgba(146, 64, 14)", backgroundColor: "rgba(253, 230, 138)", padding: "1px 5px", borderRadius: "4px" }}>
-                    Đang chờ phê duyệt
-                </div>
-            );
-        case "rejected":
-            return (
-                <div style={{ color: "rgba(239, 68, 68)", backgroundColor: "rgba(254, 202, 202)", padding: "1px 5px", borderRadius: "4px" }}>
-                    Bị từ chối
-                </div>
-            );
-        case "approved":
-            return (
-                <div style={{ color: "rgba(16, 185, 129)", backgroundColor: "rgba(167, 243, 208)", padding: "1px 5px", borderRadius: "4px" }}>
-                    Đã phê duyệt
-                </div>
-            );
-        default:
-            return "";
-            break;
-    }
-}
-
 const isImage = (src) => {
     let string = src.toLowerCase().split(".");
     let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
@@ -104,35 +66,12 @@ const formatActionAccountable = (value) => {
             break;
     }
 }
-// const valueType = (idUser, accountableEmployees) => {
-//     const accountableEmployee = accountableEmployees.find(taskOutput => taskOutput.accountableEmployee._id === idUser);
-//     if (!accountableEmployee) {
-//         return "waiting_for_approval";
-//     }
-//     return accountableEmployee.action;
-// }
-
-const getAcountableEmployees = (data) => {
-    const accountableEmployees = data && data.filter(taskOutput => (taskOutput.action !== "approve" && taskOutput.action !== "reject"));
-    if (accountableEmployees) {
-        let users = "";
-        accountableEmployees.map((taskOutput, index) => {
-            if (index !== accountableEmployees.length - 1) {
-                users = users + `${taskOutput.accountableEmployee.name}, `
-            } else {
-                users = users + `${taskOutput.accountableEmployee.name}`
-            }
-            return taskOutput;
-        })
-        return users;
-    }
-    return "Chưa có ai phê duyệt";
-}
 
 function TaskOutputsTab(props) {
     const { performtasks, auth, role } = props;
     const idUser = getStorage("userId");
     const [showPanels, setShowPanels] = useState([]);
+    const [showAccountables, setShowAccountables] = useState([]);
     const [taskOutput, setTaskOutput] = useState();
     const [state, setState] = useState(() => {
         return {
@@ -515,20 +454,26 @@ function TaskOutputsTab(props) {
                                         {/* <div><strong>Người đã phê duyệt: </strong>{getAcoutableEmployees(taskOutput.accountableEmployees)}</div> */}
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                                             <div>
-                                                <span style={{ fontWeight: 600 }}>Kết quả giao nộp lần {taskOutput.versions.length + 1}</span>
+                                                <span style={{ fontWeight: 600 }}>{taskOutput.submissionResults?.description ? `Kết quả giao nộp lần ${taskOutput.versions.length + 1}` : "Chưa giao nộp kết quả"}</span>
                                                 {
                                                     taskOutput.status === "inprogess" && role === "responsible" &&
-                                                    <a style={{ cursor: "pointer" }} onClick={() => { handleApprove("waiting_for_approval", taskOutput._id) }}>Yêu cầu phê duyệt</a>
+                                                    <a style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => { handleApprove("waiting_for_approval", taskOutput._id) }}>Yêu cầu phê duyệt</a>
                                                 }
                                             </div>
                                             <div style={{ display: "flex" }}>
-                                                <a style={{ cursor: "pointer", marginRight: "3px" }}
+                                                {taskOutput.versions?.length > 0 && <a style={{ cursor: "pointer", marginRight: "3px" }}
                                                     onClick={async () => {
                                                         await setTaskOutput(taskOutput);
                                                         showVersionsTaskOutput(taskOutput);
                                                     }} ><i className="fa fa-history" aria-hidden="true"></i> Lịch sử giao nộp</a>
-                                                <a className="edit text-yellow" style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleEditAction(taskOutput)}><i className="material-icons">edit</i></a>
-                                                <a className="delete text-red" style={{ display: "flex", alignItems: "center" }} onClick={() => { props.deleteSubmissionResults(performtasks.task._id, taskOutput._id) }}><i className="material-icons" id="delete-event"></i></a>
+                                                }
+                                                {
+                                                    role === "responsible" && (taskOutput.status !== "unfinished" && taskOutput.status !== "approved") &&
+                                                    <>
+                                                        <a className="edit text-yellow" style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleEditAction(taskOutput)}><i className="material-icons">edit</i></a>
+                                                        <a className="delete text-red" style={{ display: "flex", alignItems: "center" }} onClick={() => { props.deleteSubmissionResults(performtasks.task._id, taskOutput._id) }}><i className="material-icons" id="delete-event"></i></a>
+                                                    </>
+                                                }
                                             </div>
                                         </div>
                                         {role === "responsible" && !taskOutput?.submissionResults?.description && <React.Fragment>
@@ -582,9 +527,17 @@ function TaskOutputsTab(props) {
                                                                 </div>
                                                                 {/* Các action lựa chọn của người phê duyệt */}
 
-                                                                <ul className="list-inline" style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+                                                                <ul className="list-inline" style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginTop: "-15px" }}>
                                                                     <li className="text-sm" style={{ paddingRight: "10px", paddingLeft: "5px" }}><DateTimeConverter dateTime={taskOutput.submissionResults.createdAt} /></li>
-
+                                                                    <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => {
+                                                                        if (showAccountables.includes(taskOutput._id)) {
+                                                                            let newShowAccountable = showAccountables.filter((item) => item !== taskOutput._id)
+                                                                            setShowAccountables(newShowAccountable)
+                                                                        } else {
+                                                                            let newShowAccountable = [...showAccountables, taskOutput._id]
+                                                                            setShowAccountables(newShowAccountable)
+                                                                        }
+                                                                    }} >Phê duyệt</a></li>
                                                                     <li><a style={{ cursor: "pointer" }} className="text-sm" onClick={() => handleShowFile(taskOutput.submissionResults._id)} ><i className="fa fa-paperclip" aria-hidden="true"></i> Tập tin đính kèm ({taskOutput.submissionResults.files && taskOutput.submissionResults.files.length})</a></li>
                                                                 </ul>
 
@@ -597,13 +550,14 @@ function TaskOutputsTab(props) {
                                                                     </div>
                                                                 }
 
-                                                                {taskOutput.accountableEmployees.map((item, idx) => {
+                                                                {showAccountables.includes(taskOutput._id) && taskOutput.accountableEmployees.map((item, idx) => {
                                                                     return (
                                                                         <div key={idx}>
                                                                             <b> {item.accountableEmployee?.name} </b>
                                                                             <span style={{ fontSize: 10, marginRight: 10 }} className="text-green">[ Người phê duyệt ]</span>
                                                                             {formatActionAccountable(item.action)}
                                                                             &ensp;
+                                                                            {item.action === "approve" || item.action === "reject" && <DateTimeConverter dateTime={item.updatedAt} />}
                                                                         </div >
                                                                     )
                                                                 })}

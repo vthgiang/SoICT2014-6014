@@ -5,26 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import { checkIfHasCommonItems } from '../../task-management/component/functionHelpers';
 
-const formatStatusInfo = (value) => {
-    switch (value) {
-        case "rejected":
-            return (
-                <div style={{ color: "rgba(239, 68, 68)", backgroundColor: "rgba(254, 202, 202)", padding: "1px 5px", borderRadius: "4px" }}>
-                    Bị từ chối
-                </div>
-            );
-        case "approved":
-            return (
-                <div style={{ color: "rgba(16, 185, 129)", backgroundColor: "rgba(167, 243, 208)", padding: "1px 5px", borderRadius: "4px" }}>
-                    Đã phê duyệt
-                </div>
-            );
-        default:
-            return "";
-            break;
-    }
-}
-
 const isImage = (src) => {
     let string = src.toLowerCase().split(".");
     let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
@@ -48,24 +28,6 @@ const formatActionAccountable = (value) => {
     }
 }
 
-
-const getAcoutableEmployees = (data) => {
-    const accountableEmployees = data && data.filter(item => item.action === "approve");
-    if (accountableEmployees) {
-        let users = "";
-        accountableEmployees.map((item, index) => {
-            if (index !== accountableEmployees.length - 1) {
-                users = users + `${item.accountableEmployee.name}, `
-            } else {
-                users = users + `${item.accountableEmployee.name}`
-            }
-            return item;
-        })
-        return users;
-    }
-    return "Chưa có ai phê duyệt";
-}
-
 const checkTypeFile = (data) => {
     if (typeof data === 'string' || data instanceof String) {
         let index = data.lastIndexOf(".");
@@ -80,7 +42,7 @@ const checkTypeFile = (data) => {
 
 function ModalVersionsTaskOutput(props) {
     const { taskOutput } = props;
-    const [state, setState] = useState({ currentFilepri: null, version: null })
+    const [state, setState] = useState({ currentFilepri: null, version: null, versionIdx: null })
 
     const showFilePreview = (data) => {
         setState({
@@ -90,11 +52,12 @@ function ModalVersionsTaskOutput(props) {
         window.$('#modal-file-preview').modal('show');
     }
 
-    const handleChangeContent = async (item) => {
+    const handleChangeContent = async (item, index) => {
         await setState({
             ...state,
             version: item,
-            content: item._id
+            content: item._id,
+            versionIdx: index
         })
     };
 
@@ -103,7 +66,7 @@ function ModalVersionsTaskOutput(props) {
         props.downloadFile(path, fileName);
     }
 
-    const { version } = state;
+    const { version, versionIdx } = state;
 
     return (
         <React.Fragment>
@@ -126,7 +89,7 @@ function ModalVersionsTaskOutput(props) {
                                 {
                                     taskOutput?.versions?.map((item, index) =>
                                         <li key={index} className={state.content === item._id ? "active" : undefined}>
-                                            <a href="#abc" onClick={() => handleChangeContent(item)}>
+                                            <a href="#abc" onClick={() => handleChangeContent(item, index)}>
                                                 Lần {index + 1} (<DateTimeConverter dateTime={item.createdAt} />)
                                             </a>
                                         </li>
@@ -136,12 +99,12 @@ function ModalVersionsTaskOutput(props) {
                         </div>
                     </div>
                 </div>
-                <div className="col-xs-12 col-sm-8">
-                    <h4>Kết quả giao nộp lần 1</h4>
+                {version && <div className="col-xs-12 col-sm-8">
+                    <h4>Kết quả giao nộp lần {versionIdx}</h4>
                     <div>
                         <strong>Mô tả:</strong>
                         <div>
-                            {version?.description?.split('\n')?.map((elem, idx) => (
+                            {version.description?.split('\n')?.map((elem, idx) => (
                                 <div key={idx}>
                                     {parse(elem)}
                                 </div>
@@ -152,7 +115,7 @@ function ModalVersionsTaskOutput(props) {
                     <div style={{ cursor: "pointer" }}>
                         <div>Tập tin đính kèm:</div>
                         <ul>
-                            {version?.files.map((elem, index) => {
+                            {version.files.map((elem, index) => {
                                 let listImage = version.files?.map((elem) => isImage(elem.name) ? elem.url : -1).filter(url => url !== -1);
                                 return <li key={index}>
                                     {isImage(elem.name) ?
@@ -178,17 +141,18 @@ function ModalVersionsTaskOutput(props) {
                             })}
                         </ul>
                     </div>
-                    {version?.accountableEmployees.map((item, idx) => {
+                    {version.accountableEmployees.map((item, idx) => {
                         return (
                             <div key={idx}>
                                 <b> {item.accountableEmployee?.name} </b>
                                 <span style={{ fontSize: 10, marginRight: 10 }} className="text-green">[ Người phê duyệt ]</span>
                                 {formatActionAccountable(item.action)}
                                 &ensp;
+                                {item.action === "approve" || item.action === "reject" && <DateTimeConverter dateTime={item.updatedAt} />}
                             </div >
                         )
                     })}
-                </div>
+                </div>}
             </DialogModal >
         </React.Fragment >
     );

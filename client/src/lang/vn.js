@@ -127,6 +127,7 @@ export default {
             },
 
             task_template: "Mẫu Công Việc",
+            task_process_dashboard: "Dashboard công việc theo quy trình",
             taskmanagement: "Quản Lý Công Việc",
             task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",
@@ -4056,8 +4057,8 @@ export default {
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
-                select_task_process_template:"Chọn quy trình mẫu",
-                process_template_name:"Tên mẫu quy trình",
+                select_task_process_template: "Chọn quy trình mẫu",
+                process_template_name: "Tên mẫu quy trình",
             },
             task_dashboard: {
                 general_unit_task: "Tổng quan công việc",
@@ -4980,7 +4981,7 @@ export default {
                 equipment: "Công cụ dụng cụ",
                 asset: "Tài sản",
                 category_tree: "Danh mục cây",
-                category_table:"Danh mục bảng",
+                category_table: "Danh mục bảng",
                 bin_location: "Nơi lưu trữ",
                 archive: "Danh mục lưu trữ",
                 1: {

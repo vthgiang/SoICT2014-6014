@@ -114,7 +114,7 @@ function ModalProposalPresonnel(props) {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{x.user.name}</td>
-                                        <td>{x.point}</td>
+                                        <td>{parseFloat(x.point).toFixed(2)}</td>
                                         <td>
                                             <SelectBox
                                                 id={`select-RACI-${x.user._id}`}

@@ -664,7 +664,7 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ],
     component: getComponentsInLink('/hr-list-education')
-}, 
+},
 {
     url: "/time-sheet-log/all",
     description: "Thống kê thời gian số lượng công việc và thời gian bấm giờ của toàn bộ nhân viên",
@@ -864,6 +864,17 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-management-dashboard')
+},
+{
+    url: '/task-process-dashboard',
+    description: 'Dashboard công việc theo quy trình',
+    category: LINK_CATEGORY.TASK.name,
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/task-process-dashboard')
 },
 {
     url: '/task-organization-management-dashboard',

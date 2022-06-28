@@ -1,4 +1,4 @@
-import React, { Component, useEffect,useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 import { getStorage } from '../../../../../config';
@@ -12,6 +12,7 @@ import { ModalEditProcessNoInit } from './modalEditProcessNoInit';
 import { forwardRef } from 'react';
 import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { ModalViewTaskOutput } from './modalViewTaskOutput';
 
 function TaskProcessManagement(props) {
 	const TableId = "table-task-process-template";
@@ -26,7 +27,7 @@ function TaskProcessManagement(props) {
 		tableId: TableId,
 	})
 	const { translate, taskProcess, department } = props
-	const { currentRow, currentRole, currentUser, tableId ,showmodalCreateTaskByProcess} = state
+	const { currentRow, currentRole, currentUser, tableId, showmodalCreateTaskByProcess } = state
 	let listTaskProcess = [];
 	if (taskProcess && taskProcess.listTaskProcess) {
 		listTaskProcess = taskProcess.listTaskProcess
@@ -64,7 +65,7 @@ function TaskProcessManagement(props) {
 	}
 
 	const deleteTaskProcess = async (taskProcessId) => {
-		
+
 		props.deleteTaskProcess(taskProcessId, state.pageNumber, state.noResultsPerPage, "");
 	}
 
@@ -77,6 +78,17 @@ function TaskProcessManagement(props) {
 			}
 		});
 		window.$(`#modal-view-process-task-list`).modal("show");
+	}
+
+	const viewTaskOutputs = async (item) => {
+		// console.log(item)
+		setState(state => {
+			return {
+				...state,
+				currentRow: item,
+			}
+		});
+		window.$(`#modal-view-task-output`).modal("show");
 	}
 
 	const showModalCreateTaskByProcess = async () => {
@@ -114,7 +126,7 @@ function TaskProcessManagement(props) {
 			props.getAllTaskProcess(1, pageTotal, "");
 		}
 	}
-	const handleUpdateData = ()=>{
+	const handleUpdateData = () => {
 
 	}
 
@@ -140,6 +152,20 @@ function TaskProcessManagement(props) {
 				{
 					state.currentRow !== undefined &&
 					<ModalViewProcess
+						title={translate("task.task_process.view_task_process_modal")}
+						listOrganizationalUnit={listOrganizationalUnit}
+						data={currentRow}
+						idProcess={currentRow._id}
+						xmlDiagram={currentRow.xmlDiagram}
+						processName={currentRow.processName}
+						processDescription={currentRow.processDescription}
+						infoTask={currentRow.taskList}
+						creator={currentRow.creator}
+					/>
+				}
+				{
+					state.currentRow !== undefined &&
+					<ModalViewTaskOutput
 						title={translate("task.task_process.view_task_process_modal")}
 						listOrganizationalUnit={listOrganizationalUnit}
 						data={currentRow}
@@ -220,35 +246,38 @@ function TaskProcessManagement(props) {
 					<tbody className="task-table">
 						{
 							(listTaskProcess && listTaskProcess.length !== 0) ? listTaskProcess.map((item, key) => {
-								if (item.status !=="not_initialized")
-								return <tr key={key} >
-									<td>{item.processName}</td>
-									<td>{item.processDescription}</td>
-									<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name).join(', ')}</td>
-									<td>{item.creator?.name}</td>
-									<td>
-										<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
-											<i className="material-icons">view_list</i>
-										</a>
-										{isManager(item) &&
-											<React.Fragment>
-												<a className="edit" onClick={() => { showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
-													<i className="material-icons">edit</i>
-												</a>
-												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
-													<i className="material-icons"></i>
-												</a>
-											</React.Fragment>
-										}
+								if (item.status !== "not_initialized")
+									return <tr key={key} >
+										<td>{item.processName}</td>
+										<td>{item.processDescription}</td>
+										<td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name).join(', ')}</td>
+										<td>{item.creator?.name}</td>
+										<td>
+											<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+												<i className="material-icons">view_list</i>
+											</a>
+											<a onClick={() => { viewTaskOutputs(item) }} title={"Chi tiết kết quả giao nộp"}>
+												<i className="material-icons">content_copy</i>
+											</a>
+											{isManager(item) &&
+												<React.Fragment>
+													<a className="edit" onClick={() => { showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
+														<i className="material-icons">edit</i>
+													</a>
+													<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
+														<i className="material-icons"></i>
+													</a>
+												</React.Fragment>
+											}
 
-										{/* <a className="delete" onClick={() => { deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
+											{/* <a className="delete" onClick={() => { deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
 												<i className="material-icons"></i>
 											</a>
 											<a className="" style={{ color: "#28A745" }} onClick={() => { showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
 												<i className="material-icons">add_box</i>
 											</a> */}
-									</td>
-								</tr>
+										</td>
+									</tr>
 							}) : null
 						}
 					</tbody>
@@ -267,35 +296,35 @@ function TaskProcessManagement(props) {
 					<tbody className="task-table">
 						{
 							(listTaskProcess && listTaskProcess.length !== 0) ? listTaskProcess.map((item, key) => {
-								if (item.status ==="not_initialized")
-								return <tr key={key} >
-									<td>{item.processName}</td>
-									<td>{item.processParent.processName}</td>
-									<td>{item.startDate}</td>
-									<td>{item.endDate}</td>
-									<td>
-										<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
-											<i className="material-icons">view_list</i>
-										</a>
-										{isManager(item) &&
-											<React.Fragment>
-												<a className="edit" onClick={() => { showEditProcessNoInit(item) }} title={translate('task_template.edit_this_task_template')}>
-													<i className="material-icons">edit</i>
-												</a>
-												<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
-													<i className="material-icons"></i>
-												</a>
-											</React.Fragment>
-										}
+								if (item.status === "not_initialized")
+									return <tr key={key} >
+										<td>{item.processName}</td>
+										<td>{item.processParent.processName}</td>
+										<td>{item.startDate}</td>
+										<td>{item.endDate}</td>
+										<td>
+											<a onClick={() => { viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+												<i className="material-icons">view_list</i>
+											</a>
+											{isManager(item) &&
+												<React.Fragment>
+													<a className="edit" onClick={() => { showEditProcessNoInit(item) }} title={translate('task_template.edit_this_task_template')}>
+														<i className="material-icons">edit</i>
+													</a>
+													<a className="delete" onClick={() => { deleteTaskProcess(item._id) }} title={translate('task_template.delete_this_task_template')}>
+														<i className="material-icons"></i>
+													</a>
+												</React.Fragment>
+											}
 
-										{/* <a className="delete" onClick={() => { deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
+											{/* <a className="delete" onClick={() => { deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
 												<i className="material-icons"></i>
 											</a>
 											<a className="" style={{ color: "#28A745" }} onClick={() => { showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
 												<i className="material-icons">add_box</i>
 											</a> */}
-									</td>
-								</tr>
+										</td>
+									</tr>
 							}) : null
 						}
 					</tbody>
