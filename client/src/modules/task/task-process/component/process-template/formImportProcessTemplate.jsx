@@ -57,6 +57,7 @@ function FormImportProcessTemplate(props) {
                 "organizationalUnit": x.organizationalUnit ? x.organizationalUnit : '',
                 "collaboratedWithOrganizationalUnits": x.collaboratedWithOrganizationalUnits ? x.collaboratedWithOrganizationalUnits : '',
                 "priority": x.priority ? x.priority : '',
+                "numberOfDaysTaken": x.numberOfDaysTaken ? x.numberOfDaysTaken : '',
                 "formula": x.formula ? x.formula : '',
 
                 "taskActions": [x.taskActions],
@@ -80,6 +81,7 @@ function FormImportProcessTemplate(props) {
                 "organizationalUnit": x.organizationalUnit ? x.organizationalUnit : '',
                 "collaboratedWithOrganizationalUnits": x.collaboratedWithOrganizationalUnits ? x.collaboratedWithOrganizationalUnits : '',
                 "priority": x.priority ? x.priority : '',
+                "numberOfDaysTaken": x.numberOfDaysTaken ? x.numberOfDaysTaken : '',
                 "formula": x.formula ? x.formula : '',
 
                 "taskActions": [x.taskActions],
@@ -117,6 +119,7 @@ function FormImportProcessTemplate(props) {
                 elm.organizationalUnit = e.organizationalUnit;
                 elm.collaboratedWithOrganizationalUnits = e.collaboratedWithOrganizationalUnits.split(",");
                 elm.priority = e.priority;
+                elm.numberOfDaysTaken = e.numberOfDaysTaken;
                 elm.formula = e.formula;
 
                 elm.responsibleEmployees = (e.responsibleEmployees !== "") ? e.responsibleEmployees.split(',') : [];
@@ -140,6 +143,7 @@ function FormImportProcessTemplate(props) {
                     elm.organizationalUnit = e.organizationalUnit;
                     elm.collaboratedWithOrganizationalUnits = e.collaboratedWithOrganizationalUnits.split(",");
                     elm.priority = e.priority;
+                    elm.numberOfDaysTaken = e.numberOfDaysTaken;
                     elm.formula = e.formula;
 
                     elm.responsibleEmployees = (e.responsibleEmployees !== "") ? e.responsibleEmployees.split(',') : [];
@@ -337,6 +341,7 @@ function FormImportProcessTemplate(props) {
                             organizationalUnit: x.organizationalUnit,
                             collaboratedWithOrganizationalUnits: x.collaboratedWithOrganizationalUnits,
                             priority: x.priority,
+                            numberOfDaysTaken: x.numberOfDaysTaken,
                             formula: x.formula,
 
                             actionName: actionName[0],
@@ -372,6 +377,7 @@ function FormImportProcessTemplate(props) {
                                     organizationalUnit: "",
                                     collaboratedWithOrganizationalUnits: "",
                                     priority: "",
+                                    numberOfDaysTaken: "",
                                     formula: "",
 
                                     actionName: actionName[i],

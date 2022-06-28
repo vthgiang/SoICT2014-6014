@@ -10,7 +10,7 @@ const initState = {
     employeesHaveBirthdateInCurrentMonth: 0,
     totalEmployeeOfOrganizationalUnits: 0,
     totalAllEmployee: 0,
-
+    isSearchComplete: '',
     arrMonth: [],
     totalEmployees: [],
     listEmployeesHaveStartingDateOfNumberMonth: [],
@@ -18,6 +18,7 @@ const initState = {
     listEmployees: [],
     listEmployeesOfOrganizationalUnits: [],
     listAllEmployees: [],
+    listEmployeesPackage: [],
     error: '',
 }
 export function employeesManager(state = initState, action) {
@@ -26,6 +27,7 @@ export function employeesManager(state = initState, action) {
         case EmployeeConstants.ADDEMPLOYEE_REQUEST:
         case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST:
         case EmployeeConstants.DELETE_EMPLOYEE_REQUEST:
+        case EmployeeConstants.SEARCH_FOR_PACKAGE_REQUEST:
         case EmployeeConstants.IMPORT_EMPLOYEE_REQUEST:
             return {
                 ...state,
@@ -77,42 +79,50 @@ export function employeesManager(state = initState, action) {
                     isLoading: false,
                 }
             };
+        case EmployeeConstants.SEARCH_FOR_PACKAGE_SUCCESS:
+            return {
+                ...state,
+                listEmployeesPackage: action.payload?.listEmployees,
+                isSearchComplete: action.payload?.isComplete,
+                isLoading: false,
+            }
         case EmployeeConstants.ADDEMPLOYEE_SUCCESS:
             return {
                 ...state,
                 listEmployees: [action.payload,...state.listEmployees],
-                    isLoading: false
+                isLoading: false
             };
         case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS:
             return {
                 ...state,
                 listEmployees: state.listEmployees.map(x => x._id === action.payload._id ? action.payload : x),
-                    isLoading: false
+                isLoading: false
             };
         case EmployeeConstants.DELETE_EMPLOYEE_SUCCESS:
             return {
                 ...state,
                 listEmployees: state.listEmployees.filter(x => (x._id !== action.payload._id)),
-                    isLoading: false,
+                isLoading: false,
             };
         case EmployeeConstants.IMPORT_EMPLOYEE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                    importEmployees: action.payload.content,
-                    error: ""
+                importEmployees: action.payload.content,
+                error: ""
             }
-            case EmployeeConstants.GETALL_FAILURE:
-            case EmployeeConstants.ADDEMPLOYEE_FAILURE:
-            case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE:
-            case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
-            case EmployeeConstants.IMPORT_EMPLOYEE_FAILURE:
-                return {
-                    ...state,
-                    isLoading: false,
-                        error: action.error
-                };
-            default:
-                return state
+        case EmployeeConstants.GETALL_FAILURE:
+        case EmployeeConstants.ADDEMPLOYEE_FAILURE:
+        case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE:
+        case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
+        case EmployeeConstants.SEARCH_FOR_PACKAGE_FAILURE:
+        case EmployeeConstants.IMPORT_EMPLOYEE_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
+        default:
+            return state
     }
 }

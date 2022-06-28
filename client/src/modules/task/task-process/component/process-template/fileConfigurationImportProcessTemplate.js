@@ -82,6 +82,11 @@ export const configProcessTemplate = {
         description: "Tên tiêu đề ứng với người quan sát",
         value: "Người quan sát"
     },
+    numberOfDaysTaken: {
+        columnName: "Số ngày thực hiện dự kiến",
+        description: "Tên tiêu đề ứng với Số ngày thực hiện dự kiến",
+        value: "Số ngày thực hiện dự kiến"
+    },
     formula: {
         columnName: "Công thức tính điểm",
         description: "Tên tiêu đề ứng với công thức tính điểm",
@@ -111,7 +116,7 @@ export const templateImportProcessTemplate = {
                 key: "generalInfoTask",
                 columnName: "Thông tin chung",
                 keyMerge: 'taskName',
-                colspan: 11,
+                colspan: 12,
             }, {
                 key: "taskActions",
                 columnName: "Danh sách hoạt động",
@@ -126,7 +131,7 @@ export const templateImportProcessTemplate = {
                 key: "tasks",
                 columnName: "Danh sách công việc",
                 keyMerge: 'generalInfoTask',
-                colspan: 18,
+                colspan: 19,
             }],
             columns: [
                 { key: "STT", value: "STT" },
@@ -146,6 +151,7 @@ export const templateImportProcessTemplate = {
                 { key: "accountableEmployees", value: "Người phê duyệt" },
                 { key: "consultedEmployees", value: "Người tư vấn" },
                 { key: "informedEmployees", value: "Người quan sát" },
+                { key: "numberOfDaysTaken", value: "Số ngày thực hiện dự kiến" },
                 { key: "formula", value: "Công thức tính điểm" },
 
                 { key: "actionName", value: "Tên hoạt động" },
@@ -177,6 +183,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: ["vtc.vnist@gmail.com"],
                             consultedEmployees: ["tvb.vnist@gmail.com"],
                             informedEmployees: [],
+                            numberOfDaysTaken: 6,
                             formula: "progress / (daysUsed / totalDays) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
@@ -229,6 +236,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: [],
                             consultedEmployees: [],
                             informedEmployees: [],
+                            numberOfDaysTaken: 2,
                             formula: "progress / (daysUsed / totalDays)",
                             taskActions: [
                                 {
@@ -271,6 +279,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: ["tvb.vnist@gmail.com"],
                             consultedEmployees: [],
                             informedEmployees: [],
+                            numberOfDaysTaken: 5,
                             formula: "progress / (daysUsed / totalDays) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
@@ -313,6 +322,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: ["vtc.vnist@gmail.com"],
                             consultedEmployees: ["nhungnt.vnist@gmail.com"],
                             informedEmployees: [],
+                            numberOfDaysTaken: 4,
                             formula: "progress / (daysUsed / totalDays) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {

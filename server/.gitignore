@@ -11,4 +11,5 @@
 
 /upload/private
 /upload/avatars
+/upload/*
 package-lock.json

@@ -86,49 +86,49 @@ const FamilyMemberTab = ({
                         {/* họ và tên chủ hộ */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.head_house_hold_name')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHeadHouseHoldName} value={employeeHouseHold.headHouseHoldName} />
+                            <input type="text" className="form-control" onChange={_fm_handleHeadHouseHoldName} value={employeeHouseHold.headHouseHoldName ? employeeHouseHold.headHouseHoldName : ''} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.document_type')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleDocumentType} value={employeeHouseHold.documentType} />
+                            <input type="text" className="form-control" onChange={_fm_handleDocumentType} value={employeeHouseHold.documentType ? employeeHouseHold.documentType : ''} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.house_hold_number')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldNumber} value={employeeHouseHold.houseHoldNumber} />
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldNumber} value={employeeHouseHold.houseHoldNumber ? employeeHouseHold.houseHoldNumber : ''} />
                         </div>
 
                         {/* Tỉnh/TP */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.city')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleCity} value={employeeHouseHold.city} />
+                            <input type="text" className="form-control" onChange={_fm_handleCity} value={employeeHouseHold.city ? employeeHouseHold.city : ''} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.district')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleDistrict} value={employeeHouseHold.district} />
+                            <input type="text" className="form-control" onChange={_fm_handleDistrict} value={employeeHouseHold.district ? employeeHouseHold.district : ''} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.ward')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleWard} value={employeeHouseHold.ward} />
+                            <input type="text" className="form-control" onChange={_fm_handleWard} value={employeeHouseHold.ward ? employeeHouseHold.ward : ''} />
                         </div>
 
                         {/* Địa chỉ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.house_hold_address')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldAddress} value={employeeHouseHold.houseHoldAddress} />
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldAddress} value={employeeHouseHold.houseHoldAddress ? employeeHouseHold.houseHoldAddress : ''} />
                         </div>
                         {/* Số điện thoại */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.phone')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handlePhone} value={employeeHouseHold.phone} />
+                            <input type="text" className="form-control" onChange={_fm_handlePhone} value={employeeHouseHold.phone ? employeeHouseHold.phone : ''} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.house_hold_code')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldCode} value={employeeHouseHold.houseHoldCode} />
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldCode} value={employeeHouseHold.houseHoldCode ? employeeHouseHold.houseHoldCode : ''} />
                         </div>
                     </div>
                 </fieldset>

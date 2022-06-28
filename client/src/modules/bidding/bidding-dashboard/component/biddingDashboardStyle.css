@@ -1,0 +1,19 @@
+/* for page: statisticContractBidAndProjectRelation.jsx */
+.seemore-task {
+    font-size: 12px;
+    color: #777;
+    font-weight: bold;
+    margin-top: 5px;
+    display: block;
+}
+
+.seemore-task:hover {
+    color: #3c8dbc;
+}
+
+.seemore-task::after {
+    content: "\f0a9";
+    font-family: FontAwesome;
+    font-weight: normal;
+    margin-left: 5px;
+}

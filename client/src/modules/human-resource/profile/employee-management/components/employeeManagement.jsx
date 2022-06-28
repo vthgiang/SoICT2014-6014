@@ -10,8 +10,12 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { FieldsActions } from '../../../field/redux/actions';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import { MajorActions } from "../../../major/redux/actions";
+import { CareerReduxAction } from "../../../career/redux/actions";
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
+import { CertificateActions } from '../../../certificate/redux/actions';
+import { BiddingPackageManagerActions } from '../../../../bidding/bidding-package/biddingPackageManagement/redux/actions';
 
 const EmployeeManagement = (props) => {
 
@@ -54,6 +58,10 @@ const EmployeeManagement = (props) => {
 
     useEffect(() => {
         props.getListFields({ page: 0, limit: 10000 })
+        props.getListMajor({ name: '', page: 0, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 0, limit: 1000 });
+        props.getListCertificate({ name: '', page: 0, limit: 1000 });
+        props.getListBiddingPackage({ name: '', page: 0, limit: 1000 });
         props.getDepartment();
     }, [])
 
@@ -111,7 +119,10 @@ const EmployeeManagement = (props) => {
                 currentRowView: value
             }
         });
-        window.$(`#modal-detail-employee${value._id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modal-detail-employee${value._id}`).modal('show');
+        }, 500);
+        
     }
 
     /**
@@ -125,7 +136,10 @@ const EmployeeManagement = (props) => {
                 currentRow: value
             }
         });
-        window.$(`#modal-edit-employee${value._id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modal-edit-employee${value._id}`).modal('show');
+        }, 500);
+        
     }
 
     /**
@@ -353,19 +367,18 @@ const EmployeeManagement = (props) => {
 
         data.forEach(x => {
             let employee = x.employees[0];
-            let workProcess = employee.workProcess.map(y => {
-                return {
-                    ...y,
-                    employeeNumber: employee.employeeNumber,
-                    fullName: employee.fullName,
-                    startDate: formatDate(y.startDate, true),
-                    endDate: formatDate(y.endDate, true),
-                    company: y.company,
-                    position: y.position,
-                    referenceInformation: y.referenceInformation,
-                }
-            })
-
+            // let workProcess = employee.workProcess.map(y => {
+            //     return {
+            //         ...y,
+            //         employeeNumber: employee.employeeNumber,
+            //         fullName: employee.fullName,
+            //         startDate: formatDate(y.startDate, true),
+            //         endDate: formatDate(y.endDate, true),
+            //         company: y.company,
+            //         position: y.position,
+            //         referenceInformation: y.referenceInformation,
+            //     }
+            // })
 
             let experiences = employee.experiences.map(y => {
                 return {
@@ -486,7 +499,7 @@ const EmployeeManagement = (props) => {
                 }
             });
 
-            workProcessSheet = workProcessSheet.concat(workProcess);
+            // workProcessSheet = workProcessSheet.concat(workProcess);
             experiencesSheet = experiencesSheet.concat(experiences);
             degreesSheet = degreesSheet.concat(degrees);
             certificatesSheet = certificatesSheet.concat(certificates);
@@ -501,9 +514,9 @@ const EmployeeManagement = (props) => {
             familysSheet = familysSheet.concat(familys);
         });
 
-        workProcessSheet = workProcessSheet.map((x, index) => {
-            return { STT: index + 1, ...x }
-        });
+        // workProcessSheet = workProcessSheet.map((x, index) => {
+        //     return { STT: index + 1, ...x }
+        // });
         experiencesSheet = experiencesSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
@@ -660,25 +673,25 @@ const EmployeeManagement = (props) => {
                         }
                     ]
                 },
-                {
-                    // 2.Nhân viên - Quá trình CT
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
-                    tables: [
-                        {
-                            columns: [
-                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
-                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
-                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
-                                { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
-                                { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
-                                { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 },
-                                { key: "referenceInformation", value: translate(`human_resource.profile.reference_information`), width: 25 },
-                            ],
-                            data: workProcessSheet
-                        }
-                    ]
-                },
+                // {
+                //     // 2.Nhân viên - Quá trình CT
+                //     sheetName: translate(`human_resource.profile.employee_management.export.sheet2`),
+                //     tables: [
+                //         {
+                //             columns: [
+                //                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                //                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                //                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
+                //                 { key: "startDate", value: translate(`human_resource.profile.from_month_year`) },
+                //                 { key: "endDate", value: translate(`human_resource.profile.to_month_year`) },
+                //                 { key: "company", value: translate(`human_resource.profile.unit`), width: 35 },
+                //                 { key: "position", value: translate(`human_resource.position`), width: 25 },
+                //                 { key: "referenceInformation", value: translate(`human_resource.profile.reference_information`), width: 25 },
+                //             ],
+                //             data: workProcessSheet
+                //         }
+                //     ]
+                // },
                 {
                     // 3.HS Nhân viên - Kinh nghiệm
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet3`),
@@ -1225,8 +1238,8 @@ const EmployeeManagement = (props) => {
 }
 
 function mapState(state) {
-    const { employeesManager, department, field } = state;
-    return { employeesManager, department, field };
+    const { employeesManager, department, field, major, certificates, biddingPackagesManager } = state;
+    return { employeesManager, department, field, major,  certificates, biddingPackagesManager };
 }
 
 const actionCreators = {
@@ -1234,6 +1247,10 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCertificate: CertificateActions.getListCertificate,
+    getListBiddingPackage: BiddingPackageManagerActions.getAllBiddingPackage
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

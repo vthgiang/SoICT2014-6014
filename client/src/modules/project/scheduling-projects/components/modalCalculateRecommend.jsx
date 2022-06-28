@@ -1,6 +1,6 @@
 import jsPERT from 'js-pert'
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2'
@@ -14,8 +14,15 @@ import { getCurrentProjectDetails, processDataTasksStartEnd } from '../../projec
 const NUMS_OF_REDUCTION = 100;
 
 const ModalCalculateRecommend = (props) => {
+    const TYPE = {
+        DEFAULT: "DEFAULT", // tạo mới project thông thường
+        CREATE_BY_CONTRACT: "CREATE_BY_CONTRACT", // tạo mới project theo hợp đồng
+        CREATE_BY_TEMPLATE: "CREATE_BY_TEMPLATE", // tạo mới project theo mẫu
+    }
     const { processedData, tasksData, translate, project, oldCPMEndDate } = props;
-    const projectDetail = getCurrentProjectDetails(project);
+    const [projectData, setProjectData] = useState(props.projectData);
+    // const projectDetail = getCurrentProjectDetails(project);
+    const projectDetail = projectData ?? getCurrentProjectDetails(project);
     const [isFirstTimeHere, setIsFirstTimeHere] = useState(true);
 
     const [currentNumOfReduction, setCurrentNumOfReduction] = useState(NUMS_OF_REDUCTION);
@@ -26,6 +33,10 @@ const ModalCalculateRecommend = (props) => {
         currentCPMEndDate: '',
         currentProcessedData: [],
     })
+
+    useEffect(() => {
+        setProjectData(props.projectData)
+    }, [JSON.stringify(props.projectData)])
 
     const findLatestDate = (data) => {
         if (data.length === 0) return null;
@@ -227,7 +238,7 @@ const ModalCalculateRecommend = (props) => {
                 resetOnClose={true}
             >
                 <div className="description-box without-border">
-                    <button className="btn btn-success" onClick={calculateRecommend}>
+                    <button className="btn btn-success" type='button' onClick={calculateRecommend}>
                         Tính toán
                     </button>
                     {renderContent()}

@@ -12,7 +12,7 @@ export default class ValidationHelper {
      * Xác thực xem giá trị nhập vào có rỗng không?
      * @param {*} value giá trị cần xác thực
      */
-    static validateEmpty = (translate, value) => {
+    static validateEmpty =  (translate, value) => {
         if (!value || value?.toString()?.replace(/\s/g,"") === "")
             return { status: false, message: translate('general.validate.empty_error') };
         return { status: true };

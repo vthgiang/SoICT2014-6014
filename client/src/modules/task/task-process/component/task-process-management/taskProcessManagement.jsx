@@ -253,6 +253,8 @@ function TaskProcessManagement(props) {
 						}
 					</tbody>
 				</table>
+
+				<br />
 				<p>Các quy trình cần khởi tạo</p>
 				<table className="table table-bordered table-striped table-hover" id={tableId}>
 					<thead>

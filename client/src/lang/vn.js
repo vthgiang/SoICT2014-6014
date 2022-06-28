@@ -160,6 +160,16 @@ export default {
             training_plan_employee: "Thông tin đào tạo",
             list_major: "Danh sách chuyên ngành",
             list_career_position: "Danh sách vị trí công việc",
+            list_certificate: "Bằng cấp - chứng chỉ",
+
+            // đấu thầu
+            manage_bidding: "Quản lý đấu thầu",
+            bidding_project_template_list: "Mẫu dự án",
+            manage_tag: "Quản lý danh mục tag",
+            list_bidding_contract: "Hợp đồng đấu thầu",
+            bidding_dashboard: "Thống kê đấu thầu",
+            list_bidding_package: "Danh sách gói thầu",
+            detail_bidding_package: "Chi tiết gói thầu",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
 
             employee_unit: "Nhân sự đơn vị",
@@ -309,7 +319,9 @@ export default {
             // Quản lý dự án
             manage_project: "Quản lý dự án",
             projects_list: 'Danh sách dự án',
+            project_template_list: "Mẫu dự án",
             project_details: 'Chi tiết dự án',
+            project_template_details: 'Chi tiết mẫu dự án',
             tasks_list: 'Danh sách công việc',
             phases_list: 'Danh sách giai đoạn',
             issues_list: 'Danh sách vấn đề',
@@ -1856,8 +1868,42 @@ export default {
                 },
             },
 
+            certificate: {
+                get_certificate_success: "Lấy danh sách chứng chỉ thành công",
+                get_certificate_failure: "Lấy danh sách chứng chỉ thất bại",
+                create_certificate_success: "Tạo chứng chỉ thành công",
+                create_certificate_failure: "Tạo chứng chỉ thất bại",
+                edit_certificate_success: "Cập nhật chứng chỉ thành công",
+                edit_certificate_failure: "Cập nhật chứng chỉ thất bại",
+                delete_certificate_success: "Xóa chứng chỉ thành công",
+                delete_certificate_failure: "Xóa chứng chỉ thất bại",
+            },
+
+            career_position: {
+                get_career_position_success: "Lấy danh sách vị trí công việc thành công",
+                get_career_position_failure: "Lấy danh sách vị trí công việc thất bại",
+                create_career_position_success: "Tạo vị trí công việc thành công",
+                create_career_position_failure: "Tạo vị trí công việc thất bại",
+                update_career_position_success: "Cập nhật vị trí công việc thành công",
+                update_career_position_failure: "Cập nhật vị trí công việc thất bại",
+                delete_career_position_success: "Xóa vị trí công việc thành công",
+                delete_career_position_failure: "Xóa vị trí công việc thất bại",
+            },
+
             // Quản lý thông tin nhân viên
             profile: {
+                // Quản lý gói thầu
+                bidding_package: {
+                    get_bidding_package_success: "Lấy danh sách gói thầu thành công",
+                    get_bidding_package_failure: "Lấy danh sách gói thầu thất bại",
+                    create_bidding_package_success: "Tạo gói thầu thành công",
+                    create_bidding_package_failure: "Tạo gói thầu thất bại",
+                    update_bidding_package_success: "Cập nhật gói thầu thành công",
+                    update_bidding_package_failure: "Cập nhật gói thầu thất bại",
+                    delete_bidding_package_success: "Xóa gói thầu thành công",
+                    delete_bidding_package_failure: "Xóa gói thầu thất bại",
+                },
+
                 // Nhóm dùng chung cho chức năng quản lý tông tin nhân viên
                 tab_name: {
                     menu_basic_infor: "Thông tin cơ bản",
@@ -1992,6 +2038,11 @@ export default {
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
+                project_experience: "Dự án từng tham gia",
+                project_end_date: "Ngày kết thúc dự án",
+                project_participation_status: "Trạng thài tham gia dự án",
+                project_employee_position: "Vị trí công việc",
+                project_professional_or_managerment: "Kinh nghiệm chuyên môn và quản lý có liên quan",
                 Working_process: "Quá trình công tác",
                 job_description: "Công việc đã làm",
                 reference_information: "Thông tin tham chiếu",
@@ -2233,6 +2284,7 @@ export default {
                     update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
+
                     get_list_employee_success:
                         "Lấy danh sách nhân viên thành công",
                     get_list_employee_faile: "Lấy danh sách nhân viên thất bại",
@@ -2284,7 +2336,26 @@ export default {
                     temporary_residence_required:
                         "Nơi ở hiện tại không được để trống",
                 },
+
+                bidding_package_management: {
+                    type: {
+                        1: "Tư vẫn",
+                        2: "Phi tư vấn",
+                        3: "Hàng hóa",
+                        4: "Xây dựng",
+                        5: "Hỗn hợp"
+                    },
+                    status: {
+                        1: "Hoạt động",
+                        0: "Đã đóng thầu",
+                        2: "Chờ kết quả dự thầu",
+                        3: "Đang thực hiện",
+                        4: "Hoàn thành"
+                    },
+                }
             },
+
+
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             work_plan: {
@@ -4071,8 +4142,8 @@ export default {
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_failure: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
-                select_task_process_template:"Chọn quy trình mẫu",
-                process_template_name:"Tên mẫu quy trình",
+                select_task_process_template: "Chọn quy trình mẫu",
+                process_template_name: "Tên mẫu quy trình",
             },
             task_dashboard: {
                 general_unit_task: "Tổng quan công việc",
@@ -4998,7 +5069,7 @@ export default {
                 equipment: "Công cụ dụng cụ",
                 asset: "Tài sản",
                 category_tree: "Danh mục cây",
-                category_table:"Danh mục bảng",
+                category_table: "Danh mục bảng",
                 bin_location: "Nơi lưu trữ",
                 archive: "Danh mục lưu trữ",
                 1: {

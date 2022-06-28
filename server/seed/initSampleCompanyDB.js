@@ -1976,22 +1976,6 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 
-    console.log("Khởi tạo dữ liệu cấu hình module quản lý nhân sự!");
-
-    await ModuleConfiguration(vnistDB).create({
-        humanResource: {
-            contractNoticeTime: 15,
-            timekeepingType: "shift",
-            timekeepingByShift: {
-                shift1Time: 4,
-                shift2Time: 4,
-                shift3Time: 4,
-            },
-        },
-    });
-
-    console.log(`Xong! thông tin cấu hình module quản lý nhân sự đã được tạo`);
-
     /**
      * Tạo dữ liệu tài liệu
      */
