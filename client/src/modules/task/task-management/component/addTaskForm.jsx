@@ -17,10 +17,12 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
 import { ExpectedResults } from './expectedResults';
+import { ModalProposalPresonnel } from './modalProposalPresonnel';
 
 function AddTaskForm(props) {
     const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = props;
     const userId = getStorage("userId");
+    // const [showProposalPersonnel, setShowProposalPersonnel] = useState(false)
     const [state, setState] = useState(() => initState())
     function initState() {
         return {
@@ -589,6 +591,12 @@ function AddTaskForm(props) {
         }, []);
         return result
     }
+
+    const handleProposalPersonnel = () => {
+        console.log(596)
+        window.$('#modal-proposal-presonnel').modal('show');
+    }
+
     let listTaskTemplate;
     let listDepartment = department?.list;
     let taskTemplate;
@@ -631,6 +639,15 @@ function AddTaskForm(props) {
             <ProjectCreateForm
                 handleAfterCreateProject={handleAfterCreateProject}
             />
+            {newTask.organizationalUnit && <ModalProposalPresonnel
+                newTask={newTask}
+                handleChangeTaskAccountableEmployees={handleChangeTaskAccountableEmployees}
+                handleChangeTaskResponsibleEmployees={handleChangeTaskResponsibleEmployees}
+                handleChangeTaskConsultedEmployees={handleChangeTaskConsultedEmployees}
+                handleChangeTaskInformedEmployees={handleChangeTaskInformedEmployees}
+            />
+            }
+
             <div className="row">
                 <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
@@ -731,7 +748,16 @@ function AddTaskForm(props) {
                     {/* Phân định trách nhiệm công việc */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
-
+                        <div>
+                            <div style={{ display: "flex", justifyContent: "flex-end", cursor: "pointer" }}>
+                                <a onClick={() => {
+                                    // setShowProposalPersonnel(!showProposalPersonnel)
+                                    handleProposalPersonnel()
+                                }}>
+                                    Đề xuất nhân sự tự động
+                                </a>
+                            </div>
+                        </div>
                         {/* Những người thực hiện công việc */}
                         <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
                             <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>

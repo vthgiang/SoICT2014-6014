@@ -7931,10 +7931,10 @@ exports.approveTaskOutputs = async (portal, params, body) => {
   // Thay đổi hành động của người phê duyệt với kết quả giao nộp
   let accountableEmployees = taskOutput?.accountableEmployees.map((item) => {
     let action = item.action;
-    let updateAt = item.updateAt;
+    let updatedAt = item.updateAt;
     if (item.accountableEmployee == body.creator) {
       action = body.action;
-      updateAt = Date.now();
+      updatedAt = Date.now();
     }
     if (action === "reject") {
       status = "rejected";
@@ -7946,7 +7946,7 @@ exports.approveTaskOutputs = async (portal, params, body) => {
     return {
       action: action,
       accountableEmployee: item.accountableEmployee,
-      updateAt: updateAt,
+      updatedAt: updatedAt,
     }
   })
   if (body.action === "waiting_for_approval") {
@@ -8046,7 +8046,7 @@ exports.editSubmissionResults = async (portal, params, body, files) => {
             "taskOutputs.$.versions": version
           },
           $set: {
-            "taskOutputs.$.status": "waitting_for_approval"
+            "taskOutputs.$.status": "waiting_for_approval"
           }
         },
         { new: true });

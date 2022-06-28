@@ -319,6 +319,7 @@ exports.links = [
             // Task-management
             { path: '/task/tasks', method: 'GET' },
             { path: '/task/tasks', method: 'POST' },
+            { path: '/task/tasks/proposal-presonnel', method: 'POST' },
             { path: '/task/tasks/:taskId', method: 'DELETE' },
             { path: '/task/tasks/:taskId/sub-tasks', method: 'GET' },
             { path: '/task/task-evaluations', method: 'GET' },
@@ -850,6 +851,10 @@ exports.links = [
         url: '/task-organization-management-dashboard',
         apis: ['@all']
     }, {
+        url: '/task-process-dashboard',
+        apis: ['@all']
+    },
+    {
         url: '/task',
         apis: ['@all']
     }, {

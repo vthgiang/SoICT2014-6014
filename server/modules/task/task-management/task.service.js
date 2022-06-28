@@ -8,7 +8,8 @@ const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
 const cloneDeep = require('lodash/cloneDeep');
 const isSameOrAfter = require('dayjs/plugin/isSameOrAfter')
-const isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
+const isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
+const { result } = require("lodash");
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
 
@@ -4785,4 +4786,83 @@ _freshListEmployee = (listEmployee) => {
         result = [...filteredArr];
     })
     return result;
+}
+
+exports.proposalPersonnel = async (portal, params, body) => {
+    let formula = body.formula;
+    const organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
+        _id: {
+            $in: body.unitIds
+        }
+    })
+
+    let users = []
+    const usersOfDepartments = await UserService._getAllUsersInOrganizationalUnits(portal, organizationalUnits);
+    const departments = usersOfDepartments.map((department) => {
+        for (let i in department.managers) {
+            users = [...users, ...department.managers[i].members]
+        }
+        for (let i in department.deputyManagers) {
+            users = [...users, ...department.deputyManagers[i].members]
+        }
+        for (let i in department.employees) {
+            users = [...users, ...department.employees[i].members]
+        }
+    })
+    let tasksOfUser = [];
+    for (let i in users) {
+        let roleArr = [
+            { responsibleEmployees: { $in: [users[i]._id] } },
+            { accountableEmployees: { $in: [users[i]._id] } },
+            { consultedEmployees: { $in: [users[i]._id] } },
+            { informedEmployees: { $in: [users[i]._id] } },
+            { creator: { $in: [users[i]._id] } },
+        ]
+        let tasks = await Task(connect(DB_CONNECTION, portal)).find({
+            $or: roleArr
+        })
+        // Lấy công việc đang làm và công việc kết thúc
+        let taskInProcess = tasks?.filter((item) => item.status === "inprocess");
+        let taskFinished = tasks?.filter((item) => item.status === "finished");
+
+        let numberOfTaskInprocess = taskInProcess.length;
+
+        let numberOfTaskEvaluated = 0;
+        let sumPoint = 0;
+        let averagePoint = 0;
+
+        const averageRating = taskFinished?.map((task) => {
+            if (task.evaluations.length > 0) {
+                const evaluations = task.evaluations;
+                numberOfTaskEvaluated = numberOfTaskEvaluated + 1;
+                let sumPointOfEvaluations = 0
+                for (let i in evaluations) {
+                    const results = evaluations[i].results.filter((item) => {
+                        return String(item.employee) === String(users[i]._id)
+                    });
+                    let averagePointOfResult = 0;
+
+                    if (results.length > 0) {
+                        let sumPoint = 0;
+                        results?.map((item) => {
+                            let point = (item.approvedPoint + item.employeePoint + item.approvedPoint) / 3;
+                            sumPoint = sumPoint + point;
+                        })
+                        averagePointOfResult = sumPoint / results.length;
+                    }
+                    sumPointOfEvaluations = sumPointOfEvaluations + averagePointOfResult;
+                }
+                sumPoint = sumPoint + sumPointOfEvaluations / evaluations.length;
+            };
+        })
+
+        averagePoint = sumPoint / numberOfTaskEvaluated;
+        let user = {
+            user: users[i],
+            point: eval(formula)
+        }
+        tasksOfUser.push(user)
+    }
+
+    return tasksOfUser;
 }

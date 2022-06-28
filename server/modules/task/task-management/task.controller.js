@@ -1020,7 +1020,7 @@ exports.getUserTimeSheet = async (req, res) => {
         if (requireActions) {
             timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year, requireActions);
         } else {
-            timesheetlogs = await TaskManagementService.getAllUserTimeSheetLog(portal, month, year,  rowLimit, page, timeLimit, unitArray, sortType);
+            timesheetlogs = await TaskManagementService.getAllUserTimeSheetLog(portal, month, year, rowLimit, page, timeLimit, unitArray, sortType);
         }
 
         await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
@@ -1161,5 +1161,27 @@ exports.getOrganizationTaskDashboardChartData = async (req, res) => {
             messages: Array.isArray(error) ? error : ['get_task_dashboard_data_fail'],
             content: error
         })
+    }
+}
+
+exports.proposalPersonnel = async (req, res) => {
+    try {
+        console.log(1170)
+
+        var task = await TaskManagementService.proposalPersonnel(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, `Proposal Personnel`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['proposal_personnel_success'],
+            content: task
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, `Propasal Personnel`, req.portal);
+        console.log(error)
+        res.status(400).json({
+            success: false,
+            messages: ['proposal_personnel_fail'],
+            content: error
+        });
     }
 }
