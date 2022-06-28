@@ -32,6 +32,8 @@ exports.searchTag = async (portal, params, company) => {
             totalList: data.length,
         };
     } else {
+        let skipDoc = (params.page - 1) * params.limit
+
         let data = await Tag(connect(DB_CONNECTION, portal)).find(keySearch);
         listTag = await Tag(connect(DB_CONNECTION, portal))
             .find(keySearch)
@@ -39,7 +41,7 @@ exports.searchTag = async (portal, params, company) => {
             .sort({
                 createdAt: "desc",
             })
-            .skip(params.page)
+            .skip(skipDoc)
             .limit(params.limit);
         return {
             listTag: listTag,

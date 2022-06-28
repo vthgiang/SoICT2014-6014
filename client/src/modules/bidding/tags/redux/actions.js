@@ -27,7 +27,7 @@ function getListTag(data) {
             .then(res => {
                 dispatch({
                     type: TagConstant.GET_TAG_SUCCESS,
-                    payload: res.data.content.listTag
+                    payload: res.data.content
                 })
             })
             .catch(err => {

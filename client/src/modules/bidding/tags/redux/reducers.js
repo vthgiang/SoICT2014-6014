@@ -23,7 +23,7 @@ export function tag(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listTag: action.payload !== undefined ? action.payload : [],
+                listTag: action.payload.listTag !== undefined ? action.payload.listTag : [],
                 totalList: action.payload.totalList,
             };
         case TagConstant.CREATE_TAG_SUCCESS:
@@ -31,14 +31,14 @@ export function tag(state = initState, action) {
                 ...state,
                 isLoading: false,
                 listTag: action.payload !== undefined ? action.payload : [],
-                totalList: action.payload.totalList,
+                // totalList: action.payload.totalList,
             };
         case TagConstant.DELETE_TAG_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listTag: action.payload !== undefined ? action.payload : [],
-                totalList: action.payload.totalList,
+                // totalList: action.payload.totalList,
             };
         case TagConstant.UPDATE_TAG_SUCCESS:
             return {
