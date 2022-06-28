@@ -32,6 +32,7 @@ export const taskManagementService = {
     importTasks,
 
     getOrganizationTaskDashboardChart,
+    proposalPersonnel,
 };
 
 
@@ -516,4 +517,12 @@ function getOrganizationTaskDashboardChart(data) {
         method: 'GET',
         params: data
     }, false, true, 'task.task_management');
+}
+
+function proposalPersonnel(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/proposal-personnel`,
+        method: 'POST',
+        data: data
+    }, false, false, 'task.task_management');
 }
