@@ -186,7 +186,8 @@ const ModalProposeEmpForTask = (props) => {
                                         <tr>
                                             <th>STT</th>
                                             <th>Công việc</th>
-                                            <th>Nhân sự phân công ban đầu</th>
+                                            {proposedData?.compareVersion[0]?.old?.directEmployees?.length <= 0 && <th>Nhân sự phù hợp</th>}
+                                            {proposedData?.compareVersion[0]?.old?.directEmployees?.length > 0 && <th>Nhân sự phân công ban đầu</th>}
                                             <th>Nhân sự đề xuất tự động</th>
                                         </tr>
                                     </thead>
@@ -197,14 +198,20 @@ const ModalProposeEmpForTask = (props) => {
                                                     <tr key={`tag-${listIndex}`}>
                                                         <td>{listIndex + 1}</td>
                                                         <td>{item?.name}</td>
-                                                        <td>
+                                                        {item?.old?.directEmployees?.length <= 0 && <td>
+                                                            {allTag?.find(x => String(item?.tag) === String(x?._id)) ? 
+                                                                allTag?.find(x => String(item?.tag) === String(x?._id)).employees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')
+                                                                : "N/A"
+                                                            }
+                                                        </td>}
+                                                        {item?.old?.directEmployees?.length > 0 && <td>
                                                             <div><strong>Nhân sự trực tiếp: </strong>
                                                                 {item?.old?.directEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}
                                                             </div>
                                                             <div><strong>Nhân sự dự phòng: </strong>
-                                                                {item?.old?.backupEmployees.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ')}
+                                                                {item?.old?.backupEmployees?.length > 0 ? item?.old?.backupEmployees?.map(userItem => convertEmpIdToName(allEmployee, userItem)).join(', ') : "N/A"}
                                                             </div>
-                                                        </td>
+                                                        </td>}
                                                         <td>
                                                             <div><strong>Nhân sự trực tiếp: </strong>
                                                                 {item?.new?.directEmployees.map(userItem => {
@@ -214,11 +221,11 @@ const ModalProposeEmpForTask = (props) => {
                                                                 })}
                                                             </div>
                                                             <div><strong>Nhân sự dự phòng: </strong>
-                                                                {item?.new?.backupEmployees.map(userItem => {
+                                                                {item?.new?.backupEmployees?.length > 0 ? item?.new?.backupEmployees?.map(userItem => {
                                                                     return <span> {/** &cedil; */}
                                                                         <span style={checkInArr(userItem, item?.old?.backupEmployees) ? { color: "green", fontWeight: 600 } : { color: "red", fontWeight: 600 }}>{`${convertEmpIdToName(allEmployee, userItem)}`}</span>&#44;
                                                                     </span>
-                                                                })}
+                                                                }) : "N/A"}
                                                             </div>
                                                         </td>
                                                     </tr>
