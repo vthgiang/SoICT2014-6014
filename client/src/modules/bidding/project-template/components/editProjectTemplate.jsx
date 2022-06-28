@@ -57,7 +57,7 @@ const EditProjectTemplateForm = (props) => {
     useEffect(() => {
         setProjectData(projectEdit);
         setId(projectEditId);
-    }, [projectEditId])
+    }, [JSON.stringify(projectEditId)])
 
     useEffect(() => {
         const op = getParticipants(listUsers, projectManager, responsibleEmployeesWithUnit)
@@ -71,9 +71,6 @@ const EditProjectTemplateForm = (props) => {
         if (!ValidationHelper.validateName(translate, projectName, 6, 255).status) return false;
         if (projectManager.length === 0) return false;
         if (responsibleEmployeesWithUnit.list.length === 0) return false;
-        // if (startDate.length === 0) return false;
-        // if (endDate.length === 0) return false;
-        // if (new Date(startDate) > new Date(endDate)) return false;
 
         // validate task info
         for (let task in tasksInfo) {

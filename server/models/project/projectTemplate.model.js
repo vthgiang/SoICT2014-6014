@@ -119,9 +119,9 @@ const ProjectTemplateSchema = new Schema(
             //         },
             //     },
             // ],
-            preceedingTasks: {
+            preceedingTasks: [{
                 type: String
-            },
+            }],
             organizationalUnit: {
                 type: Schema.Types.ObjectId,
                 ref: "OrganizationalUnit",

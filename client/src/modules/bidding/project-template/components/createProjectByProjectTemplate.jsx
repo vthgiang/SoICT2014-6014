@@ -156,7 +156,7 @@ const CreateProjectByProjectTemplateModal = (props) => {
                 if (x)
                     return {
                         ...x,
-                        preceedingTasks: x.preceedingTasks ? x.preceedingTasks.split(",")?.map(s => s?.trim()) : []
+                        preceedingTasks: x.preceedingTasks ? x.preceedingTasks?.map(s => s?.trim()) : []
                     }
             }) ?? [];
             setProjectTask(projectTaskData);

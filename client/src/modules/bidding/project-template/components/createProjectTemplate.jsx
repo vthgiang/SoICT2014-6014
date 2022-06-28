@@ -167,6 +167,7 @@ const CreateProjectTemplateForm = (props) => {
                                     setTasksInfo={setTasksInfo}
                                     type={"create"}
                                     id={`create`}
+                                    // taskList={tasksInfo}
                                     projectDetail={generalInfo}
                                 // currentProjectTasks={tasksInfo}
                                 // listUsers={listUsers}

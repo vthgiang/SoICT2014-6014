@@ -45,7 +45,7 @@ export const CreateTaskProjectTemplate = (props) => {
         // creator: getStorage("userId"),
         // organizationalUnit: "",
         collaboratedWithOrganizationalUnits: [],
-        preceedingTasks: "",
+        preceedingTasks: [],
         // followingTasks: [],
         estimateNormalTime: '',
         estimateOptimisticTime: '',
@@ -90,19 +90,19 @@ export const CreateTaskProjectTemplate = (props) => {
         setTasks(taskList ?? [])
         setId(props.id)
         setPrjGeneralInfo(props.projectDetail)
-    }, [props.id])
+    }, [props.id, JSON.stringify(props.projectDetail)])
 
     useEffect(() => {
         setResponsibleEmployeesWithUnit(respEmployeesWithUnit)
-    }, [respEmployeesWithUnit])
+    }, [JSON.stringify(respEmployeesWithUnit)])
 
     useEffect(() => {
         setOptionUsers(userSelectOptions)
-    }, [userSelectOptions])
+    }, [JSON.stringify(userSelectOptions)])
 
     useEffect(() => {
         props.setTasksInfo(tasks)
-    }, [tasks])
+    }, [JSON.stringify(tasks)])
 
     const handleChange = (e) => {
         let { name, value } = e?.target;
@@ -150,6 +150,16 @@ export const CreateTaskProjectTemplate = (props) => {
             currentTask: {
                 ...state.currentTask,
                 estimateOptimisticTime: Number(value)
+            }
+        })
+    }
+
+    const handleChangePreceedingTask = (value) => {
+        setState({
+            ...state,
+            currentTask: {
+                ...state.currentTask,
+                preceedingTasks: value
             }
         })
     }
@@ -249,13 +259,18 @@ export const CreateTaskProjectTemplate = (props) => {
         newList.splice(listIndex, 1)
 
         setTasks(newList);
-        props.setTasksInfo(tasks)
+        setState({
+            ...state,
+            currentTask: initTaskData,
+            currentIndex: null
+        })
+        props.setTasksInfo(tasks);
     }
 
     const handleResetTask = () => {
         setState({
             ...state,
-            type: ADD_TYPE,
+            // type: ADD_TYPE,
             currentTask: initTaskData,
             currentIndex: null
         })
@@ -315,6 +330,7 @@ export const CreateTaskProjectTemplate = (props) => {
         props.setTasksInfo(tasks)
     }
 
+    let listPrevTask = tasks?.map(x => { return { text: x.code, value: x.code?.trim() } }) ?? []
     const renderTaskForm = () => {
         return (
             <div className='row'>
@@ -350,7 +366,17 @@ export const CreateTaskProjectTemplate = (props) => {
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label>Công việc tiền nhiệm<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="preceedingTasks" value={state.currentTask.preceedingTasks} onChange={(e) => handleChange(e)}></input>
+                                    {/* <input type="text" className="form-control" name="preceedingTasks" value={state.currentTask.preceedingTasks} onChange={(e) => handleChange(e)}></input> */}
+                                    <SelectBox
+                                        id={`${props.type}-preceeding-task-select-box-${id}-${state.currentIndex}`}
+                                        className="form-control select"
+                                        style={{ width: "100%" }}
+                                        items={listPrevTask ?? []}
+                                        onChange={handleChangePreceedingTask}
+                                        value={state.currentTask.preceedingTasks}
+                                        multiple={true}
+                                        options={{ placeholder: "Chọn công việc tiền nhiệm" }}
+                                    />
                                 </div>
                             </div>
 
@@ -433,7 +459,7 @@ export const CreateTaskProjectTemplate = (props) => {
     return (
         <div className="form-group">
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', color: 'red' }}>
-                <p>Điền các thông tin công việc theo mẫu bên duói<span className="text-red">*</span></p>
+                <p>Điền các thông tin công việc theo mẫu bên duới<span className="text-red">*</span></p>
             </div>
             {renderTaskForm()}
 
@@ -480,7 +506,7 @@ export const CreateTaskProjectTemplate = (props) => {
                             <tr key={index}>
                                 <td>{item?.code}</td>
                                 <td>{item?.name}</td>
-                                <td>{item?.preceedingTasks}</td>
+                                <td>{item?.preceedingTasks?.join(", ")}</td>
                                 <td>{item?.estimateNormalTime}</td>
                                 <td>{item?.estimateOptimisticTime}</td>
                                 <td>
