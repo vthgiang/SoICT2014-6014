@@ -2,13 +2,25 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { RequestActions } from '../../../../common-production/request-management/redux/actions';
-import { formatDate, formatToTimeZoneDate } from '../../../../../../helpers/formatDate';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 import GoodComponentRequest from '../../../../common-production/request-management/components/goodComponent';
 
 function EditForm(props) {
+
+     const formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [day, month, year].join('-');
+    }
 
     const [state, setState] = useState({
         code: generateCode("GPR"),
@@ -23,7 +35,7 @@ function EditForm(props) {
         }
         setState({
             ...state,
-            desiredTime: formatToTimeZoneDate(value)
+            desiredTime: value
         });
     }
 

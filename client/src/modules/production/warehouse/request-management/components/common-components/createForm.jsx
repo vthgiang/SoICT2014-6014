@@ -28,7 +28,6 @@ function CreateForm(props) {
         listGoods: [],
         approvers: "",
         stock: "",
-        isAutoSelectStock: false,
     });
 
     // Thời gian mong muốn 
@@ -186,8 +185,6 @@ function CreateForm(props) {
                 ...state,
                 errorOnSourceProduct: msg,
                 sourceType: value,
-                // selfProducedCheck: value === "1" ? true : false,
-                // listGood: [],
             });
         }
         return msg === undefined;
@@ -279,14 +276,6 @@ function CreateForm(props) {
         return msg === undefined;
     };
 
-    const handleChooseTypeOfSelectStock = () => {
-        setState({
-            ...state,
-            isAutoSelectStock: !state.isAutoSelectStock
-        });
-    }
-
-
     // Phần lưu dữ liệu
 
     const handleClickCreate = () => {
@@ -343,19 +332,33 @@ function CreateForm(props) {
 
     const { translate, NotHaveCreateButton } = props;
     const { code, desiredTime, errorIntendReceiveTime, description, approver, errorApprover,
-        errorStock, stock, sourceType, errorOnSourceProduct, errorSupplier, supplier, worksValueError, worksValue, isAutoSelectStock } = state;
-    let dataSource = [
+        errorStock, stock, sourceType, errorOnSourceProduct, errorSupplier, supplier, worksValueError, worksValue } = state;
+    const dataSource = [
         {
             value: '0',
-            text: 'Chọn nguồn yêu cầu',
+            text: 'Chọn nguồn hàng hóa',
         },
         {
             value: '1',
-            text: 'Yêu cầu từ nhà máy sản xuất',
+            text: 'Hàng từ nhà máy sản xuất',
         },
         {
             value: '2',
-            text: 'Yêu cầu từ nhà cung cấp',
+            text: 'Nhập hàng từ nhà cung cấp',
+        }
+    ];
+    const dataSource2 = [
+        {
+            value: '0',
+            text: 'Chọn đơn vị tiếp nhận hàng hóa',
+        },
+        {
+            value: '1',
+            text: 'Xuất hàng đến nhà máy sản xuất',
+        },
+        {
+            value: '2',
+            text: 'Xuất hàng đến khách hàng',
         }
     ];
     const dataApprover = getApprover();
@@ -384,15 +387,31 @@ function CreateForm(props) {
                                 <label>{translate('production.request_management.code')}<span className="text-red">*</span></label>
                                 <input type="text" disabled={true} value={code} className="form-control"></input>
                             </div>
+                            <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.unit_receiving_request")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-stock`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={stock}
+                                    items={dataStock}
+                                    onChange={handleStockChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorStock} />
+                            </div>
                             <div className={`form-group ${!errorOnSourceProduct ? "" : "has-error"}`}>
-                                <label>{"Nguồn yêu cầu"}</label>
+                                <label>{props.stockRequestType == '1' ? "Nguồn hàng hóa" : 'Nơi tiếp nhận hàng hóa'}</label>
                                 <span className="text-red"> * </span>
                                 <SelectBox
                                     id={`choose-source-type`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={sourceType}
-                                    items={dataSource}
+                                    items={props.stockRequestType == '1' ? dataSource : dataSource2}
                                     onChange={handleSourceChange}
                                     multiple={false}
                                 />
@@ -409,6 +428,22 @@ function CreateForm(props) {
                                     disabled={false}
                                 />
                                 <ErrorLabel content={errorIntendReceiveTime} />
+                            </div>
+                            <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("production.request_management.approver_in_stock")}
+                                    <span className="text-red"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-approver`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={approver}
+                                    items={dataApprover}
+                                    onChange={handleApproverChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={errorApprover} />
                             </div>
                             {sourceType === "2" ?
                                 (<div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
@@ -452,60 +487,6 @@ function CreateForm(props) {
                         </div>
                     </fieldset>
                     <GoodComponentRequest onHandleGoodChange={onHandleGoodChange} />
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{"Thông tin kho tiếp nhận yêu cầu"}</legend>
-                        <div className="form-group">
-                            <label>{!isAutoSelectStock ? "Chọn kho thủ công" : "Chọn kho tự động"}</label>
-                            <p style={{ float: "right" }} type="button" onClick={handleChooseTypeOfSelectStock} className="btn btn-primary">{!isAutoSelectStock ? "Chọn kho tự động" : "Chọn kho thủ công"}</p>
-                        </div>
-                        {
-                            !isAutoSelectStock &&
-                            <div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
-                                        <label>
-                                            {translate("production.request_management.unit_receiving_request")}
-                                            <span className="text-red"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-stock`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={stock}
-                                            items={dataStock}
-                                            onChange={handleStockChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorStock} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>
-                                            {translate("production.request_management.approver_in_stock")}
-                                            <span className="text-red"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-approver`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={approver}
-                                            items={dataApprover}
-                                            onChange={handleApproverChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorApprover} />
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        {
-                            isAutoSelectStock &&
-                            <div>
-                                {"Tự động chỗ này"}
-                            </div>
-                        }
-                    </fieldset>
                 </form>
             </DialogModal>
         </React.Fragment >

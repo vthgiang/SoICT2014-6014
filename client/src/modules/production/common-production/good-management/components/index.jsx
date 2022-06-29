@@ -318,7 +318,7 @@ function GoodManagement(props) {
                         category={state.currentRow.category}
                         baseUnit={state.currentRow.baseUnit}
                         units={state.currentRow.units}
-                        packingRule={state.currentRow.packingRule}
+                        // packingRule={state.currentRow.packingRule}
                         materials={state.currentRow.materials}
                         description={state.currentRow.description}
                         manufacturingMills={state.currentRow.manufacturingMills}
@@ -346,7 +346,7 @@ function GoodManagement(props) {
                         units={state.currentRow.units}
                         materials={state.currentRow.materials}
                         description={state.currentRow.description}
-                        packingRule={state.currentRow.packingRule}
+                        // packingRule={state.currentRow.packingRule}
                         manufacturingMills={state.currentRow.manufacturingMills}
                         pricePerBaseUnit={state.currentRow.pricePerBaseUnit}
                         salesPriceVariance={state.currentRow.salesPriceVariance}
@@ -431,7 +431,7 @@ function GoodManagement(props) {
                             <th>{translate("manage_warehouse.good_management.name")}</th>
                             <th>{translate("manage_warehouse.good_management.category")}</th>
                             <th>{translate("manage_warehouse.good_management.unit")}</th>
-                            <th>{translate("manage_warehouse.good_management.packing_rule")}</th>
+                            {/* <th>{translate("manage_warehouse.good_management.packing_rule")}</th> */}
                             {type === "product" && <th>{translate("manage_warehouse.good_management.materials")}</th>}
                             <th>{translate("manage_warehouse.good_management.good_source")}</th>
                             <th>{translate("manage_warehouse.good_management.description")}</th>
@@ -445,7 +445,7 @@ function GoodManagement(props) {
                                         translate("manage_warehouse.good_management.name"),
                                         translate("manage_warehouse.good_management.category"),
                                         translate("manage_warehouse.good_management.unit"),
-                                        translate("manage_warehouse.good_management.packing_rule"),
+                                        // translate("manage_warehouse.good_management.packing_rule"),
                                         type === "product" ? translate("manage_warehouse.good_management.materials") : [],
                                         translate("manage_warehouse.good_management.description"),
                                     ]}
@@ -472,7 +472,7 @@ function GoodManagement(props) {
                                             : "category is deleted"}
                                     </td>
                                     <td>{x.baseUnit}</td>
-                                    <td>{x.packingRule ? x.packingRule : ''}</td>
+                                    {/* <td>{x.packingRule ? x.packingRule : ''}</td> */}
                                     {
                                         type === "product" &&
                                         <td>{

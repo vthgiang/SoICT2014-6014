@@ -46,110 +46,110 @@ function UnitCreateForm(props) {
         return listUnitArray;
     }
 
-    const handleSelectMultiBaseUnit = (value) => {
-        if (value.length == 0) {
-            value = null;
-        }
-        validateMultiBaseUnit(value, true)
-    }
+    // const handleSelectMultiBaseUnit = (value) => {
+    //     if (value.length == 0) {
+    //         value = null;
+    //     }
+    //     validateMultiBaseUnit(value, true)
+    // }
 
-    const validateMultiBaseUnit = (value, willUpdateState) => {
-        let msg = undefined;
+    // const validateMultiBaseUnit = (value, willUpdateState) => {
+    //     let msg = undefined;
 
-        const { translate } = props;
-        if (!value) {
-            msg = translate('manage_warehouse.good_management.choose_base_unit')
-        }
-        if (willUpdateState) {
-            let packingRule = "";
-            if (value) {
-                packingRule = convertToPackingRule(value);
-            }
-            if (packingRule !== "") {
-                setState({
-                    ...state,
-                    packingRule: packingRule,
-                    listUnitSelected: value,
-                    errorOnBaseUnit: msg
-                });
-            } else {
-                setState({
-                    ...state,
-                    listUnitSelected: value,
-                    packingRule: packingRule,
-                    errorOnBaseUnit: value ? translate("manage_warehouse.good_management.error_packing_rule") : msg
-                })
-            }
+    //     const { translate } = props;
+    //     if (!value) {
+    //         msg = translate('manage_warehouse.good_management.choose_base_unit')
+    //     }
+    //     if (willUpdateState) {
+    //         let packingRule = "";
+    //         if (value) {
+    //             packingRule = convertToPackingRule(value);
+    //         }
+    //         if (packingRule !== "") {
+    //             setState({
+    //                 ...state,
+    //                 packingRule: packingRule,
+    //                 listUnitSelected: value,
+    //                 errorOnBaseUnit: msg
+    //             });
+    //         } else {
+    //             setState({
+    //                 ...state,
+    //                 listUnitSelected: value,
+    //                 packingRule: packingRule,
+    //                 errorOnBaseUnit: value ? translate("manage_warehouse.good_management.error_packing_rule") : msg
+    //             })
+    //         }
 
-            // props.onDataChange(state.listUnit);
-            props.onDataChange(state.listUnit, state.packingRule);
+    //         props.onDataChange(state.listUnit);
+    //         props.onDataChange(state.listUnit, state.packingRule);
 
-        }
+    //     }
 
-        return msg
-    }
+    //     return msg
+    // }
 
     // Hàm sắp xếp subListUnitArray theo thứ tự conversion rate tăng dần
-    const sortListUnitArray = (array) => {
-        for (let i = 0; i < array.length; i++) {
-            for (let j = i + 1; j < array.length; j++) {
-                if (array[i].conversionRate > array[j].conversionRate) {
-                    let tmp = array[i];
-                    array[i] = array[j];
-                    array[j] = tmp
-                }
-            }
-        }
-        return array;
-    }
+    // const sortListUnitArray = (array) => {
+    //     for (let i = 0; i < array.length; i++) {
+    //         for (let j = i + 1; j < array.length; j++) {
+    //             if (array[i].conversionRate > array[j].conversionRate) {
+    //                 let tmp = array[i];
+    //                 array[i] = array[j];
+    //                 array[j] = tmp
+    //             }
+    //         }
+    //     }
+    //     return array;
+    // }
 
     // Hàm này validate xem list unit có hợp lệ để tạo thành một packingRule hay không
     // Input là 1 array chứa các phần tử có conversion rate tăng dần
-    const validateListUnitArray = (array) => {
-        for (let i = 0; i < array.length - 1; i++) {
-            let rate = array[i + 1].conversionRate / array[i].conversionRate;
-            if (!Number.isInteger(rate)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    // const validateListUnitArray = (array) => {
+    //     for (let i = 0; i < array.length - 1; i++) {
+    //         let rate = array[i + 1].conversionRate / array[i].conversionRate;
+    //         if (!Number.isInteger(rate)) {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
 
 
-    const convertToPackingRule = (value) => {
-        let packingRule = '';
-        let listUnitArray = getListUnitArray();
-        let subListUnitArray = [];
-        for (let i = 0; i < listUnitArray.length; i++) {
-            for (let j = 0; j < value.length; j++) {
-                if (listUnitArray[i].value == value[j]) {
-                    subListUnitArray.push(listUnitArray[i]);
-                    break;
-                }
-            }
-        }
-        let sortListUnitArr = sortListUnitArray(subListUnitArray);
-        let resultValidate = validateListUnitArray(sortListUnitArr);
-        // Nếu chuỗi tạo thành được 1 packingRule
-        if (resultValidate) {
-            let maxIndexOfArray = sortListUnitArr.length - 1;
-            packingRule += sortListUnitArr[maxIndexOfArray].text;
-            if (maxIndexOfArray > 0) {
-                for (let i = maxIndexOfArray - 1; i >= 0; i--) {
-                    packingRule += " x " + (sortListUnitArr[i + 1].conversionRate / sortListUnitArr[i].conversionRate) + sortListUnitArr[i].text
-                }
+    // const convertToPackingRule = (value) => {
+    //     let packingRule = '';
+    //     let listUnitArray = getListUnitArray();
+    //     let subListUnitArray = [];
+    //     for (let i = 0; i < listUnitArray.length; i++) {
+    //         for (let j = 0; j < value.length; j++) {
+    //             if (listUnitArray[i].value == value[j]) {
+    //                 subListUnitArray.push(listUnitArray[i]);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     let sortListUnitArr = sortListUnitArray(subListUnitArray);
+    //     let resultValidate = validateListUnitArray(sortListUnitArr);
+    //     // Nếu chuỗi tạo thành được 1 packingRule
+    //     if (resultValidate) {
+    //         let maxIndexOfArray = sortListUnitArr.length - 1;
+    //         packingRule += sortListUnitArr[maxIndexOfArray].text;
+    //         if (maxIndexOfArray > 0) {
+    //             for (let i = maxIndexOfArray - 1; i >= 0; i--) {
+    //                 packingRule += " x " + (sortListUnitArr[i + 1].conversionRate / sortListUnitArr[i].conversionRate) + sortListUnitArr[i].text
+    //             }
 
-            }
-        }
-        return packingRule;
-    }
+    //         }
+    //     }
+    //     return packingRule;
+    // }
 
     if (props.id !== state.id || props.baseUnit !== state.baseUnit) {
         setState({
             ...state,
             baseUnit: props.baseUnit,
             id: props.id,
-            packingRule: props.packingRule,
+            // packingRule: props.packingRule,
             listUnit: props.initialData
         })
     }
@@ -228,8 +228,8 @@ function UnitCreateForm(props) {
             listUnit: [...listUnit],
             unit: Object.assign({}, EMPTY_UNIT),
         })
-        // props.onDataChange(state.listUnit);
-        props.onDataChange(state.listUnit, state.packingRule);
+        props.onDataChange(state.listUnit);
+        // props.onDataChange(state.listUnit, state.packingRule);
     }
 
     const handleEditUnit = async (unit, index) => {
@@ -251,8 +251,8 @@ function UnitCreateForm(props) {
             editInfo: false,
             unit: Object.assign({}, EMPTY_UNIT),
         })
-        props.onDataChange(state.listUnit, state.packingRule);
-        // props.onDataChange(state.listUnit);
+        // props.onDataChange(state.listUnit, state.packingRule);
+        props.onDataChange(state.listUnit);
     }
 
     const handleCancelEditUnit = async (e) => {
@@ -283,8 +283,8 @@ function UnitCreateForm(props) {
             listUnit: newListUnit
         })
 
-        props.onDataChange(state.listUnit, state.packingRule);
-        // props.onDataChange(state.listUnit);
+        // props.onDataChange(state.listUnit, state.packingRule);
+        props.onDataChange(state.listUnit);
     }
     const showListExplainUnit = () => {
         Swal.fire({
@@ -301,11 +301,11 @@ function UnitCreateForm(props) {
     };
 
     const { translate, id } = props;
-    let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected, packingRule } = state;
+    let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected } = state;
     return (
 
         <fieldset className="scheduler-border">
-            <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}
+            <legend className="scheduler-border">{"Quy tắc đóng gói"}
                 <a onClick={() => showListExplainUnit()}>
                     <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                 </a>
@@ -444,7 +444,7 @@ function UnitCreateForm(props) {
                     }
                 </tbody>
             </table>
-            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
                     <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="text-red"> * </span></label>
                     <SelectMulti
@@ -464,7 +464,7 @@ function UnitCreateForm(props) {
                         packingRule || !errorOnBaseUnit && listUnitSelected.length > 0 && packingRule
                     }
                 </div>
-            </div>
+            </div> */}
 
         </fieldset >
     )

@@ -26,11 +26,11 @@ function RequestManagement(props) {
         desiredTime: '',
         code: '',
         status: null,
+        requestFrom: 'manufacturing',
     });
 
     useEffect(() => {
-        props.getAllRequestByCondition(state);
-        // props.getAllGoodsByType({ type: 'material' });
+        props.getAllRequestByCondition({type: state.type, requestType: state.requestType, requestFrom: state.requestFrom});
         props.getUser();
         props.getAllStocks();
         props.getAllManufacturingWorks();

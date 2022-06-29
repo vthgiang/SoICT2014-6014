@@ -31,8 +31,7 @@ function RequestManagement(props) {
     });
 
     useEffect(() => {
-        props.getAllRequestByCondition(state);
-        // props.getAllGoodsByType({ type: 'material' });
+        props.getAllRequestByCondition({type: state.type, requestType: state.requestType, requestFrom: state.requestFrom});
         props.getUser();
         props.getAllStocks();
         props.getAllDepartments();
@@ -201,7 +200,7 @@ function RequestManagement(props) {
                 <li className="active"><a href="#good-receipt-request" data-toggle="tab" onClick={() => handleGoodReceiptRequest()}>{translate('production.request_management.receipt_request')}</a></li>
                 <li><a href="#good-issue-request" data-toggle="tab" onClick={() => handleGoodIssueRequest()}>{translate('production.request_management.issue_request')}</a></li>
                 <li><a href="#good-return-request" data-toggle="tab" onClick={() => handleGoodReturnRequest()}>{translate('production.request_management.good_return_request')}</a></li>
-                <li><a href="#good-take-request" data-toggle="tab" onClick={() => handleGoodTakeRequest()}>{translate('production.request_management.good_take_request')}</a></li>
+                <li><a href="#good-rotate-request" data-toggle="tab" onClick={() => handleGoodTakeRequest()}>{translate('production.request_management.good_take_request')}</a></li>
             </ul>
             <div className="tab-content">
                 <div className="tab-pane active" id="good-receipt-request">
@@ -261,7 +260,7 @@ function RequestManagement(props) {
                         </LazyLoadComponent>
                     }
                 </div>
-                <div className="tab-pane" id="good-take-request">
+                <div className="tab-pane" id="good-rotate-request">
                     {requestType === 3 && type === 4 &&
                         <LazyLoadComponent>
                             <GoodRotateRequestManagementTable
@@ -288,7 +287,6 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllRequestByCondition: RequestActions.getAllRequestByCondition,
-    // getAllGoodsByType: GoodActions.getAllGoodsByType,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     editRequest: RequestActions.editRequest,
     getUser: UserActions.get,

@@ -29,7 +29,7 @@ function ReceiptManagement(props) {
     })
 
     useEffect(() => {
-        props.getAllRequestByCondition({ requestType: 3, type: 1 });
+        props.getAllRequestByCondition({ requestType: 3, type: 1, requestFrom: 'stock' });
     }, [])
 
     const showFilePreview = (data) => {

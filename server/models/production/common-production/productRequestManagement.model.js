@@ -13,13 +13,9 @@ const ProductRequestManagementSchema = new Schema({
         ref: "User",
         required: true
     },
-    bill: {
-        type: Schema.Types.ObjectId,
-        ref: "Bill",
-    },
     // approveType 1. Người phê duyệt trong nhà máy sản xuất
     // approveType 2. Người phê duyệt mua hàng trong đơn hàng
-    // approveType 3. Người phê duyệt nhập kho trong đơn hàng
+    // approveType 3. Người phê duyệt gửi yêu cầu nhập, xuất kho trong đơn hàng
     // approveType 4. Người phê duyệt trong kho, nếu là luân chuyển hàng trong kho thì là kho xuất
     // approveType 5. Người phê duyệt trong kho nhập nếu là luân chuyển hàng trong kho
 
@@ -113,7 +109,7 @@ const ProductRequestManagementSchema = new Schema({
         default: 1
     },
     // requestType = 1: mua hàng: type = 1, nhập kho: type = 2, xuất kho : type = 3
-    // requestType = 2: nhập kho: type = 1
+    // requestType = 2: nhập kho: type = 1, xuất kho: type = 2
     // requestType = 3: nhập kho: type = 1, xuất kho: type = 2, trả hàng: type = 3, luân chuyển: type = 4 , vận chuyển: type = 5
     // requestType = 4: vận chuyển: type = 1: nhập kho type = 2: xuất kho, type = 3: trả hàng, type = 4: luân chuyển: type = 5
     type: { // loại yêu cầu
@@ -170,7 +166,18 @@ const ProductRequestManagementSchema = new Schema({
     description: { // Mô tả phiếu đề nghị mua 
         type: String
     },
-
+    purchaseOrder: { // Mã đơn mua hàng
+        type: Schema.Types.ObjectId,
+        ref: "PurchaseOrder"
+    },
+    saleOrder: { // Mã đơn bán hàng
+        type: Schema.Types.ObjectId,
+        ref: "SalesOrder"
+    },
+    bill: { // Mã phiếu trong kho
+        type: Schema.Types.ObjectId,
+        ref: "Bill"
+    },
 }, {
     // Thời gian tạo, sửa yêu cầu
     timestamps: true

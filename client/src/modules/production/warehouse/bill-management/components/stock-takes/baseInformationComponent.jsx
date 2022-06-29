@@ -379,16 +379,16 @@ function BaseInformationComponent(props) {
     useEffect(() => {
         switch (state.type) {
             case "3":
-                props.getAllRequestByCondition({ requestType: 3, type: 1 });
+                props.getAllRequestByCondition({ requestType: 3, type: 1, requestFrom: 'stock' });
                 break;
             case "4":
-                props.getAllRequestByCondition({ requestType: 3, type: 2 });
+                props.getAllRequestByCondition({ requestType: 3, type: 2,requestFrom: 'stock' });
                 break;
             case "5":
-                props.getAllRequestByCondition({ requestType: 3, type: 3 });
+                props.getAllRequestByCondition({ requestType: 3, type: 3, requestFrom: 'stock' });
                 break;
             case "6":
-                props.getAllRequestByCondition({ requestType: 3, type: 4 });
+                props.getAllRequestByCondition({ requestType: 3, type: 4, requestFrom: 'stock' });
                 break;
         }
     }, [state.type])
