@@ -3182,12 +3182,34 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       })
     }
   }
-
+  let statusActualStartDate = false;
+  if (taskItem.status==="wait_for_approval" && status[0]==="inprocess") statusActualStartDate=true;
   // cập nhật thông tin cơ bản
   await Task(connect(DB_CONNECTION, portal)).updateOne(
     { _id: taskId },
     {
-      $set: status ? {
+      $set: status ? statusActualStartDate ? {
+        name: name,
+        description: description,
+        progress: progress,
+        priority: parseInt(priority[0]),
+        status: status[0],
+        formula: formula,
+        parent: parent,
+        taskProject: taskProject ?? undefined,
+        tags: tags,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        actualStartDate: new Date(),
+        collaboratedWithOrganizationalUnits: newCollab,
+
+        responsibleEmployees: responsibleEmployees,
+        consultedEmployees: consultedEmployees,
+        accountableEmployees: accountableEmployees,
+        informedEmployees: informedEmployees,
+
+        inactiveEmployees: inactiveEmployees,
+      }: {
         name: name,
         description: description,
         progress: progress,
@@ -3668,7 +3690,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
       { path: "hoursSpentOnTask.contributions.employee", select: "name" },
       {
         path: "process",
-        populate: {
+        populate: [{
           path: "tasks",
           populate: [
             { path: "parent", select: "name" },
@@ -3725,8 +3747,9 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
               path: "commentsInProcess.comments.creator",
               select: "name email avatar",
             },
-          ],
-        },
+          ]
+        },{ path: 'processTemplate' },
+        { path: 'processTemplate', populate: { path: 'processTemplates.process' } }]
       },
       { path: "overallEvaluation.responsibleEmployees.employee", select: "_id name" },
       { path: "overallEvaluation.accountableEmployees.employee", select: "_id name" },
