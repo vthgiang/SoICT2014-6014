@@ -44,7 +44,6 @@ const getSystemAdminPage = async (req, res) => {
 }
 
 const addSystemAdminPage = async (req, res) => {
-    console.log("reqssss", req.res.req.currentRole);
     try {
         let pageURL = await SystemPageServices.addSystemAdminPage(req.body, req.res.req.currentRole);
 

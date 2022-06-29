@@ -41,7 +41,6 @@ export const systemPage = (state = initState, action) => {
 
 export const systemAdminPage = (state = initialState, action) => {
     let index = -1;
-    console.log("actionType", action.type);
     switch (action.type) {
         case SystemPageConstants.GET_SYSTEM_ADMIN_PAGE_REQUEST:
         case SystemPageConstants.DEL_SYSTEM_ADMIN_PAGE_REQUEST:

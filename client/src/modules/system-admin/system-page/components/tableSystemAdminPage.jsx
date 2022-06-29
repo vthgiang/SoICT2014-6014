@@ -133,7 +133,6 @@ function TableSystemAdminPage(props) {
 
     const totalPage = example && Math.ceil(example.totalList / perPage);
 
-    console.log("props----", example);
 
     return (
         <React.Fragment>

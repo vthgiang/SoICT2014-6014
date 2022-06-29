@@ -29,7 +29,6 @@ const getSystemAdminPage = (queryData) => {
     );
 }
 const addSystemAdminPage = (data) => {
-    console.log("here is data", data);
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/system-admin/system-page/addSystemAdminPage`,

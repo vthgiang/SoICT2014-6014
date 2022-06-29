@@ -48,7 +48,6 @@ function PageCreateForm(props) {
         }
     }
 
-    console.log("props----", example);
 
 
     /**
